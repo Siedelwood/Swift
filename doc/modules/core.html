@@ -38,6 +38,7 @@
 <li><a href="#Fields">Fields</a></li>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
 <li><a href="#Internal">Internal</a></li>
+<li><a href="#Logging">Logging</a></li>
 </ul>
 
 
@@ -50,6 +51,7 @@
   <li><a href="../modules/addons.addoninteractivesites.html">addons.addoninteractivesites</a></li>
   <li><a href="../modules/addons.addoninteractivetrebuchets.html">addons.addoninteractivetrebuchets</a></li>
   <li><a href="../modules/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
+  <li><a href="../modules/addons.addonqueststages.html">addons.addonqueststages</a></li>
   <li><a href="../modules/addons.addonrandomrequests.html">addons.addonrandomrequests</a></li>
   <li><a href="../modules/bundles.bundlebriefingsystem.html">bundles.bundlebriefingsystem</a></li>
   <li><a href="../modules/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
@@ -83,9 +85,11 @@
   <li><a href="../modules/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
   <li><a href="../modules/bundles.bundleweathermanipulation.html">bundles.bundleweathermanipulation</a></li>
   <li><strong>core</strong></li>
+  <li><a href="../modules/external.externalcampaignmap.html">external.externalcampaignmap</a></li>
   <li><a href="../modules/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
   <li><a href="../modules/external.externalgamecutscenes.html">external.externalgamecutscenes</a></li>
   <li><a href="../modules/external.externalhirdpersoncamera.html">external.externalhirdpersoncamera</a></li>
+  <li><a href="../modules/external.externalmaploader.html">external.externalmaploader</a></li>
   <li><a href="../modules/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
   <li><a href="../modules/external.externaltradinganalysis.html">external.externaltradinganalysis</a></li>
   <li><a href="../modules/loader.html">loader</a></li>
@@ -141,10 +145,6 @@
 	<td class="summary">Registriert eine Funktion, die nach dem laden ausgeführt wird.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.Bridge">API.Bridge (_Command, _Flag)</a></td>
-	<td class="summary">Schickt einen Skriptbefehl an die jeweils andere Skriptumgebung.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#API.ClearNotes">API.ClearNotes ()</a></td>
 	<td class="summary">Löscht alle Nachrichten im Debug Window.</td>
 	</tr>
@@ -171,6 +171,10 @@
 	<td class="summary">Schreibt ein genaues Abbild der Table ins Log.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#API.EndJob">API.EndJob (_JobID)</a></td>
+	<td class="summary">Beendet einen aktiven Job endgültig.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#API.EnsureScriptName">API.EnsureScriptName (_EntityID)</a></td>
 	<td class="summary">Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.</td>
 	</tr>
@@ -181,10 +185,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#API.FailQuest">API.FailQuest (_QuestName, _Verbose)</a></td>
 	<td class="summary">Lässt den Quest fehlschlagen.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.Fatal">API.Fatal (_Message)</a></td>
-	<td class="summary">Schreibt einen FATAL auf den Bildschirm und ins Log.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.GetDistance">API.GetDistance (_pos1, _pos2)</a></td>
@@ -222,6 +222,10 @@
 	<tr>
 	<td class="name" nowrap><a href="#API.IsValidQuest">API.IsValidQuest (_QuestID)</a></td>
 	<td class="summary">Prüft, ob zu der angegebenen ID ein Quest existiert.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.JobIsRunning">API.JobIsRunning (_JobID)</a></td>
+	<td class="summary">Prüft ob der angegebene Job aktiv und eingeschaltet ist.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.Localize">API.Localize (_Message)</a></td>
@@ -285,13 +289,13 @@
 	<td class="summary">Startet eine Liste von Quests.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#API.StartEventJob">API.StartEventJob (_EventType, _Function, ...)</a></td>
+	<td class="summary">Erzeugt einen neuen Event-Job.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#API.StartHiResJob">API.StartHiResJob (_Function, ...)</a></td>
 	<td class="summary">Fügt eine Funktion als Job hinzu, die zehn Mal pro Sekunde ausgeführt
  wird.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.StartInlineJob">API.StartInlineJob (_EventType, _Function, ...)</a></td>
-	<td class="summary">Erzeugt einen neuen Inline-Job.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.StartJob">API.StartJob (_Function, ...)</a></td>
@@ -327,10 +331,6 @@
 	<td class="summary">Prüft, ob eine Positionstabelle eine gültige Position enthält.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.Warn">API.Warn (_Message)</a></td>
-	<td class="summary">Schreibt eine WARNING auf den Bildschirm und ins Log.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#API.WinAllQuests">API.WinAllQuests (...)</a></td>
 	<td class="summary">Gewinnt eine Liste von Quests.</td>
 	</tr>
@@ -350,6 +350,10 @@
 	<td class="summary">Erweitert eine Funktion um eine andere Funktion.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#Core:CanGameBeSaved">Core:CanGameBeSaved ()</a></td>
+	<td class="summary">Prüft, ob das Spiel gerade gespeichert werden kann.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#Core:ChangeCustomQuestCaptionText">Core:ChangeCustomQuestCaptionText (_Text, _Quest)</a></td>
 	<td class="summary">Ändert den Text des Beschreibungsfensters eines Quests.</td>
 	</tr>
@@ -367,8 +371,16 @@
  aktuellen Systemzeit.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#Core:FormatLoggingMessage">Core:FormatLoggingMessage (_Text, _Level, _IsFile, _Env)</a></td>
+	<td class="summary">Formatiert die Nachricht für die Logger.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#Core:GetFunctionInString">Core:GetFunctionInString (_FunctionName)</a></td>
 	<td class="summary">Sucht eine Funktion mit dem angegebenen Namen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:GetSystemTime">Core:GetSystemTime ()</a></td>
+	<td class="summary">Gibt die Systemzeit und das Datum formatiert als String zurück.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Core:IdentifyHistoryEdition">Core:IdentifyHistoryEdition ()</a></td>
@@ -382,6 +394,14 @@
 	<tr>
 	<td class="name" nowrap><a href="#Core:IsBundleRegistered">Core:IsBundleRegistered (_Bundle)</a></td>
 	<td class="summary">Prüft, ob das Bundle bereits initalisiert ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:LogToFile">Core:LogToFile (_Text, _Level, _Env)</a></td>
+	<td class="summary">Schreibt eine Log Meldung in die Logdatei.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:LogToScreen">Core:LogToScreen (_Text, _Level, _Env)</a></td>
+	<td class="summary">Schreibt eine Log Meldung auf den Bildschirm.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Core:OverwriteBasePricesAndRefreshRates">Core:OverwriteBasePricesAndRefreshRates ()</a></td>
@@ -439,6 +459,10 @@
  angezeigt werden können.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#Core:SetupLocal_HistoryEditionAutoSave">Core:SetupLocal_HistoryEditionAutoSave ()</a></td>
+	<td class="summary">Überschreibt die Hotkey-Funktion, die das Spiel speichert.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#Core:SplicePlaceholderText">Core:SplicePlaceholderText (_Text, _Start)</a></td>
 	<td class="summary">Zerlegt einen String in 3 Strings: Anfang, Platzhalter, Ende.</td>
 	</tr>
@@ -451,8 +475,44 @@
 	<td class="summary">Wandelt underschiedliche Darstellungen einer Boolean in eine echte um.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#Core:TriggerEventJobs">Core:TriggerEventJobs (_Type)</a></td>
+	<td class="summary">Führt alle Event Jobs des angegebenen Typen aus und prüft deren Status.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#Core:qmod">Core:qmod (a, b)</a></td>
 	<td class="summary">Bestimmt das Modul b der Zahl a.</td>
+	</tr>
+</table>
+<h2><a href="#Logging">Logging</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.Debug">API.Debug (_Message)</a></td>
+	<td class="summary">Schreibt eine Debug-Nachricht mit dem angegebenen Level auf den Bildschirm
+ und ins Log.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.Error">API.Error (_Message)</a></td>
+	<td class="summary">Schreibt eine Warnungsmeldung mit dem angegebenen Level auf den Bildschirm
+ und ins Log.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.Info">API.Info (_Message)</a></td>
+	<td class="summary">Schreibt eine Ifon-Nachricht mit dem angegebenen Level auf den Bildschirm
+ und ins Log.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.Log">API.Log (_Message, _Level)</a></td>
+	<td class="summary">Schreibt eine Nachricht mit dem angegebenen Level auf den Bildschirm
+ und ins Log.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetLoggingLevel">API.SetLoggingLevel (_Screen, _File)</a></td>
+	<td class="summary">Setzt das Level fest ab dem auf den Bildschirm und ins Log geschrieben wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.Warn">API.Warn (_Message)</a></td>
+	<td class="summary">Schreibt eine Fehlermeldung mit dem angegebenen Level auf den Bildschirm
+ und ins Log.</td>
 	</tr>
 </table>
 
@@ -715,36 +775,6 @@ API.AddSaveGameAction(SaveGame)</pre>
 
 </dd>
     <dt>
-    <a name = "API.Bridge"></a>
-    <strong>API.Bridge (_Command, _Flag)</strong>
-    </dt>
-    <dd>
-    Schickt einen Skriptbefehl an die jeweils andere Skriptumgebung.
-<p> Wird diese Funktion als dem globalen Skript aufgerufen, sendet sie den
- Befehl an das lokale Skript. Wird diese Funktion im lokalen Skript genutzt,
- wird der Befehl an das globale Skript geschickt.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Command</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         Lua-Befehl als String
-        </li>
-        <li><span class="parameter">_Flag</span>
-            <span class="types"><span class="type">boolean</span></span>
-         FIXME Optional für GUI.SendScriptCommand benötigt.
-                      Was macht das Flag?
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
     <a name = "API.ClearNotes"></a>
     <strong>API.ClearNotes ()</strong>
     </dt>
@@ -912,6 +942,29 @@ API.DumpTable(Table)</pre>
 
 </dd>
     <dt>
+    <a name = "API.EndJob"></a>
+    <strong>API.EndJob (_JobID)</strong>
+    </dt>
+    <dd>
+    Beendet einen aktiven Job endgültig.
+<p> <b>Alias</b>: ResumeJob
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_JobID</span>
+            <span class="types"><span class="type">number</span></span>
+         Job-ID
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "API.EnsureScriptName"></a>
     <strong>API.EnsureScriptName (_EntityID)</strong>
     </dt>
@@ -984,31 +1037,6 @@ API.DumpTable(Table)</pre>
         <li><span class="parameter">_Verbose</span>
             <span class="types"><span class="type">boolean</span></span>
            Meldung nicht anzeigen
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.Fatal"></a>
-    <strong>API.Fatal (_Message)</strong>
-    </dt>
-    <dd>
-    Schreibt einen FATAL auf den Bildschirm und ins Log.
-<p> <p><b>Alias:</b> API.Dbg</p>
- <p><b>Alias:</b> fatal</p>
- <p><b>Alias:</b> dbg</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Message</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         Anzeigetext
         </li>
     </ul>
 
@@ -1271,6 +1299,29 @@ Copy = API.InstanceTable(Table)</pre>
            <span class="types"><span class="type">boolean</span></span>
         Quest existiert
     </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.JobIsRunning"></a>
+    <strong>API.JobIsRunning (_JobID)</strong>
+    </dt>
+    <dd>
+    Prüft ob der angegebene Job aktiv und eingeschaltet ist.
+<p> <b>Alias</b>: JobIsRunning
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_JobID</span>
+            <span class="types"><span class="type">number</span></span>
+         Job-ID
+        </li>
+    </ul>
+
 
 
 
@@ -1602,6 +1653,8 @@ Copy = API.InstanceTable(Table)</pre>
     </dt>
     <dd>
     Aktiviert einen angehaltenen Job.
+<p> <b>Hinweis</b>: Der Job darf nicht direkt mit Trigger.RequestTrigger
+ gestartet worden sein.
 <p> <b>Alias</b>: ResumeJob
 
 
@@ -1734,45 +1787,13 @@ Copy = API.InstanceTable(Table)</pre>
 
 </dd>
     <dt>
-    <a name = "API.StartHiResJob"></a>
-    <strong>API.StartHiResJob (_Function, ...)</strong>
+    <a name = "API.StartEventJob"></a>
+    <strong>API.StartEventJob (_EventType, _Function, ...)</strong>
     </dt>
     <dd>
-    Fügt eine Funktion als Job hinzu, die zehn Mal pro Sekunde ausgeführt
- wird.  Die Argumente werden an die Funktion übergeben.
-<p> Die Funktion kann als Referenz oder als Inline übergeben werden.
-<p> <b>Alias</b>: StartSimpleHiResJobEx
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Function</span>
-            <span class="types"><span class="type">number</span></span>
-         Funktion, die ausgeführt wird
-        </li>
-        <li><span class="parameter">...</span>
-               Liste von Argumenten
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">number</span></span>
-        Job ID
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.StartInlineJob"></a>
-    <strong>API.StartInlineJob (_EventType, _Function, ...)</strong>
-    </dt>
-    <dd>
-    Erzeugt einen neuen Inline-Job.
+    Erzeugt einen neuen Event-Job.
+<p> <b>Hinweis</b>: Nur wenn ein Event Job mit dieser Funktion gestartet wird,
+ können ResumeJob und YieldJob auf den Job angewendet werden.
 <p> <b>Hinweis</b>: Events.LOGIC_EVENT_ENTITY_CREATED funktioniert nicht!
 <p> <b>Hinweis</b>: Wird ein Table als Argument an den Job übergeben, wird eine
  Kopie angeleigt um Speicherprobleme zu verhindern. Es handelt sich also um
@@ -1787,8 +1808,7 @@ Copy = API.InstanceTable(Table)</pre>
          Event-Typ
         </li>
         <li><span class="parameter">_Function</span>
-            <span class="types"><span class="type">function</span></span>
-         Funktionsreferenz
+              Funktion (Funktionsreferenz oder String)
         </li>
         <li><span class="parameter">...</span>
                     Optionale Argumente des Job
@@ -1807,22 +1827,56 @@ Copy = API.InstanceTable(Table)</pre>
 
 </dd>
     <dt>
-    <a name = "API.StartJob"></a>
-    <strong>API.StartJob (_Function, ...)</strong>
+    <a name = "API.StartHiResJob"></a>
+    <strong>API.StartHiResJob (_Function, ...)</strong>
     </dt>
     <dd>
-    Fügt eine Funktion als Job hinzu, die einmal pro Sekunde ausgeführt
+    Fügt eine Funktion als Job hinzu, die zehn Mal pro Sekunde ausgeführt
  wird.  Die Argumente werden an die Funktion übergeben.
-<p> Die Funktion kann als Referenz oder als Inline übergeben werden.
-<p> <b>Alias</b>: StartSimpleJobEx
+<p> Die Funktion kann als Referenz, Inline oder als String übergeben werden.
+<p> <b>Alias</b>: StartSimpleHiResJobEx
+<p> <b>Alias</b>: StartSimpleHiResJob
 
 
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Function</span>
-            <span class="types"><span class="type">number</span></span>
-         Funktion, die ausgeführt wird
+         Funktion (Funktionsreferenz oder String)
+        </li>
+        <li><span class="parameter">...</span>
+               Liste von Argumenten
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        Job ID
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.StartJob"></a>
+    <strong>API.StartJob (_Function, ...)</strong>
+    </dt>
+    <dd>
+    Fügt eine Funktion als Job hinzu, die einmal pro Sekunde ausgeführt
+ wird.  Die Argumente werden an die Funktion übergeben.
+<p> Die Funktion kann als Referenz, Inline oder als String übergeben werden.
+<p> <b>Alias</b>: StartSimpleJobEx
+<p> <b>Alias</b>: StartSimpleJob
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Function</span>
+         Funktion (Funktionsreferenz oder String)
         </li>
         <li><span class="parameter">...</span>
                Liste von Argumenten
@@ -1846,7 +1900,10 @@ Copy = API.InstanceTable(Table)</pre>
         MachWas(_EntityType);
         <span class="keyword">return</span> <span class="keyword">true</span>;
     <span class="keyword">end</span>
-<span class="keyword">end</span>, Logic.GetTime(), Entities.U_KnightHealing)</pre>
+<span class="keyword">end</span>, Logic.GetTime(), Entities.U_KnightHealing)
+
+<span class="comment">-- Startet einen Job
+</span>StartSimpleJob(<span class="string">"MeinJob"</span>);</pre>
     </ul>
 
 </dd>
@@ -2063,29 +2120,6 @@ Copy = API.InstanceTable(Table)</pre>
 
 </dd>
     <dt>
-    <a name = "API.Warn"></a>
-    <strong>API.Warn (_Message)</strong>
-    </dt>
-    <dd>
-    Schreibt eine WARNING auf den Bildschirm und ins Log.
-<p> <p><p><b>Alias:</b> warn</p></p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Message</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         Anzeigetext
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
     <a name = "API.WinAllQuests"></a>
     <strong>API.WinAllQuests (...)</strong>
     </dt>
@@ -2143,6 +2177,8 @@ Copy = API.InstanceTable(Table)</pre>
     </dt>
     <dd>
     Pausiert einen laufenden Job.
+<p> <b>Hinweis</b>: Der Job darf nicht direkt mit Trigger.RequestTrigger
+ gestartet worden sein.
 <p> <b>Alias</b>: YieldJob
 
 
@@ -2193,6 +2229,25 @@ Copy = API.InstanceTable(Table)</pre>
         </li>
     </ul>
 
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:CanGameBeSaved"></a>
+    <strong>Core:CanGameBeSaved ()</strong>
+    </dt>
+    <dd>
+    Prüft, ob das Spiel gerade gespeichert werden kann.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [boolean]  Speichern ist möglich
+    </ol>
 
 
 
@@ -2303,6 +2358,45 @@ Copy = API.InstanceTable(Table)</pre>
 
 </dd>
     <dt>
+    <a name = "Core:FormatLoggingMessage"></a>
+    <strong>Core:FormatLoggingMessage (_Text, _Level, _IsFile, _Env)</strong>
+    </dt>
+    <dd>
+    Formatiert die Nachricht für die Logger.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Text</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+            Nachricht
+        </li>
+        <li><span class="parameter">_Level</span>
+            <span class="types"><span class="type">number</span></span>
+           Scheregrad
+        </li>
+        <li><span class="parameter">_IsFile</span>
+            <span class="types"><span class="type">boolean</span></span>
+          Formatiere für Log File
+        </li>
+        <li><span class="parameter">_Env</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+             Umgebung
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Nachricht
+    </ol>
+
+
+
+
+</dd>
+    <dt>
     <a name = "Core:GetFunctionInString"></a>
     <strong>Core:GetFunctionInString (_FunctionName)</strong>
     </dt>
@@ -2326,6 +2420,26 @@ Copy = API.InstanceTable(Table)</pre>
 
            <span class="types"><span class="type">function</span></span>
         Referenz auf die Funktion
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:GetSystemTime"></a>
+    <strong>Core:GetSystemTime ()</strong>
+    </dt>
+    <dd>
+    Gibt die Systemzeit und das Datum formatiert als String zurück.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Datum und Uhrzeit
     </ol>
 
 
@@ -2387,6 +2501,64 @@ Copy = API.InstanceTable(Table)</pre>
            <span class="types"><span class="type">boolean</span></span>
         Bundle initalisiert
     </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:LogToFile"></a>
+    <strong>Core:LogToFile (_Text, _Level, _Env)</strong>
+    </dt>
+    <dd>
+    Schreibt eine Log Meldung in die Logdatei.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Text</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+            Nachricht
+        </li>
+        <li><span class="parameter">_Level</span>
+            <span class="types"><span class="type">number</span></span>
+           Scheregrad
+        </li>
+        <li><span class="parameter">_Env</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+             Umgebung
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:LogToScreen"></a>
+    <strong>Core:LogToScreen (_Text, _Level, _Env)</strong>
+    </dt>
+    <dd>
+    Schreibt eine Log Meldung auf den Bildschirm.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Text</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+            Nachricht
+        </li>
+        <li><span class="parameter">_Level</span>
+            <span class="types"><span class="type">number</span></span>
+           Scheregrad
+        </li>
+        <li><span class="parameter">_Env</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+             Umgebung
+        </li>
+    </ul>
+
 
 
 
@@ -2698,6 +2870,23 @@ Core:ReplaceFunction(<span class="string">"A.foo"</span>, B)
 
 </dd>
     <dt>
+    <a name = "Core:SetupLocal_HistoryEditionAutoSave"></a>
+    <strong>Core:SetupLocal_HistoryEditionAutoSave ()</strong>
+    </dt>
+    <dd>
+    Überschreibt die Hotkey-Funktion, die das Spiel speichert.  Durch die
+ Prüfung, ob Briefings oder Cutscenes aktiv sind, wird vermieden, dass
+ die History Edition automatisch speichert.
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "Core:SplicePlaceholderText"></a>
     <strong>Core:SplicePlaceholderText (_Text, _Start)</strong>
     </dt>
@@ -2815,6 +3004,27 @@ Core:ReplaceFunction(<span class="string">"A.foo"</span>, B)
 
 </dd>
     <dt>
+    <a name = "Core:TriggerEventJobs"></a>
+    <strong>Core:TriggerEventJobs (_Type)</strong>
+    </dt>
+    <dd>
+    Führt alle Event Jobs des angegebenen Typen aus und prüft deren Status.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Type</span>
+            <span class="types"><span class="type">number</span></span>
+         Typ des Jobs
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "Core:qmod"></a>
     <strong>Core:qmod (a, b)</strong>
     </dt>
@@ -2846,13 +3056,166 @@ Core:ReplaceFunction(<span class="string">"A.foo"</span>, B)
 
 </dd>
 </dl>
+    <h2 class="section-header "><a name="Logging"></a>Logging</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.Debug"></a>
+    <strong>API.Debug (_Message)</strong>
+    </dt>
+    <dd>
+    Schreibt eine Debug-Nachricht mit dem angegebenen Level auf den Bildschirm
+ und ins Log.
+<p> <p><b>Alias:</b> error</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Message</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Anzeigetext
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.Error"></a>
+    <strong>API.Error (_Message)</strong>
+    </dt>
+    <dd>
+    Schreibt eine Warnungsmeldung mit dem angegebenen Level auf den Bildschirm
+ und ins Log.
+<p> <p><b>Alias:</b> error</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Message</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Anzeigetext
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.Info"></a>
+    <strong>API.Info (_Message)</strong>
+    </dt>
+    <dd>
+    Schreibt eine Ifon-Nachricht mit dem angegebenen Level auf den Bildschirm
+ und ins Log.
+<p> <p><b>Alias:</b> error</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Message</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Anzeigetext
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.Log"></a>
+    <strong>API.Log (_Message, _Level)</strong>
+    </dt>
+    <dd>
+    Schreibt eine Nachricht mit dem angegebenen Level auf den Bildschirm
+ und ins Log.
+<p> <p><b>Alias:</b> error</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Message</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Anzeigetext
+        </li>
+        <li><span class="parameter">_Level</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+           Fehlerlevel
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetLoggingLevel"></a>
+    <strong>API.SetLoggingLevel (_Screen, _File)</strong>
+    </dt>
+    <dd>
+    Setzt das Level fest ab dem auf den Bildschirm und ins Log geschrieben wird.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Screen</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Level Bildschirm
+        </li>
+        <li><span class="parameter">_File</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+           Level Datei
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.Warn"></a>
+    <strong>API.Warn (_Message)</strong>
+    </dt>
+    <dd>
+    Schreibt eine Fehlermeldung mit dem angegebenen Level auf den Bildschirm
+ und ins Log.
+<p> <p><p><b>Alias:</b> warn</p></p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Message</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Anzeigetext
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2020-04-30 10:17:38 </i>
+<i style="float:right;">Last updated 2020-07-19 18:13:05 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

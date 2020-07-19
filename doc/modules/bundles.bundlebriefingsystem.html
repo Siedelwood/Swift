@@ -34,6 +34,7 @@
 
 <h2>Contents</h2>
 <ul>
+<li><a href="#Tables">Tables</a></li>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
 <li><a href="#Internal">Internal</a></li>
 <li><a href="#Reward">Reward</a></li>
@@ -52,6 +53,7 @@
   <li><a href="../modules/addons.addoninteractivesites.html">addons.addoninteractivesites</a></li>
   <li><a href="../modules/addons.addoninteractivetrebuchets.html">addons.addoninteractivetrebuchets</a></li>
   <li><a href="../modules/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
+  <li><a href="../modules/addons.addonqueststages.html">addons.addonqueststages</a></li>
   <li><a href="../modules/addons.addonrandomrequests.html">addons.addonrandomrequests</a></li>
   <li><strong>bundles.bundlebriefingsystem</strong></li>
   <li><a href="../modules/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
@@ -85,9 +87,11 @@
   <li><a href="../modules/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
   <li><a href="../modules/bundles.bundleweathermanipulation.html">bundles.bundleweathermanipulation</a></li>
   <li><a href="../modules/core.html">core</a></li>
+  <li><a href="../modules/external.externalcampaignmap.html">external.externalcampaignmap</a></li>
   <li><a href="../modules/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
   <li><a href="../modules/external.externalgamecutscenes.html">external.externalgamecutscenes</a></li>
   <li><a href="../modules/external.externalhirdpersoncamera.html">external.externalhirdpersoncamera</a></li>
+  <li><a href="../modules/external.externalmaploader.html">external.externalmaploader</a></li>
   <li><a href="../modules/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
   <li><a href="../modules/external.externaltradinganalysis.html">external.externaltradinganalysis</a></li>
   <li><a href="../modules/loader.html">loader</a></li>
@@ -114,6 +118,13 @@
 </p>
 
 
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#QSB.DialogAnimations">QSB.DialogAnimations</a></td>
+	<td class="summary">Animationstypen für ASP</td>
+	</tr>
+</table>
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
@@ -157,10 +168,6 @@
 	<td class="summary">Steuert die Briefing-Warteschlange.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleBriefingSystem.Global:ConvertBriefingTable">BundleBriefingSystem.Global:ConvertBriefingTable (_Briefing)</a></td>
-	<td class="summary">Konvertiert eine Briefing-Table des alten Formats in das neue.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#BundleBriefingSystem.Global:DisableMCAnswers">BundleBriefingSystem.Global:DisableMCAnswers ()</a></td>
 	<td class="summary">Aktualisiert, ob eine Option sichtbar ist oder nicht.</td>
 	</tr>
@@ -179,6 +186,14 @@
 	<tr>
 	<td class="name" nowrap><a href="#BundleBriefingSystem.Global:IsBriefingActive">BundleBriefingSystem.Global:IsBriefingActive (Briefing)</a></td>
 	<td class="summary">Prüft, ob ein Briefing aktiv ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleBriefingSystem.Global:NormalizeRotationForEntity">BundleBriefingSystem.Global:NormalizeRotationForEntity (_Entity)</a></td>
+	<td class="summary">Gibt die Rotation für das Entity zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleBriefingSystem.Global:NormalizeZPosForEntity">BundleBriefingSystem.Global:NormalizeZPosForEntity (_Entity)</a></td>
+	<td class="summary">Gibt für das Entity eine Tabelle mit Skriptnamen und Z-Offset zurück.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BundleBriefingSystem.Global:OnMCConfirmed">BundleBriefingSystem.Global:OnMCConfirmed (_Selected)</a></td>
@@ -296,7 +311,7 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BundleBriefingSystem.Local:SetMCAnswerState">BundleBriefingSystem.Local:SetMCAnswerState (_Page, _Answer, _Visible)</a></td>
-	<td class="summary">Ändert die Sichtbarkeit einer Antwort im aktuellen Briefing</td>
+	<td class="summary">Ändert die Sichtbarkeit einer Antwort im aktuellen Briefing.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BundleBriefingSystem.Local:SetOptionsDialog">BundleBriefingSystem.Local:SetOptionsDialog ()</a></td>
@@ -328,6 +343,11 @@
  die Table.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#BundleBriefingSystem:GetRelativePos">BundleBriefingSystem:GetRelativePos (_target, _distance, _angle, _buildingRealPos)</a></td>
+	<td class="summary">Errechnet eine Position relativ im angegebenen Winkel und Position zur
+ Basisposition.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#BundleBriefingSystem:OverrideApiNote">BundleBriefingSystem:OverrideApiNote ()</a></td>
 	<td class="summary">Überschreibt API.Note, damit Nachrichten auch während Briefings angezeigt
  werden können.</td>
@@ -348,7 +368,7 @@
 	<td class="summary">Erstellt eine Seite für ein Dialog-Briefing.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#ASP">ASP (_pageName, _entity, _title, _text, _dialogCamera, _action)</a></td>
+	<td class="name" nowrap><a href="#ASP">ASP (_pageName, _entity, _title, _text, _dialogCamera, _action, ...)</a></td>
 	<td class="summary">Erstellt eine Seite in vereinfachter Syntax.</td>
 	</tr>
 </table>
@@ -373,6 +393,51 @@
 <br/>
 
 
+    <h2 class="section-header "><a name="Tables"></a>Tables</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "QSB.DialogAnimations"></a>
+    <strong>QSB.DialogAnimations</strong>
+    </dt>
+    <dd>
+    Animationstypen für ASP
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">Zoom</span>
+             Kamera zoomt hinein oder hinaus (Offset)
+        </li>
+        <li><span class="parameter">Pitch</span>
+            Kamera kippt nach oben oder unten (Offset)
+        </li>
+        <li><span class="parameter">Rotate</span>
+           Kamera wird um das Ziel geschwenkt (Offset)
+        </li>
+        <li><span class="parameter">Random</span>
+           Kamera wird sich zufällig bewegen
+        </li>
+        <li><span class="parameter">Move</span>
+             XYZ-Koordinaten von Start und Ziel überschreiben (Offset)
+        </li>
+        <li><span class="parameter">Override</span>
+         Frei einstellbare Parameter (Absolut)
+        </li>
+        <li><span class="parameter">Height</span>
+           Kamerahöhe ändern (Offset)
+        </li>
+        <li><span class="parameter">Time</span>
+             Animationsdauer (Absolut)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
     <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
 
     <dl class="function">
@@ -648,34 +713,6 @@
 
 </dd>
     <dt>
-    <a name = "BundleBriefingSystem.Global:ConvertBriefingTable"></a>
-    <strong>BundleBriefingSystem.Global:ConvertBriefingTable (_Briefing)</strong>
-    </dt>
-    <dd>
-    Konvertiert eine Briefing-Table des alten Formats in das neue.  Diese
- Funktion ist auf Zeit im Skript und wird später wieder entfernt.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Briefing</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-         Briefing Definition
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">number</span></span>
-        ID des Briefing
-    </ol>
-
-
-
-
-</dd>
-    <dt>
     <a name = "BundleBriefingSystem.Global:DisableMCAnswers"></a>
     <strong>BundleBriefingSystem.Global:DisableMCAnswers ()</strong>
     </dt>
@@ -762,6 +799,48 @@
         <li><span class="parameter">Briefing</span>
             <span class="types"><span class="type">boolean</span></span>
          ist aktiv
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleBriefingSystem.Global:NormalizeRotationForEntity"></a>
+    <strong>BundleBriefingSystem.Global:NormalizeRotationForEntity (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt die Rotation für das Entity zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Skriptname des Entity
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleBriefingSystem.Global:NormalizeZPosForEntity"></a>
+    <strong>BundleBriefingSystem.Global:NormalizeZPosForEntity (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt für das Entity eine Tabelle mit Skriptnamen und Z-Offset zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Skriptname des Entity
         </li>
     </ul>
 
@@ -1318,7 +1397,7 @@
     <strong>BundleBriefingSystem.Local:SetMCAnswerState (_Page, _Answer, _Visible)</strong>
     </dt>
     <dd>
-    Ändert die Sichtbarkeit einer Antwort im aktuellen Briefing
+    Ändert die Sichtbarkeit einer Antwort im aktuellen Briefing.
 
 
     <h3>Parameters:</h3>
@@ -1444,6 +1523,46 @@
 
 
 
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleBriefingSystem:GetRelativePos"></a>
+    <strong>BundleBriefingSystem:GetRelativePos (_target, _distance, _angle, _buildingRealPos)</strong>
+    </dt>
+    <dd>
+    Errechnet eine Position relativ im angegebenen Winkel und Position zur
+ Basisposition.  Die Basis kann ein Entity oder eine Positionstabelle sein.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_target</span>
+                  Basisposition (Skriptname, ID oder Position)
+        </li>
+        <li><span class="parameter">_distance</span>
+            <span class="types"><span class="type">number</span></span>
+                Entfernung
+        </li>
+        <li><span class="parameter">_angle</span>
+            <span class="types"><span class="type">number</span></span>
+                   Winkel
+        </li>
+        <li><span class="parameter">_buildingRealPos</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Gebäudemitte statt Gebäudeeingang
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Position
+    </ol>
 
 
 
@@ -1609,7 +1728,7 @@ end</pre>
 </dd>
     <dt>
     <a name = "ASP"></a>
-    <strong>ASP (_pageName, _entity, _title, _text, _dialogCamera, _action)</strong>
+    <strong>ASP (_pageName, _entity, _title, _text, _dialogCamera, _action, ...)</strong>
     </dt>
     <dd>
     Erstellt eine Seite in vereinfachter Syntax.  Es wird davon
@@ -1645,7 +1764,10 @@ end</pre>
         </li>
         <li><span class="parameter">_action</span>
             <span class="types"><span class="type">function</span></span>
-               Callback-Funktion
+               (Optional) Callback-Funktion
+        </li>
+        <li><span class="parameter">...</span>
+                   (Optional) Animationsparameter
         </li>
     </ul>
 
@@ -1663,7 +1785,13 @@ end</pre>
         <pre class="example"><span class="comment">-- Beispiel ohne Page Name
 </span>ASP(<span class="string">"hans"</span>, <span class="string">"Hänschen-Klein"</span>, <span class="string">"Ich gehe in die weitel Welt hinein."</span>, <span class="keyword">true</span>);
 <span class="comment">-- Beispiel mit Page Name
-</span>ASP(<span class="string">"B1P1"</span>, <span class="string">"hans"</span>, <span class="string">"Hänschen-Klein"</span>, <span class="string">"Ich gehe in die weitel Welt hinein."</span>, <span class="keyword">true</span>);</pre>
+</span>ASP(<span class="string">"B1P1"</span>, <span class="string">"hans"</span>, <span class="string">"Hänschen-Klein"</span>, <span class="string">"Ich gehe in die weitel Welt hinein."</span>, <span class="keyword">true</span>);
+<span class="comment">-- Beispiel mit Aktion
+</span>ASP(<span class="string">"B1P1"</span>, <span class="string">"hans"</span>, <span class="string">"Hänschen-Klein"</span>, <span class="string">"Ich gehe in die weitel Welt hinein."</span>, <span class="keyword">true</span>, SomeFunction);
+<span class="comment">-- Beispiel mit Animation
+</span>ASP(<span class="string">"B1P1"</span>, <span class="string">"hans"</span>, <span class="string">"Hänschen-Klein"</span>, <span class="string">"Ich gehe in die weitel Welt hinein."</span>, <span class="keyword">true</span>, QSB.DialogAnimations.Random);
+<span class="comment">-- Beispiel mit Aktion und Animation
+</span>ASP(<span class="string">"B1P1"</span>, <span class="string">"hans"</span>, <span class="string">"Hänschen-Klein"</span>, <span class="string">"Ich gehe in die weitel Welt hinein."</span>, <span class="keyword">true</span>, SomeFunction, QSB.DialogAnimations.Random);</pre>
     </ul>
 
 </dd>
@@ -1741,7 +1869,7 @@ end</pre>
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2020-04-30 10:17:38 </i>
+<i style="float:right;">Last updated 2020-07-19 18:13:05 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

@@ -37,6 +37,7 @@
 <li><a href="#Local_Functions">Local Functions</a></li>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
 <li><a href="#Internal">Internal</a></li>
+<li><a href="#Reward">Reward</a></li>
 </ul>
 
 
@@ -49,6 +50,7 @@
   <li><a href="../modules/addons.addoninteractivesites.html">addons.addoninteractivesites</a></li>
   <li><a href="../modules/addons.addoninteractivetrebuchets.html">addons.addoninteractivetrebuchets</a></li>
   <li><a href="../modules/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
+  <li><a href="../modules/addons.addonqueststages.html">addons.addonqueststages</a></li>
   <li><a href="../modules/addons.addonrandomrequests.html">addons.addonrandomrequests</a></li>
   <li><a href="../modules/bundles.bundlebriefingsystem.html">bundles.bundlebriefingsystem</a></li>
   <li><a href="../modules/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
@@ -82,9 +84,11 @@
   <li><strong>bundles.bundletravelingsalesman</strong></li>
   <li><a href="../modules/bundles.bundleweathermanipulation.html">bundles.bundleweathermanipulation</a></li>
   <li><a href="../modules/core.html">core</a></li>
+  <li><a href="../modules/external.externalcampaignmap.html">external.externalcampaignmap</a></li>
   <li><a href="../modules/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
   <li><a href="../modules/external.externalgamecutscenes.html">external.externalgamecutscenes</a></li>
   <li><a href="../modules/external.externalhirdpersoncamera.html">external.externalhirdpersoncamera</a></li>
+  <li><a href="../modules/external.externalmaploader.html">external.externalmaploader</a></li>
   <li><a href="../modules/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
   <li><a href="../modules/external.externaltradinganalysis.html">external.externaltradinganalysis</a></li>
   <li><a href="../modules/loader.html">loader</a></li>
@@ -116,10 +120,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#BundleTravelingSalesman.Global:GetHarborByShipID">BundleTravelingSalesman.Global:GetHarborByShipID (_ShipID)</a></td>
 	<td class="summary">Ermitteld den Hafen des angegeben Schiffes.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleTravelingSalesman.Global:GetHumanPlayer">BundleTravelingSalesman.Global:GetHumanPlayer ()</a></td>
-	<td class="summary">Gibt die ID des ersten menschlichen Spielers zurück.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BundleTravelingSalesman.Global:RegisterHarbor">BundleTravelingSalesman.Global:RegisterHarbor (_Harbor)</a></td>
@@ -186,6 +186,13 @@
 	<tr>
 	<td class="name" nowrap><a href="#BundleTravelingSalesman.Global:Install">BundleTravelingSalesman.Global:Install ()</a></td>
 	<td class="summary">Initialisiert das Bundle im globalen Skript.</td>
+	</tr>
+</table>
+<h2><a href="#Reward">Reward</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Reward_TravelingSalesman">Reward_TravelingSalesman (_PlayerID, _Interval, _Duration, _OfferCount1, _OfferType1, _OfferCount2, _OfferType2, _OfferCount3, _OfferType3, _OfferCount4, _OfferType4, _Path, _YieldIce)</a></td>
+	<td class="summary">Erstellt einen fliegenden Händler für den angegebenen Spieler.</td>
 	</tr>
 </table>
 
@@ -266,26 +273,6 @@
 
            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
         Hafen Model
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleTravelingSalesman.Global:GetHumanPlayer"></a>
-    <strong>BundleTravelingSalesman.Global:GetHumanPlayer ()</strong>
-    </dt>
-    <dd>
-    Gibt die ID des ersten menschlichen Spielers zurück.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">number</span></span>
-        Menschlicher Spieler
     </ol>
 
 
@@ -533,24 +520,25 @@
     <ul>
         <pre class="example"><span class="keyword">local</span> TraderDescription = {
     PlayerID   = <span class="number">2</span>,       <span class="comment">-- Partei des Hafen
-</span>    Path       = <span class="string">"SH2WP"</span>, <span class="comment">-- Pfad (auch als Table möglich)
-</span>    Duration   = <span class="number">150</span>,     <span class="comment">-- Ankerzeit in Sekunden
-</span>    Interval   = <span class="number">2</span>,       <span class="comment">-- Monate zwischen zwei Anfarten
-</span>    OfferCount = <span class="number">4</span>,       <span class="comment">-- Anzahl Angebote (1 bis 4)
+</span>    Path       = <span class="string">"SH2WP"</span>, <span class="comment">-- Pfad (auch als Table einzelner Punkte möglich)
+</span>    Duration   = <span class="number">150</span>,     <span class="comment">-- Ankerzeit in Sekunden (Standard: 360)
+</span>    Interval   = <span class="number">3</span>,       <span class="comment">-- Monate zwischen zwei Anfarten (Standard: 2)
+</span>    OfferCount = <span class="number">4</span>,       <span class="comment">-- Anzahl Angebote (1 bis 4) (Standard: 4)
+</span>    NoIce      = <span class="keyword">true</span>,    <span class="comment">-- Schiff kommt nicht im Winter (Standard: false)
 </span>    Offers = {
         <span class="comment">-- Angebot, Menge
-</span>        {<span class="string">"G_Gems"</span>, <span class="number">5</span>,},
-        {<span class="string">"G_Iron"</span>, <span class="number">5</span>,},
-        {<span class="string">"G_Beer"</span>, <span class="number">2</span>,},
-        {<span class="string">"G_Stone"</span>, <span class="number">5</span>,},
-        {<span class="string">"G_Sheep"</span>, <span class="number">1</span>,},
-        {<span class="string">"G_Cheese"</span>, <span class="number">2</span>,},
-        {<span class="string">"G_Milk"</span>, <span class="number">5</span>,},
-        {<span class="string">"G_Grain"</span>, <span class="number">5</span>,},
-        {<span class="string">"G_Broom"</span>, <span class="number">2</span>,},
-        {<span class="string">"U_CatapultCart"</span>, <span class="number">1</span>,},
-        {<span class="string">"U_MilitarySword"</span>, <span class="number">3</span>,},
-        {<span class="string">"U_MilitaryBow"</span>, <span class="number">3</span>,}
+</span>        {<span class="string">"G_Gems"</span>, <span class="number">5</span>},
+        {<span class="string">"G_Iron"</span>, <span class="number">5</span>},
+        {<span class="string">"G_Beer"</span>, <span class="number">2</span>},
+        {<span class="string">"G_Stone"</span>, <span class="number">5</span>},
+        {<span class="string">"G_Sheep"</span>, <span class="number">1</span>},
+        {<span class="string">"G_Cheese"</span>, <span class="number">2</span>},
+        {<span class="string">"G_Milk"</span>, <span class="number">5</span>},
+        {<span class="string">"G_Grain"</span>, <span class="number">5</span>},
+        {<span class="string">"G_Broom"</span>, <span class="number">2</span>},
+        {<span class="string">"U_CatapultCart"</span>, <span class="number">1</span>},
+        {<span class="string">"U_MilitarySword"</span>, <span class="number">3</span>},
+        {<span class="string">"U_MilitaryBow"</span>, <span class="number">3</span>}
     },
 };
 API.TravelingSalesmanCreate(TraderDescription);</pre>
@@ -661,13 +649,77 @@ API.TravelingSalesmanCreate(TraderDescription);</pre>
 
 </dd>
 </dl>
+    <h2 class="section-header "><a name="Reward"></a>Reward</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Reward_TravelingSalesman"></a>
+    <strong>Reward_TravelingSalesman (_PlayerID, _Interval, _Duration, _OfferCount1, _OfferType1, _OfferCount2, _OfferType2, _OfferCount3, _OfferType3, _OfferCount4, _OfferType4, _Path, _YieldIce)</strong>
+    </dt>
+    <dd>
+    Erstellt einen fliegenden Händler für den angegebenen Spieler.
+<p> Der fliegende Händler kann bis zu 4 Angebote haben. Schiffe werden im
+ angegeben Interall anlegen und nach Ablauf der Aufenthaltsdauer wieder
+ abfahren.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+              ID des Spielers
+        </li>
+        <li><span class="parameter">_Interval</span>
+              Interval in Monaten
+        </li>
+        <li><span class="parameter">_Duration</span>
+              Anlegezeit in Sekunden
+        </li>
+        <li><span class="parameter">_OfferCount1</span>
+           Menge Angebot 1
+        </li>
+        <li><span class="parameter">_OfferType1</span>
+            Typ Angebot 1
+        </li>
+        <li><span class="parameter">_OfferCount2</span>
+           Menge Angebot 2
+        </li>
+        <li><span class="parameter">_OfferType2</span>
+            Typ Angebot 2
+        </li>
+        <li><span class="parameter">_OfferCount3</span>
+           Menge Angebot 3
+        </li>
+        <li><span class="parameter">_OfferType3</span>
+            Typ Angebot 3
+        </li>
+        <li><span class="parameter">_OfferCount4</span>
+           Menge Angebot 4
+        </li>
+        <li><span class="parameter">_OfferType4</span>
+            Typ Angebot 4
+        </li>
+        <li><span class="parameter">_Path</span>
+                  Präfix der Path Entities
+        </li>
+        <li><span class="parameter">_YieldIce</span>
+              Wenn Wasser gefriert pausieren
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2020-04-30 10:17:38 </i>
+<i style="float:right;">Last updated 2020-07-19 18:13:05 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

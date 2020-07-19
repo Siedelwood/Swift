@@ -36,6 +36,7 @@
 <ul>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
 <li><a href="#Internal">Internal</a></li>
+<li><a href="#Cutscene">Cutscene</a></li>
 </ul>
 
 
@@ -48,6 +49,7 @@
   <li><a href="../modules/addons.addoninteractivesites.html">addons.addoninteractivesites</a></li>
   <li><a href="../modules/addons.addoninteractivetrebuchets.html">addons.addoninteractivetrebuchets</a></li>
   <li><a href="../modules/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
+  <li><a href="../modules/addons.addonqueststages.html">addons.addonqueststages</a></li>
   <li><a href="../modules/addons.addonrandomrequests.html">addons.addonrandomrequests</a></li>
   <li><a href="../modules/bundles.bundlebriefingsystem.html">bundles.bundlebriefingsystem</a></li>
   <li><a href="../modules/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
@@ -81,9 +83,11 @@
   <li><a href="../modules/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
   <li><a href="../modules/bundles.bundleweathermanipulation.html">bundles.bundleweathermanipulation</a></li>
   <li><a href="../modules/core.html">core</a></li>
+  <li><a href="../modules/external.externalcampaignmap.html">external.externalcampaignmap</a></li>
   <li><a href="../modules/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
   <li><a href="../modules/external.externalgamecutscenes.html">external.externalgamecutscenes</a></li>
   <li><a href="../modules/external.externalhirdpersoncamera.html">external.externalhirdpersoncamera</a></li>
+  <li><a href="../modules/external.externalmaploader.html">external.externalmaploader</a></li>
   <li><a href="../modules/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
   <li><a href="../modules/external.externaltradinganalysis.html">external.externaltradinganalysis</a></li>
   <li><a href="../modules/loader.html">loader</a></li>
@@ -121,6 +125,11 @@ cs01_flight2.cs
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
+	<td class="name" nowrap><a href="#API.AddFlights">API.AddFlights (_Cutscene)</a></td>
+	<td class="summary">Erzeugt die Funktionen zur Erstellung von Flights in einer Cutsceme und
+ bindet sie an die Cutscene.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#API.CutsceneIsActive">API.CutsceneIsActive ()</a></td>
 	<td class="summary">Prüft, ob zur Zeit eine Cutscene aktiv ist.</td>
 	</tr>
@@ -146,6 +155,10 @@ cs01_flight2.cs
 	<tr>
 	<td class="name" nowrap><a href="#AddOnCutsceneSystem.Global.CutsceneQueueController">AddOnCutsceneSystem.Global.CutsceneQueueController ()</a></td>
 	<td class="summary">Steuert die Cutscene-Warteschlange.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCutsceneSystem.Global:GetPageIDByName">AddOnCutsceneSystem.Global:GetPageIDByName (_FlightName)</a></td>
+	<td class="summary">Gibt die Flight-ID zum angegebenen Flight-Namen zurück.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#AddOnCutsceneSystem.Global:Install">AddOnCutsceneSystem.Global:Install ()</a></td>
@@ -268,6 +281,13 @@ cs01_flight2.cs
 	<td class="summary">Aktualisiert den Alpha-Wert der Fader-Maske, wenn eine Cutscene aktiv ist.</td>
 	</tr>
 </table>
+<h2><a href="#Cutscene">Cutscene</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#AF">AF (_Flight)</a></td>
+	<td class="summary">Erstellt einen Flight für eine Cutscene.</td>
+	</tr>
+</table>
 
 <br/>
 <br/>
@@ -276,6 +296,44 @@ cs01_flight2.cs
     <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
 
     <dl class="function">
+    <dt>
+    <a name = "API.AddFlights"></a>
+    <strong>API.AddFlights (_Cutscene)</strong>
+    </dt>
+    <dd>
+    Erzeugt die Funktionen zur Erstellung von Flights in einer Cutsceme und
+ bindet sie an die Cutscene.  Diese Funktion muss vor dem Start einer
+ Cutscene aufgerufen werden um Flights hinzuzufügen.
+ <ul>
+ <li><a href="#AF">AF</a></li>
+ </ul>
+<p> <b>Alias</b>: AddFlights
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Cutscene</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Cutscene Definition
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">function</span></span>
+        <a href="#AF">AF</a>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> AF = API.AddFlights(Briefing);</pre>
+    </ul>
+
+</dd>
     <dt>
     <a name = "API.CutsceneIsActive"></a>
     <strong>API.CutsceneIsActive ()</strong>
@@ -338,33 +396,6 @@ cs01_flight2.cs
 <p> Eine Cutscene besteht aus den einzelnen Kameraflügen, also Flights, und
  speziellen Feldern, mit denen weitere Einstellungen gemacht werden können.
  Siehe dazu auch das Briefing System für einen Vergleich.
-<p> Das Gerüst für eine Cutscene sieht wie folgt aus:
- <pre>local Cutscene = {
-    CameraLookAt = {X, Y},   -- Kameraposition am Ende setzen
-    RestoreGameSpeed = true, -- Spielgeschwindigkeit wiederherstellen
-    BarOpacity = 0.39,       -- Durchsichtige Bars verwenden (Opacity = 39%)
-    BigBars = false,         -- Breite Bars verwenden (Default false)
-    HideBorderPins = true,   -- Grenzsteine ausblenden
-    FastForward = false,     -- Beschleunigt abspielen erlauben
-<p>    ... -- Hier nacheinander die Flights auflisten
-<p>    Starting = function(_Data)
-        -- Hier werden Aktionen vor dem Start ausgeführt.
-    end,
-    Finished = function(_Data)
-        -- Hier kann eine abschließende Aktion ausgeführt werden.
-    end
-};
-return API.StartCutscene(Cutscene);</pre>
-<p> Ein Kameraflug wird als Table angegeben:
- <pre>{
-    Flight = "some_file", -- .cs wird nicht mit angegeben!
-    Title  = "Angezeigter Titel",
-    Text   = "Angezeigter Text",
-    Action = function(_Data)
-        -- Aktion für den Flight ausführen
-    end,
-},</pre>
- Ersetze ... mit den Flights, die zur Cutscene gehören sollen.
 <p> Die Funktion gibt die ID der Cutscene zurück, mit der geprüft werden kann,
  ob die Cutscene beendet ist.
 
@@ -389,6 +420,30 @@ return API.StartCutscene(Cutscene);</pre>
 
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">function</span> MyCutscene()
+    <span class="keyword">local</span> Cutscene = {
+       CameraLookAt = {X, Y},   <span class="comment">-- Kameraposition am Ende setzen
+</span>       RestoreGameSpeed = <span class="keyword">true</span>, <span class="comment">-- Spielgeschwindigkeit wiederherstellen
+</span>       BarOpacity = <span class="number">0.39</span>,       <span class="comment">-- Durchsichtige Bars verwenden (Opacity = 39%)
+</span>       BigBars = <span class="keyword">false</span>,         <span class="comment">-- Breite Bars verwenden (Default false)
+</span>       HideBorderPins = <span class="keyword">true</span>,   <span class="comment">-- Grenzsteine ausblenden
+</span>       FastForward = <span class="keyword">false</span>,     <span class="comment">-- Beschleunigt abspielen erlauben
+</span>    };
+    <span class="keyword">local</span> AF = API.AddFlights(Cutscene);
+
+    <span class="comment">-- Hier erfolgt die Auflistung der Flights mit AF()
+</span>
+    Cutscene.Starting = <span class="keyword">function</span>(_Data)
+       <span class="comment">-- Hier werden Aktionen vor dem Start ausgeführt.
+</span>    <span class="keyword">end</span>
+    Cutscene.Finished = <span class="keyword">function</span>(_Data)
+       <span class="comment">-- Hier kann eine abschließende Aktion ausgeführt werden.
+</span>    <span class="keyword">end</span>
+    <span class="keyword">return</span> API.StartCutscene(Cutscene);
+<span class="keyword">end</span></pre>
+    </ul>
 
 </dd>
     <dt>
@@ -454,6 +509,36 @@ return API.StartCutscene(Cutscene);</pre>
 
 
 
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCutsceneSystem.Global:GetPageIDByName"></a>
+    <strong>AddOnCutsceneSystem.Global:GetPageIDByName (_FlightName)</strong>
+    </dt>
+    <dd>
+    Gibt die Flight-ID zum angegebenen Flight-Namen zurück.
+<p> Wenn kein Flight gefunden wird, der den angegebenen Namen hat, wird 0
+ zurückgegeben. Wenn eine Flight-ID angegeben wird, wird diese zurückgegeben.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_FlightName</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name des Flight
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        ID des Flight
+    </ol>
 
 
 
@@ -1004,13 +1089,55 @@ return API.StartCutscene(Cutscene);</pre>
 
 </dd>
 </dl>
+    <h2 class="section-header "><a name="Cutscene"></a>Cutscene</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "AF"></a>
+    <strong>AF (_Flight)</strong>
+    </dt>
+    <dd>
+    Erstellt einen Flight für eine Cutscene.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flight</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Spezifikation des Flight
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Refernez auf den Flight
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">AF {
+    Flight = <span class="string">"some_file"</span>, <span class="comment">-- .cs wird nicht mit angegeben!
+</span>    Title  = <span class="string">"Angezeigter Titel"</span>,
+    Text   = <span class="string">"Angezeigter Text"</span>,
+    Action = <span class="keyword">function</span>(_Data)
+        <span class="comment">-- Aktion für den Flight ausführen
+</span>    <span class="keyword">end</span>,
+}</pre>
+    </ul>
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2020-04-30 10:17:38 </i>
+<i style="float:right;">Last updated 2020-07-19 18:13:05 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

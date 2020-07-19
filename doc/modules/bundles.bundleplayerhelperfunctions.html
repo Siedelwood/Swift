@@ -48,6 +48,7 @@
   <li><a href="../modules/addons.addoninteractivesites.html">addons.addoninteractivesites</a></li>
   <li><a href="../modules/addons.addoninteractivetrebuchets.html">addons.addoninteractivetrebuchets</a></li>
   <li><a href="../modules/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
+  <li><a href="../modules/addons.addonqueststages.html">addons.addonqueststages</a></li>
   <li><a href="../modules/addons.addonrandomrequests.html">addons.addonrandomrequests</a></li>
   <li><a href="../modules/bundles.bundlebriefingsystem.html">bundles.bundlebriefingsystem</a></li>
   <li><a href="../modules/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
@@ -81,9 +82,11 @@
   <li><a href="../modules/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
   <li><a href="../modules/bundles.bundleweathermanipulation.html">bundles.bundleweathermanipulation</a></li>
   <li><a href="../modules/core.html">core</a></li>
+  <li><a href="../modules/external.externalcampaignmap.html">external.externalcampaignmap</a></li>
   <li><a href="../modules/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
   <li><a href="../modules/external.externalgamecutscenes.html">external.externalgamecutscenes</a></li>
   <li><a href="../modules/external.externalhirdpersoncamera.html">external.externalhirdpersoncamera</a></li>
+  <li><a href="../modules/external.externalmaploader.html">external.externalmaploader</a></li>
   <li><a href="../modules/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
   <li><a href="../modules/external.externaltradinganalysis.html">external.externaltradinganalysis</a></li>
   <li><a href="../modules/loader.html">loader</a></li>
@@ -143,12 +146,20 @@
 <h2><a href="#Internal">Internal</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#BundlePlayerHelperFunctions.Global.OnSaveGameLoaded">BundlePlayerHelperFunctions.Global.OnSaveGameLoaded ()</a></td>
-	<td class="summary">Stellt nicht-persistente Änderungen nach dem laden wieder her.</td>
+	<td class="name" nowrap><a href="#API.CanPlayerCurrentlyProduceGood">API.CanPlayerCurrentlyProduceGood (_PlayerID, _GoodType)</a></td>
+	<td class="summary">Prüft, ob der Spieler die Ware tatsächlich herstellen kann.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundlePlayerHelperFunctions.Global:GetControllingPlayer">BundlePlayerHelperFunctions.Global:GetControllingPlayer ()</a></td>
-	<td class="summary">Gibt die ID des kontrollierenden Spielers zurück.</td>
+	<td class="name" nowrap><a href="#API.CanPlayerProduceGood">API.CanPlayerProduceGood (_PlayerID, _GoodType)</a></td>
+	<td class="summary">Prüft, ob der Spieler die Ware prinzipiell herstellen kann.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetResourceOfProduct">API.GetResourceOfProduct (_GoodType)</a></td>
+	<td class="summary">Gibt den Rohstoff zum Produkt am Anfang der Produktionskette zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundlePlayerHelperFunctions.Global.OnSaveGameLoaded">BundlePlayerHelperFunctions.Global.OnSaveGameLoaded ()</a></td>
+	<td class="summary">Stellt nicht-persistente Änderungen nach dem laden wieder her.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BundlePlayerHelperFunctions.Global:InitFestival">BundlePlayerHelperFunctions.Global:InitFestival ()</a></td>
@@ -192,6 +203,26 @@
 	<tr>
 	<td class="name" nowrap><a href="#BundlePlayerHelperFunctions.Local:OverrideQuestPlayerIcon">BundlePlayerHelperFunctions.Local:OverrideQuestPlayerIcon ()</a></td>
 	<td class="summary">Überschreibt das Quest Icon für Spieler, die keinem Typen zugeordnet sind.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundlePlayerHelperFunctions.Shared:CanPlayerProduceGood">BundlePlayerHelperFunctions.Shared:CanPlayerProduceGood (_PlayerID, _GoodType)</a></td>
+	<td class="summary">Prüft, ob der Spieler die Ware aktuell tatsächlich hergestellt werden kann.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundlePlayerHelperFunctions.Shared:CanPlayerProduceGoodInPrinciple">BundlePlayerHelperFunctions.Shared:CanPlayerProduceGoodInPrinciple (_PlayerID, _GoodType)</a></td>
+	<td class="summary">Prüft, ob der Spieler die Ware prinzipiell herstellen kann.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundlePlayerHelperFunctions.Shared:CreateGoodsTechnologiesMap">BundlePlayerHelperFunctions.Shared:CreateGoodsTechnologiesMap ()</a></td>
+	<td class="summary">Generiert die Map für Güter und deren benötigte Technologien.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundlePlayerHelperFunctions.Shared:CreateProductToResourceMap">BundlePlayerHelperFunctions.Shared:CreateProductToResourceMap ()</a></td>
+	<td class="summary">Generiert die Map für Die Zuordnung Produkt zu Rohstoff.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundlePlayerHelperFunctions.Shared:ProductToResource">BundlePlayerHelperFunctions.Shared:ProductToResource (_GoodType)</a></td>
+	<td class="summary">Gibt den Rohstoff zur angegebenen Ware zurück.</td>
 	</tr>
 </table>
 
@@ -449,6 +480,103 @@
 
     <dl class="function">
     <dt>
+    <a name = "API.CanPlayerCurrentlyProduceGood"></a>
+    <strong>API.CanPlayerCurrentlyProduceGood (_PlayerID, _GoodType)</strong>
+    </dt>
+    <dd>
+    Prüft, ob der Spieler die Ware tatsächlich herstellen kann.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+            <span class="types"><span class="type">number</span></span>
+         ID des Spielers
+        </li>
+        <li><span class="parameter">_GoodType</span>
+            <span class="types"><span class="type">number</span></span>
+         Warentyp
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        Ware kann produziert werden
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.CanPlayerProduceGood"></a>
+    <strong>API.CanPlayerProduceGood (_PlayerID, _GoodType)</strong>
+    </dt>
+    <dd>
+    Prüft, ob der Spieler die Ware prinzipiell herstellen kann.
+<p> Für alle gewöhnlichen Waren werden die benötigten Technologien transitiv
+ abgefragt. Ein Bannermacher benötigt z.B. Wolle, also muss der Spieler
+ nicht nur Banner, sondern ebenfalls Wolle herstellen können dürfen.
+<p> <b>Achtung:</b> Spezialwaren, wie z.B. G_MedicineLadyHealing werden nicht
+ unterstützt. Luxusgüter können ebenfalls nicht hergestellt werden.
+<p> <b>Hinweis:</b> Über Skript ausgeblendete Buttons können nicht abgefangen
+ werden. Ebenso ausgeblendetes Baumenü!
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+            <span class="types"><span class="type">number</span></span>
+         ID des Spielers
+        </li>
+        <li><span class="parameter">_GoodType</span>
+            <span class="types"><span class="type">number</span></span>
+         Warentyp
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        Ware kann produziert werden
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.GetResourceOfProduct"></a>
+    <strong>API.GetResourceOfProduct (_GoodType)</strong>
+    </dt>
+    <dd>
+    Gibt den Rohstoff zum Produkt am Anfang der Produktionskette zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_GoodType</span>
+            <span class="types"><span class="type">number</span></span>
+         Warentyp
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        Rohstoff
+    </ol>
+
+
+
+
+</dd>
+    <dt>
     <a name = "BundlePlayerHelperFunctions.Global.OnSaveGameLoaded"></a>
     <strong>BundlePlayerHelperFunctions.Global.OnSaveGameLoaded ()</strong>
     </dt>
@@ -457,28 +585,6 @@
 
 
 
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundlePlayerHelperFunctions.Global:GetControllingPlayer"></a>
-    <strong>BundlePlayerHelperFunctions.Global:GetControllingPlayer ()</strong>
-    </dt>
-    <dd>
-    Gibt die ID des kontrollierenden Spielers zurück.  Der erste als menschlich
- definierte Spieler wird als kontrollierender Spieler angenommen.
-
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">number</span></span>
-        PlayerID
-    </ol>
 
 
 
@@ -706,6 +812,132 @@
 
 
 </dd>
+    <dt>
+    <a name = "BundlePlayerHelperFunctions.Shared:CanPlayerProduceGood"></a>
+    <strong>BundlePlayerHelperFunctions.Shared:CanPlayerProduceGood (_PlayerID, _GoodType)</strong>
+    </dt>
+    <dd>
+    Prüft, ob der Spieler die Ware aktuell tatsächlich hergestellt werden kann.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+            <span class="types"><span class="type">number</span></span>
+         ID des Spielers
+        </li>
+        <li><span class="parameter">_GoodType</span>
+            <span class="types"><span class="type">number</span></span>
+         Warentyp
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        Ware kann produziert werden
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundlePlayerHelperFunctions.Shared:CanPlayerProduceGoodInPrinciple"></a>
+    <strong>BundlePlayerHelperFunctions.Shared:CanPlayerProduceGoodInPrinciple (_PlayerID, _GoodType)</strong>
+    </dt>
+    <dd>
+    Prüft, ob der Spieler die Ware prinzipiell herstellen kann.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+            <span class="types"><span class="type">number</span></span>
+         ID des Spielers
+        </li>
+        <li><span class="parameter">_GoodType</span>
+            <span class="types"><span class="type">number</span></span>
+         Warentyp
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        Ware kann produziert werden
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundlePlayerHelperFunctions.Shared:CreateGoodsTechnologiesMap"></a>
+    <strong>BundlePlayerHelperFunctions.Shared:CreateGoodsTechnologiesMap ()</strong>
+    </dt>
+    <dd>
+    Generiert die Map für Güter und deren benötigte Technologien.
+<p> Für alle gewöhnlichen Waren werden die benötigten Technologien gespeichert
+ Ein Bannermacher benötigt z.B. Wolle, also muss der Spieler nicht nur Banner,
+ sondern ebenfalls Wolle herstellen können.
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundlePlayerHelperFunctions.Shared:CreateProductToResourceMap"></a>
+    <strong>BundlePlayerHelperFunctions.Shared:CreateProductToResourceMap ()</strong>
+    </dt>
+    <dd>
+    Generiert die Map für Die Zuordnung Produkt zu Rohstoff.
+<p> Produkte, die aus anderen Produkten hergestellt werden haben den Rohstoff
+ des anderen Produktes als Rohstoff (transitive Beziezung).
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundlePlayerHelperFunctions.Shared:ProductToResource"></a>
+    <strong>BundlePlayerHelperFunctions.Shared:ProductToResource (_GoodType)</strong>
+    </dt>
+    <dd>
+    Gibt den Rohstoff zur angegebenen Ware zurück.  Wird kein Rohstoff gefunden,
+ wird Goods.G_Gold zurückgegeben.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_GoodType</span>
+            <span class="types"><span class="type">number</span></span>
+         Warentyp
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        Ware kann produziert werden
+    </ol>
+
+
+
+
+</dd>
 </dl>
 
 
@@ -713,7 +945,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2020-04-30 10:17:38 </i>
+<i style="float:right;">Last updated 2020-07-19 18:13:05 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

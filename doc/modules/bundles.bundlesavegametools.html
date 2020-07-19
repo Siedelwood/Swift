@@ -48,6 +48,7 @@
   <li><a href="../modules/addons.addoninteractivesites.html">addons.addoninteractivesites</a></li>
   <li><a href="../modules/addons.addoninteractivetrebuchets.html">addons.addoninteractivetrebuchets</a></li>
   <li><a href="../modules/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
+  <li><a href="../modules/addons.addonqueststages.html">addons.addonqueststages</a></li>
   <li><a href="../modules/addons.addonrandomrequests.html">addons.addonrandomrequests</a></li>
   <li><a href="../modules/bundles.bundlebriefingsystem.html">bundles.bundlebriefingsystem</a></li>
   <li><a href="../modules/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
@@ -81,9 +82,11 @@
   <li><a href="../modules/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
   <li><a href="../modules/bundles.bundleweathermanipulation.html">bundles.bundleweathermanipulation</a></li>
   <li><a href="../modules/core.html">core</a></li>
+  <li><a href="../modules/external.externalcampaignmap.html">external.externalcampaignmap</a></li>
   <li><a href="../modules/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
   <li><a href="../modules/external.externalgamecutscenes.html">external.externalgamecutscenes</a></li>
   <li><a href="../modules/external.externalhirdpersoncamera.html">external.externalhirdpersoncamera</a></li>
+  <li><a href="../modules/external.externalmaploader.html">external.externalmaploader</a></li>
   <li><a href="../modules/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
   <li><a href="../modules/external.externaltradinganalysis.html">external.externaltradinganalysis</a></li>
   <li><a href="../modules/loader.html">loader</a></li>
@@ -113,7 +116,7 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.LoadGameFromFolder">API.LoadGameFromFolder (_path, _name, _needButton)</a></td>
-	<td class="summary">Lδd einen Spielstand aus dem angegebenen Verzeichnis.</td>
+	<td class="summary">Läd einen Spielstand aus dem angegebenen Verzeichnis.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.SaveGameToFolder">API.SaveGameToFolder (_path, _name)</a></td>
@@ -127,14 +130,6 @@
 <h2><a href="#Internal">Internal</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#BundleSaveGameTools.Global.OnSaveGameLoaded">BundleSaveGameTools.Global.OnSaveGameLoaded ()</a></td>
-	<td class="summary">Stellt nicht-persistente Änderungen nach dem laden wieder her.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleSaveGameTools.Global:Install">BundleSaveGameTools.Global:Install ()</a></td>
-	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#BundleSaveGameTools.Local:AutoSaveGame">BundleSaveGameTools.Local:AutoSaveGame (_name)</a></td>
 	<td class="summary">Speichert das Spiel mit automatisch fortlaufender Nummer im Namen
  des Spielstandes.</td>
@@ -142,10 +137,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#BundleSaveGameTools.Local:CanGameBeSaved">BundleSaveGameTools.Local:CanGameBeSaved ()</a></td>
 	<td class="summary">Prüft, ob das Spiel gerade gespeichert werden kann.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleSaveGameTools.Local:CloseIllegalSaveGame">BundleSaveGameTools.Local:CloseIllegalSaveGame ()</a></td>
-	<td class="summary">Schließt einen Spielstand, der während des Speicherverbots erstellt wurde.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BundleSaveGameTools.Local:DisplaySaveButtons">BundleSaveGameTools.Local:DisplaySaveButtons (_Flag)</a></td>
@@ -187,7 +178,7 @@
     <dd>
     Speichert das Spiel mit automatisch fortlaufender Nummer im Namen
  des Spielstandes.  Wenn nicht gespeichert werden kann, wird bis
- zum nδchsten mφglichen Zeitpunkt gewartet.
+ zum nächsten mäglichen Zeitpunkt gewartet.
 
 
 
@@ -231,7 +222,7 @@
     <strong>API.LoadGameFromFolder (_path, _name, _needButton)</strong>
     </dt>
     <dd>
-    Lδd einen Spielstand aus dem angegebenen Verzeichnis.  Der Pfad
+    Läd einen Spielstand aus dem angegebenen Verzeichnis.  Der Pfad
  beginnt relativ vom Spielstandverzeichnis. Optional kann der
  Ladebildschirm gehalten werden, bis der Spieler das Spiel per
  Button startet.
@@ -261,7 +252,7 @@
     <strong>API.SaveGameToFolder (_path, _name)</strong>
     </dt>
     <dd>
-    Speichert den Spielstand in das angegebene Verzeichnis.  Es kφnnen
+    Speichert den Spielstand in das angegebene Verzeichnis.  Es können
  keine Verzeichnise erzeugt werden. Der Pfad beginnt relativ vom
  Spielstandverzeichnis.
 
@@ -325,42 +316,13 @@
 
     <dl class="function">
     <dt>
-    <a name = "BundleSaveGameTools.Global.OnSaveGameLoaded"></a>
-    <strong>BundleSaveGameTools.Global.OnSaveGameLoaded ()</strong>
-    </dt>
-    <dd>
-    Stellt nicht-persistente Änderungen nach dem laden wieder her.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleSaveGameTools.Global:Install"></a>
-    <strong>BundleSaveGameTools.Global:Install ()</strong>
-    </dt>
-    <dd>
-    Initalisiert das Bundle im globalen Skript.
-
-
-
-
-
-
-
-</dd>
-    <dt>
     <a name = "BundleSaveGameTools.Local:AutoSaveGame"></a>
     <strong>BundleSaveGameTools.Local:AutoSaveGame (_name)</strong>
     </dt>
     <dd>
     Speichert das Spiel mit automatisch fortlaufender Nummer im Namen
  des Spielstandes.  Wenn nicht gespeichert werden kann, wird bis
- zum nächsten mφglichen Zeitpunkt gewartet.
-
+ zum nächsten möglichen Zeitpunkt gewartet.
 
 
 
@@ -390,23 +352,6 @@
 
         [boolean]  Kann speichern
     </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleSaveGameTools.Local:CloseIllegalSaveGame"></a>
-    <strong>BundleSaveGameTools.Local:CloseIllegalSaveGame ()</strong>
-    </dt>
-    <dd>
-    Schließt einen Spielstand, der während des Speicherverbots erstellt wurde.
-<p> <b>Hinweis</b>: Dies ist ein Fallback wegen dem automatischen Speichern
- der History Edition, dass nicht auf Lua-Ebene verhindert werden kann.
-
-
-
-
 
 
 
@@ -562,7 +507,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2020-04-30 10:17:38 </i>
+<i style="float:right;">Last updated 2020-07-19 18:13:05 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

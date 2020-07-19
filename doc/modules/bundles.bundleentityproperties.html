@@ -37,7 +37,6 @@
 <li><a href="#Functions">Functions</a></li>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
 <li><a href="#Internal">Internal</a></li>
-<li><a href="#QSB_EntityProperty">QSB.EntityProperty</a></li>
 </ul>
 
 
@@ -50,6 +49,7 @@
   <li><a href="../modules/addons.addoninteractivesites.html">addons.addoninteractivesites</a></li>
   <li><a href="../modules/addons.addoninteractivetrebuchets.html">addons.addoninteractivetrebuchets</a></li>
   <li><a href="../modules/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
+  <li><a href="../modules/addons.addonqueststages.html">addons.addonqueststages</a></li>
   <li><a href="../modules/addons.addonrandomrequests.html">addons.addonrandomrequests</a></li>
   <li><a href="../modules/bundles.bundlebriefingsystem.html">bundles.bundlebriefingsystem</a></li>
   <li><a href="../modules/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
@@ -83,9 +83,11 @@
   <li><a href="../modules/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
   <li><a href="../modules/bundles.bundleweathermanipulation.html">bundles.bundleweathermanipulation</a></li>
   <li><a href="../modules/core.html">core</a></li>
+  <li><a href="../modules/external.externalcampaignmap.html">external.externalcampaignmap</a></li>
   <li><a href="../modules/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
   <li><a href="../modules/external.externalgamecutscenes.html">external.externalgamecutscenes</a></li>
   <li><a href="../modules/external.externalhirdpersoncamera.html">external.externalhirdpersoncamera</a></li>
+  <li><a href="../modules/external.externalmaploader.html">external.externalmaploader</a></li>
   <li><a href="../modules/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
   <li><a href="../modules/external.externaltradinganalysis.html">external.externaltradinganalysis</a></li>
   <li><a href="../modules/loader.html">loader</a></li>
@@ -105,12 +107,31 @@
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#API.ChangeEntityHealth">API.ChangeEntityHealth (_Entity, _Percentage)</a></td>
-	<td class="summary">Ändert die relative Gesundheit eines Entity.</td>
+	<td class="name" nowrap><a href="#BundleEntityProperties.Global:Install">BundleEntityProperties.Global:Install ()</a></td>
+	<td class="summary">Installiert das Bundle.</td>
+	</tr>
+</table>
+<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.ChangeEntityHealth">API.ChangeEntityHealth (_Entity, _Health, _Relative)</a></td>
+	<td class="summary">Setzt die Gesundheit des Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.CountSoldiersOfGroup">API.CountSoldiersOfGroup (_Entity)</a></td>
+	<td class="summary">Gibt die Mänge an Soldaten zurück, die dem Entity unterstehen</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.GetEntityHealth">API.GetEntityHealth (_Entity)</a></td>
-	<td class="summary">Gibt die relative Gesundheit des Entity zurück.</td>
+	<td class="summary">Gibt die Gesundheit des Entity zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetEntityMovementTarget">API.GetEntityMovementTarget (_Entity)</a></td>
+	<td class="summary">Gibt das Bewegungsziel des Entity zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetEntityOrientation">API.GetEntityOrientation (_Entity)</a></td>
+	<td class="summary">Gibt die Ausrichtung des Entity zurück.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.GetEntityPlayer">API.GetEntityPlayer (_Entity)</a></td>
@@ -121,220 +142,126 @@
 	<td class="summary">Gibt den Größenfaktor des Entity zurück.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.GetMovementTarget">API.GetMovementTarget (_Entity)</a></td>
-	<td class="summary">Gibt die Position zurück, zu der sich ein Entity bewegt.</td>
+	<td class="name" nowrap><a href="#API.GetEntityTaskList">API.GetEntityTaskList (_Entity)</a></td>
+	<td class="summary">Gibt die aktuelle Tasklist des Entity zurück.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.HurtEntity">API.HurtEntity (_Entity, _Damage, _Attacker)</a></td>
-	<td class="summary">Verwundet ein Entity um einen absoluten Wert Gesundheit.</td>
+	<td class="name" nowrap><a href="#API.GetEntityType">API.GetEntityType (_Entity)</a></td>
+	<td class="summary">Gibt den Typen des Entity zurück.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.IsActiveNpc">API.IsActiveNpc (_Entity)</a></td>
-	<td class="summary">Prüft, ob das NPC-FLag für das Entity gesetzt ist.</td>
+	<td class="name" nowrap><a href="#API.GetEntityTypeName">API.GetEntityTypeName (_Entity)</a></td>
+	<td class="summary">Gibt den Typnamen des Entity zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetGroupLeader">API.GetGroupLeader (_Entity)</a></td>
+	<td class="summary">Gibt den Leader des Soldaten zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetGroupSoldiers">API.GetGroupSoldiers (_Entity)</a></td>
+	<td class="summary">Gibt die IDs aller Soldaten zurück, die zum Battalion gehören.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetResourceAmount">API.GetResourceAmount (_Entity)</a></td>
+	<td class="summary">Gibt die Menge an Rohstoffen des Entity zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GroupHeal">API.GroupHeal (_Entity, _Amount)</a></td>
+	<td class="summary">Heilt das Entity um die angegebene Menge an Gesundheit.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GroupHurt">API.GroupHurt (_Entity, _Damage, _Attacker)</a></td>
+	<td class="summary">Verwundet ein Entity oder ein Battallion um die angegebene
+ Menge an Schaden.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.IsBuildingBurning">API.IsBuildingBurning (_Entity)</a></td>
+	<td class="summary">Gibt zurück, ob das Gebäude brennt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.IsEntityActiveNpc">API.IsEntityActiveNpc (_Entity)</a></td>
+	<td class="summary">Gibt zurück, ob eine NPC-Interaktion mit dem Siedler möglich ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.IsEntityIll">API.IsEntityIll (_Entity)</a></td>
+	<td class="summary">Prüft, ob das Entity krank ist.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.IsEntityVisible">API.IsEntityVisible (_Entity)</a></td>
-	<td class="summary">Prüft, ob das Entity sichtbar ist.</td>
+	<td class="summary">Gibt zurück, ob das Entity sichtbar ist.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.MakeInvulnerable">API.MakeInvulnerable (_Entity)</a></td>
-	<td class="summary">Macht das Entity oder das Battalion unverwundbar.</td>
+	<td class="name" nowrap><a href="#API.MakeEntityIll">API.MakeEntityIll (_Entity)</a></td>
+	<td class="summary">Macht das Entity krank.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.MakeVulnerable">API.MakeVulnerable (_Entity)</a></td>
-	<td class="summary">Macht das Entity oder das Battalion verwundbar.</td>
+	<td class="name" nowrap><a href="#API.SetEntityBuildingBurning">API.SetEntityBuildingBurning (_Entity, _FireSize)</a></td>
+	<td class="summary">Steckt ein Gebäude in Brand.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.SetBuildingOnFire">API.SetBuildingOnFire (_Entity, _FireSize)</a></td>
-	<td class="summary">Setzt ein Gebäude in Brand.</td>
+	<td class="name" nowrap><a href="#API.SetEntityModel">API.SetEntityModel (_Entity, _NewModel, _AnimSet)</a></td>
+	<td class="summary">Weist dem Entity ein Neues Model zu.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetEntityOrientation">API.SetEntityOrientation (_Entity, _Orientation)</a></td>
+	<td class="summary">Setzt die Ausrichtung des Entity.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.SetEntityPlayer">API.SetEntityPlayer (_Entity, _PlayerID)</a></td>
-	<td class="summary">Weist dem Entity einen neuen Besitzer zu.</td>
+	<td class="summary">Setzt den Besitzer des Entity.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.SetEntityScale">API.SetEntityScale (_Entity, _Scale)</a></td>
-	<td class="summary">Setzt den Größenfaktor des Entity.</td>
+	<td class="summary">Setzt die Größe des Entity.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleEntityProperties.Global:Install">BundleEntityProperties.Global:Install ()</a></td>
-	<td class="summary">Installiert das Bundle.</td>
-	</tr>
-</table>
-<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#API.EntityGetOrientation">API.EntityGetOrientation (_entity)</a></td>
-	<td class="summary">Gibt die Orientierung des Entity zurück.</td>
+	<td class="name" nowrap><a href="#API.SetEntityTaskList">API.SetEntityTaskList (_Entity, _NewTask)</a></td>
+	<td class="summary">Setzt die aktuelle Tasklist des Entity.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.EntitySetOrientation">API.EntitySetOrientation (_Entity, _Orientation)</a></td>
-	<td class="summary">Setzt die Orientierung des Entity.</td>
+	<td class="name" nowrap><a href="#API.SetEntityType">API.SetEntityType (_Entity, _NewType)</a></td>
+	<td class="summary">Setzt den Typen des Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetEntityVisible">API.SetEntityVisible (_Entity, _Visible)</a></td>
+	<td class="summary">Ändert die Sichtbarkeit des Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetEntityVulnerablueFlag">API.SetEntityVulnerablueFlag (_Entity, _Flag)</a></td>
+	<td class="summary">Setzt das Entity oder das Battalion verwundbar oder unverwundbar.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetResourceAmount">API.SetResourceAmount (_Entity, _Amount)</a></td>
+	<td class="summary">Setzt die Menge an Rohstoffen des Entity.</td>
 	</tr>
 </table>
 <h2><a href="#Internal">Internal</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#BundleEntityProperties.Global.InvulnerabilityJob">BundleEntityProperties.Global.InvulnerabilityJob ()</a></td>
-	<td class="summary">Setzt ein unverwundbares Entity wieder unverwundbar, wenn sich die ID
- geändert hat.</td>
-	</tr>
-</table>
-<h2><a href="#QSB_EntityProperty">QSB.EntityProperty</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:CountSoldiers">QSB.EntityProperty:CountSoldiers ()</a></td>
-	<td class="summary">Gibt die Mänge an Soldaten zurück, die dem Entity unterstehen</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:GetDestination">QSB.EntityProperty:GetDestination ()</a></td>
-	<td class="summary">Gibt das Bewegungsziel des Entity zurück.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:GetEntitySize">QSB.EntityProperty:GetEntitySize ()</a></td>
-	<td class="summary">Gibt die Größe des Entity zurück.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:GetGategories">QSB.EntityProperty:GetGategories ()</a></td>
+	<td class="name" nowrap><a href="#API.GetEntityCategoyList">API.GetEntityCategoyList (_Entity)</a></td>
 	<td class="summary">Gibt alle Kategorien zurück, zu denen das Entity gehört.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:GetHealth">QSB.EntityProperty:GetHealth ()</a></td>
-	<td class="summary">Gibt die Gesundheit des Entity zurück.</td>
+	<td class="name" nowrap><a href="#API.IsEntityInAtLeastOneCategory">API.IsEntityInAtLeastOneCategory (_Entity, ...)</a></td>
+	<td class="summary">Prüft, ob das Entity mindestens eine der Kategorien hat.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:GetInstance">QSB.EntityProperty:GetInstance (_Entity)</a></td>
-	<td class="summary">Gibt die Properties Instanz des Entity zurück.</td>
+	<td class="name" nowrap><a href="#BundleEntityProperties.Global:InvulnerabilityJob">BundleEntityProperties.Global:InvulnerabilityJob ()</a></td>
+	<td class="summary">Setzt ein unverwundbares Entity wieder unverwundbar, wenn sich die ID
+ geändert hat.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:GetLeader">QSB.EntityProperty:GetLeader ()</a></td>
-	<td class="summary">Gibt den Leader des Soldaten zurück.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:GetOrientation">QSB.EntityProperty:GetOrientation ()</a></td>
-	<td class="summary">Gibt die Ausrichtung des Entity zurück.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:GetPlayerID">QSB.EntityProperty:GetPlayerID ()</a></td>
-	<td class="summary">Gibt den Besitzer des Entity zurück.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:GetResource">QSB.EntityProperty:GetResource ()</a></td>
-	<td class="summary">Gibt die Menge an Rohstoffen des Entity zurück.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:GetSoldiers">QSB.EntityProperty:GetSoldiers ()</a></td>
-	<td class="summary">Gibt die IDs aller Soldaten zurück, die zum Battalion gehören.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:GetTask">QSB.EntityProperty:GetTask (_NewTask)</a></td>
-	<td class="summary">Gibt die aktuelle Tasklist des Entity zurück.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:GetType">QSB.EntityProperty:GetType (_NewType)</a></td>
-	<td class="summary">Gibt den Typen des Entity zurück.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:GetTypeName">QSB.EntityProperty:GetTypeName ()</a></td>
-	<td class="summary">Gibt den Typnamen des Entity zurück.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:GetValueAsFloat">QSB.EntityProperty:GetValueAsFloat (_index)</a></td>
-	<td class="summary">Gibt die Scripting Value des Entity als Dezimalzahl zurück.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:GetValueAsInteger">QSB.EntityProperty:GetValueAsInteger (_index)</a></td>
-	<td class="summary">Gibt die Scripting Value des Entity als Ganzzahl zurück.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:Heal">QSB.EntityProperty:Heal (_Amount)</a></td>
-	<td class="summary">Heilt das Entity um die angegebene Menge an Gesundheit.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:Hurt">QSB.EntityProperty:Hurt (_Damage, _Attacker)</a></td>
-	<td class="summary">Verwundet ein Entity oder ein Battallion um die angegebene
- Menge an Schaden.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:InGategory">QSB.EntityProperty:InGategory (...)</a></td>
-	<td class="summary">Prüft, ob das Entity mindestens eine der Kategorien hat</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:IsBurning">QSB.EntityProperty:IsBurning ()</a></td>
-	<td class="summary">Gibt zurück, ob das Gebäude brennt.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:IsExisting">QSB.EntityProperty:IsExisting ()</a></td>
-	<td class="summary">Prüft, ob das Entity existiert.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:IsIll">QSB.EntityProperty:IsIll ()</a></td>
-	<td class="summary">Prüft, ob das Entity krank ist.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:IsVisible">QSB.EntityProperty:IsVisible ()</a></td>
-	<td class="summary">Gibt zurück, ob das Entity sichtbar ist.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:MakeIll">QSB.EntityProperty:MakeIll ()</a></td>
-	<td class="summary">Macht das Entity krank.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:New">QSB.EntityProperty:New (_Entity)</a></td>
-	<td class="summary">Konstruktor</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:OnScreenInfo">QSB.EntityProperty:OnScreenInfo ()</a></td>
-	<td class="summary">Gibt zurück, ob eine NPC-Interaktion mit dem Siedler möglich ist.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:SetBurning">QSB.EntityProperty:SetBurning (_FireSize)</a></td>
-	<td class="summary">Steckt ein Gebäude in Brand.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:SetEntitySize">QSB.EntityProperty:SetEntitySize (_Scale)</a></td>
-	<td class="summary">Setzt die Größe des Entity.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:SetHealth">QSB.EntityProperty:SetHealth (_Health, _Relative)</a></td>
-	<td class="summary">Setzt die Gesundheit des Entity.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:SetModel">QSB.EntityProperty:SetModel (_NewModel)</a></td>
-	<td class="summary">Weist dem Entity ein Neues Model zu.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:SetOrientation">QSB.EntityProperty:SetOrientation (_Orientation)</a></td>
-	<td class="summary">Setzt die Ausrichtung des Entity.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:SetPlayerID">QSB.EntityProperty:SetPlayerID (_PlayerID)</a></td>
-	<td class="summary">Setzt den Besitzer des Entity.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:SetResource">QSB.EntityProperty:SetResource (_Amount)</a></td>
-	<td class="summary">Setzt die Menge an Rohstoffen des Entity.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:SetTask">QSB.EntityProperty:SetTask (_NewTask)</a></td>
-	<td class="summary">Setzt die aktuelle Tasklist des Entity.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:SetType">QSB.EntityProperty:SetType (_NewType)</a></td>
-	<td class="summary">Setzt den Typen des Entity.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:SetVisible">QSB.EntityProperty:SetVisible (_Visible)</a></td>
-	<td class="summary">Ändert die Sichtbarkeit des Entity</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:TriggerEntityKilledCallbacks">QSB.EntityProperty:TriggerEntityKilledCallbacks (_Damage, _Attacker)</a></td>
+	<td class="name" nowrap><a href="#BundleEntityProperties.Global:TriggerEntityKilledCallbacks">BundleEntityProperties.Global:TriggerEntityKilledCallbacks (_Damage, _Attacker)</a></td>
 	<td class="summary">Löst die entsprechenden Callbacks aus, sollte das Entity durch den Schaden
  durch :Hurt sterben.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:Vulnerable">QSB.EntityProperty:Vulnerable (_Flag)</a></td>
-	<td class="summary">Setzt das Entity oder das Battalion verwundbar oder unverwundbar.</td>
+	<td class="name" nowrap><a href="#BundleEntityProperties.Shared:GetValueAsFloat">BundleEntityProperties.Shared:GetValueAsFloat (_Entity, _index)</a></td>
+	<td class="summary">Gibt die Scripting Value des Entity als Dezimalzahl zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityProperties.Shared:GetValueAsInteger">BundleEntityProperties.Shared:GetValueAsInteger (_Entity, _Index)</a></td>
+	<td class="summary">Gibt die Scripting Value des Entity als Ganzzahl zurück.</td>
 	</tr>
 </table>
 
@@ -346,12 +273,30 @@
 
     <dl class="function">
     <dt>
-    <a name = "API.ChangeEntityHealth"></a>
-    <strong>API.ChangeEntityHealth (_Entity, _Percentage)</strong>
+    <a name = "BundleEntityProperties.Global:Install"></a>
+    <strong>BundleEntityProperties.Global:Install ()</strong>
     </dt>
     <dd>
-    Ändert die relative Gesundheit eines Entity.
-<p> <b>Hinweis</b>: Die Gesundheit ist immer ganzzahlig zwischen 0 und 100.
+    Installiert das Bundle.
+
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.ChangeEntityHealth"></a>
+    <strong>API.ChangeEntityHealth (_Entity, _Health, _Relative)</strong>
+    </dt>
+    <dd>
+    Setzt die Gesundheit des Entity.  Optional kann die Gesundheit relativ zur
+ maximalen Gesundheit geändert werden.
 <p> <b>Alias</b>: SetHealth
 
 
@@ -359,15 +304,45 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         Scriptname des Entity
+           Entity (Scriptname oder ID)
         </li>
-        <li><span class="parameter">_Percentage</span>
+        <li><span class="parameter">_Health</span>
             <span class="types"><span class="type">number</span></span>
-         Relative Gesundheit des Entity
+           Neue aktuelle Gesundheit
+        </li>
+        <li><span class="parameter">_Relative</span>
+            <span class="types"><span class="type">boolean</span></span>
+         (Optional) Relativ zur maximalen Gesundheit
         </li>
     </ul>
 
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.CountSoldiersOfGroup"></a>
+    <strong>API.CountSoldiersOfGroup (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt die Mänge an Soldaten zurück, die dem Entity unterstehen  <b>Alias</b>: CoundSoldiers
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         Entity (Skriptname oder ID)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        Menge an Soldaten
+    </ol>
 
 
 
@@ -378,8 +353,7 @@
     <strong>API.GetEntityHealth (_Entity)</strong>
     </dt>
     <dd>
-    Gibt die relative Gesundheit des Entity zurück.
-<p> <b>Hinweis</b>: Die Gesundheit ist immer ganzzahlig zwischen 0 und 100.
+    Gibt die Gesundheit des Entity zurück.
 <p> <b>Alias</b>: GetHealth
 
 
@@ -387,8 +361,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         Scriptname des Entity
+         Entity (Scriptname oder ID)
         </li>
     </ul>
 
@@ -396,7 +369,63 @@
     <ol>
 
            <span class="types"><span class="type">number</span></span>
-        Relative Gesundheit des Entity
+        Aktuelle Gesundheit
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.GetEntityMovementTarget"></a>
+    <strong>API.GetEntityMovementTarget (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt das Bewegungsziel des Entity zurück.
+<p> <b>Alias</b>: GetDestination
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         Entity (Scriptname oder ID)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Positionstabelle
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.GetEntityOrientation"></a>
+    <strong>API.GetEntityOrientation (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt die Ausrichtung des Entity zurück.
+<p> <b>Alias</b>: GetOrientation
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+          Entity (Scriptname oder ID)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        Ausrichtung in Grad
     </ol>
 
 
@@ -447,8 +476,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         Scriptname des Entity
+         Entity (Scriptname oder ID)
         </li>
     </ul>
 
@@ -464,605 +492,19 @@
 
 </dd>
     <dt>
-    <a name = "API.GetMovementTarget"></a>
-    <strong>API.GetMovementTarget (_Entity)</strong>
-    </dt>
-    <dd>
-    Gibt die Position zurück, zu der sich ein Entity bewegt.  Die Position wird
- als XY-Table zurückgegeben.
-<p> <b>Alias</b>: GetMovingTarget
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Entity</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         Scriptname des Entity
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        Zielposition des Entity
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.HurtEntity"></a>
-    <strong>API.HurtEntity (_Entity, _Damage, _Attacker)</strong>
-    </dt>
-    <dd>
-    Verwundet ein Entity um einen absoluten Wert Gesundheit.
-<p> <b>Hinweis</b>: Die Anzahl an Gesundheitspunkten richtet sich nach dem
- jeweiligen Entity und ist immer ganzzahlig!
-<p> <b>Alias</b>: HurtEntityEx
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Entity</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         Scriptname des Entity
-        </li>
-        <li><span class="parameter">_Damage</span>
-            <span class="types"><span class="type">number</span></span>
-         Menge an abgezogener Gesundheit
-        </li>
-        <li><span class="parameter">_Attacker</span>
-            <span class="types"><span class="type">number</span></span>
-         (optional) Skriptname des Angreifers
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.IsActiveNpc"></a>
-    <strong>API.IsActiveNpc (_Entity)</strong>
-    </dt>
-    <dd>
-    Prüft, ob das NPC-FLag für das Entity gesetzt ist.
-<p> <b>Alias</b>: IsNpc
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Entity</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         Scriptname des Entity
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">boolean</span></span>
-        NPC-Flag ist gesetzt
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.IsEntityVisible"></a>
-    <strong>API.IsEntityVisible (_Entity)</strong>
-    </dt>
-    <dd>
-    Prüft, ob das Entity sichtbar ist.
-<p> <b>Alias</b>: IsVisible
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Entity</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         Scriptname des Entity
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">boolean</span></span>
-        Entity ist sichtbar
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.MakeInvulnerable"></a>
-    <strong>API.MakeInvulnerable (_Entity)</strong>
-    </dt>
-    <dd>
-    Macht das Entity oder das Battalion unverwundbar.
-<p> Wenn ein Skriptname angegeben wird, wird fortlaufend geprüft, ob sich die
- ID geändert hat und das Ziel erneut unverwundbar gemacht werden muss.
-<p> <b>Alias</b>: MakeInvulnerable
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Entity</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         Scriptname des Entity
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.MakeVulnerable"></a>
-    <strong>API.MakeVulnerable (_Entity)</strong>
-    </dt>
-    <dd>
-    Macht das Entity oder das Battalion verwundbar.
-<p> <b>Alias</b>: MakeVulnerable
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Entity</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         Scriptname des Entity
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.SetBuildingOnFire"></a>
-    <strong>API.SetBuildingOnFire (_Entity, _FireSize)</strong>
-    </dt>
-    <dd>
-    Setzt ein Gebäude in Brand.  Die Feuerstärke bestimmt, wie häftig es brennt.
-<p> <b>Hinweis</b>: Im Allgemeinen reicht eine Feuerstärke zwischen 1 und 50.
-<p> <b>Alias</b>: SetOnFire
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Entity</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         Scriptname des Entity
-        </li>
-        <li><span class="parameter">_FireSize</span>
-            <span class="types"><span class="type">number</span></span>
-         Relative Gesundheit des Entity
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.SetEntityPlayer"></a>
-    <strong>API.SetEntityPlayer (_Entity, _PlayerID)</strong>
-    </dt>
-    <dd>
-    Weist dem Entity einen neuen Besitzer zu.
-<p> <b>Alias</b>: ChangePlayer
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Entity</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         Scriptname des Entity
-        </li>
-        <li><span class="parameter">_PlayerID</span>
-            <span class="types"><span class="type">number</span></span>
-         Besitzer des Entity
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.SetEntityScale"></a>
-    <strong>API.SetEntityScale (_Entity, _Scale)</strong>
-    </dt>
-    <dd>
-    Setzt den Größenfaktor des Entity.
-<p> Der Faktor gibt an, um wie viel die Größe des Entity verändert wurde, im
- Vergleich zur normalen Größe. Faktor 1 entspricht der normalen Größe.
-<p> <b>Alias</b>: SetScale
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Entity</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         Scriptname des Entity
-        </li>
-        <li><span class="parameter">_Scale</span>
-            <span class="types"><span class="type">number</span></span>
-         Größenfaktor des Entity
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleEntityProperties.Global:Install"></a>
-    <strong>BundleEntityProperties.Global:Install ()</strong>
-    </dt>
-    <dd>
-    Installiert das Bundle.
-
-
-
-
-
-
-
-</dd>
-</dl>
-    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "API.EntityGetOrientation"></a>
-    <strong>API.EntityGetOrientation (_entity)</strong>
-    </dt>
-    <dd>
-    Gibt die Orientierung des Entity zurück.
-<p> <p><b>Alias:</b> GetOrientation</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_entity</span>
-         Betreffendes Entity (Skriptname oder ID)
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">number</span></span>
-        Orientierung in Grad
-    </ol>
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">local</span> Orientation = API.EntityGetOrientation(<span class="string">"marcus"</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.EntitySetOrientation"></a>
-    <strong>API.EntitySetOrientation (_Entity, _Orientation)</strong>
-    </dt>
-    <dd>
-    Setzt die Orientierung des Entity.
-<p> <p><b>Alias:</b> SetOrientation</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Entity</span>
-              Betreffendes Entity (Skriptname oder ID)
-        </li>
-        <li><span class="parameter">_Orientation</span>
-            <span class="types"><span class="type">number</span></span>
-         Ausrichtung in Grad
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.EntitySetOrientation(<span class="string">"marcus"</span>, <span class="number">52</span>);</pre>
-    </ul>
-
-</dd>
-</dl>
-    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "BundleEntityProperties.Global.InvulnerabilityJob"></a>
-    <strong>BundleEntityProperties.Global.InvulnerabilityJob ()</strong>
-    </dt>
-    <dd>
-    Setzt ein unverwundbares Entity wieder unverwundbar, wenn sich die ID
- geändert hat.
-
-
-
-
-
-
-
-</dd>
-</dl>
-    <h2 class="section-header "><a name="QSB_EntityProperty"></a>QSB.EntityProperty</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "QSB.EntityProperty:CountSoldiers"></a>
-    <strong>QSB.EntityProperty:CountSoldiers ()</strong>
-    </dt>
-    <dd>
-    Gibt die Mänge an Soldaten zurück, die dem Entity unterstehen
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">number</span></span>
-        Menge an Soldaten
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.EntityProperty:GetDestination"></a>
-    <strong>QSB.EntityProperty:GetDestination ()</strong>
-    </dt>
-    <dd>
-    Gibt das Bewegungsziel des Entity zurück.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        Positionstabelle
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.EntityProperty:GetEntitySize"></a>
-    <strong>QSB.EntityProperty:GetEntitySize ()</strong>
-    </dt>
-    <dd>
-    Gibt die Größe des Entity zurück.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">number</span></span>
-        Größenfaktor
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.EntityProperty:GetGategories"></a>
-    <strong>QSB.EntityProperty:GetGategories ()</strong>
-    </dt>
-    <dd>
-    Gibt alle Kategorien zurück, zu denen das Entity gehört.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        Kategorien des Entity
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.EntityProperty:GetHealth"></a>
-    <strong>QSB.EntityProperty:GetHealth ()</strong>
-    </dt>
-    <dd>
-    Gibt die Gesundheit des Entity zurück.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">number</span></span>
-        Aktuelle Gesundheit
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.EntityProperty:GetInstance"></a>
-    <strong>QSB.EntityProperty:GetInstance (_Entity)</strong>
-    </dt>
-    <dd>
-    Gibt die Properties Instanz des Entity zurück.
-<p> Wenn zu dem Entity keine Instanz existiert, wird eine neue
- Instanz erzeugt.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Entity</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         Skriptname des Entity
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        Instanz
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.EntityProperty:GetLeader"></a>
-    <strong>QSB.EntityProperty:GetLeader ()</strong>
-    </dt>
-    <dd>
-    Gibt den Leader des Soldaten zurück.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">number</span></span>
-        Menge an Soldaten
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.EntityProperty:GetOrientation"></a>
-    <strong>QSB.EntityProperty:GetOrientation ()</strong>
-    </dt>
-    <dd>
-    Gibt die Ausrichtung des Entity zurück.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">number</span></span>
-        Ausrichtung in Grad
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.EntityProperty:GetPlayerID"></a>
-    <strong>QSB.EntityProperty:GetPlayerID ()</strong>
-    </dt>
-    <dd>
-    Gibt den Besitzer des Entity zurück.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">number</span></span>
-        Besitzer
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.EntityProperty:GetResource"></a>
-    <strong>QSB.EntityProperty:GetResource ()</strong>
-    </dt>
-    <dd>
-    Gibt die Menge an Rohstoffen des Entity zurück.  Optional kann
- eine neue Menge gesetzt werden.
-
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">number</span></span>
-        Menge an Rohstoffen
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.EntityProperty:GetSoldiers"></a>
-    <strong>QSB.EntityProperty:GetSoldiers ()</strong>
-    </dt>
-    <dd>
-    Gibt die IDs aller Soldaten zurück, die zum Battalion gehören.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        Liste aller Soldaten
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.EntityProperty:GetTask"></a>
-    <strong>QSB.EntityProperty:GetTask (_NewTask)</strong>
+    <a name = "API.GetEntityTaskList"></a>
+    <strong>API.GetEntityTaskList (_Entity)</strong>
     </dt>
     <dd>
     Gibt die aktuelle Tasklist des Entity zurück.
+<p> <b>Alias</b>: GetTask
+
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_NewTask</span>
-
+        <li><span class="parameter">_Entity</span>
+         Entity (Scriptname oder ID)
         </li>
     </ul>
 
@@ -1078,34 +520,49 @@
 
 </dd>
     <dt>
-    <a name = "QSB.EntityProperty:GetType"></a>
-    <strong>QSB.EntityProperty:GetType (_NewType)</strong>
+    <a name = "API.GetEntityType"></a>
+    <strong>API.GetEntityType (_Entity)</strong>
     </dt>
     <dd>
     Gibt den Typen des Entity zurück.
+<p> <b>Alias</b>: GetType
+
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_NewType</span>
-            <span class="types"><span class="type">number</span></span>
-         (optional) Typ neues Entity
+        <li><span class="parameter">_Entity</span>
+         Entity (Scriptname oder ID)
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        Typ des Entity
+    </ol>
 
 
 
 
 </dd>
     <dt>
-    <a name = "QSB.EntityProperty:GetTypeName"></a>
-    <strong>QSB.EntityProperty:GetTypeName ()</strong>
+    <a name = "API.GetEntityTypeName"></a>
+    <strong>API.GetEntityTypeName (_Entity)</strong>
     </dt>
     <dd>
     Gibt den Typnamen des Entity zurück.
+<p> <b>Alias</b>: GetTypeName
 
 
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         Entity (Scriptname oder ID)
+        </li>
+    </ul>
 
     <h3>Returns:</h3>
     <ol>
@@ -1119,18 +576,19 @@
 
 </dd>
     <dt>
-    <a name = "QSB.EntityProperty:GetValueAsFloat"></a>
-    <strong>QSB.EntityProperty:GetValueAsFloat (_index)</strong>
+    <a name = "API.GetGroupLeader"></a>
+    <strong>API.GetGroupLeader (_Entity)</strong>
     </dt>
     <dd>
-    Gibt die Scripting Value des Entity als Dezimalzahl zurück.
+    Gibt den Leader des Soldaten zurück.
+<p> <b>Alias</b>: GetLeader
+
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_index</span>
-            <span class="types"><span class="type">number</span></span>
-          Index im RAM
+        <li><span class="parameter">_Entity</span>
+         Entity (Skriptname oder ID)
         </li>
     </ul>
 
@@ -1138,7 +596,7 @@
     <ol>
 
            <span class="types"><span class="type">number</span></span>
-        Dezimalzahl
+        Menge an Soldaten
     </ol>
 
 
@@ -1146,18 +604,48 @@
 
 </dd>
     <dt>
-    <a name = "QSB.EntityProperty:GetValueAsInteger"></a>
-    <strong>QSB.EntityProperty:GetValueAsInteger (_index)</strong>
+    <a name = "API.GetGroupSoldiers"></a>
+    <strong>API.GetGroupSoldiers (_Entity)</strong>
     </dt>
     <dd>
-    Gibt die Scripting Value des Entity als Ganzzahl zurück.
+    Gibt die IDs aller Soldaten zurück, die zum Battalion gehören.
+<p> <b>Alias</b>: GetSoldiers
+
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_index</span>
-            <span class="types"><span class="type">number</span></span>
-          Index im RAM
+        <li><span class="parameter">_Entity</span>
+         Entity (Skriptname oder ID)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Liste aller Soldaten
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.GetResourceAmount"></a>
+    <strong>API.GetResourceAmount (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt die Menge an Rohstoffen des Entity zurück.  Optional kann
+ eine neue Menge gesetzt werden.
+<p> <b>Alias</b>: GetResource
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+          Entity (Scriptname oder ID)
         </li>
     </ul>
 
@@ -1165,7 +653,7 @@
     <ol>
 
            <span class="types"><span class="type">number</span></span>
-        Ganzzahl
+        Menge an Rohstoffen
     </ol>
 
 
@@ -1173,15 +661,20 @@
 
 </dd>
     <dt>
-    <a name = "QSB.EntityProperty:Heal"></a>
-    <strong>QSB.EntityProperty:Heal (_Amount)</strong>
+    <a name = "API.GroupHeal"></a>
+    <strong>API.GroupHeal (_Entity, _Amount)</strong>
     </dt>
     <dd>
     Heilt das Entity um die angegebene Menge an Gesundheit.
+<p> <b>Alias</b>: HealEntity
+
 
 
     <h3>Parameters:</h3>
     <ul>
+        <li><span class="parameter">_Entity</span>
+           Entity (Scriptname oder ID)
+        </li>
         <li><span class="parameter">_Amount</span>
             <span class="types"><span class="type">number</span></span>
            Geheilte Gesundheit
@@ -1194,18 +687,22 @@
 
 </dd>
     <dt>
-    <a name = "QSB.EntityProperty:Hurt"></a>
-    <strong>QSB.EntityProperty:Hurt (_Damage, _Attacker)</strong>
+    <a name = "API.GroupHurt"></a>
+    <strong>API.GroupHurt (_Entity, _Damage, _Attacker)</strong>
     </dt>
     <dd>
     Verwundet ein Entity oder ein Battallion um die angegebene
  Menge an Schaden.  Bei einem Battalion wird der Schaden solange
  auf Soldaten aufgeteilt, bis er komplett verrechnet wurde.
+<p> <b>Alias</b>: HurtEntity
 
 
 
     <h3>Parameters:</h3>
     <ul>
+        <li><span class="parameter">_Entity</span>
+           Entity (Scriptname oder ID)
+        </li>
         <li><span class="parameter">_Damage</span>
             <span class="types"><span class="type">number</span></span>
            Schaden
@@ -1222,18 +719,456 @@
 
 </dd>
     <dt>
-    <a name = "QSB.EntityProperty:InGategory"></a>
-    <strong>QSB.EntityProperty:InGategory (...)</strong>
+    <a name = "API.IsBuildingBurning"></a>
+    <strong>API.IsBuildingBurning (_Entity)</strong>
     </dt>
     <dd>
-    Prüft, ob das Entity mindestens eine der Kategorien hat
+    Gibt zurück, ob das Gebäude brennt.
+<p> <b>Alias</b>: IsBurning
+
 
 
     <h3>Parameters:</h3>
     <ul>
+        <li><span class="parameter">_Entity</span>
+         Entity (Scriptname oder ID)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        Gebäude steht in Flammen
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.IsEntityActiveNpc"></a>
+    <strong>API.IsEntityActiveNpc (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt zurück, ob eine NPC-Interaktion mit dem Siedler möglich ist.
+<p> <b>Alias</b>: IsNpc
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         Entity (Scriptname oder ID)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        Ist NPC
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.IsEntityIll"></a>
+    <strong>API.IsEntityIll (_Entity)</strong>
+    </dt>
+    <dd>
+    Prüft, ob das Entity krank ist.
+<p> <b>Alias</b>: IsIll
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         Entity (Scriptname oder ID)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        Entity ist krank
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.IsEntityVisible"></a>
+    <strong>API.IsEntityVisible (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt zurück, ob das Entity sichtbar ist.
+<p> <b>Alias</b>: IsVisible
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         Entity (Scriptname oder ID)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        Ist sichtbar
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.MakeEntityIll"></a>
+    <strong>API.MakeEntityIll (_Entity)</strong>
+    </dt>
+    <dd>
+    Macht das Entity krank.
+<p> <b>Alias</b>: MakeIll
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         Entity (Scriptname oder ID)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetEntityBuildingBurning"></a>
+    <strong>API.SetEntityBuildingBurning (_Entity, _FireSize)</strong>
+    </dt>
+    <dd>
+    Steckt ein Gebäude in Brand.
+<p> <b>Alias</b>: SetBurning
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+           Entity (Scriptname oder ID)
+        </li>
+        <li><span class="parameter">_FireSize</span>
+            <span class="types"><span class="type">number</span></span>
+         (Optional) Neue aktuelle Gesundheit
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetEntityModel"></a>
+    <strong>API.SetEntityModel (_Entity, _NewModel, _AnimSet)</strong>
+    </dt>
+    <dd>
+    Weist dem Entity ein Neues Model zu.
+<p> <b>Alias</b>: SetModel
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+          Entity (Scriptname oder ID)
+        </li>
+        <li><span class="parameter">_NewModel</span>
+            <span class="types"><span class="type">number</span></span>
+         Neues Model
+        </li>
+        <li><span class="parameter">_AnimSet</span>
+            <span class="types"><span class="type">number</span></span>
+          (optional) Animation Set
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetEntityOrientation"></a>
+    <strong>API.SetEntityOrientation (_Entity, _Orientation)</strong>
+    </dt>
+    <dd>
+    Setzt die Ausrichtung des Entity.
+<p> <b>Alias</b>: SetOrientation
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+          Entity (Scriptname oder ID)
+        </li>
+        <li><span class="parameter">_Orientation</span>
+            <span class="types"><span class="type">number</span></span>
+         Neue Ausrichtung
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetEntityPlayer"></a>
+    <strong>API.SetEntityPlayer (_Entity, _PlayerID)</strong>
+    </dt>
+    <dd>
+    Setzt den Besitzer des Entity.
+<p> <b>Alias</b>: SetPlayer
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+          Entity (Scriptname oder ID)
+        </li>
+        <li><span class="parameter">_PlayerID</span>
+            <span class="types"><span class="type">number</span></span>
+         ID des Besitzers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetEntityScale"></a>
+    <strong>API.SetEntityScale (_Entity, _Scale)</strong>
+    </dt>
+    <dd>
+    Setzt die Größe des Entity.  Wenn es sich um einen Siedler handelt, wird
+ versucht einen neuen Speed Factor zu setzen.
+<p> <b>Alias</b>: SetScale
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         Entity (Scriptname oder ID)
+        </li>
+        <li><span class="parameter">_Scale</span>
+            <span class="types"><span class="type">number</span></span>
+         Neuer Größenfaktor
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetEntityTaskList"></a>
+    <strong>API.SetEntityTaskList (_Entity, _NewTask)</strong>
+    </dt>
+    <dd>
+    Setzt die aktuelle Tasklist des Entity.
+<p> <b>Alias</b>: SetTask
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+          Entity (Scriptname oder ID)
+        </li>
+        <li><span class="parameter">_NewTask</span>
+            <span class="types"><span class="type">number</span></span>
+         Neuer Task
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetEntityType"></a>
+    <strong>API.SetEntityType (_Entity, _NewType)</strong>
+    </dt>
+    <dd>
+    Setzt den Typen des Entity.
+<p> <b>Alias</b>: SetType
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+          Entity (Scriptname oder ID)
+        </li>
+        <li><span class="parameter">_NewType</span>
+            <span class="types"><span class="type">number</span></span>
+         Typ neues Entity
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetEntityVisible"></a>
+    <strong>API.SetEntityVisible (_Entity, _Visible)</strong>
+    </dt>
+    <dd>
+    Ändert die Sichtbarkeit des Entity.
+<p> <b>Alias</b>: SetVisible
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+           Entity (Scriptname oder ID)
+        </li>
+        <li><span class="parameter">_Visible</span>
+            <span class="types"><span class="type">boolean</span></span>
+         (Optional) Sichtbarkeit ändern
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetEntityVulnerablueFlag"></a>
+    <strong>API.SetEntityVulnerablueFlag (_Entity, _Flag)</strong>
+    </dt>
+    <dd>
+    Setzt das Entity oder das Battalion verwundbar oder unverwundbar.
+<p> Wenn ein Skriptname angegeben wird, wird fortlaufend geprüft, ob sich die
+ ID geändert hat und das Ziel erneut unverwundbar gemacht werden muss.
+<p> <b>Alias</b>: SetVulnerable
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         Entity (Scriptname oder ID)
+        </li>
+        <li><span class="parameter">_Flag</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Verwundbar
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetResourceAmount"></a>
+    <strong>API.SetResourceAmount (_Entity, _Amount)</strong>
+    </dt>
+    <dd>
+    Setzt die Menge an Rohstoffen des Entity.
+<p> <b>Alias</b>: SetResource
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+          Entity (Scriptname oder ID)
+        </li>
+        <li><span class="parameter">_Amount</span>
+            <span class="types"><span class="type">number</span></span>
+         Menge an Rohstoffen
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.GetEntityCategoyList"></a>
+    <strong>API.GetEntityCategoyList (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt alle Kategorien zurück, zu denen das Entity gehört.
+<p> <b>Alias</b>: GetCategories
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         Entity (Skriptname oder ID)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Kategorien des Entity
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.IsEntityInAtLeastOneCategory"></a>
+    <strong>API.IsEntityInAtLeastOneCategory (_Entity, ...)</strong>
+    </dt>
+    <dd>
+    Prüft, ob das Entity mindestens eine der Kategorien hat.
+<p> <b>Alias</b>: IsInCategory
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         Entity (Skriptname oder ID)
+        </li>
         <li><span class="parameter">...</span>
             <span class="types"><span class="type">number</span></span>
-         Liste mit Kategorien
+             Liste mit Kategorien
         </li>
     </ul>
 
@@ -1249,91 +1184,12 @@
 
 </dd>
     <dt>
-    <a name = "QSB.EntityProperty:IsBurning"></a>
-    <strong>QSB.EntityProperty:IsBurning ()</strong>
+    <a name = "BundleEntityProperties.Global:InvulnerabilityJob"></a>
+    <strong>BundleEntityProperties.Global:InvulnerabilityJob ()</strong>
     </dt>
     <dd>
-    Gibt zurück, ob das Gebäude brennt.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">boolean</span></span>
-        Gebäude steht in Flammen
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.EntityProperty:IsExisting"></a>
-    <strong>QSB.EntityProperty:IsExisting ()</strong>
-    </dt>
-    <dd>
-    Prüft, ob das Entity existiert.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">boolean</span></span>
-        Entity existiert
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.EntityProperty:IsIll"></a>
-    <strong>QSB.EntityProperty:IsIll ()</strong>
-    </dt>
-    <dd>
-    Prüft, ob das Entity krank ist.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">boolean</span></span>
-        Entity ist krank
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.EntityProperty:IsVisible"></a>
-    <strong>QSB.EntityProperty:IsVisible ()</strong>
-    </dt>
-    <dd>
-    Gibt zurück, ob das Entity sichtbar ist.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">boolean</span></span>
-        Ist sichtbar
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.EntityProperty:MakeIll"></a>
-    <strong>QSB.EntityProperty:MakeIll ()</strong>
-    </dt>
-    <dd>
-    Macht das Entity krank.
+    Setzt ein unverwundbares Entity wieder unverwundbar, wenn sich die ID
+ geändert hat.
 
 
 
@@ -1343,273 +1199,8 @@
 
 </dd>
     <dt>
-    <a name = "QSB.EntityProperty:New"></a>
-    <strong>QSB.EntityProperty:New (_Entity)</strong>
-    </dt>
-    <dd>
-    Konstruktor
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Entity</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         Skriptname des Entity
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        Neue Instanz
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.EntityProperty:OnScreenInfo"></a>
-    <strong>QSB.EntityProperty:OnScreenInfo ()</strong>
-    </dt>
-    <dd>
-    Gibt zurück, ob eine NPC-Interaktion mit dem Siedler möglich ist.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">boolean</span></span>
-        Ist NPC
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.EntityProperty:SetBurning"></a>
-    <strong>QSB.EntityProperty:SetBurning (_FireSize)</strong>
-    </dt>
-    <dd>
-    Steckt ein Gebäude in Brand.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_FireSize</span>
-            <span class="types"><span class="type">number</span></span>
-         (Optional) Neue aktuelle Gesundheit
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.EntityProperty:SetEntitySize"></a>
-    <strong>QSB.EntityProperty:SetEntitySize (_Scale)</strong>
-    </dt>
-    <dd>
-    Setzt die Größe des Entity.  Wenn es sich um einen Siedler handelt, wird
- versucht einen neuen Speed Factor zu setzen.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Scale</span>
-            <span class="types"><span class="type">number</span></span>
-         Neuer Größenfaktor
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.EntityProperty:SetHealth"></a>
-    <strong>QSB.EntityProperty:SetHealth (_Health, _Relative)</strong>
-    </dt>
-    <dd>
-    Setzt die Gesundheit des Entity.  Optional kann die Gesundheit relativ zur
- maximalen Gesundheit geändert werden.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Health</span>
-            <span class="types"><span class="type">number</span></span>
-           (Optional) Neue aktuelle Gesundheit
-        </li>
-        <li><span class="parameter">_Relative</span>
-            <span class="types"><span class="type">boolean</span></span>
-         (Optional) Relativ zur maximalen Gesundheit
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.EntityProperty:SetModel"></a>
-    <strong>QSB.EntityProperty:SetModel (_NewModel)</strong>
-    </dt>
-    <dd>
-    Weist dem Entity ein Neues Model zu.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_NewModel</span>
-            <span class="types"><span class="type">number</span></span>
-         (optional) Neues Model
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.EntityProperty:SetOrientation"></a>
-    <strong>QSB.EntityProperty:SetOrientation (_Orientation)</strong>
-    </dt>
-    <dd>
-    Setzt die Ausrichtung des Entity.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Orientation</span>
-            <span class="types"><span class="type">number</span></span>
-         Neue Ausrichtung
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.EntityProperty:SetPlayerID"></a>
-    <strong>QSB.EntityProperty:SetPlayerID (_PlayerID)</strong>
-    </dt>
-    <dd>
-    Setzt den Besitzer des Entity.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-            <span class="types"><span class="type">number</span></span>
-         (Optional) Neuer Besitzer des Entity
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.EntityProperty:SetResource"></a>
-    <strong>QSB.EntityProperty:SetResource (_Amount)</strong>
-    </dt>
-    <dd>
-    Setzt die Menge an Rohstoffen des Entity.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Amount</span>
-            <span class="types"><span class="type">number</span></span>
-         Menge an Rohstoffen
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.EntityProperty:SetTask"></a>
-    <strong>QSB.EntityProperty:SetTask (_NewTask)</strong>
-    </dt>
-    <dd>
-    Setzt die aktuelle Tasklist des Entity.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_NewTask</span>
-            <span class="types"><span class="type">number</span></span>
-         (optional) Neuer Task
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.EntityProperty:SetType"></a>
-    <strong>QSB.EntityProperty:SetType (_NewType)</strong>
-    </dt>
-    <dd>
-    Setzt den Typen des Entity.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_NewType</span>
-            <span class="types"><span class="type">number</span></span>
-         (optional) Typ neues Entity
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.EntityProperty:SetVisible"></a>
-    <strong>QSB.EntityProperty:SetVisible (_Visible)</strong>
-    </dt>
-    <dd>
-    Ändert die Sichtbarkeit des Entity
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Visible</span>
-            <span class="types"><span class="type">boolean</span></span>
-         (Optional) Sichtbarkeit ändern
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.EntityProperty:TriggerEntityKilledCallbacks"></a>
-    <strong>QSB.EntityProperty:TriggerEntityKilledCallbacks (_Damage, _Attacker)</strong>
+    <a name = "BundleEntityProperties.Global:TriggerEntityKilledCallbacks"></a>
+    <strong>BundleEntityProperties.Global:TriggerEntityKilledCallbacks (_Damage, _Attacker)</strong>
     </dt>
     <dd>
     Löst die entsprechenden Callbacks aus, sollte das Entity durch den Schaden
@@ -1636,22 +1227,60 @@
 
 </dd>
     <dt>
-    <a name = "QSB.EntityProperty:Vulnerable"></a>
-    <strong>QSB.EntityProperty:Vulnerable (_Flag)</strong>
+    <a name = "BundleEntityProperties.Shared:GetValueAsFloat"></a>
+    <strong>BundleEntityProperties.Shared:GetValueAsFloat (_Entity, _index)</strong>
     </dt>
     <dd>
-    Setzt das Entity oder das Battalion verwundbar oder unverwundbar.
-
+    Gibt die Scripting Value des Entity als Dezimalzahl zurück.
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_Flag</span>
-            <span class="types"><span class="type">boolean</span></span>
-         Verwundbar
+        <li><span class="parameter">_Entity</span>
+         Entity (Skriptname oder ID)
+        </li>
+        <li><span class="parameter">_index</span>
+            <span class="types"><span class="type">number</span></span>
+          Index im RAM
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        Dezimalzahl
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityProperties.Shared:GetValueAsInteger"></a>
+    <strong>BundleEntityProperties.Shared:GetValueAsInteger (_Entity, _Index)</strong>
+    </dt>
+    <dd>
+    Gibt die Scripting Value des Entity als Ganzzahl zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         Entity (Skriptname oder ID)
+        </li>
+        <li><span class="parameter">_Index</span>
+            <span class="types"><span class="type">number</span></span>
+          Index im RAM
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        Ganzzahl
+    </ol>
 
 
 
@@ -1664,7 +1293,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2020-04-30 10:17:38 </i>
+<i style="float:right;">Last updated 2020-07-19 18:13:05 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

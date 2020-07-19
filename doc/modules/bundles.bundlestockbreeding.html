@@ -48,6 +48,7 @@
   <li><a href="../modules/addons.addoninteractivesites.html">addons.addoninteractivesites</a></li>
   <li><a href="../modules/addons.addoninteractivetrebuchets.html">addons.addoninteractivetrebuchets</a></li>
   <li><a href="../modules/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
+  <li><a href="../modules/addons.addonqueststages.html">addons.addonqueststages</a></li>
   <li><a href="../modules/addons.addonrandomrequests.html">addons.addonrandomrequests</a></li>
   <li><a href="../modules/bundles.bundlebriefingsystem.html">bundles.bundlebriefingsystem</a></li>
   <li><a href="../modules/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
@@ -81,9 +82,11 @@
   <li><a href="../modules/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
   <li><a href="../modules/bundles.bundleweathermanipulation.html">bundles.bundleweathermanipulation</a></li>
   <li><a href="../modules/core.html">core</a></li>
+  <li><a href="../modules/external.externalcampaignmap.html">external.externalcampaignmap</a></li>
   <li><a href="../modules/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
   <li><a href="../modules/external.externalgamecutscenes.html">external.externalgamecutscenes</a></li>
   <li><a href="../modules/external.externalhirdpersoncamera.html">external.externalhirdpersoncamera</a></li>
+  <li><a href="../modules/external.externalmaploader.html">external.externalmaploader</a></li>
   <li><a href="../modules/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
   <li><a href="../modules/external.externaltradinganalysis.html">external.externaltradinganalysis</a></li>
   <li><a href="../modules/loader.html">loader</a></li>
@@ -112,12 +115,28 @@
 	<td class="summary">Aktiviert oder deaktiviert den "Baby Mode" für Kühe.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#API.SetCattleFeedingInvervalForBreeding">API.SetCattleFeedingInvervalForBreeding (_Timer)</a></td>
+	<td class="summary">Setzt die Dauer des Fütterungsintervals für Kühe.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetRequiredAnimalsInCatchmentArea">API.SetRequiredAnimalsInCatchmentArea (_Amount)</a></td>
+	<td class="summary">Stellt die benötigte Menge an Tieren ein.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#API.SetSheepBabyMode">API.SetSheepBabyMode (_Flag)</a></td>
 	<td class="summary">Aktiviert oder deaktiviert den "Baby Mode" für Schafe.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.SetSheepType">API.SetSheepType (_Flag)</a></td>
+	<td class="name" nowrap><a href="#API.SetSheepFeedingInvervalForBreeding">API.SetSheepFeedingInvervalForBreeding (_Timer)</a></td>
+	<td class="summary">Setzt die Dauer des Fütterungsintervals für Schafe.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetSheepType">API.SetSheepType (_Type)</a></td>
 	<td class="summary">Setzt den Typen des verwendeten Schafes.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetSizeOfCatchmentAreaOfPasture">API.SetSizeOfCatchmentAreaOfPasture (_AreaSize)</a></td>
+	<td class="summary">Legt die Größe des Einzugsbereich des Gatters fest.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.UseBreedCattle">API.UseBreedCattle (_Flag)</a></td>
@@ -153,10 +172,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#BundleStockbreeding.Global:CreateAnimal">BundleStockbreeding.Global:CreateAnimal (_PastureID, _Type, _GrainCost, _Shrink)</a></td>
 	<td class="summary">Erzeugt ein Nutztier vor dem Gatter und zieht die Kosten ab.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleStockbreeding.Global:GetControllingPlayer">BundleStockbreeding.Global:GetControllingPlayer ()</a></td>
-	<td class="summary">Gibt die ID des menschlichen Spielers zurück.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BundleStockbreeding.Global:GetScale">BundleStockbreeding.Global:GetScale (_Entity)</a></td>
@@ -235,6 +250,71 @@
 
 </dd>
     <dt>
+    <a name = "API.SetCattleFeedingInvervalForBreeding"></a>
+    <strong>API.SetCattleFeedingInvervalForBreeding (_Timer)</strong>
+    </dt>
+    <dd>
+    Setzt die Dauer des Fütterungsintervals für Kühe.
+<p> Das Fütterungsinterval bestimmt, wie viele Sekunden es dauert, bis ein
+ Getreide durch Zucht verbraucht wird.
+<p> <b>Hinweis:</b> Das Interval ist auf 30 Sekunden voreingestellt und kann
+ nicht unter 15 Sekunden gesenkt werden.
+<p> <b>Alias</b>: SetCattleFeedingTimer
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Timer</span>
+            <span class="types"><span class="type">number</span></span>
+         Fütterungsinterval
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.SetCattleFeedingInvervalForBreeding(<span class="number">60</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.SetRequiredAnimalsInCatchmentArea"></a>
+    <strong>API.SetRequiredAnimalsInCatchmentArea (_Amount)</strong>
+    </dt>
+    <dd>
+    Stellt die benötigte Menge an Tieren ein.
+<p> Sind weniger Tiere als angegeben im Einzugsbereich des Gatters, können
+ keine neuen Tiere gezüchtet werden.
+<p> <b>Hinweis:</b> Die Mindestmenge ist standardmäßig auf 2 eingestellt.
+<p> <b>Alias</b>: SetBreedingAnimalsAmount
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Amount</span>
+            <span class="types"><span class="type">number</span></span>
+         Menge an Tieren
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Es werden keine Tiere benötigt um zu züchten.
+</span>API.SetRequiredAnimalsInCatchmentArea(<span class="number">0</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
     <a name = "API.SetSheepBabyMode"></a>
     <strong>API.SetSheepBabyMode (_Flag)</strong>
     </dt>
@@ -266,8 +346,39 @@
 
 </dd>
     <dt>
+    <a name = "API.SetSheepFeedingInvervalForBreeding"></a>
+    <strong>API.SetSheepFeedingInvervalForBreeding (_Timer)</strong>
+    </dt>
+    <dd>
+    Setzt die Dauer des Fütterungsintervals für Schafe.
+<p> Das Fütterungsinterval bestimmt, wie viele Sekunden es dauert, bis ein
+ Getreide durch Zucht verbraucht wird.
+<p> <b>Hinweis:</b> Das Interval ist auf 30 Sekunden voreingestellt und kann
+ nicht unter 15 Sekunden gesenkt werden.
+<p> <b>Alias</b>: SetSheepFeedingTimer
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Timer</span>
+            <span class="types"><span class="type">number</span></span>
+         Fütterungsinterval
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.SetSheepFeedingInvervalForBreeding(<span class="number">60</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
     <a name = "API.SetSheepType"></a>
-    <strong>API.SetSheepType (_Flag)</strong>
+    <strong>API.SetSheepType (_Type)</strong>
     </dt>
     <dd>
     Setzt den Typen des verwendeten Schafes.
@@ -283,9 +394,9 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_Flag</span>
+        <li><span class="parameter">_Type</span>
             <span class="types"><span class="type">boolean</span></span>
-         Baby Mode aktivieren/deaktivieren
+         Schafstyp
         </li>
     </ul>
 
@@ -298,6 +409,43 @@
 </span>API.SetSheepType(<span class="number">0</span>);
 <span class="comment">-- Es werden nur graue Schafe erzeugt
 </span>API.SetSheepType(<span class="number">2</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.SetSizeOfCatchmentAreaOfPasture"></a>
+    <strong>API.SetSizeOfCatchmentAreaOfPasture (_AreaSize)</strong>
+    </dt>
+    <dd>
+    Legt die Größe des Einzugsbereich des Gatters fest.
+<p> Im eingestellten Gebiet muss sich die Mindestmenge an Tieren aufhalten,
+ damit gezüchtet werden kann.
+<p> <b>Hinweis:</b> Der Einzugsbereich ist standardmäßig auf 3000 eingestellt.
+<p> <b>Alias</b>: SetBreedingAreaSize
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_AreaSize</span>
+            <span class="types"><span class="type">number</span></span>
+         Einzugsbereich des Gatters
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/bundles.bundlestockbreeding.html#API.SetRequiredAnimalsInCatchmentArea">API.SetRequiredAnimalsInCatchmentArea</a>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Es zählen nur Tiere innerhalb des Gatters.
+</span>API.SetSizeOfCatchmentAreaOfPasture(<span class="number">800</span>);
+<span class="comment">-- Tiere auf der ganzen Map zählen.
+</span>API.SetSizeOfCatchmentAreaOfPasture(Logic.WorldGetSize());</pre>
     </ul>
 
 </dd>
@@ -507,26 +655,6 @@
         </li>
     </ul>
 
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleStockbreeding.Global:GetControllingPlayer"></a>
-    <strong>BundleStockbreeding.Global:GetControllingPlayer ()</strong>
-    </dt>
-    <dd>
-    Gibt die ID des menschlichen Spielers zurück.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">number</span></span>
-        ID des menschlichen Spielers
-    </ol>
 
 
 
@@ -745,7 +873,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2020-04-30 10:17:38 </i>
+<i style="float:right;">Last updated 2020-07-19 18:13:05 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

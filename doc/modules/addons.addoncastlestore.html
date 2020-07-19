@@ -49,6 +49,7 @@
   <li><a href="../modules/addons.addoninteractivesites.html">addons.addoninteractivesites</a></li>
   <li><a href="../modules/addons.addoninteractivetrebuchets.html">addons.addoninteractivetrebuchets</a></li>
   <li><a href="../modules/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
+  <li><a href="../modules/addons.addonqueststages.html">addons.addonqueststages</a></li>
   <li><a href="../modules/addons.addonrandomrequests.html">addons.addonrandomrequests</a></li>
   <li><a href="../modules/bundles.bundlebriefingsystem.html">bundles.bundlebriefingsystem</a></li>
   <li><a href="../modules/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
@@ -82,9 +83,11 @@
   <li><a href="../modules/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
   <li><a href="../modules/bundles.bundleweathermanipulation.html">bundles.bundleweathermanipulation</a></li>
   <li><a href="../modules/core.html">core</a></li>
+  <li><a href="../modules/external.externalcampaignmap.html">external.externalcampaignmap</a></li>
   <li><a href="../modules/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
   <li><a href="../modules/external.externalgamecutscenes.html">external.externalgamecutscenes</a></li>
   <li><a href="../modules/external.externalhirdpersoncamera.html">external.externalhirdpersoncamera</a></li>
+  <li><a href="../modules/external.externalmaploader.html">external.externalmaploader</a></li>
   <li><a href="../modules/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
   <li><a href="../modules/external.externaltradinganalysis.html">external.externaltradinganalysis</a></li>
   <li><a href="../modules/loader.html">loader</a></li>
@@ -96,20 +99,19 @@
 <div id="content">
 
 <h1>Module <code>addons.addoncastlestore</code></h1>
-<p>Dieses Bundle stellt das Burglager, oder Kellerlager, zur Verfügung, das
+<p>Dieses Bundle stellt ein Burglager, oder Kellerlager, zur Verfügung, das
  sich ähnlich wie das normale Lager verhält.</p>
 <p>
-<p> Das Burglager ist von der Ausbaustufe der Burg
- abhängig. Je weiter die Burg ausgebaut wird, desto höher ist das Limit.
- Eine Ware wird dann im Burglager eingelagert, wenn das eingestellte Limit
- der Ware im Lagerhaus erreicht wird.
+<p> Das Burglager ist von der Ausbaustufe der Burg abhängig. Je weiter die Burg
+ ausgebaut wird, desto höher ist das Limit. Eine Ware wird dann im Burglager
+ eingelagert, wenn das eingestellte Limit der Ware im Lagerhaus erreicht wird.
 <p> Der Spieler kann das allgemeine Verhalten des Lagers für alle Waren wählen
  und zusätzlich für einzelne Waren andere Verhalten bestimmen. Waren können
  eingelagert und ausgelagert werden. Eingelagerte Waren können zusätzlich
  gesperrt werden. Eine gesperrte Ware wird nicht wieder ausgelagert, auch
  wenn Platz im Lager frei wird.
-<p> Muss ein Spieler einen Tribut aus dem lagerhaus begleichen, eine bestimmte
- Menge an Waren erreichen oder die Kosten Zur aktivierung eines interaktien
+<p> Muss ein Spieler einen Tribut aus dem Lagerhaus begleichen, eine bestimmte
+ Menge an Waren erreichen oder die Kosten zur Aktivierung eines interaktien
  Objektes bezahlen, werden die Güter im Burglager automatisch mit einbezogen,
  wenn sie nicht gesperrt wurden.
 </p>
@@ -165,6 +167,14 @@
 	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Global:InteractiveObjectPayStep1">AddOnCastleStore.Global:InteractiveObjectPayStep1 (_ScriptName)</a></td>
+	<td class="summary">Überschriebene Bezahlung von interaktiven Objekten - Step 2.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Global:InteractiveObjectPayStep3">AddOnCastleStore.Global:InteractiveObjectPayStep3 (_ScriptName)</a></td>
+	<td class="summary">Überschriebene Bezahlung von interaktiven Objekten - Step 3.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#AddOnCastleStore.Global:OverwriteGameFunctions">AddOnCastleStore.Global:OverwriteGameFunctions ()</a></td>
 	<td class="summary">Überschreibt die globalen Spielfunktionen, die mit dem Burglager in
  Konfilckt stehen.</td>
@@ -192,6 +202,15 @@
 	<tr>
 	<td class="name" nowrap><a href="#AddOnCastleStore.Local:Install">AddOnCastleStore.Local:Install ()</a></td>
 	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local:InteractiveObjectPayStep2">AddOnCastleStore.Local:InteractiveObjectPayStep2 (_ScriptName)</a></td>
+	<td class="summary">Überschriebene Bezahlung von interaktiven Objekten - Step 2.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local:OnObjectClicked_CanPlayerPayCosts">AddOnCastleStore.Local:OnObjectClicked_CanPlayerPayCosts (_IO)</a></td>
+	<td class="summary">Prüft, ob der Spieler die Kosten des interaktiven Objektes begleichen kann
+ und zeigt eine Meldung an, wenn das nicht der Fall ist.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#AddOnCastleStore.Local:OverwriteGameFunctions">AddOnCastleStore.Local:OverwriteGameFunctions ()</a></td>
@@ -233,6 +252,10 @@
 	<tr>
 	<td class="name" nowrap><a href="#AddOnCastleStore.Global.CastleStore:Dispose">AddOnCastleStore.Global.CastleStore:Dispose ()</a></td>
 	<td class="summary">Zerstört das Burglager.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Global.CastleStore:EnableStore">AddOnCastleStore.Global.CastleStore:EnableStore (_Flag)</a></td>
+	<td class="summary">Aktiviert oder deaktiviert das Lagermanagement des Castle Store.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#AddOnCastleStore.Global.CastleStore:GetAmount">AddOnCastleStore.Global.CastleStore:GetAmount (_Good)</a></td>
@@ -733,6 +756,54 @@
 
 </dd>
     <dt>
+    <a name = "AddOnCastleStore.Global:InteractiveObjectPayStep1"></a>
+    <strong>AddOnCastleStore.Global:InteractiveObjectPayStep1 (_ScriptName)</strong>
+    </dt>
+    <dd>
+    Überschriebene Bezahlung von interaktiven Objekten - Step 2.
+<p> Speichert die aktuelle Warenmenge zwischen und leert dann das Lagerhaus.
+ Dann werden die Kosten ins Lagerhaus gelegt. Anschließend wird Step 2 im
+ lokalenSkript aufgerufen.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Scriptname des Objektes
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Global:InteractiveObjectPayStep3"></a>
+    <strong>AddOnCastleStore.Global:InteractiveObjectPayStep3 (_ScriptName)</strong>
+    </dt>
+    <dd>
+    Überschriebene Bezahlung von interaktiven Objekten - Step 3.
+<p> Die ursprunglichen Warenmengen werden wiederhergestellt.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Scriptname des Objektes
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "AddOnCastleStore.Global:OverwriteGameFunctions"></a>
     <strong>AddOnCastleStore.Global:OverwriteGameFunctions ()</strong>
     </dt>
@@ -826,6 +897,57 @@
 
 
 
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local:InteractiveObjectPayStep2"></a>
+    <strong>AddOnCastleStore.Local:InteractiveObjectPayStep2 (_ScriptName)</strong>
+    </dt>
+    <dd>
+    Überschriebene Bezahlung von interaktiven Objekten - Step 2.
+<p> Führt die Interaktion aus und ruft danach Step 3 auf.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Scriptname des Objektes
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local:OnObjectClicked_CanPlayerPayCosts"></a>
+    <strong>AddOnCastleStore.Local:OnObjectClicked_CanPlayerPayCosts (_IO)</strong>
+    </dt>
+    <dd>
+    Prüft, ob der Spieler die Kosten des interaktiven Objektes begleichen kann
+ und zeigt eine Meldung an, wenn das nicht der Fall ist.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_IO</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Table des IO
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        Kosten können bezahlt werden
+    </ol>
 
 
 
@@ -1010,6 +1132,29 @@
 <span class="comment">-- Loschen mit Referenzvariable (z.B. Store)
 </span>Store:Dispose();</pre>
     </ul>
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Global.CastleStore:EnableStore"></a>
+    <strong>AddOnCastleStore.Global.CastleStore:EnableStore (_Flag)</strong>
+    </dt>
+    <dd>
+    Aktiviert oder deaktiviert das Lagermanagement des Castle Store.
+<p> <p><b>Alias</b>: QSB.CastleStore.EnableStore</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Lagermengenaktualisierung einschalten
+        </li>
+    </ul>
+
+
+
+
 
 </dd>
     <dt>
@@ -2101,7 +2246,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2020-04-30 10:17:38 </i>
+<i style="float:right;">Last updated 2020-07-19 18:13:05 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

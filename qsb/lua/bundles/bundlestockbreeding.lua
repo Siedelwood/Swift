@@ -152,6 +152,36 @@ end
 SetSheepBabyMode = API.SetSheepBabyMode;
 
 ---
+-- Setzt die Dauer des Fütterungsintervals für Schafe.
+--
+-- Das Fütterungsinterval bestimmt, wie viele Sekunden es dauert, bis ein
+-- Getreide durch Zucht verbraucht wird.
+--
+-- <b>Hinweis:</b> Das Interval ist auf 30 Sekunden voreingestellt und kann
+-- nicht unter 15 Sekunden gesenkt werden.
+--
+-- <b>Alias</b>: SetSheepFeedingTimer
+--
+-- @param[type=number] _Timer Fütterungsinterval
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- -- Es wird alle 60 Sekunden Getreide verbraucht.
+-- API.SetSheepFeedingInvervalForBreeding(60);
+--
+function API.SetSheepFeedingInvervalForBreeding(_Timer)
+    if GUI then
+        return;
+    end
+    if type(_Timer) ~= "number" or _Timer < 15 then 
+        error("API.SetSheepFeedingInvervalForBreeding: Time ist to short! Must be at least 15 seconds!");
+        return;
+    end
+    BundleStockbreeding.Global.Data.SheepFeedingTimer = _Timer;
+end
+SetSheepFeedingTimer = API.SetSheepFeedingInvervalForBreeding;
+
+---
 -- Aktiviert oder deaktiviert den "Baby Mode" für Kühe.
 --
 -- Ist der Modus aktiv, werden neu gekaufte Tiere mit 40% ihrer Große erzeugt
@@ -175,6 +205,99 @@ function API.SetCattleBabyMode(_Flag)
 end
 SetCattleBaby = API.SetCattleBaby;
 
+---
+-- Setzt die Dauer des Fütterungsintervals für Kühe.
+--
+-- Das Fütterungsinterval bestimmt, wie viele Sekunden es dauert, bis ein
+-- Getreide durch Zucht verbraucht wird.
+--
+-- <b>Hinweis:</b> Das Interval ist auf 30 Sekunden voreingestellt und kann
+-- nicht unter 15 Sekunden gesenkt werden.
+--
+-- <b>Alias</b>: SetCattleFeedingTimer
+--
+-- @param[type=number] _Timer Fütterungsinterval
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- -- Es wird alle 60 Sekunden Getreide verbraucht.
+-- API.SetCattleFeedingInvervalForBreeding(60);
+--
+function API.SetCattleFeedingInvervalForBreeding(_Timer)
+    if GUI then
+        return;
+    end
+    if type(_Timer) ~= "number" or _Timer < 15 then 
+        error("API.SetCattleFeedingInvervalForBreeding: Time ist to short! Must be at least 15 seconds!");
+        return;
+    end
+    BundleStockbreeding.Global.Data.CattleFeedingTimer = _Timer;
+end
+SetCattleFeedingTimer = API.SetCattleFeedingInvervalForBreeding;
+
+---
+-- Stellt die benötigte Menge an Tieren ein.
+--
+-- Sind weniger Tiere als angegeben im Einzugsbereich des Gatters, können
+-- keine neuen Tiere gezüchtet werden.
+--
+-- <b>Hinweis:</b> Die Mindestmenge ist standardmäßig auf 2 eingestellt.
+--
+-- <b>Alias</b>: SetBreedingAnimalsAmount
+--
+-- @param[type=number] _Amount Menge an Tieren
+-- @within Anwenderfunktionen
+-- @see API.SetCatchmentAreaForPasture
+--
+-- @usage
+-- -- Es werden keine Tiere benötigt um zu züchten.
+-- API.SetRequiredAnimalsInCatchmentArea(0);
+--
+function API.SetRequiredAnimalsInCatchmentArea(_Amount)
+    if GUI then
+        return;
+    end
+    if type(_Amount) ~= "number" or _Amount < 0 or _Amount > 5 then
+        error("API.SetRequiredAnimalsInCatchmentArea: Amount must be a number between 0 and 5!");
+        return;
+    end
+    BundleStockbreeding.Global.Data.MinAmountNearby = _Amount;
+end
+SetBreedingAnimalsAmount = API.SetRequiredAnimalsInCatchmentArea;
+
+---
+-- Legt die Größe des Einzugsbereich des Gatters fest.
+--
+-- Im eingestellten Gebiet muss sich die Mindestmenge an Tieren aufhalten,
+-- damit gezüchtet werden kann.
+--
+-- <b>Hinweis:</b> Der Einzugsbereich ist standardmäßig auf 3000 eingestellt
+-- und kann nicht unter 800 gesenkt werden.
+--
+-- <b>Alias</b>: SetBreedingAreaSize
+--
+-- @param[type=number] _AreaSize Einzugsbereich des Gatters
+-- @within Anwenderfunktionen
+-- @see API.SetRequiredAnimalsInCatchmentArea
+--
+-- @usage
+-- -- Es zählen nur Tiere innerhalb des Gatters.
+-- API.SetSizeOfCatchmentAreaOfPasture(800);
+-- -- Tiere auf der ganzen Map zählen.
+-- API.SetSizeOfCatchmentAreaOfPasture(Logic.WorldGetSize());
+--
+function API.SetSizeOfCatchmentAreaOfPasture(_AreaSize)
+    if GUI then
+        return;
+    end
+    if type(_AreaSize) ~= "number" or _AreaSize < 800 then
+        error("API.SetSizeOfCatchmentAreaOfPasture: Amount must be at least 800!");
+        return;
+    end
+    BundleStockbreeding.Global.Data.AreaSizeNearby = _AreaSize;
+end
+SetBreedingAreaSize = API.SetSizeOfCatchmentAreaOfPasture;
+
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
@@ -185,16 +308,18 @@ BundleStockbreeding = {
             AnimalChildren = {},
             GrothTime = 45,
             ShrinkedSize = 0.4,
+            MinAmountNearby = 2,
+            AreaSizeNearby = 3000,
 
             AllowBreedCattle = true,
             CattlePastures = {},
-            CattleBaby = false,
+            CattleBaby = true,
             CattleFeedingTimer = 30,
             CattleMoneyCost = 300,
 
             AllowBreedSheeps = true,
             SheepPastures = {},
-            SheepBaby = false,
+            SheepBaby = true,
             SheepFeedingTimer = 30,
             SheepMoneyCost = 300,
             SheepType = -1,
@@ -325,7 +450,14 @@ end
 -- @local
 --
 function BundleStockbreeding.Global:BreedingTimeTillNext(_Animals)
-    return 240 - (_Animals * 20);
+    if self.Data.MinAmountNearby >= _Animals then
+        local Time = 240 - (_Animals * 15);
+        if Time < 30 then
+            Time = 30;
+        end
+        return Time;
+    end
+    return -1;
 end
 
 ---
@@ -337,8 +469,8 @@ end
 --
 function BundleStockbreeding.Global:IsCattleNeeded(_PlayerID)
     local AmountOfCattle = {Logic.GetPlayerEntitiesInCategory(_PlayerID, EntityCategories.CattlePasture)};
-    local AmountPfPasture = Logic.GetNumberOfEntitiesOfTypeOfPlayer(_PlayerID, Entities.B_CattlePasture);
-    return #AmountOfCattle < AmountPfPasture * 5;
+    local AmountOfPasture = Logic.GetNumberOfEntitiesOfTypeOfPlayer(_PlayerID, Entities.B_CattlePasture);
+    return #AmountOfCattle < AmountOfPasture * 5;
 end
 
 ---
@@ -350,8 +482,8 @@ end
 --
 function BundleStockbreeding.Global:IsSheepNeeded(_PlayerID)
     local AmountOfSheep = {Logic.GetPlayerEntitiesInCategory(_PlayerID, EntityCategories.SheepPasture)};
-    local AmountPfPasture = Logic.GetNumberOfEntitiesOfTypeOfPlayer(_PlayerID, Entities.B_SheepPasture);
-    return #AmountOfSheep < AmountPfPasture * 5;
+    local AmountOfPasture = Logic.GetNumberOfEntitiesOfTypeOfPlayer(_PlayerID, Entities.B_SheepPasture);
+    return #AmountOfSheep < AmountOfPasture * 5;
 end
 
 ---
@@ -363,8 +495,9 @@ end
 --
 function BundleStockbreeding.Global:CountCattleNearby(_PastureID)
     local PlayerID = Logic.EntityGetPlayer(_PastureID);
-    local x, y, z = Logic.EntityGetPos(_PastureID);
-    local Cattle = {Logic.GetPlayerEntitiesInArea(PlayerID, Entities.A_X_Cow01, x, y, 800, 16)};
+    local x, y, z  = Logic.EntityGetPos(_PastureID);
+    local AreaSize = self.Data.AreaSizeNearby;
+    local Cattle   = {Logic.GetPlayerEntitiesInArea(PlayerID, Entities.A_X_Cow01, x, y, AreaSize, 16)};
     table.remove(Cattle, 1);
     return #Cattle;
 end
@@ -378,10 +511,11 @@ end
 --
 function BundleStockbreeding.Global:CountSheepsNearby(_PastureID)
     local PlayerID = Logic.EntityGetPlayer(_PastureID);
-    local x, y, z = Logic.EntityGetPos(_PastureID);
-    local Sheeps1 = {Logic.GetPlayerEntitiesInArea(PlayerID, Entities.A_X_Sheep01, x, y, 800, 16)};
+    local x, y, z  = Logic.EntityGetPos(_PastureID);
+    local AreaSize = self.Data.AreaSizeNearby;
+    local Sheeps1  = {Logic.GetPlayerEntitiesInArea(PlayerID, Entities.A_X_Sheep01, x, y, AreaSize, 16)};
+    local Sheeps2  = {Logic.GetPlayerEntitiesInArea(PlayerID, Entities.A_X_Sheep02, x, y, AreaSize, 16)};
     table.remove(Sheeps1, 1);
-    local Sheeps2 = {Logic.GetPlayerEntitiesInArea(PlayerID, Entities.A_X_Sheep02, x, y, 800, 16)};
     table.remove(Sheeps1, 1);
     return #Sheeps1 + #Sheeps2;
 end
@@ -446,7 +580,8 @@ function BundleStockbreeding.Global:AnimalBreedController()
                 end
             end
             -- Schaf spawnen
-            if self.Data.SheepPastures[v] > self:BreedingTimeTillNext(AmountNearby) then
+            local TimeTillNext = self:BreedingTimeTillNext(AmountNearby);
+            if TimeTillNext > -1 and self.Data.SheepPastures[v] > TimeTillNext then
                 local x, y, z = Logic.EntityGetPos(v);
                 if self:IsSheepNeeded(PlayerID) then
                     self:CreateAnimal(v, self.Data.SheepType, self.Data.SheepBaby);
