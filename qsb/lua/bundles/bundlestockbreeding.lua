@@ -336,34 +336,28 @@ BundleStockbreeding = {
                 Title = {
                     de = "Zucht aktiv",
                     en = "Breeding active",
-                    fr = "Elevage actif"
                 },
                 Text = {
                     de = "- Klicken um Zucht zu stoppen",
                     en = "- Click to stop breeding",
-                    fr = "- Cliquez pour arrêter la reproduction",
                 },
                 Disabled = {
                     de = "Zucht ist gesperrt!",
                     en = "Breeding is locked!",
-                    fr = "L'élevage est verrouillé!",
                 },
             },
             BreedingInactive = {
                 Title = {
                     de = "Zucht gestoppt",
                     en = "Breeding stopped",
-                    fr = "Elevage arrêté"
                 },
                 Text = {
                     de = "- Klicken um Zucht zu starten {cr}- Benötigt Platz {cr}- Benötigt Getreide",
                     en = "- Click to allow breeding {cr}- Requires space {cr}- Requires grain",
-                    fr = "- Cliquez pour permettre la reproduction {cr}- Nécessite de l'espace {cr}- Nécessite des céréales",
                 },
                 Disabled = {
                     de = "Zucht ist gesperrt!",
                     en = "Breeding is locked!",
-                    fr = "L'élevage est verrouillé!",
                 },
             },
         },

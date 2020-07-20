@@ -196,12 +196,10 @@ AddOnInteractiveMines = {
                     Title = {
                         de = "Mine errichten",
                         en = "Build pit",
-                        fr = "Construction de la mine",
                     },
                     Text = {
                         de = "An diesem Ort könnt Ihr eine Mine errichten!",
                         en = "You're able to create a pit at this location!",
-                        fr = "Dans cet endroit, vous pouvez construire une mine!",
                     },
                 },
             },

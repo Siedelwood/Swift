@@ -287,9 +287,9 @@ AddOnCutsceneSystem = {
     },
 
     Text = {
-        FastForwardActivate   = {de = "Beschleunigen", en = "Fast Forward", fr = "Accélérer"},
-        FastForwardDeactivate = {de = "Zurücksetzen",  en = "Normal Speed", fr = "Retour"},
-        FastFormardMessage    = {de = "SCHNELLER VORLAUF",  en = "FAST FORWARD", fr = "AVANCE RAPIDE"},
+        FastForwardActivate   = {de = "Beschleunigen", en = "Fast Forward"},
+        FastForwardDeactivate = {de = "Zurücksetzen",  en = "Normal Speed"},
+        FastFormardMessage    = {de = "SCHNELLER VORLAUF",  en = "FAST FORWARD"},
     }
 }
 

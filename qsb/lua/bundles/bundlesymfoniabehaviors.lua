@@ -831,11 +831,9 @@ b_Goal_CollectValuables = {
 
     Text = {
         {de = "%d/%d Gegenstände gefunden",
-         en = "%d/%d Items gefunden",
-         fr = "%d/%d Les objets ont été trouvés"},
+         en = "%d/%d Items gefunden",},
         {de = "GEGENSTÄNDE FINDEN {br}{br}Findet die verloren gegangenen Gegenstände.",
-         en = "FIND VALUABLES {br}{br}Find the missing items.",
-         fr = "RECHERCHER DES OBJECTS {br}{br}Trouvez les éléments manquants."},
+         en = "FIND VALUABLES {br}{br}Find the missing items.",},
     },
 
     Tools = {

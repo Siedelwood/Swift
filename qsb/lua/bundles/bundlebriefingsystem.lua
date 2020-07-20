@@ -495,9 +495,9 @@ BundleBriefingSystem = {
     },
 
     Text = {
-        NextButton = {de = "Weiter",  en = "Forward", fr = "Suivant"},
-        PrevButton = {de = "Zurück",  en = "Previous", fr = "Retour"},
-        EndButton  = {de = "Beenden", en = "Close", fr = "Exit"},
+        NextButton = {de = "Weiter",  en = "Forward"},
+        PrevButton = {de = "Zurück",  en = "Previous"},
+        EndButton  = {de = "Beenden", en = "Close"},
     },
 }
 

@@ -211,24 +211,20 @@ AddOnInteractiveChests = {
             Title = {
                 de = "Schatztruhe",
                 en = "Treasure Chest",
-                fr = "Trésor box",
             },
             Text = {
                 de = "Diese Truhe enthält einen geheimen Schatz. Öffnet sie um den Schatz zu bergen.",
                 en = "This chest contains a secred treasure. Open it to salvage the treasure.",
-                fr = "Ce coffre contient un trésor secret. Ouvrez-les pour récupérer le trésor.",
             },
         },
         Treasure = {
             Title = {
                 de = "Versteckter Schatz",
                 en = "Hidden treasure",
-                fr = "Trésor caché",
             },
             Text = {
                 de = "Ihr habt einen geheimen Schatz entdeckt. Beeilt Euch und beansprucht ihn für Euch!",
                 en = "You have discovered a secred treasure. Be quick to claim it, before it is to late!",
-                fr = "Vous avez découvert un trésor secret. Dépêchez-vous et réclamez-le pour vous!",
             },
         }
     }

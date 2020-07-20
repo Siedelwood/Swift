@@ -182,17 +182,14 @@ BundleBuildingButtons = {
                 Title = {
                     de = "Rückbau",
                     en = "Downgrade",
-                    fr = "démontage",
                 },
                 Text = {
                     de = "- Reißt eine Stufe des Gebäudes ein {cr}- Der überschüssige Arbeiter wird entlassen",
                     en = "- Destroy one level of this building {cr}- The surplus worker will be dismissed",
-                    fr = "- Décompose un étage de l'immeuble {cr} - Le travailleur excédentaire sera licencié",
                 },
                 Disabled = {
                     de = "Kann nicht zurückgebaut werden!",
                     en = "Can not be downgraded yet!",
-                    fr = "Ne peut pas être démonté!",
                 },
             },
 
@@ -200,12 +197,10 @@ BundleBuildingButtons = {
                 Title = {
                     de = "Arbeit anhalten/aufnehmen",
                     en = "Start/Stop Work",
-                    fr = "Arrêter / continuer le travail",
                 },
                 Text = {
                     de = "- Startet oder stoppe die Arbeit in diesem Betrieb",
                     en = "- Continue or stop work for this building",
-                    fr = "- Démarrer / arrêter le travail dans l'atelier",
                 },
             },
         },

@@ -54,38 +54,38 @@ ExternalRolePlayingGame = {
     Texts = {
         Strength = {
             Caption = {
-                de = "Kraft",
-                en = "Strength",
+                de = "Wagemut",
+                en = "Courage",
             },
             Description = {
-                de = "Kaft bestimmt, wie viel Schaden ein Held im Kampf gegen"..
-                     " andere Einheiten und Helden verursacht.",
-                en = "Strength indicates how much damage a hero can inflict"..
-                     " to enemie units and heroes.",
+                de = "Wagemut bestimmt, wie gut sich der Charakter im Kampf"..
+                     " schlägt.",
+                en = "Courage indicates how effective the charakter is in"..
+                     " battle.",
             },
         },
         Magic = {
             Caption = {
-                de = "Magie",
-                en = "Magic",
+                de = "Gewandheit",
+                en = "Knowledge",
             },
             Description = {
-                de = "Magie bestimmt, wie schnell die besondere Fähigkeit des"..
-                     " Helden wieder einsatzbereit wird.",
-                en = "The magic shortens the time needed to restore the"..
-                     " special ability of the hero.",
+                de = "Gewandheit bestimmt die gesitigen Fähigkeiten des"..
+                     " Charakters.",
+                en = "The knowledge indicates the mental capability of the"..
+                     " character.",
             },
         },
         Endurance = {
             Caption = {
-                de = "Widerstandskraft",
-                en = "Endurance",
+                de = "Tüchtigkeit",
+                en = "Proficiency",
             },
             Description = {
-                de = "Widerstandskraft bestimmt, wie gut ein Held erlittenen"..
-                     " durch Feinde erlittenen Schaden aushalten kann.",
-                en = "Endurance indicates how much damage a hero can endure"..
-                     " while fighting against enemies.",
+                de = "Tüchtigkeit bestimmt die körperlichen Fähigkeiten des"..
+                     " Charakters.",
+                en = "Proficiency indicates the physical capability of the"..
+                     " character.",
             },
         },
 
@@ -170,16 +170,16 @@ ExternalRolePlayingGame = {
         },
 
         UpgradeStrength = {
-            de = "Kraft verbessern",
-            en = "Improve Strength",
+            de = "Wagemut verbessern",
+            en = "Improve Courage",
         },
         UpgradeMagic = {
-            de = "Magie verbessern",
-            en = "Improve Magic",
+            de = "Gewandheit verbessern",
+            en = "Improve Knowledge",
         },
         UpgradeEndurance = {
-            de = "Widerstandskraft verbessern",
-            en = "Improve Endurance",
+            de = "Tüchtigkeit verbessern",
+            en = "Improve Proficiency",
         },
         InventoryBackpack = {
             Caption = {de = "Rucksack", en = "Inventory"},
@@ -221,8 +221,8 @@ ExternalRolePlayingGame = {
             en = "{@color:244,184,0,255}Level up!",
         },
         ManualLevelUp = {
-            de = "Alle Helden erhalten {@color:0,255,255,255}%d{@color:255,255,255,255} Lernpunkte!",
-            en = "All heroes gained {@color:0,255,255,255}%d{@color:255,255,255,255} learnpoints!",
+            de = "Alle Charaktäre erhalten {@color:0,255,255,255}%d{@color:255,255,255,255} Lernpunkte!",
+            en = "All characters gained {@color:0,255,255,255}%d{@color:255,255,255,255} learnpoints!",
         },
     },
 }
@@ -1829,13 +1829,13 @@ function ExternalRolePlayingGame.Local:DescribeHotkeys()
     ExternalRolePlayingGame.Local.Data.HotkeyDescribed = true;
 
     -- Inventar anzeigen
-    API.AddHotKey("I", {de = "RPG: Inventar öffnen", en = "RPG: Open inventory"});
+    API.AddHotKey("I", {de = "Inventar öffnen", en = "Open inventory"});
     -- Effecte anzeigen
-    API.AddHotKey("C", {de = "RPG: Charakter anzeigen", en = "RPG: Display character"});
+    API.AddHotKey("C", {de = "Charakter anzeigen", en = "Display character"});
     -- Effecte anzeigen
-    API.AddHotKey("K", {de = "RPG: Tugenden und Laster", en = "RPG: Vice and Virtue"});
+    API.AddHotKey("K", {de = "Tugenden und Laster", en = "Vice and Virtue"});
     -- Fähigkeit umschalten
-    API.AddHotKey("E", {de = "RPG: Fähigkeiten umschalten", en = "RPG: Toggle abilities"});
+    API.AddHotKey("E", {de = "Fähigkeiten umschalten", en = "Toggle abilities"});
 
     -- Gegenstand anlegen
     -- TODO Wird nur in Rüstungskammern möglich sein!

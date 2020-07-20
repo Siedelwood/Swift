@@ -428,7 +428,6 @@ function BundleTravelingSalesman.Global:TriggerShipAtDockMessage(_PlayerID)
     self:DisplayQuestMessage(_PlayerID, {
         de = "Ein Schiff hat angelegt. Es bringt Güter von weit her.",
         en = "A ship is at the pier. It delivers goods from far away.",
-        fr = "Un navire a accosté. Il apporte des marchandises de loin."
     });
 end
 
@@ -442,7 +441,6 @@ function BundleTravelingSalesman.Global:TriggerShipIsLeavingDockMessage(_PlayerI
     self:DisplayQuestMessage(_PlayerID, {
         de = "Das Schiff hat den Hafen wieder verlassen.",
         en = "Time has passed on and the ship has left.",
-        fr = "Le temps a passé et le navire est parti."
     });
 end
 

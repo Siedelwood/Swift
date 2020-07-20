@@ -260,8 +260,7 @@ function BundleCamera.Local:RegisterExtendedZoomHotkey()
         {de = "Strg + Umschalt + K",
          en = "Ctrl + Shift + K"},
         {de = "Alternativen Zoom ein/aus",
-         en = "Alternative zoom on/off",
-         fr = "Zoom étendu on/off"}
+         en = "Alternative zoom on/off"}
     )
 end
 

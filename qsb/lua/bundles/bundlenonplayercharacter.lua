@@ -932,7 +932,6 @@ function BundleNonPlayerCharacter.Local:Install()
                 local caption = {
                     de = "Gespräch beginnen",
                     en = "Start conversation",
-                    fr = "Commencer la conversation",
                 };
                 QuestTypeCaption = API.Localize(caption);
 
