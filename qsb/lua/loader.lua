@@ -108,8 +108,8 @@ SymfoniaLoader = {
 
             -- NEP Feature Emulation
             -- Funktionen, die das NEP nachbilden.
-            {"BundleConstructionControl",           true},
-            {"BundleDestructionControl",            true},
+            {"BundleConstructionControl",           false},
+            {"BundleDestructionControl",            false},
             {"BundleEntitySelection",               true},
             {"BundleKnightTitleRequirements",       true},
 
@@ -121,7 +121,7 @@ SymfoniaLoader = {
             {"BundleEntityCommandFunctions",        true},
             {"BundleEntityHelperFunctions",         true},
             {"BundleInterfaceFeatureVisibility",    true},
-            {"BundleMinimapMarker",                 true},
+            {"BundleMinimapMarker",                 false},
             {"BundleStockbreeding",                 true},
             {"BundleSymfoniaBehaviors",             true},
             {"BundleTimeLine",                      true},
@@ -129,19 +129,19 @@ SymfoniaLoader = {
 
             -- Fortgeschrittene Bibliothek
             -- Neue Funktionen für fortgeschrittene Anwender.
-            {"BundleBuildingButtons",               true},
+            {"BundleBuildingButtons",               false},
             {"BundleEntityProperties",              true},
-            {"BundleFollowKnight",                  true},
+            {"BundleFollowKnight",                  false},
             {"BundleSpeedLimit",                    true},
             {"BundleInteractiveObjects",            true},
             {"BundleInterfaceApperance",            true},
             {"BundlePlayerHelperFunctions",         true},
             {"BundleMusicTools",                    true},
             {"BundleNonPlayerCharacter",            true},
-            {"BundleProfileAndOptions",             true},
-            {"BundleSaveGameTools",                 true},
+            {"BundleProfileAndOptions",             false},
+            {"BundleSaveGameTools",                 false},
             {"BundleTerrainAndWater",               true},
-            {"BundleWeatherManipulation",           true},
+            {"BundleWeatherManipulation",           false},
         },
 
         AddOnLoadOrder = {
@@ -155,7 +155,7 @@ SymfoniaLoader = {
             -- Sonstige AddOns
             -- "Nice To have"-Features, die nicht so wichtig sind.
             {
-            "AddOnCastleStore",                     true,
+            "AddOnCastleStore",                     false,
             "BundleInteractiveObjects",
             },
 
@@ -170,17 +170,17 @@ SymfoniaLoader = {
             },
 
             {
-            "AddOnInteractiveMines",                true,
+            "AddOnInteractiveMines",                false,
             "BundleInteractiveObjects",
             },
 
             {
-            "AddOnInteractiveSites",                true,
+            "AddOnInteractiveSites",                false,
             "BundleInteractiveObjects",
             },
 
             {
-            "AddOnInteractiveTrebuchets",           true,
+            "AddOnInteractiveTrebuchets",           false,
             "BundleInteractiveObjects",
             "BundleEntitySelection",
             },
