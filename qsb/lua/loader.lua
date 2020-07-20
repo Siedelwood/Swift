@@ -155,7 +155,7 @@ SymfoniaLoader = {
             -- Sonstige AddOns
             -- "Nice To have"-Features, die nicht so wichtig sind.
             {
-            "AddOnCastleStore",                     false,
+            "AddOnCastleStore",                     true,
             "BundleInteractiveObjects",
             },
 
