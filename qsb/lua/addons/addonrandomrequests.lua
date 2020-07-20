@@ -70,6 +70,7 @@ AddOnRandomRequests = {
             TerritoriesUsedForClaimQuest = {},
             TerritoriesUsedForRefillQuests = {},
             UsedBehaviorsPerTitle = {},
+            TerritoryPositions = {},
 
             Text = {
                 Suggestion = {
@@ -99,7 +100,9 @@ AddOnRandomRequests = {
             }
         },
     },
-    Local = {},
+    Local = {
+        Data = {}
+    },
 }
 
 -- Global ----------------------------------------------------------------------
@@ -497,6 +500,11 @@ end
 -- @local
 --
 function AddOnRandomRequests.Global:GetFindBehavior(_Behavior, _Quest)
+    local SH1ID = Logic.GetStoreHouse(_Quest.ReceivingPlayer);
+    local SH2ID = Logic.GetStoreHouse(_Quest.SendingPlayer);
+    if not CanEntityReachTarget(_Quest.ReceivingPlayer, SH1ID, SH2ID, nil, PlayerSectorTypes.Military) then
+        return;
+    end
     local KnightTitle = Logic.GetKnightTitle(_Quest.ReceivingPlayer);
     local FindAmount = 5;
     local EntitiesToFind = self:GetRandomBuildingsForFindQuest(_Quest.SendingPlayer, FindAmount);
@@ -674,6 +682,11 @@ function AddOnRandomRequests.Global:GetClaimTerritoryBehavior(_Behavior, _Quest)
     local AllTerritories = self:GetTerritoriesOfPlayer(0);
     for i= #AllTerritories, 1, -1 do
         if self.Data.TerritoriesUsedForClaimQuest[AllTerritories[i]] then
+            table.remove(AllTerritories, i);
+        end
+    end
+    for i= #AllTerritories, 1, -1 do
+        if not self:IsTerritoryReachable(_Quest.ReceivingPlayer, AllTerritories[i]) then
             table.remove(AllTerritories, i);
         end
     end
@@ -863,12 +876,73 @@ function AddOnRandomRequests.Global:GetWorldEntitiesOnPlayersTerritories(_Type, 
     local AllTerritories = self:GetTerritoriesOfPlayer(_PlayerID);
     for i= 1, #AllEntitiesOfType, 1 do
         for j= 1, #AllTerritories, 1 do
-            if  GetTerritoryUnderEntity(AllEntitiesOfType[i]) == AllTerritories[j] then
-                table.insert(Result, AllEntitiesOfType[i]);
+            if GetTerritoryUnderEntity(AllEntitiesOfType[i]) == AllTerritories[j] then
+                local x, y   = Logic.GetEntityPosition(AllEntitiesOfType[i]);
+                local TestID = Logic.CreateEntityOnUnblockedLand(Entities.XD_ScriptEntity, x, y, 0, 0);
+                local SH1ID  = Logic.GetStoreHouse(_PlayerID);
+                if CanEntityReachTarget(_PlayerID, SH1ID, TestID, nil, PlayerSectorTypes.Military) then
+                    table.insert(Result, AllEntitiesOfType[i]);
+                end
+                DestroyEntity(TestID);
             end
         end
     end
     return Result;
+end
+
+---
+-- Prüft, ob das Territrium erreicht werden kann.
+-- @param[type=number] _PlayerID    ID des Spielers
+-- @param[type=number] _TerritoryID ID des Territoriums
+-- @return[type=boolean] Territorium ist erreichbar
+-- @within Internal
+-- @local
+--
+function AddOnRandomRequests.Global:IsTerritoryReachable(_PlayerID, _TerritoryID)
+    if self.Data.TerritoryPositions[_TerritoryID] then
+        local TestID = Logic.CreateEntityOnUnblockedLand(
+            Entities.XD_ScriptEntity,
+            self.Data.TerritoryPositions[_TerritoryID].X,
+            self.Data.TerritoryPositions[_TerritoryID].Y,
+            0,
+            0
+        );
+        local SH1ID = Logic.GetStoreHouse(_PlayerID);
+        if CanEntityReachTarget(_PlayerID, SH1ID, TestID, nil, PlayerSectorTypes.Military) then
+            DestroyEntity(TestID);
+            return true;
+        end
+        DestroyEntity(TestID);
+    end
+    return false;
+end
+
+-- Local ----------------------------------------------------------------------
+
+---
+-- Initalisiert das AddOn.
+-- @within Internal
+-- @local
+--
+function AddOnRandomRequests.Local:Install()
+    self:SaveTerritoryPosition();
+end
+
+---
+-- Speichert die Position der Territorien im globalen Skript.
+-- @within Internal
+-- @local
+--
+function AddOnRandomRequests.Local:SaveTerritoryPosition()
+    local Territories = {Logic.GetTerritories()};
+    for i= 1, #Territories, 1 do
+        local x, y = GUI.ComputeTerritoryPosition(Territories[i]);
+        GUI.SendScriptCommand(string.format([[
+            AddOnRandomRequests.Global.Data.TerritoryPositions[%d] = {
+                X = %f, Y = %f
+            }
+        ]], Territories[i], x * 1.0, y * 1.0))
+    end
 end
 
 -- -------------------------------------------------------------------------- --
