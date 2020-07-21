@@ -851,6 +851,9 @@ function AddOnRandomRequests.Global:CanGoodBeSetAsGoal(_SenderID, _ReceiverID, _
     if not API.CanPlayerCurrentlyProduceGood(_ReceiverID, _Good) then
         return false;
     end
+    if not API.HasPlayerAccessToResource(_ReceiverID, _Good, true) then
+        return false;
+    end
     if MerchantSystem.TradeBlackList[_SenderID] then
         for k, v in pairs(MerchantSystem.TradeBlackList[_SenderID]) do
             if v == _Good then
