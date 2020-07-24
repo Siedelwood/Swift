@@ -267,8 +267,8 @@ function API.CanPlayerCurrentlyProduceGood(_PlayerID, _GoodType)
     end
     local TypeName = GetNameOfKeyInTable(Goods, _GoodType);
     if TypeName == nil then
-        error("API.CanPlayerCurrentlyProduceGood: _GoodType (" ..tostring(_GoodType).. ") is wrong!");
-        return true;
+        warn("API.CanPlayerCurrentlyProduceGood: _GoodType (" ..tostring(_GoodType).. ") is wrong!");
+        return false;
     end
     return BundlePlayerHelperFunctions.Shared:CanPlayerProduceGood(_PlayerID, _GoodType);
 end
@@ -765,14 +765,17 @@ function BundlePlayerHelperFunctions.Shared:GetResourceEntitiesOfPlayerForGoodTy
     local Resources = self.Data.GoodsResourcesMap[_GoodType];
     if Resources == nil or #Resources == 0 then
         local GoodTypeName = Logic.GetGoodTypeName(_GoodType);
-        _GoodType = self.Data.ProductResourceMap[GoodTypeName];
-        if _GoodType then
-            Resources = self.Data.GoodsResourcesMap[_GoodType];
-            if Resources == nil or #Resources == 0 then
-                return -1, {};
+        if self.Data.ProductResourceMap[GoodTypeName] then
+            _GoodType = self.Data.ProductResourceMap[GoodTypeName];
+            if _GoodType then
+                Resources = self.Data.GoodsResourcesMap[_GoodType];
+                if Resources == nil or #Resources == 0 then
+                    return -1, {};
+                end
             end
         end
     end
+    Resources = Resources or {};
 
     -- Territorien des Spielers ermitteln
     local PlayerTerritories = {Logic.GetTerritories()}
@@ -787,25 +790,27 @@ function BundlePlayerHelperFunctions.Shared:GetResourceEntitiesOfPlayerForGoodTy
 
     -- Rohstoffe prüfen
     local ResultList = {};
-    for k, v in pairs(Resources) do
-        local Type = Logic.GetEntityTypeID(v);
-        if Type ~= nil then
-            local ResEntities, ResEntityAmount;
-            if Type == Entities.A_X_Cow01 or Type == Entities.A_X_Sheep01 or Type == Entities.A_X_Sheep02 then
-                for i= 1, #PlayerTerritories, 1 do
-                    ResEntities = {Logic.GetEntitiesOfTypeInTerritory(PlayerTerritories[i], _PlayerID, Type, 0)};
-                    if #ResEntities > 0 then
-                        ResultList = Array_Append(ResultList, ResEntities);
+    if #Resources > 0 then
+        for k, v in pairs(Resources) do
+            local Type = Logic.GetEntityTypeID(v);
+            if Type ~= nil then
+                local ResEntities, ResEntityAmount;
+                if Type == Entities.A_X_Cow01 or Type == Entities.A_X_Sheep01 or Type == Entities.A_X_Sheep02 then
+                    for i= 1, #PlayerTerritories, 1 do
+                        ResEntities = {Logic.GetEntitiesOfTypeInTerritory(PlayerTerritories[i], _PlayerID, Type, 0)};
+                        if #ResEntities > 0 then
+                            ResultList = Array_Append(ResultList, ResEntities);
+                        end
                     end
-                end
-            else
-                ResEntities = {Logic.GetEntities(Type, 48)};
-                ResEntityAmount = table.remove(ResEntities, 1);
-                if ResEntityAmount > 0 then
-                    for j= 1, #ResEntities do
-                        for i= 1, #PlayerTerritories, 1 do
-                            if GetTerritoryUnderEntity(ResEntities[j]) == PlayerTerritories[i] then
-                                table.insert(ResultList, ResEntities[j]);
+                else
+                    ResEntities = {Logic.GetEntities(Type, 48)};
+                    ResEntityAmount = table.remove(ResEntities, 1);
+                    if ResEntityAmount > 0 then
+                        for j= 1, #ResEntities do
+                            for i= 1, #PlayerTerritories, 1 do
+                                if GetTerritoryUnderEntity(ResEntities[j]) == PlayerTerritories[i] then
+                                    table.insert(ResultList, ResEntities[j]);
+                                end
                             end
                         end
                     end
