@@ -32,19 +32,6 @@ QSB = QSB or {};
 AddOnRandomRequests = {
     Global = {
         Data = {
-            BehaviorApperanceLimit = {
-                ["Goal_Create"]                 = 3,
-                ["Goal_Refill"]                 = 3,
-                ["Goal_ActivateObject"]         = 3,
-                ["Goal_SatisfyNeed"]            = 1,
-                ["Goal_CollectValuables"]       = 2,
-                ["Goal_DestroySpawnedEntities"] = 1,
-                ["Goal_Deliver"]                = 6,
-                ["Goal_Claim"]                  = 1,
-                ["Goal_KnightTitle"]            = 1,
-                ["Goal_CityReputation"]         = 1,
-                ["Goal_BuildWall"]              = 1,
-            },
             DeliverGoodTypes = {
                 "G_Wood", "G_Iron", "G_Stone", "G_Carcass", "G_Herb", "G_Wool",
                 "G_Honeycomb", "G_Grain", "G_Milk", "G_RawFish", "G_Bread",
@@ -71,6 +58,7 @@ AddOnRandomRequests = {
             TerritoriesUsedForRefillQuests = {},
             UsedBehaviorsPerTitle = {},
             TerritoryPositions = {},
+            PrevRandomTypeList = {},
 
             Text = {
                 Suggestion = {
@@ -124,15 +112,19 @@ end
 --
 function AddOnRandomRequests.Global:CreateSlaveQuest(_Behavior, _Quest)
     if not _Behavior.SlaveQuest then
-        local QuestGoals = self:GetPossibleBehaviors(_Behavior, _Quest);
+        local QuestGoals, QuestTypes = self:GetPossibleBehaviors(_Behavior, _Quest);
         -- Fallback
         if #QuestGoals == 0 then
             local Amount = math.random(250, 300 + (100 * Logic.GetKnightTitle(_Quest.ReceivingPlayer)));
             QuestGoals[#QuestGoals+1] = {"Goal_Deliver", "G_Gold", Amount};
         end
         -- Behavior speichern
-        local SelectedGoal = QuestGoals[math.random(1, #QuestGoals)];
-        self:SaveBehaviorTableForTitle(SelectedGoal, _Quest);
+        local SelectedIndex = math.random(1, #QuestGoals);
+        local SelectedGoal = QuestGoals[SelectedIndex];
+        table.insert(self.Data.PrevRandomTypeList, QuestTypes[SelectedIndex]);
+        if #self.Data.PrevRandomTypeList > 5 then
+            table.remove(self.Data.PrevRandomTypeList, 1);
+        end
         -- Slave Quest vorbereiten
         if SelectedGoal[1] == "Goal_ActivateObject" then
             API.InteractiveObjectActivate(SelectedGoal[2]);
@@ -162,112 +154,94 @@ function AddOnRandomRequests.Global:CreateSlaveQuest(_Behavior, _Quest)
 end
 
 ---
--- Speichert die Verwendung eines Behavior nach Auftraggeber, Auftragnehmer
--- und Titel des Auftragnehmer.
--- @param[type=table] _GoalTable Behavior
--- @param[type=table] _Quest     Quest
--- @within Internal
--- @local
---
-function AddOnRandomRequests.Global:SaveBehaviorTableForTitle(_GoalTable, _Quest)
-    local Sender   = _Quest.SendingPlayer;
-    local Receiver = _Quest.ReceivingPlayer;
-    local Title    = Logic.GetKnightTitle(Receiver);
-
-    self.Data.UsedBehaviorsPerTitle[Sender]                  = self.Data.UsedBehaviorsPerTitle[Sender]                  or {};
-    self.Data.UsedBehaviorsPerTitle[Sender][Receiver]        = self.Data.UsedBehaviorsPerTitle[Sender][Receiver]        or {};
-    self.Data.UsedBehaviorsPerTitle[Sender][Receiver][Title] = self.Data.UsedBehaviorsPerTitle[Sender][Receiver][Title] or {};
-
-    table.insert(self.Data.UsedBehaviorsPerTitle[Sender][Receiver][Title], _GoalTable[1]);
-end
-
----
--- Gibt zurück, wie oft ein Behavior für Auftraggeber, Auftragnehmer und Titel
--- des Auftragnehmer schon benutzt wurde.
--- @param[type=string] _FunctionName Funktionsname Behavior
--- @param[type=table] _Quest         Quest
--- @within Internal
--- @local
---
-function AddOnRandomRequests.Global:CountBehaviorUsageForTitle(_FunctionName, _Quest)
-    local Sender   = _Quest.SendingPlayer;
-    local Receiver = _Quest.ReceivingPlayer;
-    local Title    = Logic.GetKnightTitle(Receiver);
-
-    self.Data.UsedBehaviorsPerTitle[Sender]                  = self.Data.UsedBehaviorsPerTitle[Sender]                  or {};
-    self.Data.UsedBehaviorsPerTitle[Sender][Receiver]        = self.Data.UsedBehaviorsPerTitle[Sender][Receiver]        or {};
-    self.Data.UsedBehaviorsPerTitle[Sender][Receiver][Title] = self.Data.UsedBehaviorsPerTitle[Sender][Receiver][Title] or {};
-
-    local Count = 0;
-    for k, v in pairs(self.Data.UsedBehaviorsPerTitle[Sender][Receiver][Title]) do
-        if _FunctionName == v[1] then
-            Count = Count +1;
-        end
-    end
-    return Count;
-end
-
----
 -- Gibt eine Liste mit Behavior zurück, die für den Random Quest verfügbar
 -- sind. Es wird eines der Behavior ausgewählt.
 -- @param[type=table] _Behavior Behavior Data
 -- @param[type=table] _Quest    Quest Data
--- @return[type=table] Behavior List
+-- @return[type=table] Liste der Behavior
+-- @return[type=table] Liste der Typen
 -- @within Internal
 -- @local
 --
 function AddOnRandomRequests.Global:GetPossibleBehaviors(_Behavior, _Quest)
     local QuestGoals = {};
+    local QuestTypes = {};
 
     if _Behavior.TypeConstruct then
-        QuestGoals[#QuestGoals+1] = self:GetConstructBehavior(_Behavior, _Quest);
-    end
-    if _Behavior.TypeRefill then
-        QuestGoals[#QuestGoals+1] = self:GetRefillBehavior(_Behavior, _Quest);
-    end
-    if _Behavior.TypeObject then
-        QuestGoals[#QuestGoals+1] = self:GetObjectBehavior(_Behavior, _Quest);
-    end
-    if _Behavior.TypeCureSettlers then
-        QuestGoals[#QuestGoals+1] = self:GetCureSettlersBehavior(_Behavior, _Quest);
-    end
-    if _Behavior.TypeFind then
-        QuestGoals[#QuestGoals+1] = self:GetFindBehavior(_Behavior, _Quest);
-    end
-    if _Behavior.TypeHuntPredators then
-        QuestGoals[#QuestGoals+1] = self:GetHuntPredatorBehavior(_Behavior, _Quest);
-    end
-    if _Behavior.TypeDeliverGoods then
-        QuestGoals[#QuestGoals+1] = self:GetDeliverGoodsBehavior(_Behavior, _Quest);
-    end
-    if _Behavior.TypeDeliverGold then
-        local Amount = math.random(250, 300 + (100 * Logic.GetKnightTitle(_Quest.ReceivingPlayer)));
-        QuestGoals[#QuestGoals+1] = {"Goal_Deliver", "G_Gold", Amount};
-    end
-    if _Behavior.TypeClaim then
-        QuestGoals[#QuestGoals+1] = self:GetClaimTerritoryBehavior(_Behavior, _Quest);
-    end
-    if _Behavior.TypeKnightTitle then
-        QuestGoals[#QuestGoals+1] = self:GetKnightTitleBehavior(_Behavior, _Quest);
-    end
-    if _Behavior.TypeReputation then
-        local Reputation = 15 + (13 * Logic.GetKnightTitle(_Quest.ReceivingPlayer));
-        QuestGoals[#QuestGoals+1] = {"Goal_CityReputation", Reputation};
-    end
-    if _Behavior.TypeBuildWall then
-        QuestGoals[#QuestGoals+1] = self:GetBuildWallBehavior(_Behavior, _Quest);
-    end
-
-    for i= #QuestGoals, 1, -1 do
-        if self.Data.BehaviorApperanceLimit[QuestGoals[i]] then
-            if QuestGoals[i][1] ~= "Goal_Deliver" or (QuestGoals[i][1] == "Goal_Deliver" and QuestGoals[i][2] ~= "G_Gold") then
-                if (self:CountBehaviorUsageForTitle(QuestGoals[#QuestGoals][1], _Quest) > self.Data.BehaviorApperanceLimit[QuestGoals[i]]) then
-                    table.remove(QuestGoals, i);
-                end
-            end
+        if not API.TraverseTable("TypeConstruct", self.Data.PrevRandomTypeList) then
+            QuestGoals[#QuestGoals+1] = self:GetConstructBehavior(_Behavior, _Quest);
+            QuestTypes[#QuestTypes+1] = "TypeConstruct";
         end
     end
-    return QuestGoals;
+    if _Behavior.TypeRefill then
+        if not API.TraverseTable("TypeRefill", self.Data.PrevRandomTypeList) then
+            QuestGoals[#QuestGoals+1] = self:GetRefillBehavior(_Behavior, _Quest);
+            QuestTypes[#QuestTypes+1] = "TypeRefill";
+        end
+    end
+    if _Behavior.TypeObject then
+        if not API.TraverseTable("TypeObject", self.Data.PrevRandomTypeList) then
+            QuestGoals[#QuestGoals+1] = self:GetObjectBehavior(_Behavior, _Quest);
+            QuestTypes[#QuestTypes+1] = "TypeObject";
+        end
+    end
+    if _Behavior.TypeCureSettlers then
+        if not API.TraverseTable("TypeCureSettlers", self.Data.PrevRandomTypeList) then
+            QuestGoals[#QuestGoals+1] = self:GetCureSettlersBehavior(_Behavior, _Quest);
+            QuestTypes[#QuestTypes+1] = "TypeCureSettlers";
+        end
+    end
+    if _Behavior.TypeFind then
+        if not API.TraverseTable("TypeFind", self.Data.PrevRandomTypeList) then
+            QuestGoals[#QuestGoals+1] = self:GetFindBehavior(_Behavior, _Quest);
+            QuestTypes[#QuestTypes+1] = "TypeFind";
+        end
+    end
+    if _Behavior.TypeHuntPredators then
+        if not API.TraverseTable("TypeHuntPredators", self.Data.PrevRandomTypeList) then
+            QuestGoals[#QuestGoals+1] = self:GetHuntPredatorBehavior(_Behavior, _Quest);
+            QuestTypes[#QuestTypes+1] = "TypeHuntPredators";
+        end
+    end
+    if _Behavior.TypeDeliverGoods then
+        if not API.TraverseTable("TypeDeliverGoods", self.Data.PrevRandomTypeList) then
+            QuestGoals[#QuestGoals+1] = self:GetDeliverGoodsBehavior(_Behavior, _Quest);
+            QuestTypes[#QuestTypes+1] = "TypeDeliverGoods";
+        end
+    end
+    if _Behavior.TypeDeliverGold then
+        if not API.TraverseTable("TypeDeliverGold", self.Data.PrevRandomTypeList) then
+            local Amount = math.random(250, 300 + (100 * Logic.GetKnightTitle(_Quest.ReceivingPlayer)));
+            QuestGoals[#QuestGoals+1] = {"Goal_Deliver", "G_Gold", Amount};
+            QuestTypes[#QuestTypes+1] = "TypeDeliverGold";
+        end
+    end
+    if _Behavior.TypeClaim then
+        if not API.TraverseTable("TypeClaim", self.Data.PrevRandomTypeList) then
+            QuestGoals[#QuestGoals+1] = self:GetClaimTerritoryBehavior(_Behavior, _Quest);
+            QuestTypes[#QuestTypes+1] = "TypeClaim";
+        end
+    end
+    if _Behavior.TypeKnightTitle then
+        if not API.TraverseTable("TypeKnightTitle", self.Data.PrevRandomTypeList) then
+            QuestGoals[#QuestGoals+1] = self:GetKnightTitleBehavior(_Behavior, _Quest);
+            QuestTypes[#QuestTypes+1] = "TypeKnightTitle";
+        end
+    end
+    if _Behavior.TypeReputation then
+        if not API.TraverseTable("TypeReputation", self.Data.PrevRandomTypeList) then
+            local Reputation = 15 + (13 * Logic.GetKnightTitle(_Quest.ReceivingPlayer));
+            QuestGoals[#QuestGoals+1] = {"Goal_CityReputation", Reputation};
+            QuestTypes[#QuestTypes+1] = "TypeReputation";
+        end
+    end
+    if _Behavior.TypeBuildWall then
+        if not API.TraverseTable("TypeBuildWall", self.Data.PrevRandomTypeList) then
+            QuestGoals[#QuestGoals+1] = self:GetBuildWallBehavior(_Behavior, _Quest);
+            QuestTypes[#QuestTypes+1] = "TypeBuildWall";
+        end
+    end
+    return QuestGoals, QuestTypes;
 end
 
 -- Behaviors ---------------------------------------------------------------- --
