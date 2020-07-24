@@ -114,12 +114,42 @@ function API.StartBriefing(_Briefing)
         return -1;
     end
     if #_Briefing == 0 then
-        error("_Briefing does not contain pages!");
+        error("API.StartBriefing: _Briefing does not contain pages!");
         return -1;
     end
     return BundleBriefingSystem.Global:StartBriefing(_Briefing);
 end
 StartBriefing = API.StartBriefing;
+
+---
+-- Startet das Briefing als Mission Start Briefing.
+--
+-- Diese Funktion setzt das mit ihr aufgerufene Briefing als das Mission Start
+-- Briefing. Mit dem entsprechenden Trigger kann auf das Ende des Briefings
+-- gewartet werden.
+--
+-- <b>Alias</b>: StartMissionBriefing
+--
+-- @param[type=function] _Function Funktion mit Briefing
+-- @within Anwenderfunktionen
+-- @see Trigger_MissionBriefing
+--
+function API.StartMissionBriefing(_Function)
+    if GUI then
+        return;
+    end
+    if type(_Function) ~= "function" then
+        error("API.StartMissionBriefing: _Function must be a function!");
+        return;
+    end
+    local ID = _Function();
+    if type(ID) ~= "number" then
+        error("API.StartMissionBriefing: _Function did not return an ID!");
+        return;
+    end
+    BundleBriefingSystem.Global.Data.MissionStartBriefingID = ID;
+end
+StartMissionBriefing = API.StartMissionBriefing;
 
 ---
 -- Prüft, ob ein Briefing einmal gestartet wurde und bis zum Ende kam.
@@ -481,6 +511,7 @@ BundleBriefingSystem = {
             DisplayIngameCutscene = false,
             BriefingActive = false,
             PauseQuests = true,
+            MissionStartBriefingID = 0,
         }
     },
     Local = {
@@ -505,6 +536,7 @@ BundleBriefingSystem = {
 
 ---
 -- Startet das Bundle im globalen Skript.
+--
 -- @within Internal
 -- @local
 --
@@ -515,7 +547,62 @@ function BundleBriefingSystem.Global:Install()
 end
 
 ---
+-- Konvertiert eine Briefing-Table des alten Formats in das neue.
+--
+-- @param[type=table] _Briefing Briefing Definition
+-- @return[type=number] ID des Briefing
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Global:ConvertBriefingTable(_Briefing)
+    _Briefing.DisableGlobalInvulnerability = _Briefing.disableGlobalInvulnerability or _Briefing.DisableGlobalInvulnerability;
+    _Briefing.HideBorderPins = _Briefing.hideBorderPins or _Briefing.HideBorderPins;
+    _Briefing.ShowSky = _Briefing.showSky or _Briefing.ShowSky;
+    _Briefing.RestoreGameSpeed = _Briefing.restoreGameSpeed or _Briefing.RestoreGameSpeed;
+    _Briefing.RestoreCamera = _Briefing.restoreCamera or _Briefing.RestoreCamera;
+    _Briefing.SkippingAllowed = (_Briefing.skipPerPage or _Briefing.skipAll) or _Briefing.SkippingAllowed;
+    _Briefing.ReturnForbidden = _Briefing.returnForbidden or _Briefing.ReturnForbidden;
+    _Briefing.Finished = _Briefing.finished or _Briefing.Finished;
+    _Briefing.Starting = _Briefing.starting or _Briefing.Starting;
+    
+    for k, v in pairs(_Briefing) do
+        if type(v) == "table" then
+            -- Normale Optionen
+            _Briefing[k].Title = v.title or _Briefing[k].Title;
+            _Briefing[k].Text = v.text or _Briefing[k].Text;
+            _Briefing[k].Position = (v.position and {v.position, 0}) or _Briefing[k].Position;
+            _Briefing[k].Angle = v.angle or _Briefing[k].Angle;
+            _Briefing[k].Rotation = v.rotation or _Briefing[k].Rotation;
+            _Briefing[k].Zoom = v.zoom or _Briefing[k].Zoom;
+            _Briefing[k].Action = v.action or _Briefing[k].Action;
+            _Briefing[k].FadeIn = v.fadeIn or _Briefing[k].FadeIn;
+            _Briefing[k].FadeOut = v.fadeOut or _Briefing[k].FadeOut;
+            _Briefing[k].FaderAlpha = v.faderAlpha or _Briefing[k].FaderAlpha;
+            _Briefing[k].DialogCamera = v.dialogCamera or _Briefing[k].DialogCamera;
+            _Briefing[k].Portrait = v.portrait or _Briefing[k].Portrait;
+            _Briefing[k].NoRethink = v.noRethink or _Briefing[k].NoRethink;
+            _Briefing[k].NoHistory = v.noHistory or _Briefing[k].NoHistory;
+            -- Splashscreen
+            if v.splashscreen then
+                v.Splashscreen = v.splashscreen;
+                if type(v.Splashscreen) == "table" then
+                    v.Splashscreen = v.Splashscreen.image;
+                end
+            end
+            -- Multiple Choice
+            if v.mc then
+                _Briefing[k].Title = v.mc.title;
+                _Briefing[k].Text = v.mc.title;
+                _Briefing[k].MC = v.mc.answers;
+            end
+        end
+    end
+    return _Briefing;
+end
+
+---
 -- Startet ein Briefing.
+--
 -- @param[type=table] _Briefing Briefing Definition
 -- @param[type=number] _ID      ID aus Queue
 -- @return[type=number] ID des Briefing
@@ -523,6 +610,7 @@ end
 -- @local
 --
 function BundleBriefingSystem.Global:StartBriefing(_Briefing, _ID)
+    _Briefing = self:ConvertBriefingTable(_Briefing);
     if _Briefing.ReturnForbidden == nil then
         _Briefing.ReturnForbidden = true;
     end
@@ -598,6 +686,7 @@ end
 
 ---
 -- Beendet ein Briefing.
+--
 -- @within Internal
 -- @local
 --
@@ -874,7 +963,6 @@ function BundleBriefingSystem.Local:Install()
     end
     self:OverrideThroneRoomFunctions();
     BundleBriefingSystem:OverrideApiNote();
-
     StartSimpleHiResJobEx(self.WaitForLoadScreenHidden);
 end
 
@@ -2163,6 +2251,44 @@ function b_Trigger_Briefing:Debug(_Quest)
 end
 
 Core:RegisterBehavior(b_Trigger_Briefing);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Startet einen Quest, nachdem das Mission Briefing beendet ist
+--
+-- @param[type=string] _QuestName Name des Quest
+-- @param[type=string] _Type     (Optional) Briefing-Typ
+-- @param[type=number] _Waittime (optional) Wartezeit in Sekunden
+-- @within Trigger
+-- @see StartMissionBriefing
+--
+function Trigger_MissionBriefing(...)
+    return b_Trigger_MissionBriefing:new(...);
+end
+
+b_Trigger_MissionBriefing = {
+    Name = "Trigger_MissionBriefing",
+    Description = {
+        en = "Trigger: After the briefing started with StartMissionBriefing finishes, this trigger will start the quest.",
+        de = "Ausloeser: Wenn das Briefing, gestartet mit StartMissionBriefing, beendet ist, wird der Quest gestartet.",
+    },
+}
+
+function b_Trigger_MissionBriefing:GetTriggerTable()
+    return { Triggers.Custom2,{self, self.CustomFunction} }
+end
+
+function b_Trigger_MissionBriefing:CustomFunction(_Quest)
+    if BundleBriefingSystem.Global.Data.MissionStartBriefingID > 0 then
+        if IsBriefingFinished(BundleBriefingSystem.Global.Data.MissionStartBriefingID) then
+            return true;
+        end
+    end
+    return false;
+end
+
+Core:RegisterBehavior(b_Trigger_MissionBriefing);
 
 -- -------------------------------------------------------------------------- --
 
