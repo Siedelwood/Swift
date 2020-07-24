@@ -2864,8 +2864,12 @@ function b_Goal_TributeDiplomacy:GetTributeQuest(_Quest)
             FailureMsg = FailureMsg[Language];
         end
 
+        BundleClassicBehaviors.Global.Data.BehaviorQuestCounter = BundleClassicBehaviors.Global.Data.BehaviorQuestCounter+1;
+
         local QuestID, Quest = QuestTemplate:New (
-            _Quest.Identifier.."_TributeDiplomacyQuest" , _Quest.SendingPlayer, _Quest.ReceivingPlayer,
+            _Quest.Identifier.."_TributeDiplomacyQuest_" ..BundleClassicBehaviors.Global.Data.BehaviorQuestCounter,
+            _Quest.SendingPlayer,
+            _Quest.ReceivingPlayer,
             {{ Objective.Deliver, {Goods.G_Gold, self.Amount}}},
             {{ Triggers.Time, 0 }},
             self.TributTime, nil, nil, nil, nil, true, true, nil,
@@ -3089,11 +3093,15 @@ function b_Goal_TributeClaim:CreateTributeQuest(_Quest)
             FailureMsg = FailureMsg[Language];
         end
 
+        BundleClassicBehaviors.Global.Data.BehaviorQuestCounter = BundleClassicBehaviors.Global.Data.BehaviorQuestCounter+1;
+
         local OnFinished = function()
             self.Time = Logic.GetTime();
         end
         local QuestID, Quest = QuestTemplate:New(
-            _Quest.Identifier.."_TributeClaimQuest", self.PlayerID, _Quest.ReceivingPlayer,
+            _Quest.Identifier.."_TributeClaimQuest" ..BundleClassicBehaviors.Global.Data.BehaviorQuestCounter,
+            self.PlayerID,
+            _Quest.ReceivingPlayer,
             {{ Objective.Deliver, {Goods.G_Gold, self.Amount}}},
             {{ Triggers.Time, 0 }},
             self.TributTime, nil, nil, OnFinished, nil, true, true, nil,
@@ -3250,11 +3258,11 @@ Core:RegisterBehavior(b_Goal_TributeClaim);
 -- @within Reprisal
 --
 function Reprisal_ObjectDeactivate(...)
-    return b_Reprisal_ObjectDeactivate:new(...);
+    return b_Reprisal_InteractiveObjectDeactivate:new(...);
 end
 
-b_Reprisal_ObjectDeactivate = {
-    Name = "Reprisal_ObjectDeactivate",
+b_Reprisal_InteractiveObjectDeactivate = {
+    Name = "Reprisal_InteractiveObjectDeactivate",
     Description = {
         en = "Reprisal: Deactivates an interactive object",
         de = "Vergeltung: Deaktiviert ein interaktives Objekt",
@@ -3264,11 +3272,11 @@ b_Reprisal_ObjectDeactivate = {
     },
 }
 
-function b_Reprisal_ObjectDeactivate:GetReprisalTable()
+function b_Reprisal_InteractiveObjectDeactivate:GetReprisalTable()
     return { Reprisal.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reprisal_ObjectDeactivate:AddParameter(_Index, _Parameter)
+function b_Reprisal_InteractiveObjectDeactivate:AddParameter(_Index, _Parameter)
 
     if (_Index == 0) then
         self.ScriptName = _Parameter
@@ -3276,11 +3284,11 @@ function b_Reprisal_ObjectDeactivate:AddParameter(_Index, _Parameter)
 
 end
 
-function b_Reprisal_ObjectDeactivate:CustomFunction(_Quest)
+function b_Reprisal_InteractiveObjectDeactivate:CustomFunction(_Quest)
     InteractiveObjectDeactivate(self.ScriptName);
 end
 
-function b_Reprisal_ObjectDeactivate:Debug(_Quest)
+function b_Reprisal_InteractiveObjectDeactivate:Debug(_Quest)
     if not Logic.IsInteractiveObject(GetID(self.ScriptName)) then
         warn(_Quest.Identifier.. ": " ..self.Name..": '" ..self.ScriptName.. "' is not a interactive object!");
         self.WarningPrinted = true;
@@ -3293,7 +3301,7 @@ function b_Reprisal_ObjectDeactivate:Debug(_Quest)
     return false;
 end
 
-Core:RegisterBehavior(b_Reprisal_ObjectDeactivate);
+Core:RegisterBehavior(b_Reprisal_InteractiveObjectDeactivate);
 
 -- -------------------------------------------------------------------------- --
 
@@ -3313,11 +3321,11 @@ Core:RegisterBehavior(b_Reprisal_ObjectDeactivate);
 -- @within Reprisal
 --
 function Reprisal_ObjectActivate(...)
-    return b_Reprisal_ObjectActivate:new(...);
+    return b_Reprisal_InteractiveObjectActivate:new(...);
 end
 
-b_Reprisal_ObjectActivate = {
-    Name = "Reprisal_ObjectActivate",
+b_Reprisal_InteractiveObjectActivate = {
+    Name = "Reprisal_InteractiveObjectActivate",
     Description = {
         en = "Reprisal: Activates an interactive object",
         de = "Vergeltung: Aktiviert ein interaktives Objekt",
@@ -3328,11 +3336,11 @@ b_Reprisal_ObjectActivate = {
     },
 }
 
-function b_Reprisal_ObjectActivate:GetReprisalTable()
+function b_Reprisal_InteractiveObjectActivate:GetReprisalTable()
     return { Reprisal.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reprisal_ObjectActivate:AddParameter(_Index, _Parameter)
+function b_Reprisal_InteractiveObjectActivate:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.ScriptName = _Parameter
     elseif (_Index == 1) then
@@ -3344,17 +3352,17 @@ function b_Reprisal_ObjectActivate:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Reprisal_ObjectActivate:CustomFunction(_Quest)
+function b_Reprisal_InteractiveObjectActivate:CustomFunction(_Quest)
     InteractiveObjectActivate(self.ScriptName, self.UsingState);
 end
 
-function b_Reprisal_ObjectActivate:GetCustomData( _Index )
+function b_Reprisal_InteractiveObjectActivate:GetCustomData( _Index )
     if _Index == 1 then
         return {"Knight only", "Always"}
     end
 end
 
-function b_Reprisal_ObjectActivate:Debug(_Quest)
+function b_Reprisal_InteractiveObjectActivate:Debug(_Quest)
     if not Logic.IsInteractiveObject(GetID(self.ScriptName)) then
         warn(_Quest.Identifier.. ": " ..self.Name..": '" ..self.ScriptName.. "' is not a interactive object!");
         self.WarningPrinted = true;
@@ -3367,7 +3375,7 @@ function b_Reprisal_ObjectActivate:Debug(_Quest)
     return false;
 end
 
-Core:RegisterBehavior(b_Reprisal_ObjectActivate);
+Core:RegisterBehavior(b_Reprisal_InteractiveObjectActivate);
 
 -- -------------------------------------------------------------------------- --
 
@@ -3378,22 +3386,22 @@ Core:RegisterBehavior(b_Reprisal_ObjectActivate);
 -- @within Reprisal
 --
 function Reprisal_DiplomacyDecrease()
-    return b_Reprisal_DiplomacyDecrease:new();
+    return b_Reprisal_SlightlyDiplomacyDecrease:new();
 end
 
-b_Reprisal_DiplomacyDecrease = {
-    Name = "Reprisal_DiplomacyDecrease",
+b_Reprisal_SlightlyDiplomacyDecrease = {
+    Name = "Reprisal_SlightlyDiplomacyDecrease",
     Description = {
         en = "Reprisal: Diplomacy decreases slightly to another player.",
         de = "Vergeltung: Der Diplomatiestatus zum Auftraggeber wird um eine Stufe verringert.",
     },
 }
 
-function b_Reprisal_DiplomacyDecrease:GetReprisalTable()
+function b_Reprisal_SlightlyDiplomacyDecrease:GetReprisalTable()
     return { Reprisal.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reprisal_DiplomacyDecrease:CustomFunction(_Quest)
+function b_Reprisal_SlightlyDiplomacyDecrease:CustomFunction(_Quest)
     local Sender = _Quest.SendingPlayer;
     local Receiver = _Quest.ReceivingPlayer;
     local State = GetDiplomacyState(Receiver, Sender);
@@ -3402,13 +3410,13 @@ function b_Reprisal_DiplomacyDecrease:CustomFunction(_Quest)
     end
 end
 
-function b_Reprisal_DiplomacyDecrease:AddParameter(_Index, _Parameter)
+function b_Reprisal_SlightlyDiplomacyDecrease:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.PlayerID = _Parameter * 1
     end
 end
 
-Core:RegisterBehavior(b_Reprisal_DiplomacyDecrease);
+Core:RegisterBehavior(b_Reprisal_SlightlyDiplomacyDecrease);
 
 -- -------------------------------------------------------------------------- --
 
@@ -4299,20 +4307,20 @@ Core:RegisterBehavior(b_Reprisal_Technology);
 -- @within Reward
 --
 function Reward_ObjectDeactivate(...)
-    return b_Reward_ObjectDeactivate:new(...);
+    return b_Reward_InteractiveObjectDeactivate:new(...);
 end
 
-b_Reward_ObjectDeactivate = API.InstanceTable(b_Reprisal_ObjectDeactivate);
-b_Reward_ObjectDeactivate.Name             = "Reward_ObjectDeactivate";
-b_Reward_ObjectDeactivate.Description.de   = "Reward: Deactivates an interactive object";
-b_Reward_ObjectDeactivate.Description.en   = "Lohn: Deaktiviert ein interaktives Objekt";
-b_Reward_ObjectDeactivate.GetReprisalTable = nil;
+b_Reward_InteractiveObjectDeactivate = API.InstanceTable(b_Reprisal_InteractiveObjectDeactivate);
+b_Reward_InteractiveObjectDeactivate.Name             = "Reward_InteractiveObjectDeactivate";
+b_Reward_InteractiveObjectDeactivate.Description.de   = "Reward: Deactivates an interactive object";
+b_Reward_InteractiveObjectDeactivate.Description.en   = "Lohn: Deaktiviert ein interaktives Objekt";
+b_Reward_InteractiveObjectDeactivate.GetReprisalTable = nil;
 
-b_Reward_ObjectDeactivate.GetRewardTable = function(self, _Quest)
+b_Reward_InteractiveObjectDeactivate.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-Core:RegisterBehavior(b_Reward_ObjectDeactivate);
+Core:RegisterBehavior(b_Reward_InteractiveObjectDeactivate);
 
 -- -------------------------------------------------------------------------- --
 
@@ -4332,20 +4340,20 @@ Core:RegisterBehavior(b_Reward_ObjectDeactivate);
 -- @within Reward
 --
 function Reward_ObjectActivate(...)
-    return b_Reward_ObjectActivate:new(...);
+    return b_Reward_InteractiveObjectActivate:new(...);
 end
 
-b_Reward_ObjectActivate = API.InstanceTable(b_Reprisal_ObjectActivate);
-b_Reward_ObjectActivate.Name             = "Reward_ObjectActivate";
-b_Reward_ObjectActivate.Description.de   = "Reward: Activates an interactive object";
-b_Reward_ObjectActivate.Description.en   = "Lohn: Aktiviert ein interaktives Objekt";
-b_Reward_ObjectActivate.GetReprisalTable = nil;
+b_Reward_InteractiveObjectActivate = API.InstanceTable(b_Reprisal_InteractiveObjectActivate);
+b_Reward_InteractiveObjectActivate.Name             = "Reward_InteractiveObjectActivate";
+b_Reward_InteractiveObjectActivate.Description.de   = "Reward: Activates an interactive object";
+b_Reward_InteractiveObjectActivate.Description.en   = "Lohn: Aktiviert ein interaktives Objekt";
+b_Reward_InteractiveObjectActivate.GetReprisalTable = nil;
 
-b_Reward_ObjectActivate.GetRewardTable = function(self, _Quest)
+b_Reward_InteractiveObjectActivate.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} };
 end
 
-Core:RegisterBehavior(b_Reward_ObjectActivate);
+Core:RegisterBehavior(b_Reward_InteractiveObjectActivate);
 
 -- -------------------------------------------------------------------------- --
 
@@ -4588,22 +4596,22 @@ Core:RegisterBehavior(b_Reward_Diplomacy);
 -- @within Reward
 --
 function Reward_DiplomacyIncrease()
-    return b_Reward_DiplomacyIncrease:new();
+    return b_Reward_SlightlyDiplomacyIncrease:new();
 end
 
-b_Reward_DiplomacyIncrease = {
-    Name = "Reward_DiplomacyIncrease",
+b_Reward_SlightlyDiplomacyIncrease = {
+    Name = "Reward_SlightlyDiplomacyIncrease",
     Description = {
         en = "Reward: Diplomacy increases slightly to another player",
         de = "Lohn: Verbesserug des Diplomatiestatus zu einem anderen Spieler",
     },
 }
 
-function b_Reward_DiplomacyIncrease:GetRewardTable()
+function b_Reward_SlightlyDiplomacyIncrease:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_DiplomacyIncrease:CustomFunction(_Quest)
+function b_Reward_SlightlyDiplomacyIncrease:CustomFunction(_Quest)
     local Sender = _Quest.SendingPlayer;
     local Receiver = _Quest.ReceivingPlayer;
     local State = GetDiplomacyState(Receiver, Sender);
@@ -4612,13 +4620,13 @@ function b_Reward_DiplomacyIncrease:CustomFunction(_Quest)
     end
 end
 
-function b_Reward_DiplomacyIncrease:AddParameter(_Index, _Parameter)
+function b_Reward_SlightlyDiplomacyIncrease:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.PlayerID = _Parameter * 1
     end
 end
 
-Core:RegisterBehavior(b_Reward_DiplomacyIncrease);
+Core:RegisterBehavior(b_Reward_SlightlyDiplomacyIncrease);
 
 -- -------------------------------------------------------------------------- --
 
@@ -4642,11 +4650,11 @@ Core:RegisterBehavior(b_Reward_DiplomacyIncrease);
 -- @within Reward
 --
 function Reward_TradeOffers(...)
-    return b_Reward_TradeOffers:new(...);
+    return b_Reward_Merchant:new(...);
 end
 
-b_Reward_TradeOffers = {
-    Name = "Reward_TradeOffers",
+b_Reward_Merchant = {
+    Name = "Reward_Merchant",
     Description = {
         en = "Reward: Deletes all existing offers for a merchant and sets new offers, if given",
         de = "Lohn: Löscht alle Angebote eines Händlers und setzt neue, wenn angegeben",
@@ -4664,13 +4672,13 @@ b_Reward_TradeOffers = {
     },
 }
 
-function b_Reward_TradeOffers:GetRewardTable()
+function b_Reward_Merchant:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_TradeOffers:AddParameter(_Index, _Parameter)
+function b_Reward_Merchant:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
-        self.PlayerID = _Parameter
+        self.PlayerID = _Parameter * 1;
     elseif (_Index == 1) then
         _Parameter = _Parameter or 0;
         self.AmountOffer1 = _Parameter * 1;
@@ -4694,7 +4702,7 @@ function b_Reward_TradeOffers:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Reward_TradeOffers:CustomFunction()
+function b_Reward_Merchant:CustomFunction()
     if (self.PlayerID > 1) and (self.PlayerID < 9) then
         local Storehouse = Logic.GetStoreHouse(self.PlayerID)
         Logic.RemoveAllOffers(Storehouse)
@@ -4712,15 +4720,15 @@ function b_Reward_TradeOffers:CustomFunction()
     end
 end
 
-function b_Reward_TradeOffers:Debug(_Quest)
+function b_Reward_Merchant:Debug(_Quest)
     if Logic.GetStoreHouse(self.PlayerID ) == 0 then
         error(_Quest.Identifier.. ": " ..self.Name .. ": Player " .. self.PlayerID .. " is dead. :-(")
         return true
     end
 end
 
-function b_Reward_TradeOffers:GetCustomData(_Index)
-    local Players = { "2", "3", "4", "5", "6", "7", "8" }
+function b_Reward_Merchant:GetCustomData(_Index)
+    local Players = { 1,2,3,4,5,6,7,8 }
     local Amount = { "1", "2", "3", "4", "5", "6", "7", "8", "9" }
     local Offers = {"-",
                     "G_Beer",
@@ -4789,7 +4797,7 @@ function b_Reward_TradeOffers:GetCustomData(_Index)
     end
 end
 
-Core:RegisterBehavior(b_Reward_TradeOffers)
+Core:RegisterBehavior(b_Reward_Merchant)
 
 -- -------------------------------------------------------------------------- --
 
@@ -5307,6 +5315,15 @@ function b_Reward_CreateEntity:Debug(_Quest)
 end
 
 Core:RegisterBehavior(b_Reward_CreateEntity);
+
+-- -------------------------------------------------------------------------- --
+
+-- Kompatibelität
+b_Reward_CreateSettler = API.InstanceTable(b_Reward_CreateEntity);
+b_Reward_CreateSettler.Name = "Reward_CreateSettler";
+b_Reward_CreateSettler.Description.en = "Reward: Replaces an entity by a new one of a given type";
+b_Reward_CreateSettler.Description.de = "Lohn: Ersetzt eine Entity durch eine neue gegebenen Typs";
+Core:RegisterBehavior(b_Reward_CreateSettler);
 
 -- -------------------------------------------------------------------------- --
 
@@ -7363,11 +7380,11 @@ Core:RegisterBehavior(b_Trigger_OnAmountOfGoods);
 -- @within Trigger
 --
 function Trigger_OnQuestActive(...)
-    return b_Trigger_OnQuestActive:new(...);
+    return b_Trigger_OnQuestActiveWait:new(...);
 end
 
-b_Trigger_OnQuestActive = {
-    Name = "Trigger_OnQuestActive",
+b_Trigger_OnQuestActiveWait = {
+    Name = "Trigger_OnQuestActiveWait",
     Description = {
         en = "Trigger: if a given quest has been activated. Waiting time optional",
         de = "Auslöser: wenn eine angegebene Quest aktiviert wurde. Optional mit Wartezeit",
@@ -7378,11 +7395,11 @@ b_Trigger_OnQuestActive = {
     },
 }
 
-function b_Trigger_OnQuestActive:GetTriggerTable()
+function b_Trigger_OnQuestActiveWait:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_OnQuestActive:AddParameter(_Index, _Parameter)
+function b_Trigger_OnQuestActiveWait:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.QuestName = _Parameter
     elseif (_Index == 1) then
@@ -7390,7 +7407,7 @@ function b_Trigger_OnQuestActive:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Trigger_OnQuestActive:CustomFunction(_Quest)
+function b_Trigger_OnQuestActiveWait:CustomFunction(_Quest)
     local QuestID = GetQuestID(self.QuestName)
     if QuestID ~= nil then
         assert(type(QuestID) == "number");
@@ -7412,7 +7429,7 @@ function b_Trigger_OnQuestActive:CustomFunction(_Quest)
     return false;
 end
 
-function b_Trigger_OnQuestActive:Debug(_Quest)
+function b_Trigger_OnQuestActiveWait:Debug(_Quest)
     if type(self.QuestName) ~= "string" then
         error(_Quest.Identifier.. ": " ..self.Name..": invalid quest name!");
         return true;
@@ -7423,15 +7440,35 @@ function b_Trigger_OnQuestActive:Debug(_Quest)
     return false;
 end
 
-function b_Trigger_OnQuestActive:Interrupt(_Quest)
+function b_Trigger_OnQuestActiveWait:Interrupt(_Quest)
     -- does this realy matter after interrupt?
     -- self.WaitTimeTimer = nil;
     -- self.WasActivated = nil;
 end
 
-function b_Trigger_OnQuestActive:Reset(_Quest)
+function b_Trigger_OnQuestActiveWait:Reset(_Quest)
     self.WaitTimeTimer = nil;
     self.WasActivated = nil;
+end
+
+Core:RegisterBehavior(b_Trigger_OnQuestActiveWait);
+
+-- -------------------------------------------------------------------------- --
+
+-- Kompatibelitätsmodus
+b_Trigger_OnQuestActive = API.InstanceTable(b_Trigger_OnQuestActiveWait);
+b_Trigger_OnQuestActive.Name = "Trigger_OnQuestActive";
+b_Trigger_OnQuestActive.Description.en = "Reward: Starts the quest after another has been activated.";
+b_Trigger_OnQuestActive.Description.de = "Lohn: Startet den Quest, wenn ein anderer aktiviert wird.";
+b_Trigger_OnQuestActive.Parameter = {
+    { ParameterType.QuestName,     en = "Quest name", de = "Questname" },
+}
+
+function b_Trigger_OnQuestActive:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.QuestName = _Parameter;
+        self.WaitTime = 0;
+    end
 end
 
 Core:RegisterBehavior(b_Trigger_OnQuestActive);
@@ -7447,11 +7484,11 @@ Core:RegisterBehavior(b_Trigger_OnQuestActive);
 -- @within Trigger
 --
 function Trigger_OnQuestFailure(...)
-    return b_Trigger_OnQuestFailure:new(...);
+    return b_Trigger_OnQuestFailureWait:new(...);
 end
 
-b_Trigger_OnQuestFailure = {
-    Name = "Trigger_OnQuestFailure",
+b_Trigger_OnQuestFailureWait = {
+    Name = "Trigger_OnQuestFailureWait",
     Description = {
         en = "Trigger: if a given quest has failed. Waiting time optional",
         de = "Auslöser: wenn eine angegebene Quest fehlgeschlagen ist. Optional mit Wartezeit",
@@ -7462,11 +7499,11 @@ b_Trigger_OnQuestFailure = {
     },
 }
 
-function b_Trigger_OnQuestFailure:GetTriggerTable()
+function b_Trigger_OnQuestFailureWait:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_OnQuestFailure:AddParameter(_Index, _Parameter)
+function b_Trigger_OnQuestFailureWait:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.QuestName = _Parameter
     elseif (_Index == 1) then
@@ -7474,7 +7511,7 @@ function b_Trigger_OnQuestFailure:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Trigger_OnQuestFailure:CustomFunction(_Quest)
+function b_Trigger_OnQuestFailureWait:CustomFunction(_Quest)
     if (GetQuestID(self.QuestName) ~= nil) then
         local QuestID = GetQuestID(self.QuestName)
         if (Quests[QuestID].Result == QuestResult.Failure) then
@@ -7491,7 +7528,7 @@ function b_Trigger_OnQuestFailure:CustomFunction(_Quest)
     return false;
 end
 
-function b_Trigger_OnQuestFailure:Debug(_Quest)
+function b_Trigger_OnQuestFailureWait:Debug(_Quest)
     if type(self.QuestName) ~= "string" then
         error(_Quest.Identifier.. ": " ..self.Name..": invalid quest name!");
         return true;
@@ -7502,12 +7539,32 @@ function b_Trigger_OnQuestFailure:Debug(_Quest)
     return false;
 end
 
-function b_Trigger_OnQuestFailure:Interrupt(_Quest)
+function b_Trigger_OnQuestFailureWait:Interrupt(_Quest)
     self.WaitTimeTimer = nil;
 end
 
-function b_Trigger_OnQuestFailure:Reset(_Quest)
+function b_Trigger_OnQuestFailureWait:Reset(_Quest)
     self.WaitTimeTimer = nil;
+end
+
+Core:RegisterBehavior(b_Trigger_OnQuestFailureWait);
+
+-- -------------------------------------------------------------------------- --
+
+-- Kompatibelitätsmodus
+b_Trigger_OnQuestFailure = API.InstanceTable(b_Trigger_OnQuestFailureWait);
+b_Trigger_OnQuestFailure.Name = "Trigger_OnQuestFailure";
+b_Trigger_OnQuestFailure.Description.en = "Reward: Starts the quest after another has failed.";
+b_Trigger_OnQuestFailure.Description.de = "Lohn: Startet den Quest, wenn ein anderer fehlschlägt.";
+b_Trigger_OnQuestFailure.Parameter = {
+    { ParameterType.QuestName,     en = "Quest name", de = "Questname" },
+}
+
+function b_Trigger_OnQuestFailure:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.QuestName = _Parameter;
+        self.WaitTime = 0;
+    end
 end
 
 Core:RegisterBehavior(b_Trigger_OnQuestFailure);
@@ -7518,7 +7575,6 @@ Core:RegisterBehavior(b_Trigger_OnQuestFailure);
 -- Startet einen Quest, wenn ein anderer noch nicht ausgelöst wurde.
 --
 -- @param _QuestName Name des Quest
--- @param _Time      Wartezeit
 -- return Table mit Behavior
 -- @within Trigger
 --
@@ -7578,11 +7634,11 @@ Core:RegisterBehavior(b_Trigger_OnQuestNotTriggered);
 -- @within Trigger
 --
 function Trigger_OnQuestInterrupted(...)
-    return b_Trigger_OnQuestInterrupted:new(...);
+    return b_Trigger_OnQuestInterruptedWait:new(...);
 end
 
-b_Trigger_OnQuestInterrupted = {
-    Name = "Trigger_OnQuestInterrupted",
+b_Trigger_OnQuestInterruptedWait = {
+    Name = "Trigger_OnQuestInterruptedWait",
     Description = {
         en = "Trigger: if a given quest has been interrupted. Should be used in combination with other triggers.",
         de = "Auslöser: wenn eine angegebene Quest abgebrochen wurde. Sollte mit weiteren Triggern kombiniert werden.",
@@ -7593,11 +7649,11 @@ b_Trigger_OnQuestInterrupted = {
     },
 }
 
-function b_Trigger_OnQuestInterrupted:GetTriggerTable()
+function b_Trigger_OnQuestInterruptedWait:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_OnQuestInterrupted:AddParameter(_Index, _Parameter)
+function b_Trigger_OnQuestInterruptedWait:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.QuestName = _Parameter
     elseif (_Index == 1) then
@@ -7605,7 +7661,7 @@ function b_Trigger_OnQuestInterrupted:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Trigger_OnQuestInterrupted:CustomFunction(_Quest)
+function b_Trigger_OnQuestInterruptedWait:CustomFunction(_Quest)
     if (GetQuestID(self.QuestName) ~= nil) then
         local QuestID = GetQuestID(self.QuestName)
         if (Quests[QuestID].State == QuestState.Over and Quests[QuestID].Result == QuestResult.Interrupted) then
@@ -7622,7 +7678,7 @@ function b_Trigger_OnQuestInterrupted:CustomFunction(_Quest)
     return false;
 end
 
-function b_Trigger_OnQuestInterrupted:Debug(_Quest)
+function b_Trigger_OnQuestInterruptedWait:Debug(_Quest)
     if type(self.QuestName) ~= "string" then
         error(_Quest.Identifier.. ": " ..self.Name..": invalid quest name!");
         return true;
@@ -7633,12 +7689,32 @@ function b_Trigger_OnQuestInterrupted:Debug(_Quest)
     return false;
 end
 
-function b_Trigger_OnQuestInterrupted:Interrupt(_Quest)
+function b_Trigger_OnQuestInterruptedWait:Interrupt(_Quest)
     self.WaitTimeTimer = nil;
 end
 
-function b_Trigger_OnQuestInterrupted:Reset(_Quest)
+function b_Trigger_OnQuestInterruptedWait:Reset(_Quest)
     self.WaitTimeTimer = nil;
+end
+
+Core:RegisterBehavior(b_Trigger_OnQuestInterruptedWait);
+
+-- -------------------------------------------------------------------------- --
+
+-- Kompatibelitätsmodus
+b_Trigger_OnQuestInterrupted = API.InstanceTable(b_Trigger_OnQuestInterruptedWait);
+b_Trigger_OnQuestInterrupted.Name = "Trigger_OnQuestInterrupted";
+b_Trigger_OnQuestInterrupted.Description.en = "Reward: Starts the quest after another is interrupted.";
+b_Trigger_OnQuestInterrupted.Description.de = "Lohn: Startet den Quest, wenn ein anderer abgebrochen wurde.";
+b_Trigger_OnQuestInterrupted.Parameter = {
+    { ParameterType.QuestName,     en = "Quest name", de = "Questname" },
+}
+
+function b_Trigger_OnQuestInterrupted:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.QuestName = _Parameter;
+        self.WaitTime = 0;
+    end
 end
 
 Core:RegisterBehavior(b_Trigger_OnQuestInterrupted);
@@ -7657,11 +7733,11 @@ Core:RegisterBehavior(b_Trigger_OnQuestInterrupted);
 -- @within Trigger
 --
 function Trigger_OnQuestOver(...)
-    return b_Trigger_OnQuestOver:new(...);
+    return b_Trigger_OnQuestOverWait:new(...);
 end
 
-b_Trigger_OnQuestOver = {
-    Name = "Trigger_OnQuestOver",
+b_Trigger_OnQuestOverWait = {
+    Name = "Trigger_OnQuestOverWait",
     Description = {
         en = "Trigger: if a given quest has been finished, regardless of its result. Waiting time optional",
         de = "Auslöser: wenn eine angegebene Quest beendet wurde, unabhängig von deren Ergebnis. Wartezeit optional",
@@ -7672,11 +7748,11 @@ b_Trigger_OnQuestOver = {
     },
 }
 
-function b_Trigger_OnQuestOver:GetTriggerTable()
+function b_Trigger_OnQuestOverWait:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_OnQuestOver:AddParameter(_Index, _Parameter)
+function b_Trigger_OnQuestOverWait:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.QuestName = _Parameter
     elseif (_Index == 1) then
@@ -7684,7 +7760,7 @@ function b_Trigger_OnQuestOver:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Trigger_OnQuestOver:CustomFunction(_Quest)
+function b_Trigger_OnQuestOverWait:CustomFunction(_Quest)
     if (GetQuestID(self.QuestName) ~= nil) then
         local QuestID = GetQuestID(self.QuestName)
         if (Quests[QuestID].State == QuestState.Over and Quests[QuestID].Result ~= QuestResult.Interrupted) then
@@ -7701,7 +7777,7 @@ function b_Trigger_OnQuestOver:CustomFunction(_Quest)
     return false;
 end
 
-function b_Trigger_OnQuestOver:Debug(_Quest)
+function b_Trigger_OnQuestOverWait:Debug(_Quest)
     if type(self.QuestName) ~= "string" then
         error(_Quest.Identifier.. ": " ..self.Name..": invalid quest name!");
         return true;
@@ -7712,12 +7788,32 @@ function b_Trigger_OnQuestOver:Debug(_Quest)
     return false;
 end
 
-function b_Trigger_OnQuestOver:Interrupt(_Quest)
+function b_Trigger_OnQuestOverWait:Interrupt(_Quest)
     self.WaitTimeTimer = nil;
 end
 
-function b_Trigger_OnQuestOver:Reset(_Quest)
+function b_Trigger_OnQuestOverWait:Reset(_Quest)
     self.WaitTimeTimer = nil;
+end
+
+Core:RegisterBehavior(b_Trigger_OnQuestOverWait);
+
+-- -------------------------------------------------------------------------- --
+
+-- Kompatibelitätsmodus
+b_Trigger_OnQuestOver = API.InstanceTable(b_Trigger_OnQuestOverWait);
+b_Trigger_OnQuestOver.Name = "Trigger_OnQuestOver";
+b_Trigger_OnQuestOver.Description.en = "Reward: Starts the quest after another finished.";
+b_Trigger_OnQuestOver.Description.de = "Lohn: Startet den Quest, wenn ein anderer abgeschlossen wurde.";
+b_Trigger_OnQuestOver.Parameter = {
+    { ParameterType.QuestName,     en = "Quest name", de = "Questname" },
+}
+
+function b_Trigger_OnQuestOver:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.QuestName = _Parameter;
+        self.WaitTime = 0;
+    end
 end
 
 Core:RegisterBehavior(b_Trigger_OnQuestOver);
@@ -7733,11 +7829,11 @@ Core:RegisterBehavior(b_Trigger_OnQuestOver);
 -- @within Trigger
 --
 function Trigger_OnQuestSuccess(...)
-    return b_Trigger_OnQuestSuccess:new(...);
+    return b_Trigger_OnQuestSuccessWait:new(...);
 end
 
-b_Trigger_OnQuestSuccess = {
-    Name = "Trigger_OnQuestSuccess",
+b_Trigger_OnQuestSuccessWait = {
+    Name = "Trigger_OnQuestSuccessWait",
     Description = {
         en = "Trigger: if a given quest has been finished successfully. Waiting time optional",
         de = "Auslöser: wenn eine angegebene Quest erfolgreich abgeschlossen wurde. Wartezeit optional",
@@ -7748,11 +7844,11 @@ b_Trigger_OnQuestSuccess = {
     },
 }
 
-function b_Trigger_OnQuestSuccess:GetTriggerTable()
+function b_Trigger_OnQuestSuccessWait:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_OnQuestSuccess:AddParameter(_Index, _Parameter)
+function b_Trigger_OnQuestSuccessWait:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.QuestName = _Parameter
     elseif (_Index == 1) then
@@ -7760,7 +7856,7 @@ function b_Trigger_OnQuestSuccess:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Trigger_OnQuestSuccess:CustomFunction()
+function b_Trigger_OnQuestSuccessWait:CustomFunction()
     if (GetQuestID(self.QuestName) ~= nil) then
         local QuestID = GetQuestID(self.QuestName)
         if (Quests[QuestID].Result == QuestResult.Success) then
@@ -7777,7 +7873,7 @@ function b_Trigger_OnQuestSuccess:CustomFunction()
     return false;
 end
 
-function b_Trigger_OnQuestSuccess:Debug(_Quest)
+function b_Trigger_OnQuestSuccessWait:Debug(_Quest)
     if type(self.QuestName) ~= "string" then
         error(_Quest.Identifier.. ": " ..self.Name..": invalid quest name!");
         return true;
@@ -7788,12 +7884,32 @@ function b_Trigger_OnQuestSuccess:Debug(_Quest)
     return false;
 end
 
-function b_Trigger_OnQuestSuccess:Interrupt(_Quest)
+function b_Trigger_OnQuestSuccessWait:Interrupt(_Quest)
     self.WaitTimeTimer = nil;
 end
 
-function b_Trigger_OnQuestSuccess:Reset(_Quest)
+function b_Trigger_OnQuestSuccessWait:Reset(_Quest)
     self.WaitTimeTimer = nil;
+end
+
+Core:RegisterBehavior(b_Trigger_OnQuestSuccessWait);
+
+-- -------------------------------------------------------------------------- --
+
+-- Kompatibelitätsmodus
+b_Trigger_OnQuestSuccess = API.InstanceTable(b_Trigger_OnQuestSuccessWait);
+b_Trigger_OnQuestSuccess.Name = "Trigger_OnQuestSuccess";
+b_Trigger_OnQuestSuccess.Description.en = "Reward: Starts the quest after another finished successfully.";
+b_Trigger_OnQuestSuccess.Description.de = "Lohn: Startet den Quest, wenn ein anderer erfolgreich abgeschlossen wurde.";
+b_Trigger_OnQuestSuccess.Parameter = {
+    { ParameterType.QuestName,     en = "Quest name", de = "Questname" },
+}
+
+function b_Trigger_OnQuestSuccess:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.QuestName = _Parameter;
+        self.WaitTime = 0;
+    end
 end
 
 Core:RegisterBehavior(b_Trigger_OnQuestSuccess);
@@ -8707,7 +8823,11 @@ Core:RegisterBehavior(b_Reward_SetBuildingUpgradeLevel)
 -- -------------------------------------------------------------------------- --
 
 BundleClassicBehaviors = {
-    Global = {},
+    Global = {
+        Data = {
+            BehaviorQuestCounter = 0,
+        }
+    },
     Local = {},
     
     Text = {

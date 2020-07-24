@@ -47,10 +47,14 @@ function Mission_FirstMapAction()
 
     API.ActivateDebugMode(true, true, true, true);
 
-    -- Startet die Mapeditor-Quests
-    CreateQuests();
+    API.StartMissionBriefing(Briefing06);
 
-    -- Hier kannst Du Deine Funktionen aufrufen:
+    API.CreateQuest {
+        Name = "TestQuest",
+        EndMessage = true,
+        Goal_InstantSuccess(),
+        Trigger_MissionBriefing()
+    }
 end
 
 -- -------------------------------------------------------------------------- --
@@ -366,15 +370,15 @@ function Briefing06()
     ASP("pos4", "Page 4", "This is page 4!", false);
     ASP("pos4", "Page 5", "This is page 5!", false);
 
-    -- Briefing.PageAnimations = {
-    --     [1] = {
-    --         {"pos4", -60, 2000, 35, "pos4", -30, 2000, 25, 30}
-    --     },
-    --     [3] = {
-    --         PurgeOld = true,
-    --         {"pos2", -45, 6000, 35, "pos2", -45, 3000, 35, 30},
-    --     }
-    -- }
+    Briefing.PageAnimations = {
+        [1] = {
+            {"pos4", -60, 2000, 35, "pos4", -30, 2000, 25, 30}
+        },
+        [3] = {
+            PurgeOld = true,
+            {"pos2", -45, 6000, 35, "pos2", -45, 3000, 35, 30},
+        }
+    }
 
     Briefing.Starting = function(_Data)
     end
