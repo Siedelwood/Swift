@@ -286,7 +286,7 @@ function API.AddPages(_Briefing)
                 if _Page.FlyTo then
                     _Page.Duration = _Page.FlyTo.Duration;
                 else
-                    _Briefing.SkippingAllowed = true;
+                    _Page.NoSkipping = false;
                     _Page.Duration = -1;
                 end
             end
@@ -1038,7 +1038,7 @@ function BundleBriefingSystem.Local:PageStarted()
         -- Zurück und Weiter
         local BackFlag = 1;
         local SkipFlag = 1;
-        if not self.Data.CurrentBriefing.SkippingAllowed or self.Data.CurrentPage.NoSkipping then
+        if self.Data.CurrentBriefing.SkippingAllowed ~= true or self.Data.CurrentPage.NoSkipping == true then
             if self.Data.CurrentPage.MC and not self.Data.CurrentPage.NoHistory then
                 table.insert(self.Data.CurrentBriefing.PageHistory, PageID);
             end

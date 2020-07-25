@@ -65,7 +65,7 @@ function Briefing01()
         ShowSky = true,
         RestoreGameSpeed = true,
         RestoreCamera = true,
-        SkippingAllowed = true,
+        SkippingAllowed = false,
     }
     local AP = API.AddPages(Briefing);
 
