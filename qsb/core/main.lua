@@ -92,12 +92,6 @@ function Core:InitalizeBundles()
             self.Data.InitalizedBundles[v] = true;
             collectgarbage();
         end
-
-        -- QSB wurde lokal geladen
-        if Mission_LocalOnQsbLoaded then
-            Mission_LocalOnQsbLoaded();
-        end
-
         QSB.InitializationFinished = true;
     end
 end
