@@ -2,7 +2,10 @@
 -- Stellt Hilfsfunktionen bereit, um Maps zu verwalten, welche mit dem
 -- Maploader gestartet wurden.
 --
--- Dieses Bundle muss zusammen mit dem Maploader verwendet werden!
+-- Es werden außerdem die Fähigkeiten der bösen Helden Crimsin Sabatt und
+-- des Roten Prinzen wiederhergestellt.
+--
+-- Dieses Bundle sollte zusammen mit dem Maploader verwendet werden!
 --
 -- @see ExternalMapLoader
 -- @set sort=true
@@ -115,6 +118,34 @@ function API.Map_SaveValue(_Key, _Value)
 	end
 	local MapName = Framework.GetCurrentMapName();
 	Profile.SetString(MapName, _Key, _Value);
+end
+
+---
+-- Ändert die Texturposition der Heldenfähigkeit des bösen Helden.
+--
+-- Mögliche Helden sind:
+-- <ul>
+-- <li>CrimsonSabatt</li>
+-- <li>RedPrince</li>
+-- </ul>
+--
+-- @param[type=string] _Key   Name der Variable
+-- @param[type=string] _Value Zu speichernder Wert
+-- @within Anwenderfunktionen
+-- @usage API.Map_SetHeroAbilityTextureSource("CrimsonSabatt", {1, 1, "myicons"});
+--
+function API.Map_SetHeroAbilityTextureSource(_Hero, _Data)
+	if not GUI then
+		Logic.ExecuteInLuaLocalState(string.format(
+            'API.Map_SetHeroAbilityTextureSource("%s", %s)',
+            tostring(_Hero),
+            API.ConvertTableToString(_Data)
+        ));
+		return;
+	end
+    if ExternalCampaignMap.Local.Data[_Hero] then
+        ExternalCampaignMap.Local.Data[_Hero].AbilityIcon = _Data;
+    end
 end
 
 -- Applikation -------------------------------------------------------------- --

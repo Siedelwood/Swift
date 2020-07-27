@@ -74,6 +74,10 @@ function API.CreateQuest(_Data)
     if GUI then
         return;
     end
+    if _Data.Name and Quests[GetQuestID(_Data.Name)] then
+        error("API.CreateQuest: A quest named " ..tostring(_Data.Name).. " already exists!");
+        return;
+    end
     return BundleQuestGeneration.Global:QuestCreateNewQuest(_Data);
 end
 AddQuest = API.CreateQuest;
@@ -367,7 +371,7 @@ function BundleQuestGeneration.Global:QuestCreateNewQuest(_Data)
 
     -- Daten validieren
     if not self:QuestValidateQuestData(QuestData) then
-        error("AddQuest: Error while creating quest. Table has been copied to log.");
+        error("BundleQuestGeneration: Failed to vaidate quest data. Table has been copied to log.");
         API.DumpTable(QuestData, "Quest");
         return;
     end
@@ -424,7 +428,7 @@ end
 --
 function BundleQuestGeneration.Global:QuestValidateQuestData(_Data)
     return (
-        (type(_Data[1]) == "string" and self:QuestValidateQuestName(_Data[1])) and
+        (type(_Data[1]) == "string" and self:QuestValidateQuestName(_Data[1]) and Quests[GetQuestID(_Data[1])] == nil) and
         (type(_Data[2]) == "number" and _Data[2] >= 1 and _Data[2] <= 8) and
         (type(_Data[3]) == "number" and _Data[3] >= 1 and _Data[3] <= 8) and
         (type(_Data[6]) == "number" and _Data[6] >= 0) and
@@ -513,6 +517,7 @@ end
 
 ---
 -- Neue Implementierung des Quest Loop um Statuscallbacks auszulösen.
+--
 -- @param[type=table] _arguments Argumente
 -- @within Internal
 -- @local
@@ -615,6 +620,15 @@ function BundleQuestGeneration.Global.QuestLoop(_arguments)
     end
 end
 
+---
+-- Serialisiert das übergebene Behavior, damit es geloggt werden kann.
+--
+-- @param[type=table] _Data        Behavior Data
+-- @param[type=number] _CustomType Typ der Custom Daten
+-- @param[type=number] _Typ        Behavior Typ
+-- @within Internal
+-- @local
+--
 function BundleQuestGeneration.Global:SerializeBehavior(_Data, _CustomType, _Typ)
     local BehaviorType = "Objective";
     local BehaTable = Objective;

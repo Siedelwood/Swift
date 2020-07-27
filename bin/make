@@ -1,2 +1,2 @@
 #!/bin/bash
-bin/build -loadorder="qsb/default/loadorder_prof_qsb.lua" -devdoc
+bin/build -loadorder="qsb/default/loadorder_prof_qsb.lua"

@@ -1,8 +1,8 @@
-        {
-            Flight  = "%s",
-            Title   = "%s",
-            Text    = "%s",
-            Action  = %s,
-            FadeIn  = %s,
-            FadeOut = %s,
-        },
+    AF {
+        Flight  = "%s",
+        Title   = "%s",
+        Text    = "%s",
+        Action  = %s,
+        FadeIn  = %s,
+        FadeOut = %s,
+    };

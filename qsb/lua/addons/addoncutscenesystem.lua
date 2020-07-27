@@ -87,27 +87,29 @@ function API.CutsceneStart(_Cutscene)
 
     -- Lokalisierung Texte
     for i= 1, #_Cutscene, 1 do
-        if _Cutscene[i].Title and type(_Cutscene[i].Title) == "table" then
-            _Cutscene[i].Title = API.Localize(_Cutscene[i].Title);
-        end
-        _Cutscene[i].Title = API.ConvertPlaceholders(_Cutscene[i].Title);
+        if type(_Cutscene[i]) == "table" then
+            if _Cutscene[i].Title and type(_Cutscene[i].Title) == "table" then
+                _Cutscene[i].Title = API.Localize(_Cutscene[i].Title);
+            end
+            _Cutscene[i].Title = API.ConvertPlaceholders(_Cutscene[i].Title);
 
-        if _Cutscene[i].Text and type(_Cutscene[i].Text) == "table" then
-            _Cutscene[i].Text = API.Localize(_Cutscene[i].Text);
-        end
-        _Cutscene[i].Text = API.ConvertPlaceholders(_Cutscene[i].Text);
+            if _Cutscene[i].Text and type(_Cutscene[i].Text) == "table" then
+                _Cutscene[i].Text = API.Localize(_Cutscene[i].Text);
+            end
+            _Cutscene[i].Text = API.ConvertPlaceholders(_Cutscene[i].Text);
 
-        if _Cutscene[i].Lines then
-            for j= 1, #_Cutscene[i].Lines, 1 do
-                if _Cutscene[i].Lines[j].Title and type(_Cutscene[i].Lines[j].Title) == "table" then
-                    _Cutscene[i].Lines[j].Title = API.Localize(_Cutscene[i].Lines[j].Title);
+            if _Cutscene[i].Lines then
+                for j= 1, #_Cutscene[i].Lines, 1 do
+                    if _Cutscene[i].Lines[j].Title and type(_Cutscene[i].Lines[j].Title) == "table" then
+                        _Cutscene[i].Lines[j].Title = API.Localize(_Cutscene[i].Lines[j].Title);
+                    end
+                    _Cutscene[i].Lines[j].Title = API.ConvertPlaceholders(_Cutscene[i].Lines[j].Title);
+            
+                    if _Cutscene[i].Lines[j].Text and type(_Cutscene[i].Lines[j].Text) == "table" then
+                        _Cutscene[i].Lines[j].Text = API.Localize(_Cutscene[i].Lines[j].Text);
+                    end
+                    _Cutscene[i].Lines[j].Text = API.ConvertPlaceholders(_Cutscene[i].Lines[j].Text);
                 end
-                _Cutscene[i].Lines[j].Title = API.ConvertPlaceholders(_Cutscene[i].Lines[j].Title);
-        
-                if _Cutscene[i].Lines[j].Text and type(_Cutscene[i].Lines[j].Text) == "table" then
-                    _Cutscene[i].Lines[j].Text = API.Localize(_Cutscene[i].Lines[j].Text);
-                end
-                _Cutscene[i].Lines[j].Text = API.ConvertPlaceholders(_Cutscene[i].Lines[j].Text);
             end
         end
     end
@@ -431,6 +433,7 @@ end
 
 ---
 -- Initalisiert das Bundle im lokalen Skript.
+--
 -- @within Internal
 -- @local
 --
@@ -445,6 +448,7 @@ end
 ---
 -- Startet die Cutscene im lokalen Skript. Die Spielansicht wird versteckt
 -- und der Cinematic Mode aktiviert.
+--
 -- @param[type=table] _Cutscene Cutscene table
 -- @within Internal
 -- @local
@@ -481,6 +485,7 @@ end
 ---
 -- Stoppt die Cutscene im lokalen Skript. Hier wird der Cinematic Mode
 -- deaktiviert und die Spielansicht wiederhergestellt.
+--
 -- @within Internal
 -- @local
 --
@@ -506,6 +511,7 @@ end
 
 ---
 -- Prüft, ob eine Cutscene aktiv ist.
+--
 -- @param[type=boolean] Cutscene ist aktiv
 -- @within Internal
 -- @local
@@ -515,7 +521,38 @@ function AddOnCutsceneSystem.Local:IsCutsceneActive()
 end
 
 ---
+-- Springt zum angegebenen Flight der Cutscene.
+--
+-- @param _NameOrID Flight Name oder ID
+-- @within Internal
+-- @local
+--
+function AddOnCutsceneSystem.Local:JumpToFlight(_NameOrID)
+    if self.Data.CurrentCutscene then
+        if type(_NameOrID) == "string" then
+            for i= 1, #self.Data.CurrentCutscene, 1 do
+                if self.Data.CurrentCutscene[i] and self.Data.CurrentCutscene[i].Flight == _NameOrID then
+                    self.Data.CurrentFlight = i -1;
+                    self:FlightFinished();
+                    return;
+                end
+            end
+        else
+            if self.Data.CurrentCutscene[_NameOrID] then
+                self.Data.CurrentFlight = _NameOrID -1;
+                self:FlightFinished();
+                return;
+            end
+        end
+    end
+    -- Im Falle einer Fehleingabe, muss es trotzdem weiter gehen. Darum wird
+    -- hier noch mal :FlightFinished aufgerufen.
+    self:FlightFinished();
+end
+
+---
 -- Startet den nächsten Flight.
+--
 -- @within Internal
 -- @local
 --
@@ -525,10 +562,14 @@ function AddOnCutsceneSystem.Local:NextFlight()
     if not CurrentFlight then
         return;
     end
-    if Camera.IsValidCutscene(CurrentFlight.Flight) then
-        Camera.StartCutscene(CurrentFlight.Flight);
+    if type(CurrentFlight) ~= "table" then
+        self:JumpToFlight(CurrentFlight);
     else
-        self:FlightFinished();
+        if Camera.IsValidCutscene(CurrentFlight.Flight) then
+            Camera.StartCutscene(CurrentFlight.Flight);
+        else
+            self:FlightFinished();
+        end
     end
 end
 

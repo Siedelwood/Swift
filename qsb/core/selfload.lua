@@ -45,6 +45,9 @@ if not MapEditor and not GUI then
         if BundleKnightTitleRequirements then
             InitKnightTitleTables();
         end
+        if Mission_LocalOnQsbLoaded then
+            Mission_LocalOnQsbLoaded();
+        end
     ]]);
 end
 

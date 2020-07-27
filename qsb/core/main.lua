@@ -92,12 +92,6 @@ function Core:InitalizeBundles()
             self.Data.InitalizedBundles[v] = true;
             collectgarbage();
         end
-
-        -- QSB wurde lokal geladen
-        if Mission_LocalOnQsbLoaded then
-            Mission_LocalOnQsbLoaded();
-        end
-
         QSB.InitializationFinished = true;
     end
 end
@@ -329,8 +323,9 @@ function Core:RegisterBehavior(_Behavior)
     end
 
     if not _G["b_" .. _Behavior.Name] then
-        Core:LogToFile("AddQuestBehavior: can not find ".. _Behavior.Name .."!", LEVEL_ERROR);
-        Core:LogToScreen("AddQuestBehavior: can not find ".. _Behavior.Name .."!", LEVEL_ERROR);
+        --self:LogToFile("AddQuestBehavior: can not find ".. _Behavior.Name .."!", LEVEL_ERROR);
+        --self:LogToScreen("AddQuestBehavior: can not find ".. _Behavior.Name .."!", LEVEL_ERROR);
+        Logic.ExecuteInLuaLocalState("GUI.AddStaticNote('" ..tostring(_Behavior.Name).. "')");
     else
         if not _G["b_" .. _Behavior.Name].new then
             _G["b_" .. _Behavior.Name].new = function(self, ...)

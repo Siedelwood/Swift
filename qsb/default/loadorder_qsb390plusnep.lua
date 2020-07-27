@@ -1,6 +1,8 @@
 LoadOrder = {
     {
+        {"BundleBriefingSystem",                true},
         {"BundleClassicBehaviors",              true},
+        {"BundleKnightTitleRequirements",       true},
         {"BundleQuestGeneration",               true},
         {"BundleTravelingSalesman",             true},
     },

@@ -237,8 +237,7 @@ PlayerGetPlayerID = API.GetControllingPlayer;
 -- @param[type=number] _PlayerID ID des Spielers
 -- @param[type=number] _GoodType Warentyp
 -- @return[type=boolean] Ware kann produziert werden
--- @within Internal
--- @local
+-- @within Anwenderfunktionen
 --
 function API.CanPlayerProduceGood(_PlayerID, _GoodType)
     if type(_PlayerID) ~= "number" or _PlayerID < 1 or _PlayerID > 8 then
@@ -259,8 +258,7 @@ end
 -- @param[type=number] _PlayerID ID des Spielers
 -- @param[type=number] _GoodType Warentyp
 -- @return[type=boolean] Ware kann produziert werden
--- @within Internal
--- @local
+-- @within Anwenderfunktionen
 --
 function API.CanPlayerCurrentlyProduceGood(_PlayerID, _GoodType)
     if type(_PlayerID) ~= "number" or _PlayerID < 1 or _PlayerID > 8 then
@@ -269,8 +267,8 @@ function API.CanPlayerCurrentlyProduceGood(_PlayerID, _GoodType)
     end
     local TypeName = GetNameOfKeyInTable(Goods, _GoodType);
     if TypeName == nil then
-        error("API.CanPlayerCurrentlyProduceGood: _GoodType (" ..tostring(_GoodType).. ") is wrong!");
-        return true;
+        warn("API.CanPlayerCurrentlyProduceGood: _GoodType (" ..tostring(_GoodType).. ") is wrong!");
+        return false;
     end
     return BundlePlayerHelperFunctions.Shared:CanPlayerProduceGood(_PlayerID, _GoodType);
 end
@@ -280,8 +278,7 @@ end
 --
 -- @param[type=number] _GoodType Warentyp
 -- @return[type=number] Rohstoff
--- @within Internal
--- @local
+-- @within Anwenderfunktionen
 --
 function API.GetResourceOfProduct(_GoodType)
     local TypeName = GetNameOfKeyInTable(Goods, _GoodType);
@@ -290,6 +287,28 @@ function API.GetResourceOfProduct(_GoodType)
         return true;
     end
     return BundlePlayerHelperFunctions.Shared:ProductToResource(_GoodType);
+end
+
+---
+-- Prüft, ob der Spieler Zugang zum Rohstoff der angegebenen Ware hat.
+--
+-- @param[type=number]  _PlayerID ID des Spielers
+-- @param[type=number]  _GoodType Warentyp
+-- @param[type=boolean] _WithNeutral Entities auf neutralen Territorien zählen
+-- @return[type=boolean] Resource ist vorhanden
+-- @within Anwenderfunktionen
+--
+function API.HasPlayerAccessToResource(_PlayerID, _GoodType, _WithNeutral)
+    if GUI then
+        return false;
+    end
+    local TypeName = GetNameOfKeyInTable(Goods, _GoodType);
+    if TypeName == nil then
+        error("API.HasPlayerAccessToResource: _GoodType (" ..tostring(_GoodType).. ") is wrong!");
+        return true;
+    end
+    local Amount, Results = BundlePlayerHelperFunctions.Shared:GetResourceEntitiesOfPlayerForGoodType(_PlayerID, _GoodType, _WithNeutral);
+    return Amount == -1 or Amount > 0;
 end
 
 -- -------------------------------------------------------------------------- --
@@ -326,6 +345,7 @@ BundlePlayerHelperFunctions = {
 function BundlePlayerHelperFunctions.Global:Install()
     BundlePlayerHelperFunctions.Shared:CreateGoodsTechnologiesMap();
     BundlePlayerHelperFunctions.Shared:CreateProductToResourceMap();
+    BundlePlayerHelperFunctions.Shared:CreateGoodsResourcesMap();
     self:InitFestival();
     API.AddSaveGameAction(BundlePlayerHelperFunctions.Global.OnSaveGameLoaded);
 end
@@ -560,6 +580,7 @@ end
 function BundlePlayerHelperFunctions.Local:Install()
     BundlePlayerHelperFunctions.Shared:CreateGoodsTechnologiesMap();
     BundlePlayerHelperFunctions.Shared:CreateProductToResourceMap();
+    BundlePlayerHelperFunctions.Shared:CreateGoodsResourcesMap();
     self:InitForbidFestival();
     self:OverrideQuestLogPlayerIcon();
     self:OverrideQuestPlayerIcon();
@@ -721,6 +742,101 @@ function BundlePlayerHelperFunctions.Shared:ProductToResource(_GoodType)
 end
 
 ---
+-- Gibt die Rohstoff-Entities zur Ware zurück, die der Spieler besitzt.
+--
+-- Benötigt eine Ware keine Rohstoffe, wird -1 und eine leere Liste
+-- zurückgegeben.
+--
+-- Optional können auch Entities auf neutralen Territorien einbezogen werden.
+--
+-- Es werden nur Entities zurückgegeben, die erreichbar sind. Entities hinter
+-- Blocking werden ausgeschlossen.
+--
+-- @param[type=number]  _PlayerID ID des Spielers
+-- @param[type=number]  _GoodType Warentyp
+-- @param[type=boolean] _WithNeutral Entities auf neutralen Territorien zählen
+-- @return[type=number] Anzahl Entities
+-- @return[type=table] Liste der Entities
+-- @within Internal
+-- @local
+--
+function BundlePlayerHelperFunctions.Shared:GetResourceEntitiesOfPlayerForGoodType(_PlayerID, _GoodType, _WithNeutral)
+    -- Rohstofftyp ermitteln
+    local Resources = self.Data.GoodsResourcesMap[_GoodType];
+    if Resources == nil or #Resources == 0 then
+        local GoodTypeName = Logic.GetGoodTypeName(_GoodType);
+        if self.Data.ProductResourceMap[GoodTypeName] then
+            _GoodType = self.Data.ProductResourceMap[GoodTypeName];
+            if _GoodType then
+                Resources = self.Data.GoodsResourcesMap[_GoodType];
+                if Resources == nil or #Resources == 0 then
+                    return -1, {};
+                end
+            end
+        end
+    end
+    Resources = Resources or {};
+
+    -- Territorien des Spielers ermitteln
+    local PlayerTerritories = {Logic.GetTerritories()}
+    for i= #PlayerTerritories, 1, -1 do
+        if not _WithNeutral and Logic.GetTerritoryPlayerID(PlayerTerritories[i]) ~= _PlayerID then
+            table.remove(PlayerTerritories, i);
+        elseif _WithNeutral and Logic.GetTerritoryPlayerID(PlayerTerritories[i]) > 0 
+        and    Logic.GetTerritoryPlayerID(PlayerTerritories[i]) ~= _PlayerID then
+            table.remove(PlayerTerritories, i);
+        end
+    end
+
+    -- Rohstoffe prüfen
+    local ResultList = {};
+    if #Resources > 0 then
+        for k, v in pairs(Resources) do
+            local Type = Logic.GetEntityTypeID(v);
+            if Type ~= nil then
+                local ResEntities, ResEntityAmount;
+                if Type == Entities.A_X_Cow01 or Type == Entities.A_X_Sheep01 or Type == Entities.A_X_Sheep02 then
+                    for i= 1, #PlayerTerritories, 1 do
+                        ResEntities = {Logic.GetEntitiesOfTypeInTerritory(PlayerTerritories[i], _PlayerID, Type, 0)};
+                        if #ResEntities > 0 then
+                            ResultList = Array_Append(ResultList, ResEntities);
+                        end
+                    end
+                else
+                    ResEntities = {Logic.GetEntities(Type, 48)};
+                    ResEntityAmount = table.remove(ResEntities, 1);
+                    if ResEntityAmount > 0 then
+                        for j= 1, #ResEntities do
+                            for i= 1, #PlayerTerritories, 1 do
+                                if GetTerritoryUnderEntity(ResEntities[j]) == PlayerTerritories[i] then
+                                    table.insert(ResultList, ResEntities[j]);
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    -- Nicht erreichbare Entities entfernen
+    for i= #ResultList, 1, -1 do
+        local x,y,z = Logic.EntityGetPos(ResultList[i]);
+        local SH1ID = Logic.GetStoreHouse(_PlayerID);
+        local PosID = Logic.CreateEntityOnUnblockedLand(
+            Entities.XD_ScriptEntity, x, y, 0, 0
+        )
+        if not CanEntityReachTarget(_PlayerID, SH1ID, PosID, nil, PlayerSectorTypes.Military) then
+            table.remove(ResultList, i);
+        end
+        DestroyEntity(PosID);
+    end
+    return #ResultList, ResultList;
+end
+
+-- BundlePlayerHelperFunctions.Shared:GetResourceEntitiesOfPlayerForGoodType(1, Goods.G_Soap, false)
+
+---
 -- Generiert die Map für Die Zuordnung Produkt zu Rohstoff.
 --
 -- Produkte, die aus anderen Produkten hergestellt werden haben den Rohstoff
@@ -880,6 +996,47 @@ function BundlePlayerHelperFunctions.Shared:CreateGoodsTechnologiesMap()
     self.Data.GoodsTechnologiesMap[Goods.G_Sword] = {
         unpack(self.Data.GoodsTechnologiesMap[Goods.G_PoorSword]),
         Technologies.R_Military, Technologies.R_Barracks
+    };
+end
+
+---
+-- 
+--
+-- @within Internal
+-- @local
+--
+function BundlePlayerHelperFunctions.Shared:CreateGoodsResourcesMap()
+    -- Evergreens
+    self.Data.GoodsResourcesMap = {
+        [Goods.G_Carcass]       = {
+            "S_AxisDeer_AS",
+            "S_Deer_ME",
+            "S_FallowDeer_SE",
+            "S_Gazelle_NA",
+            "S_Moose_NE",
+            "S_Reindeer_NE",
+            "S_WildBoar",
+            "S_Zebra_NA"
+        },
+        [Goods.G_Herb]          = {
+            "S_Herbs"
+        },
+        [Goods.G_Iron]          = {
+            "R_IronMine"
+        },
+        [Goods.G_Milk]          = {
+            "A_X_Cow01"
+        },
+        [Goods.G_RawFish]       = {
+            "S_RawFish"
+        },
+        [Goods.G_Stone]         = {
+            "R_StoneMine"
+        },
+        [Goods.G_Wool]          = {
+            "A_X_Sheep01",
+            "A_X_Sheep02"
+        },
     };
 end
 
