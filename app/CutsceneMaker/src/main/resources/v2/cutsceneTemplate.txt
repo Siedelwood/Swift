@@ -5,10 +5,12 @@ function %s()
         BigBars          = %b,
         BarOpacity       = %f,
         FastForward      = %b,
+    };
+    local AF = API.AddFlights(Cutscene);
 
 %s
-        Starting = %s;
-        Finished = %s;
-    };
+    Cutscene.Starting = %s;
+    Cutscene.Finished = %s;
+
     return API.CutsceneStart(Cutscene);
 end
