@@ -72,15 +72,15 @@ function Mission_FirstMapAction()
     InteractiveObjectDeactivate("IORR4");
     InteractiveObjectDeactivate("IORR5");
 
-    API.CreateObject {
-        Name        = "IORR3",
-        Distance    = 1200,
-        Texture     = {1, 8},
-        Costs       = {Goods.G_Gold, 100, Goods.G_Stone, 10},
-        Callback    = function(_Data, _PlayerID)
-            API.Note(_PlayerID.. " has activated object " .._Data.m_Name);
-        end,
-    }
+    -- API.CreateObject {
+    --     Name        = "IORR3",
+    --     Distance    = 1200,
+    --     Texture     = {1, 8},
+    --     Costs       = {Goods.G_Gold, 100, Goods.G_Stone, 10},
+    --     Callback    = function(_Data, _PlayerID)
+    --         API.Note(_PlayerID.. " has activated object " .._Data.m_Name);
+    --     end,
+    -- }
 
     -- API.CreateQuest {
     --     Name = "TestQuest",

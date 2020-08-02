@@ -57,13 +57,21 @@ function API.CreateRandomChest(_Name, _Good, _Min, _Max, _Callback)
         error("API.CreateRandomChest: _Min (" ..tostring(_Min).. ") is wrong!");
         return;
     end
-    if type(_Max) ~= "number" or _Max < 1 then
-        error("API.CreateRandomChest: _Max (" ..tostring(_Max).. ") is wrong!");
-        return;
-    end
-    if _Max < _Min then
-        error("API.CreateRandomChest: _Max (" ..tostring(_Max).. ") must be greather then _Min (" ..tostring(_Min).. ")!");
-        return;
+
+    if type(_Max) ~= "number" then
+        if not _Callback and type(_Max) == "function" then
+            _Callback = _Max;
+        end
+        _Max = _Min;
+    else
+        if type(_Max) ~= "number" or _Max < 1 then
+            error("API.CreateRandomChest: _Max (" ..tostring(_Max).. ") is wrong!");
+            return;
+        end
+        if _Max < _Min then
+            error("API.CreateRandomChest: _Max (" ..tostring(_Max).. ") must be greather then _Min (" ..tostring(_Min).. ")!");
+            return;
+        end
     end
     AddOnInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _Callback);
 end
@@ -106,13 +114,21 @@ function API.CreateRandomTreasure(_Name, _Good, _Min, _Max, _Callback)
         error("API.CreateRandomTreasure: _Min (" ..tostring(_Min).. ") is wrong!");
         return;
     end
-    if type(_Max) ~= "number" or _Max < 1 then
-        error("API.CreateRandomTreasure: _Max (" ..tostring(_Max).. ") is wrong!");
-        return;
-    end
-    if _Max < _Min then
-        error("API.CreateRandomTreasure: _Max (" ..tostring(_Max).. ") must be greather then _Min (" ..tostring(_Min).. ")!");
-        return;
+
+    if type(_Max) ~= "number" then
+        if not _Callback and type(_Max) == "function" then
+            _Callback = _Max;
+        end
+        _Max = _Min;
+    else
+        if type(_Max) ~= "number" or _Max < 1 then
+            error("API.CreateRandomTreasure: _Max (" ..tostring(_Max).. ") is wrong!");
+            return;
+        end
+        if _Max < _Min then
+            error("API.CreateRandomTreasure: _Max (" ..tostring(_Max).. ") must be greather then _Min (" ..tostring(_Min).. ")!");
+            return;
+        end
     end
     AddOnInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _Callback, true);
 end
@@ -263,8 +279,9 @@ function AddOnInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Ma
         _Callback = function(t) end
     end
     assert(_Good ~= nil, "CreateRandomChest: Good does not exist!");
-    assert(_Min < _Max, "CreateRandomChest: min amount must be smaller than max amount!");
+    assert(_Min <= _Max, "CreateRandomChest: min amount must be smaller or equal than max amount!");
 
+    -- Debug Informationen schreiben
     debug(string.format(
         "AddOnInteractiveChests: Creating chest (%s, %s, %d, %d, %s, %s)",
         _Name,
@@ -275,6 +292,7 @@ function AddOnInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Ma
         tostring(_NoModelChange)
     ))
 
+    -- Texte und Model setzen
     local Title = AddOnInteractiveChests.Text.Treasure.Title;
     local Text  = AddOnInteractiveChests.Text.Treasure.Text;
     if not _NoModelChange then
@@ -286,26 +304,30 @@ function AddOnInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Ma
         Logic.SetVisible(eID, true);
     end
 
+    -- Menge an Gütern ermitteln
+    local GoodAmount = _Min;
+    if _Min < _Max then
+        GoodAmount = math.random(_Min, _Max);
+    end
+
     CreateObject {
         Name                    = _Name,
         Title                   = Title,
         Text                    = Text,
-        Reward                  = {_Good, math.random(_Min, _Max)},
+        Reward                  = {_Good, GoodAmount},
         Texture                 = {1, 6},
-        Distance                = 650,
+        Distance                = (_NoModelChange and 1200) or 650,
         Waittime                = 0,
         State                   = 0,
         DoNotChangeModel        = _NoModelChange == true,
         CallbackOpened          = _Callback,
         Callback                = function(_IO, _PlayerID, _Data)
             if not _Data.DoNotChangeModel then
-                -- Nur Modell ändern!
-                -- ReplaceEntity(_Data.Name, Entities.D_X_ChestOpenEmpty);
                 Logic.SetModel(GetID(_Data.Name), Models.Doodads_D_X_ChestOpenEmpty);
             end
             _Data.CallbackOpened(_Data);
         end,
-    }
+    };
 end
 
 ---
