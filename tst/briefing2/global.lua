@@ -364,17 +364,17 @@ function Briefing06()
     }
     local AP, ASP = API.AddPages(Briefing);
 
-    ASP("pos4", "Page 1", "This is page 1!", false)
+    ASP("Page1", "pos4", "Page 1", "This is page 1!", false)
     ASP("pos4", "Page 2", "This is page 2!", false);
-    ASP("pos4", "Page 3", "This is page 3!", false);
+    ASP("Page3", "pos4", "Page 3", "This is page 3!", false);
     ASP("pos4", "Page 4", "This is page 4!", false);
     ASP("pos4", "Page 5", "This is page 5!", false);
 
     Briefing.PageAnimations = {
-        [1] = {
+        ["Page1"] = {
             {"pos4", -60, 2000, 35, "pos4", -30, 2000, 25, 30}
         },
-        [3] = {
+        ["Page3"] = {
             PurgeOld = true,
             {"pos2", -45, 6000, 35, "pos2", -45, 3000, 35, 30},
         }

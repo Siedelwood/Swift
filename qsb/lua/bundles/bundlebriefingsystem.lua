@@ -13,12 +13,6 @@
 -- oder Menüstrukturen abgebildet werden. Mittels Sprüngen und Leerseiten
 -- kann innerhalb des Multiple Choice Briefings navigiert werden.
 --
--- <p>Das wichtigste auf einen Blick:
--- <ul>
--- <li><a href="#API.StartBriefing">Ein Briefing starten</a></li>
--- <li><a href="#AP">Ein Seite erzeugen</a></li>
--- <li>
---
 -- @within Modulbeschreibung
 -- @set sort=true
 --
@@ -98,6 +92,37 @@ QSB.DialogAnimations = {
 -- angegeben, dann standardmäßig deaktiviert.</td>
 -- </tr>
 -- </table>
+--
+-- <br><h5>Animationen entkoppeln</h5>
+-- Es ist außerdem möglich, die Kameraanimation von den einzelnen Seiten des
+-- Briefings zu entkoppeln. Das hat den Charme, dass Spielfiguren erzählen
+-- und erzählen und die Kamera über die ganze Zeit die gleiche Animation
+-- zeigt, was das Lesen angenehmer macht.
+--
+-- Animationen werden über die Animations-Table gesteuert. Diese wird direkt
+-- an die Briefing Table angehangen. Die Animation wird die Kamera dann von
+-- Position 1 zu Position 2 bewegen.
+-- <p>Beispiel:</p>
+-- <pre>
+-- Briefing.Animation = {
+--    ["Page1"] = {
+--        -- Position1, Rotation1, Zoom1, Angle1, Position2, Rotation2, Zoom2, Angle2, Animationsdauer
+--        {"pos4", -60, 2000, 35, "pos4", -30, 2000, 25, 30}
+--    },
+--    ["Page3"] = {
+--        PurgeOld = true,
+--        {"pos2", -45, 6000, 35, "pos2", -45, 3000, 35, 30},
+--    }
+--};</pre>
+-- Hier wird eine Animation für die Seite "Page1" definiert. Sobald die Seite
+-- abgespielt wird startet die Animation. Wird Seite "Page3" erreicht, werden
+-- alle laufenden Animationen abgebrochen (PurgeOld = true) und die neue
+-- Animation hinzugefügt. Es können mehrere Animationen definiert werden,
+-- welche nacheinander abgespielt werden.
+--
+-- Definiert man Animationen auf diese weise, so muss man es für das <u>
+-- gesamte Briefing</u> durchziehen. Angaben von Angle, Zoom und Co an
+-- einzelnen Pages werden ignoriert.
 --
 -- <b>Alias</b>: StartBriefing
 --
@@ -358,78 +383,189 @@ AddPages = API.AddPages;
 -- <a href="#API.AddPages">API.AddPages</a> erzeugt und an
 -- das Briefing gebunden.
 --
--- <h5>Normale Briefings</h5>
---
--- Eine einfache Seite lässt sich unter Nutzung von DialogCamera erstellen.
--- Dadurch wird entweder Nahsicht oder Fernsicht verwendet. Werte für Angle,
--- Rotation oder Zoom werden automatisch gesetzt, wenn sie fehlen.
+-- <h5>Dialog Page</h5>
+-- Eine Dialog Page ist eine einfache Seite, zu der es keine spezielle
+-- Kameraanimation gibt. Sie kann für die Darstellung von Dialogen zwischen
+-- Spielfiguren benutzt werden. Folgende Optionen stehen zur Verfügung:
+-- <table border="1">
+-- <tr>
+-- <td><b>Einstellung</b></td>
+-- <td><b>Beschreibung</b></td>
+-- </tr>
+-- <tr>
+-- <td>Title</td>
+-- <td>Der Titel, der oben angezeigt wird. Es ist möglich eine Table mit
+-- deutschen und englischen Texten anzugeben.</td>
+-- </tr>
+-- <tr>
+-- <td>Text</td>
+-- <td>Der Text, der unten angezeigt wird. Es ist möglich eine Table mit
+-- deutschen und englischen Texten anzugeben.</td>
+-- </tr>
+-- <tr>
+-- <td>Position</td>
+-- <td>Striptname des Entity, welches die Kamera ansieht. Es kann auch eine
+-- Table angegeben werden. Dann ist der erste Wert die Position und der
+-- zweite Wert das Z-Offset.</td>
+-- </tr>
+-- <tr>
+-- <td>Duration</td>
+-- <td>Bestimmt, wie lange die Page angezeigt wird. Wenn du es weglässt,
+-- wird die Page solange angezeigt, bis der Spieler "Weiter" klickt.</td>
+-- </tr>
+-- <tr>
+-- <td>DialogCamera</td>
+-- <td>Eine Boolean, welche angibt, ob Nah- oder Fernsicht benutzt wird.</td>
+-- </tr>
+-- <tr>
+-- <td>Action</td>
+-- <td>Eine optional angebbare Funktion, die jedes Mal ausgeführt wird, sobald
+-- die Seite angezeigt wird.</td>
+-- </tr>
+-- </table>
+-- <p>Beispiel:</p>
 -- <pre>AP {
---    Title        = "Titel",
---    Text         = "Das ist der Text der Seite.",
---    Position     = "HQ2",
---    DialogCamera = false,
---    Angle        = 30
---}</pre>
--- Es gilt zu beachten, dass Seiten ohne Duration solange angezeigt werden,
--- bis der Benutzer die Seite per Button-Klick verlässt.
---
--- Es kann eine einfache Bewegung erzeugt werden. Hierzu wird FlyTo benutzt.
--- <pre>AP {
---    ...
---    FlyTo        = {
---        Position = {"hero", 250},
---        Zoom     = 2200,
---        Rotation = Logic.GetEntityOrientation(GetID("hero"))+90,
---        Angle    = 12,
---        Duration = 15,
---    }
---}</pre>
--- Die Dauer der Animation (FlyTo.Duration) wird automatisch zur Dauer der
--- Seite, wenn diese nicht gesetzt ist oder die Animation länger ist.
---
--- <pre>Portrait = "Path/to/Portrait.ong",</pre>
--- Jede Seite kann eine Grafik am linken oberen Rand anzeigen. Diese Grafik wird
--- als Portrait betrachtet und sollte 400x600 Pixel groß sein.
+--    Title        = "Marcus",
+--    Text         = "Das ist eine simple Dialogseite",
+--    Position     = "Marcus",
+--    DialogCamera = true,
+--};</pre>
+-- Eine solche Seite wird immer im Winkel von -45° auf die Welt schauen.
 -- 
--- <pre>Splashscreen = "Path/to/Graphic.ong",</pre>
--- Jede Seite kann ebenso eine bildschirmfüllende Grafik anzeigen. Diese Grafik
--- heißt Splashscreen. Splashscreens sollten immer das Format 16:9 haben.
+-- <br><br><h5>Erweiterte Dialog Page</h5>
+-- Will man die Kameraeinstellungen selbst vornehmen kann man einige oder alle
+-- der folgenden Optionen ergänzen:
+-- <table border="1">
+-- <tr>
+-- <td><b>Einstellung</b></td>
+-- <td><b>Beschreibung</b></td>
+-- </tr>
+-- <tr>
+-- <td>Rotation</td>
+-- <td>Die Rotation der Kamera gibt den Winkel an, indem die Kamera um das
+-- Ziel gedreht wird.</td>
+-- </tr>
+-- <tr>
+-- <td>Zoom</td>
+-- <td>Zoom bestimmt die Entfernung der Kamera zum Ziel.</td>
+-- </tr>
+-- <tr>
+-- <td>Angle</td>
+-- <td>Der Angle gibt den Winkel an, in dem die Kamera gekippt wird.</td>
+-- </tr>
+-- <tr>
+-- <td>FadeIn</td>
+-- <td>Diese Option ermöglicht das Einblenden von schwarz.</td>
+-- </tr>
+-- <tr>
+-- <td>FadeOut</td>
+-- <td>Diese Option ermoglicht das Ausblenden zu schwarz.</td>
+-- </tr>
+-- <tr>
+-- <td>FaderAlpha</td>
+-- <td>Diese Option ermöglicht eine Seite komplett schwarz darzustellen. Du
+-- kannst dies Einsetzen um von einem Punkt zum anderen zu springen und
+-- "hinter dem Vorhang" Änderungen vorzunehmen, wie z.B. Entiries erzeugen.</td>
+-- </tr>
+-- </table>
 --
---<pre>Position = {X= 12000.0, Y= 36000.0, Z= 6000.0},
---LookAt   = {X= 10000.0, Y= 35000.0, Z= 2345.0},</pre>
--- AP unterstützt ebenso die Angabe von XYZ-Koordinaten. Positionen können auch
--- als Vektoren angegeben werden. Dann hat die Kamera eine Position und eine
--- Blickrichtung.
+-- <br><h5>Page mit Animation</h5>
+-- Es ist möglich einer Page eine einfache Animation zu geben. Hierfür wird
+-- eine Subtable FlyTo angelegt. Innerhalb von FlyTo können Angle, Duration,
+-- Position, Rotation und Zoom angegeben werden. Duration in FlyTime ersetzt
+-- die Duration der Page, wenn diese geringer oder nicht vorhanden ist.
+-- <p>Beispiel:</p>
+-- <pre>AP {
+--    Title    = "Erzähler",
+--    Text     = "Und so kam es, dass...",
+--    Position = {"Pos1", 450},
+--    Angle    = 32,
+--    Rotation = -45,
+--    Zoom     = 5000,
+--    FlyTo    = {
+--        Position = {"Pos1", 450},
+--        Angle    = 32,
+--        Rotation = 45,
+--        Zoom     = 5000,
+--        Duration = 20,
+--    }
+--};</pre>
 --
--- <h5>Multiple Choice</h5>
+-- <br><h5>Page mit Richtungsvektor</h5>
+-- Anstelle von Angle, Rotation und Zoom kann auch eine zweite Position
+-- angegeben werden. Die Kamera befindet sich dann an der Position von
+-- Position und schaut zur Position von LookAt. Es können Skriptnamen mit
+-- Z-Offset oder XYZ-Koordinaten verwendet werden.
+-- <p>Beispiel:</p>
+-- <pre>AP {
+--    Title    = "Marcus",
+--    Text     = "Big Brother folgt mir, wohin ich auch gehe...",
+--    Position = {"LH1", 450},
+--    LookAt   = {"Marcus", 0},
+--    FlyTo    = {
+--        Position = {"LH1", 450},
+--        LookAt   = {"Marcus", 0},
+--        Duration = 20,
+--    }
+--};</pre>
+-- Hier befindet sich die Kamera 450 Einheiten über dem Entity "LH1" und
+-- blickt zur Entity Marcus.
 --
+-- Über Richtungsvektoren können besondere Kameraeffekte erzielt werden.
+-- Wenn sich das LookAt-Entity bewegt und das Position still steht, wird
+-- die LookAt-Entity von der fest stationierten Kamera verfolgt. Wenn die
+-- Position z.B. ein sich bewegende Kutsche ist, und LookAt ein statisches
+-- Entity, wie z.B. ein Gebäude, wird der Effekt erzielt, dass jemand aus
+-- der Kutsche auf das Gebäude schaut.
+--
+-- <br><h5>Bedingtes Anzeigen</h5>
+-- Hat man verschiedene Handlungsstränge oder sollen sich die Texte an die
+-- Aktionen des Spielers anpassen, so kann es sein, dass man Pages anzeigen
+-- oder überspringen will. Dafür kann man Pages einen Namen geben.
+-- <pre>AP {
+--    Name        = "ExamplePage1",
+--    ...
+--};</pre>
+-- Mit diesem Namen kann eine Page direkt angesprungen werden.
+-- <pre>AP("ExamplePage1")</pre>
+--
+-- <br><h5>Multiple Choice</h5>
 -- In einem Dialog kann der Spieler auch zur Auswahl einer Option gebeten
 -- werden. Dies wird als Multiple Choice bezeichnet. Schreibe die Optionen
 -- in eine Subtable MC.
 -- <pre>AP {
 --    ...
 --    MC = {
---        {"Antwort 1", 5},
---        {"Antwort 2", "SomePageName"},
+--        {"Antwort 1", "ExamplePage1"},
+--        {"Antwort 2", Option2Clicked},
 --    },
---}</pre>
--- Eine Antwort kann auch markiert werden, dass sie auch bei einem Rücksprung,
+--};</pre>
+-- Es kann der Name der Zielseite angegeben werden, oder eine Funktion, die
+-- den Namen des Ziels zurück gibt. In der Funktion können vorher beliebige
+-- Dinge getan werden, wie z.B. Variablen setzen.
+--
+-- Eine Antwort kann markiert werden, dass sie auch bei einem Rücksprung,
 -- nicht mehrfach gewählt werden kann.
 -- <pre>{"Antwort 3", "AnotherPage", Remove = true},</pre>
+-- Eine Option kann auch bedingt ausgeblendet werden. Dazu wird eine Funktion
+-- angegeben, die für alle Optionen aller MC-Seiten beim Start des Briefing
+-- entscheidet, ob die Option sichtbar ist oder nicht.
+-- <pre>{"Antwort 3", "AnotherPage", Disable = OptionIsDisabled},</pre>
+--
 -- Nachdem der Spieler eine Antwort gewählt hat, wird er auf die Seite mit
--- der angegebenen ID oder dem Namen geleitet. Um das Briefing zu beenden,
--- nachdem ein Pfad beendet ist, wird eine leere AP-Seite genutzt. Auf diese
--- Weise weiß das Briefing, das es an dieser Stelle zuende ist.
+-- dem angegebenen Namen geleitet.
+--
+-- Um das Briefing zu beenden, nachdem ein Pfad beendet ist, wird eine leere
+-- AP-Seite genutzt. Auf diese Weise weiß das Briefing, das es an dieser
+-- Stelle zuende ist.
 -- <pre>AP()</pre>
--- Soll stattdessen zu einer anderen Seite gesprungen werden, kann bei AP die
--- ID der Seite angeben werden, zu der gesprungen werden soll.
--- <pre>AP(8)</pre>
--- Pages können auch einen Namen erhalten. Der Name kann anstelle der ID für
--- Sprünge genutzt werden.
+--
+-- Soll stattdessen zu einer anderen Seite gesprungen werden, kann bei AP der
+-- Name der Seite angeben werden, zu der gesprungen werden soll.
 -- <pre>AP("SomePageName")</pre>
 --
 -- Um später zu einem beliebigen Zeitpunkt die gewählte Antwort einer Seite zu
--- erfahren, muss der Name der Seite oder die ID genutzt werden.
+-- erfahren, muss der Name der Seite genutzt werden.
 -- <pre>Briefing.Finished(_Data)
 --    local Choosen = _Data:GetPage("Choice"):GetSelectedAnswer();
 --end</pre>
@@ -437,12 +573,13 @@ AddPages = API.AddPages;
 -- Wird 0 zurückgegeben, wurde noch nicht geantwortet. Wenn Anworten nicht
 -- aktiv sind, verändert sich der Index anderer Antworten nicht.
 --
+-- <br><h5>Zurückblättern</h5>
 -- Wenn man zurückblättern erlaubt, aber nicht will, dass die Entscheidung
 -- erneut getroffen werden kann, kann man dies mit NoRethink unterbinden.
 -- <pre>AP {
 --    ...
 --    NoRethink = true,
---}</pre>
+--};</pre>
 -- Auf diese Weise hat der Spieler die Möglichkeit die Texte nach der letzten
 -- Entscheidung noch einmal zu lesen, ohne dass er seine Meinung ändern kann.
 --
