@@ -2257,9 +2257,6 @@ Core:RegisterBehavior(b_Trigger_Briefing);
 ---
 -- Startet einen Quest, nachdem das Mission Briefing beendet ist
 --
--- @param[type=string] _QuestName Name des Quest
--- @param[type=string] _Type     (Optional) Briefing-Typ
--- @param[type=number] _Waittime (optional) Wartezeit in Sekunden
 -- @within Trigger
 -- @see StartMissionBriefing
 --

@@ -82,14 +82,14 @@ function Mission_FirstMapAction()
         end,
     }
 
-    API.CreateQuest {
-        Name = "TestQuest",
-        Sender = 2,
-        Visible = true,
-        EndMessage = true,
-        Goal_RandomRequest(true,true,true,true,true,true,true,true,true,true,true,true,10,-1,nil,nil,nil),
-        Trigger_Time(5)
-    }
+    -- API.CreateQuest {
+    --     Name = "TestQuest",
+    --     Sender = 2,
+    --     Visible = true,
+    --     EndMessage = true,
+    --     Goal_RandomRequest(true,true,true,true,true,true,true,true,true,true,true,true,10,-1,nil,nil,nil),
+    --     Trigger_Time(5)
+    -- }
 
     local TraderDescription = {
         PlayerID   = 2,       -- Partei des Hafen

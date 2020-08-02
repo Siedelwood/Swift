@@ -157,7 +157,7 @@ SetSheepBabyMode = API.SetSheepBabyMode;
 -- Das Fütterungsinterval bestimmt, wie viele Sekunden es dauert, bis ein
 -- Getreide durch Zucht verbraucht wird.
 --
--- <b>Hinweis:</b> Das Interval ist auf 30 Sekunden voreingestellt und kann
+-- <b>Hinweis:</b> Das Interval ist auf 45 Sekunden voreingestellt und kann
 -- nicht unter 15 Sekunden gesenkt werden.
 --
 -- <b>Alias</b>: SetSheepFeedingTimer
@@ -211,7 +211,7 @@ SetCattleBaby = API.SetCattleBaby;
 -- Das Fütterungsinterval bestimmt, wie viele Sekunden es dauert, bis ein
 -- Getreide durch Zucht verbraucht wird.
 --
--- <b>Hinweis:</b> Das Interval ist auf 30 Sekunden voreingestellt und kann
+-- <b>Hinweis:</b> Das Interval ist auf 45 Sekunden voreingestellt und kann
 -- nicht unter 15 Sekunden gesenkt werden.
 --
 -- <b>Alias</b>: SetCattleFeedingTimer
@@ -314,13 +314,13 @@ BundleStockbreeding = {
             AllowBreedCattle = true,
             CattlePastures = {},
             CattleBaby = true,
-            CattleFeedingTimer = 30,
+            CattleFeedingTimer = 45,
             CattleMoneyCost = 300,
 
             AllowBreedSheeps = true,
             SheepPastures = {},
             SheepBaby = true,
-            SheepFeedingTimer = 30,
+            SheepFeedingTimer = 45,
             SheepMoneyCost = 300,
             SheepType = -1,
         }
@@ -534,9 +534,9 @@ function BundleStockbreeding.Global:AnimalBreedController()
                 self.Data.CattlePastures[v] = self.Data.CattlePastures[v] +1;
                 -- Alle X Sekunden wird 1 Getreide verbraucht
                 local FeedingTime = self.Data.CattleFeedingTimer;
-                if self.Data.CattlePastures[v] > 0 and FeedingTime > 0 and self.Data.CattlePastures[v] % FeedingTime == 0 then
+                if self.Data.CattlePastures[v] > 0 and FeedingTime > 0 and Logic.GetTime() % FeedingTime == 0 then
                     if GetPlayerResources(Goods.G_Grain, PlayerID) > 0 then
-                        AddGood(Goods.G_Grain, PlayerID, -1);
+                        AddGood(Goods.G_Grain, -1, PlayerID);
                     else
                         self.Data.CattlePastures[v] = self.Data.CattlePastures[v] - FeedingTime;
                     end
@@ -565,9 +565,9 @@ function BundleStockbreeding.Global:AnimalBreedController()
                 self.Data.SheepPastures[v] = self.Data.SheepPastures[v] +1;
                 -- Alle X Sekunden wird 1 Getreide verbraucht
                 local FeedingTime = self.Data.SheepFeedingTimer;
-                if self.Data.SheepPastures[v] > 0 and FeedingTime > 0 and self.Data.SheepPastures[v] % FeedingTime == 0 then
+                if self.Data.SheepPastures[v] > 0 and FeedingTime > 0 and Logic.GetTime() % FeedingTime == 0 then
                     if GetPlayerResources(Goods.G_Grain, PlayerID) > 0 then
-                        AddGood(Goods.G_Grain, PlayerID, -1);
+                        AddGood(Goods.G_Grain, -1, PlayerID);
                     else
                         self.Data.SheepPastures[v] = self.Data.SheepPastures[v] - FeedingTime;
                     end
