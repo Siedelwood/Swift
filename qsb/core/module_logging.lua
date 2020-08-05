@@ -162,11 +162,13 @@ end
 --
 function API.Note(_Message)
     _Message = API.ConvertPlaceholders(API.Localize(_Message));
-    local MessageFunc = Logic.DEBUG_AddNote;
-    if GUI then
-        MessageFunc = GUI.AddNote;
+    if not GUI then
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[GUI.AddNote("%s")]], _Message
+        ));
+        return;
     end
-    MessageFunc(_Message);
+    API.AddNote(_Message);
 end
 GUI_Note = API.Note;
 
@@ -182,7 +184,9 @@ GUI_Note = API.Note;
 function API.StaticNote(_Message)
     _Message = API.ConvertPlaceholders(API.Localize(_Message));
     if not GUI then
-        Logic.ExecuteInLuaLocalState('GUI.AddStaticNote("' .._Message.. '")');
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[GUI.AddStaticNote("%s")]], _Message
+        ));
         return;
     end
     GUI.AddStaticNote(_Message);

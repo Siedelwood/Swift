@@ -248,7 +248,7 @@ end
 -- @param[type=string] _File Abzuspielende Datei
 -- @within Anwenderfunktionen
 --
--- @usage API.PlayVoice("music/puhdys_alt_wie_ein_baum.mpx");
+-- @usage API.PlayVoice("music/puhdys_alt_wie_ein_baum.mp3");
 --
 function API.PlayVoice(_File)
     if not GUI then

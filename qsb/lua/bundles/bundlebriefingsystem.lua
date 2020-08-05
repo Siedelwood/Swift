@@ -211,19 +211,6 @@ end
 IsBriefingActive = API.IsBriefingActive;
 
 ---
--- Steuert, ob Quest Timer während Briefings pausiert sind oder weiterzählen.
---
--- <b>Alias</b>: PauseQuestsDuringBriefings
---
--- @param[type=briefing] _Flag Briefing Definition
--- @within Anwenderfunktionen
---
-function API.BriefingPauseQuests(_Flag)
-    BundleBriefingSystem.Global.Data.PauseQuests = _Flag == true;
-end
-PauseQuestsDuringBriefings = API.BriefingPauseQuests;
-
----
 -- Ändert die Sichtbarkeit einer Antwort im aktuellen Briefing.
 --
 -- <b>Hinweis</b>: Außerhalb von Briefings hat die Funktion keinen Effekt!
@@ -658,6 +645,8 @@ BundleBriefingSystem = {
             BriefingMessages = {},
             DisplayIngameCutscene = false,
             BriefingActive = false,
+            ChatOptionsWasShown = false,
+            MessageLogWasShown = false,
             LastSkipButtonPressed = 0,
         },
     },
@@ -678,7 +667,6 @@ BundleBriefingSystem = {
 -- @local
 --
 function BundleBriefingSystem.Global:Install()
-    BundleBriefingSystem:OverrideApiNote();
     StartSimpleHiResJobEx(self.BriefingExecutionController);
     StartSimpleJobEx(self.BriefingQuestPausedController);
 end
@@ -1071,22 +1059,6 @@ function BundleBriefingSystem.Global.BriefingQueueController()
     end
 end
 
----
--- Fügt den Briefing Messages einen neuen Eintrag hinzu. Jede Nachricht ist
--- 120 Sekunden lang zu sehen. Sollten Nachrichten zu sehen sein, wenn ein
--- Briefing beendet ist, werden sie zu normalen Notes.
---
--- Werden 8 aktive Einträge überschritten, wird die Anzeigezeit des ersten
--- Eintrag auf 0 reduziert.
---
--- @param[type=string] _Text Text der Nachricht
--- @within Internal
--- @local
---
-function BundleBriefingSystem.Global:PushBriefingNote(_Text)
-    Logic.ExecuteInLuaLocalState("BundleBriefingSystem.Local:PushBriefingNote('" .._Text.. "')");
-end
-
 -- Local Script ------------------------------------------------------------- --
 
 ---
@@ -1099,7 +1071,6 @@ function BundleBriefingSystem.Local:Install()
         Script.Load("script/mainmenu/fader.lua");
     end
     self:OverrideThroneRoomFunctions();
-    BundleBriefingSystem:OverrideApiNote();
     StartSimpleHiResJobEx(self.WaitForLoadScreenHidden);
 end
 
@@ -1156,7 +1127,6 @@ function BundleBriefingSystem.Local:FinishBriefing()
     self.Data.GameSpeedBackup = nil;
     self:DeactivateCinematicMode();
     self.Data.BriefingActive = false;
-    self:ConvertBriefingNotes();
     self.Data.CurrentBriefing = {};
     self.Data.CurrentPage = {};
 end
@@ -1374,9 +1344,6 @@ function BundleBriefingSystem.Local:ThroneRoomCameraControl()
                 SkipText = API.Localize(BundleBriefingSystem.Text.EndButton);
             end
             XGUIEng.SetText("/InGame/ThroneRoom/Main/Skip", "{center}" ..SkipText);
-
-            -- Briefing Messages
-            self:UpdateBriefingNotes();
         end
     end
 end
@@ -1859,7 +1826,24 @@ function BundleBriefingSystem.Local:ActivateCinematicMode()
 
     -- Widgets
     XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal", 0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal", 1);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/SpeechStartAgainOrStop", 0)
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/BuildMenu", 0)
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/MapFrame", 0)
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopRight", 0)
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft", 0)
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/Buttons", 0)
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/QuestLogButton", 0)
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/QuestTimers", 0)
+    if XGUIEng.IsWidgetShownEx("/InGame/Root/Normal/ChatOptions/Background") == 1 then
+        XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions", 0);
+        self.Data.ChatOptionsWasShown = true;
+    end
+    if XGUIEng.IsWidgetShownEx("/InGame/Root/Normal/MessageLog/Name") == 1 then
+        XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog", 0);
+        self.Data.MessageLogWasShown = true;
+    end
+
     XGUIEng.ShowWidget("/InGame/ThroneRoom", 1);
     XGUIEng.PushPage("/InGame/ThroneRoom/KnightInfo", false);
     XGUIEng.PushPage("/InGame/ThroneRoomBars", false);
@@ -1916,6 +1900,7 @@ function BundleBriefingSystem.Local:ActivateCinematicMode()
     XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 0, 0);
 
     GUI.ClearSelection();
+    GUI.ClearNotes();
     GUI.ForbidContextSensitiveCommandsInSelectionState();
     GUI.ActivateCutSceneState();
     GUI.SetFeedbackSoundOutputState(0);
@@ -1969,8 +1954,25 @@ function BundleBriefingSystem.Local:DeactivateCinematicMode()
     XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoomBars_Dodge", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", 0);
+
     XGUIEng.ShowWidget("/InGame/Root/Normal", 1);
     XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 1);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/SpeechStartAgainOrStop", 1)
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/BuildMenu", 1)
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/MapFrame", 1)
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopRight", 1)
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft", 1)
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/Buttons", 1)
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/QuestLogButton", 1)
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/QuestTimers", 1)
+    if self.Data.ChatOptionsWasShown then
+        XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions", 0);
+        self.Data.ChatOptionsWasShown = false;
+    end
+    if self.Data.MessageLogWasShown then
+        XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog", 0);
+        self.Data.MessageLogWasShown = false;
+    end
 end
 
 ---
@@ -2055,85 +2057,7 @@ function BundleBriefingSystem.Local.WaitForLoadScreenHidden()
     end
 end
 
----
--- Fügt den Briefing Messages einen neuen Eintrag hinzu. Jede Nachricht ist
--- 12 Sekunden lang zu sehen. Sollten Nachrichten zu sehen sein, wenn ein
--- Briefing beendet ist, werden sie zu normalen Notes.
---
--- Werden 8 aktive Einträge überschritten, wird die Anzeigezeit des ersten
--- Eintrag auf 0 reduziert.
---
--- @param[type=string] _Text Text der Nachricht
--- @within Internal
--- @local
---
-function BundleBriefingSystem.Local:PushBriefingNote(_Text)
-    local Size = #self.Data.BriefingMessages;
-    if Size > 8 then
-        local Index = Size -8;
-        self.Data.BriefingMessages[Index][2] = 0;
-    end
-    self.Data.BriefingMessages[Size+1] = {_Text, 12000};
-end
-
----
--- Konvertiert alle angezeigten Briefing Notes zu normalen Notes und leert
--- die Table. Diese Funktion wird automatisch vom Briefing System aufgerufen.
---
--- @within Internal
--- @local
---
-function BundleBriefingSystem.Local:ConvertBriefingNotes()
-    for k, v in pairs(self.Data.BriefingMessages) do
-        if v and v[2] > 0 then
-            API.Note(v[1]);
-        end
-    end
-    self.Data.BriefingMessages = {};
-end
-
----
--- Konvertiert alle angezeigten Briefing Notes zu normalen Notes und leert
--- die Table. Diese Funktion wird automatisch vom Briefing System aufgerufen.
---
--- @within Internal
--- @local
---
-function BundleBriefingSystem.Local:UpdateBriefingNotes()
-    local Color = "{@color:255,255,255,255}";
-    local Text = "";
-    for k, v in pairs(self.Data.BriefingMessages) do
-        if v and v[2] > 0 then
-            self.Data.BriefingMessages[k][2] = v[2] -1;
-            Text = Text .. Color .. v[1] .. "{cr}";
-        end
-    end
-    XGUIEng.SetText("/InGame/ThroneRoom/KnightInfo/Text", Text);
-end
-
 -- Shared ------------------------------------------------------------------- --
-
----
--- Überschreibt API.Note, damit Nachrichten auch während Briefings angezeigt
--- werden können.
--- @within Internal
--- @local
---
-function BundleBriefingSystem:OverrideApiNote()
-    API.Note_Orig_BriefingSystem = API.Note;
-    API.Note = function(_Text)
-        if IsBriefingActive() then
-            local Text = API.Localize(_Text);
-            if not GUI then
-                BundleBriefingSystem.Global:PushBriefingNote(Text);
-            else
-                BundleBriefingSystem.Local:PushBriefingNote(Text);
-            end
-            return;
-        end
-        API.Note_Orig_BriefingSystem(_Text);
-    end
-end
 
 ---
 -- Errechnet eine Position relativ im angegebenen Winkel und Position zur
