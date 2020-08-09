@@ -28,6 +28,7 @@ QSB.Placeholders = {
 -- @field magenta Magenta
 -- @field olive   Olivgrün
 -- @field ocean   Ozeanblau
+-- @field tooltip Tooltip-Blau
 -- @field lucid   Transparent
 --
 QSB.Placeholders.Colors = {
@@ -47,6 +48,7 @@ QSB.Placeholders.Colors = {
     magenta = "{@color:190,0,89,255}",
     olive   = "{@color:74,120,0,255}",
     sky     = "{@color:145,170,210,255}",
+    tooltip = "{@color:51,51,120,255}",
     lucid   = "{@color:0,0,0,0}"
 };
 

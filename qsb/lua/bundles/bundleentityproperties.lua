@@ -258,7 +258,7 @@ function API.ChangeEntityHealth(_Entity, _Health, _Relative)
     end
     local EntityID = GetID(_Entity);
     if EntityID > 0 then
-        local MaxHealth = Logic.EntityGetMaxHealth(EntityID);
+        local MaxHealth = Logic.GetEntityMaxHealth(EntityID);
         if type(_Health) ~= "number" or _Health < 0 then
             error("API.ChangeEntityHealth: _Health " ..tostring(_Health).. "must be 0 or greater!");
             return
@@ -346,7 +346,7 @@ function API.GroupHurt(_Entity, _Damage, _Attacker)
     end
 
     local EntityKilled = false;
-    local Health = Logic.EntityGetHealth(EntityToHurt);
+    local Health = Logic.GetEntityHealth(EntityToHurt);
     if EntityToHurt then
         if Health <= _Damage then
             _Damage = _Damage - Health;
@@ -908,7 +908,7 @@ end
 function BundleEntityProperties.Global:TriggerEntityKilledCallbacks(_Entity, _Damage, _Attacker)
     local DefenderID = GetID(_Entity);
     local AttackerID = GetID(_Attacker or 0);
-    if AttackerID == 0 or DefenderID == 0 or Logic.EntityGetHealth(DefenderID) > 0 then
+    if AttackerID == 0 or DefenderID == 0 or Logic.GetEntityHealth(DefenderID) > 0 then
         return;
     end
     local x, y, z     = Logic.EntityGetPos(DefenderID);

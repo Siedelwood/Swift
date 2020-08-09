@@ -1771,7 +1771,7 @@ function AddOnCastleStore.Local:OverwriteInteractiveObject()
             return;
         end
         if not QSB.CastleStore:HasCastleStore(PlayerID) then
-            GUI_Interaction.InteractiveObjectClicked_Orig_BundleInteractiveObjects();
+            GUI_Interaction.InteractiveObjectClicked_Orig_CastleStore();
             return;
         end
         local ScriptName = Logic.GetEntityName(EntityID);
@@ -1797,7 +1797,7 @@ function AddOnCastleStore.Local:OverwriteInteractiveObject()
         end
         -- Normale Aktion wenn nicht IO oder kostenlos
         if not IO[ScriptName] or (IO[ScriptName] and not IO[ScriptName].m_Costs) then
-            GUI_Interaction.InteractiveObjectClicked_Orig_BundleInteractiveObjects();
+            GUI_Interaction.InteractiveObjectClicked_Orig_CastleStore();
             return;
         end
         -- Sound Aktivierung
@@ -1821,7 +1821,7 @@ function AddOnCastleStore.Local:OverwriteInteractiveObject()
                 end
             end
             if CanBuyBoolean then
-                GUI_Interaction.InteractiveObjectClicked_Orig_BundleInteractiveObjects();
+                GUI_Interaction.InteractiveObjectClicked_Orig_CastleStore();
             else
                 GUI.SendScriptCommand(string.format("AddOnCastleStore.Global:InteractiveObjectPayStep1('%s')", ScriptName));
             end

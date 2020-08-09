@@ -151,8 +151,8 @@ function API.InteractiveObjectActivate(_ScriptName, _State)
     if IO[_ScriptName].m_Slave then
         IO_SlaveState[ScriptName] = 1;
     end
-    IO[_ScriptName]:SetActive(true);
     API.ActivateIO(ScriptName, _State);
+    IO[_ScriptName]:SetActive(true);
 end
 InteractiveObjectActivate = API.InteractiveObjectActivate;
 
@@ -165,7 +165,7 @@ InteractiveObjectActivate = API.InteractiveObjectActivate;
 -- @param[type=string] _EntityName Scriptname des Objektes
 -- @within Anwenderfunktionen
 --
-API.InteractiveObjectDeactivate = function(_ScriptName)
+function API.InteractiveObjectDeactivate(_ScriptName)
     if not IO[_ScriptName] then
         API.DeactivateIO(_ScriptName);
         return;
@@ -174,8 +174,8 @@ API.InteractiveObjectDeactivate = function(_ScriptName)
     if IO[_ScriptName].m_Slave then
         IO_SlaveState[ScriptName] = 0;
     end
-    IO[_ScriptName]:SetActive(false);
     API.DeactivateIO(ScriptName);
+    IO[_ScriptName]:SetActive(false);
 end
 InteractiveObjectDeactivate = API.InteractiveObjectDeactivate;
 
@@ -283,8 +283,8 @@ function BundleInteractiveObjects.Global:CreateObject(_Description)
         self:CreateSlaveObject(Object);
     end
     -- Aktivieren
-    self:SetupObject(Object);
     IO[_Description.Name] = Object;
+    self:SetupObject(IO[_Description.Name]);
     return Object;
 end
 
@@ -349,9 +349,9 @@ function BundleInteractiveObjects.Global:StartObjectConditionController()
     StartSimpleHiResJobEx(function()
         for k, v in pairs(IO) do
             if v and not v:IsUsed() and v:IsActive() then
-                v.m_Fullfilled = true;
-                if v.m_Condition then
-                    v.m_Fullfilled = v.m_Condition(v);
+                IO[k].m_Fullfilled = true;
+                if IO[k].m_Condition then
+                    IO[k].m_Fullfilled = v.m_Condition(v);
                 end
             end
         end
@@ -758,8 +758,8 @@ InteractiveObject = {
     m_Distance    = 1000,
     m_Waittime    = 5,
     m_Used        = false,
-    m_Fullfilled  = true,
-    m_Active      = false,
+    m_Fullfilled  = false,
+    m_Active      = true,
     m_Slave       = nil,
     m_Caption     = nil,
     m_Description = nil,
