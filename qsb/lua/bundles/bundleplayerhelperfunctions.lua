@@ -889,16 +889,16 @@ function BundlePlayerHelperFunctions.Shared:CreateGoodsTechnologiesMap()
     }
 
     -- Gathering
-    self.Data.GoodsTechnologiesMap[Goods.G_Stone]       = {Technologies.R_Construction, Technologies.R_Gathering, Technologies.R_StoneQuarry};
-    self.Data.GoodsTechnologiesMap[Goods.G_Iron]        = {Technologies.R_Construction, Technologies.R_Gathering, Technologies.R_IronMine};
-    self.Data.GoodsTechnologiesMap[Goods.G_Wood]        = {Technologies.R_Construction, Technologies.R_Gathering, Technologies.R_Woodcutter};
-    self.Data.GoodsTechnologiesMap[Goods.G_Milk]        = {Technologies.R_Construction, Technologies.R_Gathering, Technologies.R_CattleFarm};
-    self.Data.GoodsTechnologiesMap[Goods.G_Grain]       = {Technologies.R_Construction, Technologies.R_Gathering, Technologies.R_GrainFarm};
-    self.Data.GoodsTechnologiesMap[Goods.G_RawFish]     = {Technologies.R_Construction, Technologies.R_Gathering, Technologies.R_FishingHut};
-    self.Data.GoodsTechnologiesMap[Goods.G_Carcass]     = {Technologies.R_Construction, Technologies.R_Gathering, Technologies.R_HuntersHut};
-    self.Data.GoodsTechnologiesMap[Goods.G_Honeycomb]   = {Technologies.R_Construction, Technologies.R_Gathering, Technologies.R_Beekeeper};
-    self.Data.GoodsTechnologiesMap[Goods.G_Wool]        = {Technologies.R_Construction, Technologies.R_Gathering, Technologies.R_SheepFarm};
-    self.Data.GoodsTechnologiesMap[Goods.G_Herb]        = {Technologies.R_Construction, Technologies.R_Gathering, Technologies.R_HerbGatherer};
+    self.Data.GoodsTechnologiesMap[Goods.G_Stone]       = {Technologies.R_Gathering, Technologies.R_StoneQuarry};
+    self.Data.GoodsTechnologiesMap[Goods.G_Iron]        = {Technologies.R_Gathering, Technologies.R_IronMine};
+    self.Data.GoodsTechnologiesMap[Goods.G_Wood]        = {Technologies.R_Gathering, Technologies.R_Woodcutter};
+    self.Data.GoodsTechnologiesMap[Goods.G_Milk]        = {Technologies.R_Gathering, Technologies.R_CattleFarm};
+    self.Data.GoodsTechnologiesMap[Goods.G_Grain]       = {Technologies.R_Gathering, Technologies.R_GrainFarm};
+    self.Data.GoodsTechnologiesMap[Goods.G_RawFish]     = {Technologies.R_Gathering, Technologies.R_FishingHut};
+    self.Data.GoodsTechnologiesMap[Goods.G_Carcass]     = {Technologies.R_Gathering, Technologies.R_HuntersHut};
+    self.Data.GoodsTechnologiesMap[Goods.G_Honeycomb]   = {Technologies.R_Gathering, Technologies.R_Beekeeper};
+    self.Data.GoodsTechnologiesMap[Goods.G_Wool]        = {Technologies.R_Gathering, Technologies.R_SheepFarm};
+    self.Data.GoodsTechnologiesMap[Goods.G_Herb]        = {Technologies.R_Gathering, Technologies.R_HerbGatherer};
 
     -- Food
     self.Data.GoodsTechnologiesMap[Goods.G_Bread] = {
