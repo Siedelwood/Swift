@@ -1827,14 +1827,17 @@ function BundleBriefingSystem.Local:ActivateCinematicMode()
     -- Widgets
     XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal", 1);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/SpeechStartAgainOrStop", 0)
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/BuildMenu", 0)
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/MapFrame", 0)
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopRight", 0)
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft", 0)
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/Buttons", 0)
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/QuestLogButton", 0)
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/QuestTimers", 0)
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/SpeechStartAgainOrStop", 0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/BuildMenu", 0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/MapFrame", 0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopRight", 0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft", 0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/Buttons", 0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/QuestLogButton", 0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/QuestTimers", 0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles", 0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Merchant", 0);
     if XGUIEng.IsWidgetShownEx("/InGame/Root/Normal/ChatOptions/Background") == 1 then
         XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions", 0);
         self.Data.ChatOptionsWasShown = true;
@@ -1842,6 +1845,9 @@ function BundleBriefingSystem.Local:ActivateCinematicMode()
     if XGUIEng.IsWidgetShownEx("/InGame/Root/Normal/MessageLog/Name") == 1 then
         XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog", 0);
         self.Data.MessageLogWasShown = true;
+    end
+    if g_GameExtraNo > 0 then
+        XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Tradepost", 0);
     end
 
     XGUIEng.ShowWidget("/InGame/ThroneRoom", 1);
@@ -1866,6 +1872,7 @@ function BundleBriefingSystem.Local:ActivateCinematicMode()
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Text", 1);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Title", 1);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", 1);
+    HideOtherMenus();
 
     -- Text
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Text", " ");
@@ -1957,21 +1964,26 @@ function BundleBriefingSystem.Local:DeactivateCinematicMode()
 
     XGUIEng.ShowWidget("/InGame/Root/Normal", 1);
     XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 1);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/SpeechStartAgainOrStop", 1)
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/BuildMenu", 1)
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/MapFrame", 1)
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopRight", 1)
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft", 1)
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/Buttons", 1)
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/QuestLogButton", 1)
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/QuestTimers", 1)
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/SpeechStartAgainOrStop", 1);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/BuildMenu", 1);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/MapFrame", 1);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopRight", 1);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft", 1);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/Buttons", 1);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/QuestLogButton", 1);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/QuestTimers", 1);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Merchant", 1);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 1);
     if self.Data.ChatOptionsWasShown then
-        XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions", 0);
+        XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions", 1);
         self.Data.ChatOptionsWasShown = false;
     end
     if self.Data.MessageLogWasShown then
-        XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog", 0);
+        XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog", 1);
         self.Data.MessageLogWasShown = false;
+    end
+    if g_GameExtraNo > 0 then
+        XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Tradepost", 1);
     end
 end
 
