@@ -27,7 +27,7 @@ QSB.Placeholders = {
 -- @field scarlet Scharlachrot
 -- @field magenta Magenta
 -- @field olive   Olivgrün
--- @field ocean   Ozeanblau
+-- @field sky     Ozeanblau
 -- @field tooltip Tooltip-Blau
 -- @field lucid   Transparent
 --

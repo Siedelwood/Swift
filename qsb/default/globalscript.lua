@@ -14,7 +14,7 @@
 
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- Mission_LoadFiles
-----------------------------------
+-- --------------------------------
 -- Läd zusätzliche Dateien aus der Map. Die Dateien
 -- werden in der angegebenen Reihenfolge geladen.
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -33,7 +33,7 @@ end
 
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- Mission_InitPlayers
-----------------------------------
+-- --------------------------------
 -- Diese Funktion kann benutzt werden um für die AI
 -- Vereinbarungen zu treffen.
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -45,7 +45,7 @@ end
 
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- Mission_SetStartingMonth
-----------------------------------
+-- --------------------------------
 -- Diese Funktion setzt einzig den Startmonat.
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Mission_SetStartingMonth()
@@ -54,7 +54,7 @@ end
 
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- Mission_InitMerchants
-----------------------------------
+-- --------------------------------
 -- Hier kannst du Hдndler und Handelsposten vereinbaren.
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Mission_InitMerchants()
@@ -78,7 +78,7 @@ end
 
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- Mission_FirstMapAction
-----------------------------------
+-- --------------------------------
 -- Die FirstMapAction wird am Spielstart aufgerufen.
 -- Starte von hier aus deine Funktionen.
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -104,7 +104,7 @@ QSB.DialogAnimations = {
 -- Position 1 zu Position 2 bewegen.
 -- <p>Beispiel:</p>
 -- <pre>
--- Briefing.Animation = {
+-- Briefing.PageAnimations = {
 --    ["Page1"] = {
 --        -- Position1, Rotation1, Zoom1, Angle1, Position2, Rotation2, Zoom2, Angle2, Animationsdauer
 --        {"pos4", -60, 2000, 35, "pos4", -30, 2000, 25, 30}
@@ -120,7 +120,27 @@ QSB.DialogAnimations = {
 -- Animation hinzugefügt. Es können mehrere Animationen definiert werden,
 -- welche nacheinander abgespielt werden.
 --
--- Definiert man Animationen auf diese weise, so muss man es für das <u>
+-- Anstelle von Angle, Rotation und Zoom kann auch eine zweite Position
+-- angegeben werden. Die Kamera befindet sich dann an der Position von
+-- Position und schaut zur Position von LookAt. Es können Skriptnamen mit
+-- Z-Offset oder XYZ-Koordinaten verwendet werden.
+-- <p>Beispiel:</p>
+--<pre>
+-- Briefing.PageAnimations = {
+--    ["Page1"] = {
+--        -- Position1, LookAt1, Position2, Lookat2, Animationsdauer
+--        {"pos1", "look1", "pos4", "look4", 30}
+--    },
+--};</pre>
+--
+-- Über Richtungsvektoren können besondere Kameraeffekte erzielt werden.
+-- Wenn sich das LookAt-Entity bewegt und das Position still steht, wird
+-- die LookAt-Entity von der fest stationierten Kamera verfolgt. Wenn die
+-- Position z.B. ein sich bewegende Kutsche ist, und LookAt ein statisches
+-- Entity, wie z.B. ein Gebäude, wird der Effekt erzielt, dass jemand aus
+-- der Kutsche auf das Gebäude schaut.
+--
+-- Definiert man Animationen auf diese Weise, so muss man es für das <u>
 -- gesamte Briefing</u> durchziehen. Angaben von Angle, Zoom und Co an
 -- einzelnen Pages werden ignoriert.
 --
@@ -456,55 +476,6 @@ AddPages = API.AddPages;
 -- </tr>
 -- </table>
 --
--- <br><h5>Page mit Animation</h5>
--- Es ist möglich einer Page eine einfache Animation zu geben. Hierfür wird
--- eine Subtable FlyTo angelegt. Innerhalb von FlyTo können Angle, Duration,
--- Position, Rotation und Zoom angegeben werden. Duration in FlyTime ersetzt
--- die Duration der Page, wenn diese geringer oder nicht vorhanden ist.
--- <p>Beispiel:</p>
--- <pre>AP {
---    Title    = "Erzähler",
---    Text     = "Und so kam es, dass...",
---    Position = {"Pos1", 450},
---    Angle    = 32,
---    Rotation = -45,
---    Zoom     = 5000,
---    FlyTo    = {
---        Position = {"Pos1", 450},
---        Angle    = 32,
---        Rotation = 45,
---        Zoom     = 5000,
---        Duration = 20,
---    }
---};</pre>
---
--- <br><h5>Page mit Richtungsvektor</h5>
--- Anstelle von Angle, Rotation und Zoom kann auch eine zweite Position
--- angegeben werden. Die Kamera befindet sich dann an der Position von
--- Position und schaut zur Position von LookAt. Es können Skriptnamen mit
--- Z-Offset oder XYZ-Koordinaten verwendet werden.
--- <p>Beispiel:</p>
--- <pre>AP {
---    Title    = "Marcus",
---    Text     = "Big Brother folgt mir, wohin ich auch gehe...",
---    Position = {"LH1", 450},
---    LookAt   = {"Marcus", 0},
---    FlyTo    = {
---        Position = {"LH1", 450},
---        LookAt   = {"Marcus", 0},
---        Duration = 20,
---    }
---};</pre>
--- Hier befindet sich die Kamera 450 Einheiten über dem Entity "LH1" und
--- blickt zur Entity Marcus.
---
--- Über Richtungsvektoren können besondere Kameraeffekte erzielt werden.
--- Wenn sich das LookAt-Entity bewegt und das Position still steht, wird
--- die LookAt-Entity von der fest stationierten Kamera verfolgt. Wenn die
--- Position z.B. ein sich bewegende Kutsche ist, und LookAt ein statisches
--- Entity, wie z.B. ein Gebäude, wird der Effekt erzielt, dass jemand aus
--- der Kutsche auf das Gebäude schaut.
---
 -- <br><h5>Bedingtes Anzeigen</h5>
 -- Hat man verschiedene Handlungsstränge oder sollen sich die Texte an die
 -- Aktionen des Spielers anpassen, so kann es sein, dass man Pages anzeigen
@@ -593,19 +564,13 @@ end
 -- @param[type=string]   _text         Text der Seite
 -- @param[type=boolean]  _dialogCamera Nahsicht an/aus
 -- @param[type=function] _action       (Optional) Callback-Funktion
--- @param                ...           (Optional) Animationsparameter
 -- @return[type=table] Referenz auf die Seite
 -- @within Briefing
+-- 
 -- @usage -- Beispiel ohne Page Name
 -- ASP("hans", "Hänschen-Klein", "Ich gehe in die weitel Welt hinein.", true);
 -- -- Beispiel mit Page Name
 -- ASP("B1P1", "hans", "Hänschen-Klein", "Ich gehe in die weitel Welt hinein.", true);
--- -- Beispiel mit Aktion
--- ASP("B1P1", "hans", "Hänschen-Klein", "Ich gehe in die weitel Welt hinein.", true, SomeFunction);
--- -- Beispiel mit Animation
--- ASP("B1P1", "hans", "Hänschen-Klein", "Ich gehe in die weitel Welt hinein.", true, QSB.DialogAnimations.Random);
--- -- Beispiel mit Aktion und Animation
--- ASP("B1P1", "hans", "Hänschen-Klein", "Ich gehe in die weitel Welt hinein.", true, SomeFunction, QSB.DialogAnimations.Random);
 --
 function ASP(...)
     error("ASP: Please use the function provided by AddPages!");
@@ -765,23 +730,40 @@ function BundleBriefingSystem.Global:StartBriefing(_Briefing, _ID)
             local PageID = self:GetPageIDByName(k);
             self.Data.CurrentBriefing[PageID].Animations = self.Data.CurrentBriefing[PageID].Animations or {};
             self.Data.CurrentBriefing[PageID].Animations.PurgeOld = v.PurgeOld == true;
-            for i= 1, #v, 1 do
-                table.insert(self.Data.CurrentBriefing[PageID].Animations, {
-                    Duration = v[i][9] or 2 * 60,
+            for i= 1, #v, 1 do               
+                -- Relative Angabe
+                if #v[i] == 9 then
+                    table.insert(self.Data.CurrentBriefing[PageID].Animations, {
+                        Duration = v[i][9] or 2 * 60,
 
-                    Start = {
-                        Position = (type(v[i][1]) ~= "table" and {v[i][1],0}) or v[i][1],
-                        Rotation = v[i][2],
-                        Zoom     = v[i][3],
-                        Angle    = v[i][4],
-                    },
-                    End = {
-                        Position = (type(v[i][5]) ~= "table" and {v[i][5],0}) or v[i][5],
-                        Rotation = v[i][6],
-                        Zoom     = v[i][7],
-                        Angle    = v[i][8],
-                    },
-                });
+                        Start = {
+                            Position = (type(v[i][1]) ~= "table" and {v[i][1],0}) or v[i][1],
+                            Rotation = v[i][2],
+                            Zoom     = v[i][3],
+                            Angle    = v[i][4],
+                        },
+                        End = {
+                            Position = (type(v[i][5]) ~= "table" and {v[i][5],0}) or v[i][5],
+                            Rotation = v[i][6],
+                            Zoom     = v[i][7],
+                            Angle    = v[i][8],
+                        },
+                    });
+                -- Vektorisierte Angabe
+                elseif #v[i] == 5 then
+                    table.insert(self.Data.CurrentBriefing[PageID].Animations, {
+                        Duration = v[i][5] or 2 * 60,
+
+                        Start = {
+                            Position = (type(v[i][1]) ~= "table" and {v[i][1],0}) or v[i][1],
+                            LookAt   = (type(v[i][2]) ~= "table" and {v[i][1],0}) or v[i][2],
+                        },
+                        End = {
+                            Position = (type(v[i][3]) ~= "table" and {v[i][5],0}) or v[i][3],
+                            LookAt   = (type(v[i][4]) ~= "table" and {v[i][1],0}) or v[i][4],
+                        },
+                    });
+                end
             end
         end
         self.Data.CurrentBriefing.PageAnimations = nil;
@@ -1412,7 +1394,7 @@ function BundleBriefingSystem.Local:GetPagePosition()
     local Position, FlyTo;
     if self.Data.CurrentBriefing.CurrentAnimation then
         Position = self.Data.CurrentBriefing.CurrentAnimation.Start.Position;
-        FlyTo = self.Data.CurrentBriefing.CurrentAnimation.End;
+        FlyTo = self.Data.CurrentBriefing.CurrentAnimation.End.Position;
     else
         Position = self.Data.CurrentPage.Position;
         FlyTo = self.Data.CurrentPage.FlyTo;
@@ -1442,7 +1424,7 @@ function BundleBriefingSystem.Local:GetPageLookAt()
     local LookAt, FlyTo;
     if self.Data.CurrentBriefing.CurrentAnimation then
         LookAt = self.Data.CurrentBriefing.CurrentAnimation.Start.LookAt;
-        FlyTo = self.Data.CurrentBriefing.CurrentAnimation.End;
+        FlyTo = self.Data.CurrentBriefing.CurrentAnimation.End.LookAt;
     else
         LookAt = self.Data.CurrentPage.LookAt;
         FlyTo = self.Data.CurrentPage.FlyTo;
