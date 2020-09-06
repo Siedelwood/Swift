@@ -1221,7 +1221,10 @@ end
 function BundleBriefingSystem.Local:LocalOnMCConfirmed()
     local Widget = "/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer";
     local Position = self.Data.OriginalBoxPosition;
+    local Size = self.Data.OriginalBoxSize;
     XGUIEng.SetWidgetScreenPosition(Widget, Position[1], Position[2]);
+    XGUIEng.SetWidgetSize(Widget, Size[1], Size[2]);
+    XGUIEng.SetWidgetPositionAndSize(Widget.. "/ListBox", 0, 0, Size[1], Size[2]);
     XGUIEng.ShowWidget(Widget, 0);
     XGUIEng.PopPage();
 
@@ -1665,26 +1668,36 @@ function BundleBriefingSystem.Local:SetOptionsDialog()
         self.Data.OriginalBoxPosition = {
             XGUIEng.GetWidgetScreenPosition(Widget)
         };
+        if not self.Data.OriginalBoxSize then
+            self.Data.OriginalBoxSize = {
+                XGUIEng.GetWidgetSize(Widget)
+            };
+        end
 
-        local listbox = XGUIEng.GetWidgetID(Widget .. "/ListBox");
-        XGUIEng.ListBoxPopAll(listbox);
+        local Listbox = XGUIEng.GetWidgetID(Widget .. "/ListBox");
+        XGUIEng.ListBoxPopAll(Listbox);
         self.Data.CurrentPage.MC.Map = {};
         for i=1, #self.Data.CurrentPage.MC, 1 do
             if self.Data.CurrentPage.MC[i].Invisible ~= true then
-                XGUIEng.ListBoxPushItem(listbox, self.Data.CurrentPage.MC[i][1]);
+                XGUIEng.ListBoxPushItem(Listbox, self.Data.CurrentPage.MC[i][1]);
                 table.insert(self.Data.CurrentPage.MC.Map, self.Data.CurrentPage.MC[i].ID);
             end
         end
-        XGUIEng.ListBoxSetSelectedIndex(listbox, 0);
+        XGUIEng.ListBoxSetSelectedIndex(Listbox, 0);
+
+        local BoxY = 40 * XGUIEng.ListBoxGetNrOfEntries(Listbox);
+        if BoxY > 400 then
+            BoxY = 400;
+        end
+        XGUIEng.SetWidgetSize(Widget, self.Data.OriginalBoxSize[1] +500, BoxY);
 
         local wSize = {XGUIEng.GetWidgetScreenSize(Widget)};
         local xFactor = (Screen[1]/1920);
         local xFix = math.ceil((Screen[1] /2) - (wSize[1] /2));
-        local yFix = math.ceil(Screen[2] - (wSize[2]-20));
-        if self.Data.CurrentPage.Text ~= nil and self.Data.CurrentPage.Text ~= "" then
-            yFix = math.ceil((Screen[2] /2) - ((wSize[2] /2)-20));
-        end
+        local yFix = math.ceil((Screen[2] /2) - ((wSize[2] /2)-20));
         XGUIEng.SetWidgetScreenPosition(Widget, xFix, yFix);
+        XGUIEng.SetWidgetPositionAndSize(Listbox, 0, 0, self.Data.OriginalBoxSize[1] +500, BoxY);
+        XGUIEng.SetMaterialColor(Listbox, 0, 180, 180, 180, 190);
         XGUIEng.PushPage(Widget, false);
         XGUIEng.ShowWidget(Widget, 1);
 
@@ -1820,6 +1833,8 @@ function BundleBriefingSystem.Local:ActivateCinematicMode()
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Merchant", 0);
+    XGUIEng.ShowWidget("/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer/BG", 0);
+    XGUIEng.ShowWidget("/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer/SliderWidget", 0);
     if XGUIEng.IsWidgetShownEx("/InGame/Root/Normal/ChatOptions/Background") == 1 then
         XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions", 0);
         self.Data.ChatOptionsWasShown = true;
@@ -1956,6 +1971,8 @@ function BundleBriefingSystem.Local:DeactivateCinematicMode()
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/QuestTimers", 1);
     XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Merchant", 1);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 1);
+    XGUIEng.ShowWidget("/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer/BG", 1);
+    XGUIEng.ShowWidget("/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer/BG", 1);
     if self.Data.ChatOptionsWasShown then
         XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions", 1);
         self.Data.ChatOptionsWasShown = false;

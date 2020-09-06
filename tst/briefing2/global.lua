@@ -165,7 +165,7 @@ function Briefing03()
         ShowSky = true,
         RestoreGameSpeed = true,
         RestoreCamera = true,
-        SkippingAllowed = false,
+        SkippingAllowed = true,
     }
     local AP, ASP = API.AddPages(Briefing);
     local CastleID = Logic.GetHeadquarters(1);
