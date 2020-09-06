@@ -934,7 +934,7 @@ end
 -- @local
 --
 function BundleEntityProperties.Shared:GetValueAsInteger(_Entity, _Index)
-    return math.floor(Logic.EntityGetScriptingValue(GetID(_Entity), _Index) + 0.5);
+    return math.floor(Logic.GetEntityScriptingValue(GetID(_Entity), _Index) + 0.5);
 end
 
 ---
@@ -947,7 +947,7 @@ end
 -- @local
 --
 function BundleEntityProperties.Shared:GetValueAsFloat(_Entity, _Index)
-    return Core:ScriptingValueIntegerToFloat(Logic.EntityGetScriptingValue(GetID(_Entity), _Index));
+    return Core:ScriptingValueIntegerToFloat(Logic.GetEntityScriptingValue(GetID(_Entity), _Index));
 end
 
 -- -------------------------------------------------------------------------- --
