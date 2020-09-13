@@ -145,7 +145,9 @@ function API.SimpleTextWindow(_Caption, _Content)
     _Caption = API.ConvertPlaceholders(API.Localize(_Caption));
     _Content = API.ConvertPlaceholders(API.Localize(_Content));
     if not GUI then
-        Logic.ExecuteInLuaLocalState("API.SimpleTextWindow('" .._Caption.. "', '" .._Content.. "')");
+        Logic.ExecuteInLuaLocalState(
+            string.format([[API.SimpleTextWindow("%s", "%s")]], _Caption, _Content)
+        );
         return;
     end
     QSB.TextWindow:New(_Caption, _Content):Show();
