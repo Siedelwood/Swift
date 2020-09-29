@@ -2226,6 +2226,16 @@ Core:RegisterBehavior(b_Reward_Briefing);
 --
 -- Der Trigger wird sowohl Erfolgs- als auch Niederlage-Briefings prüfen.
 -- Über den Typ-Parameter kann auf eine spezielle Art eingeschränt werden.
+-- Mit diesem Trigger ist es u.a. möglich zu verzweigen, wenn man z.B. nach
+-- einem Misserfolg eine Niederlage im nächsten Quest auslösen will und bei
+-- Erfolg stattdessen die Mission gewonnen werden soll.
+--
+-- Mögliche Angaben für Briefing-Typen:
+-- <ul>
+-- <li><b>"All"</b>: Erfolg und Niederlage</li>
+-- <li><b>"Failure"</b>: Nur Niederlage</li>
+-- <li><b>"Success"</b>: Nur Erfolg</li>
+-- </ul>
 --
 -- @param[type=string] _QuestName Name des Quest
 -- @param[type=string] _Type     (Optional) Briefing-Typ
@@ -2305,10 +2315,7 @@ function b_Trigger_Briefing:Interrupt(_Quest)
 end
 
 function b_Trigger_Briefing:Reset(_Quest)
-    local QuestID = GetQuestID(self.Quest);
-    Quests[QuestID].w5kur_xig0q_d9k7e = nil;
-    Quests[QuestID].zl97d_ukfs5_0dpm0 = nil;
-    self.WaitTimeTimer = nil
+    self:Interrupt(_Quest);
 end
 
 function b_Trigger_Briefing:Debug(_Quest)
