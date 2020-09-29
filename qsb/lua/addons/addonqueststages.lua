@@ -87,7 +87,7 @@ end
 
 function QSB.MainQuest.Trigger_OnStage(_QuestName, _Stage)
     local D, C, M = API.GetMainQuestProgress(_QuestName);
-    if M > 0 and M >= _Stage and C == _Stage then
+    if M > 0 and M >= _Stage and C >= _Stage then
         return true;
     end
     return false;
@@ -204,6 +204,9 @@ GetQuestProgress = API.GetMainQuestProgress;
 ---
 -- Spult einen Main Quest um einen Sub Quest vor.
 --
+-- Im Erfolgsfall wird eine Zahl größer 0 zurückgegeben. Tritt ein
+-- Fehler auf stattdessen 0.
+--
 -- <b>Alias</b>: ForwardMainQuest
 --
 -- @param[type=string] _QuestName  Name Main Quest
@@ -220,6 +223,9 @@ ForwardMainQuest = API.ForwardMainQuest;
 
 ---
 -- Setzt einen Main Quest um einen Sub Quest zurück.
+--
+-- Im Erfolgsfall wird eine Zahl größer 0 zurückgegeben. Tritt ein
+-- Fehler auf stattdessen 0.
 --
 -- <b>Alias</b>: RevertMainQuest
 --
@@ -240,7 +246,7 @@ RevertMainQuest = API.RevertMainQuest;
 --
 -- <b>Alias</b>: GetSubQuestName
 --
--- Wird kein Sub Quest gefunden, wird der name des Main Quest zurückgegeben
+-- Wird kein Sub Quest gefunden, wird nil zurückgegeben
 --
 -- @param[type=string] _QuestName  Name Main Quest
 -- @return[type=string] Quest Name
@@ -251,9 +257,11 @@ function API.GetSubQuestName(_QuestName, _Index)
         return;
     end
     if AddOnQuestStages.Global.Data.StagesForQuest[_QuestName] then
-        return AddOnQuestStages.Global.Data.StagesForQuest[_QuestName][_Index].Name;
+        if AddOnQuestStages.Global.Data.StagesForQuest[_QuestName][_Index] then
+            return AddOnQuestStages.Global.Data.StagesForQuest[_QuestName][_Index].Name;
+        end
     end
-    return _QuestName;
+    return nil;
 end
 GetSubQuestName = API.GetSubQuestName;
 
