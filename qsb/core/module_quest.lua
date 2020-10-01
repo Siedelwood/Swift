@@ -318,7 +318,7 @@ WinQuestByName = API.WinQuest;
 
 ---
 -- Prüft, ob der Questname formal korrekt ist. Questnamen dürfen i.d.R. nur
--- die Zeichen A-Z, a-7, 0-9, - und _ enthalten.
+-- die Zeichen A-Z, a-7, 0-9, Umlaute und _ enthalten.
 --
 -- @param[type=string] _Name Name des Quest
 -- @return[type=boolean] Questname ist fehlerfrei
@@ -326,7 +326,7 @@ WinQuestByName = API.WinQuest;
 -- @local
 --
 function Core:CheckQuestName(_Name)
-    return string.find(_Name, "^[A-Za-z0-9_]+$") ~= nil;
+    return string.find(_Name, "^[A-Za-z0-9_ ÄÖÜäöüß]+$") ~= nil;
 end
 
 ---
