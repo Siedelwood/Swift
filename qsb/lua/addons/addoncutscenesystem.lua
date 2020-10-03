@@ -324,7 +324,7 @@ function AddOnCutsceneSystem.Global:StartCutscene(_Cutscene, _ID)
         _ID = BundleBriefingSystem.Global.Data.BriefingID;
     end
 
-    if not self.Data.LoadScreenHidden or self:IsCutsceneActive() then
+    if API.IsLoadscreenVisible() or self:IsCutsceneActive() then
         table.insert(self.Data.CutsceneQueue, {_Cutscene, _ID});
         if not self.Data.CutsceneQueueJobID then
             self.Data.CutsceneQueueJobID = StartSimpleHiResJobEx(AddOnCutsceneSystem.Global.CutsceneQueueController);
@@ -423,7 +423,7 @@ function AddOnCutsceneSystem.Global.CutsceneQueueController()
         return true;
     end
     
-    if AddOnCutsceneSystem.Global.Data.LoadScreenHidden and not AddOnCutsceneSystem.Global:IsCutsceneActive() then
+    if not API.IsLoadscreenVisible() and not AddOnCutsceneSystem.Global:IsCutsceneActive() then
         local Next = table.remove(AddOnCutsceneSystem.Global.Data.CutsceneQueue, 1);
         AddOnCutsceneSystem.Global:StartCutscene(Next[1], Next[2]);
     end
@@ -438,7 +438,6 @@ end
 -- @local
 --
 function AddOnCutsceneSystem.Local:Install()
-    StartSimpleHiResJobEx(AddOnCutsceneSystem.Local.WaitForLoadScreenHidden);
     StartSimpleHiResJobEx(AddOnCutsceneSystem.Local.DisplayFastForwardMessage);
 
     self:OverrideGameCallbackEscape();
@@ -892,7 +891,7 @@ end
 function AddOnCutsceneSystem.Local:ActivateCinematicMode()
     self.Data.CinematicActive = true;
     
-    local LoadScreenVisible = XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 1;
+    local LoadScreenVisible = API.IsLoadscreenVisible();
     if LoadScreenVisible then
         XGUIEng.PopPage();
     end
@@ -1039,19 +1038,6 @@ function AddOnCutsceneSystem.Local.DisplayFastForwardMessage()
         else
             XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", " ");
         end
-    end
-end
-
----
--- Wartet bis der Ladebildschirm inaktiv ist und setzt dann ein Flag, dass
--- das Starten von Cutscenes erlaubt.
--- @within Internal
--- @local
---
-function AddOnCutsceneSystem.Local.WaitForLoadScreenHidden()
-    if XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 0 then
-        GUI.SendScriptCommand("AddOnCutsceneSystem.Global.Data.LoadScreenHidden = true;");
-        return true;
     end
 end
 

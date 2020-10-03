@@ -202,9 +202,7 @@ end
 
 BundleDialogWindows = {
     Global = {
-        Data = {
-            Loadscreen = true,
-        }
+        Data = {}
     },
     Local = {
         Data = {
@@ -409,7 +407,7 @@ end
 -- @local
 --
 function QSB.SimpleTypewriter:CanBePlayed()
-    if BundleDialogWindows.Global.Data.Loadscreen then
+    if API.IsLoadscreenVisible() then
         return false;
     end
     if BundleBriefingSystem and IsBriefingActive() then
@@ -822,13 +820,6 @@ end
 function BundleDialogWindows.Local:Install()
     self:DialogOverwriteOriginal();
     self:DialogAltF4Hotkey();
-
-    StartSimpleHiResJobEx(function()
-        if XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 0 then
-            GUI.SendScriptCommand("BundleDialogWindows.Global.Data.Loadscreen = false");
-            return true;
-        end
-    end);
 end
 
 ---
@@ -839,7 +830,7 @@ end
 --
 function BundleDialogWindows.Local:DialogAltF4Hotkey()
     StartSimpleJobEx(function ()
-        if XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 0 then
+        if not API.IsLoadscreenVisible() then
             Input.KeyBindDown(Keys.ModifierAlt + Keys.F4, "BundleDialogWindows.Local:DialogAltF4Action()", 30, false);
             return true;
         end

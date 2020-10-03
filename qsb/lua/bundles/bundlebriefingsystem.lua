@@ -710,7 +710,7 @@ function BundleBriefingSystem.Global:StartBriefing(_Briefing, _ID)
         _ID = self.Data.BriefingID;
     end
 
-    if not self.Data.LoadScreenHidden or self:IsBriefingActive() then
+    if API.IsLoadscreenVisible() or self:IsBriefingActive() then
         table.insert(self.Data.BriefingQueue, {_Briefing, _ID});
         if not self.Data.BriefingQueueJobID then
             self.Data.BriefingQueueJobID = StartSimpleHiResJobEx(self.BriefingQueueController);
@@ -1035,7 +1035,7 @@ function BundleBriefingSystem.Global.BriefingQueueController()
         return true;
     end
     
-    if BundleBriefingSystem.Global.Data.LoadScreenHidden and not BundleBriefingSystem.Global:IsBriefingActive() then
+    if not API.IsLoadscreenVisible() and not BundleBriefingSystem.Global:IsBriefingActive() then
         local Next = table.remove(BundleBriefingSystem.Global.Data.BriefingQueue, 1);
         BundleBriefingSystem.Global:StartBriefing(Next[1], Next[2]);
     end
@@ -1053,7 +1053,6 @@ function BundleBriefingSystem.Local:Install()
         Script.Load("script/mainmenu/fader.lua");
     end
     self:OverrideThroneRoomFunctions();
-    StartSimpleHiResJobEx(self.WaitForLoadScreenHidden);
 end
 
 ---
@@ -1813,7 +1812,7 @@ end
 function BundleBriefingSystem.Local:ActivateCinematicMode()
     self.Data.CinematicActive = true;
     
-    local LoadScreenVisible = XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 1;
+    local LoadScreenVisible = API.IsLoadscreenVisible();
     if LoadScreenVisible then
         XGUIEng.PopPage();
     end
@@ -2053,18 +2052,6 @@ function BundleBriefingSystem.Local:OverrideThroneRoomFunctions()
         if not BundleBriefingSystem.Local:IsBriefingActive() then
             BundleBriefingSystem.Local.GameCallback_Escape();
         end
-    end
-end
-
----
--- Speichert, wenn der Ladebildschirm geschlossen wird.
--- @within Internal
--- @local
---
-function BundleBriefingSystem.Local.WaitForLoadScreenHidden()
-    if XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 0 then
-        GUI.SendScriptCommand("BundleBriefingSystem.Global.Data.LoadScreenHidden = true");
-        return true;
     end
 end
 

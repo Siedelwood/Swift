@@ -73,6 +73,7 @@ function Core:InitalizeBundles()
             Trigger.RequestTrigger(Events.LOGIC_EVENT_WEATHER_STATE_CHANGED, "", "CoreEventJob_OnWatherChanged", 1);
 
             StartSimpleJobEx(Core.EventJob_EventOnEveryRealTimeSecond);
+            StartSimpleHiResJobEx(Core.EventJob_WaitForLoadScreenHidden);
         end
 
         -- Aufruf der Module

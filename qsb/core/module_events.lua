@@ -2,6 +2,10 @@
 
 -- API Stuff --
 
+function API.IsLoadscreenVisible()
+    return not Core.Data.LoadScreenHidden == true;
+end
+
 ---
 -- Pausiert einen laufenden Job.
 --
@@ -177,6 +181,7 @@ StartSimpleHiResJobEx = API.StartHiResJob;
 
 -- Core Stuff --
 
+Core.Data.LoadScreenHidden = false;
 Core.Data.EventJobID = 0;
 Core.Data.EventJobs = {
     [Events.LOGIC_EVENT_DIPLOMACY_CHANGED]         = {},
@@ -216,6 +221,15 @@ function Core:TriggerEventJobs(_Type)
                 end
             end
         end
+    end
+end
+
+-- Ein Job, der eine Variable setzt, sobald der Loadscreen beendet ist.
+function Core.EventJob_WaitForLoadScreenHidden()
+    if XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 0 then
+        GUI.SendScriptCommand("Core.Data.LoadScreenHidden = true");
+        Core.Data.LoadScreenHidden = true;
+        return true;
     end
 end
 
