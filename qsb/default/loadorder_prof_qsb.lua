@@ -99,5 +99,10 @@ LoadOrder = {
         "AddOnQuestDebug",
         "BundleQuestGeneration",
         },
+
+        {
+        "AddOnLanguageSelection",               true,
+        "BundleDialogWindows",
+        }
     }
 };

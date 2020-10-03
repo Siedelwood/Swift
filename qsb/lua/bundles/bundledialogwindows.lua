@@ -1085,8 +1085,8 @@ function BundleDialogWindows.Local:OpenSelectionDialog(_Title, _Text, _Action, _
         XGUIEng.ShowWidget(Container .. "HeroComboBoxContainer", 0);
         local screen = {GUI.GetScreenSize()};
         local x1, y1 = XGUIEng.GetWidgetScreenPosition(RequesterDialog_Ok);
-        XGUIEng.SetWidgetScreenPosition(Container .. "HeroComboBoxMain", x1-25, y1-90);
-        XGUIEng.SetWidgetScreenPosition(Container .. "HeroComboBoxContainer", x1-25, y1-20);
+        XGUIEng.SetWidgetScreenPosition(Container .. "HeroComboBoxMain", x1-25, y1-(90*(screen[2]/1080)));
+        XGUIEng.SetWidgetScreenPosition(Container .. "HeroComboBoxContainer", x1-25, y1-(20*(screen[2]/1080)));
     else
         self:DialogQueuePush("OpenSelectionDialog", {_Title, _Text, _Action, _List});
     end

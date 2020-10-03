@@ -199,6 +199,11 @@ SymfoniaLoader = {
             "AddOnQuestDebug",
             "BundleQuestGeneration",
             },
+
+            {
+            "AddOnLanguageSelection",               true,
+            "BundleDialogWindows",
+            }
         },
     }
 }
