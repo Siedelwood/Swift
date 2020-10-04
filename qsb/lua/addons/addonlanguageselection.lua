@@ -66,7 +66,7 @@ end
 ---
 -- Fügt der Liste der Sprachen eine weitere Sprache hinzu.
 --
--- @param[type=string] _Short Küruel der Sprache (de, en, fr, ...)
+-- @param[type=string] _Short Kurzbezeichnung der Sprache (de, en, fr, ...)
 -- @param[type=string] _Name  Anzeigename der Sprache
 -- @within Anwenderfunktionen
 --
@@ -176,7 +176,9 @@ function AddOnLanguageSelection.Local:StartSelection()
                 return;
             end
             
+            self:StartCinematicMode();
             self:GetDesiredLanguage();
+
             API.DialogSelectBox(
                 self.Text.Dialog.Title,
                 self.Text.Dialog.Text,
@@ -186,6 +188,7 @@ function AddOnLanguageSelection.Local:StartSelection()
                     GUI.SendScriptCommand(string.format([[
                         AddOnLanguageSelection.Global:LanguageSelectionFinished("%s");
                     ]], lang))
+                    self:StopCinematicMode();
                     QSB.Language = lang;
                     if Mission_OnLanguageChanged then
                         Mission_OnLanguageChanged(lang);
@@ -198,6 +201,22 @@ function AddOnLanguageSelection.Local:StartSelection()
             return true;
         end
     end);
+end
+
+function AddOnLanguageSelection.Local:StartCinematicMode()
+    if BundleBriefingSystem then
+        BundleBriefingSystem.Local.Data.BriefingActive = true;
+        GUI.SendScriptCommand("BundleBriefingSystem.Global.Data.BriefingActive = true");
+    end
+    
+end
+
+function AddOnLanguageSelection.Local:StopCinematicMode()
+    if BundleBriefingSystem then
+        BundleBriefingSystem.Local.Data.BriefingActive = false;
+        GUI.SendScriptCommand("BundleBriefingSystem.Global.Data.BriefingActive = false");
+    end
+
 end
 
 -- -------------------------------------------------------------------------- --

@@ -1834,6 +1834,8 @@ function BundleBriefingSystem.Local:ActivateCinematicMode()
     XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Merchant", 0);
     XGUIEng.ShowWidget("/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer/BG", 0);
     XGUIEng.ShowWidget("/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer/SliderWidget", 0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/MissionGoodOrEntityCounter", 0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/MissionTimer", 0);
     if XGUIEng.IsWidgetShownEx("/InGame/Root/Normal/ChatOptions/Background") == 1 then
         XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions", 0);
         self.Data.ChatOptionsWasShown = true;
@@ -1972,14 +1974,28 @@ function BundleBriefingSystem.Local:DeactivateCinematicMode()
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 1);
     XGUIEng.ShowWidget("/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer/BG", 1);
     XGUIEng.ShowWidget("/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer/BG", 1);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/MissionGoodOrEntityCounter", 1);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/MissionTimer", 1);
+    
+    -- Timer
+    if not g_MissionTimerEndTime then
+        g_MissionTimerEndTime = math.floor(Logic.GetTime());
+    end
+    -- Counter
+    if not g_MissionGoodOrEntityCounterAmountToReach then
+        g_MissionGoodOrEntityCounterAmountToReach = -1;
+    end
+    -- Chat Options
     if self.Data.ChatOptionsWasShown then
         XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions", 1);
         self.Data.ChatOptionsWasShown = false;
     end
+    -- Message Log
     if self.Data.MessageLogWasShown then
         XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog", 1);
         self.Data.MessageLogWasShown = false;
     end
+    -- Handelsposten
     if g_GameExtraNo > 0 then
         XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Tradepost", 1);
     end
