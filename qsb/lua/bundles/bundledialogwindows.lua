@@ -294,16 +294,8 @@ function QSB.SimpleTypewriter:Play()
         if BundleBriefingSystem then
             BundleBriefingSystem.Local.Data.BriefingActive = true
         end
-
-        XGUIEng.PushPage("/InGame/Root/Normal/NotesWindow", false)
-        XGUIEng.PushPage("/InGame/Root/Normal/PauseScreen", false)
-        XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal",0)
-        XGUIEng.ShowWidget("/InGame/Root/Normal/NotesWindow",1)
-        XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 1)
-        XGUIEng.SetMaterialColor("/InGame/Root/Normal/PauseScreen", 0, 0, 0, 0, 255)
-        g_Typewriter_GameSpeedBackup = Game.GameTimeGetFactor(GUI.GetPlayerID())
-        Game.GameTimeSetFactor(GUI.GetPlayerID(), 1)
-        Input.CutsceneMode()
+        Core:InterfaceDeactivateNormalInterface()
+        Core:InterfaceActivateBlackBackground()
     ]]);
     self.m_JobID = StartSimpleHiResJobEx(self.ControllerJob, self);
 end
@@ -321,32 +313,8 @@ function QSB.SimpleTypewriter:Stop()
         if BundleBriefingSystem then
             BundleBriefingSystem.Local.Data.BriefingActive = false
         end
-
-        GUI.ClearNotes()
-        Game.GameTimeSetFactor(GUI.GetPlayerID(), g_Typewriter_GameSpeedBackup or 1)
-        Input.GameMode()
-        XGUIEng.PopPage()
-        XGUIEng.PopPage()
-        XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 0)
-        XGUIEng.SetMaterialColor("/InGame/Root/Normal/PauseScreen", 0, 40, 40, 40, 180)
-        XGUIEng.ShowWidget("/InGame/Root/Normal/AnimatedCameraMovement", 1)
-        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight",1)
-        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft",1)
-        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft",1)
-        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/TopBar",1)
-        XGUIEng.ShowWidget("/InGame/Root/Normal/InteractiveObjects",1)
-        XGUIEng.ShowWidget("/InGame/Root/Normal/InteractiveObjects/Update",1)
-        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopRight",1)
-        XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Merchant",1)
-        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopCenter",1)
-        if g_PatchIdentifierExtra1 then
-            XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Tradepost",1)
-        end
-        XGUIEng.ShowWidget("/InGame/Root/Normal/TextMessages",1)
-        XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen",0)
-        XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay",1)
-        XGUIEng.ShowWidget("/InGame/Root/Normal/ShowUi",1)
-        XGUIEng.ShowWidget("/InGame/Root/3dWorldView",1)
+        Core:InterfaceDeactivateBlackBackground()
+        Core:InterfaceActivateNormalInterface()
     ]]);
     EndJob(self.m_JobID);
 end
@@ -970,12 +938,14 @@ function BundleDialogWindows.Local:OpenDialog(_Title, _Text, _Action)
         if type(_Action) == "function" then
             self.Data.Requester.ActionFunction = _Action;
             local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)";
+            Action = Action .. "; Game.GameTimeSetFactor(GUI.GetPlayerID(), 1)";
             Action = Action .. "; XGUIEng.PopPage()";
             Action = Action .. "; BundleDialogWindows.Local.Callback(BundleDialogWindows.Local)";
             XGUIEng.SetActionFunction(RequesterDialog_Ok, Action);
         else
             self.Data.Requester.ActionFunction = nil;
             local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)";
+            Action = Action .. "; Game.GameTimeSetFactor(GUI.GetPlayerID(), 1)";
             Action = Action .. "; XGUIEng.PopPage()";
             Action = Action .. "; BundleDialogWindows.Local.Callback(BundleDialogWindows.Local)";
             XGUIEng.SetActionFunction(RequesterDialog_Ok, Action);
@@ -992,6 +962,7 @@ function BundleDialogWindows.Local:OpenDialog(_Title, _Text, _Action)
             KeyBindings_SaveGame_Orig_QSB_Windows = KeyBindings_SaveGame;
             KeyBindings_SaveGame = function() end;
         end
+        Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
     else
         self:DialogQueuePush("OpenDialog", {_Title, _Text, _Action});
     end
@@ -1033,10 +1004,12 @@ function BundleDialogWindows.Local:OpenRequesterDialog(_Title, _Text, _Action, _
             self.Data.Requester.ActionRequester = _Action;
         end
         local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)";
+        Action = Action .. "; Game.GameTimeSetFactor(GUI.GetPlayerID(), 1)";
         Action = Action .. "; XGUIEng.PopPage()";
-        Action = Action .. "; BundleDialogWindows.Local.CallbackRequester(BundleDialogWindows.Local, true)";
+        Action = Action .. "; BundleDialogWindows.Local.CallbackRequester(BundleDialogWindows.Local, true)"
         XGUIEng.SetActionFunction(RequesterDialog_Yes, Action);
-        local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)";
+        local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)"
+        Action = Action .. "; Game.GameTimeSetFactor(GUI.GetPlayerID(), 1)";
         Action = Action .. "; XGUIEng.PopPage()";
         Action = Action .. "; BundleDialogWindows.Local.CallbackRequester(BundleDialogWindows.Local, false)"
         XGUIEng.SetActionFunction(RequesterDialog_No, Action);
@@ -1068,7 +1041,8 @@ function BundleDialogWindows.Local:OpenSelectionDialog(_Title, _Text, _Action, _
         XGUIEng.ListBoxSetSelectedIndex(HeroComboBoxID, 0);
         CustomGame.Knight = 0;
 
-        local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)";
+        local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)"
+        Action = Action .. "; Game.GameTimeSetFactor(GUI.GetPlayerID(), 1)";
         Action = Action .. "; XGUIEng.PopPage()";
         Action = Action .. "; XGUIEng.PopPage()";
         Action = Action .. "; XGUIEng.PopPage()";

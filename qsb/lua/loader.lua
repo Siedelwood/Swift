@@ -302,8 +302,8 @@ function SymfoniaLoader:ConcatCoreSources()
         self:LoadSource(BasePath.. "../core/module_realtime.lua"),
         self:LoadSource(BasePath.. "../core/module_entity.lua"),
         self:LoadSource(BasePath.. "../core/module_placeholder.lua"),
+        self:LoadSource(BasePath.. "../core/module_interface.lua"),
         self:LoadSource(BasePath.. "../core/main.lua"),
-        --self:LoadSource(BasePath.. "../core/module_selfload.lua"),
     };
     return QsbContent;
 end

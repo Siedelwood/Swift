@@ -1818,35 +1818,8 @@ function BundleBriefingSystem.Local:ActivateCinematicMode()
     end
     local ScreenX, ScreenY = GUI.GetScreenSize();
 
-    -- Widgets
-    XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal", 1);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/SpeechStartAgainOrStop", 0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/BuildMenu", 0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/MapFrame", 0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopRight", 0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft", 0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/Buttons", 0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/QuestLogButton", 0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/QuestTimers", 0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles", 0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Merchant", 0);
-    XGUIEng.ShowWidget("/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer/BG", 0);
-    XGUIEng.ShowWidget("/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer/SliderWidget", 0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/MissionGoodOrEntityCounter", 0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/MissionTimer", 0);
-    if XGUIEng.IsWidgetShownEx("/InGame/Root/Normal/ChatOptions/Background") == 1 then
-        XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions", 0);
-        self.Data.ChatOptionsWasShown = true;
-    end
-    if XGUIEng.IsWidgetShownEx("/InGame/Root/Normal/MessageLog/Name") == 1 then
-        XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog", 0);
-        self.Data.MessageLogWasShown = true;
-    end
-    if g_GameExtraNo > 0 then
-        XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Tradepost", 0);
-    end
+    Core:InterfaceDeactivateNormalInterface();
+    Core:InterfaceDeactivateBlackBackground();
 
     XGUIEng.ShowWidget("/InGame/ThroneRoom", 1);
     XGUIEng.PushPage("/InGame/ThroneRoom/KnightInfo", false);
@@ -1870,7 +1843,6 @@ function BundleBriefingSystem.Local:ActivateCinematicMode()
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Text", 1);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Title", 1);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", 1);
-    HideOtherMenus();
 
     -- Text
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Text", " ");
@@ -1960,45 +1932,8 @@ function BundleBriefingSystem.Local:DeactivateCinematicMode()
     XGUIEng.ShowWidget("/InGame/ThroneRoomBars_Dodge", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", 0);
 
-    XGUIEng.ShowWidget("/InGame/Root/Normal", 1);
-    XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 1);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/SpeechStartAgainOrStop", 1);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/BuildMenu", 1);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/MapFrame", 1);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopRight", 1);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft", 1);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/Buttons", 1);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/QuestLogButton", 1);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/QuestTimers", 1);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Merchant", 1);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 1);
-    XGUIEng.ShowWidget("/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer/BG", 1);
-    XGUIEng.ShowWidget("/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer/BG", 1);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/MissionGoodOrEntityCounter", 1);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/MissionTimer", 1);
-    
-    -- Timer
-    if not g_MissionTimerEndTime then
-        g_MissionTimerEndTime = math.floor(Logic.GetTime());
-    end
-    -- Counter
-    if not g_MissionGoodOrEntityCounterAmountToReach then
-        g_MissionGoodOrEntityCounterAmountToReach = -1;
-    end
-    -- Chat Options
-    if self.Data.ChatOptionsWasShown then
-        XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions", 1);
-        self.Data.ChatOptionsWasShown = false;
-    end
-    -- Message Log
-    if self.Data.MessageLogWasShown then
-        XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog", 1);
-        self.Data.MessageLogWasShown = false;
-    end
-    -- Handelsposten
-    if g_GameExtraNo > 0 then
-        XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Tradepost", 1);
-    end
+    Core:InterfaceActivateNormalInterface();
+    Core:InterfaceDeactivateBlackBackground();
 end
 
 ---

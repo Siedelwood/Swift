@@ -35,16 +35,27 @@ QSB = QSB or {};
 -- bestätigt. Nach Bestätigung des Dialogs wird Mission_OnLanguageChanged im
 -- globalen und lokalen Skript aufgerufen.
 --
+-- @param[type=boolean] _HideUIOnStart Interface beim Start ausblenden
+-- @param[type=boolean] _ShowUIOnEnd   (optional) Interface nach Ende einblenden
 -- @within Anwenderfunktionen
 --
--- @usage API.LanguageSelectionShow();
+-- @usage -- Ohne schwarzen Hintergrund
+-- API.LanguageSelectionShow();
+-- -- Mit schwarzen Hintergrund
+-- API.LanguageSelectionShow(true);
+-- -- Schwarzen Hintergrund aktiv lassen (z.B. für nachfolgende Briefings)
+-- API.LanguageSelectionShow(true, true);
 --
-function API.LanguageSelectionShow()
+function API.LanguageSelectionShow(_HideUIOnStart, _ShowUIOnEnd)
     if not GUI then
-        Logic.ExecuteInLuaLocalState("API.LanguageSelectionShow()");
+        Logic.ExecuteInLuaLocalState(string.format(
+            "API.LanguageSelectionShow(%s, %s)",
+            tostring(_HideUIOnStart == true),
+            tostring(_ShowUIOnEnd == true)
+        ));
         return;
     end
-    AddOnLanguageSelection.Local:StartSelection();
+    AddOnLanguageSelection.Local:StartSelection(_HideUIOnStart, _ShowUIOnEnd);
 end
 
 ---
@@ -99,6 +110,8 @@ AddOnLanguageSelection = {
         Data = {
             Languages = {"de", "en",},
             LanguageSelected = false,
+            HideUIOnStart = false,
+            ShowUIOnEnd = false,
             DesiredLanguage = 2,
         },
         Text = {
@@ -165,58 +178,106 @@ function AddOnLanguageSelection.Local:GetDesiredLanguage()
 end
 
 ---
--- Zeigt den Auswahldialog für die Sprache an.
+-- Zeigt den Auswahldialog für die Sprache an, sobald möglich.
+-- @param[type=boolean] _HideUIOnStart Interface beim Start ausblenden
+-- @param[type=boolean] _ShowUIOnEnd   (optional) Interface nach Ende einblenden
 -- @within Internal
 -- @local
 --
-function AddOnLanguageSelection.Local:StartSelection()
+function AddOnLanguageSelection.Local:StartSelection(_HideUIOnStart, _ShowUIOnEnd)
+    if _HideUIOnStart and _ShowUIOnEnd == nil then
+        _ShowUIOnEnd = true;
+    end
+    self.Data.HideUIOnStart = _HideUIOnStart;
+    self.Data.ShowUIOnEnd = _ShowUIOnEnd;
     StartSimpleHiResJobEx(function()
         if not API.IsLoadscreenVisible() then
-            if self.Data.LanguageSelected then
-                return;
-            end
-            
-            self:StartCinematicMode();
-            self:GetDesiredLanguage();
-
-            API.DialogSelectBox(
-                self.Text.Dialog.Title,
-                self.Text.Dialog.Text,
-                function(_Index)
-                    Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
-                    local lang = AddOnLanguageSelection.Local.Data.Languages[_Index];
-                    GUI.SendScriptCommand(string.format([[
-                        AddOnLanguageSelection.Global:LanguageSelectionFinished("%s");
-                    ]], lang))
-                    self:StopCinematicMode();
-                    QSB.Language = lang;
-                    if Mission_OnLanguageChanged then
-                        Mission_OnLanguageChanged(lang);
-                    end
-                    AddOnLanguageSelection.Local.Data.LanguageSelected = true;
-                end,
-                self.Text.Languages
-            );
-            Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
+            AddOnLanguageSelection.Local:StartSelectionInternal();
             return true;
         end
     end);
 end
 
-function AddOnLanguageSelection.Local:StartCinematicMode()
+---
+-- Startet den Sprachauswahlbildschirm.
+-- @within Internal
+-- @local
+--
+function AddOnLanguageSelection.Local:StartSelectionInternal()
+    if self.Data.LanguageSelected then
+        return;
+    end
+    
+    self:SetBriefingActive();
+    if self.Data.HideUIOnStart then
+        self:StartCinematicMode();
+    end
+    self:GetDesiredLanguage();
+
+    API.DialogSelectBox(
+        self.Text.Dialog.Title,
+        self.Text.Dialog.Text,
+        function(_Index)
+            local lang = AddOnLanguageSelection.Local.Data.Languages[_Index];
+            GUI.SendScriptCommand(string.format([[
+                AddOnLanguageSelection.Global:LanguageSelectionFinished("%s");
+            ]], lang))
+            self:SetBriefingInactive();
+            if self.Data.ShowUIOnEnd then
+                self:StopCinematicMode();
+            end
+            QSB.Language = lang;
+            if Mission_OnLanguageChanged then
+                Mission_OnLanguageChanged(lang);
+            end
+            self.Data.LanguageSelected = true;
+        end,
+        self.Text.Languages
+    );
+end
+
+---
+-- Sperrt die Ausführung von Briefings und anderen Effekte.
+-- @within Internal
+-- @local
+--
+function AddOnLanguageSelection.Local:SetBriefingActive()
     if BundleBriefingSystem then
         BundleBriefingSystem.Local.Data.BriefingActive = true;
         GUI.SendScriptCommand("BundleBriefingSystem.Global.Data.BriefingActive = true");
     end
-    
 end
 
-function AddOnLanguageSelection.Local:StopCinematicMode()
+---
+-- Aktiviert die Ausführung von Briefings und anderen Effekte.
+-- @within Internal
+-- @local
+--
+function AddOnLanguageSelection.Local:SetBriefingInactive()
     if BundleBriefingSystem then
         BundleBriefingSystem.Local.Data.BriefingActive = false;
         GUI.SendScriptCommand("BundleBriefingSystem.Global.Data.BriefingActive = false");
     end
+end
 
+---
+-- Deaktiviert das Interface und zeigt schwarzen Hintergrund an.
+-- @within Internal
+-- @local
+--
+function AddOnLanguageSelection.Local:StartCinematicMode()
+    Core:InterfaceDeactivateNormalInterface();
+    Core:InterfaceActivateBlackBackground();
+end
+
+---
+-- Aktiviert das Interface und blendet den schwarzen Hintergrund aus.
+-- @within Internal
+-- @local
+--
+function AddOnLanguageSelection.Local:StopCinematicMode()
+    Core:InterfaceActivateNormalInterface();
+    Core:InterfaceDeactivateBlackBackground();
 end
 
 -- -------------------------------------------------------------------------- --

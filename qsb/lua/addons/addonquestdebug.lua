@@ -1102,6 +1102,7 @@ function AddOnQuestDebug.Local:ActivateDevelopingCheats()
     KeyBindings_EnableDebugMode(1);
     KeyBindings_EnableDebugMode(2);
     KeyBindings_EnableDebugMode(3);
+    self.Data.GameClock = true;
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/GameClock",1);
 end
 
