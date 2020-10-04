@@ -896,9 +896,10 @@ function AddOnCutsceneSystem.Local:ActivateCinematicMode()
         XGUIEng.PopPage();
     end
 
+    Core:InterfaceDeactivateNormalInterface();
+    Core:InterfaceDeactivateBlackBackground();
+
     local ScreenX, ScreenY = GUI.GetScreenSize();
-    XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom", 1);
     XGUIEng.PushPage("/InGame/ThroneRoomBars", false);
     XGUIEng.PushPage("/InGame/ThroneRoomBars_2", false);
@@ -1005,9 +1006,10 @@ function AddOnCutsceneSystem.Local:DeactivateCinematicMode()
     XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoomBars_Dodge", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", 0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal", 1);
-    XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 1);
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", " ");
+
+    Core:InterfaceActivateNormalInterface();
+    Core:InterfaceDeactivateBlackBackground();
 end
 
 ---

@@ -2,6 +2,12 @@
 
 -- API Stuff --
 
+---
+-- Gibt zurück, ob der Ladebildschirm sichtbar ist.
+--
+-- @return[type=boolean] Ladebildschirm ist sichtbar
+-- @within Anwenderfunktionen
+--
 function API.IsLoadscreenVisible()
     return not Core.Data.LoadScreenHidden == true;
 end
