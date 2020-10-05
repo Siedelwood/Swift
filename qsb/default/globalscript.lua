@@ -5,13 +5,6 @@
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
 
--- -------------------------------------------------------------------------- --
--- Basisfunktionen                                                            --
--- -------------------------------------------------------------------------- --
---      Die folgenden Funktionen setzen die wichtigsten Einstellungen für Deine
---      Map. Hier kannst du Spielerfarben, Handelsangebote und KI-Einstellungen
---      setzen, Funktionen aufrufen und Deine Skripte laden.
-
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- Mission_LoadFiles
 -- --------------------------------
@@ -99,22 +92,7 @@ function Mission_FirstMapAction()
     -- (Falls nicht gebraucht, löschen)
     CreateQuests();
 
-    -- Startet Quests, die im Skript erzeugt werden
-    -- (Falls nicht gebraucht, löschen)
-    Mission_StartQuests();
-
     -- Hier kannst Du Deine Funktionen aufrufen
 
-end
-
--- -------------------------------------------------------------------------- --
--- Quests                                                                     --
--- -------------------------------------------------------------------------- --
---      Hier kannst Du Quests erzeugen. Füge Deine Quests hinzu, wenn Du Quests
---      im Skript erstellen willst. Arbeitest Du mit dem Assistenten, Aktiviere
---      stattdessen CreateQuests() (siehe oben).
-
-function Mission_StartQuests()
-    -- Füge hier die Aufrufe Deiner Quests hinzu.
 end
 

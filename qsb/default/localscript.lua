@@ -5,13 +5,6 @@
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
 
--- -------------------------------------------------------------------------- --
--- Basisfunktionen                                                            --
--- -------------------------------------------------------------------------- --
---      Die folgenden Funktionen setzen die wichtigsten Einstellungen für Deine
---      Map. Hier kannst du Spielerfarben, Handelsangebote und KI-Einstellungen
---      setzen, Funktionen aufrufen und Deine Skripte laden.
-
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- Mission_LoadFiles
 -- --------------------------------
