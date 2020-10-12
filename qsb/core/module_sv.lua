@@ -57,7 +57,7 @@ Round = API.Round;
 -- Core Stuff --
 
 QSB.HistoryEdition = false;
-QSB.ScriptingValues = {
+QSB.ScriptingValues = QSB.ScriptingValues or {
     Game = "Vanilla",
     Vanilla = {
         Destination = {X = 19, Y= 20},
@@ -111,8 +111,13 @@ function Core:IdentifyHistoryEdition()
     local EntityID = Logic.CreateEntity(Entities.U_NPC_Amma_NE, 100, 100, 0, 8);
     MakeInvulnerable(EntityID);
     if Logic.GetEntityScriptingValue(EntityID, -68) == 8 then
-        Logic.ExecuteInLuaLocalState("QSB.HistoryEdition = true");
-        Logic.ExecuteInLuaLocalState("QSB.ScriptingValues.Game = 'HistoryEdition'");
+        Logic.ExecuteInLuaLocalState([[
+            QSB = QSB or {}
+            QSB.HistoryEdition = true
+            QSB.ScriptingValues = QSB.ScriptingValues or {}
+            QSB.ScriptingValues.Game = 'HistoryEdition'
+        ]]);
+        QSB = QSB or {};
         QSB.HistoryEdition = true;
         QSB.ScriptingValues.Game = "HistoryEdition";
     end

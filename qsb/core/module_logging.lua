@@ -168,7 +168,7 @@ function API.Note(_Message)
         ));
         return;
     end
-    API.AddNote(_Message);
+    GUI.AddNote(_Message);
 end
 GUI_Note = API.Note;
 
@@ -259,8 +259,10 @@ end
 -- @within Logging
 --
 function API.Log(_Message, _Level)
-    Core:LogToScreen(_Message, _Level);
-    Core:LogToFile(_Message, _Level);
+    if Core then
+        Core:LogToScreen(_Message, _Level);
+        Core:LogToFile(_Message, _Level);
+    end
 end
 log = API.Error;
 
@@ -274,8 +276,10 @@ log = API.Error;
 -- @within Logging
 --
 function API.Debug(_Message)
-    Core:LogToScreen(_Message, LEVEL_DEBUG);
-    Core:LogToFile(_Message, LEVEL_DEBUG);
+    if Core then
+        Core:LogToScreen(_Message, LEVEL_DEBUG);
+        Core:LogToFile(_Message, LEVEL_DEBUG);
+    end
 end
 debug = API.Debug;
 
@@ -289,8 +293,10 @@ debug = API.Debug;
 -- @within Logging
 --
 function API.Info(_Message)
-    Core:LogToScreen(_Message, LEVEL_INFO);
-    Core:LogToFile(_Message, LEVEL_INFO);
+    if Core then
+        Core:LogToScreen(_Message, LEVEL_INFO);
+        Core:LogToFile(_Message, LEVEL_INFO);
+    end
 end
 info = API.Info;
 
@@ -304,8 +310,10 @@ info = API.Info;
 -- @within Logging
 --
 function API.Error(_Message)
-    Core:LogToScreen(_Message, LEVEL_ERROR);
-    Core:LogToFile(_Message, LEVEL_ERROR);
+    if Core then
+        Core:LogToScreen(_Message, LEVEL_ERROR);
+        Core:LogToFile(_Message, LEVEL_ERROR);
+    end
 end
 error = API.Error;
 
@@ -319,8 +327,10 @@ error = API.Error;
 -- @within Logging
 --
 function API.Warn(_Message)
-    Core:LogToScreen(_Message, LEVEL_WARNING);
-    Core:LogToFile(_Message, LEVEL_WARNING);
+    if Core then
+        Core:LogToScreen(_Message, LEVEL_WARNING);
+        Core:LogToFile(_Message, LEVEL_WARNING);
+    end
 end
 warn = API.Warn;
 
@@ -413,7 +423,12 @@ function Core:LogToFile(_Text, _Level, _Env)
     end
     if not GUI then
         _Env = "Global";
-        Logic.ExecuteInLuaLocalState(string.format([[Core:LogToFile("%s", "%d", "%s")]], _Text, _Level, _Env));
+        Logic.ExecuteInLuaLocalState(string.format([[
+            if not Core then
+                return
+            end
+            Core:LogToFile("%s", "%d", "%s")
+        ]], _Text, _Level, _Env));
         return;
     end
     if QSB.Logging.FileLoggingLevel <= _Level then
@@ -440,7 +455,12 @@ function Core:LogToScreen(_Text, _Level, _Env)
     end
     if not GUI then
         _Env = "Global";
-        Logic.ExecuteInLuaLocalState(string.format([[Core:LogToScreen("%s", "%d", "%s")]], _Text, _Level, _Env));
+        Logic.ExecuteInLuaLocalState(string.format([[
+            if not Core then
+                return
+            end
+            Core:LogToScreen("%s", "%d", "%s")
+        ]], _Text, _Level, _Env));
         return;
     end
     if QSB.Logging.DisplayLoggingLevel <= _Level then

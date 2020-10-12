@@ -25,7 +25,7 @@ QSB = QSB or {};
 -- @field Failure Phase muss fehlschlagen.
 -- @field Both    Erfolg und Misserfolg werden geleichermaßen akzeptiert.
 --
-QSB.TerminationType = {
+QSB.ResultType = {
     Success = 1,
     Failure = 2,
     Both    = 3,
@@ -142,7 +142,7 @@ end
 --         {
 --             -- Mit dem Typ Both wird Fehlschlag ignoriert und der nächste
 --             -- Quest startet nach diesem Quest.
---             Termination = QSB.TerminationType.Both,
+--             Result      = QSB.ResultType.Both,
 --
 --             Suggestion  = "Wir benötigen außerdem mehr Asche! Und das sofort...",
 --             Success     = "Geschafft!",
@@ -431,10 +431,10 @@ function AddOnQuestStages.Global:GetCheckStagesInlineGoal(_QuestName)
             end
             -- Nicht erwartetes Resultat eines Sub Quest bedeutet Fehlschlag,
             if StageQuest.State == QuestState.Over and StageQuest.Result ~= QuestResult.Interrupted then
-                if StageList[i].Termination == QSB.TerminationType.Success and StageQuest.Result ~= QuestResult.Success then
+                if StageList[i].Result == QSB.ResultType.Success and StageQuest.Result ~= QuestResult.Success then
                     return false;
                 end
-                if StageList[i].Termination == QSB.TerminationType.Failure and StageQuest.Result ~= QuestResult.Failure then
+                if StageList[i].Result == QSB.ResultType.Failure and StageQuest.Result ~= QuestResult.Failure then
                     return false;
                 end
             end
@@ -463,7 +463,7 @@ function AddOnQuestStages.Global:CreateQuestStage(_Data, _QuestName, _Index)
     local QuestDescription = {
         Name        = Name,
         Stages      = _Data.Stages,
-        Termination = _Data.Termination or QSB.TerminationType.Success,
+        Result      = _Data.Result or QSB.ResultType.Success,
         Sender      = _Data.Sender or Parent.SendingPlayer,
         Receiver    = _Data.Receiver or Parent.ReceivingPlayer,
         Time        = _Data.Time,
@@ -489,17 +489,17 @@ function AddOnQuestStages.Global:CreateQuestStage(_Data, _QuestName, _Index)
         if QuestBriefingType > 0 then
             -- Einschränkung für Briefing Trigger bestimmen.
             local BriefingTriggerType = "All";
-            if PrevStageData.Termination == QSB.TerminationType.Success and QuestBriefingType == 1 then
+            if PrevStageData.Result == QSB.ResultType.Success and QuestBriefingType == 1 then
                 BriefingTriggerType = "Success";
-            elseif PrevStageData.Termination == QSB.TerminationType.Failure and QuestBriefingType ==  2 then
+            elseif PrevStageData.Result == QSB.ResultType.Failure and QuestBriefingType ==  2 then
                 BriefingTriggerType = "Failure";
             end
             table.insert(QuestDescription, Trigger_Briefing(PrevStageData.Name, BriefingTriggerType, Waittime));
         else
             -- Bestimmen, welcher Trigger genutzt wird.
-            if PrevStageData.Termination == QSB.TerminationType.Success then
+            if PrevStageData.Result == QSB.ResultType.Success then
                 table.insert(QuestDescription, Trigger_OnQuestSuccess(PrevStageData.Name, Waittime));
-            elseif PrevStageData.Termination == QSB.TerminationType.Failure then
+            elseif PrevStageData.Result == QSB.ResultType.Failure then
                 table.insert(QuestDescription, Trigger_OnQuestFailure(PrevStageData.Name, Waittime));
             else
                 table.insert(QuestDescription, Trigger_OnQuestOver(PrevStageData.Name, Waittime));
