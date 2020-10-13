@@ -5,10 +5,10 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- Ermöglicht das Zusammenfassen mehrerer Quests unter einem Main Quest.
+-- Ermöglicht das Zusammenfassen mehrerer Quests unter einem Staged Quest.
 --
 -- Diese Funktionalität kann ausschließlich für im Skript erstellte Quests
--- genutzt werden. Im Assistenten können Subquests nicht abgebildet werden.
+-- genutzt werden. Im Assistenten können Stages nicht abgebildet werden.
 --
 -- @within Modulbeschreibung
 -- @set sort=true
@@ -45,22 +45,22 @@ QSB.ResultType = {
 -- @field Trigger_OnStage        Prüft, ob die Phase erreicht wurde.
 --
 -- @usage -- Phase als Goal prüfen (schlägt nur bei Fehler fehl)
--- Goal_MapScriptFunction(QSB.MainQuest.Goal_ReachStage, "MyQuest", 3)
+-- Goal_MapScriptFunction(QSB.StagedQuest.Goal_ReachStage, "MyQuest", 3)
 -- -- Phase zurück (Reprisal)
--- Reprisal_MapScriptFunction(QSB.MainQuest.Reprisal_PreviousStage, "MyQuest")
+-- Reprisal_MapScriptFunction(QSB.StagedQuest.Reprisal_PreviousStage, "MyQuest")
 -- -- Phase vor (Reprisal)
--- Reprisal_MapScriptFunction(QSB.MainQuest.Reprisal_NextStage, "MyQuest")
+-- Reprisal_MapScriptFunction(QSB.StagedQuest.Reprisal_NextStage, "MyQuest")
 -- -- Phase zurück (Reward)
--- Reward_MapScriptFunction(QSB.MainQuest.Reward_PreviousStage, "MyQuest")
+-- Reward_MapScriptFunction(QSB.StagedQuest.Reward_PreviousStage, "MyQuest")
 -- -- Phase vor (Reward)
--- Reward_MapScriptFunction(QSB.MainQuest.Reward_NextStage, "MyQuest")
+-- Reward_MapScriptFunction(QSB.StagedQuest.Reward_NextStage, "MyQuest")
 -- -- Phase als Trigger prüfen
--- Trigger_MapScriptFunction(QSB.MainQuest.Trigger_OnStage, "MyQuest", 5)
+-- Trigger_MapScriptFunction(QSB.StagedQuest.Trigger_OnStage, "MyQuest", 5)
 --
-QSB.MainQuest = {};
+QSB.StagedQuest = {};
 
-function QSB.MainQuest.Goal_ReachStage(_QuestName, _Stage)
-    local D, C, M = API.GetMainQuestProgress(_QuestName);
+function QSB.StagedQuest.Goal_ReachStage(_QuestName, _Stage)
+    local D, C, M = API.GetStagedQuestProgress(_QuestName);
     if M == 0 and M < _Stage then
         return false;
     elseif C >= _Stage then
@@ -69,24 +69,24 @@ function QSB.MainQuest.Goal_ReachStage(_QuestName, _Stage)
     return nil;
 end
 
-function QSB.MainQuest.Reprisal_PreviousStage(_QuestName)
-    API.RevertMainQuest(_QuestName);
+function QSB.StagedQuest.Reprisal_PreviousStage(_QuestName)
+    API.RevertStagedQuest(_QuestName);
 end
 
-function QSB.MainQuest.Reprisal_NextStage(_QuestName)
-    API.ForwardMainQuest(_QuestName);
+function QSB.StagedQuest.Reprisal_NextStage(_QuestName)
+    API.ForwardStagedQuest(_QuestName);
 end
 
-function QSB.MainQuest.Reward_PreviousStage(_QuestName)
-    API.RevertMainQuest(_QuestName);
+function QSB.StagedQuest.Reward_PreviousStage(_QuestName)
+    API.RevertStagedQuest(_QuestName);
 end
 
-function QSB.MainQuest.Reward_NextStage(_QuestName)
-    API.ForwardMainQuest(_QuestName);
+function QSB.StagedQuest.Reward_NextStage(_QuestName)
+    API.ForwardStagedQuest(_QuestName);
 end
 
-function QSB.MainQuest.Trigger_OnStage(_QuestName, _Stage)
-    local D, C, M = API.GetMainQuestProgress(_QuestName);
+function QSB.StagedQuest.Trigger_OnStage(_QuestName, _Stage)
+    local D, C, M = API.GetStagedQuestProgress(_QuestName);
     if M > 0 and M >= _Stage and C >= _Stage then
         return true;
     end
@@ -101,38 +101,38 @@ end
 -- Erstellt eine Reihe aufeinanderfolgender Aufträge, zusammengefasst under
 -- einem übergeordneten Auftrag.
 --
--- Die erzeugten Aufträge (Sub Quests) starten aufeinander folgend, sobald der
--- übergeordnete Auftrag (Main Quest) aktiv ist. Der nachfolgende Sub Quests
+-- Die erzeugten Aufträge (Stages) starten aufeinander folgend, sobald der
+-- übergeordnete Auftrag (Staged Quest) aktiv ist. Der nachfolgende Stage
 -- startet, sobald der Vorgänger abgeschlossen ist. Das erwartete Ergebnis
--- kann gesetzt werden und ist per Default auf Erfolg gesetzt. Wenn ein Sub
--- Quest abgeschlossen wird und nicht das erwartete Ergebnis hat, dann schlägt
--- der Mainquest fehl. Der Main Quest wird erfolgreich abgeschlossen, sobald
--- der letzte Sub Quest beendet ist.
+-- kann gesetzt werden und ist per Default auf Erfolg gesetzt. Wenn ein Stage
+-- abgeschlossen wird und nicht das erwartete Ergebnis hat, dann schlägt
+-- der StagedQuest fehl. Der Staged Quest wird erfolgreich abgeschlossen, sobald
+-- der letzte Stage beendet ist.
 --
--- <b>Hinweis</b>: Main Quests eignen sich nur für lineare Abläufe. Es kann
+-- <b>Hinweis</b>: Staged Quests eignen sich nur für lineare Abläufe. Es kann
 -- keine Verzweigungen innerhalb des Ablaufes geben. Wenn verzweigt werden
--- soll, müssen mehrere Main Quests paralel laufen!
+-- soll, müssen mehrere Staged Quests paralel laufen!
 --
--- Es ist nicht vorgesehen, dass Main Quests sichtbar sind oder Texte anzeigen.
+-- Es ist nicht vorgesehen, dass Staged Quests sichtbar sind oder Texte anzeigen.
 -- Es ist trotzdem möglich, <u>sollte aber unterlassen werden</u>. 
 --
--- Es ist nicht notwendig einen Trigger für die Sub Quests zu setzen. Der
+-- Es ist nicht notwendig einen Trigger für die Stage zu setzen. Der
 -- Trigger wird automatisch generiert. Es können aber zusätzliche Trigger
 -- angegeben werden. Wird ein Briefing im Vorgänger verwendet, wird der
 -- Trigger Trigger_Briefing verwendet, sonst ein OnQuest Trigger. Je nach
 -- eingestellten Ergebnis wird entsprechend verknüpft.
 --
--- Main Quests können auch ineinander verschachtelt werden. Man kann also
+-- Staged Quests können auch ineinander verschachtelt werden. Man kann also
 -- innerhalb einer Questreihe eine untergeordnete Questreige angeben.
 --
--- <b>Alias</b>: AddMainQuest
+-- <b>Alias</b>: AddStagedQuest
 --
 -- @param[type=table] _Data Daten des Quest
--- @return[type=string] Name des Main Quest oder nil bei Fehler
+-- @return[type=string] Name des Staged Quest oder nil bei Fehler
 -- @within Anwenderfunktionen
 --
--- @usage API.CreateMainQuest {
---     Name        = "MainQuest",
+-- @usage API.CreateStagedQuest {
+--     Name        = "StagedQuest",
 --     Stages      = {
 --         {
 --             Suggestion  = "Wir benötigen einen höheren Titel!",
@@ -151,8 +151,8 @@ end
 --
 --             Goal_Produce("G_Gold", 5000),
 --
---             -- Main Quest wird gewonnen. Der Nachfolger startet nicht mehr.
---             Reward_QuestSuccess("MainQuest"),
+--             -- Staged Quest wird gewonnen. Der Nachfolger startet nicht mehr.
+--             Reward_QuestSuccess("StagedQuest"),
 --         },
 --         {
 --             Suggestion  = "Dann versuchen wir es mit Eisen...",
@@ -171,16 +171,16 @@ end
 --     Reward_VictoryWithParty(),
 -- };
 --
-function API.CreateMainQuest(_Data)
+function API.CreateStagedQuest(_Data)
     if GUI then
         return;
     end
-    return AddOnQuestStages.Global:CreateMainQuest(_Data);
+    return AddOnQuestStages.Global:CreateStagedQuest(_Data);
 end
-AddMainQuest = API.CreateMainQuest;
+AddStagedQuest = API.CreateStagedQuest;
 
 ---
--- Gibt den Fortschritt eines Main Quest zurück.
+-- Gibt den Fortschritt eines Staged Quest zurück.
 --
 -- Kann der Fortschritt nicht bestimmt werden, wird 0, 0, 0 zurückgegeben.
 --
@@ -188,67 +188,67 @@ AddMainQuest = API.CreateMainQuest;
 --
 -- @param[type=string] _QuestName Name des Quest
 -- @return[type=number] Relativer Fortschritt (0 ... 1)
--- @return[type=number] Index des aktiven Sub Quest
--- @return[type=number] Maximalanzahl Sub Quests
+-- @return[type=number] Index des aktiven Stage
+-- @return[type=number] Maximalanzahl Stages
 -- @within Anwenderfunktionen
--- @usage local Progress, Current, Max = API.GetMainQuestProgress("MyQuest");
+-- @usage local Progress, Current, Max = API.GetStagedQuestProgress("MyQuest");
 --
-function API.GetMainQuestProgress(_QuestName)
+function API.GetStagedQuestProgress(_QuestName)
     if GUI then
         return;
     end
-    return AddOnQuestStages.Global:GetMainQuestProgress(_QuestName);
+    return AddOnQuestStages.Global:GetStagedQuestProgress(_QuestName);
 end
-GetQuestProgress = API.GetMainQuestProgress;
+GetQuestProgress = API.GetStagedQuestProgress;
 
 ---
--- Spult einen Main Quest um einen Sub Quest vor.
+-- Spult einen Staged Quest um einen Stage vor.
 --
 -- Im Erfolgsfall wird eine Zahl größer 0 zurückgegeben. Tritt ein
 -- Fehler auf stattdessen 0.
 --
--- <b>Alias</b>: ForwardMainQuest
+-- <b>Alias</b>: ForwardStagedQuest
 --
--- @param[type=string] _QuestName  Name Main Quest
--- @return[type=number] Index des Sub Quest
+-- @param[type=string] _QuestName  Name Staged Quest
+-- @return[type=number] Index des Stage
 -- @within Anwenderfunktionen
 --
-function API.ForwardMainQuest(_QuestName)
+function API.ForwardStagedQuest(_QuestName)
     if GUI then
         return;
     end
-    return AddOnQuestStages.Global:ForwardMainQuest(_QuestName);
+    return AddOnQuestStages.Global:ForwardStagedQuest(_QuestName);
 end
-ForwardMainQuest = API.ForwardMainQuest;
+ForwardStagedQuest = API.ForwardStagedQuest;
 
 ---
--- Setzt einen Main Quest um einen Sub Quest zurück.
+-- Setzt einen Staged Quest um einen Stage zurück.
 --
 -- Im Erfolgsfall wird eine Zahl größer 0 zurückgegeben. Tritt ein
 -- Fehler auf stattdessen 0.
 --
--- <b>Alias</b>: RevertMainQuest
+-- <b>Alias</b>: RevertStagedQuest
 --
--- @param[type=string] _QuestName  Name Main Quest
--- @return[type=number] Index des Sub Quest
+-- @param[type=string] _QuestName  Name Staged Quest
+-- @return[type=number] Index des Stage
 -- @within Anwenderfunktionen
 --
-function API.RevertMainQuest(_QuestName)
+function API.RevertStagedQuest(_QuestName)
     if GUI then
         return;
     end
-    return AddOnQuestStages.Global:RevertMainQuest(_QuestName);
+    return AddOnQuestStages.Global:RevertStagedQuest(_QuestName);
 end
-RevertMainQuest = API.RevertMainQuest;
+RevertStagedQuest = API.RevertStagedQuest;
 
 ---
--- Gibt den Skriptnamen des Sub Quest auf dem Index zurück.
+-- Gibt den Skriptnamen des Stage auf dem Index zurück.
 --
 -- <b>Alias</b>: GetSubQuestName
 --
--- Wird kein Sub Quest gefunden, wird nil zurückgegeben
+-- Wird kein Stage gefunden, wird nil zurückgegeben
 --
--- @param[type=string] _QuestName  Name Main Quest
+-- @param[type=string] _QuestName  Name Staged Quest
 -- @return[type=string] Quest Name
 -- @within Anwenderfunktionen
 --
@@ -284,17 +284,17 @@ function AddOnQuestStages.Global:Install()
 end
 
 ---
--- Erstellt einen Main Quest mit seinen Sub Quests.
+-- Erstellt einen Staged Quest mit seinen Stages.
 --
 -- @param[type=table] _Data Beschreibung
 -- @within Internal
 -- @local
 --
-function AddOnQuestStages.Global:CreateMainQuest(_Data)   
+function AddOnQuestStages.Global:CreateStagedQuest(_Data)   
     if not _Data.Stages then
         return;
     end
-    -- Behavior zum Prüfen der Quest States der Subquests.
+    -- Behavior zum Prüfen der Quest States der Stages.
     table.insert(
         _Data,
         Goal_MapScriptFunction(self:GetCheckStagesInlineGoal(_Data.Name))
@@ -306,7 +306,7 @@ function AddOnQuestStages.Global:CreateMainQuest(_Data)
     end
     -- Unsichtbarkeit erzwingen
     Quests[GetQuestID(Name)].Visible = false;
-    -- Subquests erstellen/verlinken
+    -- Stages erstellen/verlinken
     self.Data.StagesForQuest[Name] = {};
     for i= 1, #_Data.Stages, 1 do
         self:CreateQuestStage(_Data.Stages[i], Name, i);
@@ -315,10 +315,10 @@ function AddOnQuestStages.Global:CreateMainQuest(_Data)
 end
 
 ---
--- Gibt den Index des aktuell aktiven Sub Quest zurück.
+-- Gibt den Index des aktuell aktiven Stage zurück.
 --
--- @param[type=string] _QuestName  Name Main Quest
--- @return[type=number] Aktiver Subquest
+-- @param[type=string] _QuestName Name des Staged Quest
+-- @return[type=number] Aktiver Stage
 -- @within Internal
 -- @local
 --
@@ -335,9 +335,9 @@ function AddOnQuestStages.Global:GetCurrentQuestStage(_QuestName)
 end
 
 ---
--- Zählt wievele Sub Quests zum Main Quest zugeordnet sind.
+-- Zählt wievele Stages zum Staged Quest zugeordnet sind.
 --
--- @param[type=string] _QuestName  Name Main Quest
+-- @param[type=string] _QuestName  Name des Staged Quest
 -- @return[type=number] Anzahl Stages
 -- @within Internal
 -- @local
@@ -351,17 +351,17 @@ function AddOnQuestStages.Global:GetAmountOfQuestStages(_QuestName)
 end
 
 ---
--- Gibt den Fortschritt des Main Quest anhand der bereits abgeschlossenen
--- Sub Quests zurück.
+-- Gibt den Fortschritt des Staged Quest anhand der bereits abgeschlossenen
+-- Stages zurück.
 --
--- @param[type=string] _QuestName  Name Main Quest
+-- @param[type=string] _QuestName  Name des Staged Quest
 -- @return[type=number] Fortschritt in Prozent (0 ... 1)
 -- @return[type=number] Aktueller Stage
 -- @return[type=number] Höchst möglicher State
 -- @within Internal
 -- @local
 --
-function AddOnQuestStages.Global:GetMainQuestProgress(_QuestName)
+function AddOnQuestStages.Global:GetStagedQuestProgress(_QuestName)
     local CurrentStage = self:GetCurrentQuestStage(_QuestName);
     local StageAmount  = self:GetAmountOfQuestStages(_QuestName);
     if StageAmount == 0 then
@@ -371,15 +371,15 @@ function AddOnQuestStages.Global:GetMainQuestProgress(_QuestName)
 end
 
 ---
--- Spult einen Main Quest um einen Sub Quest vor.
+-- Spult einen Staged Quest um einen Stage vor.
 --
--- @param[type=string] _QuestName  Name Main Quest
--- @return[type=number] Index des Sub Quest
+-- @param[type=string] _QuestName  Name des Staged Quest
+-- @return[type=number] Index des Stage
 -- @within Internal
 -- @local
 --
-function AddOnQuestStages.Global:ForwardMainQuest(_QuestName)
-    local D, C, M = self:GetMainQuestProgress(_QuestName);
+function AddOnQuestStages.Global:ForwardStagedQuest(_QuestName)
+    local D, C, M = self:GetStagedQuestProgress(_QuestName);
     if M > 0 and C+1 <= M then
         local Current = self.Data.StagesForQuest[_QuestName][C].Name;
         local Next    = self.Data.StagesForQuest[_QuestName][C+1].Name;
@@ -391,15 +391,15 @@ function AddOnQuestStages.Global:ForwardMainQuest(_QuestName)
 end
 
 ---
--- Setzt einen Main Quest um einen Sub Quest zurück.
+-- Setzt einen Staged Quest um einen Stage zurück.
 --
--- @param[type=string] _QuestName  Name Main Quest
--- @return[type=number] Index des Sub Quest
+-- @param[type=string] _QuestName  Name des Staged Quest
+-- @return[type=number] Index des Stage
 -- @within Internal
 -- @local
 --
-function AddOnQuestStages.Global:RevertMainQuest(_QuestName)
-    local D, C, M = self:GetMainQuestProgress(_QuestName);
+function AddOnQuestStages.Global:RevertStagedQuest(_QuestName)
+    local D, C, M = self:GetStagedQuestProgress(_QuestName);
     if M > 0 and C-1 > 0 then
         local Current  = self.Data.StagesForQuest[_QuestName][C].Name;
         local Previous = self.Data.StagesForQuest[_QuestName][C-1].Name;
@@ -412,9 +412,9 @@ function AddOnQuestStages.Global:RevertMainQuest(_QuestName)
 end
 
 ---
--- Erstellt das Behavior für die Prüfung der Subquests.
+-- Erstellt das Behavior für die Prüfung der Stage.
 --
--- @param[type=string] _QuestName  Name Main Quest
+-- @param[type=string] _QuestName  Name des Staged Quest
 -- @return[type=function] Behavior
 -- @within Internal
 -- @local
@@ -425,11 +425,11 @@ function AddOnQuestStages.Global:GetCheckStagesInlineGoal(_QuestName)
         local StageList = self.Data.StagesForQuest[_QuestName];
         for i= 1, #StageList, 1 do
             local StageQuest = Quests[GetQuestID(StageList[i].Name)];
-            -- Nicht existierender Sub Quest bedeutet Fehlschlag
+            -- Nicht existierender Stage bedeutet Fehlschlag
             if not StageQuest then
                 return false;
             end
-            -- Nicht erwartetes Resultat eines Sub Quest bedeutet Fehlschlag,
+            -- Nicht erwartetes Resultat eines Stage bedeutet Fehlschlag,
             if StageQuest.State == QuestState.Over and StageQuest.Result ~= QuestResult.Interrupted then
                 if StageList[i].Result == QSB.ResultType.Success and StageQuest.Result ~= QuestResult.Success then
                     return false;
@@ -448,10 +448,10 @@ function AddOnQuestStages.Global:GetCheckStagesInlineGoal(_QuestName)
 end
 
 ---
--- Erstellt einen Subquest aus der übergebenen Beschreibung.
+-- Erstellt einen Stage aus der übergebenen Beschreibung.
 --
--- @param[type=table]  _Data      Subquest Daten
--- @param[type=string] _QuestName Name Main Quest
+-- @param[type=table]  _Data      Stage Daten
+-- @param[type=string] _QuestName Name des Staged Quest
 -- @param[type=number] _Index     Index des Stages
 -- @within Internal
 -- @local
@@ -508,7 +508,7 @@ function AddOnQuestStages.Global:CreateQuestStage(_Data, _QuestName, _Index)
     end
 
     if QuestDescription.Stages then
-        self:CreateMainQuest(QuestDescription);
+        self:CreateStagedQuest(QuestDescription);
     else
         API.CreateQuest(QuestDescription);
     end
@@ -648,12 +648,12 @@ function AddOnQuestStages.Global.SetQuestState(_Data, _Flag)
         return "Unable to find quest containing '" .._Data[2].. "'";
     end
     if _Flag == 1 then
-        if API.ForwardMainQuest(FoundQuests[1]) > 0 then
+        if API.ForwardStagedQuest(FoundQuests[1]) > 0 then
             API.Note("forwarded quest '" ..FoundQuests[1].. "'");
             return "forwarded quest '" ..FoundQuests[1].. "'";
         end
     elseif _Flag == 2 then
-        if API.RevertMainQuest(FoundQuests[1]) > 0 then
+        if API.RevertStagedQuest(FoundQuests[1]) > 0 then
             API.Note("reverted quest '" ..FoundQuests[1].. "'");
             return "reverted quest '" ..FoundQuests[1].. "'";
         end
