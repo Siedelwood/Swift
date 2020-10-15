@@ -457,7 +457,7 @@ end
 -- @local
 --
 function AddOnQuestStages.Global:CreateQuestStage(_Data, _QuestName, _Index)
-    local Name = _Data.Name or _QuestName.. "_Stage_" .._Index;
+    local Name = _Data.Name or _QuestName.. "@Stage" .._Index;
     local Parent = Quests[GetQuestID(_QuestName)];
 
     local QuestDescription = {

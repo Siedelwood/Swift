@@ -326,7 +326,7 @@ WinQuestByName = API.WinQuest;
 -- @local
 --
 function Core:CheckQuestName(_Name)
-    return string.find(_Name, "^[A-Za-z0-9_ ÄÖÜäöüß]+$") ~= nil;
+    return string.find(_Name, "^[A-Za-z0-9_ @ÄÖÜäöüß]+$") ~= nil;
 end
 
 ---

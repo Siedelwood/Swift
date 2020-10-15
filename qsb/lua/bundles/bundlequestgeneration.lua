@@ -454,7 +454,7 @@ end
 -- @local
 --
 function BundleQuestGeneration.Global:QuestValidateQuestName(_Name)
-    return string.find(_Name, "^[A-Za-z0-9_ ÄÖÜäöüß]+$") ~= nil;
+    return string.find(_Name, "^[A-Za-z0-9_ @ÄÖÜäöüß]+$") ~= nil;
 end
 
 ---
