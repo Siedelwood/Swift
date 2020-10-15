@@ -244,6 +244,25 @@ function AddOnRandomRequests.Global:GetPossibleBehaviors(_Behavior, _Quest)
     return QuestGoals, QuestTypes;
 end
 
+---
+-- Bricht den Slave Quest des Random Request ab.
+-- @param[type=table] _Quest     Quest Data
+-- @within Internal
+-- @local
+--
+function AddOnRandomRequests.Global:OnQuestSkipped(_Quest)
+    for k, v in pairs(_Quest.Objectives) do
+        if  type(v) == "table" 
+        and v.Type == Objective.Custom2 
+        and v.Data
+        and v.Data[1]
+        and v.Data[1].Name:find("Goal_RandomRequest")
+        and v.Data[1].SlaveQuest then
+            v.Data[1].SlaveQuest:Interrupt();
+        end
+    end
+end
+
 -- Behaviors ---------------------------------------------------------------- --
 
 ---

@@ -50,6 +50,7 @@ QSB.GeneratedQuestDialogs = {};
 -- <li>Time: Zeit bis zu, Fehlschlag/Abschluss</li>
 -- <li>Loop: Funktion, die während der Laufzeit des Quests aufgerufen wird</li>
 -- <li>Callback: Funktion, die nach Abschluss aufgerufen wird</li>
+-- <li>Skip: Funktion, die beim überspringen aufgerufen wird</li>
 -- </ul>
 --
 -- <p><b>Alias:</b> AddQuest</p>
@@ -415,6 +416,7 @@ function BundleQuestGeneration.Global:QuestCreateNewQuest(_Data)
     local QuestID, Quest = QuestTemplate:New(unpack(QuestData, 1, 16));
     Quest.MsgTableOverride = _Data.MSGKeyOverwrite;
     Quest.IconOverride = _Data.IconOverwrite;
+    Quest.SkipFunction = _Data.Skip;
     return _Data.Name, Quests[0];
 end
 

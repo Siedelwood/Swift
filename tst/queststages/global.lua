@@ -59,33 +59,48 @@ function Mission_FirstMapAction()
         Startup_Diplomacy();
     end
 
-    API.ActivateDebugMode(true, true, true, true);
+    API.ActivateDebugMode(true, false, true, true);
 
     CreateTestQuests();
 end
 
 function CreateTestQuests()
-    API.CreateMainQuest {
+    API.CreateStagedQuest {
         Name        = "TestQuestLine1",
+        Skip       = function()
+            API.Note("Skip Main");
+        end,
         Stages      = {
             {
                 Suggestion = "Holz produzieren",
                 Success    = "geschafft!",
+                Skip       = function()
+                    API.Note("Skip Stage 1");
+                end,
                 Goal_Produce("G_Wood", 50),
             },
             {
                 Suggestion = "Stein produzieren",
                 Success    = "geschafft!",
+                Skip       = function()
+                    API.Note("Skip Stage 2");
+                end,
                 Goal_Produce("G_Stone", 30),
             },
             {
                 Suggestion = "Baron werden",
                 Success    = "geschafft!",
+                Skip       = function()
+                    API.Note("Skip Stage 3");
+                end,
                 Goal_KnightTitle("Baron"),
             },
             {
                 Suggestion = "Bäckerei bauen",
                 Success    = "geschafft!",
+                Skip       = function()
+                    API.Note("Skip Stage 4");
+                end,
                 Goal_Create("B_Bakery", 1, 1),
             },
         }

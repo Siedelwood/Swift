@@ -406,6 +406,63 @@ function API.ActivateDebugMode(_CheckAtRun, _TraceQuests, _DevelopingCheats, _De
 end
 ActivateDebugMode = API.ActivateDebugMode;
 
+---
+-- Überspringt einen Quest.
+--
+-- Wird ein Quest übersprungen, wird er unterbrochen und nachträglich auf
+-- erfolgreich gesetzt. Falls vorhanden, wird die Skip-Funktion aufgerufen.
+-- Einmal übersprungen können Quests nicht fehlerfrei neu gestartet werden.
+--
+-- @param[type=string]  _QuestName Name des Quest
+-- @param[type=boolean] _NoMessage Nachricht nicht anzeigen
+-- @within Anwenderfunktionen
+-- @see API.SkipMultipleQuest
+--
+function API.SkipSingleQuest(_QuestName, _NoMessage)
+    if GUI then
+        return;
+    end
+    local Quest = Quests[GetQuestID(_QuestName)];
+    if Quest then
+        Quest.Visible = false;
+        Quest.ShowEndMessage = false;
+        API.StopQuest(_QuestName, true);
+        Quest.Result = QuestResult.Over;
+        if BundleClassicBehaviors then
+            BundleClassicBehaviors.Global:OnQuestSkipped(Quest);
+        end
+        if AddOnRandomRequests then
+            AddOnRandomRequests.Global:OnQuestSkipped(Quest);
+        end
+        if AddOnQuestStages then
+            AddOnQuestStages.Global:OnQuestSkipped(Quest)
+        end
+        if Quest.SkipFunction then
+            Quest:SkipFunction();
+        end
+        if not _NoMessage then
+            API.Note("skipped quest " .._QuestName);
+        end
+        return;
+    end
+    error("API.SkipSingleQuest: Quest " .._QuestName.. " not found!");
+end
+SkipSingleQuest = API.SkipSingleQuest;
+
+---
+-- Überspringt alle Quests in der Liste in der angegebenen Reihenfolge.
+--
+-- @param[type=string] ... Liste mit Questnames
+-- @within Anwenderfunktionen
+-- @see API.SkipSingleQuest
+--
+function API.SkipMultipleQuest(...)
+    for k, v in pairs(arg) do
+        API.SkipSingleQuest(v);
+    end
+end
+SkipMultipleQuest = API.SkipMultipleQuest;
+
 -- -------------------------------------------------------------------------- --
 -- Rewards                                                                    --
 -- -------------------------------------------------------------------------- --
@@ -493,6 +550,7 @@ function AddOnQuestDebug.Global:Install()
         {"stop",        self.SetQuestState,            3},
         {"start",       self.SetQuestState,            4},
         {"restart",     self.SetQuestState,            5},
+        {"skip",        self.SetQuestState,            6},
         {"won",         self.FindQuestsByState,        1},
         {"failed",      self.FindQuestsByState,        2},
         {"stoped",      self.FindQuestsByState,        3},
@@ -1001,10 +1059,14 @@ function AddOnQuestDebug.Global.SetQuestState(_Data, _Flag)
         API.StartQuest(FoundQuests[1], true);
         API.Note("trigger quest '" ..FoundQuests[1].. "'");
         return "trigger quest '" ..FoundQuests[1].. "'";
-    else
+    elseif _Flag == 5 then
         API.RestartQuest(FoundQuests[1], true);
         API.Note("restart quest '" ..FoundQuests[1].. "'");
         return "restart quest '" ..FoundQuests[1].. "'";
+    else
+        API.SkipSingleQuest(FoundQuests[1], true);
+        API.Note("skip quest '" ..FoundQuests[1].. "'");
+        return "skip quest '" ..FoundQuests[1].. "'";
     end
 end
 

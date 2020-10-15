@@ -457,7 +457,7 @@ end
 -- @local
 --
 function AddOnQuestStages.Global:CreateQuestStage(_Data, _QuestName, _Index)
-    local Name = _QuestName.. "_Stage_" .._Index;
+    local Name = _Data.Name or _QuestName.. "_Stage_" .._Index;
     local Parent = Quests[GetQuestID(_QuestName)];
 
     local QuestDescription = {
@@ -510,7 +510,11 @@ function AddOnQuestStages.Global:CreateQuestStage(_Data, _QuestName, _Index)
     if QuestDescription.Stages then
         self:CreateStagedQuest(QuestDescription);
     else
-        API.CreateQuest(QuestDescription);
+        local QuestName = API.CreateQuest(QuestDescription);
+        local Quest = Quests[GetQuestID(QuestName)];
+        if Quest then
+            Quests[GetQuestID(QuestName)].SkipFunction = _Data.Skip;
+        end
     end
     table.insert(self.Data.StagesForQuest[_QuestName], QuestDescription);
 end
@@ -656,6 +660,20 @@ function AddOnQuestStages.Global.SetQuestState(_Data, _Flag)
         if API.RevertStagedQuest(FoundQuests[1]) > 0 then
             API.Note("reverted quest '" ..FoundQuests[1].. "'");
             return "reverted quest '" ..FoundQuests[1].. "'";
+        end
+    end
+end
+
+---
+-- Bricht den Slave Quest des Random Request ab.
+-- @param[type=table] _Quest     Quest Data
+-- @within Internal
+-- @local
+--
+function AddOnQuestStages.Global:OnQuestSkipped(_Quest)
+    if self.Data.StagesForQuest[_Quest.Identifier] then
+        for k, v in pairs(self.Data.StagesForQuest[_Quest.Identifier]) do
+            API.SkipSingleQuest(v.Name);
         end
     end
 end

@@ -9029,6 +9029,25 @@ function BundleClassicBehaviors.Global:IsQuestPositionReached(_Quest, _Objective
     end
 end
 
+---
+-- Bricht den Slave Quest eines Tribute Behavior ab.
+-- @param[type=table] _Quest     Quest Data
+-- @within Internal
+-- @local
+--
+function BundleClassicBehaviors.Global:OnQuestSkipped(_Quest)
+    for k, v in pairs(_Quest.Objectives) do
+        if  type(v) == "table" 
+        and v.Type == Objective.Custom2 
+        and v.Data
+        and v.Data[1]
+        and v.Data[1].Name:find("Goal_Tribute")
+        and v.Data[1].InternTributeQuest then
+            v.Data[1].InternTributeQuest:Interrupt();
+        end
+    end
+end
+
 -- Local Script ----------------------------------------------------------------
 
 ---

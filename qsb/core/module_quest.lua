@@ -67,13 +67,13 @@ FailQuestsByName = API.FailAllQuests;
 -- <p><b>Alias:</b> FailQuestByName</p>
 --
 -- @param[type=string]  _QuestName Name des Quest
--- @param[type=boolean] _Verbose   Meldung nicht anzeigen
+-- @param[type=boolean] _NoMessage Meldung nicht anzeigen
 -- @within Anwenderfunktionen
 --
-function API.FailQuest(_QuestName, _Verbose)
+function API.FailQuest(_QuestName, _NoMessage)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
-        if not _Verbose then
+        if not _NoMessage then
             API.Note("fail quest " .._QuestName);
         end
         Quest:RemoveQuestMarkers();
@@ -112,14 +112,14 @@ RestartQuestsByName = API.RestartAllQuests;
 -- <p><b>Alias:</b> RestartQuestByName</p>
 --
 -- @param[type=string]  _QuestName Name des Quest
--- @param[type=boolean] _Verbose   Meldung nicht anzeigen
+-- @param[type=boolean] _NoMessage Meldung nicht anzeigen
 -- @within Anwenderfunktionen
 --
-function API.RestartQuest(_QuestName, _Verbose)
+function API.RestartQuest(_QuestName, _NoMessage)
     local QuestID = GetQuestID(_QuestName);
     local Quest = Quests[QuestID];
     if Quest then
-        if not _Verbose then
+        if not _NoMessage then
             API.Note("restart quest " .._QuestName);
         end
 
@@ -217,13 +217,13 @@ StartQuestsByName = API.StartAllQuests;
 -- <p><b>Alias:</b> StartQuestByName</p>
 --
 -- @param[type=string]  _QuestName Name des Quest
--- @param[type=boolean] _Verbose   Meldung nicht anzeigen
+-- @param[type=boolean] _NoMessage Meldung nicht anzeigen
 -- @within Anwenderfunktionen
 --
-function API.StartQuest(_QuestName, _Verbose)
+function API.StartQuest(_QuestName, _NoMessage)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
-        if not _Verbose then
+        if not _NoMessage then
             API.Note("start quest " .._QuestName);
         end
         Quest:SetMsgKeyOverride();
@@ -258,13 +258,13 @@ StopQuestsByName = API.StopAllQuests;
 -- <p><b>Alias:</b> StopQuestByName</p>
 --
 -- @param[type=string]  _QuestName Name des Quest
--- @param[type=boolean] _Verbose   Meldung nicht anzeigen
+-- @param[type=boolean] _NoMessage Meldung nicht anzeigen
 -- @within Anwenderfunktionen
 --
-function API.StopQuest(_QuestName, _Verbose)
+function API.StopQuest(_QuestName, _NoMessage)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
-        if not _Verbose then
+        if not _NoMessage then
             API.Note("interrupt quest " .._QuestName);
         end
         Quest:RemoveQuestMarkers();
@@ -299,13 +299,13 @@ WinQuestsByName = API.WinAllQuests;
 -- <p><b>Alias:</b> WinQuestByName</p>
 --
 -- @param[type=string]  _QuestName Name des Quest
--- @param[type=boolean] _Verbose   Meldung nicht anzeigen
+-- @param[type=boolean] _NoMessage Meldung nicht anzeigen
 -- @within Anwenderfunktionen
 --
-function API.WinQuest(_QuestName, _Verbose)
+function API.WinQuest(_QuestName, _NoMessage)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
-        if not _Verbose then
+        if not _NoMessage then
             API.Note("win quest " .._QuestName);
         end
         Quest:RemoveQuestMarkers();
