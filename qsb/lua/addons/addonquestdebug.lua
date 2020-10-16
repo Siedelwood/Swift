@@ -417,6 +417,7 @@ ActivateDebugMode = API.ActivateDebugMode;
 -- @param[type=boolean] _NoMessage Nachricht nicht anzeigen
 -- @within Anwenderfunktionen
 -- @see API.SkipMultipleQuest
+-- @local
 --
 function API.SkipSingleQuest(_QuestName, _NoMessage)
     if GUI then
@@ -455,6 +456,7 @@ SkipSingleQuest = API.SkipSingleQuest;
 -- @param[type=string] ... Liste mit Questnames
 -- @within Anwenderfunktionen
 -- @see API.SkipSingleQuest
+-- @local
 --
 function API.SkipMultipleQuest(...)
     for k, v in pairs(arg) do
