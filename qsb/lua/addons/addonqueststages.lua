@@ -8,7 +8,7 @@
 -- Ermöglicht das Zusammenfassen mehrerer Quests unter einem Staged Quest.
 --
 -- Diese Funktionalität kann ausschließlich für im Skript erstellte Quests
--- genutzt werden. Im Assistenten können Stages nicht abgebildet werden.
+-- genutzt werden. Im Assistenten können Stages nicht abgebildet werden!
 --
 -- @within Modulbeschreibung
 -- @set sort=true
@@ -23,12 +23,12 @@ QSB = QSB or {};
 --
 -- @field Success Phase muss erfolgreich abgeschlossen werden.
 -- @field Failure Phase muss fehlschlagen.
--- @field Both    Erfolg und Misserfolg werden geleichermaßen akzeptiert.
+-- @field Ignore  Erfolg und Misserfolg werden geleichermaßen akzeptiert.
 --
-QSB.ResultType = {
+QSB.StageResult = {
     Success = 1,
     Failure = 2,
-    Both    = 3,
+    Ignore  = 3,
 }
 
 ---
@@ -37,30 +37,37 @@ QSB.ResultType = {
 --
 -- Als Parameter werden immer Questname und, falls benötigt, Stage übergeben.
 --
--- @field Goal_ReachStage        Prüft, ob die Phase erreicht wurde.
--- @field Reprisal_PreviousStage Kehr zur vorherigen Phase zurück.
--- @field Reprisal_NextStage     Springt zur nächsten Phase vor.
--- @field Reward_PreviousStage   Kehr zur vorherigen Phase zurück.
--- @field Reward_NextStage       Springt zur nächsten Phase vor.
--- @field Trigger_OnStage        Prüft, ob die Phase erreicht wurde.
+-- @field Goal_ReachStage            Prüft, ob die Phase erreicht wurde.
+-- @field Reprisal_RevertStage       Kehr zur vorherigen Phase zurück.
+-- @field Reprisal_NextStage         Springt zur nächsten Phase vor.
+-- @field Reprisal_NextStageByResult Setzt Ergebnis und Springt zur nächsten Phase vor.
+-- @field Reward_RevertStage         Kehr zur vorherigen Phase zurück.
+-- @field Reward_NextStage           Springt zur nächsten Phase vor.
+-- @field Reward_NextStageByResult   Setzt Ergebnis und Springt zur nächsten Phase vor.
+-- @field Trigger_OnStage            Prüft, ob die Phase erreicht wurde.
 --
 -- @usage -- Phase als Goal prüfen (schlägt nur bei Fehler fehl)
 -- Goal_MapScriptFunction(QSB.StagedQuest.Goal_ReachStage, "MyQuest", 3)
 -- -- Phase zurück (Reprisal)
--- Reprisal_MapScriptFunction(QSB.StagedQuest.Reprisal_PreviousStage, "MyQuest")
+-- Reprisal_MapScriptFunction(QSB.StagedQuest.Reprisal_RevertStage, "MyQuest")
 -- -- Phase vor (Reprisal)
 -- Reprisal_MapScriptFunction(QSB.StagedQuest.Reprisal_NextStage, "MyQuest")
+-- -- Phase vor und Resultat des aktuellen Stage setzen (Reprisal)
+-- Reprisal_MapScriptFunction(QSB.StagedQuest.Reprisal_NextStageByResult, "MyQuest", QSB.StageResult.Success)
 -- -- Phase zurück (Reward)
--- Reward_MapScriptFunction(QSB.StagedQuest.Reward_PreviousStage, "MyQuest")
+-- Reward_MapScriptFunction(QSB.StagedQuest.Reward_RevertStage, "MyQuest")
 -- -- Phase vor (Reward)
 -- Reward_MapScriptFunction(QSB.StagedQuest.Reward_NextStage, "MyQuest")
+-- -- Phase vor und Resultat des aktuellen Stage setzen (Reward)
+-- Reward_MapScriptFunction(QSB.StagedQuest.Reward_NextStageByResult, "MyQuest", QSB.StageResult.Success)
 -- -- Phase als Trigger prüfen
 -- Trigger_MapScriptFunction(QSB.StagedQuest.Trigger_OnStage, "MyQuest", 5)
 --
 QSB.StagedQuest = {};
 
 function QSB.StagedQuest.Goal_ReachStage(_QuestName, _Stage)
-    local D, C, M = API.GetStagedQuestProgress(_QuestName);
+    local C = API.GetCurrentQuestStage(_QuestName);
+    local M = API.GetAmountOfQuestStages(_QuestName);
     if M == 0 and M < _Stage then
         return false;
     elseif C >= _Stage then
@@ -69,7 +76,7 @@ function QSB.StagedQuest.Goal_ReachStage(_QuestName, _Stage)
     return nil;
 end
 
-function QSB.StagedQuest.Reprisal_PreviousStage(_QuestName)
+function QSB.StagedQuest.Reprisal_RevertStage(_QuestName)
     API.RevertStagedQuest(_QuestName);
 end
 
@@ -77,7 +84,11 @@ function QSB.StagedQuest.Reprisal_NextStage(_QuestName)
     API.ForwardStagedQuest(_QuestName);
 end
 
-function QSB.StagedQuest.Reward_PreviousStage(_QuestName)
+function QSB.StagedQuest.Reprisal_NextStageByResult(_QuestName, _Result)
+    API.ForwardStagedQuest(_QuestName, _Result);
+end
+
+function QSB.StagedQuest.Reward_RevertStage(_QuestName)
     API.RevertStagedQuest(_QuestName);
 end
 
@@ -85,8 +96,13 @@ function QSB.StagedQuest.Reward_NextStage(_QuestName)
     API.ForwardStagedQuest(_QuestName);
 end
 
+function QSB.StagedQuest.Reward_NextStageByResult(_QuestName, _Result)
+    API.ForwardStagedQuest(_QuestName, _Result);
+end
+
 function QSB.StagedQuest.Trigger_OnStage(_QuestName, _Stage)
-    local D, C, M = API.GetStagedQuestProgress(_QuestName);
+    local C = API.GetCurrentQuestStage(_QuestName);
+    local M = API.GetAmountOfQuestStages(_QuestName);
     if M > 0 and M >= _Stage and C >= _Stage then
         return true;
     end
@@ -140,9 +156,9 @@ end
 --             Goal_KnightTitle("Mayor"),
 --         },
 --         {
---             -- Mit dem Typ Both wird Fehlschlag ignoriert und der nächste
+--             -- Mit dem Typ Ignore wird Fehlschlag ignoriert und der nächste
 --             -- Quest startet nach diesem Quest.
---             Result      = QSB.ResultType.Both,
+--             Result      = QSB.StageResult.Ignore,
 --
 --             Suggestion  = "Wir benötigen außerdem mehr Asche! Und das sofort...",
 --             Success     = "Geschafft!",
@@ -172,7 +188,11 @@ end
 -- };
 --
 function API.CreateStagedQuest(_Data)
-    if GUI then
+    if GUI or type(_Data) ~= "table" then
+        return;
+    end
+    if _Data.Stages == nil or #_Data.Stages == 0 then
+        error(string.format("API.CreateStagedQuest: Staged quest '%s' is missing it's stages!", tostring(_Data.Name)));
         return;
     end
     return AddOnQuestStages.Global:CreateStagedQuest(_Data);
@@ -180,24 +200,94 @@ end
 AddStagedQuest = API.CreateStagedQuest;
 
 ---
+-- Gibt den Index des aktuell aktiven Stages eines Staged Quest zurück.
+--
+-- Ist ein Staged Quest bereits abgeschlossen wird immer der Index des letzten
+-- Stage zurückgegeben.
+--
+-- <b>Alias</b>: GetQuestStage
+--
+-- @param[type=string] _QuestName Name des Quest
+-- @return[type=number] Relativer Fortschritt (0 ... 1)
+-- @within Anwenderfunktionen
+--
+-- @usage local CurrentStage = API.GetCurrentQuestStage("MyQuest");
+--
+function API.GetCurrentQuestStage(_QuestName)
+    if GUI then
+        return 0;
+    end
+    local Quest = Quests[GetQuestID(_QuestName)];
+    if not API.IsValidQuest(_QuestName) then
+        error(string.format("API.GetCurrentQuestStage: Quest '%s' does not exist!", tostring(_QuestName)));
+        return 0;
+    end
+    if AddOnQuestStages.Global.Data.StagesForQuest[_QuestName] == nil then
+        error(string.format("API.GetCurrentQuestStage: Quest '%s' is not a staged quest!", tostring(_QuestName)));
+        return 0;
+    end
+    return AddOnQuestStages.Global:GetCurrentQuestStage(_QuestName);
+end
+GetQuestStage = API.GetCurrentQuestStage;
+
+---
+-- Gibt die Anzahl der Stages eines Staged Quest zurück.
+--
+-- <b>Alias</b>: CountQuestStages
+--
+-- @param[type=string] _QuestName Name des Quest
+-- @return[type=number] Relativer Fortschritt (0 ... 1)
+-- @within Anwenderfunktionen
+-- @usage local Stages = API.GetAmountOfQuestStages("MyQuest");
+--
+function API.GetAmountOfQuestStages(_QuestName)
+    if GUI then
+        return 0;
+    end
+    if not API.IsValidQuest(_QuestName) then
+        error(string.format("API.GetAmountOfQuestStages: Quest '%s' does not exist!", tostring(_QuestName)));
+        return 0;
+    end
+    if AddOnQuestStages.Global.Data.StagesForQuest[_QuestName] == nil then
+        error(string.format("API.GetAmountOfQuestStages: Quest '%s' is not a staged quest!", tostring(_QuestName)));
+        return 0;
+    end
+    return AddOnQuestStages.Global:GetAmountOfQuestStages(_QuestName);
+end
+CountQuestStages = API.GetAmountOfQuestStages;
+
+---
 -- Gibt den Fortschritt eines Staged Quest zurück.
 --
--- Kann der Fortschritt nicht bestimmt werden, wird 0, 0, 0 zurückgegeben.
+-- Kann der Fortschritt nicht bestimmt werden, wird 0 zurückgegeben.
 --
 -- <b>Alias</b>: GetQuestProgress
 --
 -- @param[type=string] _QuestName Name des Quest
 -- @return[type=number] Relativer Fortschritt (0 ... 1)
--- @return[type=number] Index des aktiven Stage
--- @return[type=number] Maximalanzahl Stages
 -- @within Anwenderfunktionen
--- @usage local Progress, Current, Max = API.GetStagedQuestProgress("MyQuest");
+--
+-- @usage -- Fortschritt ermitteln
+-- local Progress = API.GetStagedQuestProgress("MyQuest");
+-- -- Fortschritt in % ermitteln
+-- local Progress = API.Round(API.GetStagedQuestProgress("MyQuest") * 100, 0);
 --
 function API.GetStagedQuestProgress(_QuestName)
     if GUI then
-        return;
+        return 0;
     end
-    return AddOnQuestStages.Global:GetStagedQuestProgress(_QuestName);
+    if not API.IsValidQuest(_QuestName) then
+        error(string.format("API.GetStagedQuestProgress: Quest '%s' does not exist!", tostring(_QuestName)));
+        return 0;
+    end
+    if AddOnQuestStages.Global.Data.StagesForQuest[_QuestName] == nil then
+        error(string.format("API.GetStagedQuestProgress: Quest '%s' is not a staged quest!", tostring(_QuestName)));
+        return 0;
+    end
+    -- Es wäre theoretisch möglich durch Veränderung der Daten hier eine
+    -- Division durch 0 herbeizuführen. Da es aber nicht möglich ist, einen
+    -- Staged Quest ohne Stages zu erzeugen, wird das hier vernachlässigt.
+    return API.GetCurrentQuestStage(_QuestName) / API.GetAmountOfQuestStages(_QuestName);
 end
 GetQuestProgress = API.GetStagedQuestProgress;
 
@@ -210,14 +300,23 @@ GetQuestProgress = API.GetStagedQuestProgress;
 -- <b>Alias</b>: ForwardStagedQuest
 --
 -- @param[type=string] _QuestName  Name Staged Quest
+-- @param[type=number] _Result     (Optional) Resultat des Stage
 -- @return[type=number] Index des Stage
 -- @within Anwenderfunktionen
 --
-function API.ForwardStagedQuest(_QuestName)
+function API.ForwardStagedQuest(_QuestName, _Result)
     if GUI then
         return;
     end
-    return AddOnQuestStages.Global:ForwardStagedQuest(_QuestName);
+    if not API.IsValidQuest(_QuestName) then
+        error(string.format("API.ForwardStagedQuest: Quest '%s' does not exist!", tostring(_QuestName)));
+        return 0;
+    end
+    if AddOnQuestStages.Global.Data.StagesForQuest[_QuestName] == nil then
+        error(string.format("API.ForwardStagedQuest: Quest '%s' is not a staged quest!", tostring(_QuestName)));
+        return 0;
+    end
+    return AddOnQuestStages.Global:ForwardStagedQuest(_QuestName, _Result);
 end
 ForwardStagedQuest = API.ForwardStagedQuest;
 
@@ -236,6 +335,14 @@ ForwardStagedQuest = API.ForwardStagedQuest;
 function API.RevertStagedQuest(_QuestName)
     if GUI then
         return;
+    end
+    if not API.IsValidQuest(_QuestName) then
+        error(string.format("API.RevertStagedQuest: Quest '%s' does not exist!", tostring(_QuestName)));
+        return 0;
+    end
+    if AddOnQuestStages.Global.Data.StagesForQuest[_QuestName] == nil then
+        error(string.format("API.RevertStagedQuest: Quest '%s' is not a staged quest!", tostring(_QuestName)));
+        return 0;
     end
     return AddOnQuestStages.Global:RevertStagedQuest(_QuestName);
 end
@@ -317,6 +424,9 @@ end
 ---
 -- Gibt den Index des aktuell aktiven Stage zurück.
 --
+-- Wenn der Staged Quest bereits beendet ist, ist der aktuelle Stage immer der
+-- letzte Stage des Quest.
+--
 -- @param[type=string] _QuestName Name des Staged Quest
 -- @return[type=number] Aktiver Stage
 -- @within Internal
@@ -325,11 +435,15 @@ end
 function AddOnQuestStages.Global:GetCurrentQuestStage(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest ~= nil and self.Data.StagesForQuest[_QuestName] ~= nil then
-        for i= 1, #self.Data.StagesForQuest[_QuestName], 1 do
-            if Quests[GetQuestID(self.Data.StagesForQuest[_QuestName][i].Name)].State == QuestState.Active then
-                return i;
+        if Quest.State ~= QuestState.Over then
+            for i= 1, #self.Data.StagesForQuest[_QuestName], 1 do
+                if Quests[GetQuestID(self.Data.StagesForQuest[_QuestName][i].Name)].State == QuestState.Active then
+                    return i;
+                end
             end
+            return 0;
         end
+        return #self.Data.StagesForQuest[_QuestName];
     end
     return 0;
 end
@@ -362,28 +476,40 @@ end
 -- @local
 --
 function AddOnQuestStages.Global:GetStagedQuestProgress(_QuestName)
-    local CurrentStage = self:GetCurrentQuestStage(_QuestName);
     local StageAmount  = self:GetAmountOfQuestStages(_QuestName);
     if StageAmount == 0 then
         return 0, 0, 0;
     end
+    local CurrentStage = self:GetCurrentQuestStage(_QuestName);
     return CurrentStage / StageAmount, CurrentStage, StageAmount;
 end
 
 ---
 -- Spult einen Staged Quest um einen Stage vor.
 --
--- @param[type=string] _QuestName  Name des Staged Quest
+-- @param[type=string] _QuestName   Name des Staged Quest
+-- @param[type=number] _StageResult (Optional) Resultat des Stage
 -- @return[type=number] Index des Stage
 -- @within Internal
 -- @local
 --
-function AddOnQuestStages.Global:ForwardStagedQuest(_QuestName)
+function AddOnQuestStages.Global:ForwardStagedQuest(_QuestName, _StageResult)
     local D, C, M = self:GetStagedQuestProgress(_QuestName);
     if M > 0 and C+1 <= M then
         local Current = self.Data.StagesForQuest[_QuestName][C].Name;
         local Next    = self.Data.StagesForQuest[_QuestName][C+1].Name;
-        API.StopQuest(Current, true);
+        -- Quest gewinnen, wenn das gewünschte Ergebnis Erfolg oder egal ist.
+        if self.Data.StagesForQuest[_QuestName][C].Result == QSB.StageResult.Success
+        or self.Data.StagesForQuest[_QuestName][C].Result == QSB.StageResult.Ignore
+        or _StageResult == QSB.StageResult.Success then
+            API.WinQuest(Current, true);
+        end
+        -- Quest verlieren, wenn das gewünschte Ergebnis Niederlage ist.
+        if self.Data.StagesForQuest[_QuestName][C].Result == QSB.StageResult.Failure
+        or _StageResult == QSB.StageResult.Failure then
+            API.FailQuest(Current, true);
+        end
+        -- Nächste Quest starten
         API.StartQuest(Next, true);
         return C+1;
     end
@@ -431,10 +557,12 @@ function AddOnQuestStages.Global:GetCheckStagesInlineGoal(_QuestName)
             end
             -- Nicht erwartetes Resultat eines Stage bedeutet Fehlschlag,
             if StageQuest.State == QuestState.Over and StageQuest.Result ~= QuestResult.Interrupted then
-                if StageList[i].Result == QSB.ResultType.Success and StageQuest.Result ~= QuestResult.Success then
+                if StageList[i].Result == QSB.StageResult.Success and StageQuest.Result ~= QuestResult.Success then
+                    self:AbortFollowingStages(_QuestName);
                     return false;
                 end
-                if StageList[i].Result == QSB.ResultType.Failure and StageQuest.Result ~= QuestResult.Failure then
+                if StageList[i].Result == QSB.StageResult.Failure and StageQuest.Result ~= QuestResult.Failure then
+                    self:AbortFollowingStages(_QuestName);
                     return false;
                 end
             end
@@ -445,6 +573,22 @@ function AddOnQuestStages.Global:GetCheckStagesInlineGoal(_QuestName)
             return true;
         end
     end;
+end
+
+---
+-- 
+--
+-- @param[type=string] _QuestName  Name des Staged Quest
+-- @return[type=function] Behavior
+-- @within Internal
+-- @local
+--
+function AddOnQuestStages.Global:AbortFollowingStages(_QuestName)
+    local Current = API.GetCurrentQuestStage(_QuestName);
+    local Maximum = API.GetAmountOfQuestStages(_QuestName);
+    for i= 1, #self.Data.StagesForQuest[_QuestName], 1 do
+        API.StopQuest(self.Data.StagesForQuest[_QuestName][i].Name, true);
+    end
 end
 
 ---
@@ -463,7 +607,7 @@ function AddOnQuestStages.Global:CreateQuestStage(_Data, _QuestName, _Index)
     local QuestDescription = {
         Name        = Name,
         Stages      = _Data.Stages,
-        Result      = _Data.Result or QSB.ResultType.Success,
+        Result      = _Data.Result or QSB.StageResult.Success,
         Sender      = _Data.Sender or Parent.SendingPlayer,
         Receiver    = _Data.Receiver or Parent.ReceivingPlayer,
         Time        = _Data.Time,
@@ -489,17 +633,17 @@ function AddOnQuestStages.Global:CreateQuestStage(_Data, _QuestName, _Index)
         if QuestBriefingType > 0 then
             -- Einschränkung für Briefing Trigger bestimmen.
             local BriefingTriggerType = "All";
-            if PrevStageData.Result == QSB.ResultType.Success and QuestBriefingType == 1 then
+            if PrevStageData.Result == QSB.StageResult.Success and QuestBriefingType == 1 then
                 BriefingTriggerType = "Success";
-            elseif PrevStageData.Result == QSB.ResultType.Failure and QuestBriefingType ==  2 then
+            elseif PrevStageData.Result == QSB.StageResult.Failure and QuestBriefingType ==  2 then
                 BriefingTriggerType = "Failure";
             end
             table.insert(QuestDescription, Trigger_Briefing(PrevStageData.Name, BriefingTriggerType, Waittime));
         else
             -- Bestimmen, welcher Trigger genutzt wird.
-            if PrevStageData.Result == QSB.ResultType.Success then
+            if PrevStageData.Result == QSB.StageResult.Success then
                 table.insert(QuestDescription, Trigger_OnQuestSuccess(PrevStageData.Name, Waittime));
-            elseif PrevStageData.Result == QSB.ResultType.Failure then
+            elseif PrevStageData.Result == QSB.StageResult.Failure then
                 table.insert(QuestDescription, Trigger_OnQuestFailure(PrevStageData.Name, Waittime));
             else
                 table.insert(QuestDescription, Trigger_OnQuestOver(PrevStageData.Name, Waittime));
@@ -559,7 +703,6 @@ function AddOnQuestStages.Global:OverrideMethods()
     -- FailQuest überschreiben
     API.FailQuest_Orig_AddOnQuestStages = API.FailQuest;
     API.FailQuest = function(_QuestName, _Verbose)
-        local CurrentStage = AddOnQuestStages.Global:GetCurrentQuestStage(_QuestName);
         local StageAmount  = AddOnQuestStages.Global:GetAmountOfQuestStages(_QuestName);
         
         if StageAmount > 0 then
@@ -574,7 +717,6 @@ function AddOnQuestStages.Global:OverrideMethods()
     -- RestartQuest überschreiben
     API.RestartQuest_Orig_AddOnQuestStages = API.RestartQuest;
     API.RestartQuest = function(_QuestName, _Verbose)
-        local CurrentStage = AddOnQuestStages.Global:GetCurrentQuestStage(_QuestName);
         local StageAmount  = AddOnQuestStages.Global:GetAmountOfQuestStages(_QuestName);
         
         if StageAmount > 0 then
@@ -590,7 +732,6 @@ function AddOnQuestStages.Global:OverrideMethods()
     -- StartQuest überschreiben
     API.StartQuest_Orig_AddOnQuestStages = API.StartQuest;
     API.StartQuest = function(_QuestName, _Verbose)
-        local CurrentStage = AddOnQuestStages.Global:GetCurrentQuestStage(_QuestName);
         local StageAmount  = AddOnQuestStages.Global:GetAmountOfQuestStages(_QuestName);
         
         if StageAmount > 0 then
@@ -609,7 +750,6 @@ function AddOnQuestStages.Global:OverrideMethods()
     -- StopQuest überschreiben
     API.StopQuest_Orig_AddOnQuestStages = API.StopQuest;
     API.StopQuest = function(_QuestName, _Verbose)
-        local CurrentStage = AddOnQuestStages.Global:GetCurrentQuestStage(_QuestName);
         local StageAmount  = AddOnQuestStages.Global:GetAmountOfQuestStages(_QuestName);
         
         if StageAmount > 0 then
@@ -624,7 +764,6 @@ function AddOnQuestStages.Global:OverrideMethods()
     -- WinQuest überschreiben
     API.WinQuest_Orig_AddOnQuestStages = API.WinQuest;
     API.WinQuest = function(_QuestName, _Verbose)
-        local CurrentStage = AddOnQuestStages.Global:GetCurrentQuestStage(_QuestName);
         local StageAmount  = AddOnQuestStages.Global:GetAmountOfQuestStages(_QuestName);
         
         if StageAmount > 0 then
