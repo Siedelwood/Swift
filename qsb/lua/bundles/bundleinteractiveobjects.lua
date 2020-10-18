@@ -196,7 +196,7 @@ InteractiveObjectDeactivate = API.InteractiveObjectDeactivate;
 -- API.InteractiveObjectSetName("D_X_ChestOpenEmpty", "Leere Schatztruhe");
 --
 function API.InteractiveObjectSetName(_Key, _Text)
-    _Text = API.Localize(_Text);
+    _Text = API.ConvertPlaceholders(API.Localize(_Text));
     if GUI then
         return;
     end
@@ -639,10 +639,10 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
                         ObjectName = Wrapped_GetStringTableText(_QuestIndex, "UI_ObjectNames/" .. ObjectTypeName);
                     end
                     if ObjectName == "" then
-                        ObjectName = API.Localize(IO_UserDefindedNames[ObjectTypeName]);
+                        ObjectName = IO_UserDefindedNames[ObjectTypeName];
                     end
                     if ObjectName == nil then
-                        ObjectName = API.Localize(IO_UserDefindedNames[ObjectEntityName]);
+                        ObjectName = IO_UserDefindedNames[ObjectEntityName];
                     end
                     if ObjectName == nil then
                         ObjectName = "Debug: ObjectName missing for " .. ObjectTypeName;
@@ -793,14 +793,14 @@ end
 
 function InteractiveObject:SetCaption(_Text)
     if _Text then
-        self.m_Caption = API.Localize(_Text);
+        self.m_Caption = API.ConvertPlaceholders(API.Localize(_Text));
     end
     return self;
 end
 
 function InteractiveObject:SetDescription(_Text)
     if _Text then
-        self.m_Description = API.Localize(_Text);
+        self.m_Description = API.ConvertPlaceholders(API.Localize(_Text));
     end
     return self;
 end
