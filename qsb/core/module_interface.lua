@@ -71,8 +71,6 @@ function Core:InterfaceDeactivateNormalInterface()
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/GameClock", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Merchant", 0);
-    XGUIEng.ShowWidget("/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer/BG", 0);
-    XGUIEng.ShowWidget("/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer/SliderWidget", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal/MissionGoodOrEntityCounter", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal/MissionTimer", 0);
     HideOtherMenus();
@@ -115,8 +113,6 @@ function Core:InterfaceActivateNormalInterface()
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/QuestTimers", 1);
     XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Merchant", 1);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 1);
-    XGUIEng.ShowWidget("/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer/BG", 1);
-    XGUIEng.ShowWidget("/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer/BG", 1);
     XGUIEng.PopPage();
     
     -- Debug Clock

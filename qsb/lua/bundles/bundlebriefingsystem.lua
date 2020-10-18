@@ -21,29 +21,6 @@ BundleBriefingSystem = {};
 API = API or {};
 QSB = QSB or {};
 
----
--- Animationstypen für ASP
---
--- @field Zoom     Kamera zoomt hinein oder hinaus (Offset)
--- @field Pitch    Kamera kippt nach oben oder unten (Offset)
--- @field Rotate   Kamera wird um das Ziel geschwenkt (Offset)
--- @field Random   Kamera wird sich zufällig bewegen
--- @field Move     XYZ-Koordinaten von Start und Ziel überschreiben (Offset)
--- @field Override Frei einstellbare Parameter (Absolut)
--- @field Height   Kamerahöhe ändern (Offset)
--- @field Time     Animationsdauer (Absolut)
---
-QSB.DialogAnimations = {
-    Height       = 1,
-    Zoom         = 2,
-    Pitch        = 3,
-    Rotate       = 4,
-    Random       = 5,
-    Move         = 6,
-    Override     = 7,
-    Time         = 8,
-}
-
 -- -------------------------------------------------------------------------- --
 -- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
@@ -1220,10 +1197,7 @@ end
 function BundleBriefingSystem.Local:LocalOnMCConfirmed()
     local Widget = "/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer";
     local Position = self.Data.OriginalBoxPosition;
-    local Size = self.Data.OriginalBoxSize;
     XGUIEng.SetWidgetScreenPosition(Widget, Position[1], Position[2]);
-    XGUIEng.SetWidgetSize(Widget, Size[1], Size[2]);
-    XGUIEng.SetWidgetPositionAndSize(Widget.. "/ListBox", 0, 0, Size[1], Size[2]);
     XGUIEng.ShowWidget(Widget, 0);
     XGUIEng.PopPage();
 
@@ -1667,11 +1641,6 @@ function BundleBriefingSystem.Local:SetOptionsDialog()
         self.Data.OriginalBoxPosition = {
             XGUIEng.GetWidgetScreenPosition(Widget)
         };
-        if not self.Data.OriginalBoxSize then
-            self.Data.OriginalBoxSize = {
-                XGUIEng.GetWidgetSize(Widget)
-            };
-        end
 
         local Listbox = XGUIEng.GetWidgetID(Widget .. "/ListBox");
         XGUIEng.ListBoxPopAll(Listbox);
@@ -1684,19 +1653,14 @@ function BundleBriefingSystem.Local:SetOptionsDialog()
         end
         XGUIEng.ListBoxSetSelectedIndex(Listbox, 0);
 
-        local BoxY = 40 * XGUIEng.ListBoxGetNrOfEntries(Listbox);
-        if BoxY > 400 then
-            BoxY = 400;
-        end
-        XGUIEng.SetWidgetSize(Widget, self.Data.OriginalBoxSize[1] +500, BoxY);
-
         local wSize = {XGUIEng.GetWidgetScreenSize(Widget)};
         local xFactor = (Screen[1]/1920);
         local xFix = math.ceil((Screen[1] /2) - (wSize[1] /2));
-        local yFix = math.ceil((Screen[2] /2) - ((wSize[2] /2)-20));
+        local yFix = math.ceil(Screen[2] - (wSize[2] -10));
+        if self.Data.CurrentPage.Text and self.Data.CurrentPage.Text ~= "" then
+            yFix = math.ceil((Screen[2] /2) - (wSize[2] /2));
+        end
         XGUIEng.SetWidgetScreenPosition(Widget, xFix, yFix);
-        XGUIEng.SetWidgetPositionAndSize(Listbox, 0, 0, self.Data.OriginalBoxSize[1] +500, BoxY);
-        XGUIEng.SetMaterialColor(Listbox, 0, 180, 180, 180, 190);
         XGUIEng.PushPage(Widget, false);
         XGUIEng.ShowWidget(Widget, 1);
 
