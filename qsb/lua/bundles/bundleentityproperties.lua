@@ -554,21 +554,18 @@ GetDestination = API.GetEntityMovementTarget;
 ---
 -- Setzt das Entity oder das Battalion verwundbar oder unverwundbar.
 --
--- Wenn ein Skriptname angegeben wird, wird fortlaufend geprüft, ob sich die
--- ID geändert hat und das Ziel erneut unverwundbar gemacht werden muss.
---
 -- <b>Alias</b>: SetVulnerable
 -- 
 -- @param               _Entity Entity (Scriptname oder ID)
 -- @param[type=boolean] _Flag Verwundbar
 -- @within Anwenderfunktionen
 --
-function API.SetEntityVulnerablueFlag(_Entity, _Flag)
+function API.SetEntityVulnerableFlag(_Entity, _Flag)
     if GUI then
         return;
     end
     local EntityID = GetID(_Entity);
-    local VulnerabilityFlag = (_Flag and 0) or 1;
+    local VulnerabilityFlag = (_Flag and 1) or 0;
     if EntityID > 0 then
         if API.CountSoldiersOfGroup(EntityID) > 0 then
             for k, v in pairs(API.GetGroupSoldiers(EntityID)) do
@@ -576,23 +573,15 @@ function API.SetEntityVulnerablueFlag(_Entity, _Flag)
             end
         end
         Logic.SetEntityInvulnerabilityFlag(EntityID, VulnerabilityFlag);
-        -- Unverwundbarkeitsüberwachung
-        if type(_Entity) == "string" then
-            if _Flag == true then
-                BundleEntityProperties.Global.Data.InvulnerableEntityNames[_Entity] = EntityID;
-            else
-                BundleEntityProperties.Global.Data.InvulnerableEntityNames[_Entity] = nil;
-            end
-        end
     end
 end
-SetVulnerable = API.SetEntityVulnerablueFlag;
+SetVulnerable = API.SetEntityVulnerableFlag;
 
 MakeVulnerable = function(_Entity)
-    API.SetEntityVulnerablueFlag(_Entity, true);
+    API.SetEntityVulnerableFlag(_Entity, false);
 end
 MakeInvulnerable = function(_Entity)
-    API.SetEntityVulnerablueFlag(_Entity, false);
+    API.SetEntityVulnerableFlag(_Entity, true);
 end
 
 ---
@@ -862,9 +851,7 @@ IsInCategory = API.IsEntityInAtLeastOneCategory;
 
 BundleEntityProperties = {
     Global = {
-        Data = {
-            InvulnerableEntityNames = {},
-        };
+        Data = {};
     },
     Shared = {
         Data = {};
@@ -875,24 +862,6 @@ BundleEntityProperties = {
 -- Installiert das Bundle.
 --
 function BundleEntityProperties.Global:Install()
-    StartSimpleHiResJobEx(function()
-        self:InvulnerabilityJob()
-    end);
-end
-
----
--- Setzt ein unverwundbares Entity wieder unverwundbar, wenn sich die ID
--- geändert hat.
--- @within Internal
--- @local
---
-function BundleEntityProperties.Global:InvulnerabilityJob()
-    for k, v in pairs(self.Data.InvulnerableEntityNames) do
-        local ID = GetID(k);
-        if v and ID ~= v then
-            API.EntitySetVulnerablueFlag(k, false);
-        end
-    end
 end
 
 ---
