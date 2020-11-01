@@ -140,7 +140,7 @@ SetPlayer = API.SetEntityPlayer;
 function API.GetEntityOrientation(_Entity)
     local EntityID = GetID(_Entity);
     if EntityID > 0 then
-        return API.Round(Logic.EntityGetOrientation(EntityID));
+        return API.Round(Logic.GetEntityOrientation(EntityID));
     end
     error("API.GetEntityOrientation: _Entity (" ..tostring(_Entity).. ") does not exist!");
     return 0;
@@ -213,7 +213,7 @@ function API.SetResourceAmount(_Entity, _Amount)
             return
         end
         if Logic.GetResourceDoodadGoodAmount(EntityID) == 0 then
-            EntityID = ReplaceEntity(EntityID, Logic.EntityGetType(EntityID));
+            EntityID = ReplaceEntity(EntityID, Logic.GetEntityType(EntityID));
         end
         Logic.SetResourceDoodadGoodAmount(EntityID, _Amount);
     else
@@ -607,7 +607,7 @@ end
 function API.GetEntityType(_Entity)
     local EntityID = GetID(_Entity);
     if EntityID > 0 then
-        return Logic.EntityGetType(EntityID);
+        return Logic.GetEntityType(EntityID);
     end
     error("API.EntityGetType: _Entity (" ..tostring(_Entity).. ") must be a leader with soldiers!");
     return 0;
@@ -913,9 +913,9 @@ function BundleEntityProperties.Global:TriggerEntityKilledCallbacks(_Entity, _Da
     end
     local x, y, z     = Logic.EntityGetPos(DefenderID);
     local DefPlayerID = Logic.EntityGetPlayer(DefenderID);
-    local DefType     = Logic.EntityGetType(DefenderID);
+    local DefType     = Logic.GetEntityType(DefenderID);
     local AttPlayerID = Logic.EntityGetPlayer(AttackerID);
-    local AttType     = Logic.EntityGetType(AttackerID);
+    local AttType     = Logic.GetEntityType(AttackerID);
 
     GameCallback_EntityKilled(DefenderID, DefPlayerID, AttackerID, AttPlayerID, DefType, AttType);
     Logic.ExecuteInLuaLocalState(string.format(
