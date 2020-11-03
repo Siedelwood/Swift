@@ -617,7 +617,7 @@ function API.GetEntityTypeName(_Entity)
         error("API.GetEntityTypeName: _Entity (" ..tostring(_Entity).. ") does not exist!");
         return;
     end
-    return Logic.EntityGetTypeName(API.GetEntityType(_Entity));
+    return Logic.GetEntityTypeName(API.GetEntityType(_Entity));
 end
 GetTypeName = API.GetEntityTypeName;
 
