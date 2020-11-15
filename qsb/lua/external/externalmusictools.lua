@@ -1,6 +1,6 @@
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
--- #  Symfonia BundleMusicTools                                             # --
+-- #  Symfonia ExternalMusicTools                                           # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
 
@@ -12,7 +12,7 @@
 -- @within Modulbeschreibung
 -- @set sort=true
 --
-BundleMusicTools = {};
+ExternalMusicTools = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -117,7 +117,7 @@ function API.SoundSetVolume(_Volume)
         Logic.ExecuteInLuaLocalState(string.format("API.SoundSetVolume(%d)", _Volume));
         return;
     end
-    BundleMusicTools.Local:AdjustSound(_Volume, nil, nil, nil, nil);
+    ExternalMusicTools.Local:AdjustSound(_Volume, nil, nil, nil, nil);
 end
 
 ---
@@ -137,7 +137,7 @@ function API.SoundSetMusicVolume(_Volume)
         Logic.ExecuteInLuaLocalState(string.format("API.SoundSetMusicVolume(%d)", _Volume));
         return;
     end
-    BundleMusicTools.Local:AdjustSound(nil, _Volume, nil, nil, nil);
+    ExternalMusicTools.Local:AdjustSound(nil, _Volume, nil, nil, nil);
 end
 
 ---
@@ -157,7 +157,7 @@ function API.SoundSetVoiceVolume(_Volume)
         Logic.ExecuteInLuaLocalState(string.format("API.SoundSetVoiceVolume(%d)", _Volume));
         return;
     end
-    BundleMusicTools.Local:AdjustSound(nil, nil, _Volume, nil, nil);
+    ExternalMusicTools.Local:AdjustSound(nil, nil, _Volume, nil, nil);
 end
 
 ---
@@ -177,7 +177,7 @@ function API.SoundSetAtmoVolume(_Volume)
         Logic.ExecuteInLuaLocalState(string.format("API.SoundSetAtmoVolume(%d)", _Volume));
         return;
     end
-    BundleMusicTools.Local:AdjustSound(nil, nil, nil, _Volume, nil);
+    ExternalMusicTools.Local:AdjustSound(nil, nil, nil, _Volume, nil);
 end
 
 ---
@@ -197,7 +197,7 @@ function API.SoundSetUIVolume(_Volume)
         Logic.ExecuteInLuaLocalState(string.format("API.SoundSetUIVolume(%d)", _Volume));
         return;
     end
-    BundleMusicTools.Local:AdjustSound(nil, nil, nil, nil, _Volume);
+    ExternalMusicTools.Local:AdjustSound(nil, nil, nil, nil, _Volume);
 end
 
 ---
@@ -212,7 +212,7 @@ function API.SoundSave()
         Logic.ExecuteInLuaLocalState("API.SoundSave()");
         return;
     end
-    BundleMusicTools.Local:SaveSound();
+    ExternalMusicTools.Local:SaveSound();
 end
 
 ---
@@ -227,7 +227,7 @@ function API.SoundRestore()
         Logic.ExecuteInLuaLocalState("API.SoundRestore()");
         return;
     end
-    BundleMusicTools.Local:RestoreSound();
+    ExternalMusicTools.Local:RestoreSound();
 end
 
 ---
@@ -268,7 +268,7 @@ StopSound = API.StopVoice;
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
-BundleMusicTools = {
+ExternalMusicTools = {
     Local = {
         Data = {
             SoundBackup = {},
@@ -284,10 +284,10 @@ BundleMusicTools = {
 -- @within Internal
 -- @local
 --
-function BundleMusicTools.Local:Install()
+function ExternalMusicTools.Local:Install()
 end
 
-function BundleMusicTools.Local:AdjustSound(_Global, _Music, _Voice, _Atmo, _UI)
+function ExternalMusicTools.Local:AdjustSound(_Global, _Music, _Voice, _Atmo, _UI)
     self:SaveSound();
     if _Global then
         Sound.SetGlobalVolume(_Global);
@@ -308,7 +308,7 @@ function BundleMusicTools.Local:AdjustSound(_Global, _Music, _Voice, _Atmo, _UI)
     end
 end
 
-function BundleMusicTools.Local:SaveSound()
+function ExternalMusicTools.Local:SaveSound()
     if self.Data.SoundBackup.FXSP == nil then
         self.Data.SoundBackup.FXSP = Sound.GetFXSoundpointVolume();
         self.Data.SoundBackup.FXAtmo = Sound.GetFXAtmoVolume();
@@ -320,7 +320,7 @@ function BundleMusicTools.Local:SaveSound()
     end
 end
 
-function BundleMusicTools.Local:RestoreSound()
+function ExternalMusicTools.Local:RestoreSound()
     if self.Data.SoundBackup.FXSP ~= nil then
         Sound.SetFXSoundpointVolume(self.Data.SoundBackup.FXSP)
         Sound.SetFXAtmoVolume(self.Data.SoundBackup.FXAtmo)
@@ -335,5 +335,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Core:RegisterBundle("BundleMusicTools");
+Core:RegisterBundle("ExternalMusicTools");
 

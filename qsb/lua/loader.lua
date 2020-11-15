@@ -136,7 +136,7 @@ SymfoniaLoader = {
             {"BundleInteractiveObjects",            true},
             {"BundleInterfaceApperance",            true},
             {"BundlePlayerHelperFunctions",         true},
-            {"BundleMusicTools",                    true},
+            {"BundleSoundOptions",                  true},
             {"BundleNonPlayerCharacter",            true},
             {"BundleProfileAndOptions",             false},
             {"BundleSaveGameTools",                 false},

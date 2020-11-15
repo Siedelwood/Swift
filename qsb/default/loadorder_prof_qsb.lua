@@ -36,7 +36,7 @@ LoadOrder = {
         {"BundleInteractiveObjects",            true},
         {"BundleInterfaceApperance",            true},
         {"BundlePlayerHelperFunctions",         true},
-        {"BundleMusicTools",                    true},
+        {"BundleSoundOptions",                  true},
         {"BundleNonPlayerCharacter",            true},
         {"BundleProfileAndOptions",             true},
         {"BundleSaveGameTools",                 true},
