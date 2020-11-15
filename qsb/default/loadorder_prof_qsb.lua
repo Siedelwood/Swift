@@ -38,7 +38,6 @@ LoadOrder = {
         {"BundlePlayerHelperFunctions",         true},
         {"BundleSoundOptions",                  true},
         {"BundleNonPlayerCharacter",            true},
-        {"BundleProfileAndOptions",             true},
         {"BundleSaveGameTools",                 true},
         {"BundleTerrainAndWater",               true},
         {"BundleWeatherManipulation",           true},
