@@ -1116,6 +1116,10 @@ function BundleBriefingSystem.Local:PageStarted()
         if PageID == 1 or NoRethinkMC == 0 or self.Data.CurrentBriefing.ReturnForbidden == true then
             BackFlag = 0;
         end
+        if  (self.Data.CurrentPage.Duration == nil or self.Data.CurrentPage.Duration == -1)
+        and not self.Data.CurrentPage.MC then
+            SkipFlag = 1;
+        end
         XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", SkipFlag);
         XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/StartButton", BackFlag);
 
