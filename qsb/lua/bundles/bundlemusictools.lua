@@ -21,37 +21,24 @@ QSB = QSB or {};
 -- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
 
-function API.StartMusic(_Description)
-end
-StartSong = API.StartMusic;
-
-function API.StartMusicSimple(_File, _Volume, _Length, _FadeOut)
-end
-StartSongSimple = API.StartMusicSimple;
-
-function API.StartPlaylist(_Playlist)
-end
-StartPlaylist = API.StartPlaylist;
-
-function API.StartPlaylistTitle(_Title)
-end
-StartPlaylistTitle = API.StartPlaylistTitle;
-
-function API.StopSong()
-end
-StopSong = API.StopSong;
-
-function API.AbortMusic()
-end
-AbortSongOrPlaylist = API.AbortMusic;
-
 ---
 -- Startet eine Playlist, welche als XML angegeben ist.
 --
 -- Eine als XML definierte Playlist wird nicht als Voice abgespielt sondern
 -- als Music. Als Musik werden MP3-Dateien verwendet. Diese können entweder
--- im Spiel vorhanden sein oder im Ordner <i>music/</i> in der Map gespeichert
--- werden.
+-- im Spiel vorhanden sein oder im Ordner <i>music/</i> im Root-Verzeichnis
+-- des Spiels gespeichert werden. Die Playlist gehört ebenfalls ins Root-
+-- Verzeichnis nach <i>config/sound/</i>.
+--
+-- Struktur des Mapordners:
+-- <pre>map_xyz.s6xmap.unpacked
+--|-- music/*
+--|-- config/sound/*
+--|-- maps/externalmap/map_xyz/*
+--|-- ...</pre>
+--
+-- In der QSB sind bereits die Variablen <i>gvMission.MusicRootPath</i> und
+-- <i>gvMission.PlaylistRootPath</i> mit den entsprechenden Pfaden vordefiniert.
 --
 -- Wenn du eigene Musik verwendest, achte darauf, einen möglichst eindeutigen
 -- Namen zu verwenden. Und natürlich auch auf Urheberrecht!
@@ -79,11 +66,12 @@ AbortSongOrPlaylist = API.AbortMusic;
 -- @param _PlayerID (Optional) ID des menschlichen Spielers
 -- @within Anwenderfunktionen
 --
--- @usage API.StartEventPlaylist("config/sound/my_playlist.xml");
+-- @usage API.StartEventPlaylist(gvMission.PlaylistRootPath .."my_playlist.xml");
 --
 function API.StartEventPlaylist(_Playlist, _PlayerID)
+    _PlayerID = _PlayerID or 1;
     if not GUI then
-        Logic.ExecuteInLuaLocalState(string.format("API.StartEventPlaylist('%s', %d)", _Playlist, _PlayerID or 1));
+        Logic.ExecuteInLuaLocalState(string.format("API.StartEventPlaylist('%s', %d)", _Playlist, _PlayerID));
         return;
     end
     if _PlayerID == GUI.GetPlayerID() then
@@ -101,8 +89,9 @@ end
 -- @usage API.StopEventPlaylist("config/sound/my_playlist.xml");
 --
 function API.StopEventPlaylist(_Playlist, _PlayerID)
+    _PlayerID = _PlayerID or 1;
     if not GUI then
-        Logic.ExecuteInLuaLocalState(string.format("API.StopEventPlaylist('%s', %d)", _Playlist, _PlayerID or 1));
+        Logic.ExecuteInLuaLocalState(string.format("API.StopEventPlaylist('%s', %d)", _Playlist, _PlayerID));
         return;
     end
     if _PlayerID == GUI.GetPlayerID() then
@@ -123,11 +112,11 @@ end
 -- @usage API.SoundSetVolume(100);
 --
 function API.SoundSetVolume(_Volume)
+    _Volume = (_Volume < 0 and 0) or math.floor(_Volume);
     if not GUI then
         Logic.ExecuteInLuaLocalState(string.format("API.SoundSetVolume(%d)", _Volume));
         return;
     end
-    _Volume = (_Volume < 0 and 0) or math.floor(_Volume);
     BundleMusicTools.Local:AdjustSound(_Volume, nil, nil, nil, nil);
 end
 
@@ -143,11 +132,11 @@ end
 -- @usage API.SoundSetMusicVolume(100);
 --
 function API.SoundSetMusicVolume(_Volume)
+    _Volume = (_Volume < 0 and 0) or math.floor(_Volume);
     if not GUI then
         Logic.ExecuteInLuaLocalState(string.format("API.SoundSetMusicVolume(%d)", _Volume));
         return;
     end
-    _Volume = (_Volume < 0 and 0) or math.floor(_Volume);
     BundleMusicTools.Local:AdjustSound(nil, _Volume, nil, nil, nil);
 end
 
@@ -163,11 +152,11 @@ end
 -- @usage API.SoundSetVoiceVolume(100);
 --
 function API.SoundSetVoiceVolume(_Volume)
+    _Volume = (_Volume < 0 and 0) or math.floor(_Volume);
     if not GUI then
         Logic.ExecuteInLuaLocalState(string.format("API.SoundSetVoiceVolume(%d)", _Volume));
         return;
     end
-    _Volume = (_Volume < 0 and 0) or math.floor(_Volume);
     BundleMusicTools.Local:AdjustSound(nil, nil, _Volume, nil, nil);
 end
 
@@ -183,11 +172,11 @@ end
 -- @usage API.SoundSetAtmoVolume(100);
 --
 function API.SoundSetAtmoVolume(_Volume)
+    _Volume = (_Volume < 0 and 0) or math.floor(_Volume);
     if not GUI then
         Logic.ExecuteInLuaLocalState(string.format("API.SoundSetAtmoVolume(%d)", _Volume));
         return;
     end
-    _Volume = (_Volume < 0 and 0) or math.floor(_Volume);
     BundleMusicTools.Local:AdjustSound(nil, nil, nil, _Volume, nil);
 end
 
@@ -203,11 +192,11 @@ end
 -- @usage API.SoundSetUIVolume(100);
 --
 function API.SoundSetUIVolume(_Volume)
+    _Volume = (_Volume < 0 and 0) or math.floor(_Volume);
     if not GUI then
         Logic.ExecuteInLuaLocalState(string.format("API.SoundSetUIVolume(%d)", _Volume));
         return;
     end
-    _Volume = (_Volume < 0 and 0) or math.floor(_Volume);
     BundleMusicTools.Local:AdjustSound(nil, nil, nil, nil, _Volume);
 end
 
