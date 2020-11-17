@@ -11,5 +11,9 @@ LoadOrder = {
         "AddOnQuestDebug",                      true,
         "BundleQuestGeneration",
         },
-    },
+        {
+            "AddOnGraphVizIntegration",             true,
+            "AddOnQuestDebug",
+        },
+    }
 }

@@ -202,7 +202,13 @@ SymfoniaLoader = {
             {
             "AddOnLanguageSelection",               true,
             "BundleDialogWindows",
-            }
+            },
+
+            
+            {
+            "AddOnGraphVizIntegration",             true,
+            "AddOnQuestDebug",
+            },
         },
     }
 }
