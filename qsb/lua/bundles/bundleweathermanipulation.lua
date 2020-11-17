@@ -73,16 +73,15 @@ end
 -- Event mehr aktiv ist.
 -- 
 -- @param[type=table]  _Event     Event-Instanz
--- @param[type=string] _Name      Name des Events
 -- @param[type=number] _Duration  Name des Events
 -- @within WeatherEvent
 -- @see API.WeatherEventNext
 -- @see API.WeatherEventAbort
 -- @see API.WeatherEventRegisterLoop
 --
--- @usage API.WeatherEventRegister(MyEvent, "Winter_ME_Event", 300);
+-- @usage API.WeatherEventRegister(MyEvent, 300);
 --
-function API.WeatherEventRegister(_Event, _Name, _Duration)
+function API.WeatherEventRegister(_Event, _Duration)
     if GUI then
         return;
     end
@@ -90,7 +89,7 @@ function API.WeatherEventRegister(_Event, _Name, _Duration)
         log("API.WeatherEventStart: Invalid weather event!", LEVEL_ERROR);
         return;
     end
-    BundleWeatherManipulation.Global:AddEvent(_Event, _Name, _Duration);
+    BundleWeatherManipulation.Global:AddEvent(_Event, _Duration);
 end
 
 ---
@@ -98,15 +97,14 @@ end
 -- starten, kurz bevor es eigentlich endet. Es darf keine anderen Events auf
 -- der "Wartebank" geben.
 -- @param[type=table]  _Event Event-Instanz
--- @param[type=string] _Name  Name des Events
 -- @within WeatherEvent
 -- @see API.WeatherEventNext
 -- @see API.WeatherEventAbort
 -- @see API.WeatherEventRegister
 --
--- @usage API.WeatherEventRegister(MyEvent, "Winter_ME_Event_Loop");
+-- @usage API.WeatherEventRegister(MyEvent);
 --
-function API.WeatherEventRegisterLoop(_Event, _Name)
+function API.WeatherEventRegisterLoop(_Event)
     if GUI then
         return;
     end
@@ -122,7 +120,7 @@ function API.WeatherEventRegisterLoop(_Event, _Name)
             BundleWeatherManipulation.Global:ActivateEvent();
         end
     end
-    BundleWeatherManipulation.Global:AddEvent(_Event, _Name, 120);
+    BundleWeatherManipulation.Global:AddEvent(_Event, 120);
 end
 
 ---
@@ -204,27 +202,10 @@ end
 -- @within WeatherEvent
 -- @local
 --
-function BundleWeatherManipulation.Global:AddEvent(_Event, _Name, _Duration)
+function BundleWeatherManipulation.Global:AddEvent(_Event, _Duration)
     local Event = API.InstanceTable(_Event);
     Event.Duration = _Duration;
-    Event.Name = _Name;
     table.insert(self.Data.EventQueue, Event);
-end
-
----
--- Entfernt alle Events aus der Event Queue, die den gleichen Namen haben.
--- @param[type=string] _EventName Name des Events
--- @within WeatherEvent
--- @local
---
-function BundleWeatherManipulation.Global:PurgeEvent(_EventName)
-    if #self.Data.EventQueue > 0 then
-        for i= #self.Data.EventQueue, 1 -1 do
-            if self.Data.EventQueue[i].Name == _EventName then
-                self.Data.EventQueue:remove(i);
-            end
-        end
-    end
 end
 
 ---
@@ -270,7 +251,6 @@ function BundleWeatherManipulation.Global:ActivateEvent()
         BundleWeatherManipulation.Local.Data.ActiveEvent = ]] ..API.ConvertTableToString(Event).. [[
         BundleWeatherManipulation.Local:DisplayEvent()
     ]]);
-    API.Note("Debug: Event activated")
 
     Logic.WeatherEventClearGoodTypesNotGrowing();
     for i= 1, #Event.NotGrowing, 1 do
