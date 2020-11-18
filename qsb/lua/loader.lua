@@ -197,6 +197,7 @@ SymfoniaLoader = {
             "AddOnQuestStages",                     true,
             "AddOnQuestDebug",
             "BundleQuestGeneration",
+            "BundleSymfoniaBehaviors",
             },
 
             {

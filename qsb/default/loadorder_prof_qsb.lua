@@ -97,6 +97,7 @@ LoadOrder = {
         "AddOnQuestStages",                     true,
         "AddOnQuestDebug",
         "BundleQuestGeneration",
+        "BundleSymfoniaBehaviors",
         },
 
         {
