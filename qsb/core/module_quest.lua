@@ -181,6 +181,28 @@ function API.RestartQuest(_QuestName, _NoMessage)
         resetCustom("Rewards", Reward.Custom);
         resetCustom("Reprisals", Reprisal.Custom);
 
+        -- Quest Output zurücksetzen
+        if Quest.Visible_OrigDebug then
+            Quest.Visible = Quest.Visible_OrigDebug;
+            Quest.Visible_OrigDebug = nil;
+        end
+        if Quest.ShowEndMessage then
+            Quest.ShowEndMessage = Quest.ShowEndMessage_OrigDebug;
+            Quest.ShowEndMessage_OrigDebug = nil;
+        end
+        if Quest.QuestStartMsg_OrigDebug then
+            Quest.QuestStartMsg = Quest.QuestStartMsg_OrigDebug;
+            Quest.QuestStartMsg_OrigDebug = nil;
+        end
+        if Quest.QuestSuccessMsg_OrigDebug then
+            Quest.QuestSuccessMsg = Quest.QuestSuccessMsg_OrigDebug;
+            Quest.QuestSuccessMsg_OrigDebug = nil;
+        end
+        if Quest.QuestFailureMsg_OrigDebug then
+            Quest.QuestFailureMsg = Quest.QuestFailureMsg_OrigDebug;
+            Quest.QuestFailureMsg_OrigDebug = nil;
+        end
+
         Quest.Result = nil;
         local OldQuestState = Quest.State;
         Quest.State = QuestState.NotTriggered;

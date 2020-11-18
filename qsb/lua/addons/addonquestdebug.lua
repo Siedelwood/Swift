@@ -411,23 +411,23 @@ ActivateDebugMode = API.ActivateDebugMode;
 --
 -- Wird ein Quest übersprungen, wird er unterbrochen und nachträglich auf
 -- erfolgreich gesetzt. Falls vorhanden, wird die Skip-Funktion aufgerufen.
--- Einmal übersprungen können Quests nicht fehlerfrei neu gestartet werden.
+-- Die Start- und Endnachricht wird deaktiviert.
 --
 -- @param[type=string]  _QuestName Name des Quest
 -- @param[type=boolean] _NoMessage Nachricht nicht anzeigen
 -- @within Anwenderfunktionen
 -- @see API.SkipMultipleQuest
--- @local
+--
+-- @usage API.SkipSingleQuest("MeinQuest", true)
 --
 function API.SkipSingleQuest(_QuestName, _NoMessage)
     if GUI then
         return;
     end
     local Quest = Quests[GetQuestID(_QuestName)];
-    if Quest then
-        Quest.Visible = false;
-        Quest.ShowEndMessage = false;
-        API.StopQuest(_QuestName, true);
+    if Quest and Quest.Stage ~= QuestState.Over then
+        AddOnQuestDebug.Global:MuteQuest(_QuestName);
+        API.StopQuest(_QuestName, _NoMessage);
         Quest.Result = QuestResult.Over;
         if BundleClassicBehaviors then
             BundleClassicBehaviors.Global:OnQuestSkipped(Quest);
@@ -456,11 +456,21 @@ SkipSingleQuest = API.SkipSingleQuest;
 -- @param[type=string] ... Liste mit Questnames
 -- @within Anwenderfunktionen
 -- @see API.SkipSingleQuest
--- @local
+--
+-- @usage API.SkipMultipleQuest("MeinQuest1", "MeinQuest2", "MeinQuest3", false)
 --
 function API.SkipMultipleQuest(...)
-    for k, v in pairs(arg) do
-        API.SkipSingleQuest(v);
+    local QuestsToSkip = {};
+    local NoMessage = false;
+    for i=1, #arg, 1 do
+        if type(arg[i]) == "string" then
+            table.insert(QuestsToSkip, arg[i]);
+        else
+            NoMessage = arg[i] == true;
+        end
+    end
+    for i=1, #QuestsToSkip, 1 do
+        API.SkipSingleQuest(QuestsToSkip[i], NoMessage);
     end
 end
 SkipMultipleQuest = API.SkipMultipleQuest;
@@ -624,6 +634,53 @@ function AddOnQuestDebug.Global:ActivateDebug(_CheckAtRun, _TraceQuests, _Cheats
     self:ActivateQuestTrace();
     self:ActivateDevelopingCheats();
     self:ActivateDevelopingShell();
+end
+
+---
+-- Deaktiviert sämtlichen Output eines Quest.
+--
+-- Die Werte für Visible, ShowEndMessage, QuestStartMsg, QuestSuccessMsg und
+-- QuestFailureMsg werden in einem Backup gesichert und dann überschrieben,
+-- damit der Quest keine Meldungen mehr erzeugt.
+--
+-- Setzt man einen Quest zurück, werden die Werte wiederhergestellt. Handelt
+-- es sich um einen Staged Quest, wird auch deren Output gleich behandelt.
+--
+-- @param[type=string] _QuestName Identifier des Quest
+-- @within Internal
+-- @local
+--
+function AddOnQuestDebug.Global:MuteQuest(_QuestName)
+    local Quest = Quests[GetQuestID(_QuestName)];
+    if Quest then
+        if Quest.Visible_OrigDebug == nil then
+            Quest.Visible_OrigDebug = Quest.Visible;
+            Quest.Visible = false;
+        end
+        if Quest.ShowEndMessage_OrigDebug == nil then
+            Quest.ShowEndMessage_OrigDebug = Quest.ShowEndMessage;
+            Quest.ShowEndMessage = false;
+        end
+        if Quest.QuestStartMsg_OrigDebug == nil then
+            Quest.QuestStartMsg_OrigDebug = Quest.QuestStartMsg;
+            Quest.QuestStartMsg = "KEY(NO_MESSAGE)";
+        end
+        if Quest.QuestSuccessMsg_OrigDebug == nil then
+            Quest.QuestSuccessMsg_OrigDebug = Quest.QuestSuccessMsg;
+            Quest.QuestSuccessMsg = "KEY(NO_MESSAGE)";
+        end
+        if Quest.QuestFailureMsg_OrigDebug == nil then
+            Quest.QuestFailureMsg_OrigDebug = Quest.QuestFailureMsg;
+            Quest.QuestFailureMsg = "KEY(NO_MESSAGE)";
+        end
+        if AddOnQuestStages then
+            if AddOnQuestStages.Global.Data.StagesForQuest[_QuestName] then
+                for k,v in pairs(AddOnQuestStages.Global.Data.StagesForQuest[_QuestName]) do
+                    self:MuteQuest(v);
+                end
+            end
+        end
+    end
 end
 
 ---
