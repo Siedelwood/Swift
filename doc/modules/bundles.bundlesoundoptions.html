@@ -43,10 +43,12 @@
 <ul class="nowrap">
   <li><a href="../modules/addons.addoncastlestore.html">addons.addoncastlestore</a></li>
   <li><a href="../modules/addons.addoncutscenesystem.html">addons.addoncutscenesystem</a></li>
+  <li><a href="../modules/addons.addongraphvizintegration.html">addons.addongraphvizintegration</a></li>
   <li><a href="../modules/addons.addoninteractivechests.html">addons.addoninteractivechests</a></li>
   <li><a href="../modules/addons.addoninteractivemines.html">addons.addoninteractivemines</a></li>
   <li><a href="../modules/addons.addoninteractivesites.html">addons.addoninteractivesites</a></li>
   <li><a href="../modules/addons.addoninteractivetrebuchets.html">addons.addoninteractivetrebuchets</a></li>
+  <li><a href="../modules/addons.addonlanguageselection.html">addons.addonlanguageselection</a></li>
   <li><a href="../modules/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
   <li><a href="../modules/addons.addonqueststages.html">addons.addonqueststages</a></li>
   <li><a href="../modules/addons.addonrandomrequests.html">addons.addonrandomrequests</a></li>
@@ -68,12 +70,11 @@
   <li><a href="../modules/bundles.bundleinterfacefeaturevisibility.html">bundles.bundleinterfacefeaturevisibility</a></li>
   <li><a href="../modules/bundles.bundleknighttitlerequirements.html">bundles.bundleknighttitlerequirements</a></li>
   <li><a href="../modules/bundles.bundleminimapmarker.html">bundles.bundleminimapmarker</a></li>
-  <li><strong>bundles.bundlemusictools</strong></li>
   <li><a href="../modules/bundles.bundlenonplayercharacter.html">bundles.bundlenonplayercharacter</a></li>
   <li><a href="../modules/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
-  <li><a href="../modules/bundles.bundleprofileandoptions.html">bundles.bundleprofileandoptions</a></li>
   <li><a href="../modules/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
   <li><a href="../modules/bundles.bundlesavegametools.html">bundles.bundlesavegametools</a></li>
+  <li><strong>bundles.bundlesoundoptions</strong></li>
   <li><a href="../modules/bundles.bundlespeedlimit.html">bundles.bundlespeedlimit</a></li>
   <li><a href="../modules/bundles.bundlestockbreeding.html">bundles.bundlestockbreeding</a></li>
   <li><a href="../modules/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
@@ -97,16 +98,19 @@
 
 <div id="content">
 
-<h1>Module <code>bundles.bundlemusictools</code></h1>
-<p>Dieses Bundle bietet die Möglichkeit Playlists im Spiel abzuspielen.</p>
-<p> Eine
- Playlist kann sich endlos wiederholen oder nur einmal abgespielt werden.
- Eine zufallsbasierte Wiedergabe ist ebenfalls möglich.
+<h1>Module <code>bundles.bundlesoundoptions</code></h1>
+<p>Dieses Bundle bietet die Möglichkeit die Lautstärke im Spiel zu regeln.</p>
+<p>
+ Außerdem kannst du Stimmen abspielen und stoppen.
 </p>
 
 
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.PlaySound">API.PlaySound (_Sound, _PlayerID)</a></td>
+	<td class="summary">Spielt einen Sound aus dem Spiel ab.</td>
+	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.PlayVoice">API.PlayVoice (_File)</a></td>
 	<td class="summary">Gibt eine MP3-Datei als Stimme wieder.</td>
@@ -155,7 +159,7 @@
 <h2><a href="#Internal">Internal</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#BundleMusicTools.Local:Install">BundleMusicTools.Local:Install ()</a></td>
+	<td class="name" nowrap><a href="#BundleSoundOptions.Local:Install">BundleSoundOptions.Local:Install ()</a></td>
 	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
 	</tr>
 </table>
@@ -167,6 +171,43 @@
     <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
 
     <dl class="function">
+    <dt>
+    <a name = "API.PlaySound"></a>
+    <strong>API.PlaySound (_Sound, _PlayerID)</strong>
+    </dt>
+    <dd>
+    Spielt einen Sound aus dem Spiel ab.
+<p> Wenn eigene Sounds verwendet werden sollen, müssen sie im WAV-Format
+ vorliegen und in die zwei Verzeichnisse für niedrige und hohe Qualität
+ kopiert werden.
+<p> Verzeichnisstruktur für eigene Sounds:
+ <pre>map_xyz.s6xmap.unpacked
+|-- sounds/high/ui/*
+|-- sounds/low/ui/*
+|-- maps/externalmap/map_xyz/*
+|-- ...</pre>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Sound</span>
+            Pfad des Sound
+        </li>
+        <li><span class="parameter">_PlayerID</span>
+         (Optional) ID des menschlichen Spielers
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.PlaySound(<span class="string">"ui\\menu_left_gold_pay"</span>);</pre>
+    </ul>
+
+</dd>
     <dt>
     <a name = "API.PlayVoice"></a>
     <strong>API.PlayVoice (_File)</strong>
@@ -190,7 +231,7 @@
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example">API.PlayVoice(<span class="string">"music/puhdys_alt_wie_ein_baum.mpx"</span>);</pre>
+        <pre class="example">API.PlayVoice(<span class="string">"music/puhdys_alt_wie_ein_baum.mp3"</span>);</pre>
     </ul>
 
 </dd>
@@ -374,8 +415,17 @@
     Startet eine Playlist, welche als XML angegeben ist.
 <p> Eine als XML definierte Playlist wird nicht als Voice abgespielt sondern
  als Music. Als Musik werden MP3-Dateien verwendet. Diese können entweder
- im Spiel vorhanden sein oder im Ordner <i>music/</i> in der Map gespeichert
- werden.
+ im Spiel vorhanden sein oder im Ordner <i>music/</i> im Root-Verzeichnis
+ des Spiels gespeichert werden. Die Playlist gehört ebenfalls ins Root-
+ Verzeichnis nach <i>config/sound/</i>.
+<p> Verzeichnisstruktur für eigene Musik:
+ <pre>map_xyz.s6xmap.unpacked
+|-- music/*
+|-- config/sound/*
+|-- maps/externalmap/map_xyz/*
+|-- ...</pre>
+<p> In der QSB sind bereits die Variablen <i>gvMission.MusicRootPath</i> und
+ <i>gvMission.PlaylistRootPath</i> mit den entsprechenden Pfaden vordefiniert.
 <p> Wenn du eigene Musik verwendest, achte darauf, einen möglichst eindeutigen
  Namen zu verwenden. Und natürlich auch auf Urheberrecht!
 <p> Beispiel für eine Playlist:
@@ -413,7 +463,7 @@
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example">API.StartEventPlaylist(<span class="string">"config/sound/my_playlist.xml"</span>);</pre>
+        <pre class="example">API.StartEventPlaylist(gvMission.PlaylistRootPath ..<span class="string">"my_playlist.xml"</span>);</pre>
     </ul>
 
 </dd>
@@ -467,8 +517,8 @@
 
     <dl class="function">
     <dt>
-    <a name = "BundleMusicTools.Local:Install"></a>
-    <strong>BundleMusicTools.Local:Install ()</strong>
+    <a name = "BundleSoundOptions.Local:Install"></a>
+    <strong>BundleSoundOptions.Local:Install ()</strong>
     </dt>
     <dd>
     Initalisiert das Bundle im lokalen Skript.
@@ -487,7 +537,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2020-07-20 19:45:48 </i>
+<i style="float:right;">Last updated 2020-11-18 13:00:29 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

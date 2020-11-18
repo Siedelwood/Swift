@@ -42,10 +42,12 @@
 <ul class="nowrap">
   <li><a href="../modules/addons.addoncastlestore.html">addons.addoncastlestore</a></li>
   <li><a href="../modules/addons.addoncutscenesystem.html">addons.addoncutscenesystem</a></li>
+  <li><a href="../modules/addons.addongraphvizintegration.html">addons.addongraphvizintegration</a></li>
   <li><a href="../modules/addons.addoninteractivechests.html">addons.addoninteractivechests</a></li>
   <li><a href="../modules/addons.addoninteractivemines.html">addons.addoninteractivemines</a></li>
   <li><a href="../modules/addons.addoninteractivesites.html">addons.addoninteractivesites</a></li>
   <li><a href="../modules/addons.addoninteractivetrebuchets.html">addons.addoninteractivetrebuchets</a></li>
+  <li><a href="../modules/addons.addonlanguageselection.html">addons.addonlanguageselection</a></li>
   <li><a href="../modules/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
   <li><a href="../modules/addons.addonqueststages.html">addons.addonqueststages</a></li>
   <li><a href="../modules/addons.addonrandomrequests.html">addons.addonrandomrequests</a></li>
@@ -67,12 +69,11 @@
   <li><a href="../modules/bundles.bundleinterfacefeaturevisibility.html">bundles.bundleinterfacefeaturevisibility</a></li>
   <li><a href="../modules/bundles.bundleknighttitlerequirements.html">bundles.bundleknighttitlerequirements</a></li>
   <li><a href="../modules/bundles.bundleminimapmarker.html">bundles.bundleminimapmarker</a></li>
-  <li><a href="../modules/bundles.bundlemusictools.html">bundles.bundlemusictools</a></li>
   <li><a href="../modules/bundles.bundlenonplayercharacter.html">bundles.bundlenonplayercharacter</a></li>
   <li><a href="../modules/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
-  <li><a href="../modules/bundles.bundleprofileandoptions.html">bundles.bundleprofileandoptions</a></li>
   <li><a href="../modules/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
   <li><a href="../modules/bundles.bundlesavegametools.html">bundles.bundlesavegametools</a></li>
+  <li><a href="../modules/bundles.bundlesoundoptions.html">bundles.bundlesoundoptions</a></li>
   <li><a href="../modules/bundles.bundlespeedlimit.html">bundles.bundlespeedlimit</a></li>
   <li><a href="../modules/bundles.bundlestockbreeding.html">bundles.bundlestockbreeding</a></li>
   <li><a href="../modules/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
@@ -123,11 +124,11 @@
 	<td class="summary">Bricht das aktuelle Event ab und löscht alle eingereihten Events.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.WeatherEventRegister">API.WeatherEventRegister (_Event, _Name, _Duration)</a></td>
+	<td class="name" nowrap><a href="#API.WeatherEventRegister">API.WeatherEventRegister (_Event, _Duration)</a></td>
 	<td class="summary">Registiert ein Event für eine bestimmte Dauer.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.WeatherEventRegisterLoop">API.WeatherEventRegisterLoop (_Event, _Name)</a></td>
+	<td class="name" nowrap><a href="#API.WeatherEventRegisterLoop">API.WeatherEventRegisterLoop (_Event)</a></td>
 	<td class="summary">Registiert ein Event als Endlosschleife.</td>
 	</tr>
 	<tr>
@@ -167,10 +168,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#BundleWeatherManipulation.Global:PurgeAllEvents">BundleWeatherManipulation.Global:PurgeAllEvents ()</a></td>
 	<td class="summary">Leer die Event Queue komplett.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleWeatherManipulation.Global:PurgeEvent">BundleWeatherManipulation.Global:PurgeEvent (_EventName)</a></td>
-	<td class="summary">Entfernt alle Events aus der Event Queue, die den gleichen Namen haben.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BundleWeatherManipulation.Global:StopEvent">BundleWeatherManipulation.Global:StopEvent ()</a></td>
@@ -322,7 +319,7 @@
 </dd>
     <dt>
     <a name = "API.WeatherEventRegister"></a>
-    <strong>API.WeatherEventRegister (_Event, _Name, _Duration)</strong>
+    <strong>API.WeatherEventRegister (_Event, _Duration)</strong>
     </dt>
     <dd>
     Registiert ein Event für eine bestimmte Dauer.  Das Event wird auf der
@@ -337,10 +334,6 @@
         <li><span class="parameter">_Event</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
              Event-Instanz
-        </li>
-        <li><span class="parameter">_Name</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-              Name des Events
         </li>
         <li><span class="parameter">_Duration</span>
             <span class="types"><span class="type">number</span></span>
@@ -359,13 +352,13 @@
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example">API.WeatherEventRegister(MyEvent, <span class="string">"Winter_ME_Event"</span>, <span class="number">300</span>);</pre>
+        <pre class="example">API.WeatherEventRegister(MyEvent, <span class="number">300</span>);</pre>
     </ul>
 
 </dd>
     <dt>
     <a name = "API.WeatherEventRegisterLoop"></a>
-    <strong>API.WeatherEventRegisterLoop (_Event, _Name)</strong>
+    <strong>API.WeatherEventRegisterLoop (_Event)</strong>
     </dt>
     <dd>
     Registiert ein Event als Endlosschleife.  Das Event wird immer wieder neu
@@ -378,10 +371,6 @@
         <li><span class="parameter">_Event</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
          Event-Instanz
-        </li>
-        <li><span class="parameter">_Name</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-          Name des Events
         </li>
     </ul>
 
@@ -396,7 +385,7 @@
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example">API.WeatherEventRegister(MyEvent, <span class="string">"Winter_ME_Event_Loop"</span>);</pre>
+        <pre class="example">API.WeatherEventRegister(MyEvent);</pre>
     </ul>
 
 </dd>
@@ -557,27 +546,6 @@
 
 </dd>
     <dt>
-    <a name = "BundleWeatherManipulation.Global:PurgeEvent"></a>
-    <strong>BundleWeatherManipulation.Global:PurgeEvent (_EventName)</strong>
-    </dt>
-    <dd>
-    Entfernt alle Events aus der Event Queue, die den gleichen Namen haben.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_EventName</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         Name des Events
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
     <a name = "BundleWeatherManipulation.Global:StopEvent"></a>
     <strong>BundleWeatherManipulation.Global:StopEvent ()</strong>
     </dt>
@@ -720,7 +688,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2020-07-20 19:45:48 </i>
+<i style="float:right;">Last updated 2020-11-18 13:00:29 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

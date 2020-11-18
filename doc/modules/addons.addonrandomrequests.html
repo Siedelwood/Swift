@@ -43,10 +43,12 @@
 <ul class="nowrap">
   <li><a href="../modules/addons.addoncastlestore.html">addons.addoncastlestore</a></li>
   <li><a href="../modules/addons.addoncutscenesystem.html">addons.addoncutscenesystem</a></li>
+  <li><a href="../modules/addons.addongraphvizintegration.html">addons.addongraphvizintegration</a></li>
   <li><a href="../modules/addons.addoninteractivechests.html">addons.addoninteractivechests</a></li>
   <li><a href="../modules/addons.addoninteractivemines.html">addons.addoninteractivemines</a></li>
   <li><a href="../modules/addons.addoninteractivesites.html">addons.addoninteractivesites</a></li>
   <li><a href="../modules/addons.addoninteractivetrebuchets.html">addons.addoninteractivetrebuchets</a></li>
+  <li><a href="../modules/addons.addonlanguageselection.html">addons.addonlanguageselection</a></li>
   <li><a href="../modules/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
   <li><a href="../modules/addons.addonqueststages.html">addons.addonqueststages</a></li>
   <li><strong>addons.addonrandomrequests</strong></li>
@@ -68,12 +70,11 @@
   <li><a href="../modules/bundles.bundleinterfacefeaturevisibility.html">bundles.bundleinterfacefeaturevisibility</a></li>
   <li><a href="../modules/bundles.bundleknighttitlerequirements.html">bundles.bundleknighttitlerequirements</a></li>
   <li><a href="../modules/bundles.bundleminimapmarker.html">bundles.bundleminimapmarker</a></li>
-  <li><a href="../modules/bundles.bundlemusictools.html">bundles.bundlemusictools</a></li>
   <li><a href="../modules/bundles.bundlenonplayercharacter.html">bundles.bundlenonplayercharacter</a></li>
   <li><a href="../modules/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
-  <li><a href="../modules/bundles.bundleprofileandoptions.html">bundles.bundleprofileandoptions</a></li>
   <li><a href="../modules/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
   <li><a href="../modules/bundles.bundlesavegametools.html">bundles.bundlesavegametools</a></li>
+  <li><a href="../modules/bundles.bundlesoundoptions.html">bundles.bundlesoundoptions</a></li>
   <li><a href="../modules/bundles.bundlespeedlimit.html">bundles.bundlespeedlimit</a></li>
   <li><a href="../modules/bundles.bundlestockbreeding.html">bundles.bundlestockbreeding</a></li>
   <li><a href="../modules/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
@@ -112,11 +113,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#AddOnRandomRequests.Global:CanGoodBeSetAsGoal">AddOnRandomRequests.Global:CanGoodBeSetAsGoal (_SenderID, _ReceiverID, _Good)</a></td>
 	<td class="summary">Prüft, ob eine Ware für ein Goal_Deliver verwendet werden kann.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#AddOnRandomRequests.Global:CountBehaviorUsageForTitle">AddOnRandomRequests.Global:CountBehaviorUsageForTitle (_FunctionName, _Quest)</a></td>
-	<td class="summary">Gibt zurück, wie oft ein Behavior für Auftraggeber, Auftragnehmer und Titel
- des Auftragnehmer schon benutzt wurde.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#AddOnRandomRequests.Global:CreateSlaveQuest">AddOnRandomRequests.Global:CreateSlaveQuest (_Behavior, _Quest)</a></td>
@@ -201,9 +197,8 @@
 	<td class="summary">Prüft, ob das Territrium erreicht werden kann.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AddOnRandomRequests.Global:SaveBehaviorTableForTitle">AddOnRandomRequests.Global:SaveBehaviorTableForTitle (_GoalTable, _Quest)</a></td>
-	<td class="summary">Speichert die Verwendung eines Behavior nach Auftraggeber, Auftragnehmer
- und Titel des Auftragnehmer.</td>
+	<td class="name" nowrap><a href="#AddOnRandomRequests.Global:OnQuestSkipped">AddOnRandomRequests.Global:OnQuestSkipped (_Quest)</a></td>
+	<td class="summary">Bricht den Slave Quest des Random Request ab.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#AddOnRandomRequests.Local:Install">AddOnRandomRequests.Local:Install ()</a></td>
@@ -259,32 +254,6 @@
            <span class="types"><span class="type">boolean</span></span>
         Ware kann benutzt werden.
     </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "AddOnRandomRequests.Global:CountBehaviorUsageForTitle"></a>
-    <strong>AddOnRandomRequests.Global:CountBehaviorUsageForTitle (_FunctionName, _Quest)</strong>
-    </dt>
-    <dd>
-    Gibt zurück, wie oft ein Behavior für Auftraggeber, Auftragnehmer und Titel
- des Auftragnehmer schon benutzt wurde.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_FunctionName</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         Funktionsname Behavior
-        </li>
-        <li><span class="parameter">_Quest</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-                 Quest
-        </li>
-    </ul>
-
 
 
 
@@ -714,9 +683,12 @@
 
     <h3>Returns:</h3>
     <ol>
-
+        <li>
            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        Behavior List
+        Liste der Behavior</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Liste der Typen</li>
     </ol>
 
 
@@ -894,23 +866,18 @@
 
 </dd>
     <dt>
-    <a name = "AddOnRandomRequests.Global:SaveBehaviorTableForTitle"></a>
-    <strong>AddOnRandomRequests.Global:SaveBehaviorTableForTitle (_GoalTable, _Quest)</strong>
+    <a name = "AddOnRandomRequests.Global:OnQuestSkipped"></a>
+    <strong>AddOnRandomRequests.Global:OnQuestSkipped (_Quest)</strong>
     </dt>
     <dd>
-    Speichert die Verwendung eines Behavior nach Auftraggeber, Auftragnehmer
- und Titel des Auftragnehmer.
+    Bricht den Slave Quest des Random Request ab.
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_GoalTable</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-         Behavior
-        </li>
         <li><span class="parameter">_Quest</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-             Quest
+             Quest Data
         </li>
     </ul>
 
@@ -1066,7 +1033,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2020-07-20 19:45:48 </i>
+<i style="float:right;">Last updated 2020-11-18 13:00:29 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

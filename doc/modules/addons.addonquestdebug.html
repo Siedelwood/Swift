@@ -44,10 +44,12 @@
 <ul class="nowrap">
   <li><a href="../modules/addons.addoncastlestore.html">addons.addoncastlestore</a></li>
   <li><a href="../modules/addons.addoncutscenesystem.html">addons.addoncutscenesystem</a></li>
+  <li><a href="../modules/addons.addongraphvizintegration.html">addons.addongraphvizintegration</a></li>
   <li><a href="../modules/addons.addoninteractivechests.html">addons.addoninteractivechests</a></li>
   <li><a href="../modules/addons.addoninteractivemines.html">addons.addoninteractivemines</a></li>
   <li><a href="../modules/addons.addoninteractivesites.html">addons.addoninteractivesites</a></li>
   <li><a href="../modules/addons.addoninteractivetrebuchets.html">addons.addoninteractivetrebuchets</a></li>
+  <li><a href="../modules/addons.addonlanguageselection.html">addons.addonlanguageselection</a></li>
   <li><strong>addons.addonquestdebug</strong></li>
   <li><a href="../modules/addons.addonqueststages.html">addons.addonqueststages</a></li>
   <li><a href="../modules/addons.addonrandomrequests.html">addons.addonrandomrequests</a></li>
@@ -69,12 +71,11 @@
   <li><a href="../modules/bundles.bundleinterfacefeaturevisibility.html">bundles.bundleinterfacefeaturevisibility</a></li>
   <li><a href="../modules/bundles.bundleknighttitlerequirements.html">bundles.bundleknighttitlerequirements</a></li>
   <li><a href="../modules/bundles.bundleminimapmarker.html">bundles.bundleminimapmarker</a></li>
-  <li><a href="../modules/bundles.bundlemusictools.html">bundles.bundlemusictools</a></li>
   <li><a href="../modules/bundles.bundlenonplayercharacter.html">bundles.bundlenonplayercharacter</a></li>
   <li><a href="../modules/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
-  <li><a href="../modules/bundles.bundleprofileandoptions.html">bundles.bundleprofileandoptions</a></li>
   <li><a href="../modules/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
   <li><a href="../modules/bundles.bundlesavegametools.html">bundles.bundlesavegametools</a></li>
+  <li><a href="../modules/bundles.bundlesoundoptions.html">bundles.bundlesoundoptions</a></li>
   <li><a href="../modules/bundles.bundlespeedlimit.html">bundles.bundlespeedlimit</a></li>
   <li><a href="../modules/bundles.bundlestockbreeding.html">bundles.bundlestockbreeding</a></li>
   <li><a href="../modules/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
@@ -113,6 +114,14 @@
 	<tr>
 	<td class="name" nowrap><a href="#API.ActivateDebugMode">API.ActivateDebugMode (_CheckAtRun, _TraceQuests, _DevelopingCheats, _DevelopingShell)</a></td>
 	<td class="summary">Aktiviert den Debug.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SkipMultipleQuest">API.SkipMultipleQuest (...)</a></td>
+	<td class="summary">Überspringt alle Quests in der Liste in der angegebenen Reihenfolge.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SkipSingleQuest">API.SkipSingleQuest (_QuestName, _NoMessage)</a></td>
+	<td class="summary">Überspringt einen Quest.</td>
 	</tr>
 </table>
 <h2><a href="#Internal">Internal</a></h2>
@@ -198,6 +207,10 @@
 	<tr>
 	<td class="name" nowrap><a href="#AddOnQuestDebug.Global:Install">AddOnQuestDebug.Global:Install ()</a></td>
 	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global:MuteQuest">AddOnQuestDebug.Global:MuteQuest (_QuestName)</a></td>
+	<td class="summary">Deaktiviert sämtlichen Output eines Quest.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#AddOnQuestDebug.Global:Parser">AddOnQuestDebug.Global:Parser (_Input)</a></td>
@@ -624,6 +637,72 @@
 
 
 </dd>
+    <dt>
+    <a name = "API.SkipMultipleQuest"></a>
+    <strong>API.SkipMultipleQuest (...)</strong>
+    </dt>
+    <dd>
+    Überspringt alle Quests in der Liste in der angegebenen Reihenfolge.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Liste mit Questnames
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/addons.addonquestdebug.html#API.SkipSingleQuest">API.SkipSingleQuest</a>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.SkipMultipleQuest(<span class="string">"MeinQuest1"</span>, <span class="string">"MeinQuest2"</span>, <span class="string">"MeinQuest3"</span>, <span class="keyword">false</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.SkipSingleQuest"></a>
+    <strong>API.SkipSingleQuest (_QuestName, _NoMessage)</strong>
+    </dt>
+    <dd>
+    Überspringt einen Quest.
+<p> Wird ein Quest übersprungen, wird er unterbrochen und nachträglich auf
+ erfolgreich gesetzt. Falls vorhanden, wird die Skip-Funktion aufgerufen.
+ Die Start- und Endnachricht wird deaktiviert.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name des Quest
+        </li>
+        <li><span class="parameter">_NoMessage</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Nachricht nicht anzeigen
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/addons.addonquestdebug.html#API.SkipMultipleQuest">API.SkipMultipleQuest</a>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.SkipSingleQuest(<span class="string">"MeinQuest"</span>, <span class="keyword">true</span>)</pre>
+    </ul>
+
+</dd>
 </dl>
     <h2 class="section-header "><a name="Internal"></a>Internal</h2>
 
@@ -1011,6 +1090,33 @@
 
 </dd>
     <dt>
+    <a name = "AddOnQuestDebug.Global:MuteQuest"></a>
+    <strong>AddOnQuestDebug.Global:MuteQuest (_QuestName)</strong>
+    </dt>
+    <dd>
+    Deaktiviert sämtlichen Output eines Quest.
+<p> Die Werte für Visible, ShowEndMessage, QuestStartMsg, QuestSuccessMsg und
+ QuestFailureMsg werden in einem Backup gesichert und dann überschrieben,
+ damit der Quest keine Meldungen mehr erzeugt.
+<p> Setzt man einen Quest zurück, werden die Werte wiederhergestellt. Handelt
+ es sich um einen Staged Quest, wird auch deren Output gleich behandelt.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Identifier des Quest
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "AddOnQuestDebug.Global:Parser"></a>
     <strong>AddOnQuestDebug.Global:Parser (_Input)</strong>
     </dt>
@@ -1177,7 +1283,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2020-07-20 19:45:48 </i>
+<i style="float:right;">Last updated 2020-11-18 13:00:29 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

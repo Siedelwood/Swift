@@ -46,10 +46,12 @@
 <ul class="nowrap">
   <li><a href="../modules/addons.addoncastlestore.html">addons.addoncastlestore</a></li>
   <li><a href="../modules/addons.addoncutscenesystem.html">addons.addoncutscenesystem</a></li>
+  <li><a href="../modules/addons.addongraphvizintegration.html">addons.addongraphvizintegration</a></li>
   <li><a href="../modules/addons.addoninteractivechests.html">addons.addoninteractivechests</a></li>
   <li><a href="../modules/addons.addoninteractivemines.html">addons.addoninteractivemines</a></li>
   <li><a href="../modules/addons.addoninteractivesites.html">addons.addoninteractivesites</a></li>
   <li><a href="../modules/addons.addoninteractivetrebuchets.html">addons.addoninteractivetrebuchets</a></li>
+  <li><a href="../modules/addons.addonlanguageselection.html">addons.addonlanguageselection</a></li>
   <li><a href="../modules/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
   <li><a href="../modules/addons.addonqueststages.html">addons.addonqueststages</a></li>
   <li><a href="../modules/addons.addonrandomrequests.html">addons.addonrandomrequests</a></li>
@@ -71,12 +73,11 @@
   <li><a href="../modules/bundles.bundleinterfacefeaturevisibility.html">bundles.bundleinterfacefeaturevisibility</a></li>
   <li><a href="../modules/bundles.bundleknighttitlerequirements.html">bundles.bundleknighttitlerequirements</a></li>
   <li><a href="../modules/bundles.bundleminimapmarker.html">bundles.bundleminimapmarker</a></li>
-  <li><a href="../modules/bundles.bundlemusictools.html">bundles.bundlemusictools</a></li>
   <li><a href="../modules/bundles.bundlenonplayercharacter.html">bundles.bundlenonplayercharacter</a></li>
   <li><a href="../modules/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
-  <li><a href="../modules/bundles.bundleprofileandoptions.html">bundles.bundleprofileandoptions</a></li>
   <li><a href="../modules/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
   <li><a href="../modules/bundles.bundlesavegametools.html">bundles.bundlesavegametools</a></li>
+  <li><a href="../modules/bundles.bundlesoundoptions.html">bundles.bundlesoundoptions</a></li>
   <li><a href="../modules/bundles.bundlespeedlimit.html">bundles.bundlespeedlimit</a></li>
   <li><a href="../modules/bundles.bundlestockbreeding.html">bundles.bundlestockbreeding</a></li>
   <li><a href="../modules/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
@@ -183,7 +184,7 @@
 	<td class="summary">Lässt eine Liste von Quests fehlschlagen.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.FailQuest">API.FailQuest (_QuestName, _Verbose)</a></td>
+	<td class="name" nowrap><a href="#API.FailQuest">API.FailQuest (_QuestName, _NoMessage)</a></td>
 	<td class="summary">Lässt den Quest fehlschlagen.</td>
 	</tr>
 	<tr>
@@ -218,6 +219,10 @@
 	<tr>
 	<td class="name" nowrap><a href="#API.InstanceTable">API.InstanceTable (_Source, _Dest)</a></td>
 	<td class="summary">Kopiert eine komplette Table und gibt die Kopie zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.IsLoadscreenVisible">API.IsLoadscreenVisible ()</a></td>
+	<td class="summary">Gibt zurück, ob der Ladebildschirm sichtbar ist.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.IsValidQuest">API.IsValidQuest (_QuestID)</a></td>
@@ -269,7 +274,7 @@
 	<td class="summary">Startet eine Liste von Quests neu.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.RestartQuest">API.RestartQuest (_QuestName, _Verbose)</a></td>
+	<td class="name" nowrap><a href="#API.RestartQuest">API.RestartQuest (_QuestName, _NoMessage)</a></td>
 	<td class="summary">Startet den Quest neu.</td>
 	</tr>
 	<tr>
@@ -303,7 +308,7 @@
  wird.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.StartQuest">API.StartQuest (_QuestName, _Verbose)</a></td>
+	<td class="name" nowrap><a href="#API.StartQuest">API.StartQuest (_QuestName, _NoMessage)</a></td>
 	<td class="summary">Startet den Quest sofort, sofern er existiert.</td>
 	</tr>
 	<tr>
@@ -315,7 +320,7 @@
 	<td class="summary">Unterbricht eine Liste von Quests.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.StopQuest">API.StopQuest (_QuestName, _Verbose)</a></td>
+	<td class="name" nowrap><a href="#API.StopQuest">API.StopQuest (_QuestName, _NoMessage)</a></td>
 	<td class="summary">Unterbricht den Quest.</td>
 	</tr>
 	<tr>
@@ -335,7 +340,7 @@
 	<td class="summary">Gewinnt eine Liste von Quests.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.WinQuest">API.WinQuest (_QuestName, _Verbose)</a></td>
+	<td class="name" nowrap><a href="#API.WinQuest">API.WinQuest (_QuestName, _NoMessage)</a></td>
 	<td class="summary">Gewinnt den Quest.</td>
 	</tr>
 	<tr>
@@ -390,6 +395,22 @@
 	<tr>
 	<td class="name" nowrap><a href="#Core:InitalizeBundles">Core:InitalizeBundles ()</a></td>
 	<td class="summary">Initialisiert alle verfügbaren Bundles und führt ihre Install-Methode aus.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:InterfaceActivateBlackBackground">Core:InterfaceActivateBlackBackground ()</a></td>
+	<td class="summary">Zeigt den Pausebildschirm als schwarzen Hintergrund an.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:InterfaceActivateNormalInterface">Core:InterfaceActivateNormalInterface ()</a></td>
+	<td class="summary">Blendet das normale Interface ein.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:InterfaceDeactivateBlackBackground">Core:InterfaceDeactivateBlackBackground ()</a></td>
+	<td class="summary">Blendet den Pausebildschirm aus und stellt Farbe und Transparenz wieder her.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:InterfaceDeactivateNormalInterface">Core:InterfaceDeactivateNormalInterface ()</a></td>
+	<td class="summary">Blendet das normale Interface aus.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Core:IsBundleRegistered">Core:IsBundleRegistered (_Bundle)</a></td>
@@ -582,8 +603,11 @@
         <li><span class="parameter">olive</span>
            Olivgrün
         </li>
-        <li><span class="parameter">ocean</span>
-           Ozeanblau
+        <li><span class="parameter">sky</span>
+             Ozeanblau
+        </li>
+        <li><span class="parameter">tooltip</span>
+         Tooltip-Blau
         </li>
         <li><span class="parameter">lucid</span>
            Transparent
@@ -1019,7 +1043,7 @@ API.DumpTable(Table)</pre>
 </dd>
     <dt>
     <a name = "API.FailQuest"></a>
-    <strong>API.FailQuest (_QuestName, _Verbose)</strong>
+    <strong>API.FailQuest (_QuestName, _NoMessage)</strong>
     </dt>
     <dd>
     Lässt den Quest fehlschlagen.
@@ -1034,9 +1058,9 @@ API.DumpTable(Table)</pre>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
          Name des Quest
         </li>
-        <li><span class="parameter">_Verbose</span>
+        <li><span class="parameter">_NoMessage</span>
             <span class="types"><span class="type">boolean</span></span>
-           Meldung nicht anzeigen
+         Meldung nicht anzeigen
         </li>
     </ul>
 
@@ -1272,6 +1296,26 @@ API.DumpTable(Table)</pre>
         <pre class="example">Table = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, {a = <span class="keyword">true</span>}}
 Copy = API.InstanceTable(Table)</pre>
     </ul>
+
+</dd>
+    <dt>
+    <a name = "API.IsLoadscreenVisible"></a>
+    <strong>API.IsLoadscreenVisible ()</strong>
+    </dt>
+    <dd>
+    Gibt zurück, ob der Ladebildschirm sichtbar ist.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        Ladebildschirm ist sichtbar
+    </ol>
+
+
+
 
 </dd>
     <dt>
@@ -1616,7 +1660,7 @@ Copy = API.InstanceTable(Table)</pre>
 </dd>
     <dt>
     <a name = "API.RestartQuest"></a>
-    <strong>API.RestartQuest (_QuestName, _Verbose)</strong>
+    <strong>API.RestartQuest (_QuestName, _NoMessage)</strong>
     </dt>
     <dd>
     Startet den Quest neu.
@@ -1636,9 +1680,9 @@ Copy = API.InstanceTable(Table)</pre>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
          Name des Quest
         </li>
-        <li><span class="parameter">_Verbose</span>
+        <li><span class="parameter">_NoMessage</span>
             <span class="types"><span class="type">boolean</span></span>
-           Meldung nicht anzeigen
+         Meldung nicht anzeigen
         </li>
     </ul>
 
@@ -1909,7 +1953,7 @@ Copy = API.InstanceTable(Table)</pre>
 </dd>
     <dt>
     <a name = "API.StartQuest"></a>
-    <strong>API.StartQuest (_QuestName, _Verbose)</strong>
+    <strong>API.StartQuest (_QuestName, _NoMessage)</strong>
     </dt>
     <dd>
     Startet den Quest sofort, sofern er existiert.
@@ -1924,9 +1968,9 @@ Copy = API.InstanceTable(Table)</pre>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
          Name des Quest
         </li>
-        <li><span class="parameter">_Verbose</span>
+        <li><span class="parameter">_NoMessage</span>
             <span class="types"><span class="type">boolean</span></span>
-           Meldung nicht anzeigen
+         Meldung nicht anzeigen
         </li>
     </ul>
 
@@ -1984,7 +2028,7 @@ Copy = API.InstanceTable(Table)</pre>
 </dd>
     <dt>
     <a name = "API.StopQuest"></a>
-    <strong>API.StopQuest (_QuestName, _Verbose)</strong>
+    <strong>API.StopQuest (_QuestName, _NoMessage)</strong>
     </dt>
     <dd>
     Unterbricht den Quest.
@@ -2000,9 +2044,9 @@ Copy = API.InstanceTable(Table)</pre>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
          Name des Quest
         </li>
-        <li><span class="parameter">_Verbose</span>
+        <li><span class="parameter">_NoMessage</span>
             <span class="types"><span class="type">boolean</span></span>
-           Meldung nicht anzeigen
+         Meldung nicht anzeigen
         </li>
     </ul>
 
@@ -2145,7 +2189,7 @@ Copy = API.InstanceTable(Table)</pre>
 </dd>
     <dt>
     <a name = "API.WinQuest"></a>
-    <strong>API.WinQuest (_QuestName, _Verbose)</strong>
+    <strong>API.WinQuest (_QuestName, _NoMessage)</strong>
     </dt>
     <dd>
     Gewinnt den Quest.
@@ -2160,9 +2204,9 @@ Copy = API.InstanceTable(Table)</pre>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
          Name des Quest
         </li>
-        <li><span class="parameter">_Verbose</span>
+        <li><span class="parameter">_NoMessage</span>
             <span class="types"><span class="type">boolean</span></span>
-           Meldung nicht anzeigen
+         Meldung nicht anzeigen
         </li>
     </ul>
 
@@ -2286,7 +2330,7 @@ Copy = API.InstanceTable(Table)</pre>
     </dt>
     <dd>
     Prüft, ob der Questname formal korrekt ist.  Questnamen dürfen i.d.R. nur
- die Zeichen A-Z, a-7, 0-9, - und _ enthalten.
+ die Zeichen A-Z, a-7, 0-9, Umlaute und _ enthalten.
 
 
 
@@ -2471,6 +2515,66 @@ Copy = API.InstanceTable(Table)</pre>
     <dd>
     Initialisiert alle verfügbaren Bundles und führt ihre Install-Methode aus.
  Bundles werden immer getrennt im globalen und im lokalen Skript gestartet.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:InterfaceActivateBlackBackground"></a>
+    <strong>Core:InterfaceActivateBlackBackground ()</strong>
+    </dt>
+    <dd>
+    Zeigt den Pausebildschirm als schwarzen Hintergrund an.  Wurde dieser schon
+ eingeblendet, macht die Funktion nichts.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:InterfaceActivateNormalInterface"></a>
+    <strong>Core:InterfaceActivateNormalInterface ()</strong>
+    </dt>
+    <dd>
+    Blendet das normale Interface ein.  Wurde das Interface schon eingeblentet,
+ macht die Funktion nichts.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:InterfaceDeactivateBlackBackground"></a>
+    <strong>Core:InterfaceDeactivateBlackBackground ()</strong>
+    </dt>
+    <dd>
+    Blendet den Pausebildschirm aus und stellt Farbe und Transparenz wieder her.
+ Wurde dieser schon deaktiviert, macht die Funktion nichts.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:InterfaceDeactivateNormalInterface"></a>
+    <strong>Core:InterfaceDeactivateNormalInterface ()</strong>
+    </dt>
+    <dd>
+    Blendet das normale Interface aus.  Wurde das Interface schon ausgeblentet,
+ macht die Funktion nichts.
 
 
 
@@ -3215,7 +3319,7 @@ Core:ReplaceFunction(<span class="string">"A.foo"</span>, B)
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2020-07-20 19:45:48 </i>
+<i style="float:right;">Last updated 2020-11-18 13:00:29 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

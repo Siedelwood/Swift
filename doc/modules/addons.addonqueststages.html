@@ -44,10 +44,12 @@
 <ul class="nowrap">
   <li><a href="../modules/addons.addoncastlestore.html">addons.addoncastlestore</a></li>
   <li><a href="../modules/addons.addoncutscenesystem.html">addons.addoncutscenesystem</a></li>
+  <li><a href="../modules/addons.addongraphvizintegration.html">addons.addongraphvizintegration</a></li>
   <li><a href="../modules/addons.addoninteractivechests.html">addons.addoninteractivechests</a></li>
   <li><a href="../modules/addons.addoninteractivemines.html">addons.addoninteractivemines</a></li>
   <li><a href="../modules/addons.addoninteractivesites.html">addons.addoninteractivesites</a></li>
   <li><a href="../modules/addons.addoninteractivetrebuchets.html">addons.addoninteractivetrebuchets</a></li>
+  <li><a href="../modules/addons.addonlanguageselection.html">addons.addonlanguageselection</a></li>
   <li><a href="../modules/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
   <li><strong>addons.addonqueststages</strong></li>
   <li><a href="../modules/addons.addonrandomrequests.html">addons.addonrandomrequests</a></li>
@@ -69,12 +71,11 @@
   <li><a href="../modules/bundles.bundleinterfacefeaturevisibility.html">bundles.bundleinterfacefeaturevisibility</a></li>
   <li><a href="../modules/bundles.bundleknighttitlerequirements.html">bundles.bundleknighttitlerequirements</a></li>
   <li><a href="../modules/bundles.bundleminimapmarker.html">bundles.bundleminimapmarker</a></li>
-  <li><a href="../modules/bundles.bundlemusictools.html">bundles.bundlemusictools</a></li>
   <li><a href="../modules/bundles.bundlenonplayercharacter.html">bundles.bundlenonplayercharacter</a></li>
   <li><a href="../modules/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
-  <li><a href="../modules/bundles.bundleprofileandoptions.html">bundles.bundleprofileandoptions</a></li>
   <li><a href="../modules/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
   <li><a href="../modules/bundles.bundlesavegametools.html">bundles.bundlesavegametools</a></li>
+  <li><a href="../modules/bundles.bundlesoundoptions.html">bundles.bundlesoundoptions</a></li>
   <li><a href="../modules/bundles.bundlespeedlimit.html">bundles.bundlespeedlimit</a></li>
   <li><a href="../modules/bundles.bundlestockbreeding.html">bundles.bundlestockbreeding</a></li>
   <li><a href="../modules/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
@@ -99,46 +100,50 @@
 <div id="content">
 
 <h1>Module <code>addons.addonqueststages</code></h1>
-<p>Ermöglicht das Zusammenfassen mehrerer Quests unter einem Main Quest.</p>
+<p>Ermöglicht das Zusammenfassen mehrerer Quests unter einem Staged Quest.</p>
 <p>
 <p> Diese Funktionalität kann ausschließlich für im Skript erstellte Quests
- genutzt werden. Im Assistenten können Subquests nicht abgebildet werden.
+ genutzt werden. Im Assistenten können Stages nicht abgebildet werden!
 </p>
 
 
 <h2><a href="#Tables">Tables</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#QSB.MainQuest">QSB.MainQuest</a></td>
-	<td class="summary">Vordefinierte Funktionen für MSF Behavior.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.TerminationType">QSB.TerminationType</a></td>
+	<td class="name" nowrap><a href="#QSB.StageResult">QSB.StageResult</a></td>
 	<td class="summary">Die Abschlussarten eines Quest Stage.</td>
 	</tr>
 </table>
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#API.CreateMainQuest">API.CreateMainQuest (_Data)</a></td>
+	<td class="name" nowrap><a href="#API.CreateStagedQuest">API.CreateStagedQuest (_Data)</a></td>
 	<td class="summary">Erstellt eine Reihe aufeinanderfolgender Aufträge, zusammengefasst under
  einem übergeordneten Auftrag.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.ForwardMainQuest">API.ForwardMainQuest (_QuestName)</a></td>
-	<td class="summary">Spult einen Main Quest um einen Sub Quest vor.</td>
+	<td class="name" nowrap><a href="#API.ForwardStagedQuest">API.ForwardStagedQuest (_QuestName, _Result)</a></td>
+	<td class="summary">Spult einen Staged Quest um einen Stage vor.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.GetMainQuestProgress">API.GetMainQuestProgress (_QuestName)</a></td>
-	<td class="summary">Gibt den Fortschritt eines Main Quest zurück.</td>
+	<td class="name" nowrap><a href="#API.GetAmountOfQuestStages">API.GetAmountOfQuestStages (_QuestName)</a></td>
+	<td class="summary">Gibt die Anzahl der Stages eines Staged Quest zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetCurrentQuestStage">API.GetCurrentQuestStage (_QuestName)</a></td>
+	<td class="summary">Gibt den Index des aktuell aktiven Stages eines Staged Quest zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetStagedQuestProgress">API.GetStagedQuestProgress (_QuestName)</a></td>
+	<td class="summary">Gibt den Fortschritt eines Staged Quest zurück.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.GetSubQuestName">API.GetSubQuestName (_QuestName)</a></td>
-	<td class="summary">Gibt den Skriptnamen des Sub Quest auf dem Index zurück.</td>
+	<td class="summary">Gibt den Skriptnamen des Stage auf dem Index zurück.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.RevertMainQuest">API.RevertMainQuest (_QuestName)</a></td>
-	<td class="summary">Setzt einen Main Quest um einen Sub Quest zurück.</td>
+	<td class="name" nowrap><a href="#API.RevertStagedQuest">API.RevertStagedQuest (_QuestName)</a></td>
+	<td class="summary">Setzt einen Staged Quest um einen Stage zurück.</td>
 	</tr>
 </table>
 <h2><a href="#Internal">Internal</a></h2>
@@ -148,45 +153,53 @@
 	<td class="summary">Überschreibt das Mapping der Konsolenbefehle des Debugs.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestStages.Global:AbortFollowingStages">AddOnQuestStages.Global:AbortFollowingStages (_QuestName)</a></td>
+	<td class="summary"></td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#AddOnQuestStages.Global:ContainsBriefing">AddOnQuestStages.Global:ContainsBriefing (_Description)</a></td>
 	<td class="summary">Pfüft, ob ein Briefing in den übergebenen Questdaten vorhanden ist.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AddOnQuestStages.Global:CreateMainQuest">AddOnQuestStages.Global:CreateMainQuest (_Data)</a></td>
-	<td class="summary">Erstellt einen Main Quest mit seinen Sub Quests.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#AddOnQuestStages.Global:CreateQuestStage">AddOnQuestStages.Global:CreateQuestStage (_Data, _QuestName, _Index)</a></td>
-	<td class="summary">Erstellt einen Subquest aus der übergebenen Beschreibung.</td>
+	<td class="summary">Erstellt einen Stage aus der übergebenen Beschreibung.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AddOnQuestStages.Global:ForwardMainQuest">AddOnQuestStages.Global:ForwardMainQuest (_QuestName)</a></td>
-	<td class="summary">Spult einen Main Quest um einen Sub Quest vor.</td>
+	<td class="name" nowrap><a href="#AddOnQuestStages.Global:CreateStagedQuest">AddOnQuestStages.Global:CreateStagedQuest (_Data)</a></td>
+	<td class="summary">Erstellt einen Staged Quest mit seinen Stages.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestStages.Global:ForwardStagedQuest">AddOnQuestStages.Global:ForwardStagedQuest (_QuestName, _StageResult)</a></td>
+	<td class="summary">Spult einen Staged Quest um einen Stage vor.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#AddOnQuestStages.Global:GetAmountOfQuestStages">AddOnQuestStages.Global:GetAmountOfQuestStages (_QuestName)</a></td>
-	<td class="summary">Zählt wievele Sub Quests zum Main Quest zugeordnet sind.</td>
+	<td class="summary">Zählt wievele Stages zum Staged Quest zugeordnet sind.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#AddOnQuestStages.Global:GetCheckStagesInlineGoal">AddOnQuestStages.Global:GetCheckStagesInlineGoal (_QuestName)</a></td>
-	<td class="summary">Erstellt das Behavior für die Prüfung der Subquests.</td>
+	<td class="summary">Erstellt das Behavior für die Prüfung der Stage.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#AddOnQuestStages.Global:GetCurrentQuestStage">AddOnQuestStages.Global:GetCurrentQuestStage (_QuestName)</a></td>
-	<td class="summary">Gibt den Index des aktuell aktiven Sub Quest zurück.</td>
+	<td class="summary">Gibt den Index des aktuell aktiven Stage zurück.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AddOnQuestStages.Global:GetMainQuestProgress">AddOnQuestStages.Global:GetMainQuestProgress (_QuestName)</a></td>
-	<td class="summary">Gibt den Fortschritt des Main Quest anhand der bereits abgeschlossenen
- Sub Quests zurück.</td>
+	<td class="name" nowrap><a href="#AddOnQuestStages.Global:GetStagedQuestProgress">AddOnQuestStages.Global:GetStagedQuestProgress (_QuestName)</a></td>
+	<td class="summary">Gibt den Fortschritt des Staged Quest anhand der bereits abgeschlossenen
+ Stages zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestStages.Global:OnQuestSkipped">AddOnQuestStages.Global:OnQuestSkipped (_Quest)</a></td>
+	<td class="summary">Bricht den Slave Quest des Random Request ab.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#AddOnQuestStages.Global:OverrideMethods">AddOnQuestStages.Global:OverrideMethods ()</a></td>
 	<td class="summary">Überschreibt das Mapping der Konsolenbefehle des Debugs.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AddOnQuestStages.Global:RevertMainQuest">AddOnQuestStages.Global:RevertMainQuest (_QuestName)</a></td>
-	<td class="summary">Setzt einen Main Quest um einen Sub Quest zurück.</td>
+	<td class="name" nowrap><a href="#AddOnQuestStages.Global:RevertStagedQuest">AddOnQuestStages.Global:RevertStagedQuest (_QuestName)</a></td>
+	<td class="summary">Setzt einen Staged Quest um einen Stage zurück.</td>
 	</tr>
 </table>
 
@@ -198,61 +211,8 @@
 
     <dl class="function">
     <dt>
-    <a name = "QSB.MainQuest"></a>
-    <strong>QSB.MainQuest</strong>
-    </dt>
-    <dd>
-    Vordefinierte Funktionen für MSF Behavior.  Diese Funktionen können nur im
- Skript und nicht im Assistenten bentuzt werden!
-<p> Als Parameter werden immer Questname und, falls benötigt, Stage übergeben.
-
-
-
-    <h3>Fields:</h3>
-    <ul>
-        <li><span class="parameter">Goal_ReachStage</span>
-                Prüft, ob die Phase erreicht wurde.
-        </li>
-        <li><span class="parameter">Reprisal_PreviousStage</span>
-         Kehr zur vorherigen Phase zurück.
-        </li>
-        <li><span class="parameter">Reprisal_NextStage</span>
-             Springt zur nächsten Phase vor.
-        </li>
-        <li><span class="parameter">Reward_PreviousStage</span>
-           Kehr zur vorherigen Phase zurück.
-        </li>
-        <li><span class="parameter">Reward_NextStage</span>
-               Springt zur nächsten Phase vor.
-        </li>
-        <li><span class="parameter">Trigger_OnStage</span>
-                Prüft, ob die Phase erreicht wurde.
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="comment">-- Phase als Goal prüfen (schlägt nur bei Fehler fehl)
-</span>Goal_MapScriptFunction(QSB.MainQuest.Goal_ReachStage, <span class="string">"MyQuest"</span>, <span class="number">3</span>)
-<span class="comment">-- Phase zurück (Reprisal)
-</span>Reprisal_MapScriptFunction(QSB.MainQuest.Reprisal_PreviousStage, <span class="string">"MyQuest"</span>)
-<span class="comment">-- Phase vor (Reprisal)
-</span>Reprisal_MapScriptFunction(QSB.MainQuest.Reprisal_NextStage, <span class="string">"MyQuest"</span>)
-<span class="comment">-- Phase zurück (Reward)
-</span>Reward_MapScriptFunction(QSB.MainQuest.Reward_PreviousStage, <span class="string">"MyQuest"</span>)
-<span class="comment">-- Phase vor (Reward)
-</span>Reward_MapScriptFunction(QSB.MainQuest.Reward_NextStage, <span class="string">"MyQuest"</span>)
-<span class="comment">-- Phase als Trigger prüfen
-</span>Trigger_MapScriptFunction(QSB.MainQuest.Trigger_OnStage, <span class="string">"MyQuest"</span>, <span class="number">5</span>)</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "QSB.TerminationType"></a>
-    <strong>QSB.TerminationType</strong>
+    <a name = "QSB.StageResult"></a>
+    <strong>QSB.StageResult</strong>
     </dt>
     <dd>
     Die Abschlussarten eines Quest Stage.
@@ -266,8 +226,8 @@
         <li><span class="parameter">Failure</span>
          Phase muss fehlschlagen.
         </li>
-        <li><span class="parameter">Both</span>
-            Erfolg und Misserfolg werden geleichermaßen akzeptiert.
+        <li><span class="parameter">Ignore</span>
+          Erfolg und Misserfolg werden geleichermaßen akzeptiert.
         </li>
     </ul>
 
@@ -281,32 +241,32 @@
 
     <dl class="function">
     <dt>
-    <a name = "API.CreateMainQuest"></a>
-    <strong>API.CreateMainQuest (_Data)</strong>
+    <a name = "API.CreateStagedQuest"></a>
+    <strong>API.CreateStagedQuest (_Data)</strong>
     </dt>
     <dd>
     Erstellt eine Reihe aufeinanderfolgender Aufträge, zusammengefasst under
  einem übergeordneten Auftrag.
-<p> Die erzeugten Aufträge (Sub Quests) starten aufeinander folgend, sobald der
- übergeordnete Auftrag (Main Quest) aktiv ist. Der nachfolgende Sub Quests
+<p> Die erzeugten Aufträge (Stages) starten aufeinander folgend, sobald der
+ übergeordnete Auftrag (Staged Quest) aktiv ist. Der nachfolgende Stage
  startet, sobald der Vorgänger abgeschlossen ist. Das erwartete Ergebnis
- kann gesetzt werden und ist per Default auf Erfolg gesetzt. Wenn ein Sub
- Quest abgeschlossen wird und nicht das erwartete Ergebnis hat, dann schlägt
- der Mainquest fehl. Der Main Quest wird erfolgreich abgeschlossen, sobald
- der letzte Sub Quest beendet ist.
-<p> <b>Hinweis</b>: Main Quests eignen sich nur für lineare Abläufe. Es kann
+ kann gesetzt werden und ist per Default auf Erfolg gesetzt. Wenn ein Stage
+ abgeschlossen wird und nicht das erwartete Ergebnis hat, dann schlägt
+ der StagedQuest fehl. Der Staged Quest wird erfolgreich abgeschlossen, sobald
+ der letzte Stage beendet ist.
+<p> <b>Hinweis</b>: Staged Quests eignen sich nur für lineare Abläufe. Es kann
  keine Verzweigungen innerhalb des Ablaufes geben. Wenn verzweigt werden
- soll, müssen mehrere Main Quests paralel laufen!
-<p> Es ist nicht vorgesehen, dass Main Quests sichtbar sind oder Texte anzeigen.
+ soll, müssen mehrere Staged Quests paralel laufen!
+<p> Es ist nicht vorgesehen, dass Staged Quests sichtbar sind oder Texte anzeigen.
  Es ist trotzdem möglich, <u>sollte aber unterlassen werden</u>.
-<p> Es ist nicht notwendig einen Trigger für die Sub Quests zu setzen. Der
+<p> Es ist nicht notwendig einen Trigger für die Stage zu setzen. Der
  Trigger wird automatisch generiert. Es können aber zusätzliche Trigger
  angegeben werden. Wird ein Briefing im Vorgänger verwendet, wird der
  Trigger Trigger_Briefing verwendet, sonst ein OnQuest Trigger. Je nach
  eingestellten Ergebnis wird entsprechend verknüpft.
-<p> Main Quests können auch ineinander verschachtelt werden. Man kann also
+<p> Staged Quests können auch ineinander verschachtelt werden. Man kann also
  innerhalb einer Questreihe eine untergeordnete Questreige angeben.
-<p> <b>Alias</b>: AddMainQuest
+<p> <b>Alias</b>: AddStagedQuest
 
 
 
@@ -322,15 +282,15 @@
     <ol>
 
            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-        Name des Main Quest oder nil bei Fehler
+        Name des Staged Quest oder nil bei Fehler
     </ol>
 
 
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example">API.CreateMainQuest {
-    Name        = <span class="string">"MainQuest"</span>,
+        <pre class="example">API.CreateStagedQuest {
+    Name        = <span class="string">"StagedQuest"</span>,
     Stages      = {
         {
             Suggestion  = <span class="string">"Wir benötigen einen höheren Titel!"</span>,
@@ -338,9 +298,9 @@
             Goal_KnightTitle(<span class="string">"Mayor"</span>),
         },
         {
-            <span class="comment">-- Mit dem Typ Both wird Fehlschlag ignoriert und der nächste
+            <span class="comment">-- Mit dem Typ Ignore wird Fehlschlag ignoriert und der nächste
 </span>            <span class="comment">-- Quest startet nach diesem Quest.
-</span>            Termination = QSB.TerminationType.Both,
+</span>            Result      = QSB.StageResult.Ignore,
 
             Suggestion  = <span class="string">"Wir benötigen außerdem mehr Asche! Und das sofort..."</span>,
             Success     = <span class="string">"Geschafft!"</span>,
@@ -349,8 +309,8 @@
 
             Goal_Produce(<span class="string">"G_Gold"</span>, <span class="number">5000</span>),
 
-            <span class="comment">-- Main Quest wird gewonnen. Der Nachfolger startet nicht mehr.
-</span>            Reward_QuestSuccess(<span class="string">"MainQuest"</span>),
+            <span class="comment">-- Staged Quest wird gewonnen. Der Nachfolger startet nicht mehr.
+</span>            Reward_QuestSuccess(<span class="string">"StagedQuest"</span>),
         },
         {
             Suggestion  = <span class="string">"Dann versuchen wir es mit Eisen..."</span>,
@@ -372,12 +332,14 @@
 
 </dd>
     <dt>
-    <a name = "API.ForwardMainQuest"></a>
-    <strong>API.ForwardMainQuest (_QuestName)</strong>
+    <a name = "API.ForwardStagedQuest"></a>
+    <strong>API.ForwardStagedQuest (_QuestName, _Result)</strong>
     </dt>
     <dd>
-    Spult einen Main Quest um einen Sub Quest vor.
-<p> <b>Alias</b>: ForwardMainQuest
+    Spult einen Staged Quest um einen Stage vor.
+<p> Im Erfolgsfall wird eine Zahl größer 0 zurückgegeben. Tritt ein
+ Fehler auf stattdessen 0.
+<p> <b>Alias</b>: ForwardStagedQuest
 
 
 
@@ -385,7 +347,11 @@
     <ul>
         <li><span class="parameter">_QuestName</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-          Name Main Quest
+          Name Staged Quest
+        </li>
+        <li><span class="parameter">_Result</span>
+            <span class="types"><span class="type">number</span></span>
+             (Optional) Resultat des Stage
         </li>
     </ul>
 
@@ -393,7 +359,7 @@
     <ol>
 
            <span class="types"><span class="type">number</span></span>
-        Index des Sub Quest
+        Index des Stage
     </ol>
 
 
@@ -401,12 +367,80 @@
 
 </dd>
     <dt>
-    <a name = "API.GetMainQuestProgress"></a>
-    <strong>API.GetMainQuestProgress (_QuestName)</strong>
+    <a name = "API.GetAmountOfQuestStages"></a>
+    <strong>API.GetAmountOfQuestStages (_QuestName)</strong>
     </dt>
     <dd>
-    Gibt den Fortschritt eines Main Quest zurück.
-<p> Kann der Fortschritt nicht bestimmt werden, wird 0, 0, 0 zurückgegeben.
+    Gibt die Anzahl der Stages eines Staged Quest zurück.
+<p> <b>Alias</b>: CountQuestStages
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name des Quest
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        Relativer Fortschritt (0 ... 1)
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Stages = API.GetAmountOfQuestStages(<span class="string">"MyQuest"</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.GetCurrentQuestStage"></a>
+    <strong>API.GetCurrentQuestStage (_QuestName)</strong>
+    </dt>
+    <dd>
+    Gibt den Index des aktuell aktiven Stages eines Staged Quest zurück.
+<p> Ist ein Staged Quest bereits abgeschlossen wird immer der Index des letzten
+ Stage zurückgegeben.
+<p> <b>Alias</b>: GetQuestStage
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name des Quest
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        Relativer Fortschritt (0 ... 1)
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> CurrentStage = API.GetCurrentQuestStage(<span class="string">"MyQuest"</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.GetStagedQuestProgress"></a>
+    <strong>API.GetStagedQuestProgress (_QuestName)</strong>
+    </dt>
+    <dd>
+    Gibt den Fortschritt eines Staged Quest zurück.
+<p> Kann der Fortschritt nicht bestimmt werden, wird 0 zurückgegeben.
 <p> <b>Alias</b>: GetQuestProgress
 
 
@@ -421,22 +455,19 @@
 
     <h3>Returns:</h3>
     <ol>
-        <li>
+
            <span class="types"><span class="type">number</span></span>
-        Relativer Fortschritt (0 ... 1)</li>
-        <li>
-           <span class="types"><span class="type">number</span></span>
-        Index des aktiven Sub Quest</li>
-        <li>
-           <span class="types"><span class="type">number</span></span>
-        Maximalanzahl Sub Quests</li>
+        Relativer Fortschritt (0 ... 1)
     </ol>
 
 
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example"><span class="keyword">local</span> Progress, Current, Max = API.GetMainQuestProgress(<span class="string">"MyQuest"</span>);</pre>
+        <pre class="example"><span class="comment">-- Fortschritt ermitteln
+</span><span class="keyword">local</span> Progress = API.GetStagedQuestProgress(<span class="string">"MyQuest"</span>);
+<span class="comment">-- Fortschritt in % ermitteln
+</span><span class="keyword">local</span> Progress = API.Round(API.GetStagedQuestProgress(<span class="string">"MyQuest"</span>) * <span class="number">100</span>, <span class="number">0</span>);</pre>
     </ul>
 
 </dd>
@@ -445,9 +476,9 @@
     <strong>API.GetSubQuestName (_QuestName)</strong>
     </dt>
     <dd>
-    Gibt den Skriptnamen des Sub Quest auf dem Index zurück.
+    Gibt den Skriptnamen des Stage auf dem Index zurück.
 <p> <b>Alias</b>: GetSubQuestName
-<p> Wird kein Sub Quest gefunden, wird der name des Main Quest zurückgegeben
+<p> Wird kein Stage gefunden, wird nil zurückgegeben
 
 
 
@@ -455,7 +486,7 @@
     <ul>
         <li><span class="parameter">_QuestName</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-          Name Main Quest
+          Name Staged Quest
         </li>
     </ul>
 
@@ -471,12 +502,14 @@
 
 </dd>
     <dt>
-    <a name = "API.RevertMainQuest"></a>
-    <strong>API.RevertMainQuest (_QuestName)</strong>
+    <a name = "API.RevertStagedQuest"></a>
+    <strong>API.RevertStagedQuest (_QuestName)</strong>
     </dt>
     <dd>
-    Setzt einen Main Quest um einen Sub Quest zurück.
-<p> <b>Alias</b>: RevertMainQuest
+    Setzt einen Staged Quest um einen Stage zurück.
+<p> Im Erfolgsfall wird eine Zahl größer 0 zurückgegeben. Tritt ein
+ Fehler auf stattdessen 0.
+<p> <b>Alias</b>: RevertStagedQuest
 
 
 
@@ -484,7 +517,7 @@
     <ul>
         <li><span class="parameter">_QuestName</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-          Name Main Quest
+          Name Staged Quest
         </li>
     </ul>
 
@@ -492,7 +525,7 @@
     <ol>
 
            <span class="types"><span class="type">number</span></span>
-        Index des Sub Quest
+        Index des Stage
     </ol>
 
 
@@ -529,6 +562,33 @@
 
 </dd>
     <dt>
+    <a name = "AddOnQuestStages.Global:AbortFollowingStages"></a>
+    <strong>AddOnQuestStages.Global:AbortFollowingStages (_QuestName)</strong>
+    </dt>
+    <dd>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+          Name des Staged Quest
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">function</span></span>
+        Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
     <a name = "AddOnQuestStages.Global:ContainsBriefing"></a>
     <strong>AddOnQuestStages.Global:ContainsBriefing (_Description)</strong>
     </dt>
@@ -556,11 +616,40 @@
 
 </dd>
     <dt>
-    <a name = "AddOnQuestStages.Global:CreateMainQuest"></a>
-    <strong>AddOnQuestStages.Global:CreateMainQuest (_Data)</strong>
+    <a name = "AddOnQuestStages.Global:CreateQuestStage"></a>
+    <strong>AddOnQuestStages.Global:CreateQuestStage (_Data, _QuestName, _Index)</strong>
     </dt>
     <dd>
-    Erstellt einen Main Quest mit seinen Sub Quests.
+    Erstellt einen Stage aus der übergebenen Beschreibung.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Data</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+              Stage Daten
+        </li>
+        <li><span class="parameter">_QuestName</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name des Staged Quest
+        </li>
+        <li><span class="parameter">_Index</span>
+            <span class="types"><span class="type">number</span></span>
+             Index des Stages
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestStages.Global:CreateStagedQuest"></a>
+    <strong>AddOnQuestStages.Global:CreateStagedQuest (_Data)</strong>
+    </dt>
+    <dd>
+    Erstellt einen Staged Quest mit seinen Stages.
 
 
     <h3>Parameters:</h3>
@@ -577,47 +666,22 @@
 
 </dd>
     <dt>
-    <a name = "AddOnQuestStages.Global:CreateQuestStage"></a>
-    <strong>AddOnQuestStages.Global:CreateQuestStage (_Data, _QuestName, _Index)</strong>
+    <a name = "AddOnQuestStages.Global:ForwardStagedQuest"></a>
+    <strong>AddOnQuestStages.Global:ForwardStagedQuest (_QuestName, _StageResult)</strong>
     </dt>
     <dd>
-    Erstellt einen Subquest aus der übergebenen Beschreibung.
+    Spult einen Staged Quest um einen Stage vor.
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_Data</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-              Subquest Daten
-        </li>
         <li><span class="parameter">_QuestName</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         Name Main Quest
+           Name des Staged Quest
         </li>
-        <li><span class="parameter">_Index</span>
+        <li><span class="parameter">_StageResult</span>
             <span class="types"><span class="type">number</span></span>
-             Index des Stages
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "AddOnQuestStages.Global:ForwardMainQuest"></a>
-    <strong>AddOnQuestStages.Global:ForwardMainQuest (_QuestName)</strong>
-    </dt>
-    <dd>
-    Spult einen Main Quest um einen Sub Quest vor.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestName</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-          Name Main Quest
+         (Optional) Resultat des Stage
         </li>
     </ul>
 
@@ -625,7 +689,7 @@
     <ol>
 
            <span class="types"><span class="type">number</span></span>
-        Index des Sub Quest
+        Index des Stage
     </ol>
 
 
@@ -637,14 +701,14 @@
     <strong>AddOnQuestStages.Global:GetAmountOfQuestStages (_QuestName)</strong>
     </dt>
     <dd>
-    Zählt wievele Sub Quests zum Main Quest zugeordnet sind.
+    Zählt wievele Stages zum Staged Quest zugeordnet sind.
 
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_QuestName</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-          Name Main Quest
+          Name des Staged Quest
         </li>
     </ul>
 
@@ -664,14 +728,14 @@
     <strong>AddOnQuestStages.Global:GetCheckStagesInlineGoal (_QuestName)</strong>
     </dt>
     <dd>
-    Erstellt das Behavior für die Prüfung der Subquests.
+    Erstellt das Behavior für die Prüfung der Stage.
 
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_QuestName</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-          Name Main Quest
+          Name des Staged Quest
         </li>
     </ul>
 
@@ -691,14 +755,17 @@
     <strong>AddOnQuestStages.Global:GetCurrentQuestStage (_QuestName)</strong>
     </dt>
     <dd>
-    Gibt den Index des aktuell aktiven Sub Quest zurück.
+    Gibt den Index des aktuell aktiven Stage zurück.
+<p> Wenn der Staged Quest bereits beendet ist, ist der aktuelle Stage immer der
+ letzte Stage des Quest.
+
 
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_QuestName</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-          Name Main Quest
+         Name des Staged Quest
         </li>
     </ul>
 
@@ -706,7 +773,7 @@
     <ol>
 
            <span class="types"><span class="type">number</span></span>
-        Aktiver Subquest
+        Aktiver Stage
     </ol>
 
 
@@ -714,19 +781,19 @@
 
 </dd>
     <dt>
-    <a name = "AddOnQuestStages.Global:GetMainQuestProgress"></a>
-    <strong>AddOnQuestStages.Global:GetMainQuestProgress (_QuestName)</strong>
+    <a name = "AddOnQuestStages.Global:GetStagedQuestProgress"></a>
+    <strong>AddOnQuestStages.Global:GetStagedQuestProgress (_QuestName)</strong>
     </dt>
     <dd>
-    Gibt den Fortschritt des Main Quest anhand der bereits abgeschlossenen
- Sub Quests zurück.
+    Gibt den Fortschritt des Staged Quest anhand der bereits abgeschlossenen
+ Stages zurück.
 
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_QuestName</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-          Name Main Quest
+          Name des Staged Quest
         </li>
     </ul>
 
@@ -748,6 +815,27 @@
 
 </dd>
     <dt>
+    <a name = "AddOnQuestStages.Global:OnQuestSkipped"></a>
+    <strong>AddOnQuestStages.Global:OnQuestSkipped (_Quest)</strong>
+    </dt>
+    <dd>
+    Bricht den Slave Quest des Random Request ab.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Quest</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+             Quest Data
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "AddOnQuestStages.Global:OverrideMethods"></a>
     <strong>AddOnQuestStages.Global:OverrideMethods ()</strong>
     </dt>
@@ -762,18 +850,18 @@
 
 </dd>
     <dt>
-    <a name = "AddOnQuestStages.Global:RevertMainQuest"></a>
-    <strong>AddOnQuestStages.Global:RevertMainQuest (_QuestName)</strong>
+    <a name = "AddOnQuestStages.Global:RevertStagedQuest"></a>
+    <strong>AddOnQuestStages.Global:RevertStagedQuest (_QuestName)</strong>
     </dt>
     <dd>
-    Setzt einen Main Quest um einen Sub Quest zurück.
+    Setzt einen Staged Quest um einen Stage zurück.
 
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_QuestName</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-          Name Main Quest
+          Name des Staged Quest
         </li>
     </ul>
 
@@ -781,7 +869,7 @@
     <ol>
 
            <span class="types"><span class="type">number</span></span>
-        Index des Sub Quest
+        Index des Stage
     </ol>
 
 
@@ -795,7 +883,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2020-07-20 19:45:48 </i>
+<i style="float:right;">Last updated 2020-11-18 13:00:29 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 
