@@ -702,49 +702,8 @@ function BundleBriefingSystem.Global:StartBriefing(_Briefing, _ID)
     self.Data.CurrentBriefing.BarOpacity = self.Data.CurrentBriefing.BarOpacity or 1;
 
     -- Animationen übertragen
-    if self.Data.CurrentBriefing.PageAnimations then
-        for k, v in pairs(self.Data.CurrentBriefing.PageAnimations) do
-            local PageID = self:GetPageIDByName(k);
-            self.Data.CurrentBriefing[PageID].Animations = self.Data.CurrentBriefing[PageID].Animations or {};
-            self.Data.CurrentBriefing[PageID].Animations.PurgeOld = v.PurgeOld == true;
-            for i= 1, #v, 1 do               
-                -- Relative Angabe
-                if #v[i] == 9 then
-                    table.insert(self.Data.CurrentBriefing[PageID].Animations, {
-                        Duration = v[i][9] or 2 * 60,
-
-                        Start = {
-                            Position = (type(v[i][1]) ~= "table" and {v[i][1],0}) or v[i][1],
-                            Rotation = v[i][2],
-                            Zoom     = v[i][3],
-                            Angle    = v[i][4],
-                        },
-                        End = {
-                            Position = (type(v[i][5]) ~= "table" and {v[i][5],0}) or v[i][5],
-                            Rotation = v[i][6],
-                            Zoom     = v[i][7],
-                            Angle    = v[i][8],
-                        },
-                    });
-                -- Vektorisierte Angabe
-                elseif #v[i] == 5 then
-                    table.insert(self.Data.CurrentBriefing[PageID].Animations, {
-                        Duration = v[i][5] or 2 * 60,
-
-                        Start = {
-                            Position = (type(v[i][1]) ~= "table" and {v[i][1],0}) or v[i][1],
-                            LookAt   = (type(v[i][2]) ~= "table" and {v[i][1],0}) or v[i][2],
-                        },
-                        End = {
-                            Position = (type(v[i][3]) ~= "table" and {v[i][5],0}) or v[i][3],
-                            LookAt   = (type(v[i][4]) ~= "table" and {v[i][1],0}) or v[i][4],
-                        },
-                    });
-                end
-            end
-        end
-        self.Data.CurrentBriefing.PageAnimations = nil;
-    end
+    self:TransformAnimations();
+    
     -- Bars Default setzen
     if self.Data.CurrentBriefing.BigBars == nil then
         self.Data.CurrentBriefing.BigBars = true;
@@ -872,12 +831,64 @@ end
 
 ---
 -- Prüft, ob ein Briefing aktiv ist.
--- @param[type=boolean] Briefing ist aktiv
+-- @return[type=boolean] Briefing ist aktiv
 -- @within Internal
 -- @local
 --
 function BundleBriefingSystem.Global:IsBriefingActive()
     return self.Data.BriefingActive == true;
+end
+
+---
+-- Bindet die angegebenen Animationen an die jeweiligen Pages.
+--
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Global:TransformAnimations()
+    if self.Data.CurrentBriefing.PageAnimations then
+        for k, v in pairs(self.Data.CurrentBriefing.PageAnimations) do
+            local PageID = self:GetPageIDByName(k);
+            self.Data.CurrentBriefing[PageID].Animations = self.Data.CurrentBriefing[PageID].Animations or {};
+            self.Data.CurrentBriefing[PageID].Animations.PurgeOld = v.PurgeOld == true;
+            for i= 1, #v, 1 do               
+                -- Relative Angabe
+                if #v[i] == 9 then
+                    table.insert(self.Data.CurrentBriefing[PageID].Animations, {
+                        Duration = v[i][9] or 2 * 60,
+
+                        Start = {
+                            Position = (type(v[i][1]) ~= "table" and {v[i][1],0}) or v[i][1],
+                            Rotation = v[i][2],
+                            Zoom     = v[i][3],
+                            Angle    = v[i][4],
+                        },
+                        End = {
+                            Position = (type(v[i][5]) ~= "table" and {v[i][5],0}) or v[i][5],
+                            Rotation = v[i][6],
+                            Zoom     = v[i][7],
+                            Angle    = v[i][8],
+                        },
+                    });
+                -- Vektorisierte Angabe
+                elseif #v[i] == 5 then
+                    table.insert(self.Data.CurrentBriefing[PageID].Animations, {
+                        Duration = v[i][5] or 2 * 60,
+
+                        Start = {
+                            Position = (type(v[i][1]) ~= "table" and {v[i][1],0}) or v[i][1],
+                            LookAt   = (type(v[i][2]) ~= "table" and {v[i][1],0}) or v[i][2],
+                        },
+                        End = {
+                            Position = (type(v[i][3]) ~= "table" and {v[i][5],0}) or v[i][3],
+                            LookAt   = (type(v[i][4]) ~= "table" and {v[i][1],0}) or v[i][4],
+                        },
+                    });
+                end
+            end
+        end
+        self.Data.CurrentBriefing.PageAnimations = nil;
+    end
 end
 
 ---

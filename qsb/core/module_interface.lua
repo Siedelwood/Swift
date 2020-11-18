@@ -42,6 +42,51 @@ function Core:InterfaceDeactivateBlackBackground()
 end
 
 ---
+-- 
+-- @within Internal
+-- @local
+--
+function Core:OverrideInterfaceUpdateForCinematicMode()
+    MissionTimerUpdate_Orig_CoreInterface = MissionTimerUpdate;
+    MissionTimerUpdate = function()
+        MissionTimerUpdate_Orig_CoreInterface();
+        if self.Data.Interface.NormalModeHidden
+        or self.Data.Interface.PauseScreenShown then
+            XGUIEng.ShowWidget("/InGame/Root/Normal/MissionTimer", 0);
+        end
+    end
+
+    MissionGoodOrEntityCounterUpdate_Orig_CoreInterface = MissionGoodOrEntityCounterUpdate;
+    MissionGoodOrEntityCounterUpdate = function()
+        MissionGoodOrEntityCounterUpdate_Orig_CoreInterface();
+        if self.Data.Interface.NormalModeHidden
+        or self.Data.Interface.PauseScreenShown then
+            XGUIEng.ShowWidget("/InGame/Root/Normal/MissionGoodOrEntityCounter", 0);
+        end
+    end
+
+    MerchantButtonsUpdater_Orig_CoreInterface = GUI_Merchant.ButtonsUpdater;
+    GUI_Merchant.ButtonsUpdater = function()
+        MerchantButtonsUpdater_Orig_CoreInterface();
+        if self.Data.Interface.NormalModeHidden
+        or self.Data.Interface.PauseScreenShown then
+            XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Merchant", 0);
+        end
+    end
+
+    if GUI_Tradepost then
+        TradepostButtonsUpdater_Orig_CoreInterface = GUI_Tradepost.ButtonsUpdater;
+        GUI_Tradepost.ButtonsUpdater = function()
+            TradepostButtonsUpdater_Orig_CoreInterface();
+            if self.Data.Interface.NormalModeHidden
+            or self.Data.Interface.PauseScreenShown then
+                XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Tradepost", 0);
+            end
+        end
+    end
+end
+
+---
 -- Blendet das normale Interface aus. Wurde das Interface schon ausgeblentet,
 -- macht die Funktion nichts.
 -- @within Internal

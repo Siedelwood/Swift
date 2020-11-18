@@ -58,6 +58,7 @@ function Core:InitalizeBundles()
             self:CreateRandomSeedBySystemTime();
             self:SetupLocal_HackRegisterHotkey();
             self:SetupLocal_HistoryEditionAutoSave();
+            self:OverrideInterfaceUpdateForCinematicMode();
 
             Trigger.RequestTrigger(Events.LOGIC_EVENT_DIPLOMACY_CHANGED, "", "CoreEventJob_OnDiplomacyChanged", 1); 
             Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_CREATED, "", "CoreEventJob_OnEntityCreated", 1); 
