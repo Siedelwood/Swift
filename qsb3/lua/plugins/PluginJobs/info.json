@@ -1,0 +1,11 @@
+{
+    "name": "Jobs",
+    "version": "1.0.0",
+    "caption": "Jobs",
+    "description": "",
+    "files": [
+        ["source.lua", true, true],
+        ["api.lua", true, true]
+    ],
+    "dependencies": []
+}

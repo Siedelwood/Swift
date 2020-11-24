@@ -1,7 +1,7 @@
 OptLoader_BasePath = "maps/externalmap/" ..Framework.GetCurrentMapName().. "/";
 OptLoader_PluginFiles = {
-    {"PluginLuaPatch/source.lua", true, true},
-    {"PluginLuaPatch/api.lua", true, true},
+    {"PluginJobs/source.lua", true, true},
+    {"PluginJobs/api.lua", true, true},
 }
 
 function OptLoader_SetBasePath(_Path)
@@ -9,7 +9,7 @@ function OptLoader_SetBasePath(_Path)
 end
 
 function OptLoader_LoadFiles()  
-    Script.Load(OptLoader_BasePath.. "lua/core/symfonia.lua");
+    Script.Load(OptLoader_BasePath.. "lua/core/swift.lua");
     Script.Load(OptLoader_BasePath.. "lua/core/api.lua");
     Script.Load(OptLoader_BasePath.. "lua/core/debug.lua");
     Script.Load(OptLoader_BasePath.. "lua/core/behavior.lua");

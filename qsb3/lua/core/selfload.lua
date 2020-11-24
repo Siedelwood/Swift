@@ -7,6 +7,7 @@ if not MapEditor and not GUI then
 
     gvMission = gvMission or {};
     gvMission.ContentPath = "maps/" ..MapTypeFolder.. "/" ..Framework.GetCurrentMapName() .. "/";
+    Script.Load(gvMission.ContentPath.. "questsystembehavior.lua");
     API.Install();
 
     Logic.ExecuteInLuaLocalState([[

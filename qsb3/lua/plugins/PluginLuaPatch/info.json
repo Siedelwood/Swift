@@ -1,8 +1,0 @@
-{
-    "name": "Symfonia",
-    "description": "",
-    "files": [
-        ["source.lua", true, true]
-    ],
-    "dependencies": []
-}

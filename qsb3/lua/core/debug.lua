@@ -1,6 +1,6 @@
 -- Core Debug --------------------------------------------------------------- --
 
-Symfonia.Debug = {
+Swift = Swift or {
     m_CheckAtRun       = false;
     m_TraceQuests      = false;
     m_DevelopingCheats = false;
@@ -11,23 +11,23 @@ Symfonia.Debug = {
 -- TODO: Add doc
 -- @local
 --
-function Symfonia.Debug:ActivateDebugMode(_CheckAtRun, _TraceQuests, _DevelopingCheats, _DevelopingShell)
+function Swift:ActivateDebugMode(_CheckAtRun, _TraceQuests, _DevelopingCheats, _DevelopingShell)
     self.m_CheckAtRun       = false;
     self.m_TraceQuests      = false;
     self.m_DevelopingCheats = false;
     self.m_DevelopingShell  = false;
 
-    Symfonia:RegisterLoadAction(function()
-        Symfonia.Debug:RestoreAfterLoad();
+    Swift:RegisterLoadAction(function()
+        Swift:RestoreAfterLoad();
     end);
     self:ActivateCheats();
 end
 
-function Symfonia.Debug:RestoreAfterLoad()
+function Swift:RestoreAfterLoad()
     self:ActivateCheats()
 end
 
-function Symfonia.Debug:ActivateCheats()
+function Swift:ActivateCheats()
     Logic.ExecuteInLuaLocalState([[Input.KeyBindDown(Keys.ModifierControl + Keys.ModifierAlt + Keys.R, "Framework.RestartMap()", 2)]]);
 end
 
