@@ -11,7 +11,12 @@ function API.Install()
 end
 
 function API.ActivateDebugMode(_CheckAtRun, _TraceQuests, _DevelopingCheats, _DevelopingShell)
-    Swift:ActivateDebugMode(_CheckAtRun, _TraceQuests, _DevelopingCheats, _DevelopingShell);
+    Swift:ActivateDebugMode(
+        _CheckAtRun == true,
+        _TraceQuests == true,
+        _DevelopingCheats == true,
+        _DevelopingShell == true
+    );
 end
 
 function API.RegisterScriptEvent(_Name, _Action)

@@ -2,6 +2,8 @@ OptLoader_BasePath = "maps/externalmap/" ..Framework.GetCurrentMapName().. "/";
 OptLoader_PluginFiles = {
     {"PluginJobs/source.lua", true, true},
     {"PluginJobs/api.lua", true, true},
+    {"PluginTextTools/source.lua", true, true},
+    {"PluginTextTools/api.lua", true, true},
 }
 
 function OptLoader_SetBasePath(_Path)

@@ -28,6 +28,8 @@ function Swift:RestoreAfterLoad()
 end
 
 function Swift:ActivateCheats()
-    Logic.ExecuteInLuaLocalState([[Input.KeyBindDown(Keys.ModifierControl + Keys.ModifierAlt + Keys.R, "Framework.RestartMap()", 2)]]);
+    Logic.ExecuteInLuaLocalState([[
+        Input.KeyBindDown(Keys.ModifierControl + Keys.ModifierAlt + Keys.R, "Framework.RestartMap()", 2);
+    ]]);
 end
 

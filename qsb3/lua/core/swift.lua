@@ -14,8 +14,8 @@ API = API or {};
 QSB = QSB or {};
 
 QSB.Version = "Version 3.0.0 XX/XX/20XX ALPHA";
-QSB.HumanPlayerID = 1;
 QSB.Language = "de";
+QSB.HumanPlayerID = 1;
 
 Swift = Swift or {};
 
@@ -136,10 +136,6 @@ end
 
 function Swift:IsLocalEnvironment()
     return "local" == self.m_Environment;
-end
-
-function Swift:DetectLanguage()
-    self.m_Language = Network.GetDesiredLanguage();
 end
 
 -- History Edition
@@ -272,6 +268,28 @@ function Swift:OverrideTable()
     end
 end
 
+-- Lua base functions
+
+function Swift:OverrideString()
+    -- TODO: Implement!
+
+    ---
+    -- TODO: Add doc
+    -- @within string
+    --
+    string.contains = function (self, s)
+        return self:find(s) ~= nil;
+    end
+
+    ---
+    -- TODO: Add doc
+    -- @within string
+    --
+    string.indexOf = function (self, s)
+        return self:find(s);
+    end
+end
+
 -- Save Game Callback
 
 function Swift:RegisterLoadAction(_Action)
@@ -296,6 +314,7 @@ function Swift:CallSaveGameActions()
 end
 
 function Swift:RestoreAfterLoad()
+    debug("Loading save game");
     self:OverrideString();
     self:OverrideTable();
     if self:IsGlobalEnvironment() then
@@ -315,28 +334,6 @@ do
     end
 end
 
--- Lua base functions
-
-function Swift:OverrideString()
-    -- TODO: Implement!
-
-    ---
-    -- TODO: Add doc
-    -- @within string
-    --
-    string.contains = function (self, s)
-        return self:find(s) ~= nil;
-    end
-
-    ---
-    -- TODO: Add doc
-    -- @within string
-    --
-    string.indexOf = function (self, s)
-        return self:find(s);
-    end
-end
-
 -- Script Events
 
 function Swift:CreateScriptEvent(_Name, _Action)
@@ -347,21 +344,48 @@ function Swift:CreateScriptEvent(_Name, _Action)
         end
         ID = ID +1;
     end
+    debug(string.format("Create script event %s", _Name));
     self.m_ScriptEventRegister[ID] = {_Name, _Action};
     return ID;
 end
 
 function Swift:RemoveScriptEvent(_ID)
+    if self.m_ScriptEventRegister[_ID] then
+        debug(string.format("Remove script event %s", self.m_ScriptEventRegister[_ID].Name));
+    end
     self.m_ScriptEventRegister[_ID] = nil;
 end
 
-function Swift:DispatchScriptEvent(_Event, ...)
-    if not self.m_ScriptEventRegister[_Event] then
+function Swift:DispatchScriptEvent(_ID, ...)
+    if not self.m_ScriptEventRegister[_ID] then
         return;
     end
     for i= 1, #self.m_PluginRegister, 1 do
         if self.m_PluginRegister[i].OnEvent then
-            self.m_PluginRegister[i]:OnEvent(self.m_ScriptEventRegister[_Event], unpack(arg));
+            debug(string.format(
+                "Dispatching script event %s for plugin %s",
+                self.m_ScriptEventRegister[_ID].Name,
+                self.m_PluginRegister[i].Properties.Name
+            ));
+            self.m_PluginRegister[i]:OnEvent(self.m_ScriptEventRegister[_ID], unpack(arg));
+        end
+    end
+end
+
+-- Language
+
+function Swift:DetectLanguage()
+    self.m_Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    self:ChangeSystemLanguage(self.m_Language);
+end
+
+function Swift:ChangeSystemLanguage(_Language)
+    self.m_Language = _Language;
+    QSB.Language = _Language;
+    -- TODO: Change defaults of Swift here
+    for i= 1, #self.m_PluginRegister, 1 do
+        if self.m_PluginRegister[i].OnLanguageSelected then
+            self.m_PluginRegister[i]:OnLanguageSelected(_Language);
         end
     end
 end

@@ -2,10 +2,6 @@
 -- Plugin Job                                                                 --
 -- -------------------------------------------------------------------------- --
 
----
--- TODO: add doc
--- @within Plugins
---
 PluginJobs = {
     Properties = {
         Name = "Job",

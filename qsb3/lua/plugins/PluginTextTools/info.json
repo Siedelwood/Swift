@@ -1,0 +1,11 @@
+{
+    "name": "TextTools",
+    "version": "1.0.0",
+    "caption": "Text Tools",
+    "description": "",
+    "files": [
+        ["source.lua", true, true],
+        ["api.lua", true, true]
+    ],
+    "dependencies": []
+}
