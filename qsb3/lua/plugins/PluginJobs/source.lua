@@ -28,9 +28,6 @@ function PluginJobs:OnGameStart()
     self:InstallEventJobs();
 end
 
-function PluginJobs:OnSaveGameLoaded()
-end
-
 function PluginJobs:TriggerEventJobs(_Type)
     for k, v in pairs(self.m_EventJobs[_Type]) do
         if type(v) == "table" then
@@ -74,6 +71,13 @@ function PluginJobs:InstallEventJobs()
     );
 
     Trigger.RequestTrigger(
+        Events.LOGIC_EVENT_ENTITY_CREATED,
+        "",
+        "PluginEventJob_OnEntityCreated",
+        1
+    );
+
+    Trigger.RequestTrigger(
         Events.LOGIC_EVENT_ENTITY_HURT_ENTITY,
         "",
         "PluginEventJob_OnEntityHurtEntity",
@@ -102,13 +106,13 @@ end
 PluginEventJob_OnEveryTurn = function()
     PluginJobs:TriggerEventJobs(Events.LOGIC_EVENT_EVERY_TURN);
 end
-
--- Useless?
 PluginEventJob_OnEntityCreated = function()
     local PlayerID = Event.GetPlayerID();
     local EntityID = Event.GetEntityID();
     PluginJobs:TriggerEventJobs(Events.LOGIC_EVENT_ENTITY_CREATED, PlayerID, EntityID);
 end
+
+-- FIXME: Useless?
 PluginEventJob_OnEntityInRangeOfEntity = function()
     PluginJobs:TriggerEventJobs(Events.LOGIC_EVENT_ENTITY_IN_RANGE_OF_ENTITY);
 end

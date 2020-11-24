@@ -115,7 +115,8 @@ function API.StartJobByEventType(_EventType, _Function, ...)
     end
 
     PluginJobs.m_EventJobID = PluginJobs.m_EventJobID +1;
-    local ID = PluginJobs.m_EventJobID
+    local ID = PluginJobs.m_EventJobID;
+    PluginJobs.m_EventJobs[_EventType] = PluginJobs.m_EventJobs[_EventType] or {};
     PluginJobs.m_EventJobs[_EventType][ID] = {
         Function = Function,
         Arguments = table.copy(arg);

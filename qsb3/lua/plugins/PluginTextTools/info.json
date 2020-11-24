@@ -4,8 +4,8 @@
     "caption": "Text Tools",
     "description": "",
     "files": [
-        ["source.lua", true, true],
-        ["api.lua", true, true]
+        "source.lua",
+        "api.lua"
     ],
     "dependencies": []
 }
