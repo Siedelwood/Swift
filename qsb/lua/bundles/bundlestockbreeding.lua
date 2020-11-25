@@ -543,7 +543,8 @@ function BundleStockbreeding.Global:AnimalBreedController()
                 end
             end
             -- Kuh spawnen
-            if self.Data.CattlePastures[v] > self:BreedingTimeTillNext(AmountNearby) then
+            local TimeTillNext = self:BreedingTimeTillNext(AmountNearby);
+            if TimeTillNext > -1 and self.Data.CattlePastures[v] > TimeTillNext then
                 local x, y, z = Logic.EntityGetPos(v);
                 if self:IsCattleNeeded(PlayerID) then
                     self:CreateAnimal(v, Entities.A_X_Cow01, self.Data.CattleBaby);
