@@ -1,0 +1,428 @@
+-- -------------------------------------------------------------------------- --
+-- ########################################################################## --
+-- #  Swift 3                                                               # --
+-- ########################################################################## --
+-- -------------------------------------------------------------------------- --
+
+---
+-- TODO: Add doc
+--
+-- @set sort=true
+--
+
+API = API or {};
+QSB = QSB or {};
+
+QSB.Version = "Version 3.0.0 XX/XX/20XX ALPHA";
+QSB.Language = "de";
+QSB.HumanPlayerID = 1;
+QSB.ScriptEvents = {};
+
+Swift = Swift or {};
+
+ParameterType = ParameterType or {};
+g_QuestBehaviorVersion = 1;
+g_QuestBehaviorTypes = {};
+
+---
+-- AddOn Versionsnummer
+-- @local
+--
+g_GameExtraNo = 0;
+if Framework then
+    g_GameExtraNo = Framework.GetGameExtraNo();
+elseif MapEditor then
+    g_GameExtraNo = MapEditor.GetGameExtraNo();
+end
+
+-- Core  -------------------------------------------------------------------- --
+
+Swift = {
+    m_ModuleRegister      = {};
+    m_BehaviorRegister    = {};
+    m_ScriptEventRegister = {};
+    m_LoadActionRegister  = {};
+    m_Language            = "de";
+    m_Environment         = "global";
+    m_HistoryEdition      = false;
+    m_LogLevel            = 4;
+};
+
+function Swift:LoadCore()
+    self:OverrideString();
+    self:OverrideTable();
+    self:DetectEnvironment();
+    self:DetectLanguage();
+
+    if self:IsGlobalEnvironment() then
+        self:DetectHistoryEdition();
+        self:InitalizeDebugModeGlobal();
+    end
+
+    if self:IsLocalEnvironment() then
+        self:InitalizeDebugModeLocal();
+    end
+
+    Swift:RegisterLoadAction(function ()
+        Swift:RestoreDebugAfterLoad();
+    end);
+    
+    self:LoadExternFiles();
+end
+
+-- Modules
+
+function Swift:LoadModules()
+    for i= 1, #self.m_ModuleRegister, 1 do
+        if self.m_ModuleRegister[i].OnGameStart then
+            self.m_ModuleRegister[i]:OnGameStart();
+        end
+    end
+end
+
+function Swift:RegisterModules(_Module)
+    if (type(_Module) ~= "table") then
+        assert(false, "Modules must be tables!");
+        return;
+    end
+    if _Module.Properties == nil or _Module.Properties.Name == nil then
+        assert(false, "Expected name for Module!");
+        return;
+    end
+    table.insert(self.m_ModuleRegister, _Module);
+end
+
+function Swift:IsModuleRegistered(_Name)
+    for k, v in pairs(self.m_ModuleRegister) do
+        return v.Properties and v.Properties.Name == _Name;
+    end
+end
+
+-- Behavior
+
+function Swift:LoadBehaviors()
+    for i= 1, #self.m_BehaviorRegister, 1 do
+        -- TODO
+    end
+end
+
+function Swift:RegisterBehavior(_Behavior)
+    if (type(_Behavior) ~= "table") then
+        assert(false, "Behavior must be tables!");
+        return;
+    end
+    -- TODO: Implement fix
+    table.insert(self.m_BehaviorRegister, _Behavior);
+end
+
+-- Load files
+
+function Swift:LoadExternFiles()
+    if Mission_LoadFiles then
+        local FilesList = Mission_LoadFiles();
+        for i= 1, #FilesList, 1 do
+            if type(FilesList[i]) == "function" then
+                FilesList[i]();
+            else
+                Script.Load(FilesList[i]);
+            end
+        end
+    end
+end
+
+-- Environment Detection
+
+function Swift:DetectEnvironment()
+    self.m_Environment = (nil ~= GUI and "local") or "global";
+end
+
+function Swift:IsGlobalEnvironment()
+    return "global" == self.m_Environment;
+end
+
+function Swift:IsLocalEnvironment()
+    return "local" == self.m_Environment;
+end
+
+-- History Edition
+
+function Swift:DetectHistoryEdition()
+    local EntityID = Logic.CreateEntity(Entities.U_NPC_Amma_NE, 100, 100, 0, 8);
+    MakeInvulnerable(EntityID);
+    if Logic.GetEntityScriptingValue(EntityID, -68) == 8 then
+        Logic.ExecuteInLuaLocalState("Swift.m_HistoryEdition = true");
+        self.m_HistoryEdition = true;
+    end
+    DestroyEntity(EntityID);
+end
+
+function Swift:IsHistoryEdition()
+    return true == self.m_HistoryEdition;
+end
+
+-- Logging
+
+LOG_LEVEL_ALL     = 4;
+LOG_LEVEL_INFO    = 3;
+LOG_LEVEL_WARNING = 2;
+LOG_LEVEL_ERROR   = 1;
+LOG_LEVEL_OFF     = 0;
+
+function Swift:Log(_Text, _Verbose)
+    Framework.WriteToLog(_Text);
+    if _Verbose then
+        if self:IsGlobalEnvironment() then
+            Logic.ExecuteInLuaLocalState(string.format(
+                [[GUI.AddStaticNote("%s")]],
+                _Text
+            ));
+            return;
+        end
+        GUI.AddStaticNote(_text);
+    end
+end
+
+function Swift:SetLogLevel(_Level)
+    if self:IsGlobalEnvironment() then
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[Swift.m_LogLevel = %d]],
+            _Level
+        ));
+        self.m_LogLevel = _Level;
+    end
+end
+
+function debug(_Text, _Verbose)
+    if Swift.m_LogLevel >= 4 then
+        Swift:Log("DEBUG: " .._Text, _Verbose);
+    end
+end
+function info(_Text, _Verbose)
+    if Swift.m_LogLevel >= 3 then
+        Swift:Log("INFO: " .._Text, _Verbose);
+    end
+end
+function warn(_Text, _Verbose)
+    if Swift.m_LogLevel >= 2 then
+        Swift:Log("WARNING: " .._Text, _Verbose);
+    end
+end
+function error(_Text, _Verbose)
+    if Swift.m_LogLevel >= 1 then
+        Swift:Log("ERROR: " .._Text, _Verbose);
+    end
+end
+
+function Swift:OverrideTable()
+    ---
+    -- TODO: Add doc
+    -- @within table
+    --
+    table.contains = function (t, e)
+        for k, v in ipairs(t) do
+            if v == e then return true; end
+        end
+        return false;
+    end
+
+    ---
+    -- TODO: Add doc
+    -- @within table
+    --
+    table.copy = function (t1, t2)
+        t1 = t1 or {};
+        t2 = t2 or {};
+        for k, v in pairs(t1) do
+            if "table" == type(v) then
+                t2[k] = t2[k] or {};
+                for kk, vv in pairs(table.copy(v, t2[k])) do
+                    t2[k][kk] = t2[k][kk] or vv;
+                end
+            else
+                t2[k] = v;
+            end
+        end
+        return t2;
+    end
+
+    ---
+    -- TODO: Add doc
+    -- @within table
+    --
+    table.invert = function (t1)
+        local t2 = {};
+        for i= #t1, 1, -1 do
+            table.insert(t2, t1[i]);
+        end
+        return t2;
+    end
+
+    ---
+    -- TODO: Add doc
+    -- @within table
+    --
+    table.push = function (t, e)
+        table.insert(t, 1, e);
+    end
+
+    ---
+    -- TODO: Add doc
+    -- @within table
+    --
+    table.pop = function (t, e)
+        return table.remove(t, 1);
+    end
+
+    ---
+    -- TODO: Add doc
+    -- @within table
+    --
+    table.tostring = function(t)
+        assert(type(t) == "table");
+        local s = "{";
+        for k, v in pairs(t) do
+            local key;
+            if (tonumber(k)) then
+                key = ""..k;
+            else
+                key = "\""..k.."\"";
+            end
+            if type(v) == "table" then
+                s = s .. "[" .. key .. "] = " .. table.tostring(v) .. ", ";
+            elseif type(v) == "number" then
+                s = s .. "[" .. key .. "] = " .. v .. ", ";
+            elseif type(v) == "string" then
+                s = s .. "[" .. key .. "] = \"" .. v .. "\", ";
+            elseif type(v) == "boolean" or type(v) == "nil" then
+                s = s .. "[" .. key .. "] = " .. tostring(v) .. ", ";
+            else
+                s = s .. "[" .. key .. "] = \"" .. tostring(v) .. "\", ";
+            end
+        end
+        s = s .. "}";
+        return s;
+    end
+end
+
+-- Lua base functions
+
+function Swift:OverrideString()
+    -- TODO: Implement!
+
+    ---
+    -- TODO: Add doc
+    -- @within string
+    --
+    string.contains = function (self, s)
+        return self:find(s) ~= nil;
+    end
+
+    ---
+    -- TODO: Add doc
+    -- @within string
+    --
+    string.indexOf = function (self, s)
+        return self:find(s);
+    end
+end
+
+-- Save Game Callback
+
+function Swift:RegisterLoadAction(_Action)
+    if (type(_Action) ~= "function") then
+        assert(false, "Action must be a function!");
+        return;
+    end
+    table.insert(self.m_LoadActionRegister, _Action);
+end
+
+function Swift:CallSaveGameActions()
+    -- Core actions
+    for i= 1, #self.m_LoadActionRegister, 1 do
+        self.m_LoadActionRegister[i](self);
+    end
+    -- Module actions
+    for i= 1, #self.m_ModuleRegister, 1 do
+        if self.m_ModuleRegister[i].OnSaveGameLoaded then
+            self.m_ModuleRegister[i]:OnSaveGameLoaded();
+        end
+    end
+end
+
+function Swift:RestoreAfterLoad()
+    debug("Loading save game");
+    self:OverrideString();
+    self:OverrideTable();
+    if self:IsGlobalEnvironment() then
+    end
+    if self:IsLocalEnvironment() then
+    end
+end
+
+do
+    if Mission_OnSaveGameLoaded then
+        local Mission_OnSaveGameLoaded_Orig = Mission_OnSaveGameLoaded;
+        Mission_OnSaveGameLoaded = function()
+            Mission_OnSaveGameLoaded_Orig();
+            Logic.ExecuteInLuaLocalState([[Swift:CallSaveGameActions()]]);
+            Swift:CallSaveGameActions();
+        end
+    end
+end
+
+-- Script Events
+
+function Swift:CreateScriptEvent(_Name, _Function)
+    local ID = 1;
+    for k, v in pairs(self.m_ScriptEventRegister) do
+        if v and v.Name == _Name then
+            return 0;
+        end
+        ID = ID +1;
+    end
+    debug(string.format("Create script event %s", _Name));
+    self.m_ScriptEventRegister[ID] = {_Name, _Function};
+    return ID;
+end
+
+function Swift:RemoveScriptEvent(_ID)
+    if self.m_ScriptEventRegister[_ID] then
+        debug(string.format("Remove script event %s", self.m_ScriptEventRegister[_ID].Name));
+    end
+    self.m_ScriptEventRegister[_ID] = nil;
+end
+
+function Swift:DispatchScriptEvent(_ID, ...)
+    if not self.m_ScriptEventRegister[_ID] then
+        return;
+    end
+    for i= 1, #self.m_ModuleRegister, 1 do
+        if self.m_ModuleRegister[i].OnEvent then
+            debug(string.format(
+                "Dispatching script event %s for Module %s",
+                self.m_ScriptEventRegister[_ID].Name,
+                self.m_ModuleRegister[i].Properties.Name
+            ));
+            self.m_ModuleRegister[i]:OnEvent(self.m_ScriptEventRegister[_ID], unpack(arg));
+        end
+    end
+end
+
+-- Language
+
+function Swift:DetectLanguage()
+    self.m_Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    self:ChangeSystemLanguage(self.m_Language);
+end
+
+function Swift:ChangeSystemLanguage(_Language)
+    self.m_Language = _Language;
+    QSB.Language = _Language;
+    -- TODO: Change defaults of Swift here
+    for i= 1, #self.m_ModuleRegister, 1 do
+        if self.m_ModuleRegister[i].OnLanguageSelected then
+            self.m_ModuleRegister[i]:OnLanguageSelected(_Language);
+        end
+    end
+end
+

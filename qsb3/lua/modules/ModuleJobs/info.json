@@ -1,5 +1,5 @@
 {
-    "name": "Jobs",
+    "name": "ModuleJobs",
     "version": "1.0.0",
     "caption": "Jobs",
     "description": "",
@@ -7,5 +7,7 @@
         "source.lua",
         "api.lua"
     ],
-    "dependencies": []
+    "dependencies": [
+        "Core"
+    ]
 }

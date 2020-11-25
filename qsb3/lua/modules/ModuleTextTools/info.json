@@ -1,5 +1,5 @@
 {
-    "name": "TextTools",
+    "name": "ModuleTextTools",
     "version": "1.0.0",
     "caption": "Text Tools",
     "description": "",
@@ -7,5 +7,7 @@
         "source.lua",
         "api.lua"
     ],
-    "dependencies": []
+    "dependencies": [
+        "Core"
+    ]
 }

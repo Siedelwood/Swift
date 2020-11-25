@@ -1,0 +1,13 @@
+{
+    "name": "Core",
+    "version": "1.0.0",
+    "caption": "Core",
+    "description": "",
+    "files": [
+        "swift.lua",
+        "api.lua",
+        "debug.lua",
+        "behavior.lua"
+    ],
+    "dependencies": []
+}
