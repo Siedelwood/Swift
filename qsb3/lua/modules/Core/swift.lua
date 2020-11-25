@@ -213,6 +213,8 @@ function error(_Text, _Verbose)
     end
 end
 
+-- Lua base functions
+
 function Swift:OverrideTable()
     ---
     -- TODO: Add doc
@@ -303,8 +305,6 @@ function Swift:OverrideTable()
         return s;
     end
 end
-
--- Lua base functions
 
 function Swift:OverrideString()
     -- TODO: Implement!
@@ -424,5 +424,17 @@ function Swift:ChangeSystemLanguage(_Language)
             self.m_ModuleRegister[i]:OnLanguageSelected(_Language);
         end
     end
+end
+
+-- Utils
+
+function Swift:ToBoolean(_Input)
+    if type(_Input) == "boolean" then
+        return _Input;
+    end
+    if string.find(string.lower(tostring(_Input)), "^[tjy\\+].*$") then
+        return true;
+    end
+    return false;
 end
 

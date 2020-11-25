@@ -4,7 +4,7 @@
 
 ModuleJobs = {
     Properties = {
-        Name = "Job",
+        Name = "ModuleJobs",
     },
 
     m_EventJobID = 0;

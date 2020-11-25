@@ -4,6 +4,8 @@ OptLoader_ModuleFiles = {
     "ModuleJobs/api.lua",
     "ModuleTextTools/source.lua",
     "ModuleTextTools/api.lua",
+    "ModuleRealtime/source.lua",
+    "ModuleRealtime/api.lua",
 }
 
 function OptLoader_SetBasePath(_Path)

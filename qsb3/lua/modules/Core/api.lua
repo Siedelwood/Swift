@@ -87,3 +87,26 @@ function API.SendScriptEvent(_ID, ...)
     Swift:DispatchScriptEvent(_ID, unpack(arg));
 end
 
+---
+-- Wandelt underschiedliche Darstellungen einer Boolean in eine echte um.
+--
+-- Jeder String, der mit j, t, y oder + beginnt, wird als true interpretiert.
+-- Alles andere als false.
+--
+-- Ist die Eingabe bereits ein Boolean wird es direkt zurückgegeben.
+--
+-- <p><b>Alias:</b> AcceptAlternativeBoolean</p>
+--
+-- @param _Value Wahrheitswert
+-- @return[type=boolean] Wahrheitswert
+-- @within Anwenderfunktionen
+-- @local
+--
+-- @usage local Bool = API.ToBoolean("+")  --> Bool = true
+-- local Bool = API.ToBoolean("no") --> Bool = false
+--
+function API.ToBoolean(_Value)
+    return Swift:ToBoolean(_Value);
+end
+AcceptAlternativeBoolean = API.ToBoolean;
+

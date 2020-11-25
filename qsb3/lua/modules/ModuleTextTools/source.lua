@@ -2,14 +2,9 @@
 -- Module Text Tools                                                          --
 -- -------------------------------------------------------------------------- --
 
----
--- TODO: add doc
--- @within Beschreibung
--- @set sort=true
---
 ModuleTextTools = {
     Properties = {
-        Name = "TextTools",
+        Name = "ModuleTextTools",
     },
 
     m_Colors = {

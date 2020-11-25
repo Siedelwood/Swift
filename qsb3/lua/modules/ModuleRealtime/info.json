@@ -1,0 +1,14 @@
+{
+    "name": "ModuleRealtime",
+    "version": "1.0.0",
+    "caption": "Realtime",
+    "description": "",
+    "files": [
+        "source.lua",
+        "api.lua"
+    ],
+    "dependencies": [
+        "Core",
+        "ModuleJobs"
+    ]
+}
