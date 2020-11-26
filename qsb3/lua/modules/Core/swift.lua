@@ -66,8 +66,9 @@ function Swift:LoadCore()
     Swift:RegisterLoadAction(function ()
         Swift:RestoreAfterLoad();
     end);
-    
     self:LoadExternFiles();
+    -- Must be done last
+    self:LoadBehaviors();
 end
 
 -- Modules
@@ -98,11 +99,35 @@ function Swift:IsModuleRegistered(_Name)
     end
 end
 
+-- Quest
+
+
+
 -- Behavior
 
 function Swift:LoadBehaviors()
     for i= 1, #self.m_BehaviorRegister, 1 do
-        -- TODO
+        local Behavior = self.m_BehaviorRegister[i];
+
+        if not _G["b_" .. Behavior.Name].new then
+            _G["b_" .. Behavior.Name].new = function(self, ...)
+                local arg = {...};
+                local behavior = table.copy(self);
+                -- Raw parameters
+                behavior.i47ya_6aghw_frxil = {};
+                -- Overhead parameters
+                behavior.v12ya_gg56h_al125 = {};
+                for i= 1, #arg, 1 do
+                    table.insert(behavior.v12ya_gg56h_al125, arg[i]);
+                    if self.Parameter and self.Parameter[i] ~= nil then
+                        behavior:AddParameter(i-1, arg[i]);
+                    else
+                        table.insert(behavior.i47ya_6aghw_frxil, arg[i]);
+                    end
+                end
+                return behavior;
+            end
+        end
     end
 end
 
@@ -117,25 +142,6 @@ function Swift:RegisterBehavior(_Behavior)
     if not _G["b_" .. _Behavior.Name] then
         error(string.format("Behavior %s does not exist!", _Behavior.Name), true);
         return;
-    end
-    if not _G["b_" .. _Behavior.Name].new then
-        _G["b_" .. _Behavior.Name].new = function(self, ...)
-            local arg = {...};
-            local behavior = table.copy(self);
-            -- Raw parameters
-            behavior.i47ya_6aghw_frxil = {};
-            -- Overhead parameters
-            behavior.v12ya_gg56h_al125 = {};
-            for i= 1, #arg, 1 do
-                table.insert(behavior.v12ya_gg56h_al125, arg[i]);
-                if self.Parameter and self.Parameter[i] ~= nil then
-                    behavior:AddParameter(i-1, arg[i]);
-                else
-                    table.insert(behavior.i47ya_6aghw_frxil, arg[i]);
-                end
-            end
-            return behavior;
-        end
     end
 
     for i= 1, #g_QuestBehaviorTypes, 1 do
