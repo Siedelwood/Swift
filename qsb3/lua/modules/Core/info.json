@@ -2,6 +2,7 @@
     "name": "Core",
     "version": "1.0.0",
     "caption": "Core",
+    "shortdesc": "",
     "description": "",
     "files": [
         "swift.lua",

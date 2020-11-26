@@ -2,6 +2,7 @@
     "name": "ModuleTextTools",
     "version": "1.0.0",
     "caption": "Text Tools",
+    "shortdesc": "",
     "description": "",
     "files": [
         "source.lua",

@@ -2,6 +2,7 @@
     "name": "ModuleJobs",
     "version": "1.0.0",
     "caption": "Jobs",
+    "shortdesc": "",
     "description": "",
     "files": [
         "source.lua",

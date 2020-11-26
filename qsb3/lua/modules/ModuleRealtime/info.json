@@ -2,6 +2,7 @@
     "name": "ModuleRealtime",
     "version": "1.0.0",
     "caption": "Realtime",
+    "shortdesc": "",
     "description": "",
     "files": [
         "source.lua",
