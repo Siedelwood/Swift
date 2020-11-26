@@ -11,24 +11,16 @@ Swift = Swift or {
 
 function Swift:InitalizeDebugModeGlobal()
     self:InitalizeQsbDebugEvents();
-    self:RegisterLoadAction(function()
-        Swift:InitalizeQuestTrace();
-    end);
 end
 
 function Swift:InitalizeDebugModeLocal()
-    self:RegisterLoadAction(function()
-        Swift:LocalRestoreDebugAfterLoad();
-    end);
     self:InitalizeQsbDebugHotkeys();
     self:InitalizeQsbDebugShell();
     self:InitalizeQsbDebugEvents();
 end
 
 function Swift:GlobalRestoreDebugAfterLoad()
-    self:InitalizeQsbDebugHotkeys();
-    self:InitalizeQsbDebugShell();
-    self:InitalizeDebugHotkeys();
+    self:InitalizeQuestTrace();
 end
 
 function Swift:LocalRestoreDebugAfterLoad()
@@ -39,7 +31,7 @@ end
 
 function Swift:InitalizeQsbDebugEvents()
     QSB.ScriptEvents.DebugChatConfirmed = Swift:CreateScriptEvent(
-        "DebugChatConfirmed",
+        "DebugModeChatConfirmed",
         nil
     );
     QSB.ScriptEvents.DebugModeStatusChanged = Swift:CreateScriptEvent(

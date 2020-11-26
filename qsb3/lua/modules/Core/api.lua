@@ -110,3 +110,42 @@ function API.ToBoolean(_Value)
 end
 AcceptAlternativeBoolean = API.ToBoolean;
 
+---
+-- Gibt die ID des Quests mit dem angegebenen Namen zurück. Existiert der
+-- Quest nicht, wird nil zurückgegeben.
+--
+-- <p><b>Alias:</b> GetQuestID</p>
+--
+-- @param[type=string] _Name Name des Quest
+-- @return[type=number] ID des Quest
+-- @within Anwenderfunktionen
+--
+function API.GetQuestID(_Name)
+    if type(_Name) == "number" then
+        return _Name;
+    end
+    for k, v in pairs(Quests) do
+        if v and k > 0 then
+            if v.Identifier == _Name then
+                return k;
+            end
+        end
+    end
+end
+GetQuestID = API.GetQuestID;
+
+---
+-- Prüft, ob zu der angegebenen ID ein Quest existiert. Wird ein Questname
+-- angegeben wird dessen Quest-ID ermittelt und geprüft.
+--
+-- <p><b>Alias:</b> IsValidQuest</p>
+--
+-- @param[type=number] _QuestID ID oder Name des Quest
+-- @return[type=boolean] Quest existiert
+-- @within Anwenderfunktionen
+--
+function API.IsValidQuest(_QuestID)
+    return Quests[_QuestID] ~= nil or Quests[API.GetQuestID(_QuestID)] ~= nil;
+end
+IsValidQuest = API.IsValidQuest;
+

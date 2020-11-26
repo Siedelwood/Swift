@@ -64,7 +64,7 @@ function Swift:LoadCore()
     end
 
     Swift:RegisterLoadAction(function ()
-        Swift:RestoreDebugAfterLoad();
+        Swift:RestoreAfterLoad();
     end);
     
     self:LoadExternFiles();
@@ -107,11 +107,43 @@ function Swift:LoadBehaviors()
 end
 
 function Swift:RegisterBehavior(_Behavior)
-    if (type(_Behavior) ~= "table") then
-        assert(false, "Behavior must be tables!");
+    if type(_Behavior) ~= "table" or _Behavior.Name == nil then
+        assert(false, "Behavior is invalid!");
         return;
     end
-    -- TODO: Implement fix
+    if _Behavior.RequiresExtraNo and _Behavior.RequiresExtraNo > g_GameExtraNo then
+        return;
+    end
+    if not _G["b_" .. _Behavior.Name] then
+        error(string.format("Behavior %s does not exist!", _Behavior.Name), true);
+        return;
+    end
+    if not _G["b_" .. _Behavior.Name].new then
+        _G["b_" .. _Behavior.Name].new = function(self, ...)
+            local arg = {...};
+            local behavior = table.copy(self);
+            -- Raw parameters
+            behavior.i47ya_6aghw_frxil = {};
+            -- Overhead parameters
+            behavior.v12ya_gg56h_al125 = {};
+            for i= 1, #arg, 1 do
+                table.insert(behavior.v12ya_gg56h_al125, arg[i]);
+                if self.Parameter and self.Parameter[i] ~= nil then
+                    behavior:AddParameter(i-1, arg[i]);
+                else
+                    table.insert(behavior.i47ya_6aghw_frxil, arg[i]);
+                end
+            end
+            return behavior;
+        end
+    end
+
+    for i= 1, #g_QuestBehaviorTypes, 1 do
+        if g_QuestBehaviorTypes[i].Name == _Behavior.Name then
+            return;
+        end
+    end
+    table.insert(g_QuestBehaviorTypes, _Behavior);
     table.insert(self.m_BehaviorRegister, _Behavior);
 end
 
@@ -354,8 +386,10 @@ function Swift:RestoreAfterLoad()
     self:OverrideString();
     self:OverrideTable();
     if self:IsGlobalEnvironment() then
+        self:GlobalRestoreDebugAfterLoad();
     end
     if self:IsLocalEnvironment() then
+        self:LocalRestoreDebugAfterLoad();
     end
 end
 
