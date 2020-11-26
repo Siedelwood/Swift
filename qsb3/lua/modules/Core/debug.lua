@@ -31,11 +31,11 @@ end
 
 function Swift:InitalizeQsbDebugEvents()
     QSB.ScriptEvents.DebugChatConfirmed = Swift:CreateScriptEvent(
-        "DebugModeChatConfirmed",
+        "Event_DebugModeChatConfirmed",
         nil
     );
     QSB.ScriptEvents.DebugModeStatusChanged = Swift:CreateScriptEvent(
-        "DebugModeStatusChanged",
+        "Event_DebugModeStatusChanged",
         nil
     );
 end

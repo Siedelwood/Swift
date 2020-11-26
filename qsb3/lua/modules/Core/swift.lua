@@ -38,14 +38,14 @@ end
 -- Core  -------------------------------------------------------------------- --
 
 Swift = {
-    m_ModuleRegister      = {};
-    m_BehaviorRegister    = {};
-    m_ScriptEventRegister = {};
-    m_LoadActionRegister  = {};
-    m_Language            = "de";
-    m_Environment         = "global";
-    m_HistoryEdition      = false;
-    m_LogLevel            = 4;
+    m_ModuleRegister            = {};
+    m_BehaviorRegister          = {};
+    m_ScriptEventRegister       = {};
+    m_LoadActionRegister        = {};
+    m_Language                  = "de";
+    m_Environment               = "global";
+    m_HistoryEdition            = false;
+    m_LogLevel                  = 4;
 };
 
 function Swift:LoadCore()
@@ -57,6 +57,7 @@ function Swift:LoadCore()
     if self:IsGlobalEnvironment() then
         self:DetectHistoryEdition();
         self:InitalizeDebugModeGlobal();
+        self:InitalizeEventsGlobal();
     end
 
     if self:IsLocalEnvironment() then
@@ -98,10 +99,6 @@ function Swift:IsModuleRegistered(_Name)
         return v.Properties and v.Properties.Name == _Name;
     end
 end
-
--- Quest
-
-
 
 -- Behavior
 
@@ -411,6 +408,14 @@ do
 end
 
 -- Script Events
+
+function Swift:InitalizeEventsGlobal()
+    QSB.ScriptEvents.QuestFailure = Swift:CreateScriptEvent("Event_QuestFailure", nil);
+    QSB.ScriptEvents.QuestInterrupt = Swift:CreateScriptEvent("Event_QuestInterrupt", nil);
+    QSB.ScriptEvents.QuestReset = Swift:CreateScriptEvent("Event_QuestReset", nil);
+    QSB.ScriptEvents.QuestSuccess = Swift:CreateScriptEvent("Event_QuestSuccess", nil);
+    QSB.ScriptEvents.QuestTrigger = Swift:CreateScriptEvent("Event_QuestTrigger", nil);
+end
 
 function Swift:CreateScriptEvent(_Name, _Function)
     local ID = 1;
