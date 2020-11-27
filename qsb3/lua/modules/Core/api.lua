@@ -1,7 +1,7 @@
 -- Core API ----------------------------------------------------------------- --
 
 ---
--- TODO: add doc
+-- Stellt wichtige Kernfunktionen bereit.
 --
 -- @within Beschreibung
 -- @set sort=true
@@ -9,9 +9,10 @@
 Swift = Swift or {};
 
 ---
--- TODO: Add doc
+-- Installiert Swift.
 --
 -- @within Anwenderfunktionen
+-- @local
 --
 function API.Install()
     Swift:LoadCore();
@@ -22,7 +23,9 @@ end
 
 function API.OverrideTable()
     ---
-    -- TODO: Add doc
+    -- Prüft, ob ein Element in einer eindimensionenen Table enthalten ist.
+    -- @param[type=table] t Table
+    -- @param             e Element
     -- @within table
     --
     table.contains = function (t, e)
@@ -33,7 +36,11 @@ function API.OverrideTable()
     end
 
     ---
-    -- TODO: Add doc
+    -- Erzeugt eine Deep Copy der Tabelle und schreibt alle Werte optional in
+    -- eine weitere Tabelle.
+    -- @param[type=table] t1 Quelle
+    -- @param[type=table] t2 (Optional) Ziel
+    -- @return[type=table] Deep Copy
     -- @within table
     --
     table.copy = function (t1, t2)
@@ -41,7 +48,9 @@ function API.OverrideTable()
     end
 
     ---
-    -- TODO: Add doc
+    -- Kehr die Reihenfolge aller Elemente in einer Array Table um.
+    -- @param[type=table] t1 Table
+    -- @return[type=table] Invertierte Table
     -- @within table
     --
     table.invert = function (t1)
@@ -53,7 +62,9 @@ function API.OverrideTable()
     end
 
     ---
-    -- TODO: Add doc
+    -- Fügt ein Element am Anfang einer Tabelle ein.
+    -- @param[type=table] t Table
+    -- @param             e Element
     -- @within table
     --
     table.push = function (t, e)
@@ -61,15 +72,20 @@ function API.OverrideTable()
     end
 
     ---
-    -- TODO: Add doc
+    -- Entfernt das erste Element einer Table und gibt es zurück.
+    -- @param[type=table] t Table
+    -- @return Element
     -- @within table
     --
-    table.pop = function (t, e)
+    table.pop = function (t)
         return table.remove(t, 1);
     end
 
     ---
-    -- TODO: Add doc
+    -- Serialisiert eine Table als String. Funktionen, Threads und Upvalues
+    -- können nicht serialisiert werden.
+    -- @param[type=table] t Table
+    -- @return[type=string] Serialisierte Table
     -- @within table
     --
     table.tostring = function(t)
@@ -103,7 +119,9 @@ function API.OverrideString()
     -- TODO: Implement!
 
     ---
-    -- TODO: Add doc
+    -- Gibt true zurück, wenn der Teil-String enthalten ist.
+    -- @param[type=string] s Pattern
+    -- @return[type=boolean] Pattern vorhanden
     -- @within string
     --
     string.contains = function (self, s)
@@ -111,7 +129,10 @@ function API.OverrideString()
     end
 
     ---
-    -- TODO: Add doc
+    -- Gibt die Position des Teil-String im String zurück.
+    -- @param[type=string] s Pattern
+    -- @return[type=number] Startindex
+    -- @return[type=number] Endindex
     -- @within string
     --
     string.indexOf = function (self, s)
@@ -120,8 +141,15 @@ function API.OverrideString()
 end
 
 ---
--- TODO: Add doc
+-- Aktiviert oder deaktiviert Optionen des Debug Mode.
 --
+-- <b>Hinweis:</b> Du kannst alle Optionen unbegrenzt oft beliebig ein-
+-- und ausschalten.
+--
+-- @pqram[type=boolean] _CheckAtRun       Custom Behavior prüfen an/aus
+-- @pqram[type=boolean] _TraceQuests      Quest Trace an/aus
+-- @pqram[type=boolean] _DevelopingCheats Cheats an/aus
+-- @pqram[type=boolean] _DevelopingShell  Eingabeaufforderung an/aus
 -- @within Anwenderfunktionen
 --
 function API.ActivateDebugMode(_CheckAtRun, _TraceQuests, _DevelopingCheats, _DevelopingShell)
@@ -134,8 +162,12 @@ function API.ActivateDebugMode(_CheckAtRun, _TraceQuests, _DevelopingCheats, _De
 end
 
 ---
--- TODO: Add doc
+-- Prüft, ob der Debug Behavior überprüfen darf.
 --
+-- <b>Hinweis:</b> Module müssen die Behandlung dieser Option selbst
+-- inmpelentieren. Das Core Modul übernimmt diese Aufgabe nicht!
+--
+-- @return[type=boolean] Option Aktiv
 -- @within Anwenderfunktionen
 --
 function API.IsDebugBehaviorCheckActive()
@@ -143,8 +175,9 @@ function API.IsDebugBehaviorCheckActive()
 end
 
 ---
--- TODO: Add doc
+-- Prüft, ob Quest Trace benutzt wird.
 --
+-- @return[type=boolean] Option Aktiv
 -- @within Anwenderfunktionen
 --
 function API.IsDebugQuestTraceActive()
@@ -152,8 +185,9 @@ function API.IsDebugQuestTraceActive()
 end
 
 ---
--- TODO: Add doc
+-- Prüft, ob die Cheats aktiviert sind.
 --
+-- @return[type=boolean] Option Aktiv
 -- @within Anwenderfunktionen
 --
 function API.IsDebugCheatsActive()
@@ -161,8 +195,12 @@ function API.IsDebugCheatsActive()
 end
 
 ---
--- TODO: Add doc
+-- Prüft, ob die Eingabeaufforderung aktiv ist.
 --
+-- <b>Hinweis:</b> Viele Kommandos müssen von Modulen implementiert werden.
+-- Siehe die Doku dieser Module.
+--
+-- @return[type=boolean] Option Aktiv
 -- @within Anwenderfunktionen
 --
 function API.IsDebugShellActive()
@@ -170,8 +208,12 @@ function API.IsDebugShellActive()
 end
 
 ---
--- TODO: Add doc
+-- Legt ein neues Script Event an. Dem Event kann optional eine Funktion
+-- mitgegeben werden, die ausgeführt werden kann.
 --
+-- @param[type=string]   _Name     Identifier des Event
+-- @param[type=function] _Function (Optional) Funktionsreferenz
+-- @return[type=number] ID des neuen Script Event
 -- @within Anwenderfunktionen
 --
 function API.RegisterScriptEvent(_Name, _Function)
@@ -179,8 +221,9 @@ function API.RegisterScriptEvent(_Name, _Function)
 end
 
 ---
--- TODO: Add doc
+-- Löscht ein initialisieres Script Event.
 --
+-- @param[type=number] _ID ID des Event
 -- @within Anwenderfunktionen
 --
 function API.RemoveScriptEvent(_ID)
@@ -188,8 +231,11 @@ function API.RemoveScriptEvent(_ID)
 end
 
 ---
--- TODO: Add doc
+-- Sendet das Script Event mit der übergebenen ID und überträgt optional
+-- Parameter.
 --
+-- @param[type=number] _ID ID des Event
+-- @param              ... Optionale Parameter
 -- @within Anwenderfunktionen
 --
 function API.SendScriptEvent(_ID, ...)

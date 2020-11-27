@@ -149,7 +149,7 @@ function Swift:GetTextOfDesiredLanguage(_Table)
     if _Table[QSB.Language] then
         return _Table[QSB.Language];
     end
-    return _Table["de"] or "ERROR_NO_TEXT";
+    return _Table["en"] or "ERROR_NO_TEXT";
 end
 
 -- Behavior

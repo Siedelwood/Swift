@@ -1,7 +1,7 @@
 -- Core Behavior ------------------------------------------------------------ --
 
 ---
--- TODO: add doc
+-- Stellt die wichtigsten Behavior bereit.
 --
 -- @within Beschreibung
 -- @set sort=true

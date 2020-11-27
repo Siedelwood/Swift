@@ -7,6 +7,8 @@ ModuleRealtime = {
         Name = "ModuleRealtime",
     },
 
+    m_RealTimeWaitActiveFlag = {};
+    m_RealTimeWaitID = 0;
     m_SecondsSinceGameStart = 0;
     m_LastTimeStamp = 0;
 };

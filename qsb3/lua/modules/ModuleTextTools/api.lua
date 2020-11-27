@@ -1,7 +1,16 @@
 -- Messages API ------------------------------------------------------------- --
 
 ---
--- Modul für die Nutzung von Platzhaltern.
+-- Modul für die Nutzung von Platzhaltern und zur lokalisierung von Texten.
+--
+-- Du kannst vordefinierte Farben in Textausgaben verwenden. Außerdem kannst
+-- du für Skriptnamen und Entitytypen Platzhalter zu definieren. Diese
+-- Platzhalter können auch Lokalisiert werden.
+--
+-- <b>Vorausgesetzte Module:</b>
+-- <ul>
+-- <li><a href="modules.core.api.html">Core</a></li>
+-- </ul>
 --
 -- @within Beschreibung
 -- @set sort=true
@@ -11,14 +20,17 @@
 -- Schreibt eine Nachricht in das Debug Window. Der Text erscheint links am
 -- Bildschirm und ist nicht statisch.
 --
--- <p><b>Alias:</b> GUI_Note</p>
+-- <b>Hinweis:</b> Texte werden automatisch lokalisiert und Platzhalter ersetzt.
+--
+-- <b>Alias:</b> GUI_Note
 --
 -- @param[type=string] _Text Anzeigetext
 -- @within Anwenderfunktionen
--- @local
+--
+-- @usage API.Note("Das ist eine flüchtige Information!");
 --
 function API.Note(_Text)
-    ModuleTextTools:Note(ModuleTextTools:Localize(_Text));
+    ModuleTextTools:Note(ModuleTextTools:ConvertPlaceholders(_Text));
 end
 GUI_Note = API.Note;
 
@@ -26,20 +38,44 @@ GUI_Note = API.Note;
 -- Schreibt eine Nachricht in das Debug Window. Der Text erscheint links am
 -- Bildschirm und verbleibt dauerhaft am Bildschirm.
 --
--- <p><b>Alias:</b> GUI_StaticNote</p>
+-- <b>Hinweis:</b> Texte werden automatisch lokalisiert und Platzhalter ersetzt.
+--
+-- <b>Alias:</b> GUI_StaticNote
 --
 -- @param[type=string] _Text Anzeigetext
 -- @within Anwenderfunktionen
 --
+-- @usage API.StaticNote("Das ist eine dauerhafte Information!");
+--
 function API.StaticNote(_Text)
-    ModuleTextTools:StaticNote(ModuleTextTools:Localize(_Text));
+    ModuleTextTools:StaticNote(ModuleTextTools:ConvertPlaceholders(_Text));
 end
 GUI_StaticNote = API.StaticNote;
+
+---
+-- Schreibt eine Nachricht unten in das Nachrichtenfenster. Die Nachricht
+-- verschwindet nach einigen Sekunden.
+--
+-- <b>Hinweis:</b> Texte werden automatisch lokalisiert und Platzhalter ersetzt.
+--
+-- <b>Alias:</b> GUI_Message<
+--
+-- @param[type=string] _Text Anzeigetext
+-- @within Anwenderfunktionen
+--
+-- @usage API.Message("Das ist eine Nachricht!");
+--
+function API.Message(_Text)
+    ModuleTextTools:Message(ModuleTextTools:ConvertPlaceholders(_Text));
+end
+GUI_Message = API.Message;
 
 ---
 -- Löscht alle Nachrichten im Debug Window.
 --
 -- @within Anwenderfunktionen
+--
+-- @usage API.ClearNotes();
 --
 function API.ClearNotes()
     ModuleTextTools:ClearNotes();
@@ -49,12 +85,17 @@ GUI_ClearNotes = API.ClearNotes;
 ---
 -- Ermittelt den lokalisierten Text anhand der eingestellten Sprache der QSB.
 --
--- Wird ein normaler String übergeben, wird dieser sofort zurückgegeben.
+-- Wird ein normaler String übergeben, wird dieser sofort zurückgegeben. Im
+-- Gegensatz zur Funktion im Core Modul wird hier immer sichergestellt, dass
+-- die Rückgabe ein String ist.
+--
+-- <b>Hinweis</b>: Diese Funktion ersetzt die Lokalisierung aus dem Core Modul.
 --
 -- @param _Text Anzeigetext (String oder Table)
 -- @return[type=string] Message
 -- @within Anwenderfunktionen
--- @local
+--
+-- @usage local Text = API.Localize({de = "Deutsch", en = "English"});
 --
 function API.Localize(_Text)
     return ModuleTextTools:Localize(_Text);
@@ -99,6 +140,10 @@ end
 -- @return Ersetzter Text
 -- @within Anwenderfunktionen
 --
+-- @usage local Placeholder = API.ConvertPlaceholders("{scarlet}Dieser Text ist rot!");
+-- local Placeholder2 = API.ConvertPlaceholders("{name:placeholder2} wird ersetzt!");
+-- local Placeholder3 = API.ConvertPlaceholders("{type:U_KnightHealing} wird ersetzt!");
+--
 function API.ConvertPlaceholders(_Message)
     if type(_Message) == "table" then
         for k, v in pairs(_Message) do
@@ -106,7 +151,7 @@ function API.ConvertPlaceholders(_Message)
         end
         return _Message;
     elseif type(_Message) == "string" then
-        return ModuleTextTools:ConvertPlaceholders(_Message);
+        return API.Localize(ModuleTextTools:ConvertPlaceholders(_Message));
     else
         return _Message;
     end
@@ -122,6 +167,9 @@ end
 -- @param[type=string] _Name        Name, der ersetzt werden soll
 -- @param[type=string] _Replacement Wert, der ersetzt wird
 -- @within Anwenderfunktionen
+--
+-- @usage API.AddNamePlaceholder("Scriptname", "Horst");
+-- API.AddNamePlaceholder("Scriptname", {de = "Kuchen", en = "Cake"});
 --
 function API.AddNamePlaceholder(_Name, _Replacement)
     if type(_Replacement) == "function" or type(_Replacement) == "thread" then
@@ -142,6 +190,9 @@ end
 -- @param[type=string] _Name        Scriptname, der ersetzt werden soll
 -- @param[type=string] _Replacement Wert, der ersetzt wird
 -- @within Anwenderfunktionen
+--
+-- @usage API.AddNamePlaceholder("U_KnightHealing", "Arroganze Ziege");
+-- API.AddNamePlaceholder("B_Castle_SE", {de = "Festung des Bösen", en = "Fortress of evil"});
 --
 function API.AddEntityTypePlaceholder(_Type, _Replacement)
     if Entities[_Type] == nil then

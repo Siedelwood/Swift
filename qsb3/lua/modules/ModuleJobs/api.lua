@@ -1,7 +1,15 @@
 -- Job API ------------------------------------------------------------------ --
 
 ---
--- TODO: add doc
+-- Dieses Modul erweitert die standardmäßig vorhandenen Jobs. Du kannst für
+-- jedes (in Siedler implementierte) Event einen Job als Funktionsreferenz
+-- oder Inline Job schreiben.
+--
+-- <b>Vorausgesetzte Module:</b>
+-- <ul>
+-- <li><a href="modules.core.api.html">Core</a></li>
+-- </ul>
+--
 -- @within Beschreibung
 -- @set sort=true
 --
@@ -16,6 +24,8 @@
 --
 -- @param[type=number] _JobID Job-ID
 -- @within Anwenderfunktionen
+--
+-- @usage API.YieldJob(SOME_JOB_ID);
 --
 function API.YieldJob(_JobID)
     for k, v in pairs(ModuleJobs.m_EventJobs) do
@@ -37,6 +47,8 @@ YieldJob = API.YieldJob;
 -- @param[type=number] _JobID Job-ID
 -- @within Anwenderfunktionen
 --
+-- @usage API.ResumeJob(SOME_JOB_ID);
+--
 function API.ResumeJob(_JobID)
     for k, v in pairs(ModuleJobs.m_EventJobs) do
         if ModuleJobs.m_EventJobs[k][_JobID] then
@@ -54,6 +66,8 @@ ResumeJob = API.ResumeJob;
 -- @param[type=number] _JobID Job-ID
 -- @within Anwenderfunktionen
 --
+-- @usage local Runnint = API.JobIsRunning(SOME_JOB_ID);
+--
 function API.JobIsRunning(_JobID)
     for k, v in pairs(ModuleJobs.m_EventJobs) do
         if ModuleJobs.m_EventJobs[k][_JobID] then
@@ -70,10 +84,12 @@ JobIsRunning = API.JobIsRunning;
 ---
 -- Beendet einen aktiven Job endgültig.
 --
--- <b>Alias</b>: ResumeJob
+-- <b>Alias</b>: EndJob
 --
 -- @param[type=number] _JobID Job-ID
 -- @within Anwenderfunktionen
+--
+-- @usage API.EndJob(SOME_JOB_ID);
 --
 function API.EndJob(_JobID)
     for k, v in pairs(ModuleJobs.m_EventJobs) do
@@ -94,7 +110,7 @@ EndJob = API.EndJob;
 -- <b>Hinweis</b>: Events.LOGIC_EVENT_ENTITY_CREATED funktioniert nicht!
 --
 -- <b>Hinweis</b>: Wird ein Table als Argument an den Job übergeben, wird eine
--- Kopie angeleigt um Speicherprobleme zu verhindern. Es handelt sich also um
+-- Kopie angelegt um Speicherprobleme zu verhindern. Es handelt sich also um
 -- eine neue Table und keine Referenz!
 --
 -- @param[type=number]   _EventType Event-Typ
@@ -102,6 +118,11 @@ EndJob = API.EndJob;
 -- @param ...            Optionale Argumente des Job
 -- @return[type=number] ID des Jobs
 -- @within Anwenderfunktionen
+--
+-- @usage API.StartJobByEventType(
+--     Events.LOGIC_EVENT_EVERY_SECOND,
+--     FunctionRefToCall
+-- );
 --
 function API.StartJobByEventType(_EventType, _Function, ...)
     local Function = _Function;
@@ -171,6 +192,7 @@ StartSimpleJobEx = API.StartJob;
 -- @param ...       Liste von Argumenten
 -- @return[type=number] Job ID
 -- @within Anwenderfunktionen
+-- @see API.StartJob
 --
 function API.StartHiResJob(_Function, ...)
     return API.StartJobByEventType(Events.LOGIC_EVENT_EVERY_TURN, _Function, unpack(arg));

@@ -78,7 +78,7 @@ function ModuleTextTools:ClearNotes()
 end
 
 function ModuleTextTools:Localize(_Text)
-    if "table" ~= type(_Text) or (nil == _Text.de or nil == _Text.en) then
+    if type(_Text) ~= "table" or (_Text.de == nil or _Text.en == nil) then
         return tostring(_Text);
     end
     if _Text[self.m_Language] then
