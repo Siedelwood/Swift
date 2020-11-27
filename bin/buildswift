@@ -1,0 +1,7 @@
+#!/bin/bash
+
+cd qsb3/lua/opt
+echo "start building swift..."
+echo "PWD is $PWD"
+lua writer.lua
+echo "finished"

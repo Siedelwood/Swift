@@ -12,7 +12,7 @@ function OptLoader_SetBasePath(_Path)
     OptLoader_BasePath = _Path;
 end
 
-function OptLoader_LoadFiles()  
+function OptLoader_LoadFiles()
     Script.Load(OptLoader_BasePath.. "lua/modules/Core/swift.lua");
     Script.Load(OptLoader_BasePath.. "lua/modules/Core/api.lua");
     Script.Load(OptLoader_BasePath.. "lua/modules/Core/debug.lua");
