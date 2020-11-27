@@ -8816,7 +8816,7 @@ function b_Reward_SetBuildingUpgradeLevel:GetCustomData(_Index)
     end
 end
 
-Core:RegisterBehavior(b_Reward_SetBuildingUpgradeLevel)
+Core:RegisterBehavior(b_Reward_SetBuildingUpgradeLevel);
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --

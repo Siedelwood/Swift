@@ -125,7 +125,7 @@ end
 --
 function API.AddNamePlaceholder(_Name, _Replacement)
     if type(_Replacement) == "function" or type(_Replacement) == "thread" then
-        error("API.AddNamePlaceholder: Only strings, numbers, or tables are allowed!", true);
+        error("API.AddNamePlaceholder: Only strings, numbers, or tables are allowed!");
         return;
     end
     ModuleTextTools.m_Placeholders.Names[_Name] = _Replacement;
@@ -145,7 +145,7 @@ end
 --
 function API.AddEntityTypePlaceholder(_Type, _Replacement)
     if Entities[_Type] == nil then
-        error("API.AddEntityTypePlaceholder: EntityType does not exist!", true);
+        error("API.AddEntityTypePlaceholder: EntityType does not exist!");
         return;
     end
     ModuleTextTools.m_Placeholders.EntityTypes[_Type] = _Replacement;

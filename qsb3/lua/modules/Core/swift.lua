@@ -53,6 +53,7 @@ function Swift:LoadCore()
         self:InitalizeDebugModeGlobal();
         self:InitalizeEventsGlobal();
         self:InstallBehaviorGlobal();
+        self:OverrideQuestSystemGlobal();
     end
 
     if self:IsLocalEnvironment() then
@@ -96,6 +97,61 @@ function Swift:IsModuleRegistered(_Name)
     end
 end
 
+-- Quests
+
+function Swift:OverrideQuestSystemGlobal()
+    QuestTemplate.Trigger_Orig_QSB_Core = QuestTemplate.Trigger
+    QuestTemplate.Trigger = function(_quest)
+        QuestTemplate.Trigger_Orig_QSB_Core(_quest);
+        for i=1,_quest.Objectives[0] do
+            if _quest.Objectives[i].Type == Objective.Custom2 and _quest.Objectives[i].Data[1].SetDescriptionOverwrite then
+                local Desc = _quest.Objectives[i].Data[1]:SetDescriptionOverwrite(_quest);
+                Swift:ChangeCustomQuestCaptionText(Desc, _quest);
+                break;
+            end
+        end
+    end
+
+    QuestTemplate.Interrupt_Orig_QSB_Core = QuestTemplate.Interrupt;
+    QuestTemplate.Interrupt = function(_quest)
+        QuestTemplate.Interrupt_Orig_QSB_Core(_quest);
+        for i=1, _quest.Objectives[0] do
+            if _quest.Objectives[i].Type == Objective.Custom2 and _quest.Objectives[i].Data[1].Interrupt then
+                _quest.Objectives[i].Data[1]:Interrupt(_quest, i);
+            end
+        end
+        for i=1, _quest.Triggers[0] do
+            if _quest.Triggers[i].Type == Triggers.Custom2 and _quest.Triggers[i].Data[1].Interrupt then
+                _quest.Triggers[i].Data[1]:Interrupt(_quest, i);
+            end
+        end
+    end
+end
+
+function Swift:ChangeCustomQuestCaptionText(_Text, _Quest)
+    if _Quest and _Quest.Visible then
+        _Quest.QuestDescription = _Text;
+        Logic.ExecuteInLuaLocalState([[
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/QuestObjectives/Custom/BGDeco",0)
+            local identifier = "]].._Quest.Identifier..[["
+            for i=1, Quests[0] do
+                if Quests[i].Identifier == identifier then
+                    local text = Quests[i].QuestDescription
+                    XGUIEng.SetText("/InGame/Root/Normal/AlignBottomLeft/Message/QuestObjectives/Custom/Text", "]].._Text..[[")
+                    break
+                end
+            end
+        ]]);
+    end
+end
+
+function Swift:GetTextOfDesiredLanguage(_Table)
+    if _Table[QSB.Language] then
+        return _Table[QSB.Language];
+    end
+    return _Table["de"] or "ERROR_NO_TEXT";
+end
+
 -- Behavior
 
 function Swift:LoadBehaviors()
@@ -125,6 +181,9 @@ function Swift:LoadBehaviors()
 end
 
 function Swift:RegisterBehavior(_Behavior)
+    if self:IsLocalEnvironment() then
+        return;
+    end
     if type(_Behavior) ~= "table" or _Behavior.Name == nil then
         assert(false, "Behavior is invalid!");
         return;
@@ -133,7 +192,7 @@ function Swift:RegisterBehavior(_Behavior)
         return;
     end
     if not _G["b_" .. _Behavior.Name] then
-        error(string.format("Behavior %s does not exist!", _Behavior.Name), true);
+        error(string.format("Behavior %s does not exist!", _Behavior.Name));
         return;
     end
 
@@ -223,24 +282,24 @@ function Swift:SetLogLevel(_Level)
     end
 end
 
-function debug(_Text, _Verbose)
+function debug(_Text, _Silent)
     if Swift.m_LogLevel >= 4 then
-        Swift:Log("DEBUG: " .._Text, _Verbose);
+        Swift:Log("DEBUG: " .._Text, not _Silent);
     end
 end
-function info(_Text, _Verbose)
+function info(_Text, _Silent)
     if Swift.m_LogLevel >= 3 then
-        Swift:Log("INFO: " .._Text, _Verbose);
+        Swift:Log("INFO: " .._Text, not _Silent);
     end
 end
-function warn(_Text, _Verbose)
+function warn(_Text, _Silent)
     if Swift.m_LogLevel >= 2 then
-        Swift:Log("WARNING: " .._Text, _Verbose);
+        Swift:Log("WARNING: " .._Text, not _Silent);
     end
 end
-function error(_Text, _Verbose)
+function error(_Text, _Silent)
     if Swift.m_LogLevel >= 1 then
-        Swift:Log("ERROR: " .._Text, _Verbose);
+        Swift:Log("ERROR: " .._Text, not _Silent);
     end
 end
 
@@ -278,7 +337,7 @@ function Swift:CallSaveGameActions()
 end
 
 function Swift:RestoreAfterLoad()
-    debug("Loading save game");
+    debug("Loading save game", true);
     self:OverrideString();
     self:OverrideTable();
     if self:IsGlobalEnvironment() then
@@ -318,14 +377,14 @@ function Swift:CreateScriptEvent(_Name, _Function)
         end
         ID = ID +1;
     end
-    debug(string.format("Create script event %s", _Name));
+    debug(string.format("Create script event %s", _Name), true);
     self.m_ScriptEventRegister[ID] = {_Name, _Function};
     return ID;
 end
 
 function Swift:RemoveScriptEvent(_ID)
     if self.m_ScriptEventRegister[_ID] then
-        debug(string.format("Remove script event %s", self.m_ScriptEventRegister[_ID].Name));
+        debug(string.format("Remove script event %s", self.m_ScriptEventRegister[_ID].Name), true);
     end
     self.m_ScriptEventRegister[_ID] = nil;
 end
@@ -340,7 +399,7 @@ function Swift:DispatchScriptEvent(_ID, ...)
                 "Dispatching script event %s for Module %s",
                 self.m_ScriptEventRegister[_ID].Name,
                 self.m_ModuleRegister[i].Properties.Name
-            ));
+            ), true);
             self.m_ModuleRegister[i]:OnEvent(self.m_ScriptEventRegister[_ID], unpack(arg));
         end
     end
@@ -374,5 +433,21 @@ function Swift:ToBoolean(_Input)
         return true;
     end
     return false;
+end
+
+function Swift:CopyTable(_Table1, _Table2)
+    _Table1 = _Table1 or {};
+    _Table2 = _Table2 or {};
+    for k, v in pairs(_Table1) do
+        if "table" == type(v) then
+            _Table2[k] = _Table2[k] or {};
+            for kk, vv in pairs(self:CopyTable(v, _Table2[k])) do
+                _Table2[k][kk] = _Table2[k][kk] or vv;
+            end
+        else
+            _Table2[k] = v;
+        end
+    end
+    return _Table2;
 end
 

@@ -37,19 +37,7 @@ function API.OverrideTable()
     -- @within table
     --
     table.copy = function (t1, t2)
-        t1 = t1 or {};
-        t2 = t2 or {};
-        for k, v in pairs(t1) do
-            if "table" == type(v) then
-                t2[k] = t2[k] or {};
-                for kk, vv in pairs(table.copy(v, t2[k])) do
-                    t2[k][kk] = t2[k][kk] or vv;
-                end
-            else
-                t2[k] = v;
-            end
-        end
-        return t2;
+        return Swift:CopyTable(t1, t2);
     end
 
     ---
@@ -230,6 +218,58 @@ function API.ToBoolean(_Value)
     return Swift:ToBoolean(_Value);
 end
 AcceptAlternativeBoolean = API.ToBoolean;
+
+---
+-- Rundet eine Dezimalzahl kaufmännisch ab.
+--
+-- <b>Hinweis</b>: Es wird manuell gerundet um den Rundungsfehler in der
+-- History Edition zu umgehen.
+--
+-- <p><b>Alias:</b> Round</p>
+--
+-- @param[type=string] _Value         Zu rundender Wert
+-- @param[type=string] _DecimalDigits Maximale Dezimalstellen
+-- @return[type=number] Abgerundete Zahl
+-- @within Anwenderfunktionen
+--
+function API.Round(_Value, _DecimalDigits)
+    _DecimalDigits = _DecimalDigits or 2;
+    _DecimalDigits = (_DecimalDigits < 0 and 0) or _DecimalDigits;
+    local Value = tostring(_Value);
+    if tonumber(Value) == nil then
+        return 0;
+    end
+    local s,e = Value:find(".", 1, true);
+    if e then
+        local Overhead = nil;
+        if Value:len() > e + _DecimalDigits then
+            if _DecimalDigits > 0 then
+                local TmpNum;
+                if tonumber(Value:sub(e+_DecimalDigits+1, e+_DecimalDigits+1)) >= 5 then
+                    TmpNum = tonumber(Value:sub(e+1, e+_DecimalDigits)) +1;
+                    Overhead = (_DecimalDigits == 1 and TmpNum == 10);
+                else
+                    TmpNum = tonumber(Value:sub(e+1, e+_DecimalDigits));
+                end
+                Value = Value:sub(1, e-1);
+                if (tostring(TmpNum):len() >= _DecimalDigits) then
+                    Value = Value .. "." ..TmpNum;
+                end
+            else
+                local NewValue = tonumber(Value:sub(1, e-1));
+                if tonumber(Value:sub(e+_DecimalDigits+1, e+_DecimalDigits+1)) >= 5 then
+                    NewValue = NewValue +1;
+                end
+                Value = NewValue;
+            end
+        else
+            Value = (Overhead and (tonumber(Value) or 0) +1) or
+                     Value .. string.rep("0", Value:len() - (e + _DecimalDigits))
+        end
+    end
+    return tonumber(Value);
+end
+Round = API.Round;
 
 ---
 -- Gibt die ID des Quests mit dem angegebenen Namen zurück. Existiert der

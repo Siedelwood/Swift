@@ -109,7 +109,7 @@ function API.StartJobByEventType(_EventType, _Function, ...)
         Function = _G[Function];
     end
     if type(Function) ~= "function" then
-        error("API.StartJobByEventType: Can not find function!", true)
+        error("API.StartJobByEventType: Can not find function!")
         return;
     end
 

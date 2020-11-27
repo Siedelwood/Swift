@@ -34,6 +34,14 @@ ModuleTextTools = {
     }
 };
 
+function ModuleTextTools:OnGameStart()
+    Swift.GetTextOfDesiredLanguage = function(self, _Table)
+        return ModuleTextTools:Localize(_Table);
+    end
+end
+
+-- Swift:GetTextOfDesiredLanguage
+
 function ModuleTextTools:Note(_Text)
     _Text = self:ConvertPlaceholders(self:Localize(_Text));
     if Swift:IsGlobalEnvironment() then
