@@ -106,13 +106,13 @@ end
 ModuleEventJob_OnEveryTurn = function()
     ModuleJobs:TriggerEventJobs(Events.LOGIC_EVENT_EVERY_TURN);
 end
+
+-- FIXME: Useless?
 ModuleEventJob_OnEntityCreated = function()
     local PlayerID = Event.GetPlayerID();
     local EntityID = Event.GetEntityID();
     ModuleJobs:TriggerEventJobs(Events.LOGIC_EVENT_ENTITY_CREATED, PlayerID, EntityID);
 end
-
--- FIXME: Useless?
 ModuleEventJob_OnEntityInRangeOfEntity = function()
     ModuleJobs:TriggerEventJobs(Events.LOGIC_EVENT_ENTITY_IN_RANGE_OF_ENTITY);
 end

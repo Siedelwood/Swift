@@ -1,13 +1,10 @@
 -- Core Debug --------------------------------------------------------------- --
 
-Swift = Swift or {
-    m_CheckAtRun       = false;
-    m_TraceQuests      = false;
-    m_DevelopingCheats = false;
-    m_DevelopingShell  = false;
-
-    m_DebugInputShown  = false;
-};
+Swift.m_CheckAtRun       = false;
+Swift.m_TraceQuests      = false;
+Swift.m_DevelopingCheats = false;
+Swift.m_DevelopingShell  = false;
+Swift.m_DebugInputShown  = false;
 
 function Swift:InitalizeDebugModeGlobal()
     self:InitalizeQsbDebugEvents();

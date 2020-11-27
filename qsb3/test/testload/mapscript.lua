@@ -67,10 +67,7 @@ end
 -- Starte von hier aus deine Funktionen.
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Mission_FirstMapAction()
-    -- Script.Load("maps/externalmap/" ..Framework.GetCurrentMapName().. "/questsystembehavior.lua");
-    Script.Load("E:/Repositories/symfonia/qsb3/lua/opt/loader.lua");
-    OptLoader_SetBasePath("E:/Repositories/symfonia/qsb3/");
-    OptLoader_LoadFiles();
+    Script.Load("maps/externalmap/" ..Framework.GetCurrentMapName().. "/questsystembehavior.lua");
 
     -- Mapeditor-Einstellungen werden geladen
     if Framework.IsNetworkGame() ~= true then

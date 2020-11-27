@@ -237,6 +237,9 @@ end
 -- History Edition
 
 function Swift:DetectHistoryEdition()
+    if self:IsLocalEnvironment() then
+        return true;
+    end
     local EntityID = Logic.CreateEntity(Entities.U_NPC_Amma_NE, 100, 100, 0, 8);
     MakeInvulnerable(EntityID);
     if Logic.GetEntityScriptingValue(EntityID, -68) == 8 then
@@ -247,7 +250,7 @@ function Swift:DetectHistoryEdition()
 end
 
 function Swift:IsHistoryEdition()
-    return true == self.m_HistoryEdition;
+    return self.m_HistoryEdition == true;
 end
 
 -- Logging
