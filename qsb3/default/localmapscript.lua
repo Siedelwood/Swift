@@ -31,9 +31,7 @@ end
 -- Starte von hier aus deine Funktionen.
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Mission_LocalOnMapStart()
-    Script.Load("E:/Repositories/symfonia/qsb3/lua/opt/loader.lua");
-    OptLoader_SetBasePath("E:/Repositories/symfonia/qsb3/");
-    OptLoader_LoadFiles();
+    
 end
 
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
