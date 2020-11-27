@@ -4,12 +4,6 @@
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
 
----
--- TODO: Add doc
---
--- @set sort=true
---
-
 API = API or {};
 QSB = QSB or {};
 
@@ -251,114 +245,11 @@ end
 -- Lua base functions
 
 function Swift:OverrideTable()
-    ---
-    -- TODO: Add doc
-    -- @within table
-    --
-    table.contains = function (t, e)
-        for k, v in ipairs(t) do
-            if v == e then return true; end
-        end
-        return false;
-    end
-
-    ---
-    -- TODO: Add doc
-    -- @within table
-    --
-    table.copy = function (t1, t2)
-        t1 = t1 or {};
-        t2 = t2 or {};
-        for k, v in pairs(t1) do
-            if "table" == type(v) then
-                t2[k] = t2[k] or {};
-                for kk, vv in pairs(table.copy(v, t2[k])) do
-                    t2[k][kk] = t2[k][kk] or vv;
-                end
-            else
-                t2[k] = v;
-            end
-        end
-        return t2;
-    end
-
-    ---
-    -- TODO: Add doc
-    -- @within table
-    --
-    table.invert = function (t1)
-        local t2 = {};
-        for i= #t1, 1, -1 do
-            table.insert(t2, t1[i]);
-        end
-        return t2;
-    end
-
-    ---
-    -- TODO: Add doc
-    -- @within table
-    --
-    table.push = function (t, e)
-        table.insert(t, 1, e);
-    end
-
-    ---
-    -- TODO: Add doc
-    -- @within table
-    --
-    table.pop = function (t, e)
-        return table.remove(t, 1);
-    end
-
-    ---
-    -- TODO: Add doc
-    -- @within table
-    --
-    table.tostring = function(t)
-        assert(type(t) == "table");
-        local s = "{";
-        for k, v in pairs(t) do
-            local key;
-            if (tonumber(k)) then
-                key = ""..k;
-            else
-                key = "\""..k.."\"";
-            end
-            if type(v) == "table" then
-                s = s .. "[" .. key .. "] = " .. table.tostring(v) .. ", ";
-            elseif type(v) == "number" then
-                s = s .. "[" .. key .. "] = " .. v .. ", ";
-            elseif type(v) == "string" then
-                s = s .. "[" .. key .. "] = \"" .. v .. "\", ";
-            elseif type(v) == "boolean" or type(v) == "nil" then
-                s = s .. "[" .. key .. "] = " .. tostring(v) .. ", ";
-            else
-                s = s .. "[" .. key .. "] = \"" .. tostring(v) .. "\", ";
-            end
-        end
-        s = s .. "}";
-        return s;
-    end
+    API.OverrideTable();
 end
 
 function Swift:OverrideString()
-    -- TODO: Implement!
-
-    ---
-    -- TODO: Add doc
-    -- @within string
-    --
-    string.contains = function (self, s)
-        return self:find(s) ~= nil;
-    end
-
-    ---
-    -- TODO: Add doc
-    -- @within string
-    --
-    string.indexOf = function (self, s)
-        return self:find(s);
-    end
+    API.OverrideString();
 end
 
 -- Save Game Callback

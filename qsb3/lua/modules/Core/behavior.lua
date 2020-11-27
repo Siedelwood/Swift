@@ -1,6 +1,13 @@
 -- Core Behavior ------------------------------------------------------------ --
 
 ---
+-- TODO: add doc
+--
+-- @within Beschreibung
+-- @set sort=true
+--
+
+---
 -- Aktiviert den Debug.
 --
 -- @param[type=boolean] _CheckAtRun Prüfe Quests zur Laufzeit

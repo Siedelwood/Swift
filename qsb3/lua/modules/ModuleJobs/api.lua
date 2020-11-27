@@ -5,7 +5,6 @@
 -- @within Beschreibung
 -- @set sort=true
 --
-ModuleJobs = ModuleJobs or {};
 
 ---
 -- Pausiert einen laufenden Job.

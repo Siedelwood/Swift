@@ -5,7 +5,6 @@
 -- @within Beschreibung
 -- @set sort=true
 --
-ModuleRealtime = ModuleRealtime or {};
 
 ---
 -- Gibt die real vergangene Zeit seit dem Spielstart in Sekunden zurück.

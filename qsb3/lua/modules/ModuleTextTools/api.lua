@@ -1,58 +1,11 @@
 -- Messages API ------------------------------------------------------------- --
 
 ---
--- TODO: add doc
+-- Modul für die Nutzung von Platzhaltern.
+--
 -- @within Beschreibung
 -- @set sort=true
 --
-ModuleTextTools = ModuleTextTools or {};
-
----
--- Farben, die als Platzhalter genutzt werden können.
---
--- Verwendung:
--- <pre>{YOUR_COLOR}</pre>
--- Ersetze YOUR_COLOR mit einer der gelisteten Farben.
---
--- @field red     Rot
--- @field blue    Blau
--- @field yellow  Gelp
--- @field green   Grün
--- @field white   Weiß
--- @field black   Schwarz
--- @field grey    Grau
--- @field azure   Azurblau
--- @field orange  Orange
--- @field amber   Bernstein
--- @field violet  Violett
--- @field pink    Rosa
--- @field scarlet Scharlachrot
--- @field magenta Magenta
--- @field olive   Olivgrün
--- @field sky     Ozeanblau
--- @field tooltip Tooltip-Blau
--- @field lucid   Transparent
---
-QSB.TextColors = {
-    red     = "{@color:255,80,80,255}",
-    blue    = "{@color:104,104,232,255}",
-    yellow  = "{@color:255,255,80,255}",
-    green   = "{@color:80,180,0,255}",
-    white   = "{@color:255,255,255,255}",
-    black   = "{@color:0,0,0,255}",
-    grey    = "{@color:140,140,140,255}",
-    azure   = "{@color:0,160,190,255}",
-    orange  = "{@color:255,176,30,255}",
-    amber   = "{@color:224,197,117,255}",
-    violet  = "{@color:180,100,190,255}",
-    pink    = "{@color:255,170,200,255}",
-    scarlet = "{@color:190,0,0,255}",
-    magenta = "{@color:190,0,89,255}",
-    olive   = "{@color:74,120,0,255}",
-    sky     = "{@color:145,170,210,255}",
-    tooltip = "{@color:51,51,120,255}",
-    lucid   = "{@color:0,0,0,0}"
-};
 
 ---
 -- Schreibt eine Nachricht in das Debug Window. Der Text erscheint links am
@@ -60,7 +13,7 @@ QSB.TextColors = {
 --
 -- <p><b>Alias:</b> GUI_Note</p>
 --
--- @param[type=string] _Message Anzeigetext
+-- @param[type=string] _Text Anzeigetext
 -- @within Anwenderfunktionen
 -- @local
 --
@@ -75,7 +28,7 @@ GUI_Note = API.Note;
 --
 -- <p><b>Alias:</b> GUI_StaticNote</p>
 --
--- @param[type=string] _Message Anzeigetext
+-- @param[type=string] _Text Anzeigetext
 -- @within Anwenderfunktionen
 --
 function API.StaticNote(_Text)
@@ -98,7 +51,7 @@ GUI_ClearNotes = API.ClearNotes;
 --
 -- Wird ein normaler String übergeben, wird dieser sofort zurückgegeben.
 --
--- @param _Message Anzeigetext (String oder Table)
+-- @param _Text Anzeigetext (String oder Table)
 -- @return[type=string] Message
 -- @within Anwenderfunktionen
 -- @local
@@ -117,7 +70,30 @@ end
 -- </ul>
 --
 -- Außerdem werden einige Standardfarben ersetzt.
--- @see QSB.Placeholders.Colors
+-- <pre>{YOUR_COLOR}</pre>
+-- Ersetze YOUR_COLOR in deinen Texten mit einer der gelisteten Farben.
+--
+-- <table border="1">
+-- <tr><th>Platzhalter</th><th>Farbe</th><th>RGBA</th></tr>
+-- <tr><td>red</td>     <td>Rot</td>          <td>255,80,80,255</td></tr>
+-- <tr><td>blue</td>    <td>Blau</td>         <td>104,104,232,255</td></tr>
+-- <tr><td>yellow</td>  <td>Gelp</td>         <td>255,255,80,255</td></tr>
+-- <tr><td>green</td>   <td>Grün</td>         <td>80,180,0,255</td></tr>
+-- <tr><td>white</td>   <td>Weiß</td>         <td>255,255,255,255</td></tr>
+-- <tr><td>black</td>   <td>Schwarz</td>      <td>0,0,0,255</td></tr>
+-- <tr><td>grey</td>    <td>Grau</td>         <td>140,140,140,255</td></tr>
+-- <tr><td>azure</td>   <td>Azurblau</td>     <td>255,176,30,255</td></tr>
+-- <tr><td>orange</td>  <td>Orange</td>       <td>255,176,30,255</td></tr>
+-- <tr><td>amber</td>   <td>Bernstein</td>    <td>224,197,117,255</td></tr>
+-- <tr><td>violet</td>  <td>Violett</td>      <td>180,100,190,255</td></tr>
+-- <tr><td>pink</td>    <td>Rosa</td>         <td>255,170,200,255</td></tr>
+-- <tr><td>scarlet</td> <td>Scharlachrot</td> <td>190,0,0,255</td></tr>
+-- <tr><td>magenta</td> <td>Magenta</td>      <td>190,0,89,255</td></tr>
+-- <tr><td>olive</td>   <td>Olivgrün</td>     <td>74,120,0,255</td></tr>
+-- <tr><td>sky</td>     <td>Ozeanblau</td>    <td>145,170,210,255</td></tr>
+-- <tr><td>tooltip</td> <td>Tooltip-Blau</td> <td>51,51,120,255</td></tr>
+-- <tr><td>lucid</td>   <td>Transparent</td>  <td>0,0,0,0</td></tr>
+-- </table>
 --
 -- @param _Message Text oder Table mit Texten
 -- @return Ersetzter Text
@@ -159,7 +135,7 @@ end
 -- Fügt einen Platzhalter für einen Entity-Typ hinzu.
 --
 -- Innerhalb des Textes wird der Plathalter wie folgt geschrieben:
--- <pre>{name:ENTITY_TYP}</pre>
+-- <pre>{type:ENTITY_TYP}</pre>
 -- ENTITY_TYP muss mit einem Entity-Typ ersetzt werden. Der Typ wird ohne
 -- Entities. davor geschrieben.
 --
