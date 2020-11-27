@@ -52,10 +52,12 @@ function Swift:LoadCore()
         self:DetectHistoryEdition();
         self:InitalizeDebugModeGlobal();
         self:InitalizeEventsGlobal();
+        self:InstallBehaviorGlobal();
     end
 
     if self:IsLocalEnvironment() then
         self:InitalizeDebugModeLocal();
+        self:InstallBehaviorLocal();
     end
 
     Swift:RegisterLoadAction(function ()
