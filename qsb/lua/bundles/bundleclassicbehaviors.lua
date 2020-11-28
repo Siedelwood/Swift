@@ -3072,6 +3072,7 @@ function b_Goal_TributeClaim:RestartTributeQuest(_Quest)
         self.InternTributeQuest.Objectives[1].Data[5] = nil;
         self.InternTributeQuest.Result = nil;
         self.InternTributeQuest.State = QuestState.NotTriggered;
+        self.InternTributeQuest.NotPayed = nil;
         Logic.ExecuteInLuaLocalState("LocalScriptCallback_OnQuestStatusChanged("..self.InternTributeQuest.Index..")");
         StartSimpleJobEx(_G[QuestTemplate.Loop], self.InternTributeQuest.QueueID);
     end
@@ -3119,7 +3120,7 @@ function b_Goal_TributeClaim:OnTributeFailed(_Quest)
         Logic.ChangeEntityPlayerID(Outpost, self.PlayerID);
     end
     Logic.SetTerritoryPlayerID(self.TerritoryID, self.PlayerID);
-    self.InternTributeQuest.State = false;
+    self.InternTributeQuest.NotPayed = false;
     self.Time = nil;
 
     if self.DontPayCancels then
@@ -3168,7 +3169,7 @@ function b_Goal_TributeClaim:CustomFunction(_Quest)
                 self:OnTributePaid(_Quest);
             end
 
-        elseif self.InternTributeQuest.State == false then
+        elseif self.InternTributeQuest.NotPayed == false then
             if self.Time and Logic.GetTime() >= self.Time + self.PeriodLength then
                 self:RestartTributeQuest(_Quest);
             end
@@ -8816,7 +8817,7 @@ function b_Reward_SetBuildingUpgradeLevel:GetCustomData(_Index)
     end
 end
 
-Core:RegisterBehavior(b_Reward_SetBuildingUpgradeLevel)
+Core:RegisterBehavior(b_Reward_SetBuildingUpgradeLevel);
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
