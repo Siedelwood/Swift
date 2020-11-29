@@ -55,6 +55,11 @@ QSB.NonPlayerCharacterObjects = {};
 -- <td>Callback</td>
 -- <td>Eine Funktion, die aufgerufen wird, wenn der NPC angesprochen wird.</td>
 -- </tr>
+-- <tr>
+-- <td>Reposition</td>
+-- <td>Standardmäßig aktiv. Schaltet die Neupositionierung und Neuausrichtung
+-- der Charaktere an/aus.</td>
+-- </tr>
 -- </table>
 --
 -- <p><b>Alias:</b> CreateNPC</p>
@@ -83,6 +88,11 @@ function API.NpcCompose(_Data)
     NPC:SetWrongPartnerCallback(WronHeroCallback);
     NPC:SetCallback(_Data.Callback);
     NPC:SetType(_Data.Type or 1);
+    if  BundleNonPlayerCharacter.Global.UseRepositionByDefault
+    and _Data.Reposition == nil then
+        _Data.Reposition = true;
+    end
+    NPC:SetRepositionOnAction(_Data.Reposition);
     return NPC:Activate();
 end
 CreateNPC = API.NpcCompose;
@@ -194,6 +204,17 @@ function API.NpcHasSpoken(_Entity)
     return NPC:HasTalkedTo();
 end
 TalkedToNPC = API.NpcHasSpoken;
+
+---
+-- Setzt die Repositionierung von Charakteren per Default aktiv oder inaktiv.
+-- Der Default wird verwendet, wenn nicht explizit im NPC angegeben.
+--
+-- @param[type=boolean] _Flag Repositionierung an/aus
+-- @within Anwenderfunktionen
+--
+function API.SetUseRepositionByDefault(_Flag)
+    BundleNonPlayerCharacter.Global.UseRepositionByDefault = _Flag == true;
+end
 
 -- -------------------------------------------------------------------------- --
 -- Klassen                                                                    --
@@ -415,6 +436,12 @@ function QSB.NonPlayerCharacter:SetType(_Type)
     return self;
 end
 
+function QSB.NonPlayerCharacter:SetRepositionOnAction(_Flag)
+    assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
+    self.m_RepositionOnAction = _Flag == true;
+    return self;
+end
+
 ---
 -- Setzt die Entfernung, die unterschritten werden muss, damit
 -- ein NPC als angesprochen gilt.
@@ -482,6 +509,9 @@ end
 --
 function QSB.NonPlayerCharacter:RotateActors()
     assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
+    if self.m_RepositionOnAction == false then
+        return;
+    end
     local PlayerID = Logic.EntityGetPlayer(BundleNonPlayerCharacter.Global.LastHeroEntityID);
     local PlayerKnights = {};
     Logic.GetKnights(PlayerID, PlayerKnights);
@@ -514,6 +544,9 @@ end
 --
 function QSB.NonPlayerCharacter:RepositionHero()
     assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
+    if self.m_RepositionOnAction == false then
+        return;
+    end
     local HeroID = BundleNonPlayerCharacter.Global.LastHeroEntityID;
     local NPCID  = GetID(self.m_NpcName);
     if GetDistance(HeroID, NPCID) < self.m_Distance -50 then
@@ -655,6 +688,7 @@ BundleNonPlayerCharacter = {
         LastNpcEntityID = 0,
         LastHeroEntityID = 0,
         DefaultNpcType = 1,
+        UseRepositionByDefault = true,
     },
     Local = {}
 };
@@ -800,6 +834,18 @@ end
 --
 function BundleNonPlayerCharacter.Global:SetDefaultNPCType(_Type)
     self.DefaultNpcType = _Type;
+end
+
+---
+-- Setzt die Repositionierung von Charakteren per Default aktiv oder inaktiv.
+-- Der Default wird verwendet, wenn nicht explizit im NPC angegeben.
+--
+-- @param[type=boolean] _Flag Repositionierung an/aus
+-- @within Internal
+-- @local
+--
+function BundleNonPlayerCharacter.Global:SetUseRepositionByDefault(_Flag)
+    self.UseRepositionByDefault = _Flag == true;
 end
 
 ---
