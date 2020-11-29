@@ -1,1 +1,0 @@
-Script.Load("E:/Repositories/symfonia/qsb/default/internglobalscript.lua");

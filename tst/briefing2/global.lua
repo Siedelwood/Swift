@@ -109,7 +109,7 @@ function Briefing02()
         RestoreCamera = true,
         BigBars = false,
     }
-    local AP, ASP = API.AddPages(Briefing);
+    local AP = API.AddPages(Briefing);
 
     AP {
         Title    = "Title 1",
@@ -125,7 +125,7 @@ function Briefing02()
         Position = "pos4",
         DialogCamera = false,
         Splashscreen = {
-            Image     = "C:/Users/angermanager/Downloads/alisa.png",
+            Image     = "C:/Users/marti/Downloads/alisa.png",
             Animation = {
                 {0, 0, 1, 0.7},
                 {0, 0.3, 1, 1},
@@ -167,13 +167,21 @@ function Briefing03()
         RestoreCamera = true,
         SkippingAllowed = true,
     }
-    local AP, ASP = API.AddPages(Briefing);
+    local AP = API.AddPages(Briefing);
     local CastleID = Logic.GetHeadquarters(1);
 
     -- Page 1
-    ASP(CastleID, "Seite 1", "Das ist Seite 1!", false);
+    AP{
+        Title    = "Seite 1",
+        Text     = "Das ist Seite 1!",
+        Position = CastleID
+    }
     -- Page 2
-    ASP(CastleID, "Seite 2", "Das ist Seite 2!", false);
+    AP{
+        Title    = "Seite 2",
+        Text     = "Das ist Seite 2!",
+        Position = CastleID
+    }
 
     local JumpTo7 = function()
         return 7;
@@ -194,19 +202,39 @@ function Briefing03()
     }
 
     -- Page 4
-    local JumpedToPage4 = function()
-    end
-    ASP("ResultPage1", CastleID, "Seite 4", "Das ist Seite 4!", false, JumpedToPage4);
+    AP{
+        Title    = "Seite 4",
+        Text     = "Das ist Seite 4!",
+        Position = CastleID,
+        Action   = function()
+        end
+    }
     -- Page 5
-    ASP(CastleID, "Seite 5", "Das ist Seite 5!", false);
+    AP{
+        Title    = "Seite 5",
+        Text     = "Das ist Seite 5!",
+        Position = CastleID,
+        Action   = function()
+        end
+    }
     AP("ChoicePage1");
 
     -- Page 7
-    local JumpedToPage7 = function()
-    end
-    ASP("ResultPage2", CastleID, "Seite 7", "Das ist Seite 7!", false, JumpedToPage7);
+    AP{
+        Title    = "Seite 7",
+        Text     = "Das ist Seite 7!",
+        Position = CastleID,
+        Action   = function()
+        end
+    }
     -- Page 8
-    ASP(CastleID, "Seite 8", "Das ist Seite 8!", false);
+    AP{
+        Title    = "Seite 8",
+        Text     = "Das ist Seite 8!",
+        Position = CastleID,
+        Action   = function()
+        end
+    }
 
     Briefing.Starting = function(_Data)
     end
@@ -223,7 +251,7 @@ function Briefing04()
         RestoreGameSpeed = true,
         RestoreCamera = true,
     }
-    local AP, ASP = API.AddPages(Briefing);
+    local AP = API.AddPages(Briefing);
 
     AP {
         Title    = "Title 1",
@@ -292,7 +320,7 @@ function Briefing05()
         RestoreCamera = true,
         SkippingAllowed = true,
     }
-    local AP, ASP = API.AddPages(Briefing);
+    local AP = API.AddPages(Briefing);
 
     AP {
         Title       = "Page 1",
@@ -362,13 +390,32 @@ function Briefing06()
         RestoreCamera = true,
         SkippingAllowed = true,
     }
-    local AP, ASP = API.AddPages(Briefing);
+    local AP = API.AddPages(Briefing);
 
-    ASP("Page1", "pos4", "Page 1", "This is page 1!", false)
-    ASP("pos4", "Page 2", "This is page 2!", false);
-    ASP("Page3", "pos4", "Page 3", "This is page 3!", false);
-    ASP("pos4", "Page 4", "This is page 4!", false);
-    ASP("pos4", "Page 5", "This is page 5!", false);
+
+    AP{
+        Name     = "Page1",
+        Title    = "Page 1",
+        Text     = "This is page 1!",
+        Position = "pos4",
+    }
+    AP{
+        Title    = "Page 2",
+        Text     = "This is page 2!",
+    }
+    AP{
+        Name     = "Page3",
+        Title    = "Page 3",
+        Text     = "This is page 3!",
+    }
+    AP{
+        Title    = "Page 4",
+        Text     = "This is page 4!",
+    }
+    AP{
+        Title    = "Page 5",
+        Text     = "This is page 5!",
+    }
 
     Briefing.PageAnimations = {
         ["Page1"] = {
