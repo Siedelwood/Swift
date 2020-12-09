@@ -318,7 +318,42 @@ function API.AddPages(_Briefing)
         end
         return _Page;
     end
-    return AP;
+
+    local ASP = function(...)
+        local PageName;
+        if type(arg[4]) == "string" or type(arg[4]) == "table" then
+            PageName = table.remove(arg, 1);
+        end
+        -- Position angleichen
+        local Position = BundleBriefingSystem.Global:NormalizeZPosForEntity(table.remove(arg, 1));
+        -- Rotation angleichen
+        local Rotation = BundleBriefingSystem.Global:NormalizeRotationForEntity(Position[1]);
+        -- Größe abgleichen
+        local SizeSV = QSB.ScriptingValues[QSB.ScriptingValues.Game].Size;
+        local Size = Logic.GetEntityScriptingValue(GetID(Position[1]), SizeSV);
+        Position[2] = Position[2] * Core:ScriptingValueIntegerToFloat(Size);
+    
+        local Title  = table.remove(arg, 1);
+        local Text   = table.remove(arg, 1);
+        local DlgCam = table.remove(arg, 1);
+        local Action;
+        if type(arg[1]) == "function" then
+            Action = table.remove(arg, 1);
+        end
+        return AP {
+            Name         = PageName,
+            Title        = Title,
+            Text         = Text,
+            Position     = Position,
+            Zoom         = (DlgCam and 1000) or BundleBriefingSystem.Global.Data.CAMERA_ZOOMDEFAULT,
+            Angle        = (DlgCam and 27) or BundleBriefingSystem.Global.Data.CAMERA_ANGLEDEFAULT,
+            Rotation     = Rotation,
+            Duration     = -1,
+            Action       = Action
+        }
+    end
+    
+    return AP, ASP;
 end
 AddPages = API.AddPages;
 
@@ -488,9 +523,31 @@ function AP(_Page)
     error("AP: Please use the function provides by AddPages!");
 end
 
--- Laufzeitfehler beim Import in alte Maps vermeiden und den Nutzer informieren.
-function ASP(_Page)
-    error("ASP: Function was removed in version 2.13.4!");
+---
+-- Erstellt eine Seite in vereinfachter Syntax. Es wird davon
+-- Ausgegangen, dass das Entity ein Siedler ist. Die Kamera
+-- schaut den Siedler an.
+--
+-- <b>Achtung</b>: Diese Funktion wird von
+-- <a href="#API.AddPages">API.AddPages</a> erzeugt und an
+-- das Briefing gebunden.
+--
+-- @param[type=string]   _pageName     (optional) Briefing-Seite Namen geben
+-- @param[type=string]   _entity       Entity, das die Kamera zeigt
+-- @param[type=string]   _title	       Titel der Seite
+-- @param[type=string]   _text         Text der Seite
+-- @param[type=boolean]  _dialogCamera Nahsicht an/aus
+-- @param[type=function] _action       (Optional) Callback-Funktion
+-- @return[type=table] Referenz auf die Seite
+-- @within Briefing
+-- 
+-- @usage -- Beispiel ohne Page Name
+-- ASP("hans", "Hänschen-Klein", "Ich gehe in die weitel Welt hinein.", true);
+-- -- Beispiel mit Page Name
+-- ASP("B1P1", "hans", "Hänschen-Klein", "Ich gehe in die weitel Welt hinein.", true);
+--
+function ASP(...)
+    error("ASP: Please use the function provided by AddPages!");
 end
 
 -- -------------------------------------------------------------------------- --
