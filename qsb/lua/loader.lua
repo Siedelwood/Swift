@@ -100,59 +100,45 @@ QSB = QSB or {};
 SymfoniaLoader = {
     Data = {
         LoadOrder = {
-            -- Basisbibliothek
-            -- Ausschließlich Features, die essentiell sind.
             {"BundleBriefingSystem",                true},
             {"BundleClassicBehaviors",              true},
             {"BundleQuestGeneration",               true},
 
-            -- NEP Feature Emulation
-            -- Funktionen, die das NEP nachbilden.
-            {"BundleConstructionControl",           false},
-            {"BundleDestructionControl",            false},
-            {"BundleEntitySelection",               true},
-            {"BundleKnightTitleRequirements",       true},
-
-            -- Erweiterte Bibliothek
-            -- Zusätzliche Funktionalität und weitere Behavior.
+            {"BundleBuildingButtons",               true},
             {"BundleCamera",                        true},
             {"BundleCheats",                        true},
+            {"BundleConstructionControl",           true},
+            {"BundleDestructionControl",            true},
             {"BundleDialogWindows",                 true},
             {"BundleEntityCommandFunctions",        true},
             {"BundleEntityHelperFunctions",         true},
-            {"BundleInterfaceFeatureVisibility",    true},
-            {"BundleMinimapMarker",                 false},
-            {"BundleStockbreeding",                 true},
-            {"BundleSymfoniaBehaviors",             true},
-            {"BundleTimeLine",                      true},
-            {"BundleTravelingSalesman",             true},
-
-            -- Fortgeschrittene Bibliothek
-            -- Neue Funktionen für fortgeschrittene Anwender.
-            {"BundleBuildingButtons",               false},
             {"BundleEntityProperties",              true},
-            {"BundleFollowKnight",                  false},
-            {"BundleSpeedLimit",                    true},
+            {"BundleEntitySelection",               true},
+            {"BundleFollowKnight",                  true},
             {"BundleInteractiveObjects",            true},
             {"BundleInterfaceApperance",            true},
-            {"BundlePlayerHelperFunctions",         true},
-            {"BundleSoundOptions",                  true},
+            {"BundleInterfaceFeatureVisibility",    true},
+            {"BundleKnightTitleRequirements",       true},
+            {"BundleMinimapMarker",                 true},
             {"BundleNonPlayerCharacter",            true},
-            {"BundleSaveGameTools",                 false},
+            {"BundlePlayerHelperFunctions",         true},
+            {"BundleSaveGameTools",                 true},
+            {"BundleSoundOptions",                  true},
+            {"BundleSpeedLimit",                    true},
+            {"BundleStockbreeding",                 true},
+            {"BundleSymfoniaBehaviors",             true},
             {"BundleTerrainAndWater",               true},
-            {"BundleWeatherManipulation",           false},
+            {"BundleTimeLine",                      true},
+            {"BundleTravelingSalesman",             true},
+            {"BundleWeatherManipulation",           true},
         },
 
         AddOnLoadOrder = {
-            -- Basisbibliothek
-            -- Ausschließlich Features, die essentiell sind.
             {
             "AddOnQuestDebug",                      true,
             "BundleQuestGeneration",
             },
 
-            -- Sonstige AddOns
-            -- "Nice To have"-Features, die nicht so wichtig sind.
             {
             "AddOnCastleStore",                     true,
             "BundleInteractiveObjects",
@@ -164,33 +150,34 @@ SymfoniaLoader = {
             },
 
             {
+            "AddOnGraphVizIntegration",             true,
+            "AddOnQuestDebug",
+            },
+
+            {
             "AddOnInteractiveChests",               true,
             "BundleInteractiveObjects",
             },
 
             {
-            "AddOnInteractiveMines",                false,
+            "AddOnInteractiveMines",                true,
             "BundleInteractiveObjects",
             },
 
             {
-            "AddOnInteractiveSites",                false,
+            "AddOnInteractiveSites",                true,
             "BundleInteractiveObjects",
             },
 
             {
-            "AddOnInteractiveTrebuchets",           false,
+            "AddOnInteractiveTrebuchets",           true,
             "BundleInteractiveObjects",
             "BundleEntitySelection",
             },
 
             {
-            "AddOnRandomRequests",                  true,
-            "BundleClassicBehaviors",
-            "BundleEntityHelperFunctions",
-            "BundleInteractiveObjects",
-            "BundlePlayerHelperFunctions",
-            "BundleSymfoniaBehaviors",
+            "AddOnLanguageSelection",               true,
+            "BundleDialogWindows",
             },
 
             {
@@ -201,14 +188,12 @@ SymfoniaLoader = {
             },
 
             {
-            "AddOnLanguageSelection",               true,
-            "BundleDialogWindows",
-            },
-
-            
-            {
-            "AddOnGraphVizIntegration",             true,
-            "AddOnQuestDebug",
+            "AddOnRandomRequests",                  true,
+            "BundleClassicBehaviors",
+            "BundleEntityHelperFunctions",
+            "BundleInteractiveObjects",
+            "BundlePlayerHelperFunctions",
+            "BundleSymfoniaBehaviors",
             },
         },
     }
