@@ -30,7 +30,7 @@
 -- @usage API.Note("Das ist eine flüchtige Information!");
 --
 function API.Note(_Text)
-    ModuleTextTools:Note(ModuleTextTools:ConvertPlaceholders(_Text));
+    ModuleTextTools.Shared:Note(ModuleTextTools.Shared:ConvertPlaceholders(_Text));
 end
 GUI_Note = API.Note;
 
@@ -48,7 +48,7 @@ GUI_Note = API.Note;
 -- @usage API.StaticNote("Das ist eine dauerhafte Information!");
 --
 function API.StaticNote(_Text)
-    ModuleTextTools:StaticNote(ModuleTextTools:ConvertPlaceholders(_Text));
+    ModuleTextTools.Shared:StaticNote(ModuleTextTools.Shared:ConvertPlaceholders(_Text));
 end
 GUI_StaticNote = API.StaticNote;
 
@@ -66,7 +66,7 @@ GUI_StaticNote = API.StaticNote;
 -- @usage API.Message("Das ist eine Nachricht!");
 --
 function API.Message(_Text)
-    ModuleTextTools:Message(ModuleTextTools:ConvertPlaceholders(_Text));
+    ModuleTextTools.Shared:Message(ModuleTextTools.Shared:ConvertPlaceholders(_Text));
 end
 GUI_Message = API.Message;
 
@@ -78,7 +78,7 @@ GUI_Message = API.Message;
 -- @usage API.ClearNotes();
 --
 function API.ClearNotes()
-    ModuleTextTools:ClearNotes();
+    ModuleTextTools.Shared:ClearNotes();
 end
 GUI_ClearNotes = API.ClearNotes;
 
@@ -98,7 +98,7 @@ GUI_ClearNotes = API.ClearNotes;
 -- @usage local Text = API.Localize({de = "Deutsch", en = "English"});
 --
 function API.Localize(_Text)
-    return ModuleTextTools:Localize(_Text);
+    return ModuleTextTools.Shared:Localize(_Text);
 end
 
 ---
@@ -147,11 +147,11 @@ end
 function API.ConvertPlaceholders(_Message)
     if type(_Message) == "table" then
         for k, v in pairs(_Message) do
-            _Message[k] = ModuleTextTools:ConvertPlaceholders(v);
+            _Message[k] = ModuleTextTools.Shared:ConvertPlaceholders(v);
         end
         return _Message;
     elseif type(_Message) == "string" then
-        return API.Localize(ModuleTextTools:ConvertPlaceholders(_Message));
+        return API.Localize(ModuleTextTools.Shared:ConvertPlaceholders(_Message));
     else
         return _Message;
     end
@@ -176,7 +176,7 @@ function API.AddNamePlaceholder(_Name, _Replacement)
         error("API.AddNamePlaceholder: Only strings, numbers, or tables are allowed!");
         return;
     end
-    ModuleTextTools.m_Placeholders.Names[_Name] = _Replacement;
+    ModuleTextTools.Shared.Placeholders.Names[_Name] = _Replacement;
 end
 
 ---
@@ -199,6 +199,6 @@ function API.AddEntityTypePlaceholder(_Type, _Replacement)
         error("API.AddEntityTypePlaceholder: EntityType does not exist!");
         return;
     end
-    ModuleTextTools.m_Placeholders.EntityTypes[_Type] = _Replacement;
+    ModuleTextTools.Shared.Placeholders.EntityTypes[_Type] = _Replacement;
 end
 

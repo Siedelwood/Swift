@@ -58,6 +58,7 @@ function Swift:LoadCore()
 
     if self:IsLocalEnvironment() then
         self:InitalizeDebugModeLocal();
+        self:InitalizeEventsLocal();
         self:InstallBehaviorLocal();
     end
 
@@ -73,8 +74,11 @@ end
 
 function Swift:LoadModules()
     for i= 1, #self.m_ModuleRegister, 1 do
-        if self.m_ModuleRegister[i].OnGameStart then
-            self.m_ModuleRegister[i]:OnGameStart();
+        if self.m_ModuleRegister[i]["Global"].OnGameStart then
+            self.m_ModuleRegister[i]["Global"]:OnGameStart();
+        end
+        if self.m_ModuleRegister[i]["Local"].OnGameStart then
+            self.m_ModuleRegister[i]["Local"]:OnGameStart();
         end
     end
 end
@@ -333,8 +337,8 @@ function Swift:CallSaveGameActions()
     end
     -- Module actions
     for i= 1, #self.m_ModuleRegister, 1 do
-        if self.m_ModuleRegister[i].OnSaveGameLoaded then
-            self.m_ModuleRegister[i]:OnSaveGameLoaded();
+        if self.m_ModuleRegister[i]["Global"] and self.m_ModuleRegister[i]["Global"].OnSaveGameLoaded then
+            self.m_ModuleRegister[i]["Global"]:OnSaveGameLoaded();
         end
     end
 end
@@ -371,6 +375,8 @@ function Swift:InitalizeEventsGlobal()
     QSB.ScriptEvents.QuestSuccess = Swift:CreateScriptEvent("Event_QuestSuccess", nil);
     QSB.ScriptEvents.QuestTrigger = Swift:CreateScriptEvent("Event_QuestTrigger", nil);
 end
+function Swift:InitalizeEventsLocal()
+end
 
 function Swift:CreateScriptEvent(_Name, _Function)
     local ID = 1;
@@ -397,13 +403,21 @@ function Swift:DispatchScriptEvent(_ID, ...)
         return;
     end
     for i= 1, #self.m_ModuleRegister, 1 do
-        if self.m_ModuleRegister[i].OnEvent then
+        if self.m_ModuleRegister[i]["Global"] and self.m_ModuleRegister[i]["Global"].OnEvent then
             debug(string.format(
-                "Dispatching script event %s for Module %s",
+                "Dispatching global script event %s for Module %s",
                 self.m_ScriptEventRegister[_ID].Name,
                 self.m_ModuleRegister[i].Properties.Name
             ), true);
-            self.m_ModuleRegister[i]:OnEvent(self.m_ScriptEventRegister[_ID], unpack(arg));
+            self.m_ModuleRegister[i]["Global"]:OnEvent(self.m_ScriptEventRegister[_ID], unpack(arg));
+        end
+        if self.m_ModuleRegister[i]["Local"] and self.m_ModuleRegister[i]["Local"].OnEvent then
+            debug(string.format(
+                "Dispatching local script event %s for Module %s",
+                self.m_ScriptEventRegister[_ID].Name,
+                self.m_ModuleRegister[i].Properties.Name
+            ), true);
+            self.m_ModuleRegister[i]["Local"]:OnEvent(self.m_ScriptEventRegister[_ID], unpack(arg));
         end
     end
 end
@@ -420,8 +434,11 @@ function Swift:ChangeSystemLanguage(_Language)
     QSB.Language = _Language;
     -- TODO: Change defaults of Swift here
     for i= 1, #self.m_ModuleRegister, 1 do
-        if self.m_ModuleRegister[i].OnLanguageSelected then
-            self.m_ModuleRegister[i]:OnLanguageSelected(_Language);
+        if self.m_ModuleRegister[i]["Global"] and self.m_ModuleRegister[i]["Global"].OnLanguageSelected then
+            self.m_ModuleRegister[i]["Global"]:OnLanguageSelected(_Language);
+        end
+        if self.m_ModuleRegister[i]["Local"] and self.m_ModuleRegister[i]["Local"].OnLanguageSelected then
+            self.m_ModuleRegister[i]["Local"]:OnLanguageSelected(_Language);
         end
     end
 end

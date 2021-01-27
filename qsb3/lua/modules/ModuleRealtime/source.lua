@@ -7,28 +7,39 @@ ModuleRealtime = {
         Name = "ModuleRealtime",
     },
 
-    m_RealTimeWaitActiveFlag = {};
-    m_RealTimeWaitID = 0;
-    m_SecondsSinceGameStart = 0;
-    m_LastTimeStamp = 0;
+    Global = {},
+    Local = {},
+    -- This is a shared structure but the values are asynchronous!
+    Shared = {
+        RealTimeWaitActiveFlag = {};
+        RealTimeWaitID = 0;
+        SecondsSinceGameStart = 0;
+        LastTimeStamp = 0;
+    },
 };
 
-function ModuleRealtime:OnGameStart()
+function ModuleRealtime.Global:OnGameStart()
     StartSimpleHiResJobEx( function()
-        ModuleRealtime:EventOnEveryRealTimeSecond();
+        ModuleRealtime.Shared:EventOnEveryRealTimeSecond();
     end);
 end
 
-function ModuleRealtime:EventOnEveryRealTimeSecond()
-    if not self.m_LastTimeStamp then
-        self.m_LastTimeStamp = math.floor(Framework.TimeGetTime());
+function ModuleRealtime.Local:OnGameStart()
+    StartSimpleHiResJobEx( function()
+        ModuleRealtime.Shared:EventOnEveryRealTimeSecond();
+    end);
+end
+
+function ModuleRealtime.Shared:EventOnEveryRealTimeSecond()
+    if not self.LastTimeStamp then
+        self.LastTimeStamp = math.floor(Framework.TimeGetTime());
     end
     local CurrentTimeStamp = math.floor(Framework.TimeGetTime());
 
     -- Eine Sekunde ist vergangen
-    if self.m_LastTimeStamp ~= CurrentTimeStamp then
-        self.m_LastTimeStamp = CurrentTimeStamp;
-        self.m_SecondsSinceGameStart = self.m_SecondsSinceGameStart +1;
+    if self.LastTimeStamp ~= CurrentTimeStamp then
+        self.LastTimeStamp = CurrentTimeStamp;
+        self.SecondsSinceGameStart = self.SecondsSinceGameStart +1;
     end
 end
 

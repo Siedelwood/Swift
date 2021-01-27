@@ -28,9 +28,11 @@
 -- @usage API.YieldJob(SOME_JOB_ID);
 --
 function API.YieldJob(_JobID)
-    for k, v in pairs(ModuleJobs.m_EventJobs) do
-        if ModuleJobs.m_EventJobs[k][_JobID] then
-            ModuleJobs.m_EventJobs[k][_JobID].Enabled = false;
+    if ModuleJobs.Shared then
+        for k, v in pairs(ModuleJobs.Shared.EventJobs) do
+            if ModuleJobs.Shared.EventJobs[k][_JobID] then
+                ModuleJobs.Shared.EventJobs[k][_JobID].Enabled = false;
+            end
         end
     end
 end
@@ -50,9 +52,11 @@ YieldJob = API.YieldJob;
 -- @usage API.ResumeJob(SOME_JOB_ID);
 --
 function API.ResumeJob(_JobID)
-    for k, v in pairs(ModuleJobs.m_EventJobs) do
-        if ModuleJobs.m_EventJobs[k][_JobID] then
-            ModuleJobs.m_EventJobs[k][_JobID].Enabled = true;
+    if ModuleJobs.Shared then
+        for k, v in pairs(ModuleJobs.Shared.EventJobs) do
+            if ModuleJobs.Shared.EventJobs[k][_JobID] then
+                ModuleJobs.Shared.EventJobs[k][_JobID].Enabled = true;
+            end
         end
     end
 end
@@ -69,11 +73,13 @@ ResumeJob = API.ResumeJob;
 -- @usage local Runnint = API.JobIsRunning(SOME_JOB_ID);
 --
 function API.JobIsRunning(_JobID)
-    for k, v in pairs(ModuleJobs.m_EventJobs) do
-        if ModuleJobs.m_EventJobs[k][_JobID] then
-            if  ModuleJobs.m_EventJobs[k][_JobID].Active == true 
-            and ModuleJobs.m_EventJobs[k][_JobID].Enabled == true then
-                return true;
+    if ModuleJobs.Shared then
+        for k, v in pairs(ModuleJobs.Shared.EventJobs) do
+            if ModuleJobs.Shared.EventJobs[k][_JobID] then
+                if  ModuleJobs.Shared.EventJobs[k][_JobID].Active == true 
+                and ModuleJobs.Shared.EventJobs[k][_JobID].Enabled == true then
+                    return true;
+                end
             end
         end
     end
@@ -92,10 +98,12 @@ JobIsRunning = API.JobIsRunning;
 -- @usage API.EndJob(SOME_JOB_ID);
 --
 function API.EndJob(_JobID)
-    for k, v in pairs(ModuleJobs.m_EventJobs) do
-        if ModuleJobs.m_EventJobs[k][_JobID] then
-            ModuleJobs.m_EventJobs[k][_JobID].Active = false;
-            return;
+    if ModuleJobs.Shared then
+        for k, v in pairs(ModuleJobs.Shared.EventJobs) do
+            if ModuleJobs.Shared.EventJobs[k][_JobID] then
+                ModuleJobs.Shared.EventJobs[k][_JobID].Active = false;
+                return;
+            end
         end
     end
 end
@@ -134,15 +142,18 @@ function API.StartJobByEventType(_EventType, _Function, ...)
         return;
     end
 
-    ModuleJobs.m_EventJobID = ModuleJobs.m_EventJobID +1;
-    local ID = ModuleJobs.m_EventJobID;
-    ModuleJobs.m_EventJobs[_EventType] = ModuleJobs.m_EventJobs[_EventType] or {};
-    ModuleJobs.m_EventJobs[_EventType][ID] = {
-        Function = Function,
-        Arguments = table.copy(arg);
-        Active = true,
-        Enabled = true,
-    }
+    local ID = -1;
+    if ModuleJobs.Shared then
+        ModuleJobs.Shared.EventJobID = ModuleJobs.Shared.EventJobID +1;
+        ID = ModuleJobs.Shared.EventJobID;
+        ModuleJobs.Shared.EventJobs[_EventType] = ModuleJobs.Shared.EventJobs[_EventType] or {};
+        ModuleJobs.Shared.EventJobs[_EventType][ID] = {
+            Function = Function,
+            Arguments = table.copy(arg);
+            Active = true,
+            Enabled = true,
+        }
+    end
     return ID;
 end
 
