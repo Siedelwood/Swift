@@ -892,7 +892,7 @@ function b_Goal_EntityDistance:CustomFunction(_Quest)
     end
     local ID1 = GetID( self.Entity1 )
     local ID2 = GetID( self.Entity2 )
-    local InRange = Logic.CheckEntitiesDistance( ID1, ID2, self.Distance )
+    local InRange = Logic.CheckEntitiesDistance( ID1, ID2, math.abs(self.Distance) )
     if ( self.bRelSmallerThan and InRange ) or ( not self.bRelSmallerThan and not InRange ) then
         return true
     end
@@ -912,6 +912,10 @@ end
 function b_Goal_EntityDistance:Debug(_Quest)
     if not IsExisting(self.Entity1) or not IsExisting(self.Entity2) then
         error(_Quest.Identifier.. ": " ..self.Name..": At least 1 of the entities for distance check don't exist!");
+        return true;
+    end
+    if not self.Distance or self.Distance == 0 then
+        error(_Quest.Identifier.. ": " ..self.Name..": Distance must be above 0!");
         return true;
     end
     return false;
