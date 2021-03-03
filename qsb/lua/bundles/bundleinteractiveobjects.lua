@@ -522,6 +522,17 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
             Message(XGUIEng.GetStringTableText("UI_ButtonDisabled/PromoteKnight"));
             return;
         end
+
+        if IO[ScriptName].m_Costs and #IO[ScriptName].m_Costs == 0 then
+            local PlayerID    = GUI.GetPlayerID();
+            local CathedralID = Logic.GetCathedral(PlayerID);
+            local CastleID    = Logic.GetHeadquarters(PlayerID);
+            if CathedralID == nil or CathedralID == 0 or CastleID == nil or CastleID == 0 then
+                API.Note("DEBUG: Player does not have special buildings!");
+                return;
+            end
+        end
+
         GUI_Interaction.InteractiveObjectClicked_Orig_BundleInteractiveObjects();
     end
     
