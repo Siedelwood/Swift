@@ -1031,10 +1031,10 @@ function AddOnCastleStore.Global:OverwriteGameFunctions()
 end
 
 ---
--- Überschriebene Bezahlung von interaktiven Objekten - Step 2.
+-- Überschriebene Bezahlung von interaktiven Objekten - Step 1.
 --
 -- Speichert die aktuelle Warenmenge zwischen und leert dann das Lagerhaus.
--- Dann werden die Kosten ins Lagerhaus gelegt. Anschließend wird Step 2 im 
+-- Dann werden die Kosten ins Lagerhaus gelegt. Anschließend wird Step 1 im 
 -- lokalenSkript aufgerufen.
 --
 -- @param[type=string] _ScriptName Scriptname des Objektes
@@ -1097,7 +1097,7 @@ function AddOnCastleStore.Global:InteractiveObjectPayStep3(_ScriptName)
     if _ScriptName == nil then
         return;
     end
-    -- Burglager abschalten
+    -- Burglager einschalten
     QSB.CastleStore:GetInstance(QSB.HumanPlayerID):EnableStore(true);
     -- Lagerhaus zurücksetzen
     for k, v in pairs(self.CastleStore.Data.Goods) do
@@ -1778,8 +1778,9 @@ function AddOnCastleStore.Local:OverwriteInteractiveObject()
         if IO_SlaveToMaster[ScriptName] then
             ScriptName = IO_SlaveToMaster[ScriptName];
         end
+        local ObjectID = Logic.GetEntityName(GetID(ScriptName));
         -- Kosten
-        local Costs = {Logic.InteractiveObjectGetEffectiveCosts(EntityID, PlayerID)}
+        local Costs = {Logic.InteractiveObjectGetEffectiveCosts(ObjectID, PlayerID)}
         local CanBuyBoolean, CanNotBuyString = AreCostsAffordable(Costs, false);
         if IO[ScriptName] then
             if not self:OnObjectClicked_CanPlayerPayCosts(IO[ScriptName]) then
@@ -1801,16 +1802,16 @@ function AddOnCastleStore.Local:OverwriteInteractiveObject()
             return;
         end
         -- Sound Aktivierung
-        if not GUI_Interaction.InteractionClickOverride  or not GUI_Interaction.InteractionClickOverride(EntityID) then
+        if not GUI_Interaction.InteractionClickOverride  or not GUI_Interaction.InteractionClickOverride(ObjectID) then
             Sound.FXPlay2DSound( "ui\\menu_click");
         end
-        if not GUI_Interaction.InteractionSpeechFeedbackOverride or not GUI_Interaction.InteractionSpeechFeedbackOverride(EntityID) then                
+        if not GUI_Interaction.InteractionSpeechFeedbackOverride or not GUI_Interaction.InteractionSpeechFeedbackOverride(ObjectID) then                
             GUI_FeedbackSpeech.Add("SpeechOnly_CartsSent", g_FeedbackSpeech.Categories.CartsUnderway, nil, nil);
         end
         -- Aktion
         Costs = IO[ScriptName].m_Costs;
-        if not Mission_Callback_OverrideObjectInteraction or not Mission_Callback_OverrideObjectInteraction(EntityID, PlayerID, Costs) then
-            local ScriptName = Logic.GetEntityName(EntityID);
+        if not Mission_Callback_OverrideObjectInteraction or not Mission_Callback_OverrideObjectInteraction(ObjectID, PlayerID, Costs) then
+            local ScriptName = Logic.GetEntityName(ObjectID);
             -- Es muss geprüft werden, ob die Kosten wirklich bezahlt werden
             -- können oder ob das Burglager mit einbezogen wird.
             local CanBuyBoolean = true;

@@ -892,7 +892,7 @@ function b_Goal_EntityDistance:CustomFunction(_Quest)
     end
     local ID1 = GetID( self.Entity1 )
     local ID2 = GetID( self.Entity2 )
-    local InRange = Logic.CheckEntitiesDistance( ID1, ID2, self.Distance )
+    local InRange = Logic.CheckEntitiesDistance( ID1, ID2, math.abs(self.Distance) )
     if ( self.bRelSmallerThan and InRange ) or ( not self.bRelSmallerThan and not InRange ) then
         return true
     end
@@ -912,6 +912,10 @@ end
 function b_Goal_EntityDistance:Debug(_Quest)
     if not IsExisting(self.Entity1) or not IsExisting(self.Entity2) then
         error(_Quest.Identifier.. ": " ..self.Name..": At least 1 of the entities for distance check don't exist!");
+        return true;
+    end
+    if not self.Distance or self.Distance == 0 then
+        error(_Quest.Identifier.. ": " ..self.Name..": Distance must be above 0!");
         return true;
     end
     return false;
@@ -7383,6 +7387,7 @@ Core:RegisterBehavior(b_Trigger_OnAmountOfGoods);
 function Trigger_OnQuestActive(...)
     return b_Trigger_OnQuestActiveWait:new(...);
 end
+Trigger_OnQuestActiveWait = Trigger_OnQuestActive;
 
 b_Trigger_OnQuestActiveWait = {
     Name = "Trigger_OnQuestActiveWait",
@@ -7487,6 +7492,7 @@ Core:RegisterBehavior(b_Trigger_OnQuestActive);
 function Trigger_OnQuestFailure(...)
     return b_Trigger_OnQuestFailureWait:new(...);
 end
+Trigger_OnQuestFailureWait = Trigger_OnQuestFailure;
 
 b_Trigger_OnQuestFailureWait = {
     Name = "Trigger_OnQuestFailureWait",
@@ -7637,6 +7643,7 @@ Core:RegisterBehavior(b_Trigger_OnQuestNotTriggered);
 function Trigger_OnQuestInterrupted(...)
     return b_Trigger_OnQuestInterruptedWait:new(...);
 end
+Trigger_OnQuestInterruptedWait = Trigger_OnQuestInterrupted;
 
 b_Trigger_OnQuestInterruptedWait = {
     Name = "Trigger_OnQuestInterruptedWait",
@@ -7736,6 +7743,7 @@ Core:RegisterBehavior(b_Trigger_OnQuestInterrupted);
 function Trigger_OnQuestOver(...)
     return b_Trigger_OnQuestOverWait:new(...);
 end
+Trigger_OnQuestOverWait = Trigger_OnQuestOver;
 
 b_Trigger_OnQuestOverWait = {
     Name = "Trigger_OnQuestOverWait",
@@ -7832,6 +7840,7 @@ Core:RegisterBehavior(b_Trigger_OnQuestOver);
 function Trigger_OnQuestSuccess(...)
     return b_Trigger_OnQuestSuccessWait:new(...);
 end
+Trigger_OnQuestSuccessWait = Trigger_OnQuestSuccess;
 
 b_Trigger_OnQuestSuccessWait = {
     Name = "Trigger_OnQuestSuccessWait",

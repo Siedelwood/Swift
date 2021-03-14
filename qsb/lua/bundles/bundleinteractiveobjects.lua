@@ -285,6 +285,7 @@ function BundleInteractiveObjects.Global:CreateObject(_Description)
     -- Aktivieren
     IO[_Description.Name] = Object;
     self:SetupObject(IO[_Description.Name]);
+    Logic.ExecuteInLuaLocalState("BundleInteractiveObjects.Local:UpdateReferenceTables()");
     return Object;
 end
 
@@ -296,13 +297,24 @@ end
 -- @local
 --
 function BundleInteractiveObjects.Global:CreateSlaveObject(_Object)
+    -- Generate new name
     self.Data.SlaveSequence = self.Data.SlaveSequence +1;
-    local Name    = "QSB_SlaveObject_" ..self.Data.SlaveSequence;
-    local x,y, z  = Logic.EntityGetPos(GetID(_Object.m_Name));
-    local SlaveID = Logic.CreateEntity(Entities.I_X_DragonBoatWreckage, x, y, 0, 0);
-    IO_SlaveToMaster[Name] = _Object.m_Name;
-    Logic.SetEntityName(SlaveID, Name);
-    Logic.SetModel(SlaveID, Models.Effects_E_Mosquitos);
+    local Name = "QSB_SlaveObject_" ..self.Data.SlaveSequence;
+    -- Overwrite with existing slave
+    for k, v in pairs(IO_SlaveToMaster) do
+        if v == _Object.m_Name and IsExisting(k) then
+            Name = k;
+        end
+    end
+    -- Create slave object if not already existing
+    local SlaveID = GetID(Name);
+    if not IsExisting(Name) then
+        local x,y,z = Logic.EntityGetPos(GetID(_Object.m_Name));
+        SlaveID = Logic.CreateEntity(Entities.I_X_DragonBoatWreckage, x, y, 0, 0);
+        Logic.SetModel(SlaveID, Models.Effects_E_Mosquitos);
+        Logic.SetEntityName(SlaveID, Name);
+        IO_SlaveToMaster[Name] = _Object.m_Name;
+    end
     _Object:SetWaittime(0);
     _Object:SetSlave(Name);
     IO_SlaveState[Name] = 1;
@@ -489,11 +501,20 @@ end
 -- @local
 --
 function BundleInteractiveObjects.Local:Install()
+    self:UpdateReferenceTables();
+    self:ActivateInteractiveObjectControl();
+end
+
+---
+-- Aktualisiert die Referenztabellen zum globalen Skript.
+--
+-- @within Internal
+-- @local
+--
+function BundleInteractiveObjects.Local:UpdateReferenceTables()
     IO = Logic.CreateReferenceToTableInGlobaLuaState("IO");
     IO_UserDefindedNames = Logic.CreateReferenceToTableInGlobaLuaState("IO_UserDefindedNames");
     IO_SlaveToMaster = Logic.CreateReferenceToTableInGlobaLuaState("IO_SlaveToMaster");
-
-    self:ActivateInteractiveObjectControl();
 end
 
 ---
@@ -522,6 +543,17 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
             Message(XGUIEng.GetStringTableText("UI_ButtonDisabled/PromoteKnight"));
             return;
         end
+
+        if IO[ScriptName].m_Costs and #IO[ScriptName].m_Costs == 0 then
+            local PlayerID    = GUI.GetPlayerID();
+            local CathedralID = Logic.GetCathedral(PlayerID);
+            local CastleID    = Logic.GetHeadquarters(PlayerID);
+            if CathedralID == nil or CathedralID == 0 or CastleID == nil or CastleID == 0 then
+                API.Note("DEBUG: Player does not have special buildings!");
+                return;
+            end
+        end
+
         GUI_Interaction.InteractiveObjectClicked_Orig_BundleInteractiveObjects();
     end
     
