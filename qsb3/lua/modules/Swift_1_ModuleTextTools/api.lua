@@ -111,11 +111,12 @@ end
 -- </ul>
 --
 -- Außerdem werden einige Standardfarben ersetzt.
--- <pre>{YOUR_COLOR}</pre>
--- Ersetze YOUR_COLOR in deinen Texten mit einer der gelisteten Farben.
+-- <pre>{COLOR}</pre>
+-- Ersetze {COLOR} in deinen Texten mit einer der gelisteten Farben.
 --
 -- <table border="1">
 -- <tr><th>Platzhalter</th><th>Farbe</th><th>RGBA</th></tr>
+--
 -- <tr><td>red</td>     <td>Rot</td>          <td>255,80,80,255</td></tr>
 -- <tr><td>blue</td>    <td>Blau</td>         <td>104,104,232,255</td></tr>
 -- <tr><td>yellow</td>  <td>Gelp</td>         <td>255,255,80,255</td></tr>
@@ -131,7 +132,7 @@ end
 -- <tr><td>scarlet</td> <td>Scharlachrot</td> <td>190,0,0,255</td></tr>
 -- <tr><td>magenta</td> <td>Magenta</td>      <td>190,0,89,255</td></tr>
 -- <tr><td>olive</td>   <td>Olivgrün</td>     <td>74,120,0,255</td></tr>
--- <tr><td>sky</td>     <td>Ozeanblau</td>    <td>145,170,210,255</td></tr>
+-- <tr><td>sky</td>     <td>Himmelsblau</td>  <td>145,170,210,255</td></tr>
 -- <tr><td>tooltip</td> <td>Tooltip-Blau</td> <td>51,51,120,255</td></tr>
 -- <tr><td>lucid</td>   <td>Transparent</td>  <td>0,0,0,0</td></tr>
 -- </table>
@@ -149,9 +150,9 @@ function API.ConvertPlaceholders(_Message)
         for k, v in pairs(_Message) do
             _Message[k] = ModuleTextTools.Shared:ConvertPlaceholders(v);
         end
-        return _Message;
+        return API.Localize(_Message);
     elseif type(_Message) == "string" then
-        return API.Localize(ModuleTextTools.Shared:ConvertPlaceholders(_Message));
+        return ModuleTextTools.Shared:ConvertPlaceholders(_Message);
     else
         return _Message;
     end

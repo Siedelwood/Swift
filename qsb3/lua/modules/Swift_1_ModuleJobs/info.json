@@ -1,7 +1,7 @@
 {
-    "name": "ModuleTextTools",
+    "name": "Swift_1_ModuleJobs",
     "version": "1.0.0",
-    "caption": "Text Tools",
+    "caption": "Jobs",
     "shortdesc": "",
     "description": "",
     "files": [
@@ -9,6 +9,6 @@
         "api.lua"
     ],
     "dependencies": [
-        "Core"
+        "Swift_0_Core"
     ]
 }

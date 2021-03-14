@@ -1,5 +1,5 @@
 {
-    "name": "ModuleRealtime",
+    "name": "Swift_2_ModuleRealtime",
     "version": "1.0.0",
     "caption": "Realtime",
     "shortdesc": "",
@@ -9,7 +9,7 @@
         "api.lua"
     ],
     "dependencies": [
-        "Core",
-        "ModuleJobs"
+        "Swift_0_Core",
+        "Swift_1_ModuleJobs"
     ]
 }
