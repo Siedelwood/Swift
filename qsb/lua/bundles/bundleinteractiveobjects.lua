@@ -285,6 +285,7 @@ function BundleInteractiveObjects.Global:CreateObject(_Description)
     -- Aktivieren
     IO[_Description.Name] = Object;
     self:SetupObject(IO[_Description.Name]);
+    Logic.ExecuteInLuaLocalState("BundleInteractiveObjects.Local:UpdateReferenceTables()");
     return Object;
 end
 
@@ -500,11 +501,20 @@ end
 -- @local
 --
 function BundleInteractiveObjects.Local:Install()
+    self:UpdateReferenceTables();
+    self:ActivateInteractiveObjectControl();
+end
+
+---
+-- Aktualisiert die Referenztabellen zum globalen Skript.
+--
+-- @within Internal
+-- @local
+--
+function BundleInteractiveObjects.Local:UpdateReferenceTables()
     IO = Logic.CreateReferenceToTableInGlobaLuaState("IO");
     IO_UserDefindedNames = Logic.CreateReferenceToTableInGlobaLuaState("IO_UserDefindedNames");
     IO_SlaveToMaster = Logic.CreateReferenceToTableInGlobaLuaState("IO_SlaveToMaster");
-
-    self:ActivateInteractiveObjectControl();
 end
 
 ---
