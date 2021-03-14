@@ -7822,6 +7822,7 @@ Swift:RegisterBehavior(b_Trigger_OnAmountOfGoods);
 function Trigger_OnQuestActive(...)
     return b_Trigger_OnQuestActiveWait:new(...);
 end
+Trigger_OnQuestActiveWait = Trigger_OnQuestActive;
 
 b_Trigger_OnQuestActiveWait = {
     Name = "Trigger_OnQuestActiveWait",
@@ -7926,6 +7927,7 @@ Swift:RegisterBehavior(b_Trigger_OnQuestActive);
 function Trigger_OnQuestFailure(...)
     return b_Trigger_OnQuestFailureWait:new(...);
 end
+Trigger_OnQuestFailureWait = Trigger_OnQuestFailure;
 
 b_Trigger_OnQuestFailureWait = {
     Name = "Trigger_OnQuestFailureWait",
@@ -8076,6 +8078,7 @@ Swift:RegisterBehavior(b_Trigger_OnQuestNotTriggered);
 function Trigger_OnQuestInterrupted(...)
     return b_Trigger_OnQuestInterruptedWait:new(...);
 end
+Trigger_OnQuestInterruptedWait = Trigger_OnQuestInterrupted;
 
 b_Trigger_OnQuestInterruptedWait = {
     Name = "Trigger_OnQuestInterruptedWait",
@@ -8175,6 +8178,7 @@ Swift:RegisterBehavior(b_Trigger_OnQuestInterrupted);
 function Trigger_OnQuestOver(...)
     return b_Trigger_OnQuestOverWait:new(...);
 end
+Trigger_OnQuestOverWait = Trigger_OnQuestOver;
 
 b_Trigger_OnQuestOverWait = {
     Name = "Trigger_OnQuestOverWait",
@@ -8271,6 +8275,7 @@ Swift:RegisterBehavior(b_Trigger_OnQuestOver);
 function Trigger_OnQuestSuccess(...)
     return b_Trigger_OnQuestSuccessWait:new(...);
 end
+Trigger_OnQuestSuccessWait = Trigger_OnQuestSuccess;
 
 b_Trigger_OnQuestSuccessWait = {
     Name = "Trigger_OnQuestSuccessWait",
