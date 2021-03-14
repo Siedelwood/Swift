@@ -1,17 +1,17 @@
 OptWriter_ModuleFiles = {
-    "Core/swift.lua",
-    "Core/api.lua",
-    "Core/debug.lua",
-    "Core/behavior.lua",
+    "Swift_0_Core/swift.lua",
+    "Swift_0_Core/api.lua",
+    "Swift_0_Core/debug.lua",
+    "Swift_0_Core/behavior.lua",
 
-    "ModuleJobs/source.lua",
-    "ModuleJobs/api.lua",
-    "ModuleTextTools/source.lua",
-    "ModuleTextTools/api.lua",
-    "ModuleRealtime/source.lua",
-    "ModuleRealtime/api.lua",
+    "Swift_1_ModuleJobs/source.lua",
+    "Swift_1_ModuleJobs/api.lua",
+    "Swift_1_ModuleTextTools/source.lua",
+    "Swift_1_ModuleTextTools/api.lua",
+    "Swift_2_ModuleRealtime/source.lua",
+    "Swift_2_ModuleRealtime/api.lua",
 
-    "Core/selfload.lua",
+    "Swift_0_Core/selfload.lua",
 };
 
 function OptWriter_LoadSource(_File)
