@@ -4,12 +4,12 @@ OptWriter_ModuleFiles = {
     "Swift_0_Core/debug.lua",
     "Swift_0_Core/behavior.lua",
 
-    "Swift_1_ModuleJobs/source.lua",
-    "Swift_1_ModuleJobs/api.lua",
-    "Swift_1_ModuleTextTools/source.lua",
-    "Swift_1_ModuleTextTools/api.lua",
-    "Swift_2_ModuleRealtime/source.lua",
-    "Swift_2_ModuleRealtime/api.lua",
+    "Swift_1_JobsCore/source.lua",
+    "Swift_1_JobsCore/api.lua",
+    "Swift_1_TextCore/source.lua",
+    "Swift_1_TextCore/api.lua",
+    "Swift_2_JobsRealtime/source.lua",
+    "Swift_2_JobsRealtime/api.lua",
 
     "Swift_0_Core/selfload.lua",
 };

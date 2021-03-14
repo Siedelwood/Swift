@@ -1,7 +1,7 @@
 {
-    "name": "Swift_2_ModuleRealtime",
+    "name": "Swift_1_TradingCore",
     "version": "1.0.0",
-    "caption": "Realtime",
+    "caption": "(1) Trading Core",
     "shortdesc": "",
     "description": "",
     "files": [
@@ -9,7 +9,6 @@
         "api.lua"
     ],
     "dependencies": [
-        "Swift_0_Core",
-        "Swift_1_ModuleJobs"
+        "Swift_0_Core"
     ]
 }

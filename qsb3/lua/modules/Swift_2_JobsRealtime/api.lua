@@ -25,7 +25,7 @@
 -- @usage local RealTime = API.RealTimeGetSecondsPassedSinceGameStart();
 --
 function API.RealTimeGetSecondsPassedSinceGameStart()
-    return ModuleRealtime.Shared.SecondsSinceGameStart;
+    return ModuleJobsRealtime.Shared.SecondsSinceGameStart;
 end
 
 ---
@@ -47,24 +47,24 @@ end
 -- )
 --
 function API.RealTimeWait(_Waittime, _Action, ...)
-    ModuleRealtime.Shared.RealTimeWaitID = ModuleRealtime.Shared.RealTimeWaitID +1;
-    local ID = ModuleRealtime.Shared.RealTimeWaitID;
-    ModuleRealtime.Shared.RealTimeWaitActiveFlag[ID] = true;
+    ModuleJobsRealtime.Shared.RealTimeWaitID = ModuleJobsRealtime.Shared.RealTimeWaitID +1;
+    local ID = ModuleJobsRealtime.Shared.RealTimeWaitID;
+    ModuleJobsRealtime.Shared.RealTimeWaitActiveFlag[ID] = true;
 
     StartSimpleJobEx( function(_StartTime, _Delay, _Callback, _Arguments)
-        if not ModuleRealtime.Shared.RealTimeWaitActiveFlag[ID] then
+        if not ModuleJobsRealtime.Shared.RealTimeWaitActiveFlag[ID] then
             return true;
         end
-        if (ModuleRealtime.Shared.SecondsSinceGameStart >= _StartTime + _Delay) then
+        if (ModuleJobsRealtime.Shared.SecondsSinceGameStart >= _StartTime + _Delay) then
             if #_Arguments > 0 then
                 _Callback(unpack(_Arguments));
             else
                 _Callback();
             end
-            ModuleRealtime.Shared.RealTimeWaitActiveFlag[ID] = nil;
+            ModuleJobsRealtime.Shared.RealTimeWaitActiveFlag[ID] = nil;
             return true;
         end
-    end, ModuleRealtime.Shared.SecondsSinceGameStart, _Waittime, _Action, {...});
+    end, ModuleJobsRealtime.Shared.SecondsSinceGameStart, _Waittime, _Action, {...});
     return ID;
 end
 
@@ -78,6 +78,6 @@ end
 -- API.RealTimeWaitStop(TIMER_ID);
 --
 function API.RealTimeWaitStop(_ID)
-    ModuleRealtime.Shared.RealTimeWaitActiveFlag[_ID] = nil;
+    ModuleJobsRealtime.Shared.RealTimeWaitActiveFlag[_ID] = nil;
 end
 

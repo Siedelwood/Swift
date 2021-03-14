@@ -2,9 +2,9 @@
 -- Module Job                                                                 --
 -- -------------------------------------------------------------------------- --
 
-ModuleJobs = {
+ModuleJobsCore = {
     Properties = {
-        Name = "ModuleJobs",
+        Name = "ModuleJobsCore",
     },
 
     Global = {};
@@ -29,15 +29,15 @@ ModuleJobs = {
     };
 };
 
-function ModuleJobs.Global:OnGameStart()
-    ModuleJobs.Shared:InstallEventJobs();
+function ModuleJobsCore.Global:OnGameStart()
+    ModuleJobsCore.Shared:InstallEventJobs();
 end
 
-function ModuleJobs.Local:OnGameStart()
-    ModuleJobs.Shared:InstallEventJobs();
+function ModuleJobsCore.Local:OnGameStart()
+    ModuleJobsCore.Shared:InstallEventJobs();
 end
 
-function ModuleJobs.Shared:TriggerEventJobs(_Type)
+function ModuleJobsCore.Shared:TriggerEventJobs(_Type)
     for k, v in pairs(self.EventJobs[_Type]) do
         if type(v) == "table" then
             if v.Active == false then
@@ -57,7 +57,7 @@ function ModuleJobs.Shared:TriggerEventJobs(_Type)
     end
 end
 
-function ModuleJobs.Shared:InstallEventJobs()
+function ModuleJobsCore.Shared:InstallEventJobs()
     Trigger.RequestTrigger(
         Events.LOGIC_EVENT_EVERY_SECOND,
         "",
@@ -95,53 +95,53 @@ function ModuleJobs.Shared:InstallEventJobs()
 end
 
 ModuleEventJob_OnDiplomacyChanged = function()
-    ModuleJobs.Shared:TriggerEventJobs(Events.LOGIC_EVENT_DIPLOMACY_CHANGED);
+    ModuleJobsCore.Shared:TriggerEventJobs(Events.LOGIC_EVENT_DIPLOMACY_CHANGED);
 end
 ModuleEventJob_OnEntityDestroyed = function()
     local PlayerID = Event.GetPlayerID();
     local EntityID = Event.GetEntityID();
-    ModuleJobs.Shared:TriggerEventJobs(Events.LOGIC_EVENT_ENTITY_DESTROYED, PlayerID, EntityID);
+    ModuleJobsCore.Shared:TriggerEventJobs(Events.LOGIC_EVENT_ENTITY_DESTROYED, PlayerID, EntityID);
 end
 ModuleEventJob_OnEntityHurtEntity = function()
     local PlayerID1 = Event.GetPlayerID1();
     local EntityID1 = Event.GetEntityID1();
     local PlayerID2 = Event.GetPlayerID2();
     local EntityID2 = Event.GetEntityID2();
-    ModuleJobs.Shared:TriggerEventJobs(Events.LOGIC_EVENT_ENTITY_HURT_ENTITY, PlayerID1, EntityID1, PlayerID2, EntityID2);
+    ModuleJobsCore.Shared:TriggerEventJobs(Events.LOGIC_EVENT_ENTITY_HURT_ENTITY, PlayerID1, EntityID1, PlayerID2, EntityID2);
 end
 ModuleEventJob_OnEverySecond = function()
-    ModuleJobs.Shared:TriggerEventJobs(Events.LOGIC_EVENT_EVERY_SECOND);
+    ModuleJobsCore.Shared:TriggerEventJobs(Events.LOGIC_EVENT_EVERY_SECOND);
 end
 ModuleEventJob_OnEveryTurn = function()
-    ModuleJobs.Shared:TriggerEventJobs(Events.LOGIC_EVENT_EVERY_TURN);
+    ModuleJobsCore.Shared:TriggerEventJobs(Events.LOGIC_EVENT_EVERY_TURN);
 end
 
 -- FIXME: Useless?
 ModuleEventJob_OnEntityCreated = function()
     local PlayerID = Event.GetPlayerID();
     local EntityID = Event.GetEntityID();
-    ModuleJobs.Shared:TriggerEventJobs(Events.LOGIC_EVENT_ENTITY_CREATED, PlayerID, EntityID);
+    ModuleJobsCore.Shared:TriggerEventJobs(Events.LOGIC_EVENT_ENTITY_CREATED, PlayerID, EntityID);
 end
 ModuleEventJob_OnEntityInRangeOfEntity = function()
-    ModuleJobs.Shared:TriggerEventJobs(Events.LOGIC_EVENT_ENTITY_IN_RANGE_OF_ENTITY);
+    ModuleJobsCore.Shared:TriggerEventJobs(Events.LOGIC_EVENT_ENTITY_IN_RANGE_OF_ENTITY);
 end
 ModuleEventJob_OnGoodsTraded = function()
-    ModuleJobs.Shared:TriggerEventJobs(Events.LOGIC_EVENT_GOODS_TRADED);
+    ModuleJobsCore.Shared:TriggerEventJobs(Events.LOGIC_EVENT_GOODS_TRADED);
 end
 ModuleEventJob_OnPlayerDied = function()
-    ModuleJobs.Shared:TriggerEventJobs(Events.LOGIC_EVENT_PLAYER_DIED);
+    ModuleJobsCore.Shared:TriggerEventJobs(Events.LOGIC_EVENT_PLAYER_DIED);
 end
 ModuleEventJob_OnResearchDone = function()
-    ModuleJobs.Shared:TriggerEventJobs(Events.LOGIC_EVENT_RESEARCH_DONE);
+    ModuleJobsCore.Shared:TriggerEventJobs(Events.LOGIC_EVENT_RESEARCH_DONE);
 end
 ModuleEventJob_OnTributePaied = function()
-    ModuleJobs.Shared:TriggerEventJobs(Events.LOGIC_EVENT_TRIBUTE_PAID);
+    ModuleJobsCore.Shared:TriggerEventJobs(Events.LOGIC_EVENT_TRIBUTE_PAID);
 end
 ModuleEventJob_OnWatherChanged = function()
-    ModuleJobs.Shared:TriggerEventJobs(Events.LOGIC_EVENT_WEATHER_STATE_CHANGED);
+    ModuleJobsCore.Shared:TriggerEventJobs(Events.LOGIC_EVENT_WEATHER_STATE_CHANGED);
 end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleJobs);
+Swift:RegisterModules(ModuleJobsCore);
 

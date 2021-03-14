@@ -2,9 +2,9 @@
 -- Module Realtime                                                            --
 -- -------------------------------------------------------------------------- --
 
-ModuleRealtime = {
+ModuleJobsRealtime = {
     Properties = {
-        Name = "ModuleRealtime",
+        Name = "ModuleJobsRealtime",
     },
 
     Global = {},
@@ -18,19 +18,19 @@ ModuleRealtime = {
     },
 };
 
-function ModuleRealtime.Global:OnGameStart()
+function ModuleJobsRealtime.Global:OnGameStart()
     StartSimpleHiResJobEx( function()
-        ModuleRealtime.Shared:EventOnEveryRealTimeSecond();
+        ModuleJobsRealtime.Shared:EventOnEveryRealTimeSecond();
     end);
 end
 
-function ModuleRealtime.Local:OnGameStart()
+function ModuleJobsRealtime.Local:OnGameStart()
     StartSimpleHiResJobEx( function()
-        ModuleRealtime.Shared:EventOnEveryRealTimeSecond();
+        ModuleJobsRealtime.Shared:EventOnEveryRealTimeSecond();
     end);
 end
 
-function ModuleRealtime.Shared:EventOnEveryRealTimeSecond()
+function ModuleJobsRealtime.Shared:EventOnEveryRealTimeSecond()
     if not self.LastTimeStamp then
         self.LastTimeStamp = math.floor(Framework.TimeGetTime());
     end
@@ -45,5 +45,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleRealtime);
+Swift:RegisterModules(ModuleJobsRealtime);
 

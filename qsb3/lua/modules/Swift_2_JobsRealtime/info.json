@@ -1,7 +1,7 @@
 {
-    "name": "Swift_1_ModuleJobs",
+    "name": "Swift_2_JobsRealtime",
     "version": "1.0.0",
-    "caption": "Jobs",
+    "caption": "(2) Jobs Realtime",
     "shortdesc": "",
     "description": "",
     "files": [
@@ -9,6 +9,7 @@
         "api.lua"
     ],
     "dependencies": [
-        "Swift_0_Core"
+        "Swift_0_Core",
+        "Swift_1_JobsCore"
     ]
 }

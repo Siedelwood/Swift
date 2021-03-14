@@ -2,9 +2,9 @@
 -- Module Text Tools                                                          --
 -- -------------------------------------------------------------------------- --
 
-ModuleTextTools = {
+ModuleTextCore = {
     Properties = {
-        Name = "ModuleTextTools",
+        Name = "ModuleTextCore",
     },
 
     Global = {};
@@ -39,18 +39,18 @@ ModuleTextTools = {
     };
 };
 
-function ModuleTextTools.Global:OnGameStart()
+function ModuleTextCore.Global:OnGameStart()
     Swift.GetTextOfDesiredLanguage = function(self, _Table)
-        return ModuleTextTools.Shared:Localize(_Table);
+        return ModuleTextCore.Shared:Localize(_Table);
     end
 end
-function ModuleTextTools.Local:OnGameStart()
+function ModuleTextCore.Local:OnGameStart()
     Swift.GetTextOfDesiredLanguage = function(self, _Table)
-        return ModuleTextTools.Shared:Localize(_Table);
+        return ModuleTextCore.Shared:Localize(_Table);
     end
 end
 
-function ModuleTextTools.Shared:Note(_Text)
+function ModuleTextCore.Shared:Note(_Text)
     _Text = self.Shared:ConvertPlaceholders(self.Shared:Localize(_Text));
     if Swift:IsGlobalEnvironment() then
         Logic.DEBUG_AddNote(_Text);
@@ -59,7 +59,7 @@ function ModuleTextTools.Shared:Note(_Text)
     end
 end
 
-function ModuleTextTools.Shared:StaticNote(_Text)
+function ModuleTextCore.Shared:StaticNote(_Text)
     _Text = self.Shared:ConvertPlaceholders(self.Shared:Localize(_Text));
     if Swift:IsGlobalEnvironment() then
         Logic.ExecuteInLuaLocalState(string.format([[GUI.AddStaticNote("%s")]], _Text));
@@ -68,7 +68,7 @@ function ModuleTextTools.Shared:StaticNote(_Text)
     GUI.AddStaticNote(_text);
 end
 
-function ModuleTextTools.Shared:Message(_Text)
+function ModuleTextCore.Shared:Message(_Text)
     _Text = self.Shared:ConvertPlaceholders(self.Shared:Localize(_Text));
     if Swift:IsGlobalEnvironment() then
         Logic.ExecuteInLuaLocalState(string.format([[Message("%s")]], _Text));
@@ -77,7 +77,7 @@ function ModuleTextTools.Shared:Message(_Text)
     Message(_Text);
 end
 
-function ModuleTextTools.Shared:ClearNotes()
+function ModuleTextCore.Shared:ClearNotes()
     if Swift:IsGlobalEnvironment() then
         Logic.ExecuteInLuaLocalState([[GUI.ClearNotes()]]);
         return;
@@ -85,7 +85,7 @@ function ModuleTextTools.Shared:ClearNotes()
     GUI.ClearNotes();
 end
 
-function ModuleTextTools.Shared:Localize(_Text)
+function ModuleTextCore.Shared:Localize(_Text)
     if type(_Text) ~= "table" or (_Text.de == nil or _Text.en == nil) then
         return tostring(_Text);
     end
@@ -98,7 +98,7 @@ function ModuleTextTools.Shared:Localize(_Text)
     return tostring(_Text);
 end
 
-function ModuleTextTools.Shared:ConvertPlaceholders(_Text)
+function ModuleTextCore.Shared:ConvertPlaceholders(_Text)
     local s1, e1, s2, e2;
     while true do
         local Before, Placeholder, After, Replacement, s1, e1, s2, e2;
@@ -119,7 +119,7 @@ function ModuleTextTools.Shared:ConvertPlaceholders(_Text)
     return _Text;
 end
 
-function ModuleTextTools.Shared:SplicePlaceholderText(_Text, _Start)
+function ModuleTextCore.Shared:SplicePlaceholderText(_Text, _Start)
     local s1, e1 = _Text:find(_Start);
     local s2, e2 = _Text:find("}", e1);
 
@@ -129,7 +129,7 @@ function ModuleTextTools.Shared:SplicePlaceholderText(_Text, _Start)
     return Before, Placeholder, After, s1, e1, s2, e2;
 end
 
-function ModuleTextTools.Shared:ReplaceColorPlaceholders(_Text)
+function ModuleTextCore.Shared:ReplaceColorPlaceholders(_Text)
     for k, v in pairs(self.Shared.Colors) do
         _Text = _Text:gsub("{" ..k.. "}", v);
     end
@@ -138,5 +138,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleTextTools);
+Swift:RegisterModules(ModuleTextCore);
 

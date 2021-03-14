@@ -23,12 +23,54 @@ end
 
 function API.OverrideTable()
     ---
+    -- Vergleicht zwei Tables anhand der übergebenen Vergleichsfunktion.
+    -- @param[type=table]    t1 Table 1
+    -- @param[type=table]    t2 Table 2
+    -- @param[type=function] fx Vergleichsfunktion
+    -- @within table
+    --
+    table.compare = function(t1, t2, fx)
+        assert(type(t1) == "table");
+        assert(type(t2) == "table");
+        fx = fx or function(t1, t2)
+            return tostring(t1) < tostring(t2);
+        end
+        assert(type(fx) == "function");
+        return fx(t1, t2);
+    end
+
+    ---
+    -- Prüft, ob ein Table identisch zu einem anderen ist. Zwei Tables sind
+    -- gleich, wenn ihre Inhalte gleich sind.
+    -- @param[type=table] t1 Table 1
+    -- @param[type=table] t2 Table 2
+    -- @within table
+    --
+    table.equals = function(t1, t2)
+        assert(type(t1) == "table");
+        assert(type(t2) == "table");
+        for k, v in pairs(t1) do
+            if type(v) == "table" then
+                if not t2[k] or not table.equals(t2[k], v) then
+                    return false;
+                end
+            elseif type(v) ~= "thread" and type(v) ~= "userdata" then
+                if not t2[k] or t2[k] ~= v then
+                    return false;
+                end
+            end
+        end
+        return true;
+    end
+    
+    ---
     -- Prüft, ob ein Element in einer eindimensionenen Table enthalten ist.
     -- @param[type=table] t Table
     -- @param             e Element
     -- @within table
     --
     table.contains = function (t, e)
+        assert(type(t) == "table");
         for k, v in ipairs(t) do
             if v == e then return true; end
         end
@@ -44,6 +86,8 @@ function API.OverrideTable()
     -- @within table
     --
     table.copy = function (t1, t2)
+        assert(type(t1) == "table");
+        assert(type(t2) == "table");
         return Swift:CopyTable(t1, t2);
     end
 
@@ -54,6 +98,7 @@ function API.OverrideTable()
     -- @within table
     --
     table.invert = function (t1)
+        assert(type(t1) == "table");
         local t2 = {};
         for i= #t1, 1, -1 do
             table.insert(t2, t1[i]);
@@ -68,6 +113,7 @@ function API.OverrideTable()
     -- @within table
     --
     table.push = function (t, e)
+        assert(type(t) == "table");
         table.insert(t, 1, e);
     end
 
@@ -78,6 +124,7 @@ function API.OverrideTable()
     -- @within table
     --
     table.pop = function (t)
+        assert(type(t) == "table");
         return table.remove(t, 1);
     end
 

@@ -1,0 +1,14 @@
+{
+    "name": "Swift_1_TextCore",
+    "version": "1.0.0",
+    "caption": "Text Core",
+    "shortdesc": "",
+    "description": "",
+    "files": [
+        "source.lua",
+        "api.lua"
+    ],
+    "dependencies": [
+        "Swift_0_Core"
+    ]
+}

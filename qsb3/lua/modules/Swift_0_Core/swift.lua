@@ -403,21 +403,25 @@ function Swift:DispatchScriptEvent(_ID, ...)
         return;
     end
     for i= 1, #self.m_ModuleRegister, 1 do
-        if self.m_ModuleRegister[i]["Global"] and self.m_ModuleRegister[i]["Global"].OnEvent then
-            debug(string.format(
-                "Dispatching global script event %s for Module %s",
-                self.m_ScriptEventRegister[_ID].Name,
-                self.m_ModuleRegister[i].Properties.Name
-            ), true);
-            self.m_ModuleRegister[i]["Global"]:OnEvent(self.m_ScriptEventRegister[_ID], unpack(arg));
+        if self:IsGlobalEnvironment() then
+            if self.m_ModuleRegister[i]["Global"] and self.m_ModuleRegister[i]["Global"].OnEvent then
+                debug(string.format(
+                    "Dispatching global script event %s to Module %s",
+                    self.m_ScriptEventRegister[_ID].Name,
+                    self.m_ModuleRegister[i].Properties.Name
+                ), true);
+                self.m_ModuleRegister[i]["Global"]:OnEvent(self.m_ScriptEventRegister[_ID], unpack(arg));
+            end
         end
-        if self.m_ModuleRegister[i]["Local"] and self.m_ModuleRegister[i]["Local"].OnEvent then
-            debug(string.format(
-                "Dispatching local script event %s for Module %s",
-                self.m_ScriptEventRegister[_ID].Name,
-                self.m_ModuleRegister[i].Properties.Name
-            ), true);
-            self.m_ModuleRegister[i]["Local"]:OnEvent(self.m_ScriptEventRegister[_ID], unpack(arg));
+        if self:IsLocalEnvironment() then
+            if self.m_ModuleRegister[i]["Local"] and self.m_ModuleRegister[i]["Local"].OnEvent then
+                debug(string.format(
+                    "Dispatching local script event %s to Module %s",
+                    self.m_ScriptEventRegister[_ID].Name,
+                    self.m_ModuleRegister[i].Properties.Name
+                ), true);
+                self.m_ModuleRegister[i]["Local"]:OnEvent(self.m_ScriptEventRegister[_ID], unpack(arg));
+            end
         end
     end
 end
