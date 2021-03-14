@@ -296,13 +296,24 @@ end
 -- @local
 --
 function BundleInteractiveObjects.Global:CreateSlaveObject(_Object)
+    -- Generate new name
     self.Data.SlaveSequence = self.Data.SlaveSequence +1;
-    local Name    = "QSB_SlaveObject_" ..self.Data.SlaveSequence;
-    local x,y, z  = Logic.EntityGetPos(GetID(_Object.m_Name));
-    local SlaveID = Logic.CreateEntity(Entities.I_X_DragonBoatWreckage, x, y, 0, 0);
-    IO_SlaveToMaster[Name] = _Object.m_Name;
-    Logic.SetEntityName(SlaveID, Name);
-    Logic.SetModel(SlaveID, Models.Effects_E_Mosquitos);
+    local Name = "QSB_SlaveObject_" ..self.Data.SlaveSequence;
+    -- Overwrite with existing slave
+    for k, v in pairs(IO_SlaveToMaster) do
+        if v == _Object.m_Name and IsExisting(k) then
+            Name = k;
+        end
+    end
+    -- Create slave object if not already existing
+    local SlaveID = GetID(Name);
+    if not IsExisting(Name) then
+        local x,y,z = Logic.EntityGetPos(GetID(_Object.m_Name));
+        SlaveID = Logic.CreateEntity(Entities.I_X_DragonBoatWreckage, x, y, 0, 0);
+        Logic.SetModel(SlaveID, Models.Effects_E_Mosquitos);
+        Logic.SetEntityName(SlaveID, Name);
+        IO_SlaveToMaster[Name] = _Object.m_Name;
+    end
     _Object:SetWaittime(0);
     _Object:SetSlave(Name);
     IO_SlaveState[Name] = 1;
