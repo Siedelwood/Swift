@@ -220,7 +220,12 @@ Core:RegisterBehavior(b_Goal_Deliver);
 -- werden. Der Status kann eine Verbesserung oder eine Verschlechterung zum
 -- aktuellen Status sein.
 --
+-- Die Relation kann entweder auf kleiner oder gleich (<=), größer oder gleich
+-- (>=), oder exakte Gleichheit (==) eingestellt werden. Exakte GLeichheit ist
+-- wegen der Gefahr eines Soft Locks mit Vorsicht zu genießen.
+--
 -- @param _PlayerID Partei, die Entdeckt werden muss
+-- @param _Relation Größer-Kleiner-Relation
 -- @param _State    Diplomatiestatus
 --
 -- @within Goal
@@ -237,8 +242,8 @@ b_Goal_Diplomacy = {
     },
     Parameter = {
         { ParameterType.PlayerID, en = "Party", de = "Partei" },
-        { ParameterType.Custom,   en = "Diplomacy state", de = "Diplomatische Beziehung" },
         { ParameterType.Custom,   en = "Relation", de = "Relation" },
+        { ParameterType.Custom,   en = "Diplomacy state", de = "Diplomatische Beziehung" },
     },
     DiploNameMap = {
         [DiplomacyStates.Allied]             = {de = "Verbündeter",    en = "Allied"},
@@ -265,12 +270,16 @@ end
 
 function b_Goal_Diplomacy:CustomFunction(_Quest)
     self:ChangeCaption(_Quest);
-    if self.BeSmallerThan then
-        if GetDiplomacyState(_Quest.ReceivingPlayer, self.PlayerID) < self.DiplState then
+    if self.Relation == "<=" then
+        if GetDiplomacyState(_Quest.ReceivingPlayer, self.PlayerID) <= self.DiplState then
+            return true;
+        end
+    elseif self.Relation == ">=" then
+        if GetDiplomacyState(_Quest.ReceivingPlayer, self.PlayerID) >= self.DiplState then
             return true;
         end
     else
-        if GetDiplomacyState(_Quest.ReceivingPlayer, self.PlayerID) >= self.DiplState then
+        if GetDiplomacyState(_Quest.ReceivingPlayer, self.PlayerID) == self.DiplState then
             return true;
         end
     end
@@ -280,9 +289,9 @@ function b_Goal_Diplomacy:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.PlayerID = _Parameter * 1
     elseif (_Index == 1) then
-        self.DiplState = DiplomacyStates[_Parameter];
+        self.Relation = _Parameter;
     elseif (_Index == 2) then
-        self.BeSmallerThan = _Parameter == "<";
+        self.DiplState = DiplomacyStates[_Parameter];
     end
 end
 
@@ -292,9 +301,9 @@ end
 
 function b_Goal_Diplomacy:GetCustomData(_Index)
     if _Index == 1 then
-        return {"Allied", "TradeContact", "EstablishedContact", "Undecided", "Enemy"};
+        return {">=", "<=", "=="};
     elseif _Index == 2 then
-        return {">=", "<"};
+        return {"Allied", "TradeContact", "EstablishedContact", "Undecided", "Enemy"};
     end
 end
 
