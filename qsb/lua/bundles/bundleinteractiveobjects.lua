@@ -544,7 +544,7 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
             return;
         end
 
-        if IO[ScriptName].m_Costs and #IO[ScriptName].m_Costs == 0 then
+        if type(IO[ScriptName].m_Costs) == "table" and #IO[ScriptName].m_Costs ~= 0 then
             local PlayerID    = GUI.GetPlayerID();
             local CathedralID = Logic.GetCathedral(PlayerID);
             local CastleID    = Logic.GetHeadquarters(PlayerID);
