@@ -9,7 +9,7 @@
 --
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
--- <li><a href="modules.core.api.html">Core</a></li>
+-- <li><a href="modules.Swift_0_Core.api.html">Core</a></li>
 -- </ul>
 --
 -- @within Beschreibung
@@ -188,7 +188,7 @@ end
 -- ENTITY_TYP muss mit einem Entity-Typ ersetzt werden. Der Typ wird ohne
 -- Entities. davor geschrieben.
 --
--- @param[type=string] _Name        Scriptname, der ersetzt werden soll
+-- @param[type=string] _Type        Typname, der ersetzt werden soll
 -- @param[type=string] _Replacement Wert, der ersetzt wird
 -- @within Anwenderfunktionen
 --

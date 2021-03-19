@@ -1,0 +1,16 @@
+{
+    "name": "Swift_3_QuestCore",
+    "version": "1.0.0",
+    "caption": "(3) Quest Core",
+    "shortdesc": "",
+    "description": "",
+    "files": [
+        "source.lua",
+        "api.lua"
+    ],
+    "dependencies": [
+        "Swift_0_Core",
+        "Swift_1_TextCore",
+        "Swift_2_JobsRealtime"
+    ]
+}

@@ -193,10 +193,10 @@ end
 -- <b>Hinweis:</b> Du kannst alle Optionen unbegrenzt oft beliebig ein-
 -- und ausschalten.
 --
--- @pqram[type=boolean] _CheckAtRun       Custom Behavior prüfen an/aus
--- @pqram[type=boolean] _TraceQuests      Quest Trace an/aus
--- @pqram[type=boolean] _DevelopingCheats Cheats an/aus
--- @pqram[type=boolean] _DevelopingShell  Eingabeaufforderung an/aus
+-- @param[type=boolean] _CheckAtRun       Custom Behavior prüfen an/aus
+-- @param[type=boolean] _TraceQuests      Quest Trace an/aus
+-- @param[type=boolean] _DevelopingCheats Cheats an/aus
+-- @param[type=boolean] _DevelopingShell  Eingabeaufforderung an/aus
 -- @within Anwenderfunktionen
 --
 function API.ActivateDebugMode(_CheckAtRun, _TraceQuests, _DevelopingCheats, _DevelopingShell)

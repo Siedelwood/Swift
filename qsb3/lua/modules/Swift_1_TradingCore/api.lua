@@ -1,12 +1,30 @@
 -- Trading API -------------------------------------------------------------- --
 
 ---
+-- Modul zum Überschreiben des Verhaltens von Händlern. Es können Angebote im
+-- eigenen Lagerhaus und in fremden Lagerhäusern beeinflusst werden.
+--
+-- <b>Vorausgesetzte Module:</b>
+-- <ul>
+-- <li><a href="modules.Swift_0_Core.api.html">Core</a></li>
+-- </ul>
+--
+-- @within Beschreibung
+-- @set sort=true
+--
+
+---
 -- Setzt die Funktion zur Kalkulation des Preisfaktors des Helden. Die Änderung
 -- betrifft nur den angegebenen Spieler.
 -- Die Funktion muss den angepassten Preis zurückgeben.
 --
--- Die übergebene Funktion erhält den Basispreis, die ID des Spielers und die
--- ID der KI als Parameter.
+-- Parameter der Funktion:
+-- <table border="1">
+-- <tr><th>Parameter</th><th>Typ</th><th>Beschreibung</th></tr>
+-- <tr><td>_Price</td><td>number</td><td></td>Basispreis</tr>
+-- <tr><td>_PlayerID1</td><td>number</td><td>ID des Käufers</td></tr>
+-- <tr><td>_PlayerID2</td><td>number</td><td>ID des Verkäufers</td></tr>
+-- </table>
 --
 -- <b>Hinweis:</b> Die Funktion kann nur im lokalen Skript verwendet werden!
 --
@@ -31,8 +49,13 @@ end
 -- Setzt die allgemeine Funktion zur Kalkulation des Preisfaktors des Helden.
 -- Die Funktion muss den angepassten Preis zurückgeben.
 --
--- Die übergebene Funktion erhält den Basispreis, die ID des Spielers und die
--- ID der KI als Parameter.
+-- Parameter der Funktion:
+-- <table border="1">
+-- <tr><th>Parameter</th><th>Typ</th><th>Beschreibung</th></tr>
+-- <tr><td>_Price</td><td>number</td><td></td>Basispreis</tr>
+-- <tr><td>_PlayerID1</td><td>number</td><td>ID des Käufers</td></tr>
+-- <tr><td>_PlayerID2</td><td>number</td><td>ID des Verkäufers</td></tr>
+-- </table>
 --
 -- <b>Hinweis:</b> Die Funktion kann nur im lokalen Skript verwendet werden!
 --
@@ -50,8 +73,13 @@ end
 -- den angegebenen Spieler.
 -- Die Funktion muss den Basispreis der Ware zurückgeben.
 --
--- Die übergebene Funktion erhält den Warentyp, die ID des Spielers und die ID
--- der KI als Parameter.
+-- Parameter der Funktion:
+-- <table border="1">
+-- <tr><th>Parameter</th><th>Typ</th><th>Beschreibung</th></tr>
+-- <tr><td>_Type</td><td>number</td><td>Typ des Angebot</td></tr>
+-- <tr><td>_PlayerID1</td><td>number</td><td>ID des Käufers</td></tr>
+-- <tr><td>_PlayerID2</td><td>number</td><td>ID des Verkäufers</td></tr>
+-- </table>
 --
 -- <b>Hinweis:</b> Die Funktion kann nur im lokalen Skript verwendet werden!
 --
@@ -76,8 +104,14 @@ end
 -- Setzt die Funktion zur Bestimmung des Basispreis.
 -- Die Funktion muss den Basispreis der Ware zurückgeben.
 --
--- Die übergebene Funktion erhält den Warentyp, die ID des Spielers und die ID
--- der KI als Parameter.
+-- Parameter der Funktion:
+-- <table border="1">
+-- <tr><th>Parameter</th><th>Typ</th><th>Beschreibung</th></tr>
+-- <tr><td>_PurchaseCount</td><td>number</td><td>Zahl bereits gekaufter Angebote</td></tr>
+-- <tr><td>_Price</td><td>number</td><td></td>Aktueller Preis</tr>
+-- <tr><td>_PlayerID1</td><td>number</td><td>ID des Käufers</td></tr>
+-- <tr><td>_PlayerID2</td><td>number</td><td>ID des Verkäufers</td></tr>
+-- </table>
 --
 -- <b>Hinweis:</b> Die Funktion kann nur im lokalen Skript verwendet werden!
 --
@@ -95,8 +129,14 @@ end
 -- nur den angegebenen Spieler.
 -- Die Funktion muss den von der Inflation beeinflussten Preis zurückgeben.
 --
--- Die übergebene Funktion erhält die Zahl bisher gekaufter angebote, den Preis
--- der Ware, ID des Spielers und die ID ID der KI als Parameter.
+-- Parameter der Funktion:
+-- <table border="1">
+-- <tr><th>Parameter</th><th>Typ</th><th>Beschreibung</th></tr>
+-- <tr><td>_PurchaseCount</td><td>number</td><td>Zahl bereits gekaufter Angebote</td></tr>
+-- <tr><td>_Price</td><td>number</td><td></td>Aktueller Preis</tr>
+-- <tr><td>_PlayerID1</td><td>number</td><td>ID des Käufers</td></tr>
+-- <tr><td>_PlayerID2</td><td>number</td><td>ID des Verkäufers</td></tr>
+-- </table>
 --
 -- <b>Hinweis:</b> Die Funktion kann nur im lokalen Skript verwendet werden!
 --
@@ -121,8 +161,15 @@ end
 -- Setzt die Funktion zur Berechnung der Preisinflation.
 -- Die Funktion muss den von der Inflation beeinflussten Preis zurückgeben.
 --
--- Die übergebene Funktion erhält die Zahl bisher gekaufter angebote, den Preis
--- der Ware, ID des Spielers und die ID der KI als Parameter.
+-- Parameter der Funktion:
+-- <table border="1">
+-- <tr><th>Parameter</th><th>Typ</th><th>Beschreibung</th></tr>
+-- <tr><td>_PlayerID1</td><td>number</td><td>ID des Käufers</td></tr>
+-- <tr><td>_PlayerID2</td><td>number</td><td>ID des Verkäufers</td></tr>
+-- <tr><td>_Type</td><td>number</td><td>Typ des Angebot</td></tr>
+-- <tr><td>_Amount</td><td>number</td><td>Verkaufte Menge</td></tr>
+-- <tr><td>_UnitPrice</td><td>number</td><td>Stückpreis</td></tr>
+-- </table>
 --
 -- <b>Hinweis:</b> Die Funktion kann nur im lokalen Skript verwendet werden!
 --
@@ -140,8 +187,15 @@ end
 -- Bedingungen betreffen nur den angegebenen Spieler.
 -- Die Funktion muss true zurückgeben, wenn gekauft werden darf.
 --
--- Die übergebene Funktion erhält den Spieler, die KI-Partei, den Angebotstyp,
--- die Menge an Waren und den Stückpreis als Argumente.
+-- Parameter der Funktion:
+-- <table border="1">
+-- <tr><th>Parameter</th><th>Typ</th><th>Beschreibung</th></tr>
+-- <tr><td>_PlayerID1</td><td>number</td><td>ID des Käufers</td></tr>
+-- <tr><td>_PlayerID2</td><td>number</td><td>ID des Verkäufers</td></tr>
+-- <tr><td>_Type</td><td>number</td><td>Typ des Angebot</td></tr>
+-- <tr><td>_Amount</td><td>number</td><td>Verkaufte Menge</td></tr>
+-- <tr><td>_UnitPrice</td><td>number</td><td>Stückpreis</td></tr>
+-- </table>
 --
 -- Angebotstypen:
 -- <table border="1">
@@ -174,8 +228,23 @@ end
 -- Setzt eine Funktion zur Festlegung spezieller Verkaufsbedingungen.
 -- Die Funktion muss true zurückgeben, wenn verkauft werden darf.
 --
--- Die übergebene Funktion erhält den Spieler, die KI-Partei, die Menge an
--- Waren und den Stückpreis als Argumente.
+-- Parameter der Funktion:
+-- <table border="1">
+-- <tr><th>Parameter</th><th>Typ</th><th>Beschreibung</th></tr>
+-- <tr><td>_PlayerID1</td><td>number</td><td>ID des Käufers</td></tr>
+-- <tr><td>_PlayerID2</td><td>number</td><td>ID des Verkäufers</td></tr>
+-- <tr><td>_Type</td><td>number</td><td>Typ des Angebot</td></tr>
+-- <tr><td>_Amount</td><td>number</td><td>Verkaufte Menge</td></tr>
+-- <tr><td>_UnitPrice</td><td>number</td><td>Stückpreis</td></tr>
+-- </table>
+--
+-- Angebotstypen:
+-- <table border="1">
+-- <tr><th>Typ</th><th>Variable</th></tr>
+-- <tr><td>Söldner</td><td>g_Merchant.MercenaryTrader</td></tr>
+-- <tr><td>Unterhalter</td><td>g_Merchant.EntertainerTrader</td></tr>
+-- <tr><td>Ware</td><td>g_Merchant.GoodTrader</td></tr>
+-- </table>
 --
 -- <b>Hinweis:</b> Die Funktion kann nur im lokalen Skript verwendet werden!
 --
@@ -193,8 +262,13 @@ end
 -- den angegebenen Spieler.
 -- Die Funktion muss den Basispreis der Ware zurückgeben.
 --
--- Die übergebene Funktion erhält den Warentyp, die ID des Spielers und die ID
--- der KI als Parameter.
+-- Parameter der Funktion:
+-- <table border="1">
+-- <tr><th>Parameter</th><th>Typ</th><th>Beschreibung</th></tr>
+-- <tr><td>_Type</td><td>number</td><td>Warentyp</td></tr>
+-- <tr><td>_PlayerID1</td><td>number</td><td>ID des Verkäufers</td></tr>
+-- <tr><td>_PlayerID2</td><td>number</td><td>ID des Käufers</td></tr>
+-- </table>
 --
 -- <b>Hinweis:</b> Die Funktion kann nur im lokalen Skript verwendet werden!
 --
@@ -219,8 +293,13 @@ end
 -- Setzt die Funktion zur Bestimmung des Basispreis.
 -- Die Funktion muss den Basispreis der Ware zurückgeben.
 --
--- Die übergebene Funktion erhält den Warentyp, die ID des Spielers und die ID
--- der KI als Parameter.
+-- Parameter der Funktion:
+-- <table border="1">
+-- <tr><th>Parameter</th><th>Typ</th><th>Beschreibung</th></tr>
+-- <tr><td>_Type</td><td>number</td><td>Warentyp</td></tr>
+-- <tr><td>_PlayerID1</td><td>number</td><td>ID des Verkäufers</td></tr>
+-- <tr><td>_PlayerID2</td><td>number</td><td>ID des Käufers</td></tr>
+-- </table>
 --
 -- <b>Hinweis:</b> Die Funktion kann nur im lokalen Skript verwendet werden!
 --
@@ -238,8 +317,13 @@ end
 -- betrifft nur den angegebenen Spieler.
 -- Die Funktion muss den von der Deflation beeinflussten Erlös zurückgeben.
 --
--- Die übergebene Funktion erhält den Preis der Ware, ID des Spielers und
--- die ID ID der KI als Parameter.
+-- Parameter der Funktion:
+-- <table border="1">
+-- <tr><th>Parameter</th><th>Typ</th><th>Beschreibung</th></tr>
+-- <tr><td>_Price</td><td>number</td><td>Verkaufspreis</td></tr>
+-- <tr><td>_PlayerID1</td><td>number</td><td>ID des Verkäufers</td></tr>
+-- <tr><td>_PlayerID2</td><td>number</td><td>ID des Käufers</td></tr>
+-- </table>
 --
 -- <b>Hinweis:</b> Die Funktion kann nur im lokalen Skript verwendet werden!
 --
@@ -264,8 +348,13 @@ end
 -- Setzt die Funktion zur Berechnung des minimalen Verkaufserlös.
 -- Die Funktion muss den von der Deflation beeinflussten Erlös zurückgeben.
 --
--- Die übergebene Funktion erhält den Preis der Ware, ID des Spielers und
--- die ID der KI als Parameter.
+-- Parameter der Funktion:
+-- <table border="1">
+-- <tr><th>Parameter</th><th>Typ</th><th>Beschreibung</th></tr>
+-- <tr><td>_Price</td><td>number</td><td>Verkaufspreis</td></tr>
+-- <tr><td>_PlayerID1</td><td>number</td><td>ID des Verkäufers</td></tr>
+-- <tr><td>_PlayerID2</td><td>number</td><td>ID des Käufers</td></tr>
+-- </table>
 --
 -- <b>Hinweis:</b> Die Funktion kann nur im lokalen Skript verwendet werden!
 --
@@ -283,8 +372,14 @@ end
 -- Bedingungen betreffen nur den angegebenen Spieler.
 -- Die Funktion muss true zurückgeben, wenn verkauft werden darf.
 --
--- Die übergebene Funktion erhält den Spieler, die KI-Partei, die Menge an
--- Waren und den Stückpreis als Argumente.
+-- Parameter der Funktion:
+-- <table border="1">
+-- <tr><th>Parameter</th><th>Typ</th><th>Beschreibung</th></tr>
+-- <tr><td>_PlayerID1</td><td>number</td><td>ID des Verkäufers</td></tr>
+-- <tr><td>_PlayerID2</td><td>number</td><td>ID des Käufers</td></tr>
+-- <tr><td>_Amount</td><td>number</td><td>Verkaufte Menge</td></tr>
+-- <tr><td>_UnitPrice</td><td>number</td><td>Preis pro Stück</td></tr>
+-- </table>
 --
 -- <b>Hinweis:</b> Die Funktion kann nur im lokalen Skript verwendet werden!
 --
@@ -309,8 +404,14 @@ end
 -- Setzt eine Funktion zur Festlegung spezieller Verkaufsbedingungen.
 -- Die Funktion muss true zurückgeben, wenn verkauft werden darf.
 --
--- Die übergebene Funktion erhält den Spieler, die KI-Partei, die Menge an
--- Waren und den Stückpreis als Argumente.
+-- Parameter der Funktion:
+-- <table border="1">
+-- <tr><th>Parameter</th><th>Typ</th><th>Beschreibung</th></tr>
+-- <tr><td>_PlayerID1</td><td>number</td><td>ID des Verkäufers</td></tr>
+-- <tr><td>_PlayerID2</td><td>number</td><td>ID des Käufers</td></tr>
+-- <tr><td>_Amount</td><td>number</td><td>Verkaufte Menge</td></tr>
+-- <tr><td>_UnitPrice</td><td>number</td><td>Preis pro Stück</td></tr>
+-- </table>
 --
 -- <b>Hinweis:</b> Die Funktion kann nur im lokalen Skript verwendet werden!
 --
