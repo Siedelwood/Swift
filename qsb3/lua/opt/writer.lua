@@ -4,6 +4,10 @@ OptWriter_ModuleFiles = {
     "Swift_0_Core/debug.lua",
     "Swift_0_Core/behavior.lua",
 
+    "Swift_1_DialogCore/source.lua",
+    "Swift_1_DialogCore/api.lua",
+    "Swift_1_DisplayCore/source.lua",
+    "Swift_1_DisplayCore/api.lua",
     "Swift_1_JobsCore/source.lua",
     "Swift_1_JobsCore/api.lua",
     "Swift_1_ScriptingValueCore/source.lua",

@@ -8,8 +8,8 @@
 
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
--- <li><a href="modules.Swift_0_Core.api.html">Core</a></li>
--- <li><a href="modules.Swift_1_JobsCore.api.html">Core</a></li>
+-- <li><a href="Swift_0_Core.api.html">Core</a></li>
+-- <li><a href="Swift_1_JobsCore.api.html">Core</a></li>
 -- </ul>
 --
 -- @within Beschreibung

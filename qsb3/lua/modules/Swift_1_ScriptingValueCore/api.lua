@@ -6,7 +6,7 @@
 --
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
--- <li><a href="modules.Swift_0_Core.api.html">Core</a></li>
+-- <li><a href="Swift_0_Core.api.html">Core</a></li>
 -- </ul>
 --
 -- @within Beschreibung

@@ -10,7 +10,7 @@
 --
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
--- <li><a href="modules.core.api.html">Core</a></li>
+-- <li><a href="core.api.html">Core</a></li>
 -- </ul>
 --
 -- @within Beschreibung
