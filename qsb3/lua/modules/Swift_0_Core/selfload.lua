@@ -10,13 +10,17 @@ if not MapEditor and not GUI then
     end
 
     gvMission = gvMission or {};
-    gvMission.ContentPath = "maps/" ..MapTypeFolder.. "/" ..Framework.GetCurrentMapName() .. "/";
+    gvMission.ContentPath      = "maps/" ..MapTypeFolder.. "/" ..Framework.GetCurrentMapName() .. "/";
+    gvMission.MusicRootPath    = "music/";
+    gvMission.PlaylistRootPath = "config/sound/";
     API.Install();
 
     Logic.ExecuteInLuaLocalState([[
         gvMission = gvMission or {};
         gvMission.GlobalVariables = Logic.CreateReferenceToTableInGlobaLuaState("gvMission");
-        gvMission.ContentPath = "maps/]] ..MapTypeFolder.. [[/" ..Framework.GetCurrentMapName() .. "/";
+        gvMission.ContentPath      = "maps/]] ..MapTypeFolder.. [[/" ..Framework.GetCurrentMapName() .. "/";
+        gvMission.MusicRootPath    = "music/";
+        gvMission.PlaylistRootPath = "config/sound/";
 
         Script.Load(gvMission.ContentPath.. "questsystembehavior.lua");
         API.Install();

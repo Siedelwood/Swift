@@ -13,6 +13,15 @@
 -- @set sort=true
 --
 
+---
+-- Konstanten aller bekannten Index von Scripting Values.
+--
+-- @field Destination   XY-Koordinate Bewegungsziel
+-- @field Health        Gesundheit
+-- @field Player        Besitzer
+-- @field Size          Skalierungsfaktor
+-- @field Visible       Sichtbar
+-- @within Konstanten
 QSB.ScriptingValue = {}
 
 ---
