@@ -45,7 +45,7 @@ function ModuleJobsCore.Shared:TriggerEventJobs(_Type)
             else
                 if v.Enabled then
                     if v.Function then
-                        local Arguments = table.copy(arg);
+                        local Arguments = table.copy(v.Arguments or {});
                         Arguments = Array_Append(Arguments, v.Arguments or {});
                         if v.Function(unpack(Arguments)) == true then
                             self.EventJobs[_Type][k] = nil;

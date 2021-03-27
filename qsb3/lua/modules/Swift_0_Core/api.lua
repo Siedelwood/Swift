@@ -86,6 +86,7 @@ function API.OverrideTable()
     -- @within table
     --
     table.copy = function (t1, t2)
+        t2 = t2 or {};
         assert(type(t1) == "table");
         assert(type(t2) == "table");
         return Swift:CopyTable(t1, t2);
@@ -632,4 +633,12 @@ function API.WinQuest(_QuestName, _NoMessage)
     end
 end
 WinQuestByName = API.WinQuest;
+
+function API.AddSaveGameAction(_Function)
+    Swift:RegisterLoadAction(_Function);
+end
+
+function API.IsLoadscreenVisible()
+    return Swift.m_LoadScreenHidden == true;
+end
 

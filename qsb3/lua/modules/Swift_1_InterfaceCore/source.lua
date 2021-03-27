@@ -3,6 +3,10 @@
 -- -------------------------------------------------------------------------- --
 
 ModuleInterfaceCore = {
+    Properties = {
+        Name = "ModuleInterfaceCore",
+    },
+
     Global = {},
     Local = {},
     -- This is a shared structure but the values are asynchronous!
@@ -13,8 +17,6 @@ ModuleInterfaceCore = {
 
 function ModuleInterfaceCore.Global:OnGameStart()
 end
-
-
 
 -- Local -------------------------------------------------------------------- --
 

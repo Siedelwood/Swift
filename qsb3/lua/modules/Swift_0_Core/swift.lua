@@ -60,6 +60,8 @@ function Swift:LoadCore()
         self:InitalizeDebugModeLocal();
         self:InitalizeEventsLocal();
         self:InstallBehaviorLocal();
+
+        StartSimpleHiResJob("Swift_EventJob_WaitForLoadScreenHidden");
     end
 
     Swift:RegisterLoadAction(function ()
@@ -74,10 +76,10 @@ end
 
 function Swift:LoadModules()
     for i= 1, #self.m_ModuleRegister, 1 do
-        if self.m_ModuleRegister[i]["Global"].OnGameStart then
+        if self:IsGlobalEnvironment() and self.m_ModuleRegister[i]["Global"].OnGameStart then
             self.m_ModuleRegister[i]["Global"]:OnGameStart();
         end
-        if self.m_ModuleRegister[i]["Local"].OnGameStart then
+        if self:IsLocalEnvironment() and self.m_ModuleRegister[i]["Local"].OnGameStart then
             self.m_ModuleRegister[i]["Local"]:OnGameStart();
         end
     end
@@ -473,5 +475,15 @@ function Swift:CopyTable(_Table1, _Table2)
         end
     end
     return _Table2;
+end
+
+-- Jobs
+
+function Swift_EventJob_WaitForLoadScreenHidden()
+    if XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 0 then
+        GUI.SendScriptCommand("Swift.m_LoadScreenHidden = true");
+        Swift.m_LoadScreenHidden = true;
+        return true;
+    end
 end
 

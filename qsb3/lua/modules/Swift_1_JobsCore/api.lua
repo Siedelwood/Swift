@@ -149,7 +149,7 @@ function API.StartJobByEventType(_EventType, _Function, ...)
         ModuleJobsCore.Shared.EventJobs[_EventType] = ModuleJobsCore.Shared.EventJobs[_EventType] or {};
         ModuleJobsCore.Shared.EventJobs[_EventType][ID] = {
             Function = Function,
-            Arguments = table.copy(arg);
+            Arguments = table.copy(arg or {});
             Active = true,
             Enabled = true,
         }

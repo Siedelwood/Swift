@@ -3,6 +3,10 @@
 -- -------------------------------------------------------------------------- --
 
 ModuleDialogCore = {
+    Properties = {
+        Name = "ModuleDialogCore",
+    },
+
     Global = {},
     Local = {
         Requester = {

@@ -3,6 +3,10 @@
 -- -------------------------------------------------------------------------- --
 
 ModuleDialogTypewriter = {
+    Properties = {
+        Name = "ModuleDialogTypewriter",
+    },
+    
     Global = {},
     Local = {
         

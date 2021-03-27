@@ -21,6 +21,7 @@ ModuleTradingCore = {
             SaleDeflation         = {},
             SaleAllowed           = {},
         },
+        Event = {},
         ShowKnightTraderAbility = true;
     },
     -- This is a shared structure but the values are asynchronous!

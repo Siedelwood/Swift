@@ -3,6 +3,10 @@
 -- -------------------------------------------------------------------------- --
 
 ModuleWeatherCore = {
+    Properties = {
+        Name = "ModuleWeatherCore",
+    },
+
     Global = {
         EventQueue = {},
         ActiveEvent = nil,

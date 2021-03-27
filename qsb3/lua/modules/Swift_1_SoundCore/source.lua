@@ -3,6 +3,11 @@
 -- -------------------------------------------------------------------------- --
 
 ModuleSoundCore = {
+    Properties = {
+        Name = "ModuleSoundCore",
+    },
+
+    Global = {},
     Local = {
         SoundBackup = {},
     },

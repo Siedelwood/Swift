@@ -3,6 +3,10 @@
 -- -------------------------------------------------------------------------- --
 
 ModuleDisplayCore = {
+    Properties = {
+        Name = "ModuleDisplayCore",
+    },
+
     Global = {},
     Local = {
         ChatOptionsWasShown = false,
