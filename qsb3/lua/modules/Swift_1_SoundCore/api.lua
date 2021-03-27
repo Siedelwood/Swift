@@ -4,6 +4,11 @@
 -- Dieses Modul bietet die Möglichkeit die Lautstärke im Spiel zu regeln.
 -- Außerdem kannst du Stimmen und Playlists abspielen und stoppen.
 --
+-- <b>Vorausgesetzte Module:</b>
+-- <ul>
+-- <li><a href="Swift_0_Core.api.html">(1) Core</a></li>
+-- </ul>
+--
 -- @within Modulbeschreibung
 -- @set sort=true
 --

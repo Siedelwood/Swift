@@ -10,7 +10,7 @@
 --
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
--- <li><a href="core.api.html">Core</a></li>
+-- <li><a href="Swift_1_JobsCore.api.html">(1) Jobs Core</a></li>
 -- </ul>
 --
 -- @within Beschreibung
