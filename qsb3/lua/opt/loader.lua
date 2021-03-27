@@ -14,6 +14,8 @@ OptLoader_ModuleFiles = {
     "Swift_1_TextCore/api.lua",
     "Swift_1_TradingCore/source.lua",
     "Swift_1_TradingCore/api.lua",
+    "Swift_1_DialogTypewriter/source.lua",
+    "Swift_1_DialogTypewriter/api.lua",
     "Swift_2_JobsRealtime/source.lua",
     "Swift_2_JobsRealtime/api.lua",
     "Swift_2_WeatherCore/source.lua",

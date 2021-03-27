@@ -118,6 +118,7 @@ function ModuleQuestCore.Global:QuestCreateNewQuest(_Data)
     Quest.MsgTableOverride = _Data.MSGKeyOverwrite;
     Quest.IconOverride = _Data.IconOverwrite;
     Quest.SkipFunction = _Data.Skip;
+    Quest.QuestInfo = _Data.InfoText;
     return _Data.Name, Quests[0];
 end
 

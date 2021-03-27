@@ -18,12 +18,6 @@ ModuleDialogCore = {
 
 -- Global Script ---------------------------------------------------------------
 
----
--- Initalisiert das Bundle im globalen Skript.
---
--- @within Internal
--- @local
---
 function ModuleDialogCore.Global:OnGameStart()
     API.AddSaveGameAction(function ()
         Logic.ExecuteInLuaLocalState("ModuleDialogCore.Local.DialogAltF4Hotkey()");
@@ -32,23 +26,11 @@ end
 
 -- Local Script ----------------------------------------------------------------
 
----
--- Initalisiert das Bundle im lokalen Skript.
---
--- @within Internal
--- @local
---
 function ModuleDialogCore.Local:OnGameStart()
     self:DialogOverwriteOriginal();
     self:DialogAltF4Hotkey();
 end
 
----
--- Überschreibt den Alt + F4 Hotkey.
---
--- @within Internal
--- @local
---
 function ModuleDialogCore.Local:DialogAltF4Hotkey()
     StartSimpleJobEx(function ()
         if not API.IsLoadscreenVisible() then
@@ -58,12 +40,6 @@ function ModuleDialogCore.Local:DialogAltF4Hotkey()
     end);
 end
 
----
--- Öffnet den Dialog mit der Frage, ob das Spiel verlassen werden
---
--- @within Internal
--- @local
---
 function ModuleDialogCore.Local:DialogAltF4Action()
     -- Muss leider sein, sonst werden mehr Elemente in die Queue geladen
     Input.KeyBindDown(Keys.ModifierAlt + Keys.F4, "", 30, false);
@@ -85,12 +61,6 @@ function ModuleDialogCore.Local:DialogAltF4Action()
     Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
 end
 
----
--- Führt das Callback eines Info-Fensters oder eines Selektionsfensters aus.
---
--- @within Internal
--- @local
---
 function ModuleDialogCore.Local:Callback()
     if self.Requester.ActionFunction then
         self.Requester.ActionFunction(CustomGame.Knight + 1);
@@ -98,13 +68,6 @@ function ModuleDialogCore.Local:Callback()
     self:OnDialogClosed();
 end
 
----
--- Führt das Callback eines Ja-Nein-Dialogs aus.
---
--- @param[type=boolean] _yes Gegebene Antwort
--- @within Internal
--- @local
---
 function ModuleDialogCore.Local:CallbackRequester(_yes)
     if self.Requester.ActionRequester then
         self.Requester.ActionRequester(_yes);
@@ -112,24 +75,11 @@ function ModuleDialogCore.Local:CallbackRequester(_yes)
     self:OnDialogClosed();
 end
 
----
--- Läd den nächsten Dialog aus der Warteschlange und stellt die Speicher-Hotkeys
--- wieder her.
---
--- @within Internal
--- @local
---
 function ModuleDialogCore.Local:OnDialogClosed()
     self:DialogQueueStartNext();
     self:RestoreSaveGame();
 end
 
----
--- Startet den nächsten Dialog in der Warteschlange, sofern möglich.
---
--- @within Internal
--- @local
---
 function ModuleDialogCore.Local:DialogQueueStartNext()
     self.Requester.Next = table.remove(self.Requester.Queue, 1);
 
@@ -145,29 +95,11 @@ function ModuleDialogCore.Local:DialogQueueStartNext()
     StartSimpleHiResJob("DialogQueueStartNext_HiResControl");
 end
 
----
--- Fügt der Dialogwarteschlange einen neuen Dialog hinten an.
---
--- @param[type=string] _Methode Dialogfunktion als String
--- @param[type=table] _Args    Argumente als Table
--- @within Internal
--- @local
---
 function ModuleDialogCore.Local:DialogQueuePush(_Methode, _Args)
     local Entry = {_Methode, _Args};
     table.insert(self.Requester.Queue, Entry);
 end
 
----
--- Öffnet einen Info-Dialog. Sollte bereits ein Dialog zu sehen sein, wird
--- der Dialog der Dialogwarteschlange hinzugefügt.
---
--- @param[type=string]   _Title  Titel des Dialog
--- @param[type=string]   _Text   Text des Dialog
--- @param[type=function] _Action Callback-Funktion
--- @within Internal
--- @local
---
 function ModuleDialogCore.Local:OpenDialog(_Title, _Text, _Action)
     if XGUIEng.IsWidgetShown(RequesterDialog) == 0 then
         assert(type(_Title) == "string");
@@ -221,17 +153,6 @@ function ModuleDialogCore.Local:OpenDialog(_Title, _Text, _Action)
     end
 end
 
----
--- Öffnet einen Ja-Nein-Dialog. Sollte bereits ein Dialog zu sehen sein, wird
--- der Dialog der Dialogwarteschlange hinzugefügt.
---
--- @param[type=string]   _Title    Titel des Dialog
--- @param[type=string]   _Text     Text des Dialog
--- @param[type=function] _Action   Callback-Funktion
--- @param[type=boolean]  _OkCancel Okay/Abbrechen statt Ja/Nein
--- @within Internal
--- @local
---
 function ModuleDialogCore.Local:OpenRequesterDialog(_Title, _Text, _Action, _OkCancel)
     if XGUIEng.IsWidgetShown(RequesterDialog) == 0 then
         assert(type(_Title) == "string");
@@ -271,17 +192,6 @@ function ModuleDialogCore.Local:OpenRequesterDialog(_Title, _Text, _Action, _OkC
     end
 end
 
----
--- Öffnet einen Auswahldialog. Sollte bereits ein Dialog zu sehen sein, wird
--- der Dialog der Dialogwarteschlange hinzugefügt.
---
--- @param[type=string]   _Title  Titel des Dialog
--- @param[type=string]   _Text   Text des Dialog
--- @param[type=function] _Action Callback-Funktion
--- @param[type=table]    _List   Liste der Optionen
--- @within Internal
--- @local
---
 function ModuleDialogCore.Local:OpenSelectionDialog(_Title, _Text, _Action, _List)
     if XGUIEng.IsWidgetShown(RequesterDialog) == 0 then
         self:OpenDialog(_Title, _Text, _Action);
@@ -319,12 +229,6 @@ function ModuleDialogCore.Local:OpenSelectionDialog(_Title, _Text, _Action, _Lis
     end
 end
 
----
--- Stellt die Hotkeys zum Speichern des Spiels wieder her.
---
--- @within Internal
--- @local
---
 function ModuleDialogCore.Local:RestoreSaveGame()
     if BundleGameHelperFunctions and not BundleGameHelperFunctions.Local.ForbidSave then
         XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/QuickSave", 1);
@@ -336,20 +240,12 @@ function ModuleDialogCore.Local:RestoreSaveGame()
     end
 end
 
----
--- Überschreibt die originalen Dialogfunktionen, um Fehler in den vorhandenen
--- Funktionen zu vermeiden.
---
--- @within Internal
--- @local
---
 function ModuleDialogCore.Local:DialogOverwriteOriginal()
     OpenDialog_Orig_Windows = OpenDialog;
     OpenDialog = function(_Message, _Title, _IsMPError)
         if XGUIEng.IsWidgetShown(RequesterDialog) == 0 then
             local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)";
             Action = Action .. "; XGUIEng.PopPage()";
-            XGUIEng.SetActionFunction(RequesterDialog_Ok, Action);
             OpenDialog_Orig_Windows(_Title, _Message);
         end
     end

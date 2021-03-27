@@ -66,3 +66,44 @@ function API.DeactivateNormalInterface()
     ModuleDisplayCore.Local:InterfaceDeactivateNormalInterface();
 end
 
+---
+-- Aktiviert den Cinematic State und sagt dem Framework, dass jetzt ein Effekt
+-- im Kinomodus aktiv ist.
+--
+-- @within Anwenderfunktionen
+--
+function API.ActivateCinematicState()
+    if GUI then
+        GUI.SendScriptCommand("ModuleDisplayCore.Shared.CinematicState = true");
+        ModuleDisplayCore.Shared.CinematicState = true;
+        return;
+    end
+    Logic.ExecuteInLuaLocalState("ModuleDisplayCore.Shared.CinematicState = true");
+    ModuleDisplayCore.Shared.CinematicState = true;
+end
+
+---
+-- Deaktiviert den Cinematic State und teilt dem Framework mit, dass der
+-- Kinomodus jetzt beendet wurde.
+--
+-- @within Anwenderfunktionen
+--
+function API.DeactivateCinematicState()
+    if GUI then
+        GUI.SendScriptCommand("ModuleDisplayCore.Shared.CinematicState = false");
+        ModuleDisplayCore.Shared.CinematicState = false;
+        return;
+    end
+    Logic.ExecuteInLuaLocalState("ModuleDisplayCore.Shared.CinematicState = false");
+    ModuleDisplayCore.Shared.CinematicState = false;
+end
+
+---
+-- Gibt zurück, ob gerade ein Effekt im Kinomodus läuft.
+-- @return[type=boolean] Cinematic State ist Aktiv
+-- @within Anwenderfunktionen
+--
+function API.IsCinematicState()
+    return ModuleDisplayCore.Shared.CinematicState == true;
+end
+
