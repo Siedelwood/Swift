@@ -4,7 +4,6 @@ app/
 tmp/
 qsb/doc/*
 qsb3/doc/*
-qsb3/ldoc/*
 qsb/lua/core.lua
 var/
 qsb/doc/html/

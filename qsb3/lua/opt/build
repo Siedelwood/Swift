@@ -1,0 +1,7 @@
+#!/bin/bash
+lua writer.lua
+cd ../../luaminifyer
+./LuaMinify.sh ../lua/var/qsb.lua
+cd ../lua/var
+rm qsb.lua
+mv qsb_min.lua qsb.lua
