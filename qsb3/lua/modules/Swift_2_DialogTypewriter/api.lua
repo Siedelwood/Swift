@@ -1,6 +1,22 @@
 -- Dialog API --------------------------------------------------------------- --
 
 ---
+-- Ermöglicht die Anzeige eines fortlaufend getippten Text auf dem Bildschirm.
+--
+-- Der Text kann mit oder ohne schwarzem Hintergrund angezeigt werden.
+--
+-- <b>Vorausgesetzte Module:</b>
+-- <ul>
+-- <li><a href="Swift_1_DialogCore.api.html">Core</a></li>
+-- <li><a href="Swift_1_DisplayCore.api.html">Core</a></li>
+-- <li><a href="Swift_1_JobsCore.api.html">Core</a></li>
+-- </ul>
+--
+-- @within Beschreibung
+-- @set sort=true
+--
+
+---
 -- Blendet einen Text Zeichen für Zeichen auf schwarzem Grund ein.
 --
 -- <b>Diese Funktion ist der offizielle Nachfolger der Laufschrift!</b>
