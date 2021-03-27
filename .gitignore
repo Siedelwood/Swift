@@ -2,6 +2,7 @@
 doctest/
 app/
 tmp/
+*/ldoc/*
 qsb/doc/*
 qsb3/doc/*
 qsb/lua/core.lua

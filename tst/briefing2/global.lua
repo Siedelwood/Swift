@@ -246,60 +246,83 @@ end
 
 function Briefing04()
     local Briefing = {
-        HideBorderPins = true,
-        ShowSky = true,
-        RestoreGameSpeed = true,
-        RestoreCamera = true,
+        HideBorderPins = true,   -- Grenzsteine ausblenden
+        ShowSky = true,          -- Himmel anzeigen
+        RestoreGameSpeed = true, -- Spielgeschwindigkeit wiederherstellen
+        RestoreCamera = true,    -- Kameraposition wiederherstellen
+        SkippingAllowed = true,  -- Spieler kann weiter blättern
+        BigBars = true,          -- Breite Balken verwenden
+        BarOpacity = 1.0,        -- Balkentransparenz (0 = unsichtbar)
     }
     local AP = API.AddPages(Briefing);
 
     AP {
-        Title    = "Title 1",
-        Text     = "Text 1",
+        Title    = "",
+        Text     = "Just fading in.",
         Position = "pos3",
         DialogCamera = false,
-        FadeIn   = 3.0,
-        Duration = 5.0,
-        Action   = function(_Data)
-        end
-    }
-    AP {
-        Title    = "Title 2",
-        Text     = "Text 2",
-        Position = "pos4",
-        DialogCamera = false,
-        Duration = 5.0,
-        FadeOut  = 3.0,
-        Action   = function(_Data)
-        end
-    }
-    AP {
-        Title    = "Title 3",
-        Text     = "Text 3",
-        Position = "pos3",
-        DialogCamera = false,
-        FadeIn   = 3.0,
-        FadeOut  = 3.0,
+        FadeIn   = 5.0,
         Duration = 10.0,
         Action   = function(_Data)
         end
     }
     AP {
-        Title    = "Title 4",
-        Text     = "Text 4",
+        Title    = "",
+        Text     = "Just fading out",
         Position = "pos4",
         DialogCamera = false,
-        FadeIn   = 3.0,
-        Duration = 5.0,
+        Duration = 10.0,
+        FadeOut  = 5.0,
         Action   = function(_Data)
         end
     }
     AP {
-        Title    = "Title 5",
-        Text     = "Text 5",
-        Position = "pos1",
+        Title    = "",
+        Text     = "",
+        Position = "pos4",
+        DialogCamera = false,
+        Duration = 1,
+        FaderAlpha = 1.0,
+        Action   = function(_Data)
+        end
+    }
+    AP {
+        Title    = "",
+        Text     = "First fading in than fading out",
+        Position = "pos3",
+        DialogCamera = false,
+        FadeIn   = 3.0,
         FadeOut  = 3.0,
-        Duration = 5.0,
+        Duration = 16.0,
+        Action   = function(_Data)
+        end
+    }
+    AP {
+        Title    = "",
+        Text     = "",
+        Position = "pos4",
+        DialogCamera = false,
+        Duration = 1,
+        FaderAlpha = 1.0,
+        Action   = function(_Data)
+        end
+    }
+    AP {
+        Title    = "",
+        Text     = "Just fading in.",
+        Position = "pos4",
+        DialogCamera = false,
+        FadeIn   = 5.0,
+        Duration = 10.0,
+        Action   = function(_Data)
+        end
+    }
+    AP {
+        Title    = "",
+        Text     = "Just fading out.",
+        Position = "pos1",
+        FadeOut  = 5.0,
+        Duration = 10.0,
         DialogCamera = false,
         Action   = function(_Data)
         end
