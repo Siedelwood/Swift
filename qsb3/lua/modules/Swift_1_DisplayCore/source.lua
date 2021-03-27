@@ -107,6 +107,16 @@ function ModuleDisplayCore.Local:InterfaceDeactivateNormalInterface()
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopRight", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/TopBar", 0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/TopBar/Windows/Gold", 0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/TopBar/Windows/Resources", 0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/TopBar/Windows/Nutrition", 0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/TopBar/Windows/Cleanliness", 0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/TopBar/Windows/Clothes", 0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/TopBar/Windows/Entertainment", 0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/TopBar/Windows/Decoration", 0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/TopBar/Windows/Prosperity", 0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/TopBar/Windows/Military", 0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/TopBar/UpdateFunction", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/TopBar/UpdateFunction", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/Buttons", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/QuestLogButton", 0);
