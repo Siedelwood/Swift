@@ -417,7 +417,7 @@ function BundleQuestGeneration.Global:QuestCreateNewQuest(_Data)
     Quest.MsgTableOverride = _Data.MSGKeyOverwrite;
     Quest.IconOverride = _Data.IconOverwrite;
     Quest.SkipFunction = _Data.Skip;
-    Quest.QuestNotes = _Data.Journal;
+    Quest.QuestNotes = _Data.QuestNotes == true;
     return _Data.Name, Quests[0];
 end
 
