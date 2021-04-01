@@ -449,6 +449,7 @@ QSB.TextWindow = {
         ButtonText  = "",
         Picture     = nil,
         Action      = nil,
+        Pause       = true,
         Callback    = function() end,
     },
 };
@@ -527,6 +528,25 @@ function QSB.TextWindow:AddParamater(_Key, _Value)
     assert(self ~= QSB.TextWindow, "Can not be used in static context!");
     assert(self.Data[_Key] ~= nil, "Key '" .._Key.. "' already exists!");
     self.Data[_Key] = _Value;
+    return self;
+end
+
+---
+-- Setzt die Überschrift des TextWindow.
+--
+-- <p><b>Alias</b>: TextWindow:SetCaption</p>
+--
+-- @param[type=string] _Flag Spiel pausieren
+-- @return self
+-- @within QSB.TextWindow
+-- @local
+--
+-- @usage
+-- MyWindow:SetPause(false);
+--
+function QSB.TextWindow:SetPause(_Flag)
+    assert(self ~= QSB.TextWindow, "Can not be used in static context!");
+    self.Data.Pause = _Flag == true;
     return self;
 end
 
@@ -670,7 +690,9 @@ function QSB.TextWindow:Show()
     if (stringlen + (carreturn*55)) > 1000 then
         XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatLogSlider",1);
     end
-    Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
+    if self.Pause then
+        Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
+    end
 end
 
 ---
@@ -696,7 +718,9 @@ function QSB.TextWindow:Prepare()
     end
 
     function GUI_Chat.ToggleWhisperTargetUpdate()
-        Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
+        if self.Pause then
+            Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
+        end
     end
 
     function GUI_Chat.CheckboxMessageTypeWhisperUpdate()
