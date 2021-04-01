@@ -277,6 +277,7 @@ QSB.TextWindow = {
     ButtonText  = "",
     Picture     = nil,
     Action      = nil,
+    Pause       = true,
     Callback    = function() end,
 };
 
@@ -284,8 +285,6 @@ QSB.TextWindow = {
 -- Erzeugt ein Textfenster, dass einen beliebig großen Text anzeigen kann.
 -- Optional kann ein Button genutzt werden, der eine Aktion ausführt, wenn
 -- er gedrückt wird.
---
--- <p><b>Alias</b>: TextWindow:New</p>
 --
 -- Parameterliste:
 -- <table>
@@ -339,8 +338,6 @@ end
 -- Schlüssel-Wert-Paare angegeben werden und dürfen vorhandene Pare nicht
 -- überschreiben.
 --
--- <p><b>Alias</b>: TextWindow:AddParamater</p>
---
 -- @param[type=string] _Key   Schlüssel
 -- @param              _Value Wert
 -- @return self
@@ -360,7 +357,22 @@ end
 ---
 -- Setzt die Überschrift des TextWindow.
 --
--- <p><b>Alias</b>: TextWindow:SetCaption</p>
+-- @param[type=string] _Flag Spiel pausieren
+-- @return self
+-- @within QSB.TextWindow
+-- @local
+--
+-- @usage
+-- MyWindow:SetPause(false);
+--
+function QSB.TextWindow:SetPause(_Flag)
+    assert(self ~= QSB.TextWindow, "Can not be used in static context!");
+    self.Pause = _Flag == true;
+    return self;
+end
+
+---
+-- Setzt die Überschrift des TextWindow.
 --
 -- @param[type=string] _Text Titel des Textfenster
 -- @return self
@@ -380,8 +392,6 @@ end
 ---
 -- Setzt den Inhalt des TextWindow.
 --
--- <p><b>Alias</b>: TextWindow:SetContent</p>
---
 -- @param[type=string] _Text Inhalt des Textfenster
 -- @return self
 -- @within QSB.TextWindow
@@ -400,8 +410,6 @@ end
 ---
 -- Setzt die Close Action des TextWindow. Die Funktion wird beim schließen
 -- des Fensters ausgeführt.
---
--- <p><b>Alias</b>: TextWindow:SetAction</p>
 --
 -- @param[type=function] _Function Close Callback
 -- @return self
@@ -426,8 +434,6 @@ end
 --
 -- Der Button muss mit einer Funktion versehen werden. Sobald der Button
 -- betätigt wird, wird die Funktion ausgeführt.
---
--- <p><b>Alias</b>: TextWindow:SetButton</p>
 --
 -- @param[type=string]   _Text     Beschriftung des Buttons
 -- @param[type=function] _Callback Aktion des Buttons
@@ -455,8 +461,6 @@ end
 
 ---
 -- Zeigt ein erzeigtes Fenster an.
---
--- <p><b>Alias</b>: TextWindow:Show</p>
 --
 -- @within QSB.TextWindow
 -- @local
@@ -497,7 +501,9 @@ function QSB.TextWindow:Show()
     if (stringlen + (carreturn*55)) > 1000 then
         XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatLogSlider",1);
     end
-    Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
+    if self.Pause then
+        Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
+    end
 end
 
 ---
@@ -523,7 +529,9 @@ function QSB.TextWindow:Prepare()
     end
 
     function GUI_Chat.ToggleWhisperTargetUpdate()
-        Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
+        if self.Pause then
+            Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
+        end
     end
 
     function GUI_Chat.CheckboxMessageTypeWhisperUpdate()
