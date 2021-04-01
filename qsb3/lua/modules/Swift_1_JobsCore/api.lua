@@ -211,3 +211,67 @@ end
 StartSimpleHiResJob = API.StartHiResJob;
 StartSimpleHiResJobEx = API.StartHiResJob;
 
+---
+-- Gibt die real vergangene Zeit seit dem Spielstart in Sekunden zurück.
+-- @return[type=number] Vergangene reale Zeit
+-- @within Anwenderfunktionen
+--
+-- @usage local RealTime = API.RealTimeGetSecondsPassedSinceGameStart();
+--
+function API.RealTimeGetSecondsPassedSinceGameStart()
+    return ModuleJobsCore.Shared.SecondsSinceGameStart;
+end
+
+---
+-- Wartet die angebene Zeit in realen Sekunden und führt anschließend das
+-- Callback aus. Die Ausführung erfolgt asynchron. Das bedeutet, dass das
+-- Skript weiterläuft.
+--
+-- @param[type=number] _Waittime Wartezeit in realen Sekunden
+-- @param[type=function] _Action Callback-Funktion
+-- @param ... Liste der Argumente
+-- @return[type=number] ID der Verzögerung
+-- @within Anwenderfunktionen
+--
+-- @usage API.StartRealTimeJob(
+--     30,
+--     function()
+--         Logic.DEBUG_AddNote("Zeit abgelaufen!");
+--     end
+-- )
+--
+function API.StartRealTimeJob(_Waittime, _Action, ...)
+    ModuleJobsCore.Shared.RealTimeWaitID = ModuleJobsCore.Shared.RealTimeWaitID +1;
+    local ID = ModuleJobsCore.Shared.RealTimeWaitID;
+    ModuleJobsCore.Shared.RealTimeWaitActiveFlag[ID] = true;
+
+    StartSimpleJobEx( function(_StartTime, _Delay, _Callback, _Arguments)
+        if not ModuleJobsCore.Shared.RealTimeWaitActiveFlag[ID] then
+            return true;
+        end
+        if (ModuleJobsCore.Shared.SecondsSinceGameStart >= _StartTime + _Delay) then
+            if #_Arguments > 0 then
+                _Callback(unpack(_Arguments));
+            else
+                _Callback();
+            end
+            ModuleJobsCore.Shared.RealTimeWaitActiveFlag[ID] = nil;
+            return true;
+        end
+    end, ModuleJobsCore.Shared.SecondsSinceGameStart, _Waittime, _Action, {...});
+    return ID;
+end
+
+---
+-- Stoppt den Real Time Timer mit der angegebenen ID.
+--
+-- @param[type=number] _ID ID der Verzögerung
+-- @within Anwenderfunktionen
+--
+-- @usage TIMER_ID = API.StartRealTimeJob(...); -- (Parameter unerheblich)
+-- API.EndRealTimeJob(TIMER_ID);
+--
+function API.EndRealTimeJob(_ID)
+    ModuleJobsCore.Shared.RealTimeWaitActiveFlag[_ID] = nil;
+end
+

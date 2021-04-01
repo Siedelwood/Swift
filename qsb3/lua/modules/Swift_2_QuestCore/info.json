@@ -1,7 +1,7 @@
 {
-    "name": "Swift_3_QuestCore",
+    "name": "Swift_2_QuestCore",
     "version": "1.0.0",
-    "caption": "(3) Quest Core",
+    "caption": "(2) Quest Core",
     "shortdesc": "",
     "description": "",
     "files": [
@@ -10,7 +10,6 @@
     ],
     "dependencies": [
         "Swift_0_Core",
-        "Swift_1_TextCore",
-        "Swift_2_JobsRealtime"
+        "Swift_1_TextCore"
     ]
 }

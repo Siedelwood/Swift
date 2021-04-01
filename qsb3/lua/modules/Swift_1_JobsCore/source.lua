@@ -26,6 +26,10 @@ ModuleJobsCore = {
             [Events.LOGIC_EVENT_TRIBUTE_PAID]              = {},
             [Events.LOGIC_EVENT_WEATHER_STATE_CHANGED]     = {},
         };
+        RealTimeWaitActiveFlag = {};
+        RealTimeWaitID = 0;
+        SecondsSinceGameStart = 0;
+        LastTimeStamp = 0;
     };
 };
 
@@ -92,7 +96,30 @@ function ModuleJobsCore.Shared:InstallEventJobs()
         "ModuleEventJob_OnEntityHurtEntity",
         1
     );
+
+    Trigger.RequestTrigger(
+        Events.LOGIC_EVENT_EVERY_TURN,
+        "",
+        "ModuleEventJob_RealtimeController",
+        1
+    );
 end
+
+-- Real Time
+
+function ModuleEventJob_RealtimeController()
+    if not ModuleJobsCore.Shared.LastTimeStamp then
+        ModuleJobsCore.Shared.LastTimeStamp = math.floor(Framework.TimeGetTime());
+    end
+    local CurrentTimeStamp = math.floor(Framework.TimeGetTime());
+
+    if ModuleJobsCore.Shared.LastTimeStamp ~= CurrentTimeStamp then
+        ModuleJobsCore.Shared.LastTimeStamp = CurrentTimeStamp;
+        ModuleJobsCore.Shared.SecondsSinceGameStart = ModuleJobsCore.Shared.SecondsSinceGameStart +1;
+    end
+end
+
+-- Event Jobs
 
 ModuleEventJob_OnDiplomacyChanged = function()
     ModuleJobsCore.Shared:TriggerEventJobs(Events.LOGIC_EVENT_DIPLOMACY_CHANGED);
@@ -117,28 +144,11 @@ ModuleEventJob_OnEveryTurn = function()
 end
 
 -- FIXME: Useless?
+
 ModuleEventJob_OnEntityCreated = function()
     local PlayerID = Event.GetPlayerID();
     local EntityID = Event.GetEntityID();
     ModuleJobsCore.Shared:TriggerEventJobs(Events.LOGIC_EVENT_ENTITY_CREATED, PlayerID, EntityID);
-end
-ModuleEventJob_OnEntityInRangeOfEntity = function()
-    ModuleJobsCore.Shared:TriggerEventJobs(Events.LOGIC_EVENT_ENTITY_IN_RANGE_OF_ENTITY);
-end
-ModuleEventJob_OnGoodsTraded = function()
-    ModuleJobsCore.Shared:TriggerEventJobs(Events.LOGIC_EVENT_GOODS_TRADED);
-end
-ModuleEventJob_OnPlayerDied = function()
-    ModuleJobsCore.Shared:TriggerEventJobs(Events.LOGIC_EVENT_PLAYER_DIED);
-end
-ModuleEventJob_OnResearchDone = function()
-    ModuleJobsCore.Shared:TriggerEventJobs(Events.LOGIC_EVENT_RESEARCH_DONE);
-end
-ModuleEventJob_OnTributePaied = function()
-    ModuleJobsCore.Shared:TriggerEventJobs(Events.LOGIC_EVENT_TRIBUTE_PAID);
-end
-ModuleEventJob_OnWatherChanged = function()
-    ModuleJobsCore.Shared:TriggerEventJobs(Events.LOGIC_EVENT_WEATHER_STATE_CHANGED);
 end
 
 -- -------------------------------------------------------------------------- --

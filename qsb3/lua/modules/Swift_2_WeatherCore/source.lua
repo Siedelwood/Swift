@@ -212,5 +212,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleJobsRealtime);
+Swift:RegisterModules(ModuleWeatherCore);
 
