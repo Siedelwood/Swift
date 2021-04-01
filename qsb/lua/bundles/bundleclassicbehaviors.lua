@@ -1679,11 +1679,11 @@ b_Goal_SatisfyNeed = {
     Name = "Goal_SatisfyNeed",
     Description = {
         en = "Goal: Satisfy a need",
-        de = "Ziel: Erfuelle ein Beduerfnis",
+        de = "Ziel: Erfuelle ein Bedürfnis",
     },
     Parameter = {
         { ParameterType.PlayerID, en = "Player", de = "Spieler" },
-        { ParameterType.Need, en = "Need", de = "Beduerfnis" },
+        { ParameterType.Need, en = "Need", de = "Bedürfnis" },
     },
 }
 
@@ -2808,7 +2808,8 @@ Core:RegisterBehavior(b_Goal_Decide);
 -- <b>Hinweis</b>: Je mehr Zeit sich der Spieler lässt um den Tribut zu
 -- begleichen, desto mehr wird sich der Start der nächsten Periode verzögern.
 --
--- @param _GoldAmount Menge an Gold
+-- @param _Good       Warentyp
+-- @param _Amount     Menge an Waren
 -- @param _Periode    Zahlungsperiode in Sekunden
 -- @param _Time       Zeitbegrenzung in Sekunden
 -- @param _StartMsg   Vorschlagnachricht
@@ -2818,17 +2819,18 @@ Core:RegisterBehavior(b_Goal_Decide);
 --
 -- @within Goal
 --
-function Goal_TributeDiplomacy(...)
-    return b_Goal_TributeDiplomacy:new(...);
+function Goal_GoodTributeDiplomacy(...)
+    return b_Goal_GoodTributeDiplomacy:new(...);
 end
 
-b_Goal_TributeDiplomacy = {
-    Name = "Goal_TributeDiplomacy",
+b_Goal_GoodTributeDiplomacy = {
+    Name = "Goal_GoodTributeDiplomacy",
     Description = {
-        en = "Goal: AI requests periodical tribute for better Diplomacy",
-        de = "Ziel: Die KI fordert einen regelmässigen Tribut fuer bessere Diplomatie. Der Questgeber ist der fordernde Spieler.",
+        en = "Goal: AI requests periodical a tribute of the selected good type for better Diplomacy.",
+        de = "Ziel: Die KI fordert einen regelmässigen Warentribut für bessere Diplomatie. Der Questgeber ist der fordernde Spieler.",
     },
     Parameter = {
+        { ParameterType.Custom, en = "Good Type", de = "Warentyp", },
         { ParameterType.Number, en = "Amount", de = "Menge", },
         { ParameterType.Number, en = "Time till next peyment in seconds", de = "Zeit bis zur Forderung in Sekunden", },
         { ParameterType.Number, en = "Time to pay tribute in seconds", de = "Zeit bis zur Zahlung in Sekunden", },
@@ -2836,32 +2838,37 @@ b_Goal_TributeDiplomacy = {
         { ParameterType.Default, en = "Success Message for TributQuest", de = "Erfolgsnachricht der Tributquest", },
         { ParameterType.Default, en = "Failure Message for TributQuest", de = "Niederlagenachricht der Tributquest", },
         { ParameterType.Custom, en = "Restart if failed to pay", de = "Nicht-bezahlen beendet die Quest", },
+        { ParameterType.Custom, en = "Increase/Decrease gradually ", de = "Stufenweise senken/verbessern", },
     },
 }
 
-function b_Goal_TributeDiplomacy:GetGoalTable()
+function b_Goal_GoodTributeDiplomacy:GetGoalTable()
     return {Objective.Custom2, {self, self.CustomFunction} };
 end
 
-function b_Goal_TributeDiplomacy:AddParameter(_Index, _Parameter)
+function b_Goal_GoodTributeDiplomacy:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
-        self.Amount = _Parameter * 1;
+        self.GoodType = Goods[_Parameter];
     elseif (_Index == 1) then
-        self.PeriodLength = _Parameter * 1;
+        self.Amount = _Parameter * 1;
     elseif (_Index == 2) then
-        self.TributTime = _Parameter * 1;
+        self.PeriodLength = _Parameter * 1;
     elseif (_Index == 3) then
-        self.StartMsg = _Parameter;
+        self.TributTime = _Parameter * 1;
     elseif (_Index == 4) then
-        self.SuccessMsg = _Parameter;
+        self.StartMsg = _Parameter;
     elseif (_Index == 5) then
-        self.FailureMsg = _Parameter;
+        self.SuccessMsg = _Parameter;
     elseif (_Index == 6) then
+        self.FailureMsg = _Parameter;
+    elseif (_Index == 7) then
         self.RestartAtFailure = AcceptAlternativeBoolean(_Parameter);
+    elseif (_Index == 8) then
+        self.GraduallyDiplomacy = AcceptAlternativeBoolean(_Parameter);
     end
 end
 
-function b_Goal_TributeDiplomacy:GetTributeQuest(_Quest)
+function b_Goal_GoodTributeDiplomacy:GetTributeQuest(_Quest)
     if not self.InternTributeQuest then
         local Language = QSB.Language;
         local StartMsg = self.StartMsg;
@@ -2883,7 +2890,7 @@ function b_Goal_TributeDiplomacy:GetTributeQuest(_Quest)
             _Quest.Identifier.."_TributeDiplomacyQuest_" ..BundleClassicBehaviors.Global.Data.BehaviorQuestCounter,
             _Quest.SendingPlayer,
             _Quest.ReceivingPlayer,
-            {{ Objective.Deliver, {Goods.G_Gold, self.Amount}}},
+            {{ Objective.Deliver, {self.GoodType, self.Amount}}},
             {{ Triggers.Time, 0 }},
             self.TributTime, nil, nil, nil, nil, true, true, nil,
             StartMsg,
@@ -2894,22 +2901,26 @@ function b_Goal_TributeDiplomacy:GetTributeQuest(_Quest)
     end
 end
 
-function b_Goal_TributeDiplomacy:CheckTributeQuest(_Quest)
+function b_Goal_GoodTributeDiplomacy:CheckTributeQuest(_Quest)
     if self.InternTributeQuest and self.InternTributeQuest.State == QuestState.Over and not self.RestartQuest then
         if self.InternTributeQuest.Result ~= QuestResult.Success then
-            SetDiplomacyState( _Quest.ReceivingPlayer, _Quest.SendingPlayer, DiplomacyStates.Enemy);
+            local OldState = GetDiplomacyState(_Quest.ReceivingPlayer, _Quest.SendingPlayer);
+            local NewState = (self.GraduallyDiplomacy and OldState > -2 and (OldState -1)) or -2;
+            SetDiplomacyState(_Quest.ReceivingPlayer, _Quest.SendingPlayer, NewState);
             if not self.RestartAtFailure then
                 return false;
             end
         else
-            SetDiplomacyState(_Quest.ReceivingPlayer, _Quest.SendingPlayer, DiplomacyStates.TradeContact);
+            local OldState = GetDiplomacyState(_Quest.ReceivingPlayer, _Quest.SendingPlayer);
+            local NewState = (self.GraduallyDiplomacy and OldState < 2 and (OldState +1)) or 2;
+            SetDiplomacyState(_Quest.ReceivingPlayer, _Quest.SendingPlayer, NewState);
         end
         self.RestartQuest = true;
         self.Time = Logic.GetTime();
     end
 end
 
-function b_Goal_TributeDiplomacy:CheckTributePlayer(_Quest)
+function b_Goal_GoodTributeDiplomacy:CheckTributePlayer(_Quest)
     local storeHouse = Logic.GetStoreHouse(_Quest.SendingPlayer);
     if (storeHouse == 0 or Logic.IsEntityDestroyed(storeHouse)) then
         if self.InternTributeQuest and self.InternTributeQuest.State == QuestState.Active then
@@ -2919,7 +2930,7 @@ function b_Goal_TributeDiplomacy:CheckTributePlayer(_Quest)
     end
 end
 
-function b_Goal_TributeDiplomacy:TributQuestRestarter(_Quest)
+function b_Goal_GoodTributeDiplomacy:TributQuestRestarter(_Quest)
     if self.InternTributeQuest and self.Time and self.RestartQuest and ((Logic.GetTime() - self.Time) >= self.PeriodLength) then
         self.InternTributeQuest.Objectives[1].Completed = nil;
         self.InternTributeQuest.Objectives[1].Data[3] = nil;
@@ -2933,7 +2944,7 @@ function b_Goal_TributeDiplomacy:TributQuestRestarter(_Quest)
     end
 end
 
-function b_Goal_TributeDiplomacy:CustomFunction(_Quest)
+function b_Goal_GoodTributeDiplomacy:CustomFunction(_Quest)
     -- Tribut Quest erzeugen
     self:GetTributeQuest(_Quest);
     -- Status des Tributes prüfen.
@@ -2948,9 +2959,13 @@ function b_Goal_TributeDiplomacy:CustomFunction(_Quest)
     self:TributQuestRestarter(_Quest);
 end
 
-function b_Goal_TributeDiplomacy:Debug(_Quest)
+function b_Goal_GoodTributeDiplomacy:Debug(_Quest)
     if self.Amount < 0 then
         error(_Quest.Identifier.. ": " ..self.Name .. ": Amount is negative!");
+        return true;
+    end
+    if not self.GoodType or self.GoodType == nil or self.GoodType == 0 then
+        error(_Quest.Identifier.. ": " ..self.Name .. ": Good type is invalid!");
         return true;
     end
     if self.PeriodLength < self.TributTime then
@@ -2959,17 +2974,88 @@ function b_Goal_TributeDiplomacy:Debug(_Quest)
     end
 end
 
-function b_Goal_TributeDiplomacy:Reset(_Quest)
+function b_Goal_GoodTributeDiplomacy:Reset(_Quest)
     self.Time = nil;
     self.InternTributeQuest = nil;
     self.RestartQuest = nil;
 end
 
-function b_Goal_TributeDiplomacy:Interrupt(_Quest)
+function b_Goal_GoodTributeDiplomacy:Interrupt(_Quest)
     if self.InternTributeQuest ~= nil then
         if self.InternTributeQuest.State == QuestState.Active then
             self.InternTributeQuest:Interrupt()
         end
+    end
+end
+
+function b_Goal_GoodTributeDiplomacy:GetCustomData(_Index)
+    if (_Index == 0) then
+        return {
+            "G_Beer",
+            "G_Bread",
+            "G_Broom",
+            "G_Carcass",
+            "G_Cheese",
+            "G_Clothes",
+            "G_Gold",
+            "G_Grain",
+            "G_Herb",
+            "G_Honeycomb",
+            "G_Iron",
+            "G_Leather",
+            "G_Medicine",
+            "G_Milk",
+            "G_RawFish",
+            "G_Sausage",
+            "G_SmokedFish",
+            "G_Soap",
+            "G_Stone",
+            "G_Water",
+            "G_Wood",
+            "G_Wool",
+        };
+    end
+    if (_Index == 7) or (_Index == 8) then
+        return {"true", "false"};
+    end
+end
+
+Core:RegisterBehavior(b_Goal_GoodTributeDiplomacy);
+
+-- -------------------------------------------------------------------------- --
+
+-- Kompatibelitätsmodus
+b_Goal_TributeDiplomacy = API.InstanceTable(b_Goal_GoodTributeDiplomacy);
+b_Goal_TributeDiplomacy.Name             = "Goal_TributeDiplomacy";
+b_Goal_TributeDiplomacy.Description.de   = "Ziel: Die KI fordert einen regelmässigen Tribut für bessere Diplomatie. Der Questgeber ist der fordernde Spieler.";
+b_Goal_TributeDiplomacy.Description.en   = "Goal: AI requests periodical tribute for better diplomacy.";
+b_Goal_TributeDiplomacy.Parameter        = {
+    { ParameterType.Number, en = "Gold Amount", de = "Goldmenge", },
+    { ParameterType.Number, en = "Time till next peyment in seconds", de = "Zeit bis zur Forderung in Sekunden", },
+    { ParameterType.Number, en = "Time to pay tribute in seconds", de = "Zeit bis zur Zahlung in Sekunden", },
+    { ParameterType.Default, en = "Start Message for TributQuest", de = "Startnachricht der Tributquest", },
+    { ParameterType.Default, en = "Success Message for TributQuest", de = "Erfolgsnachricht der Tributquest", },
+    { ParameterType.Default, en = "Failure Message for TributQuest", de = "Niederlagenachricht der Tributquest", },
+    { ParameterType.Custom, en = "Restart if failed to pay", de = "Nicht-bezahlen beendet die Quest", },
+};
+
+function b_Goal_TributeDiplomacy:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.GoodType = Goods.G_Gold;
+        self.Amount = _Parameter * 1;
+        self.GraduallyDiplomacy = false;
+    elseif (_Index == 1) then
+        self.PeriodLength = _Parameter * 1;
+    elseif (_Index == 2) then
+        self.TributTime = _Parameter * 1;
+    elseif (_Index == 3) then
+        self.StartMsg = _Parameter;
+    elseif (_Index == 4) then
+        self.SuccessMsg = _Parameter;
+    elseif (_Index == 5) then
+        self.FailureMsg = _Parameter;
+    elseif (_Index == 6) then
+        self.RestartAtFailure = AcceptAlternativeBoolean(_Parameter);
     end
 end
 
@@ -3010,19 +3096,20 @@ Core:RegisterBehavior(b_Goal_TributeDiplomacy);
 --
 -- @within Goal
 --
-function Goal_TributeClaim(...)
-    return b_Goal_TributeClaim:new(...);
+function Goal_GoodTributeClaim(...)
+    return b_Goal_GoodTributeClaim:new(...);
 end
 
-b_Goal_TributeClaim = {
-    Name = "Goal_TributeClaim",
+b_Goal_GoodTributeClaim = {
+    Name = "Goal_GoodTributeClaim",
     Description = {
-        en = "Goal: AI requests periodical tribute for a specified territory. The quest sender is the demanding player.",
-        de = "Ziel: Die KI fordert einen regelmässigen Tribut fuer ein Territorium. Der Questgeber ist der fordernde Spieler.",
+        en = "Goal: AI requests periodical good tribute for a specified territory. The quest sender is the demanding player.",
+        de = "Ziel: Die KI fordert einen regelmässigen Warentribut für ein Territorium. Der Questgeber ist der fordernde Spieler.",
                 },
     Parameter = {
         { ParameterType.TerritoryName, en = "Territory", de = "Territorium", },
         { ParameterType.PlayerID, en = "PlayerID", de = "PlayerID", },
+        { ParameterType.Custom, en = "Good Type", de = "Warentyp", },
         { ParameterType.Number, en = "Amount", de = "Menge", },
         { ParameterType.Number, en = "Length of Period in seconds", de = "Sekunden bis zur nächsten Forderung", },
         { ParameterType.Number, en = "Time to pay Tribut in seconds", de = "Zeit bis zur Zahlung in Sekunden", },
@@ -3035,11 +3122,11 @@ b_Goal_TributeClaim = {
     },
 }
 
-function b_Goal_TributeClaim:GetGoalTable()
+function b_Goal_GoodTributeClaim:GetGoalTable()
     return {Objective.Custom2, {self, self.CustomFunction} };
 end
 
-function b_Goal_TributeClaim:AddParameter(_Index, _Parameter)
+function b_Goal_GoodTributeClaim:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         if type(_Parameter) == "string" then
             _Parameter = GetTerritoryIDByName(_Parameter);
@@ -3048,27 +3135,29 @@ function b_Goal_TributeClaim:AddParameter(_Index, _Parameter)
     elseif (_Index == 1) then
         self.PlayerID = _Parameter * 1;
     elseif (_Index == 2) then
-        self.Amount = _Parameter * 1;
+        self.GoodType = Goods[_Parameter];
     elseif (_Index == 3) then
-        self.PeriodLength = _Parameter * 1;
+        self.Amount = _Parameter * 1;
     elseif (_Index == 4) then
-        self.TributTime = _Parameter * 1;
+        self.PeriodLength = _Parameter * 1;
     elseif (_Index == 5) then
-        self.StartMsg = _Parameter;
+        self.TributTime = _Parameter * 1;
     elseif (_Index == 6) then
-        self.SuccessMsg = _Parameter;
+        self.StartMsg = _Parameter;
     elseif (_Index == 7) then
-        self.FailureMsg = _Parameter;
+        self.SuccessMsg = _Parameter;
     elseif (_Index == 8) then
-        self.HowOften = _Parameter * 1;
+        self.FailureMsg = _Parameter;
     elseif (_Index == 9) then
-        self.OtherOwnerCancels = AcceptAlternativeBoolean(_Parameter);
+        self.HowOften = _Parameter * 1;
     elseif (_Index == 10) then
+        self.OtherOwnerCancels = AcceptAlternativeBoolean(_Parameter);
+    elseif (_Index == 11) then
         self.DontPayCancels = AcceptAlternativeBoolean(_Parameter);
     end
 end
 
-function b_Goal_TributeClaim:CureOutpost(_Quest)
+function b_Goal_GoodTributeClaim:CureOutpost(_Quest)
     local Outpost = Logic.GetTerritoryAcquiringBuildingID(self.TerritoryID);
     if IsExisting(Outpost) and GetHealth(Outpost) < 25 and Logic.IsBuildingBeingKnockedDown(Outpost) == false then
         while (Logic.GetEntityHealth(Outpost) < Logic.GetEntityMaxHealth(Outpost) * 0.6) do
@@ -3077,7 +3166,7 @@ function b_Goal_TributeClaim:CureOutpost(_Quest)
     end
 end
 
-function b_Goal_TributeClaim:RestartTributeQuest(_Quest)
+function b_Goal_GoodTributeClaim:RestartTributeQuest(_Quest)
     if self.InternTributeQuest then
         self.InternTributeQuest.Objectives[1].Completed = nil;
         self.InternTributeQuest.Objectives[1].Data[3] = nil;
@@ -3091,7 +3180,7 @@ function b_Goal_TributeClaim:RestartTributeQuest(_Quest)
     end
 end
 
-function b_Goal_TributeClaim:CreateTributeQuest(_Quest)
+function b_Goal_GoodTributeClaim:CreateTributeQuest(_Quest)
     if not self.InternTributeQuest then
         local Language = QSB.Language;
         local StartMsg = self.StartMsg;
@@ -3116,7 +3205,7 @@ function b_Goal_TributeClaim:CreateTributeQuest(_Quest)
             _Quest.Identifier.."_TributeClaimQuest" ..BundleClassicBehaviors.Global.Data.BehaviorQuestCounter,
             self.PlayerID,
             _Quest.ReceivingPlayer,
-            {{ Objective.Deliver, {Goods.G_Gold, self.Amount}}},
+            {{ Objective.Deliver, {self.GoodType, self.Amount}}},
             {{ Triggers.Time, 0 }},
             self.TributTime, nil, nil, OnFinished, nil, true, true, nil,
             StartMsg,
@@ -3127,7 +3216,7 @@ function b_Goal_TributeClaim:CreateTributeQuest(_Quest)
     end
 end
 
-function b_Goal_TributeClaim:OnTributeFailed(_Quest)
+function b_Goal_GoodTributeClaim:OnTributeFailed(_Quest)
     local Outpost = Logic.GetTerritoryAcquiringBuildingID(self.TerritoryID);
     if IsExisting(Outpost) then
         Logic.ChangeEntityPlayerID(Outpost, self.PlayerID);
@@ -3141,7 +3230,7 @@ function b_Goal_TributeClaim:OnTributeFailed(_Quest)
     end
 end
 
-function b_Goal_TributeClaim:OnTributePaid(_Quest)
+function b_Goal_GoodTributeClaim:OnTributePaid(_Quest)
     local Outpost = Logic.GetTerritoryAcquiringBuildingID(self.TerritoryID);
     if self.InternTributeQuest.Result == QuestResult.Success then
         if Logic.GetTerritoryPlayerID(self.TerritoryID) == self.PlayerID then
@@ -3163,7 +3252,7 @@ function b_Goal_TributeClaim:OnTributePaid(_Quest)
     end
 end
 
-function b_Goal_TributeClaim:CustomFunction(_Quest)
+function b_Goal_GoodTributeClaim:CustomFunction(_Quest)
     self:CreateTributeQuest(_Quest);
     self:CureOutpost(_Quest);
 
@@ -3215,9 +3304,13 @@ function b_Goal_TributeClaim:CustomFunction(_Quest)
     end
 end
 
-function b_Goal_TributeClaim:Debug(_Quest)
+function b_Goal_GoodTributeClaim:Debug(_Quest)
     if self.TerritoryID == 0 then
         error(_Quest.Identifier.. ": " ..self.Name .. ": Unknown Territory");
+        return true;
+    end
+    if not self.GoodType or self.GoodType == nil or self.GoodType == 0 then
+        error(_Quest.Identifier.. ": " ..self.Name .. ": Good type is invalid!");
         return true;
     end
     if not self.Quest and Logic.GetStoreHouse(self.PlayerID) == 0 then
@@ -3238,17 +3331,102 @@ function b_Goal_TributeClaim:Debug(_Quest)
     end
 end
 
-function b_Goal_TributeClaim:Reset(_Quest)
+function b_Goal_GoodTributeClaim:Reset(_Quest)
     self.InternTributeQuest = nil;
     self.Time = nil;
     self.OtherOwner = nil;
 end
 
-function b_Goal_TributeClaim:Interrupt(_Quest)
+function b_Goal_GoodTributeClaim:Interrupt(_Quest)
     if type(self.InternTributeQuest) == "table" then
         if self.InternTributeQuest.State == QuestState.Active then
             self.InternTributeQuest:Interrupt();
         end
+    end
+end
+
+function b_Goal_GoodTributeClaim:GetCustomData(_Index)
+    if (_Index == 2) then
+        return {
+            "G_Beer",
+            "G_Bread",
+            "G_Broom",
+            "G_Carcass",
+            "G_Cheese",
+            "G_Clothes",
+            "G_Gold",
+            "G_Grain",
+            "G_Herb",
+            "G_Honeycomb",
+            "G_Iron",
+            "G_Leather",
+            "G_Medicine",
+            "G_Milk",
+            "G_RawFish",
+            "G_Sausage",
+            "G_SmokedFish",
+            "G_Soap",
+            "G_Stone",
+            "G_Water",
+            "G_Wood",
+            "G_Wool",
+        };
+    end
+    if (_Index == 10) or (_Index == 11) then
+        return {"false", "true"};
+    end
+end
+
+Core:RegisterBehavior(b_Goal_GoodTributeClaim);
+
+-- -------------------------------------------------------------------------- --
+
+-- Kompatibelitätsmodus
+b_Goal_TributeClaim = API.InstanceTable(b_Goal_GoodTributeClaim);
+b_Goal_TributeClaim.Name             = "Goal_TributeClaim";
+b_Goal_TributeClaim.Description.de   = "Ziel: Die KI fordert einen regelmässigen Tribut für bessere Diplomatie. Der Questgeber ist der fordernde Spieler.";
+b_Goal_TributeClaim.Description.en   = "Goal: AI requests periodical tribute for better diplomacy.";
+b_Goal_TributeClaim.Parameter        = {
+    { ParameterType.TerritoryName, en = "Territory", de = "Territorium", },
+    { ParameterType.PlayerID, en = "PlayerID", de = "PlayerID", },
+    { ParameterType.Number, en = "Amount", de = "Menge", },
+    { ParameterType.Number, en = "Length of Period in seconds", de = "Sekunden bis zur nächsten Forderung", },
+    { ParameterType.Number, en = "Time to pay Tribut in seconds", de = "Zeit bis zur Zahlung in Sekunden", },
+    { ParameterType.Default, en = "Start Message for TributQuest", de = "Startnachricht der Tributquest", },
+    { ParameterType.Default, en = "Success Message for TributQuest", de = "Erfolgsnachricht der Tributquest", },
+    { ParameterType.Default, en = "Failure Message for TributQuest", de = "Niederlagenachricht der Tributquest", },
+    { ParameterType.Number, en = "How often to pay (0 = forerver)", de = "Anzahl der Tributquests (0 = unendlich)", },
+    { ParameterType.Custom, en = "Other Owner cancels the Quest", de = "Anderer Spieler kann Quest beenden", },
+    { ParameterType.Custom, en = "About if a rate is not payed", de = "Nicht-bezahlen beendet die Quest", },
+};
+
+function b_Goal_TributeClaim:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        if type(_Parameter) == "string" then
+            _Parameter = GetTerritoryIDByName(_Parameter);
+        end
+        self.TerritoryID = _Parameter;
+    elseif (_Index == 1) then
+        self.PlayerID = _Parameter * 1;
+    elseif (_Index == 2) then
+        self.GoodType = Goods.G_Gold;
+        self.Amount = _Parameter * 1;
+    elseif (_Index == 3) then
+        self.PeriodLength = _Parameter * 1;
+    elseif (_Index == 4) then
+        self.TributTime = _Parameter * 1;
+    elseif (_Index == 5) then
+        self.StartMsg = _Parameter;
+    elseif (_Index == 6) then
+        self.SuccessMsg = _Parameter;
+    elseif (_Index == 7) then
+        self.FailureMsg = _Parameter;
+    elseif (_Index == 8) then
+        self.HowOften = _Parameter * 1;
+    elseif (_Index == 9) then
+        self.OtherOwnerCancels = AcceptAlternativeBoolean(_Parameter);
+    elseif (_Index == 10) then
+        self.DontPayCancels = AcceptAlternativeBoolean(_Parameter);
     end
 end
 
@@ -3637,7 +3815,7 @@ b_Reprisal_FakeDefeat = {
     Name = "Reprisal_FakeDefeat",
     Description = {
         en = "Reprisal: Displays a defeat icon for a quest",
-        de = "Vergeltung: Zeigt ein Niederlage Icon fuer eine Quest an",
+        de = "Vergeltung: Zeigt ein Niederlage Icon für eine Quest an",
     },
 }
 
@@ -4245,7 +4423,7 @@ b_Reprisal_Technology = {
     Name = "Reprisal_Technology",
     Description = {
         en = "Reprisal: Locks or unlocks a technology for the given player",
-        de = "Vergeltung: Sperrt oder erlaubt eine Technolgie fuer den angegebenen Player",
+        de = "Vergeltung: Sperrt oder erlaubt eine Technolgie für den angegebenen Player",
     },
     Parameter = {
         { ParameterType.PlayerID, en = "PlayerID", de = "SpielerID" },
@@ -5604,7 +5782,7 @@ b_Reward_FakeVictory = {
     Name = "Reward_FakeVictory",
     Description = {
         en = "Reward: Display a victory icon for a quest",
-        de = "Lohn: Zeigt ein Siegesicon fuer diese Quest",
+        de = "Lohn: Zeigt ein Siegesicon für diese Quest",
     },
 }
 
@@ -5647,7 +5825,7 @@ b_Reward_AI_SpawnAndAttackTerritory = {
     Name = "Reward_AI_SpawnAndAttackTerritory",
     Description = {
         en = "Reward: Spawns AI troops and attacks a territory (Hint: Use for hidden quests as a surprise)",
-        de = "Lohn: Erstellt KI Truppen und greift ein Territorium an (Tipp: Fuer eine versteckte Quest als Ueberraschung verwenden)",
+        de = "Lohn: Erstellt KI Truppen und greift ein Territorium an (Tipp: Für eine versteckte Quest als Ueberraschung verwenden)",
     },
     Parameter = {
         { ParameterType.PlayerID, en = "AI Player", de = "KI Spieler" },
@@ -5656,7 +5834,7 @@ b_Reward_AI_SpawnAndAttackTerritory = {
         { ParameterType.Number, en = "Sword", de = "Schwert" },
         { ParameterType.Number, en = "Bow", de = "Bogen" },
         { ParameterType.Number, en = "Catapults", de = "Katapulte" },
-        { ParameterType.Number, en = "Siege towers", de = "Belagerungstuerme" },
+        { ParameterType.Number, en = "Siege towers", de = "Belagerungstürme" },
         { ParameterType.Number, en = "Rams", de = "Rammen" },
         { ParameterType.Number, en = "Ammo carts", de = "Munitionswagen" },
         { ParameterType.Custom, en = "Soldier type", de = "Soldatentyp" },
@@ -5941,7 +6119,7 @@ b_Reward_AI_SpawnAndProtectArea = {
         { ParameterType.ScriptName, en = "Spawn point", de = "Erstellungsort" },
         { ParameterType.ScriptName, en = "Target", de = "Ziel" },
         { ParameterType.Number, en = "Radius", de = "Radius" },
-        { ParameterType.Number, en = "Time (-1 for infinite)", de = "Zeit (-1 fuer unendlich)" },
+        { ParameterType.Number, en = "Time (-1 for infinite)", de = "Zeit (-1 für unendlich)" },
         { ParameterType.Number, en = "Sword", de = "Schwert" },
         { ParameterType.Number, en = "Bow", de = "Bogen" },
         { ParameterType.Custom, en = "Capture tradecarts", de = "Handelskarren angreifen" },
@@ -6091,7 +6269,7 @@ b_Reward_AI_SetNumericalFact = {
     Name = "Reward_AI_SetNumericalFact",
     Description = {
         en = "Reward: Sets a numerical fact for the AI player",
-        de = "Lohn: Setzt eine Verhaltensregel fuer den KI-Spieler. ",
+        de = "Lohn: Setzt eine Verhaltensregel für den KI-Spieler. ",
     },
     Parameter = {
         { ParameterType.PlayerID, en = "AI Player",      de = "KI Spieler" },
@@ -6886,7 +7064,7 @@ end
 b_Reward_Technology = API.InstanceTable(b_Reprisal_Technology);
 b_Reward_Technology.Name = "Reward_Technology";
 b_Reward_Technology.Description.en = "Reward: Locks or unlocks a technology for the given player.";
-b_Reward_Technology.Description.de = "Lohn: Sperrt oder erlaubt eine Technolgie fuer den angegebenen Player.";
+b_Reward_Technology.Description.de = "Lohn: Sperrt oder erlaubt eine Technolgie für den angegebenen Player.";
 b_Reward_Technology.GetReprisalTable = nil;
 
 b_Reward_Technology.GetRewardTable = function(self, _Quest)
@@ -7227,11 +7405,11 @@ b_Trigger_OnNeedUnsatisfied = {
     Name = "Trigger_OnNeedUnsatisfied",
     Description = {
         en = "Trigger: if a specified need is unsatisfied",
-        de = "Auslöser: wenn ein bestimmtes Beduerfnis nicht befriedigt ist.",
+        de = "Auslöser: wenn ein bestimmtes Bedürfnis nicht befriedigt ist.",
     },
     Parameter = {
         { ParameterType.PlayerID, en = "Player", de = "Spieler" },
-        { ParameterType.Need, en = "Need", de = "Beduerfnis" },
+        { ParameterType.Need, en = "Need", de = "Bedürfnis" },
         { ParameterType.Number, en = "Workers on strike", de = "Streikende Arbeiter" },
     },
 }

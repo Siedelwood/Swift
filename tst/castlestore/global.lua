@@ -71,7 +71,6 @@ function Mission_FirstMapAction()
     InteractiveObjectDeactivate("IORR3");
     InteractiveObjectDeactivate("IORR4");
     InteractiveObjectDeactivate("IORR5");
-
 end
 
 function SomeFunction(_Question, _Answer)
