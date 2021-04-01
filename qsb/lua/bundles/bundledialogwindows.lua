@@ -690,7 +690,7 @@ function QSB.TextWindow:Show()
     if (stringlen + (carreturn*55)) > 1000 then
         XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatLogSlider",1);
     end
-    if self.Pause then
+    if self.Data.Pause then
         Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
     end
 end
@@ -718,7 +718,7 @@ function QSB.TextWindow:Prepare()
     end
 
     function GUI_Chat.ToggleWhisperTargetUpdate()
-        if self.Pause then
+        if self.Data.Pause then
             Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
         end
     end
