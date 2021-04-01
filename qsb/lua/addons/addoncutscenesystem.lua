@@ -226,6 +226,7 @@ function API.AddFlights(_Cutscene)
     
     local AF = function(_Flight)
         _Cutscene.Length = (_Cutscene.Length or 0) +1;
+        _Flight.__Legit = true;
         table.insert(_Cutscene, _Flight);
         return _Flight;
     end
@@ -334,6 +335,10 @@ function AddOnCutsceneSystem.Global:StartCutscene(_Cutscene, _ID)
     if _Cutscene.Starting then
         _Cutscene:Starting();
     end
+    if not self:AreAllFlightsLegit(_Cutscene) then
+        error("API.StartCutscene: Discovered illegaly added flights inside the cutscene!");
+        return _ID;
+    end
 
     self.Data.CurrentCutscene = _Cutscene;
     self.Data.CurrentCutscene.ID = BundleBriefingSystem.Global.Data.BriefingID;
@@ -400,6 +405,17 @@ function AddOnCutsceneSystem.Global:GetPageIDByName(_FlightName)
         end
     end
     return 0;
+end
+
+function AddOnCutsceneSystem.Global:AreAllFlightsLegit(_Cutscene)
+    for i= 1, #_Cutscene, 1 do
+        if type(_Cutscene[i]) == "table" then
+            if not _Cutscene[i].__Legit then
+                return false;
+            end
+        end
+    end
+    return true;
 end
 
 ---

@@ -15,6 +15,9 @@
 -- für Dialogfenster aktiv sein, wird stattdessen ein Textfenster verwendet.
 -- Die Aktion für die Anzeige kann jedoch frei konfiguriert werden.
 --
+-- <b>Achtung</b>: Damit ein Quest Informationen anzeigen kann muss das Attribut
+-- QuestNotes auf true gesetzt werden.
+--
 -- @within Modulbeschreibung
 -- @set sort=true
 --

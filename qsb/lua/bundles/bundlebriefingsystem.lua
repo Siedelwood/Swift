@@ -263,6 +263,7 @@ function API.AddPages(_Briefing)
     local AP = function(_Page)
         _Briefing.Length = (_Briefing.Length or 0) +1;
         if type(_Page) == "table" then
+            _Page.__Legit = true;
             -- Sprache anpassen
             _Page.Title = API.ConvertPlaceholders(API.Localize(_Page.Title));
             _Page.Text = API.ConvertPlaceholders(API.Localize(_Page.Text));
@@ -692,6 +693,11 @@ function BundleBriefingSystem.Global:StartBriefing(_Briefing, _ID)
         return _ID;
     end
 
+    if not self:AreAllPagesLegit(_Briefing) then
+        error("API.StartBriefing: Discovered illegaly added pages inside the briefing!");
+        return _ID;
+    end
+
     self.Data.CurrentBriefing = API.InstanceTable(_Briefing);
     self.Data.CurrentBriefing.Page = 1;
     self.Data.CurrentBriefing.PageHistory = {};
@@ -834,6 +840,17 @@ end
 --
 function BundleBriefingSystem.Global:IsBriefingActive()
     return self.Data.BriefingActive == true;
+end
+
+function BundleBriefingSystem.Global:AreAllPagesLegit(_Briefing)
+    for i= 1, #_Briefing, 1 do
+        if type(_Briefing[i]) == "table" then
+            if not _Briefing[i].__Legit then
+                return false;
+            end
+        end
+    end
+    return true;
 end
 
 ---
