@@ -307,8 +307,8 @@ AddOnQuestNotes = {
     },
 
     Text = {
-        Next  = {de = "Notizen anzeigen", en = "Show journal"},
-        Title = {de = "Tagebuch", en = "Journal"}
+        Next  = {de = "Notizen anzeigen", en = "Show Notebook"},
+        Title = {de = "Notizbuch", en = "Notebook"}
     },
 }
 
