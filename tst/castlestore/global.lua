@@ -71,40 +71,6 @@ function Mission_FirstMapAction()
     InteractiveObjectDeactivate("IORR3");
     InteractiveObjectDeactivate("IORR4");
     InteractiveObjectDeactivate("IORR5");
-
-    API.CreateQuest {
-        Name = "Test1",
-        Suggestion = "Guck mal hier!",
-        QuestNotes = true,
-
-        Goal_NoChange(),
-        Trigger_Time(5)
-    };
-
-    API.CreateQuest {
-        Name = "Test2",
-        Suggestion = "Guck auch mal hier!",
-        QuestNotes = true,
-
-        Goal_NoChange(),
-        Trigger_Time(5),
-    };
-
-    API.CreateQuest {
-        Name = "Test3",
-        Suggestion = "Guck trotzdem mal hier!",
-        QuestNotes = false,
-
-        Goal_NoChange(),
-        Trigger_Time(5),
-    };
-
-    -- API.PushGlobalQuestInfo("- Das ist normale Nachricht 1!");
-    -- API.PushImportantGlobalQuestInfo("- Das ist wichtige Nachricht 1!");
-    -- API.PushGlobalQuestInfo("- Das ist normale Nachricht 2!");
-    -- API.PushImportantQuestInfo("Test2", "- Das ist wichtige Nachricht 2!");
-
-    API.SetShowQuestInfo(true);
 end
 
 function SomeFunction(_Question, _Answer)

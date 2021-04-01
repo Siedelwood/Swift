@@ -7,10 +7,13 @@
 ---
 -- Dieses Modul erlaubt das Speichern und Anzeigen von Zusatzinformationen zu
 -- Quests. Die Informationen werden mit Klick auf den Informationsbutton neben
--- dem Portrait angezeigt.
+-- dem Portrait angezeigt. Dadurch ist es möglich, dem Spieler erweiterte Hilfe
+-- zu geben oder ihn nach und nach Informationen zusammen tragen zu lassen, die
+-- für die Erfüllung der Mission benötigt werden.
+--
 -- Per Default werden die Informationen als Message angezeigt. Sollte das Bundle
 -- für Dialogfenster aktiv sein, wird stattdessen ein Textfenster verwendet.
--- Die Aktion für die Anzeige kann jedoch konfiguriert werden.
+-- Die Aktion für die Anzeige kann jedoch frei konfiguriert werden.
 --
 -- @within Modulbeschreibung
 -- @set sort=true
@@ -39,9 +42,9 @@ QSB = QSB or {};
 -- @within Anwenderfunktionen
 --
 -- @usage
--- API.SetDefaultQuestInfoAction(SomeActionFunction);
+-- API.SetDefaultNoteAction(SomeActionFunction);
 --
-function API.SetDefaultQuestInfoAction(_Function)
+function API.SetDefaultNoteAction(_Function)
     if GUI then
         return;
     end
@@ -66,9 +69,9 @@ end
 -- @within Anwenderfunktionen
 --
 -- @usage
--- API.SetQuestInfoActionForQuest("MyQuest", SomeSpecializedActionFunction);
+-- API.SetQuestNoteAction("MyQuest", SomeSpecializedActionFunction);
 --
-function API.SetQuestInfoActionForQuest(_QuestName, _Function)
+function API.SetQuestNoteAction(_QuestName, _Function)
     if GUI then
         return;
     end
@@ -97,49 +100,21 @@ function API.SetShowQuestInfo(_Flag)
 end
 
 ---
--- Gibt die Zusatzinformationen eines Quests zurück. Hat ein Quest keine
--- Zusatzinformationen wird nil zurückgegeben.
+-- Fugt eine Zusatzinformation für diesen Quests hinzu.
 --
--- @return[type=table] Zusatinfos des Quest
--- @within Anwenderfunktionen
+-- <b>Hinweis</b>: Die erzeugte ID ist immer eindeutig für alle Einträge,
+-- ungeachtet ob sie einem Quest zugeordnet sind oder nicht.
 --
--- @usage
--- local Text = API.GetQuestInfo();
---
-function API.GetQuestInfo()
-    return AddOnQuestNotes.Global.Data.Journal;
-end
-
----
--- Setzt einen bestimmten Text als Zusatzinformation für Quests.
---
--- @param [type=table] _Text Zusatinfos des Quest
--- @within Anwenderfunktionen
---
--- @usage
--- API.SetQuestInfo("Wichtige Information zum Anzeigen");
---
-function API.SetQuestInfo(_Text)
-    if _Text then
-        _Text = {ID = 1, Quest = nil, Rank = 0, _Text};
-        AddOnQuestNotes.Global.Data.Journal = {ID = 1, _Text};
-    else
-        AddOnQuestNotes.Global.Data.Journal = {ID = 0};
-    end
-end
-
----
--- Fugt eine Zusatzinformation für den Quests hinzu.
---
--- @param [type=string] _Quest Questname
--- @param [type=string] _Text  Zusatinfos des Quest
+-- @param[type=string] _Quest Questname
+-- @param              _Text  Text der Zusatzinfo
 -- @return[type=number] ID des neuen Eintrags
 -- @within Anwenderfunktionen
 --
 -- @usage
--- local NewEntryID = API.PushQuestInfo("SomeQuest", "Wichtige Information zum Anzeigen");
+-- local NewEntryID = API.AddQuestNote("SomeQuest", "Wichtige Information zum Anzeigen");
 --
-function API.PushQuestInfo(_Quest, _Text)
+function API.AddQuestNote(_Quest, _Text)
+    -- Add entry
     AddOnQuestNotes.Global.Data.Journal.ID = AddOnQuestNotes.Global.Data.Journal.ID +1;
     table.insert(AddOnQuestNotes.Global.Data.Journal, {
         ID = AddOnQuestNotes.Global.Data.Journal.ID,
@@ -147,81 +122,120 @@ function API.PushQuestInfo(_Quest, _Text)
         Rank = 0,
         _Text
     });
+    -- Local reference
+    local Index = #AddOnQuestNotes.Global.Data.Journal;
+    Logic.ExecuteInLuaLocalState(string.format(
+        [[AddOnQuestNotes.Local.Data.Journal[%d] = %s]],
+        Index,
+        API.ConvertTableToString(AddOnQuestNotes.Global.Data.Journal[Index])
+    ));
     return AddOnQuestNotes.Global.Data.Journal.ID;
 end
 
 ---
 -- Fugt eine Zusatzinformation für alle Quests hinzu.
 --
--- @param [type=string] _Text Zusatinfos des Quest
+-- <b>Hinweis</b>: Die erzeugte ID ist immer eindeutig für alle Einträge,
+-- ungeachtet ob sie einem Quest zugeordnet sind oder nicht.
+--
+-- @param _Text Text der Zusatzinfo
 -- @return[type=number] ID des neuen Eintrags
 -- @within Anwenderfunktionen
 --
 -- @usage
--- local NewEntryID = API.PushGlobalQuestInfo("Wichtige Information zum Anzeigen");
+-- local NewEntryID = API.AddCommonQuestNote("Wichtige Information zum Anzeigen");
 --
-function API.PushGlobalQuestInfo(_Text)
-    return API.PushQuestInfo(nil, _Text);
+function API.AddCommonQuestNote(_Text)
+    return API.AddQuestNote(nil, _Text);
 end
 
 ---
--- Fugt eine wichtige Zusatzinformation für den Quests hinzu.
+-- Ändert den Text einer Zusatzinformation.
 --
--- <b>Hinweis</b>: Wichtige Zusatzinformationen werden zuerst und rot hinterlegt
--- dargestellt.
+-- <b>Hinweis</b>: Der neue Text bezieht sich auf den Eintrag mit der ID. Ist
+-- der Eintrag für alle Quests sichtbar, wird er in allen Quests geändert.
+-- Kopien eines Eintrags werden nicht berücksichtigt.
 --
--- @param [type=string] _Quest Questname
--- @param [type=string] _Text  Zusatinfos des Quest
--- @return[type=number] ID des neuen Eintrags
+-- @param[type=number] _ID   ID des Eintrag
+-- @param              _Text Neuer Text
 -- @within Anwenderfunktionen
 --
 -- @usage
--- local NewEntryID = API.PushImportantQuestInfo("SomeQuest", "Wichtige Information zum Anzeigen");
+-- API.AlterInfoEntry(SomeEntryID, "Das ist der neue Text");
 --
-function API.PushImportantQuestInfo(_Quest, _Text)
-    AddOnQuestNotes.Global.Data.Journal.ID = AddOnQuestNotes.Global.Data.Journal.ID +1;
-    table.insert(AddOnQuestNotes.Global.Data.Journal, {
-        ID = AddOnQuestNotes.Global.Data.Journal.ID,
-        Quest = _Quest,
-        Rank = 1,
-        _Text
-    });
-    return AddOnQuestNotes.Global.Data.Journal.ID;
-end
-
----
--- Fugt eine wichtige Zusatzinformation für alle Quests hinzu.
---
--- <b>Hinweis</b>: Wichtige Zusatzinformationen werden zuerst und rot hinterlegt
--- dargestellt.
---
--- @param [type=string] _Text Zusatinfos des Quest
--- @return[type=number] ID des neuen Eintrags
--- @within Anwenderfunktionen
---
--- @usage
--- local NewEntryID = API.PushImportantGlobalQuestInfo("Wichtige Information zum Anzeigen");
---
-function API.PushImportantGlobalQuestInfo(_Text)
-    return API.PushImportantQuestInfo(nil, _Text);
+function API.AlterInfoEntry(_ID, _Text)
+    for i= #AddOnQuestNotes.Global.Data.Journal, 1, -1 do
+        if AddOnQuestNotes.Global.Data.Journal[i].ID == _ID then
+            AddOnQuestNotes.Global.Data.Journal[i][1] = _Text;
+            Logic.ExecuteInLuaLocalState(string.format(
+                [[AddOnQuestNotes.Local.Data.Journal[%d] = %s]],
+                i,
+                API.ConvertTableToString(AddOnQuestNotes.Global.Data.Journal[i])
+            ));
+            return;
+        end
+    end
 end
 
 ---
 -- Hebt einen Eintrag aus den Zusatzinformationen als wichtig hervor oder
 -- setzt ihn zurück.
 --
--- @param [type=number]  _ID        ID des Eintrag
--- @param [type=boolean] _Important Wichtig Markierung
+-- <b>Hinweis</b>: Wichtige Einträge erscheinen immer als erstes und sind durch
+-- rote Färbung hervorgehoben.
+--
+-- @param[type=number]  _ID        ID des Eintrag
+-- @param[type=boolean] _Important Wichtig Markierung
 -- @within Anwenderfunktionen
 --
 -- @usage
--- API.HighlightQuestInfoEntry(SomeEntryID, true);
+-- API.HighlightInfoEntry(SomeEntryID, true);
 --
-function API.HighlightQuestInfoEntry(_ID, _Important)
-    for i= 1, #AddOnQuestNotes.Global.Data.Journal, 1 do
+function API.HighlightInfoEntry(_ID, _Important)
+    for i= #AddOnQuestNotes.Global.Data.Journal, 1, -1 do
         if AddOnQuestNotes.Global.Data.Journal[i].ID == _ID then
             AddOnQuestNotes.Global.Data.Journal[i].Rank = (_Important == true and 1) or 0;
+            Logic.ExecuteInLuaLocalState(string.format(
+                [[AddOnQuestNotes.Local.Data.Journal[%d].Rank = %d]],
+                i,
+                (_Important == true and 1) or 0
+            ));
             return;
+        end
+    end
+end
+
+---
+-- Kopiert einen Eintrag als neuen Eintrag in einen anderen Quest.
+--
+-- @param[type=number] _ID    ID des Eintrag
+-- @param[type=string] _Quest Name des neuen Quest
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- API.DeleteInfoEntry(SomeEntryID);
+--
+function API.CopyInfoEntry(_ID, _Quest)
+    for i= #AddOnQuestNotes.Global.Data.Journal, 1, -1 do
+        if AddOnQuestNotes.Global.Data.Journal[i].ID == _ID and AddOnQuestNotes.Global.Data.Journal[i].Quest ~= nil then
+            if AddOnQuestNotes.Global.Data.Journal[i].Quest ~= _Quest then
+                -- Create entry
+                AddOnQuestNotes.Global.Data.Journal.ID = AddOnQuestNotes.Global.Data.Journal.ID +1;
+                table.insert(AddOnQuestNotes.Global.Data.Journal, {
+                    ID = AddOnQuestNotes.Global.Data.Journal.ID,
+                    Quest = _Quest,
+                    Rank = AddOnQuestNotes.Global.Data.Journal[i].Rank,
+                    AddOnQuestNotes.Global.Data.Journal[i][1]
+                });
+                -- Local reference
+                local Index = #AddOnQuestNotes.Global.Data.Journal;
+                Logic.ExecuteInLuaLocalState(string.format(
+                    [[AddOnQuestNotes.Local.Data.Journal[%d] = %s]],
+                    Index,
+                    API.ConvertTableToString(AddOnQuestNotes.Global.Data.Journal[Index])
+                ));
+                return AddOnQuestNotes.Global.Data.Journal.ID;
+            end
         end
     end
 end
@@ -229,16 +243,42 @@ end
 ---
 -- Entfernt einen Eintrag aus den Zusatzinformationen.
 --
--- @param [type=number]  _ID        ID des Eintrag
+-- @param[type=number] _ID ID des Eintrag
 -- @within Anwenderfunktionen
 --
 -- @usage
--- API.DeleteQuestInfoEntry(SomeEntryID);
+-- API.DeleteInfoEntry(SomeEntryID);
 --
-function API.DeleteQuestInfoEntry(_ID)
-    for i= 1, #AddOnQuestNotes.Global.Data.Journal, 1 do
+function API.DeleteInfoEntry(_ID)
+    for i= #AddOnQuestNotes.Global.Data.Journal, 1, -1 do
         if AddOnQuestNotes.Global.Data.Journal[i].ID == _ID then
             AddOnQuestNotes.Global.Data.Journal[i].Deleted = true;
+            Logic.ExecuteInLuaLocalState(string.format(
+                [[AddOnQuestNotes.Local.Data.Journal[%d].Deleted = true]],
+                i
+            ));
+            return;
+        end
+    end
+end
+
+---
+-- Stellt einen gelöschten Eintrag in den Zusatzinformationen wieder her.
+--
+-- @param[type=number] _ID ID des Eintrag
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- API.RestoreInfoEntry(SomeEntryID);
+--
+function API.RestoreInfoEntry(_ID)
+    for i= #AddOnQuestNotes.Global.Data.Journal, 1, -1 do
+        if AddOnQuestNotes.Global.Data.Journal[i].ID == _ID then
+            AddOnQuestNotes.Global.Data.Journal[i].Deleted = false;
+            Logic.ExecuteInLuaLocalState(string.format(
+                [[AddOnQuestNotes.Local.Data.Journal[%d].Deleted = false]],
+                i
+            ));
             return;
         end
     end
@@ -251,12 +291,15 @@ end
 AddOnQuestNotes = {
     Global =  {
         Data = {
-            ShowInfo = {},
-            Journal  = {ID = 0},
+            ShowInfo   = {},
+            Journal    = {ID = 0},
+            TextColor  = "{white}",
+            TextWindow = false,
         },
     },
     Local =  {
         Data = {
+            Journal  = {},
             NextButton = "/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/TutorialNextButton",
             NextButtonIcon = {16, 10},
             ShowJournal = false,
@@ -273,6 +316,9 @@ AddOnQuestNotes = {
 
 function AddOnQuestNotes.Global:Install()
     self:CreateDefaultActionLambda();
+    self.Data.TextWindow = BundleDialogWindows ~= nil;
+    self.Data.TextColor  = (BundleDialogWindows ~= nil and "{tooltip}") or "{white}",
+
     API.AddSaveGameAction(function()
         Logic.ExecuteInLuaLocalState("AddOnQuestNotes.Local:OverrideStringKeys()");
     end);
@@ -280,7 +326,7 @@ end
 
 function AddOnQuestNotes.Global:CreateDefaultActionLambda()
     self.Data.ShowInfo.Default = function(_Quest, _Text)
-        if not BundleDialogWindows then
+        if not self.Data.TextWindow then
             Logic.ExecuteInLuaLocalState(string.format(
                 [[GUI.ClearNotes(); API.Note("%s");]],
                 _Text
@@ -289,7 +335,7 @@ function AddOnQuestNotes.Global:CreateDefaultActionLambda()
             Logic.ExecuteInLuaLocalState(string.format([[
                 if not QSB.TextWindow.Data.Shown then
                     local Text = API.ConvertPlaceholders(API.Localize("%s"));
-                    QSB.TextWindow:New(API.Localize(AddOnQuestNotes.Text.Title), Text):Show();
+                    QSB.TextWindow:New(API.Localize(AddOnQuestNotes.Text.Title), Text):SetPause(false):Show();
                 end
             ]], _Text));
         end
@@ -306,7 +352,7 @@ function AddOnQuestNotes.Global:DisplayQuestNote(_QuestID)
                 if not Journal[i].Deleted then
                     local Text = API.ConvertPlaceholders(API.Localize(Journal[i][1]));
                     if Journal[i].Rank == 1 then
-                        Text = "{scarlet}" .. Text .. "{tooltip}";
+                        Text = "{scarlet}" .. Text .. self.Data.TextColor;
                     end
                     Info = Info .. ((Info ~= "" and "{cr}") or "") .. Text;
                 end
@@ -351,12 +397,8 @@ function AddOnQuestNotes.Local:OverrideUpdateVoiceMessage()
     GUI_Interaction.UpdateVoiceMessage_Orig_AddOnQuestNotes = GUI_Interaction.UpdateVoiceMessage;
     GUI_Interaction.UpdateVoiceMessage = function()
         GUI_Interaction.UpdateVoiceMessage_Orig_AddOnQuestNotes();
-        if not g_Interaction.CurrentMessageQuestIndex then
-            return;
-        end
         if not QuestLog.IsQuestLogShown() then
-            local Quest = Quests[g_Interaction.CurrentMessageQuestIndex];
-            if type(Quest) == "table" and AddOnQuestNotes.Local.Data.ShowJournal and Quest.QuestNotes then
+            if AddOnQuestNotes.Local:IsShowingQuestNoteButton(g_Interaction.CurrentMessageQuestIndex) then
                 XGUIEng.ShowWidget(AddOnQuestNotes.Local.Data.NextButton, 1);
                 SetIcon(
                     AddOnQuestNotes.Local.Data.NextButton,
@@ -367,6 +409,26 @@ function AddOnQuestNotes.Local:OverrideUpdateVoiceMessage()
             end
         end
     end
+end
+
+function AddOnQuestNotes.Local:IsShowingQuestNoteButton(_ID)
+    if not g_Interaction.CurrentMessageQuestIndex then
+        return false;
+    end
+    local Quest = Quests[_ID];
+    if  type(Quest) == "table"
+    and AddOnQuestNotes.Local.Data.ShowJournal 
+    and Quest.QuestNotes 
+    and #AddOnQuestNotes.Local.Data.Journal > 0 then
+        for i= #AddOnQuestNotes.Local.Data.Journal, 1, -1 do
+            if  AddOnQuestNotes.Local.Data.Journal[i].Deleted ~= true
+            and (AddOnQuestNotes.Local.Data.Journal[i].Quest == nil or 
+                 AddOnQuestNotes.Local.Data.Journal[i].Quest == Quest.Identifier) then
+                return true;
+            end
+        end
+    end
+    return false;
 end
 
 function AddOnQuestNotes.Local:OverrideTutorialNext()
