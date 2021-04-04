@@ -33,6 +33,8 @@ if not MapEditor and not GUI then
         gvMission = gvMission or {};
         gvMission.GlobalVariables = Logic.CreateReferenceToTableInGlobaLuaState("gvMission");
         gvMission.ContentPath = "maps/]] ..MapTypeFolder.. [[/" ..Framework.GetCurrentMapName() .. "/";
+        gvMission.MusicRootPath = "music/";
+        gvMission.PlaylistRootPath = "config/sound/";
 
         Script.Load(gvMission.ContentPath.. "questsystembehavior.lua");
         if Mission_LoadFiles then
