@@ -29,10 +29,64 @@ QSB = QSB or {};
 -- des Spiels gespeichert werden. Die Playlist gehört ebenfalls ins Root-
 -- Verzeichnis nach <i>config/sound/</i>.
 --
+-- Bereits vorhandene Playlists im Hauptspiel:
+-- <pre>config/sound/playlistbackgroundgeneric.xml
+--config/sound/playlistbackgroundmiddleeurope.xml
+--config/sound/playlistbackgroundnorthafrica.xml
+--config/sound/playlistbackgroundnortheurope.xml
+--config/sound/playlistbackgroundsoutheurope.xml
+--config/sound/playlistbackgroundwintergeneric.xml
+--config/sound/playlistbackgroundwintermiddleeurope.xml
+--config/sound/playlistbackgroundwinternorthafrica.xml
+--config/sound/playlistbackgroundwinternortheurope.xml
+--config/sound/playlistbackgroundwintersoutheurope.xml
+--config/sound/playlistcombatlargegeneric.xml
+--config/sound/playlistcombatlargemiddleeurope.xml
+--config/sound/playlistcombatlargenorthafrica.xml
+--config/sound/playlistcombatlargenortheurope.xml
+--config/sound/playlistcombatlargesoutheurope.xml
+--config/sound/playlistcombatsmallgeneric.xml
+--config/sound/playlistcombatsmallmiddleeurope.xml
+--config/sound/playlistcombatsmallnorthafrica.xml
+--config/sound/playlistcombatsmallnortheurope.xml
+--config/sound/playlistcombatsmallsoutheurope.xml
+--config/sound/playlisteventantagonist.xml
+--config/sound/playlisteventblaze.xml
+--config/sound/playlisteventexploration.xml
+--config/sound/playlisteventfestival.xml
+--config/sound/playlisteventgamelost.xml
+--config/sound/playlisteventgamewon.xml
+--config/sound/playlisteventheroic.xml
+--config/sound/playlisteventplague.xml
+--config/sound/playlisteventsad.xml
+--config/sound/playlisteventsiege.xml
+--config/sound/playlisteventsinging.xml
+--config/sound/playlisteventstorm.xml
+--config/sound/playlistlocation.xml
+--config/sound/playlistlocationcitymiddleeurope.xml
+--config/sound/playlistlocationcitynorthafrica.xml
+--config/sound/playlistlocationcitynortheurope.xml
+--config/sound/playlistlocationcitysoutheurope.xml
+--config/sound/playlistlocationvillagemiddleeurope.xml
+--config/sound/playlistlocationvillagenorthafrica.xml
+--config/sound/playlistlocationvillagenortheurope.xml
+--config/sound/playlistlocationvillagesoutheurope.xml
+--config/sound/playlistthroneroommiddleeurope.xml
+--config/sound/playlistthroneroomnorthafrica.xml
+--config/sound/playlistthroneroomnortheurope.xml
+--config/sound/playlistthroneroomsoutheurope.xml
+--config/sound/playlistui.xml</pre>
+--
+-- Zusätzlich vorhandene Playlists in Reich des Ostens:
+--<pre>config/sound/playlistbackgroundasia.xml
+--config/sound/playlistbackgroundwinterasia.xml
+--config/sound/playlistcombatsmallasia.xml
+--config/sound/playlistthroneroomasia.xml</pre>
+--
 -- Verzeichnisstruktur für eigene Musik:
 -- <pre>map_xyz.s6xmap.unpacked
---|-- music/*
---|-- config/sound/*
+--|-- music/*        <-- Hier liegen die MP3-Dateien
+--|-- config/sound/* <-- Hier liegen die XML-Dateien
 --|-- maps/externalmap/map_xyz/*
 --|-- ...</pre>
 --
@@ -42,7 +96,7 @@ QSB = QSB or {};
 -- Wenn du eigene Musik verwendest, achte darauf, einen möglichst eindeutigen
 -- Namen zu verwenden. Und natürlich auch auf Urheberrecht!
 --
--- Beispiel für eine Playlist:
+-- Beispiel für eine eigene Playlist:
 -- <pre>
 --&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
 --&lt;PlayList&gt;
