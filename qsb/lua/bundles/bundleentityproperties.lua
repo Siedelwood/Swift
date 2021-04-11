@@ -389,7 +389,7 @@ IsBurning = API.IsBuildingBurning;
 -- <b>Alias</b>: SetBurning
 --
 -- @param               _Entity   Entity (Scriptname oder ID)
--- @param[type=number]  _FireSize (Optional) Neue aktuelle Gesundheit
+-- @param[type=number]  _FireSize (Optional) Stärke des Brand
 -- @within Anwenderfunktionen
 --
 function API.SetEntityBuildingBurning(_Entity, _FireSize)
