@@ -136,7 +136,7 @@ end
 -- @param               _Entity   Entity zum versetzen (Skriptname oder ID)
 -- @param               _Position Neue Ziel (Skriptname oder ID)
 -- @param[type=number]  _Distance Entfernung zum Ziel
--- @param[type=number]  _Angle    Winkel
+-- @param[type=number]  _Angle    Winkel um die Position
 -- @within Anwenderfunktionen
 --
 -- @usage

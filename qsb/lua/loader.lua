@@ -145,7 +145,7 @@ SymfoniaLoader = {
             },
 
             {
-            "AddonCutsceneSystem",                  true,
+            "AddOnCutsceneSystem",                  true,
             "BundleBriefingSystem",
             },
 

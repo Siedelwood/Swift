@@ -15,6 +15,9 @@
 -- für Dialogfenster aktiv sein, wird stattdessen ein Textfenster verwendet.
 -- Die Aktion für die Anzeige kann jedoch frei konfiguriert werden.
 --
+-- <b>Achtung</b>: Damit ein Quest Informationen anzeigen kann muss das Attribut
+-- QuestNotes auf true gesetzt werden.
+--
 -- @within Modulbeschreibung
 -- @set sort=true
 --
@@ -82,21 +85,50 @@ end
 -- Aktiviert oder Deaktiviert die Verfügbarkeit der Zusatzinformationen global
 -- für alle Quests.
 --
+-- <b>Hinweis</b>: Die Zusatzinformationen sind generell erlaubt.
+--
 -- @param[type=boolean] _Flag Zusatzinfos aktivieren
 -- @within Anwenderfunktionen
 --
 -- @usage
 -- -- Global deaktivieren
--- API.SetShowQuestInfo(false);
+-- API.SetAllowQuestInfo(false);
 -- -- Global aktivieren
--- API.SetShowQuestInfo(false);
+-- API.SetAllowQuestInfo(true);
 --
-function API.SetShowQuestInfo(_Flag)
+function API.SetAllowQuestInfo(_Flag)
     if not GUI then
-        Logic.ExecuteInLuaLocalState(string.format([[API.SetShowQuestInfo(%s)]], tostring(_Flag)))
+        Logic.ExecuteInLuaLocalState(string.format([[API.SetAllowQuestInfo(%s)]], tostring(_Flag)))
         return;
     end
     AddOnQuestNotes.Local.Data.ShowJournal = _Flag == true;
+end
+
+---
+-- Aktiviert oder Deaktiviert die Verfügbarkeit der Zusatzinformationen für den
+-- übergebenen Quest.
+--
+-- <b>Hinweis</b>: Die Sichtbarkeit der Zusatzinformationen für einzelne Quests
+-- ist generell deaktiviert und muss explizit aktiviert werden.
+--
+-- @param[type=string]  _Quest Name des Quest
+-- @param[type=boolean] _Flag  Zusatzinfos aktivieren
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- -- Deaktivieren
+-- API.SetShowQuestInfo("MyQuest", false);
+-- -- Aktivieren
+-- API.SetShowQuestInfo("MyQuest", true);
+--
+function API.SetActivateQuestInfoForQuest(_Quest, _Flag)
+    if GUI then
+        return;
+    end
+    local Quest = Quests[GetQuestID(_Quest)];
+    if Quest then
+        Quest.QuestNotes = _Flag == true
+    end
 end
 
 ---
@@ -111,7 +143,7 @@ end
 -- @within Anwenderfunktionen
 --
 -- @usage
--- local NewEntryID = API.AddQuestNote("SomeQuest", "Wichtige Information zum Anzeigen");
+-- local NewEntryID = API.AddQuestNote("MyQuest", "Wichtige Information zum Anzeigen");
 --
 function API.AddQuestNote(_Quest, _Text)
     -- Add entry
@@ -213,7 +245,7 @@ end
 -- @within Anwenderfunktionen
 --
 -- @usage
--- API.DeleteInfoEntry(SomeEntryID);
+-- local NewEntryID = API.CopyInfoEntry(SomeEntryID, "MyOtherQuest");
 --
 function API.CopyInfoEntry(_ID, _Quest)
     for i= #AddOnQuestNotes.Global.Data.Journal, 1, -1 do
@@ -307,8 +339,8 @@ AddOnQuestNotes = {
     },
 
     Text = {
-        Next  = {de = "Notizen anzeigen", en = "Show journal"},
-        Title = {de = "Tagebuch", en = "Journal"}
+        Next  = {de = "Notizen anzeigen", en = "Show Notebook"},
+        Title = {de = "Notizbuch", en = "Notebook"}
     },
 }
 

@@ -220,9 +220,11 @@ Core:RegisterBehavior(b_Goal_Deliver);
 -- werden. Der Status kann eine Verbesserung oder eine Verschlechterung zum
 -- aktuellen Status sein.
 --
--- Die Relation kann entweder auf kleiner oder gleich (<=), größer oder gleich
--- (>=), oder exakte Gleichheit (==) eingestellt werden. Exakte GLeichheit ist
--- wegen der Gefahr eines Soft Locks mit Vorsicht zu genießen.
+-- Die Relation kann entweder auf kleiner (<), kleiner oder gleich (<=), genau
+-- gleich (==), größer oder gleich (>=), größer (>) oder ungleich (~=) 
+-- eingestellt werden. Bei Prüfung auf genaue Gleicheit musst du darauf achten,
+-- das dieser Zustand erreicht werden kann bzw. nicht schon überschritten oder
+-- unterboten wurde.
 --
 -- @param _PlayerID Partei, die Entdeckt werden muss
 -- @param _Relation Größer-Kleiner-Relation
@@ -245,41 +247,35 @@ b_Goal_Diplomacy = {
         { ParameterType.Custom,   en = "Relation", de = "Relation" },
         { ParameterType.Custom,   en = "Diplomacy state", de = "Diplomatische Beziehung" },
     },
-    DiploNameMap = {
-        [DiplomacyStates.Allied]             = {de = "Verbündeter",    en = "Allied"},
-        [DiplomacyStates.TradeContact]       = {de = "Handelspartner", en = "Trade Contact"},
-        [DiplomacyStates.EstablishedContact] = {de = "Bekannt",        en = "Established Contact"},
-        [DiplomacyStates.Undecided]          = {de = "Unbekannt",      en = "Undecided"},
-        [DiplomacyStates.Enemy]              = {de = "Feind",          en = "Enemy"},
-    },
-    TextPattern = {
-        de = "DIPLOMATIESTATUS ERREICHEN {cr}{cr}Status: %s{cr}Zur Partei: %s",
-        en = "DIPLOMATIC STATE {cr}{cr}State: %s{cr}To player: %s",
-    },
 }
 
 function b_Goal_Diplomacy:GetGoalTable()
     return { Objective.Custom2, {self, self.CustomFunction}};
 end
 
-function b_Goal_Diplomacy:ChangeCaption(_Quest)
-    local PlayerName = GetPlayerName(self.PlayerID) or "";
-    local Text = string.format(API.Localize(self.TextPattern), API.Localize(self.DiploNameMap[self.DiplState]), PlayerName);
-    Core:ChangeCustomQuestCaptionText(Text, _Quest);
-end
-
 function b_Goal_Diplomacy:CustomFunction(_Quest)
-    self:ChangeCaption(_Quest);
-    if self.Relation == "<=" then
+    if self.Relation == "<" then
+        if GetDiplomacyState(_Quest.ReceivingPlayer, self.PlayerID) < self.DiplState then
+            return true;
+        end
+    elseif self.Relation == "<=" then
         if GetDiplomacyState(_Quest.ReceivingPlayer, self.PlayerID) <= self.DiplState then
+            return true;
+        end
+    elseif self.Relation == "==" then
+        if GetDiplomacyState(_Quest.ReceivingPlayer, self.PlayerID) == self.DiplState then
             return true;
         end
     elseif self.Relation == ">=" then
         if GetDiplomacyState(_Quest.ReceivingPlayer, self.PlayerID) >= self.DiplState then
             return true;
         end
+    elseif self.Relation == ">" then
+        if GetDiplomacyState(_Quest.ReceivingPlayer, self.PlayerID) > self.DiplState then
+            return true;
+        end
     else
-        if GetDiplomacyState(_Quest.ReceivingPlayer, self.PlayerID) == self.DiplState then
+        if GetDiplomacyState(_Quest.ReceivingPlayer, self.PlayerID) ~= self.DiplState then
             return true;
         end
     end
@@ -301,7 +297,7 @@ end
 
 function b_Goal_Diplomacy:GetCustomData(_Index)
     if _Index == 1 then
-        return {">=", "<=", "=="};
+        return {">", ">=", "==", "<=", "<", "~="};
     elseif _Index == 2 then
         return {"Allied", "TradeContact", "EstablishedContact", "Undecided", "Enemy"};
     end
