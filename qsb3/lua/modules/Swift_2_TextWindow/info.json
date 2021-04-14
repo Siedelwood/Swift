@@ -1,7 +1,7 @@
 {
-    "name": "Swift_1_TextCore",
+    "name": "Swift_2_TextWindow",
     "version": "1.0.0",
-    "caption": "(1) Text Core",
+    "caption": "(2) TextWindow",
     "shortdesc": "",
     "description": "",
     "files": [
@@ -9,6 +9,8 @@
         "api.lua"
     ],
     "dependencies": [
-        "Swift_0_Core"
+        "Swift_1_InputOutputCore",
+        "Swift_1_DisplayCore",
+        "Swift_1_JobsCore"
     ]
 }

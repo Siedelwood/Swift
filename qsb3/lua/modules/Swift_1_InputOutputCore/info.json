@@ -1,7 +1,7 @@
 {
-    "name": "Swift_1_DialogCore",
+    "name": "Swift_1_InputOutputCore",
     "version": "1.0.0",
-    "caption": "(1) Dialog Core",
+    "caption": "(1) Input/Output Core",
     "shortdesc": "",
     "description": "",
     "files": [

@@ -1,5 +1,5 @@
 {
-    "name": "Swift_2_DialogTypewriter",
+    "name": "Swift_2_Typewriter",
     "version": "1.0.0",
     "caption": "(2) Typewriter",
     "shortdesc": "",
@@ -9,7 +9,7 @@
         "api.lua"
     ],
     "dependencies": [
-        "Swift_1_DialogCore",
+        "Swift_1_InputOutputCore",
         "Swift_1_DisplayCore",
         "Swift_1_JobsCore"
     ]

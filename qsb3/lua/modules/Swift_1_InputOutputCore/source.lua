@@ -1,0 +1,394 @@
+-- -------------------------------------------------------------------------- --
+-- Module Text Tools                                                          --
+-- -------------------------------------------------------------------------- --
+
+ModuleInputOutputCore = {
+    Properties = {
+        Name = "ModuleInputOutputCore",
+    },
+
+    Global = {};
+    Local  = {
+        Requester = {
+            ActionFunction = nil,
+            ActionRequester = nil,
+            Next = nil,
+            Queue = {},
+        },
+    };
+    -- This is a shared structure but the values are asynchronous!
+    Shared = {
+        Colors = {
+            red     = "{@color:255,80,80,255}",
+            blue    = "{@color:104,104,232,255}",
+            yellow  = "{@color:255,255,80,255}",
+            green   = "{@color:80,180,0,255}",
+            white   = "{@color:255,255,255,255}",
+            black   = "{@color:0,0,0,255}",
+            grey    = "{@color:140,140,140,255}",
+            azure   = "{@color:0,160,190,255}",
+            orange  = "{@color:255,176,30,255}",
+            amber   = "{@color:224,197,117,255}",
+            violet  = "{@color:180,100,190,255}",
+            pink    = "{@color:255,170,200,255}",
+            scarlet = "{@color:190,0,0,255}",
+            magenta = "{@color:190,0,89,255}",
+            olive   = "{@color:74,120,0,255}",
+            sky     = "{@color:145,170,210,255}",
+            tooltip = "{@color:51,51,120,255}",
+            lucid   = "{@color:0,0,0,0}"
+        },
+
+        Placeholders = {
+            Names = {},
+            EntityTypes = {},
+        };
+    };
+};
+
+-- Global ------------------------------------------------------------------- --
+
+function ModuleInputOutputCore.Global:OnGameStart()
+    Swift.GetTextOfDesiredLanguage = function(self, _Table)
+        return ModuleInputOutputCore.Shared:Localize(_Table);
+    end
+    API.AddSaveGameAction(function ()
+        Logic.ExecuteInLuaLocalState("ModuleInputOutputCore.Local.DialogAltF4Hotkey()");
+    end);
+end
+
+-- Local -------------------------------------------------------------------- --
+
+function ModuleInputOutputCore.Local:OnGameStart()
+    Swift.GetTextOfDesiredLanguage = function(self, _Table)
+        return ModuleInputOutputCore.Shared:Localize(_Table);
+    end
+    self:DialogOverwriteOriginal();
+    self:DialogAltF4Hotkey();
+end
+
+function ModuleInputOutputCore.Local:DialogAltF4Hotkey()
+    StartSimpleJobEx(function ()
+        if not API.IsLoadscreenVisible() then
+            Input.KeyBindDown(Keys.ModifierAlt + Keys.F4, "ModuleInputOutputCore.Local:DialogAltF4Action()", 30, false);
+            return true;
+        end
+    end);
+end
+
+function ModuleInputOutputCore.Local:DialogAltF4Action()
+    -- Muss leider sein, sonst werden mehr Elemente in die Queue geladen
+    Input.KeyBindDown(Keys.ModifierAlt + Keys.F4, "", 30, false);
+
+    -- Selbstgebauten Dialog öffnen
+    self:OpenRequesterDialog(
+        XGUIEng.GetStringTableText("UI_Texts/MainMenuExitGame_center"),
+        XGUIEng.GetStringTableText("UI_Texts/ConfirmQuitCurrentGame"),
+        function (_Yes) 
+            if _Yes then 
+                Framework.ExitGame(); 
+            end
+            ModuleInputOutputCore.Local:DialogAltF4Hotkey();
+            Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
+        end
+    );
+
+    -- Zeit anhelten
+    Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
+end
+
+function ModuleInputOutputCore.Local:Callback()
+    if self.Requester.ActionFunction then
+        self.Requester.ActionFunction(CustomGame.Knight + 1);
+    end
+    self:OnDialogClosed();
+end
+
+function ModuleInputOutputCore.Local:CallbackRequester(_yes)
+    if self.Requester.ActionRequester then
+        self.Requester.ActionRequester(_yes);
+    end
+    self:OnDialogClosed();
+end
+
+function ModuleInputOutputCore.Local:OnDialogClosed()
+    self:DialogQueueStartNext();
+    self:RestoreSaveGame();
+end
+
+function ModuleInputOutputCore.Local:DialogQueueStartNext()
+    self.Requester.Next = table.remove(self.Requester.Queue, 1);
+
+    DialogQueueStartNext_HiResControl = function()
+        local Entry = ModuleInputOutputCore.Local.Requester.Next;
+        if Entry and Entry[1] and Entry[2] then
+            local Methode = Entry[1];
+            ModuleInputOutputCore.Local[Methode]( ModuleInputOutputCore.Local, unpack(Entry[2]) );
+            ModuleInputOutputCore.Local.Requester.Next = nil;
+        end
+        return true;
+    end
+    StartSimpleHiResJob("DialogQueueStartNext_HiResControl");
+end
+
+function ModuleInputOutputCore.Local:DialogQueuePush(_Methode, _Args)
+    local Entry = {_Methode, _Args};
+    table.insert(self.Requester.Queue, Entry);
+end
+
+function ModuleInputOutputCore.Local:OpenDialog(_Title, _Text, _Action)
+    if XGUIEng.IsWidgetShown(RequesterDialog) == 0 then
+        assert(type(_Title) == "string");
+        assert(type(_Text) == "string");
+
+        _Title = "{center}" .. _Title;
+        if string.len(_Text) < 35 then
+            _Text = _Text .. "{cr}";
+        end
+
+        g_MapAndHeroPreview.SelectKnight = function()
+        end
+
+        XGUIEng.ShowAllSubWidgets("/InGame/Dialog/BG",1);
+        XGUIEng.ShowWidget("/InGame/Dialog/Backdrop",0);
+        XGUIEng.ShowWidget(RequesterDialog,1);
+        XGUIEng.ShowWidget(RequesterDialog_Yes,0);
+        XGUIEng.ShowWidget(RequesterDialog_No,0);
+        XGUIEng.ShowWidget(RequesterDialog_Ok,1);
+
+        if type(_Action) == "function" then
+            self.Requester.ActionFunction = _Action;
+            local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)";
+            Action = Action .. "; Game.GameTimeSetFactor(GUI.GetPlayerID(), 1)";
+            Action = Action .. "; XGUIEng.PopPage()";
+            Action = Action .. "; ModuleInputOutputCore.Local.Callback(ModuleInputOutputCore.Local)";
+            XGUIEng.SetActionFunction(RequesterDialog_Ok, Action);
+        else
+            self.Requester.ActionFunction = nil;
+            local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)";
+            Action = Action .. "; Game.GameTimeSetFactor(GUI.GetPlayerID(), 1)";
+            Action = Action .. "; XGUIEng.PopPage()";
+            Action = Action .. "; ModuleInputOutputCore.Local.Callback(ModuleInputOutputCore.Local)";
+            XGUIEng.SetActionFunction(RequesterDialog_Ok, Action);
+        end
+
+        XGUIEng.SetText(RequesterDialog_Message, "{center}" .. _Text);
+        XGUIEng.SetText(RequesterDialog_Title, _Title);
+        XGUIEng.SetText(RequesterDialog_Title.."White", _Title);
+        XGUIEng.PushPage(RequesterDialog,false);
+
+        XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/QuickSave", 0);
+        XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/SaveGame", 0);
+        if not KeyBindings_SaveGame_Orig_QSB_Windows then
+            KeyBindings_SaveGame_Orig_QSB_Windows = KeyBindings_SaveGame;
+            KeyBindings_SaveGame = function() end;
+        end
+        Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
+    else
+        self:DialogQueuePush("OpenDialog", {_Title, _Text, _Action});
+    end
+end
+
+function ModuleInputOutputCore.Local:OpenRequesterDialog(_Title, _Text, _Action, _OkCancel)
+    if XGUIEng.IsWidgetShown(RequesterDialog) == 0 then
+        assert(type(_Title) == "string");
+        assert(type(_Text) == "string");
+        _Title = "{center}" .. _Title;
+
+        self:OpenDialog(_Title, _Text, _Action);
+        XGUIEng.ShowWidget(RequesterDialog_Yes,1);
+        XGUIEng.ShowWidget(RequesterDialog_No,1);
+        XGUIEng.ShowWidget(RequesterDialog_Ok,0);
+
+        if _OkCancel ~= nil then
+            XGUIEng.SetText(RequesterDialog_Yes, XGUIEng.GetStringTableText("UI_Texts/Ok_center"));
+            XGUIEng.SetText(RequesterDialog_No, XGUIEng.GetStringTableText("UI_Texts/Cancel_center"));
+        else
+            XGUIEng.SetText(RequesterDialog_Yes, XGUIEng.GetStringTableText("UI_Texts/Yes_center"));
+            XGUIEng.SetText(RequesterDialog_No, XGUIEng.GetStringTableText("UI_Texts/No_center"));
+        end
+
+        self.Requester.ActionRequester = nil;
+        if _Action then
+            assert(type(_Action) == "function");
+            self.Requester.ActionRequester = _Action;
+        end
+        local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)";
+        Action = Action .. "; Game.GameTimeSetFactor(GUI.GetPlayerID(), 1)";
+        Action = Action .. "; XGUIEng.PopPage()";
+        Action = Action .. "; ModuleInputOutputCore.Local.CallbackRequester(ModuleInputOutputCore.Local, true)"
+        XGUIEng.SetActionFunction(RequesterDialog_Yes, Action);
+        local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)"
+        Action = Action .. "; Game.GameTimeSetFactor(GUI.GetPlayerID(), 1)";
+        Action = Action .. "; XGUIEng.PopPage()";
+        Action = Action .. "; ModuleInputOutputCore.Local.CallbackRequester(ModuleInputOutputCore.Local, false)"
+        XGUIEng.SetActionFunction(RequesterDialog_No, Action);
+    else
+        self:DialogQueuePush("OpenRequesterDialog", {_Title, _Text, _Action, _OkCancel});
+    end
+end
+
+function ModuleInputOutputCore.Local:OpenSelectionDialog(_Title, _Text, _Action, _List)
+    if XGUIEng.IsWidgetShown(RequesterDialog) == 0 then
+        self:OpenDialog(_Title, _Text, _Action);
+
+        local HeroComboBoxID = XGUIEng.GetWidgetID(CustomGame.Widget.KnightsList);
+        XGUIEng.ListBoxPopAll(HeroComboBoxID);
+        for i=1,#_List do
+            XGUIEng.ListBoxPushItem(HeroComboBoxID, _List[i] );
+        end
+        XGUIEng.ListBoxSetSelectedIndex(HeroComboBoxID, 0);
+        CustomGame.Knight = 0;
+
+        local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)"
+        Action = Action .. "; Game.GameTimeSetFactor(GUI.GetPlayerID(), 1)";
+        Action = Action .. "; XGUIEng.PopPage()";
+        Action = Action .. "; XGUIEng.PopPage()";
+        Action = Action .. "; XGUIEng.PopPage()";
+        Action = Action .. "; ModuleInputOutputCore.Local.Callback(ModuleInputOutputCore.Local)";
+        XGUIEng.SetActionFunction(RequesterDialog_Ok, Action);
+
+        local Container = "/InGame/Singleplayer/CustomGame/ContainerSelection/";
+        XGUIEng.SetText(Container .. "HeroComboBoxMain/HeroComboBox", "");
+        if _List[1] then
+            XGUIEng.SetText(Container .. "HeroComboBoxMain/HeroComboBox", _List[1]);
+        end
+        XGUIEng.PushPage(Container .. "HeroComboBoxContainer", false);
+        XGUIEng.PushPage(Container .. "HeroComboBoxMain",false);
+        XGUIEng.ShowWidget(Container .. "HeroComboBoxContainer", 0);
+        local screen = {GUI.GetScreenSize()};
+        local x1, y1 = XGUIEng.GetWidgetScreenPosition(RequesterDialog_Ok);
+        XGUIEng.SetWidgetScreenPosition(Container .. "HeroComboBoxMain", x1-25, y1-(90*(screen[2]/1080)));
+        XGUIEng.SetWidgetScreenPosition(Container .. "HeroComboBoxContainer", x1-25, y1-(20*(screen[2]/1080)));
+    else
+        self:DialogQueuePush("OpenSelectionDialog", {_Title, _Text, _Action, _List});
+    end
+end
+
+function ModuleInputOutputCore.Local:RestoreSaveGame()
+    if BundleGameHelperFunctions and not BundleGameHelperFunctions.Local.ForbidSave then
+        XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/QuickSave", 1);
+        XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/SaveGame", 1);
+    end
+    if KeyBindings_SaveGame_Orig_QSB_Windows then
+        KeyBindings_SaveGame = KeyBindings_SaveGame_Orig_QSB_Windows;
+        KeyBindings_SaveGame_Orig_QSB_Windows = nil;
+    end
+end
+
+function ModuleInputOutputCore.Local:DialogOverwriteOriginal()
+    OpenDialog_Orig_Windows = OpenDialog;
+    OpenDialog = function(_Message, _Title, _IsMPError)
+        if XGUIEng.IsWidgetShown(RequesterDialog) == 0 then
+            local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)";
+            Action = Action .. "; XGUIEng.PopPage()";
+            OpenDialog_Orig_Windows(_Title, _Message);
+        end
+    end
+
+    OpenRequesterDialog_Orig_Windows = OpenRequesterDialog;
+    OpenRequesterDialog = function(_Message, _Title, action, _OkCancel, no_action)
+        if XGUIEng.IsWidgetShown(RequesterDialog) == 0 then
+            local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)";
+            Action = Action .. "; XGUIEng.PopPage()";
+            XGUIEng.SetActionFunction(RequesterDialog_Yes, Action);
+            local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)";
+            Action = Action .. "; XGUIEng.PopPage()";
+            XGUIEng.SetActionFunction(RequesterDialog_No, Action);
+            OpenRequesterDialog_Orig_Windows(_Message, _Title, action, _OkCancel, no_action);
+        end
+    end
+end
+
+-- Shared ------------------------------------------------------------------- --
+
+function ModuleInputOutputCore.Shared:Note(_Text)
+    _Text = self.Shared:ConvertPlaceholders(self.Shared:Localize(_Text));
+    if Swift:IsGlobalEnvironment() then
+        Logic.DEBUG_AddNote(_Text);
+    else
+        GUI.AddNote(_text);
+    end
+end
+
+function ModuleInputOutputCore.Shared:StaticNote(_Text)
+    _Text = self.Shared:ConvertPlaceholders(self.Shared:Localize(_Text));
+    if Swift:IsGlobalEnvironment() then
+        Logic.ExecuteInLuaLocalState(string.format([[GUI.AddStaticNote("%s")]], _Text));
+        return;
+    end
+    GUI.AddStaticNote(_text);
+end
+
+function ModuleInputOutputCore.Shared:Message(_Text)
+    _Text = self.Shared:ConvertPlaceholders(self.Shared:Localize(_Text));
+    if Swift:IsGlobalEnvironment() then
+        Logic.ExecuteInLuaLocalState(string.format([[Message("%s")]], _Text));
+        return;
+    end
+    Message(_Text);
+end
+
+function ModuleInputOutputCore.Shared:ClearNotes()
+    if Swift:IsGlobalEnvironment() then
+        Logic.ExecuteInLuaLocalState([[GUI.ClearNotes()]]);
+        return;
+    end
+    GUI.ClearNotes();
+end
+
+function ModuleInputOutputCore.Shared:Localize(_Text)
+    if type(_Text) ~= "table" or (_Text.de == nil or _Text.en == nil) then
+        return tostring(_Text);
+    end
+    if _Text[QSB.Language] then
+        return tostring(_Text[QSB.Language]);
+    end
+    if _Text.en then
+        return tostring(_Text.en);
+    end
+    return tostring(_Text);
+end
+
+function ModuleInputOutputCore.Shared:ConvertPlaceholders(_Text)
+    local s1, e1, s2, e2;
+    while true do
+        local Before, Placeholder, After, Replacement, s1, e1, s2, e2;
+        if _Text:find("{name:") then
+            Before, Placeholder, After, s1, e1, s2, e2 = self.Shared:SplicePlaceholderText(_Text, "{name:");
+            Replacement = self.Shared.Placeholders.Names[Placeholder];
+            _Text = Before .. self.Shared:Localize(Replacement or "ERROR_PLACEHOLDER_NOT_FOUND") .. After;
+        elseif _Text:find("{type:") then
+            Before, Placeholder, After, s1, e1, s2, e2 = self.Shared:SplicePlaceholderText(_Text, "{type:");
+            Replacement = self.Shared.Placeholders.EntityTypes[Placeholder];
+            _Text = Before .. self.Shared:Localize(Replacement or "ERROR_PLACEHOLDER_NOT_FOUND") .. After;
+        end
+        if s1 == nil or e1 == nil or s2 == nil or e2 == nil then
+            break;
+        end
+    end
+    _Text = self.Shared:ReplaceColorPlaceholders(_Text);
+    return _Text;
+end
+
+function ModuleInputOutputCore.Shared:SplicePlaceholderText(_Text, _Start)
+    local s1, e1 = _Text:find(_Start);
+    local s2, e2 = _Text:find("}", e1);
+
+    local Before      = _Text:sub(1, s1-1);
+    local Placeholder = _Text:sub(e1+1, s2-1);
+    local After       = _Text:sub(e2+1);
+    return Before, Placeholder, After, s1, e1, s2, e2;
+end
+
+function ModuleInputOutputCore.Shared:ReplaceColorPlaceholders(_Text)
+    for k, v in pairs(self.Shared.Colors) do
+        _Text = _Text:gsub("{" ..k.. "}", v);
+    end
+    return _Text;
+end
+
+-- -------------------------------------------------------------------------- --
+
+Swift:RegisterModules(ModuleInputOutputCore);
+

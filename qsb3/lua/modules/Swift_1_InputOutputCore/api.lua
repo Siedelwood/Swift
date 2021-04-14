@@ -1,4 +1,4 @@
--- Messages API ------------------------------------------------------------- --
+-- Input/Output API --------------------------------------------------------- --
 
 ---
 -- Modul für die Nutzung von Platzhaltern und zur lokalisierung von Texten.
@@ -30,7 +30,7 @@
 -- @usage API.Note("Das ist eine flüchtige Information!");
 --
 function API.Note(_Text)
-    ModuleTextCore.Shared:Note(ModuleTextCore.Shared:ConvertPlaceholders(_Text));
+    ModuleInputOutputCore.Shared:Note(ModuleInputOutputCore.Shared:ConvertPlaceholders(_Text));
 end
 GUI_Note = API.Note;
 
@@ -48,7 +48,7 @@ GUI_Note = API.Note;
 -- @usage API.StaticNote("Das ist eine dauerhafte Information!");
 --
 function API.StaticNote(_Text)
-    ModuleTextCore.Shared:StaticNote(ModuleTextCore.Shared:ConvertPlaceholders(_Text));
+    ModuleInputOutputCore.Shared:StaticNote(ModuleInputOutputCore.Shared:ConvertPlaceholders(_Text));
 end
 GUI_StaticNote = API.StaticNote;
 
@@ -66,7 +66,7 @@ GUI_StaticNote = API.StaticNote;
 -- @usage API.Message("Das ist eine Nachricht!");
 --
 function API.Message(_Text)
-    ModuleTextCore.Shared:Message(ModuleTextCore.Shared:ConvertPlaceholders(_Text));
+    ModuleInputOutputCore.Shared:Message(ModuleInputOutputCore.Shared:ConvertPlaceholders(_Text));
 end
 GUI_Message = API.Message;
 
@@ -78,7 +78,7 @@ GUI_Message = API.Message;
 -- @usage API.ClearNotes();
 --
 function API.ClearNotes()
-    ModuleTextCore.Shared:ClearNotes();
+    ModuleInputOutputCore.Shared:ClearNotes();
 end
 GUI_ClearNotes = API.ClearNotes;
 
@@ -98,7 +98,7 @@ GUI_ClearNotes = API.ClearNotes;
 -- @usage local Text = API.Localize({de = "Deutsch", en = "English"});
 --
 function API.Localize(_Text)
-    return ModuleTextCore.Shared:Localize(_Text);
+    return ModuleInputOutputCore.Shared:Localize(_Text);
 end
 
 ---
@@ -148,11 +148,11 @@ end
 function API.ConvertPlaceholders(_Message)
     if type(_Message) == "table" then
         for k, v in pairs(_Message) do
-            _Message[k] = ModuleTextCore.Shared:ConvertPlaceholders(v);
+            _Message[k] = ModuleInputOutputCore.Shared:ConvertPlaceholders(v);
         end
         return API.Localize(_Message);
     elseif type(_Message) == "string" then
-        return ModuleTextCore.Shared:ConvertPlaceholders(_Message);
+        return ModuleInputOutputCore.Shared:ConvertPlaceholders(_Message);
     else
         return _Message;
     end
@@ -177,7 +177,7 @@ function API.AddNamePlaceholder(_Name, _Replacement)
         error("API.AddNamePlaceholder: Only strings, numbers, or tables are allowed!");
         return;
     end
-    ModuleTextCore.Shared.Placeholders.Names[_Name] = _Replacement;
+    ModuleInputOutputCore.Shared.Placeholders.Names[_Name] = _Replacement;
 end
 
 ---
@@ -200,6 +200,99 @@ function API.AddEntityTypePlaceholder(_Type, _Replacement)
         error("API.AddEntityTypePlaceholder: EntityType does not exist!");
         return;
     end
-    ModuleTextCore.Shared.Placeholders.EntityTypes[_Type] = _Replacement;
+    ModuleInputOutputCore.Shared.Placeholders.EntityTypes[_Type] = _Replacement;
+end
+
+---
+-- Das Dialog Modul ermöglicht es Dialogfenster anzuzeigen.
+--
+-- <b>Vorausgesetzte Module:</b>
+-- <ul>
+-- <li><a href="Swift_0_Core.api.html">(1) Core</a></li>
+-- </ul>
+--
+-- @within Beschreibung
+-- @set sort=true
+--
+
+---
+-- Öffnet einen Info-Dialog. Sollte bereits ein Dialog zu sehen sein, wird
+-- der Dialog der Dialogwarteschlange hinzugefügt.
+--
+-- @param[type=string]   _Title  Titel des Dialog
+-- @param[type=string]   _Text   Text des Dialog
+-- @param[type=function] _Action Callback-Funktion
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- API.DialogInfoBox("Wichtige Information", "Diese Information ist Spielentscheidend!");
+--
+function API.DialogInfoBox(_Title, _Text, _Action)
+    if not GUI then
+        return;
+    end
+
+    _Title = API.ConvertPlaceholders(API.Localize(_Title));
+    _Text  = API.ConvertPlaceholders(API.Localize(_Text));
+    return ModuleInputOutputCore.Local:OpenDialog(_Title, _Text, _Action);
+end
+
+---
+-- Öffnet einen Ja-Nein-Dialog. Sollte bereits ein Dialog zu sehen sein, wird
+-- der Dialog der Dialogwarteschlange hinzugefügt.
+--
+-- Um die Entscheigung des Spielers abzufragen, wird ein Callback benötigt.
+-- Das Callback bekommt eine Boolean übergeben, sobald der Spieler die
+-- Entscheidung getroffen hat.
+--
+-- @param[type=string]   _Title    Titel des Dialog
+-- @param[type=string]   _Text     Text des Dialog
+-- @param[type=function] _Action   Callback-Funktion
+-- @param[type=boolean]  _OkCancel Okay/Abbrechen statt Ja/Nein
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- function YesNoAction(_yes)
+--     if _yes then GUI.AddNote("Ja wurde gedrückt"); end
+-- end
+-- API.DialogRequestBox("Frage", "Möchtest du das wirklich tun?", YesNoAction, false);
+--
+function API.DialogRequestBox(_Title, _Text, _Action, _OkCancel)
+    if not GUI then
+        return;
+    end
+    _Title = API.ConvertPlaceholders(API.Localize(_Title));
+    _Text = API.ConvertPlaceholders(API.Localize(_Text));
+    return ModuleInputOutputCore.Local:OpenRequesterDialog(_Title, _Text, _Action, _OkCancel);
+end
+
+---
+-- Öffnet einen Auswahldialog. Sollte bereits ein Dialog zu sehen sein, wird
+-- der Dialog der Dialogwarteschlange hinzugefügt.
+--
+-- In diesem Dialog wählt der Spieler eine Option aus einer Liste von Optionen
+-- aus. Anschließend erhält das Callback den Index der selektierten Option.
+--
+-- @param[type=string]   _Title  Titel des Dialog
+-- @param[type=string]   _Text   Text des Dialog
+-- @param[type=function] _Action Callback-Funktion
+-- @param[type=table]    _List   Liste der Optionen
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- function OptionsAction(_idx)
+--     GUI.AddNote(_idx.. " wurde ausgewählt!");
+-- end
+-- local List = {"Option A", "Option B", "Option C"};
+-- API.DialogSelectBox("Auswahl", "Wähle etwas aus!", OptionsAction, List);
+--
+function API.DialogSelectBox(_Title, _Text, _Action, _List)
+    if not GUI then
+        return;
+    end
+    _Title = API.ConvertPlaceholders(API.Localize(_Title));
+    _Text = API.ConvertPlaceholders(API.Localize(_Text));
+    _Text = _Text .. "{cr}";
+    return ModuleInputOutputCore.Local:OpenSelectionDialog(_Title, _Text, _Action, _List);
 end
 

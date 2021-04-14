@@ -1,4 +1,4 @@
--- Dialog API --------------------------------------------------------------- --
+-- Typewriter API ----------------------------------------------------------- --
 
 ---
 -- Ermöglicht die Anzeige eines fortlaufend getippten Text auf dem Bildschirm.
@@ -7,7 +7,7 @@
 --
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
--- <li><a href="Swift_1_DialogCore.api.html">(1) Dialog Core</a></li>
+-- <li><a href="Swift_1_InputOutputCore.api.html">(1) Input/Output Core</a></li>
 -- <li><a href="Swift_1_DisplayCore.api.html">(1) Display Core</a></li>
 -- <li><a href="Swift_1_JobsCore.api.html">(1) Jobs Core</a></li>
 -- </ul>

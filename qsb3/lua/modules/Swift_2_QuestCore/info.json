@@ -10,6 +10,6 @@
     ],
     "dependencies": [
         "Swift_0_Core",
-        "Swift_1_TextCore"
+        "Swift_1_InputOutputCore"
     ]
 }

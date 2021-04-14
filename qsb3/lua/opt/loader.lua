@@ -1,9 +1,9 @@
 OptLoader_BasePath = "maps/externalmap/" ..Framework.GetCurrentMapName().. "/";
 OptLoader_ModuleFiles = {
-    "Swift_1_DialogCore/source.lua",
-    "Swift_1_DialogCore/api.lua",
     "Swift_1_DisplayCore/source.lua",
     "Swift_1_DisplayCore/api.lua",
+    "Swift_1_InputOutputCore/source.lua",
+    "Swift_1_InputOutputCore/api.lua",
     "Swift_1_InterfaceCore/source.lua",
     "Swift_1_InterfaceCore/api.lua",
     "Swift_1_JobsCore/source.lua",
@@ -12,18 +12,18 @@ OptLoader_ModuleFiles = {
     "Swift_1_ScriptingValueCore/api.lua",
     "Swift_1_SoundCore/source.lua",
     "Swift_1_SoundCore/api.lua",
-    "Swift_1_TextCore/source.lua",
-    "Swift_1_TextCore/api.lua",
     "Swift_1_TradingCore/source.lua",
     "Swift_1_TradingCore/api.lua",
-    "Swift_1_DialogTypewriter/source.lua",
-    "Swift_1_DialogTypewriter/api.lua",
     "Swift_2_InteractionCore/source.lua",
     "Swift_2_InteractionCore/api.lua",
+    "Swift_2_QuestCore/source.lua",
+    "Swift_2_QuestCore/api.lua",
+    "Swift_2_TextWindow/source.lua",
+    "Swift_2_TextWindow/api.lua",
+    "Swift_2_Typewriter/source.lua",
+    "Swift_2_Typewriter/api.lua",
     "Swift_2_WeatherCore/source.lua",
     "Swift_2_WeatherCore/api.lua",
-    "Swift_3_QuestCore/source.lua",
-    "Swift_3_QuestCore/api.lua",
 }
 
 function OptLoader_SetBasePath(_Path)

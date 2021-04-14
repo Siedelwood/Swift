@@ -1,20 +1,15 @@
 -- -------------------------------------------------------------------------- --
--- Module Dialog Tools                                                        --
+-- Module Dialog Typewriter                                                   --
 -- -------------------------------------------------------------------------- --
 
-ModuleDialogCore = {
+ModuleTextWindow = {
     Properties = {
-        Name = "ModuleDialogCore",
+        Name = "ModuleTextWindow",
     },
-
+    
     Global = {},
     Local = {
-        Requester = {
-            ActionFunction = nil,
-            ActionRequester = nil,
-            Next = nil,
-            Queue = {},
-        },
+        
     },
     -- This is a shared structure but the values are asynchronous!
     Shared = {};
@@ -22,251 +17,15 @@ ModuleDialogCore = {
 
 -- Global Script ---------------------------------------------------------------
 
-function ModuleDialogCore.Global:OnGameStart()
-    API.AddSaveGameAction(function ()
-        Logic.ExecuteInLuaLocalState("ModuleDialogCore.Local.DialogAltF4Hotkey()");
-    end);
+function ModuleTextWindow.Global:OnGameStart()
 end
 
 -- Local Script ----------------------------------------------------------------
 
-function ModuleDialogCore.Local:OnGameStart()
-    self:DialogOverwriteOriginal();
-    self:DialogAltF4Hotkey();
+function ModuleTextWindow.Local:OnGameStart()
 end
 
-function ModuleDialogCore.Local:DialogAltF4Hotkey()
-    StartSimpleJobEx(function ()
-        if not API.IsLoadscreenVisible() then
-            Input.KeyBindDown(Keys.ModifierAlt + Keys.F4, "ModuleDialogCore.Local:DialogAltF4Action()", 30, false);
-            return true;
-        end
-    end);
-end
 
-function ModuleDialogCore.Local:DialogAltF4Action()
-    -- Muss leider sein, sonst werden mehr Elemente in die Queue geladen
-    Input.KeyBindDown(Keys.ModifierAlt + Keys.F4, "", 30, false);
-
-    -- Selbstgebauten Dialog öffnen
-    self:OpenRequesterDialog(
-        XGUIEng.GetStringTableText("UI_Texts/MainMenuExitGame_center"),
-        XGUIEng.GetStringTableText("UI_Texts/ConfirmQuitCurrentGame"),
-        function (_Yes) 
-            if _Yes then 
-                Framework.ExitGame(); 
-            end
-            ModuleDialogCore.Local:DialogAltF4Hotkey();
-            Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
-        end
-    );
-
-    -- Zeit anhelten
-    Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
-end
-
-function ModuleDialogCore.Local:Callback()
-    if self.Requester.ActionFunction then
-        self.Requester.ActionFunction(CustomGame.Knight + 1);
-    end
-    self:OnDialogClosed();
-end
-
-function ModuleDialogCore.Local:CallbackRequester(_yes)
-    if self.Requester.ActionRequester then
-        self.Requester.ActionRequester(_yes);
-    end
-    self:OnDialogClosed();
-end
-
-function ModuleDialogCore.Local:OnDialogClosed()
-    self:DialogQueueStartNext();
-    self:RestoreSaveGame();
-end
-
-function ModuleDialogCore.Local:DialogQueueStartNext()
-    self.Requester.Next = table.remove(self.Requester.Queue, 1);
-
-    DialogQueueStartNext_HiResControl = function()
-        local Entry = ModuleDialogCore.Local.Requester.Next;
-        if Entry and Entry[1] and Entry[2] then
-            local Methode = Entry[1];
-            ModuleDialogCore.Local[Methode]( ModuleDialogCore.Local, unpack(Entry[2]) );
-            ModuleDialogCore.Local.Requester.Next = nil;
-        end
-        return true;
-    end
-    StartSimpleHiResJob("DialogQueueStartNext_HiResControl");
-end
-
-function ModuleDialogCore.Local:DialogQueuePush(_Methode, _Args)
-    local Entry = {_Methode, _Args};
-    table.insert(self.Requester.Queue, Entry);
-end
-
-function ModuleDialogCore.Local:OpenDialog(_Title, _Text, _Action)
-    if XGUIEng.IsWidgetShown(RequesterDialog) == 0 then
-        assert(type(_Title) == "string");
-        assert(type(_Text) == "string");
-
-        _Title = "{center}" .. _Title;
-        if string.len(_Text) < 35 then
-            _Text = _Text .. "{cr}";
-        end
-
-        g_MapAndHeroPreview.SelectKnight = function()
-        end
-
-        XGUIEng.ShowAllSubWidgets("/InGame/Dialog/BG",1);
-        XGUIEng.ShowWidget("/InGame/Dialog/Backdrop",0);
-        XGUIEng.ShowWidget(RequesterDialog,1);
-        XGUIEng.ShowWidget(RequesterDialog_Yes,0);
-        XGUIEng.ShowWidget(RequesterDialog_No,0);
-        XGUIEng.ShowWidget(RequesterDialog_Ok,1);
-
-        if type(_Action) == "function" then
-            self.Requester.ActionFunction = _Action;
-            local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)";
-            Action = Action .. "; Game.GameTimeSetFactor(GUI.GetPlayerID(), 1)";
-            Action = Action .. "; XGUIEng.PopPage()";
-            Action = Action .. "; ModuleDialogCore.Local.Callback(ModuleDialogCore.Local)";
-            XGUIEng.SetActionFunction(RequesterDialog_Ok, Action);
-        else
-            self.Requester.ActionFunction = nil;
-            local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)";
-            Action = Action .. "; Game.GameTimeSetFactor(GUI.GetPlayerID(), 1)";
-            Action = Action .. "; XGUIEng.PopPage()";
-            Action = Action .. "; ModuleDialogCore.Local.Callback(ModuleDialogCore.Local)";
-            XGUIEng.SetActionFunction(RequesterDialog_Ok, Action);
-        end
-
-        XGUIEng.SetText(RequesterDialog_Message, "{center}" .. _Text);
-        XGUIEng.SetText(RequesterDialog_Title, _Title);
-        XGUIEng.SetText(RequesterDialog_Title.."White", _Title);
-        XGUIEng.PushPage(RequesterDialog,false);
-
-        XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/QuickSave", 0);
-        XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/SaveGame", 0);
-        if not KeyBindings_SaveGame_Orig_QSB_Windows then
-            KeyBindings_SaveGame_Orig_QSB_Windows = KeyBindings_SaveGame;
-            KeyBindings_SaveGame = function() end;
-        end
-        Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
-    else
-        self:DialogQueuePush("OpenDialog", {_Title, _Text, _Action});
-    end
-end
-
-function ModuleDialogCore.Local:OpenRequesterDialog(_Title, _Text, _Action, _OkCancel)
-    if XGUIEng.IsWidgetShown(RequesterDialog) == 0 then
-        assert(type(_Title) == "string");
-        assert(type(_Text) == "string");
-        _Title = "{center}" .. _Title;
-
-        self:OpenDialog(_Title, _Text, _Action);
-        XGUIEng.ShowWidget(RequesterDialog_Yes,1);
-        XGUIEng.ShowWidget(RequesterDialog_No,1);
-        XGUIEng.ShowWidget(RequesterDialog_Ok,0);
-
-        if _OkCancel ~= nil then
-            XGUIEng.SetText(RequesterDialog_Yes, XGUIEng.GetStringTableText("UI_Texts/Ok_center"));
-            XGUIEng.SetText(RequesterDialog_No, XGUIEng.GetStringTableText("UI_Texts/Cancel_center"));
-        else
-            XGUIEng.SetText(RequesterDialog_Yes, XGUIEng.GetStringTableText("UI_Texts/Yes_center"));
-            XGUIEng.SetText(RequesterDialog_No, XGUIEng.GetStringTableText("UI_Texts/No_center"));
-        end
-
-        self.Requester.ActionRequester = nil;
-        if _Action then
-            assert(type(_Action) == "function");
-            self.Requester.ActionRequester = _Action;
-        end
-        local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)";
-        Action = Action .. "; Game.GameTimeSetFactor(GUI.GetPlayerID(), 1)";
-        Action = Action .. "; XGUIEng.PopPage()";
-        Action = Action .. "; ModuleDialogCore.Local.CallbackRequester(ModuleDialogCore.Local, true)"
-        XGUIEng.SetActionFunction(RequesterDialog_Yes, Action);
-        local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)"
-        Action = Action .. "; Game.GameTimeSetFactor(GUI.GetPlayerID(), 1)";
-        Action = Action .. "; XGUIEng.PopPage()";
-        Action = Action .. "; ModuleDialogCore.Local.CallbackRequester(ModuleDialogCore.Local, false)"
-        XGUIEng.SetActionFunction(RequesterDialog_No, Action);
-    else
-        self:DialogQueuePush("OpenRequesterDialog", {_Title, _Text, _Action, _OkCancel});
-    end
-end
-
-function ModuleDialogCore.Local:OpenSelectionDialog(_Title, _Text, _Action, _List)
-    if XGUIEng.IsWidgetShown(RequesterDialog) == 0 then
-        self:OpenDialog(_Title, _Text, _Action);
-
-        local HeroComboBoxID = XGUIEng.GetWidgetID(CustomGame.Widget.KnightsList);
-        XGUIEng.ListBoxPopAll(HeroComboBoxID);
-        for i=1,#_List do
-            XGUIEng.ListBoxPushItem(HeroComboBoxID, _List[i] );
-        end
-        XGUIEng.ListBoxSetSelectedIndex(HeroComboBoxID, 0);
-        CustomGame.Knight = 0;
-
-        local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)"
-        Action = Action .. "; Game.GameTimeSetFactor(GUI.GetPlayerID(), 1)";
-        Action = Action .. "; XGUIEng.PopPage()";
-        Action = Action .. "; XGUIEng.PopPage()";
-        Action = Action .. "; XGUIEng.PopPage()";
-        Action = Action .. "; ModuleDialogCore.Local.Callback(ModuleDialogCore.Local)";
-        XGUIEng.SetActionFunction(RequesterDialog_Ok, Action);
-
-        local Container = "/InGame/Singleplayer/CustomGame/ContainerSelection/";
-        XGUIEng.SetText(Container .. "HeroComboBoxMain/HeroComboBox", "");
-        if _List[1] then
-            XGUIEng.SetText(Container .. "HeroComboBoxMain/HeroComboBox", _List[1]);
-        end
-        XGUIEng.PushPage(Container .. "HeroComboBoxContainer", false);
-        XGUIEng.PushPage(Container .. "HeroComboBoxMain",false);
-        XGUIEng.ShowWidget(Container .. "HeroComboBoxContainer", 0);
-        local screen = {GUI.GetScreenSize()};
-        local x1, y1 = XGUIEng.GetWidgetScreenPosition(RequesterDialog_Ok);
-        XGUIEng.SetWidgetScreenPosition(Container .. "HeroComboBoxMain", x1-25, y1-(90*(screen[2]/1080)));
-        XGUIEng.SetWidgetScreenPosition(Container .. "HeroComboBoxContainer", x1-25, y1-(20*(screen[2]/1080)));
-    else
-        self:DialogQueuePush("OpenSelectionDialog", {_Title, _Text, _Action, _List});
-    end
-end
-
-function ModuleDialogCore.Local:RestoreSaveGame()
-    if BundleGameHelperFunctions and not BundleGameHelperFunctions.Local.ForbidSave then
-        XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/QuickSave", 1);
-        XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/SaveGame", 1);
-    end
-    if KeyBindings_SaveGame_Orig_QSB_Windows then
-        KeyBindings_SaveGame = KeyBindings_SaveGame_Orig_QSB_Windows;
-        KeyBindings_SaveGame_Orig_QSB_Windows = nil;
-    end
-end
-
-function ModuleDialogCore.Local:DialogOverwriteOriginal()
-    OpenDialog_Orig_Windows = OpenDialog;
-    OpenDialog = function(_Message, _Title, _IsMPError)
-        if XGUIEng.IsWidgetShown(RequesterDialog) == 0 then
-            local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)";
-            Action = Action .. "; XGUIEng.PopPage()";
-            OpenDialog_Orig_Windows(_Title, _Message);
-        end
-    end
-
-    OpenRequesterDialog_Orig_Windows = OpenRequesterDialog;
-    OpenRequesterDialog = function(_Message, _Title, action, _OkCancel, no_action)
-        if XGUIEng.IsWidgetShown(RequesterDialog) == 0 then
-            local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)";
-            Action = Action .. "; XGUIEng.PopPage()";
-            XGUIEng.SetActionFunction(RequesterDialog_Yes, Action);
-            local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)";
-            Action = Action .. "; XGUIEng.PopPage()";
-            XGUIEng.SetActionFunction(RequesterDialog_No, Action);
-            OpenRequesterDialog_Orig_Windows(_Message, _Title, action, _OkCancel, no_action);
-        end
-    end
-end
 
 -- TextWindow class ------------------------------------------------------------
 
@@ -600,5 +359,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleDialogCore);
+Swift:RegisterModules(ModuleTextWindow);
 

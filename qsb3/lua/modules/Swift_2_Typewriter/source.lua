@@ -2,9 +2,9 @@
 -- Module Dialog Typewriter                                                   --
 -- -------------------------------------------------------------------------- --
 
-ModuleDialogTypewriter = {
+ModuleTypewriter = {
     Properties = {
-        Name = "ModuleDialogTypewriter",
+        Name = "ModuleTypewriter",
     },
     
     Global = {},
@@ -17,12 +17,12 @@ ModuleDialogTypewriter = {
 
 -- Global Script ---------------------------------------------------------------
 
-function ModuleDialogTypewriter.Global:OnGameStart()
+function ModuleTypewriter.Global:OnGameStart()
 end
 
 -- Local Script ----------------------------------------------------------------
 
-function ModuleDialogTypewriter.Local:OnGameStart()
+function ModuleTypewriter.Local:OnGameStart()
 end
 
 -- Typewriter class ------------------------------------------------------------
@@ -249,5 +249,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleDialogTypewriter);
+Swift:RegisterModules(ModuleTypewriter);
 
