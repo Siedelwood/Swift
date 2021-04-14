@@ -7,8 +7,13 @@ ModuleInputOutputCore = {
         Name = "ModuleInputOutputCore",
     },
 
-    Global = {};
+    Global = {
+        Input = {
+            Action = {},
+        },
+    };
     Local  = {
+        InputBoxShown = false,
         Requester = {
             ActionFunction = nil,
             ActionRequester = nil,
@@ -52,9 +57,36 @@ function ModuleInputOutputCore.Global:OnGameStart()
     Swift.GetTextOfDesiredLanguage = function(self, _Table)
         return ModuleInputOutputCore.Shared:Localize(_Table);
     end
+    QSB.ScriptEvents.ChatOpened = Swift:CreateScriptEvent("Event_ChatOpened", nil);
+    QSB.ScriptEvents.ChatClosed = Swift:CreateScriptEvent("Event_ChatClosed", nil);
     API.AddSaveGameAction(function ()
         Logic.ExecuteInLuaLocalState("ModuleInputOutputCore.Local.DialogAltF4Hotkey()");
     end);
+end
+
+function ModuleInputOutputCore.Global:OnEvent(_ID, _Event, _Text)
+    if _ID == QSB.ScriptEvents.ChatClosed then
+        if #self.Input > 0 and #self.Input.Action > 0 then
+            local Action = table.remove(self.Input.Action, 1);
+            Action(table.remove(self.Input, 1));
+            if #self.Input.Action > 0 then
+                Logic.ExecuteInLuaLocalState([[ModuleInputOutputCore.Local:ShowInputBox()]]);
+            end
+        end
+    end
+end
+
+function ModuleInputOutputCore.Global:PrepareInputBox(_Action)
+    table.insert(self.Input.Action, _Action);
+    Logic.ExecuteInLuaLocalState([[
+        ModuleInputOutputCore.Local:PrepareInputVariable()
+        ModuleInputOutputCore.Local:ShowInputBox()
+    ]]);
+end
+
+function ModuleInputOutputCore.Global:EnqueueInput(_Text)
+    table.insert(self.Input, _Text);
+    API.SendScriptEvent(QSB.ScriptEvents.ChatClosed, _Text);
 end
 
 -- Local -------------------------------------------------------------------- --
@@ -300,10 +332,46 @@ function ModuleInputOutputCore.Local:DialogOverwriteOriginal()
     end
 end
 
+function ModuleInputOutputCore.Local:ShowInputBox()
+    Input.ChatMode();
+    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatInput",1);
+    XGUIEng.SetText("/InGame/Root/Normal/ChatInput/ChatInput", "");
+    XGUIEng.SetFocus("/InGame/Root/Normal/ChatInput/ChatInput");
+end
+
+function ModuleInputOutputCore.Local:PrepareInputVariable()
+    GUI.SendScriptCommand("API.SendScriptEvent(QSB.ScriptEvents.ChatOpened)");
+
+    GUI_Chat.Abort_Orig_ModuleInputOutputCore = GUI_Chat.Abort_Orig_ModuleInputOutputCore or GUI_Chat.Abort;
+    GUI_Chat.Confirm_Orig_ModuleInputOutputCore = GUI_Chat.Confirm_Orig_ModuleInputOutputCore or GUI_Chat.Confirm;
+
+    GUI_Chat.Confirm = function()
+        Input.GameMode();
+        XGUIEng.ShowWidget("/InGame/Root/Normal/ChatInput",0);
+        local ChatMessage = XGUIEng.GetText("/InGame/Root/Normal/ChatInput/ChatInput");
+        g_Chat.JustClosed = 1;
+        ModuleInputOutputCore.Local:SendInputToGlobal(ChatMessage);
+    end
+
+    GUI_Chat.Abort = function()
+    end
+end
+
+function ModuleInputOutputCore.Local:SendInputToGlobal(_Text)
+    _Text = (_Text == nil and "") or _Text;
+    GUI.SendScriptCommand(string.format(
+        [[
+            local Text = "%s"
+            ModuleInputOutputCore.Global:EnqueueInput(Text)
+            API.SendScriptEvent(QSB.ScriptEvents.ChatClosed, Text)
+        ]], _Text
+    ));
+end
+
 -- Shared ------------------------------------------------------------------- --
 
 function ModuleInputOutputCore.Shared:Note(_Text)
-    _Text = self.Shared:ConvertPlaceholders(self.Shared:Localize(_Text));
+    _Text = self:ConvertPlaceholders(self:Localize(_Text));
     if Swift:IsGlobalEnvironment() then
         Logic.DEBUG_AddNote(_Text);
     else
@@ -312,7 +380,7 @@ function ModuleInputOutputCore.Shared:Note(_Text)
 end
 
 function ModuleInputOutputCore.Shared:StaticNote(_Text)
-    _Text = self.Shared:ConvertPlaceholders(self.Shared:Localize(_Text));
+    _Text = self:ConvertPlaceholders(self:Localize(_Text));
     if Swift:IsGlobalEnvironment() then
         Logic.ExecuteInLuaLocalState(string.format([[GUI.AddStaticNote("%s")]], _Text));
         return;
@@ -321,7 +389,7 @@ function ModuleInputOutputCore.Shared:StaticNote(_Text)
 end
 
 function ModuleInputOutputCore.Shared:Message(_Text)
-    _Text = self.Shared:ConvertPlaceholders(self.Shared:Localize(_Text));
+    _Text = self:ConvertPlaceholders(self:Localize(_Text));
     if Swift:IsGlobalEnvironment() then
         Logic.ExecuteInLuaLocalState(string.format([[Message("%s")]], _Text));
         return;
@@ -355,19 +423,19 @@ function ModuleInputOutputCore.Shared:ConvertPlaceholders(_Text)
     while true do
         local Before, Placeholder, After, Replacement, s1, e1, s2, e2;
         if _Text:find("{name:") then
-            Before, Placeholder, After, s1, e1, s2, e2 = self.Shared:SplicePlaceholderText(_Text, "{name:");
-            Replacement = self.Shared.Placeholders.Names[Placeholder];
-            _Text = Before .. self.Shared:Localize(Replacement or "ERROR_PLACEHOLDER_NOT_FOUND") .. After;
+            Before, Placeholder, After, s1, e1, s2, e2 = self:SplicePlaceholderText(_Text, "{name:");
+            Replacement = self.Placeholders.Names[Placeholder];
+            _Text = Before .. self:Localize(Replacement or "ERROR_PLACEHOLDER_NOT_FOUND") .. After;
         elseif _Text:find("{type:") then
-            Before, Placeholder, After, s1, e1, s2, e2 = self.Shared:SplicePlaceholderText(_Text, "{type:");
-            Replacement = self.Shared.Placeholders.EntityTypes[Placeholder];
-            _Text = Before .. self.Shared:Localize(Replacement or "ERROR_PLACEHOLDER_NOT_FOUND") .. After;
+            Before, Placeholder, After, s1, e1, s2, e2 = self:SplicePlaceholderText(_Text, "{type:");
+            Replacement = self.Placeholders.EntityTypes[Placeholder];
+            _Text = Before .. self:Localize(Replacement or "ERROR_PLACEHOLDER_NOT_FOUND") .. After;
         end
         if s1 == nil or e1 == nil or s2 == nil or e2 == nil then
             break;
         end
     end
-    _Text = self.Shared:ReplaceColorPlaceholders(_Text);
+    _Text = self:ReplaceColorPlaceholders(_Text);
     return _Text;
 end
 
@@ -382,7 +450,7 @@ function ModuleInputOutputCore.Shared:SplicePlaceholderText(_Text, _Start)
 end
 
 function ModuleInputOutputCore.Shared:ReplaceColorPlaceholders(_Text)
-    for k, v in pairs(self.Shared.Colors) do
+    for k, v in pairs(self.Colors) do
         _Text = _Text:gsub("{" ..k.. "}", v);
     end
     return _Text;

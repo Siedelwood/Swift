@@ -46,7 +46,7 @@ function ModuleQuestCore.Global:QuestCreateNewQuest(_Data)
         QSB.AutomaticQuestNameCounter = (QSB.AutomaticQuestNameCounter or 0) +1;
         _Data.Name = string.format("AutoNamed_Quest_%d", QSB.AutomaticQuestNameCounter);
     end
-    if not Core:CheckQuestName(_Data.Name) then
+    if not self:QuestValidateQuestName(_Data.Name) then
         error("Quest '"..tostring(_Data.Name).."': invalid questname! Contains forbidden characters!");
         return;
     end

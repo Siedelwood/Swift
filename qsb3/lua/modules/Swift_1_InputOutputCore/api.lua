@@ -1,11 +1,16 @@
 -- Input/Output API --------------------------------------------------------- --
 
 ---
--- Modul für die Nutzung von Platzhaltern und zur lokalisierung von Texten.
+-- Modul für die Eingabe durch den Spieler und die Ausgabe von Texten.
 --
 -- Du kannst vordefinierte Farben in Textausgaben verwenden. Außerdem kannst
 -- du für Skriptnamen und Entitytypen Platzhalter zu definieren. Diese
 -- Platzhalter können auch Lokalisiert werden.
+--
+-- Du kannst ferner verschiedene Input Dialoge nutzen, um Ausgaben anzuzeigen.
+-- Außerdem kannst du vom Spieler Eingaben fordern.
+--
+-- TODO: Implement hot keys
 --
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
@@ -294,5 +299,30 @@ function API.DialogSelectBox(_Title, _Text, _Action, _List)
     _Text = API.ConvertPlaceholders(API.Localize(_Text));
     _Text = _Text .. "{cr}";
     return ModuleInputOutputCore.Local:OpenSelectionDialog(_Title, _Text, _Action, _List);
+end
+
+---
+-- Bereitet die Texteingabe über den Chat Input vor. Die übergebene erhält den
+-- eingegebenen Text als Parameter.
+--
+-- <b<Hinweis</b>: Der Spieler kann den Input nicht mit Esc verlassen. Der Input
+-- kann nur durch Enter geschlossen werden. Das dedeutet, dass evtl. ein leerer
+-- String übergeben wird. In diesem Fall wurde nichts eingegeben.
+--
+-- @param[type=function] _Action Reaktion auf Eingabe
+--
+-- @usage
+-- API.ShowTextInput(function(_Text)
+--     -- Mach was mit _Text
+-- end);
+--
+function API.ShowTextInput(_Action)
+    if GUI then
+        return;
+    end
+    if type(_Action) ~= "function" then
+        return;
+    end
+    return ModuleInputOutputCore.Global:PrepareInputBox(_Action);
 end
 

@@ -77,5 +77,15 @@ function Mission_FirstMapAction()
     end
 
     API.ActivateDebugMode(true, false, true, true);
+
+    API.CreateQuest {
+        Name        = "Test1",
+
+        Goal_InputDialog("foo", 0, "Wrong"),
+        Reward_MapScriptFunction(function()
+            API.Note("Bockwurst");
+        end),
+        Trigger_Time(5)
+    }
 end
 

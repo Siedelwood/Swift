@@ -8,6 +8,7 @@ OptWriter_ModuleFiles = {
     "Swift_1_DisplayCore/api.lua",
     "Swift_1_InputOutputCore/source.lua",
     "Swift_1_InputOutputCore/api.lua",
+    "Swift_1_InputOutputCore/behavior.lua",
     "Swift_1_InterfaceCore/source.lua",
     "Swift_1_InterfaceCore/api.lua",
     "Swift_1_JobsCore/source.lua",

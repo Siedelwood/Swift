@@ -383,7 +383,7 @@ end
 function Swift:CreateScriptEvent(_Name, _Function)
     local ID = 1;
     for k, v in pairs(self.m_ScriptEventRegister) do
-        if v and v.Name == _Name then
+        if v and v[1] == _Name then
             return 0;
         end
         ID = ID +1;
@@ -409,20 +409,20 @@ function Swift:DispatchScriptEvent(_ID, ...)
             if self.m_ModuleRegister[i]["Global"] and self.m_ModuleRegister[i]["Global"].OnEvent then
                 debug(string.format(
                     "Dispatching global script event %s to Module %s",
-                    self.m_ScriptEventRegister[_ID].Name,
+                    self.m_ScriptEventRegister[_ID][1],
                     self.m_ModuleRegister[i].Properties.Name
                 ), true);
-                self.m_ModuleRegister[i]["Global"]:OnEvent(self.m_ScriptEventRegister[_ID], unpack(arg));
+                self.m_ModuleRegister[i]["Global"]:OnEvent(_ID, self.m_ScriptEventRegister[_ID], unpack(arg));
             end
         end
         if self:IsLocalEnvironment() then
             if self.m_ModuleRegister[i]["Local"] and self.m_ModuleRegister[i]["Local"].OnEvent then
                 debug(string.format(
                     "Dispatching local script event %s to Module %s",
-                    self.m_ScriptEventRegister[_ID].Name,
+                    self.m_ScriptEventRegister[_ID][1],
                     self.m_ModuleRegister[i].Properties.Name
                 ), true);
-                self.m_ModuleRegister[i]["Local"]:OnEvent(self.m_ScriptEventRegister[_ID], unpack(arg));
+                self.m_ModuleRegister[i]["Local"]:OnEvent(_ID, self.m_ScriptEventRegister[_ID], unpack(arg));
             end
         end
     end
