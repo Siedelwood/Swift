@@ -152,18 +152,16 @@ function b_Goal_InputDialog:AddParameter(_Index, _Parameter)
 end
 
 function b_Goal_InputDialog:CustomFunction(_Quest)
-    local InputAction = function(_Text)
-        _Quest.InputDialogResult = _Text
-    end;
-
     if not self.Shown then
         if (not self.Trials) or (self.Trials) == 0 then
+            QSB.GoalInputDialogQuest = _Quest.Identifier;
             self.Shown = true;
-            API.ShowTextInput(InputAction);
+            API.ShowTextInput();
         elseif not self.Shown then
+            QSB.GoalInputDialogQuest = _Quest.Identifier;
             self.Shown = true;
             self.TrialCounter = self.TrialCounter or self.Trials;
-            API.ShowTextInput(InputAction);
+            API.ShowTextInput();
             self.TrialCounter = self.TrialCounter - 1;
         end
     end
@@ -182,6 +180,7 @@ function b_Goal_InputDialog:CustomFunction(_Quest)
                     return false;
                 end
             end
+            QSB.GoalInputDialogQuest = nil;
             return true;
         end
     end
@@ -219,6 +218,7 @@ function b_Goal_InputDialog:GetIcon()
 end
 
 function b_Goal_InputDialog:Reset(_Quest)
+    QSB.GoalInputDialogQuest = nil;
     _Quest.InputDialogResult = nil;
     self.TrialCounter = nil;
     self.Shown = nil;

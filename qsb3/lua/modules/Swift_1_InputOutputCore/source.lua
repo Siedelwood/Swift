@@ -7,11 +7,7 @@ ModuleInputOutputCore = {
         Name = "ModuleInputOutputCore",
     },
 
-    Global = {
-        Input = {
-            Action = {},
-        },
-    };
+    Global = {};
     Local  = {
         InputBoxShown = false,
         Requester = {
@@ -66,27 +62,22 @@ end
 
 function ModuleInputOutputCore.Global:OnEvent(_ID, _Event, _Text)
     if _ID == QSB.ScriptEvents.ChatClosed then
-        if #self.Input > 0 and #self.Input.Action > 0 then
-            local Action = table.remove(self.Input.Action, 1);
-            Action(table.remove(self.Input, 1));
-            if #self.Input.Action > 0 then
-                Logic.ExecuteInLuaLocalState([[ModuleInputOutputCore.Local:ShowInputBox()]]);
+        if _Text == "restartmap" then
+            Framework.RestartMap();
+        else
+            for i= 1, Quests[0], 1 do
+                if Quests[i].State == QuestState.Active and QSB.GoalInputDialogQuest == Quests[i].Identifier then
+                    for j= 1, #Quests[i].Objectives, 1 do
+                        if Quests[i].Objectives[j].Type == Objective.Custom2 then
+                            if Quests[i].Objectives[j].Data[1].Name == "Goal_InputDialog" then
+                                Quests[i].InputDialogResult = _Text;
+                            end
+                        end
+                    end
+                end
             end
         end
     end
-end
-
-function ModuleInputOutputCore.Global:PrepareInputBox(_Action)
-    table.insert(self.Input.Action, _Action);
-    Logic.ExecuteInLuaLocalState([[
-        ModuleInputOutputCore.Local:PrepareInputVariable()
-        ModuleInputOutputCore.Local:ShowInputBox()
-    ]]);
-end
-
-function ModuleInputOutputCore.Global:EnqueueInput(_Text)
-    table.insert(self.Input, _Text);
-    API.SendScriptEvent(QSB.ScriptEvents.ChatClosed, _Text);
 end
 
 -- Local -------------------------------------------------------------------- --
@@ -100,31 +91,11 @@ function ModuleInputOutputCore.Local:OnGameStart()
     self:DialogAltF4Hotkey();
 end
 
-function ModuleInputOutputCore.Global:OnEvent(_ID, _Event, _Text)
-    if _ID == QSB.ScriptEvents.DebugChatConfirmed then
-        if _Text == "restartmap" then
-            Framework.RestartMap();
-        end
-    end
-end
-
 -- Override the original usage of the chat box to make it compatible to this
 -- module. Otherwise there would be no reaction whatsoever to console commands.
 function ModuleInputOutputCore.Local:OverrideDebugInput()
     Swift.InitalizeQsbDebugShell = function(self)
-        QSB_DEBUG_InputBoxJob = function()
-            API.ShowTextInput(function(_Text)
-                Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
-                GUI.SendScriptCommand(string.format(
-                    [[API.SendScriptEvent(QSB.ScriptEvents.DebugChatConfirmed, "%s")]],
-                    _Text
-                ));
-                API.SendScriptEvent(QSB.ScriptEvents.DebugChatConfirmed, _Text);
-            end);
-            Game.GameTimeSetFactor( GUI.GetPlayerID(), 0 );
-            return true;
-        end
-        Input.KeyBindDown(Keys.ModifierShift + Keys.OemPipe, "StartSimpleHiResJob('QSB_DEBUG_InputBoxJob')", 2);
+        Input.KeyBindDown(Keys.ModifierControl + Keys.X, "API.ShowTextInput()", 2);
     end
     Swift:InitalizeQsbDebugShell();
 end
@@ -145,13 +116,17 @@ function ModuleInputOutputCore.Local:DialogAltF4Action()
         XGUIEng.GetStringTableText("UI_Texts/ConfirmQuitCurrentGame"),
         function (_Yes) 
             if _Yes then 
-                Framework.ExitGame(); 
+                Framework.ExitGame();
+            end
+            Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
+            if not ModuleDisplayCore or not ModuleDisplayCore.Local.PauseScreenShown then
+                XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 0);
             end
             ModuleInputOutputCore.Local:DialogAltF4Hotkey();
-            Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
         end
     );
-    Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
+    Game.GameTimeSetFactor(GUI.GetPlayerID(), 0.0000001);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 1);
 end
 
 function ModuleInputOutputCore.Local:Callback()
@@ -240,7 +215,8 @@ function ModuleInputOutputCore.Local:OpenDialog(_Title, _Text, _Action)
             KeyBindings_SaveGame_Orig_QSB_Windows = KeyBindings_SaveGame;
             KeyBindings_SaveGame = function() end;
         end
-        Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
+        Game.GameTimeSetFactor(GUI.GetPlayerID(), 0.0000001);
+        XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 1);
     else
         self:DialogQueuePush("OpenDialog", {_Title, _Text, _Action});
     end
@@ -359,8 +335,10 @@ end
 
 function ModuleInputOutputCore.Local:ShowInputBox()
     Input.ChatMode();
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatInput",1);
+    Game.GameTimeSetFactor(GUI.GetPlayerID(), 0.0000001);
     XGUIEng.SetText("/InGame/Root/Normal/ChatInput/ChatInput", "");
+    XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 1);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatInput", 1);
     XGUIEng.SetFocus("/InGame/Root/Normal/ChatInput/ChatInput");
 end
 
@@ -372,24 +350,26 @@ function ModuleInputOutputCore.Local:PrepareInputVariable()
 
     GUI_Chat.Confirm = function()
         Input.GameMode();
-        XGUIEng.ShowWidget("/InGame/Root/Normal/ChatInput",0);
+        Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
+        XGUIEng.ShowWidget("/InGame/Root/Normal/ChatInput", 0);
+        if not ModuleDisplayCore or not ModuleDisplayCore.Local.PauseScreenShown then
+            XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 0);
+        end
         local ChatMessage = XGUIEng.GetText("/InGame/Root/Normal/ChatInput/ChatInput");
         g_Chat.JustClosed = 1;
-        ModuleInputOutputCore.Local:SendInputToGlobal(ChatMessage);
+        ModuleInputOutputCore.Local:selfToGlobal(ChatMessage);
     end
 
     GUI_Chat.Abort = function()
     end
 end
 
-function ModuleInputOutputCore.Local:SendInputToGlobal(_Text)
+function ModuleInputOutputCore.Local:selfToGlobal(_Text)
     _Text = (_Text == nil and "") or _Text;
+    API.SendScriptEvent(QSB.ScriptEvents.ChatClosed, _Text);
     GUI.SendScriptCommand(string.format(
-        [[
-            local Text = "%s"
-            ModuleInputOutputCore.Global:EnqueueInput(Text)
-            API.SendScriptEvent(QSB.ScriptEvents.ChatClosed, Text)
-        ]], _Text
+        [[API.SendScriptEvent(QSB.ScriptEvents.ChatClosed, "%s")]],
+        _Text
     ));
 end
 

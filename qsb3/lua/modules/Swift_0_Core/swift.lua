@@ -393,12 +393,15 @@ function Swift:CreateScriptEvent(_Name, _Function)
     return ID;
 end
 
-function Swift:CreateScriptEventAction(_ID, _Name, _Function)
+function Swift:CreateScriptEventAction(_ID, _Function)
     if self.m_ScriptEventRegister[_ID] then
+        local Index;
+        local EventName = self.m_ScriptEventRegister[_ID][1];
         self.m_ScriptEventActions[_ID] = self.m_ScriptEventActions[_ID] or {};
-        table.insert(self.m_ScriptEventActions[_ID], {_Name, _Function});
-        debug(string.format("Bind script event action %s for event %d", _Name, _ID), true);
-        return #self.m_ScriptEventActions[_ID];
+        table.insert(self.m_ScriptEventActions[_ID], {EventName, _Function});
+        Index = #self.m_ScriptEventActions[_ID];
+        debug(string.format("Bind script event action %s for event %d", EventName, _ID), true);
+        return Index;
     end
     return 0;
 end

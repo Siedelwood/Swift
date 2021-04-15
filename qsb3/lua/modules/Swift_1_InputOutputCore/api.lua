@@ -343,27 +343,24 @@ function API.DialogSelectBox(_Title, _Text, _Action, _List)
 end
 
 ---
--- Bereitet die Texteingabe über den Chat Input vor. Die übergebene erhält den
--- eingegebenen Text als Parameter.
+-- Bereitet die Texteingabe über den Chat Input vor.
 --
 -- <b<Hinweis</b>: Der Spieler kann den Input nicht mit Esc verlassen. Der Input
 -- kann nur durch Enter geschlossen werden. Das dedeutet, dass evtl. ein leerer
 -- String übergeben wird. In diesem Fall wurde nichts eingegeben.
 --
--- @param[type=function] _Action Reaktion auf Eingabe
---
 -- @usage
--- API.ShowTextInput(function(_Text)
---     -- Mach was mit _Text
--- end);
+-- API.ShowTextInput();
 --
-function API.ShowTextInput(_Action)
-    if GUI then
-        return;
+function API.ShowTextInput()
+    if not GUI then
+        Logic.ExecuteInLuaLocalState([[
+            ModuleInputOutputCore.Local:PrepareInputVariable()
+            ModuleInputOutputCore.Local:ShowInputBox()
+        ]]);
+    else
+        ModuleInputOutputCore.Local:PrepareInputVariable();
+        ModuleInputOutputCore.Local:ShowInputBox();
     end
-    if type(_Action) ~= "function" then
-        return;
-    end
-    return ModuleInputOutputCore.Global:PrepareInputBox(_Action);
 end
 
