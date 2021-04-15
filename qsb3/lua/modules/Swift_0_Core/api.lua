@@ -269,13 +269,14 @@ function API.RegisterScriptEvent(_Name, _Function)
 end
 
 ---
--- Löscht ein initialisieres Script Event.
+-- Legt eine neue Reaktion zu einem Skriptevent an.
 --
--- @param[type=number] _ID ID des Event
+-- @param[type=string]   ID        ID des Event
+-- @param[type=function] _Function Funktionsreferenz
 -- @within Anwenderfunktionen
 --
-function API.RemoveScriptEvent(_ID)
-    return Swift:RemoveScriptEvent(_ID);
+function API.RegisterScriptEventAction(_ID, _Function)
+    return Swift:CreateScriptEventAction(_ID, _Function);
 end
 
 ---

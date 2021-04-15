@@ -35,6 +35,7 @@ Swift = {
     m_ModuleRegister            = {};
     m_BehaviorRegister          = {};
     m_ScriptEventRegister       = {};
+    m_ScriptEventActions        = {};
     m_LoadActionRegister        = {};
     m_Language                  = "de";
     m_Environment               = "global";
@@ -381,48 +382,52 @@ function Swift:InitalizeEventsLocal()
 end
 
 function Swift:CreateScriptEvent(_Name, _Function)
-    local ID = 1;
-    for k, v in pairs(self.m_ScriptEventRegister) do
-        if v and v[1] == _Name then
+    for i= 1, #self.m_ScriptEventRegister, 1 do
+        if self.m_ScriptEventRegister[i][1] == _Name then
             return 0;
         end
-        ID = ID +1;
     end
+    local ID = #self.m_ScriptEventRegister+1;
     debug(string.format("Create script event %s", _Name), true);
     self.m_ScriptEventRegister[ID] = {_Name, _Function};
     return ID;
 end
 
-function Swift:RemoveScriptEvent(_ID)
+function Swift:CreateScriptEventAction(_ID, _Name, _Function)
     if self.m_ScriptEventRegister[_ID] then
-        debug(string.format("Remove script event %s", self.m_ScriptEventRegister[_ID].Name), true);
+        self.m_ScriptEventActions[_ID] = self.m_ScriptEventActions[_ID] or {};
+        table.insert(self.m_ScriptEventActions[_ID], {_Name, _Function});
+        debug(string.format("Bind script event action %s for event %d", _Name, _ID), true);
+        return #self.m_ScriptEventActions[_ID];
     end
-    self.m_ScriptEventRegister[_ID] = nil;
+    return 0;
 end
 
 function Swift:DispatchScriptEvent(_ID, ...)
     if not self.m_ScriptEventRegister[_ID] then
         return;
     end
+    -- Dispatch module events
     for i= 1, #self.m_ModuleRegister, 1 do
+        local Env = "Local";
         if self:IsGlobalEnvironment() then
-            if self.m_ModuleRegister[i]["Global"] and self.m_ModuleRegister[i]["Global"].OnEvent then
-                debug(string.format(
-                    "Dispatching global script event %s to Module %s",
-                    self.m_ScriptEventRegister[_ID][1],
-                    self.m_ModuleRegister[i].Properties.Name
-                ), true);
-                self.m_ModuleRegister[i]["Global"]:OnEvent(_ID, self.m_ScriptEventRegister[_ID], unpack(arg));
-            end
+            Env = "Global";
         end
-        if self:IsLocalEnvironment() then
-            if self.m_ModuleRegister[i]["Local"] and self.m_ModuleRegister[i]["Local"].OnEvent then
-                debug(string.format(
-                    "Dispatching local script event %s to Module %s",
-                    self.m_ScriptEventRegister[_ID][1],
-                    self.m_ModuleRegister[i].Properties.Name
-                ), true);
-                self.m_ModuleRegister[i]["Local"]:OnEvent(_ID, self.m_ScriptEventRegister[_ID], unpack(arg));
+        if self.m_ModuleRegister[i][Env] and self.m_ModuleRegister[i][Env].OnEvent then
+            debug(string.format(
+                "Dispatching %s script event %s to Module %s",
+                Env:lower(),
+                self.m_ScriptEventRegister[_ID][1],
+                self.m_ModuleRegister[i].Properties.Name
+            ), true);
+            self.m_ModuleRegister[i][Env]:OnEvent(_ID, self.m_ScriptEventRegister[_ID], unpack(arg));
+        end
+    end
+    -- Dispatch user events
+    if self.m_ScriptEventActions[_ID] then
+        for k, v in pairs(self.m_ScriptEventActions[_ID]) do
+            if v and v[2] then
+                v[2](unpack(arg));
             end
         end
     end

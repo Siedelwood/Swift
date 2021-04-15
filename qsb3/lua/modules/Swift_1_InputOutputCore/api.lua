@@ -224,9 +224,13 @@ end
 -- Öffnet einen Info-Dialog. Sollte bereits ein Dialog zu sehen sein, wird
 -- der Dialog der Dialogwarteschlange hinzugefügt.
 --
+-- <b>Hinweis</b>: Aus dem globalen Skript aufgerufen muss der Name der Action
+-- als String angegeben werden. Es wird dann eine Funktion im lokalen Skript
+-- als Aktion aufgerufen.
+--
 -- @param[type=string]   _Title  Titel des Dialog
 -- @param[type=string]   _Text   Text des Dialog
--- @param[type=function] _Action Callback-Funktion
+-- @param                _Action Funktionsreferenz
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -234,6 +238,15 @@ end
 --
 function API.DialogInfoBox(_Title, _Text, _Action)
     if not GUI then
+        if _Action and type(_Action) ~= "string" then
+            return;
+        end
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[ModuleInputOutputCore.Local:OpenDialog(%s, %s, %s)]],
+            API.ConvertPlaceholders(API.Localize(_Title)),
+            API.ConvertPlaceholders(API.Localize(_Text)),
+            _Action
+        ));
         return;
     end
 
@@ -250,9 +263,13 @@ end
 -- Das Callback bekommt eine Boolean übergeben, sobald der Spieler die
 -- Entscheidung getroffen hat.
 --
+-- <b>Hinweis</b>: Aus dem globalen Skript aufgerufen muss der Name der Action
+-- als String angegeben werden. Es wird dann eine Funktion im lokalen Skript
+-- als Aktion aufgerufen.
+--
 -- @param[type=string]   _Title    Titel des Dialog
 -- @param[type=string]   _Text     Text des Dialog
--- @param[type=function] _Action   Callback-Funktion
+-- @param                _Action   Funktionsreferenz
 -- @param[type=boolean]  _OkCancel Okay/Abbrechen statt Ja/Nein
 -- @within Anwenderfunktionen
 --
@@ -264,6 +281,16 @@ end
 --
 function API.DialogRequestBox(_Title, _Text, _Action, _OkCancel)
     if not GUI then
+        if _Action and type(_Action) ~= "string" then
+            return;
+        end
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[ModuleInputOutputCore.Local:OpenRequesterDialog(%s, %s, %s, %s)]],
+            API.ConvertPlaceholders(API.Localize(_Title)),
+            API.ConvertPlaceholders(API.Localize(_Text)),
+            _Action,
+            tostring(_OkCancel == true)
+        ));
         return;
     end
     _Title = API.ConvertPlaceholders(API.Localize(_Title));
@@ -278,9 +305,13 @@ end
 -- In diesem Dialog wählt der Spieler eine Option aus einer Liste von Optionen
 -- aus. Anschließend erhält das Callback den Index der selektierten Option.
 --
+-- <b>Hinweis</b>: Aus dem globalen Skript aufgerufen muss der Name der Action
+-- als String angegeben werden. Es wird dann eine Funktion im lokalen Skript
+-- als Aktion aufgerufen.
+--
 -- @param[type=string]   _Title  Titel des Dialog
 -- @param[type=string]   _Text   Text des Dialog
--- @param[type=function] _Action Callback-Funktion
+-- @param                _Action Funktionsreferenz
 -- @param[type=table]    _List   Liste der Optionen
 -- @within Anwenderfunktionen
 --
@@ -293,12 +324,22 @@ end
 --
 function API.DialogSelectBox(_Title, _Text, _Action, _List)
     if not GUI then
+        if _Action and type(_Action) ~= "string" then
+            return;
+        end
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[ModuleInputOutputCore.Local:OpenSelectionDialog(%s, %s, %s, %s)]],
+            API.ConvertPlaceholders(API.Localize(_Title)),
+            API.ConvertPlaceholders(API.Localize(_Text)),
+            _Action,
+            table.toString(_List)
+        ));
         return;
     end
     _Title = API.ConvertPlaceholders(API.Localize(_Title));
     _Text = API.ConvertPlaceholders(API.Localize(_Text));
     _Text = _Text .. "{cr}";
-    return ModuleInputOutputCore.Local:OpenSelectionDialog(_Title, _Text, _Action, _List);
+    ModuleInputOutputCore.Local:OpenSelectionDialog(_Title, _Text, _Action, _List);
 end
 
 ---

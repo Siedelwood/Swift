@@ -95,8 +95,38 @@ function ModuleInputOutputCore.Local:OnGameStart()
     Swift.GetTextOfDesiredLanguage = function(self, _Table)
         return ModuleInputOutputCore.Shared:Localize(_Table);
     end
+    self:OverrideDebugInput();
     self:DialogOverwriteOriginal();
     self:DialogAltF4Hotkey();
+end
+
+function ModuleInputOutputCore.Global:OnEvent(_ID, _Event, _Text)
+    if _ID == QSB.ScriptEvents.DebugChatConfirmed then
+        if _Text == "restartmap" then
+            Framework.RestartMap();
+        end
+    end
+end
+
+-- Override the original usage of the chat box to make it compatible to this
+-- module. Otherwise there would be no reaction whatsoever to console commands.
+function ModuleInputOutputCore.Local:OverrideDebugInput()
+    Swift.InitalizeQsbDebugShell = function(self)
+        QSB_DEBUG_InputBoxJob = function()
+            API.ShowTextInput(function(_Text)
+                Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
+                GUI.SendScriptCommand(string.format(
+                    [[API.SendScriptEvent(QSB.ScriptEvents.DebugChatConfirmed, "%s")]],
+                    _Text
+                ));
+                API.SendScriptEvent(QSB.ScriptEvents.DebugChatConfirmed, _Text);
+            end);
+            Game.GameTimeSetFactor( GUI.GetPlayerID(), 0 );
+            return true;
+        end
+        Input.KeyBindDown(Keys.ModifierShift + Keys.OemPipe, "StartSimpleHiResJob('QSB_DEBUG_InputBoxJob')", 2);
+    end
+    Swift:InitalizeQsbDebugShell();
 end
 
 function ModuleInputOutputCore.Local:DialogAltF4Hotkey()
@@ -109,10 +139,7 @@ function ModuleInputOutputCore.Local:DialogAltF4Hotkey()
 end
 
 function ModuleInputOutputCore.Local:DialogAltF4Action()
-    -- Muss leider sein, sonst werden mehr Elemente in die Queue geladen
     Input.KeyBindDown(Keys.ModifierAlt + Keys.F4, "", 30, false);
-
-    -- Selbstgebauten Dialog öffnen
     self:OpenRequesterDialog(
         XGUIEng.GetStringTableText("UI_Texts/MainMenuExitGame_center"),
         XGUIEng.GetStringTableText("UI_Texts/ConfirmQuitCurrentGame"),
@@ -124,8 +151,6 @@ function ModuleInputOutputCore.Local:DialogAltF4Action()
             Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
         end
     );
-
-    -- Zeit anhelten
     Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
 end
 
