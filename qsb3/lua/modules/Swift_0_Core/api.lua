@@ -8,6 +8,8 @@
 --
 Swift = Swift or {};
 
+QSB.Metatable = {Init = false, Weak = {}, Metas = {}, Key = 0};
+
 ---
 -- Installiert Swift.
 --
@@ -161,6 +163,54 @@ function API.OverrideTable()
         s = s .. "}";
         return s;
     end
+
+    ---
+    -- Setzt die Metatable für die übergebene Table.
+    -- @param[type=table] t    Table
+    -- @param[type=table] meta Metatable
+    -- @within table
+    --
+    table.setMetatable = function(t, meta)
+        assert(type(t) == "table");
+        assert(type(meta) == "table" or meta == nil);
+    
+        local oldmeta = meta;
+        meta = {};
+        for k,v in pairs(oldmeta) do
+            meta[k] = v;
+        end
+        oldmeta = getmetatable(t);
+        setmetatable(t, meta);
+        local k = 0;
+        if oldmeta and oldmeta.KeySave and t == QSB.Metatable.Weak[oldmeta.KeySave] then
+            k = oldmeta.KeySave;
+            if meta == nil then
+                QSB.Metatable.Weak[k] = nil;
+                metatabQSB.Metatablele.Metas[k] = nil;
+                return;
+            end
+        else
+            k = QSB.Metatable.Key + 1;
+            QSB.Metatable.Key = k;
+        end
+        QSB.Metatable.Weak[k] = t;
+        QSB.Metatable.Metas[k] = meta;
+        meta.KeySave = k;
+    end
+
+    ---
+    -- Erneuert alle Metatables und deren Referenzen.
+    -- @within table
+    -- @local
+    --
+    table.restoreMetatables = function()
+        for k, tab in pairs(QSB.Metatable.Weak) do
+            setmetatable(tab, QSB.Metatable.Metas[k]);
+        end
+        setmetatable(QSB.Metatable.Weak, {__mode = "v"});
+        setmetatable(QSB.Metatable.Metas, {__mode = "v"});
+    end
+    table.restoreMetatables();
 end
 
 function API.OverrideString()

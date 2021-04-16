@@ -13,18 +13,11 @@ ModuleJobsCore = {
     Shared = {
         EventJobID = 0;
         EventJobs = {
-            [Events.LOGIC_EVENT_DIPLOMACY_CHANGED]         = {},
             [Events.LOGIC_EVENT_ENTITY_CREATED]            = {},
             [Events.LOGIC_EVENT_ENTITY_DESTROYED]          = {},
             [Events.LOGIC_EVENT_ENTITY_HURT_ENTITY]        = {},
-            [Events.LOGIC_EVENT_ENTITY_IN_RANGE_OF_ENTITY] = {},
             [Events.LOGIC_EVENT_EVERY_SECOND]              = {},
             [Events.LOGIC_EVENT_EVERY_TURN]                = {},
-            [Events.LOGIC_EVENT_GOODS_TRADED]              = {},
-            [Events.LOGIC_EVENT_PLAYER_DIED]               = {},
-            [Events.LOGIC_EVENT_RESEARCH_DONE]             = {},
-            [Events.LOGIC_EVENT_TRIBUTE_PAID]              = {},
-            [Events.LOGIC_EVENT_WEATHER_STATE_CHANGED]     = {},
         };
         RealTimeWaitActiveFlag = {};
         RealTimeWaitID = 0;
@@ -121,9 +114,6 @@ end
 
 -- Event Jobs
 
-ModuleEventJob_OnDiplomacyChanged = function()
-    ModuleJobsCore.Shared:TriggerEventJobs(Events.LOGIC_EVENT_DIPLOMACY_CHANGED);
-end
 ModuleEventJob_OnEntityDestroyed = function()
     local PlayerID = Event.GetPlayerID();
     local EntityID = Event.GetEntityID();
