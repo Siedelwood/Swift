@@ -19,6 +19,7 @@ ModuleScriptingValue = {
                 Player      = -71,
                 Size        = -45,
                 Visible     = -50,
+                NPC         = 6,
             },
             HistoryEdition = {
                 Destination = {X = 17, Y= 18},
@@ -26,6 +27,7 @@ ModuleScriptingValue = {
                 Player      = -68,
                 Size        = -42,
                 Visible     = -47,
+                NPC         = 6,
             }
         }
     };
