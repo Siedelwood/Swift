@@ -154,9 +154,8 @@ function API.SimpleTextWindow(_Caption, _Content)
 end
 
 ---
--- Blendet einen Text Zeichen für Zeichen auf schwarzem Grund ein.
---
--- Diese Funktion ist der offizielle Nachfolger der Laufschrift!
+-- Blendet einen Text Zeichen für Zeichen auf schwarzem oder halbtransparentem
+-- Grund ein.
 --
 -- Der Effekt startet erst, nachdem die Map geladen ist. Wenn ein Briefing
 -- läuft, wird gewartet, bis das Briefing beendet ist. Wärhend der Effekt
@@ -168,32 +167,43 @@ end
 -- Gibt es mehr als 1 Leerzeichen hintereinander, werden alle zusammenhängenden
 -- Leerzeichen auf ein Leerzeichen reduziert!
 --
--- @param[type=string]   _Text     Anzuzeigender Text
--- @param[type=function] _Callback Funktion nach Ende des Effekt
+-- @param[type=table] _Data Konfiguration
 --
 -- @usage
--- local Text = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, "..
---              "sed diam nonumy eirmod tempor invidunt ut labore et dolore"..
---              "magna aliquyam erat, sed diam voluptua. At vero eos et"..
---              " accusam et justo duo dolores et ea rebum. Stet clita kasd"..
---              " gubergren, no sea takimata sanctus est Lorem ipsum dolor"..
---              " sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing"..
---              " elitr, sed diam nonumy eirmod tempor invidunt ut labore et"..
---              " dolore magna aliquyam erat, sed diam voluptua. At vero eos"..
---              " et accusam et justo duo dolores et ea rebum. Stet clita"..
---              " kasd gubergren, no sea takimata sanctus est Lorem ipsum"..
---              " dolor sit amet.";
--- local Callback = function(_Data)
---     -- Hier kann was passieren
--- end
--- API.SimpleTypewriter(Text, Callback);
+-- API.SimpleTypewriter {
+--     Text =     "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, "..
+--                "sed diam nonumy eirmod tempor invidunt ut labore et dolore"..
+--                "magna aliquyam erat, sed diam voluptua. At vero eos et"..
+--                " accusam et justo duo dolores et ea rebum. Stet clita kasd"..
+--                " gubergren, no sea takimata sanctus est Lorem ipsum dolor"..
+--                " sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing"..
+--                " elitr, sed diam nonumy eirmod tempor invidunt ut labore et"..
+--                " dolore magna aliquyam erat, sed diam voluptua. At vero eos"..
+--                " et accusam et justo duo dolores et ea rebum. Stet clita"..
+--                " kasd gubergren, no sea takimata sanctus est Lorem ipsum"..
+--                " dolor sit amet.",
+--     Callback = function(_Data)
+--         -- Hier kann was passieren
+--     end
+-- };
 -- @within Anwenderfunktionen
 --
-function API.SimpleTypewriter(_Text, _Callback)
+function API.SimpleTypewriter(_Data)
     if GUI then
         return;
     end
-    QSB.SimpleTypewriter:New(API.ConvertPlaceholders(API.Localize(_Text)), _Callback):Start();
+    local Text = API.ConvertPlaceholders(API.Localize(_Data.Text));
+    local Instance = QSB.SimpleTypewriter:New(Text);
+    if _Data.Callback then
+        Instance:SetCallback(_Data.Callback);
+    end
+    if _Data.Speed and _Data.Speed > 0 then
+        Instance:SetSpeed(_Data.Speed);
+    end
+    if _Data.Waittime and _Data.Waittime > 0 then
+        Instance:SetWaittime(_Data.Waittime);
+    end
+    Instance:Start();
 end
 
 -- -------------------------------------------------------------------------- --
@@ -232,21 +242,29 @@ QSB.SimpleTypewriter = {
 ---
 -- Erzeugt eine Neue Instanz der Schreibmaschinenschrift.
 -- @param[type=string]   _Text     Anzuzeigender Text
--- @param[type=function] _Callback Funktion, die am Ende ausgeführt wird
 -- @return[type=table] Neue Instanz
 -- @within QSB.SimpleTypewriter
 -- @local
 --
-function QSB.SimpleTypewriter:New(_Text, _Callback)
+function QSB.SimpleTypewriter:New(_Text)
     local typewriter = API.InstanceTable(self);
     typewriter.m_Text = _Text;
-    typewriter.m_Callback = _Callback;
     return typewriter;
 end
 
 ---
+-- Setzt das Callback, welches am Ende der Anzeige aufgerufen wird.
+-- @param[type=function] _Callback Funktion, die am Ende ausgeführt wird
+-- @within QSB.SimpleTypewriter
+-- @local
+--
+function QSB.SimpleTypewriter:SetCallback(_Callback)
+    self.m_Callback = _Callback;
+end
+
+---
 -- Stellt ein, wie viele Zeichen in einer Interation angezeigt werden.
--- @param[type=number] _Speed Anzahl an Character pro 1/10 Sekunde
+-- @param[type=number] _Speed Anzahl an Zeichen pro 1/10 Sekunde
 -- @within QSB.SimpleTypewriter
 -- @local
 --

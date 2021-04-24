@@ -488,7 +488,6 @@ function AddOnCutsceneSystem.Local:StartCutscene(_Cutscene)
         end
         Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
     end
-    self.Data.SelectedEntities = {GUI.GetSelectedEntities()};
     
     if not self.Data.CinematicActive then
         self:ActivateCinematicMode();
@@ -507,9 +506,6 @@ end
 function AddOnCutsceneSystem.Local:StopCutscene()
     if self.Data.CurrentCutscene.CameraLookAt then 
         Camera.RTS_SetLookAtPosition(unpack(self.Data.CurrentCutscene.CameraLookAt));
-    end
-    for k, v in pairs(self.Data.SelectedEntities) do
-        GUI.SelectEntity(v);
     end
     Display.SetRenderBorderPins(1);
     Display.SetRenderSky(0);

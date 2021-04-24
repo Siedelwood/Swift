@@ -1,6 +1,7 @@
 -- Interface -------------------------------------------------------------------
 
 Core.Data.Interface = {
+    SelectedEntities = {},
     ChatOptionsWasShown = false,
     MessageLogWasShown = false,
     PauseScreenShown = false,
@@ -97,6 +98,10 @@ function Core:InterfaceDeactivateNormalInterface()
         return;
     end
     self.Data.Interface.NormalModeHidden = true;
+    for k, v in pairs({GUI.GetSelectedEntities()}) do
+        table.insert(self.Data.Interface.SelectedEntities, v);
+    end
+    GUI.ClearSelection();
 
     XGUIEng.PushPage("/InGame/Root/Normal/NotesWindow", false);
     XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 0);
@@ -153,6 +158,10 @@ function Core:InterfaceActivateNormalInterface()
         return;
     end
     self.Data.Interface.NormalModeHidden = false;
+    for k, v in pairs(self.Data.Interface.SelectedEntities) do
+        GUI.SelectEntity(v);
+    end
+    self.Data.Interface.SelectedEntities = {};
 
     XGUIEng.ShowWidget("/InGame/Root/Normal", 1);
     XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 1);

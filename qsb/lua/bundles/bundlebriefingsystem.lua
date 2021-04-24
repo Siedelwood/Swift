@@ -1064,7 +1064,6 @@ end
 -- @local
 --
 function BundleBriefingSystem.Local:StartBriefing(_Briefing)
-    self.Data.SelectedEntities = {GUI.GetSelectedEntities()};
     self.Data.CurrentBriefing.Page = 1;
     self.Data.CurrentBriefing = _Briefing;
     self.Data.CurrentBriefing.CurrentAnimation = nil;
@@ -1099,9 +1098,6 @@ function BundleBriefingSystem.Local:FinishBriefing()
     if self.Data.CurrentBriefing.CameraBackup then 
         Camera.RTS_SetLookAtPosition(unpack(self.Data.CurrentBriefing.CameraBackup));
         self.Data.CurrentBriefing.CameraBackup = nil;
-    end
-    for k, v in pairs(self.Data.SelectedEntities) do
-        GUI.SelectEntity(v);
     end
     Display.SetRenderBorderPins(1);
     Display.SetRenderSky(0);
