@@ -118,21 +118,25 @@ function API.CreateIOIronMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _
         error("API.CreateIOIronMine: _Position (" ..tostring(_Position).. ") does not exist!");
         return;
     end
-    if GetNameOfKeyInTable(Goods, _Cost1Type) == nil then
-        error("API.CreateIOIronMine: _Cost1Type (" ..tostring(_Cost1Type).. ") is wrong!");
-        return;
+    if _Cost1Type then
+        if GetNameOfKeyInTable(Goods, _Cost1Type) == nil then
+            error("API.CreateIOIronMine: _Cost1Type (" ..tostring(_Cost1Type).. ") is wrong!");
+            return;
+        end
+        if _Cost1Amount and (type(_Cost1Amount) ~= "number" or _Cost1Amount < 1) then
+            error("API.CreateIOIronMine: _Cost1Amount must be above 0!");
+            return;
+        end
     end
-    if _Cost1Amount and (type(_Cost1Amount) ~= "number" or _Cost1Amount < 1) then
-        error("API.CreateIOIronMine: _Cost1Amount must be above 0!");
-        return;
-    end
-    if GetNameOfKeyInTable(Goods, _Cost2Type) == nil then
-        error("API.CreateIOIronMine: _Cost2Type (" ..tostring(_Cost2Type).. ") is wrong!");
-        return;
-    end
-    if _Cost2Amount and (type(_Cost2Amount) ~= "number" or _Cost2Amount < 1) then
-        error("API.CreateIOIronMine: _Cost2Amount must be above 0!");
-        return;
+    if _Cost2Type then
+        if GetNameOfKeyInTable(Goods, _Cost2Type) == nil then
+            error("API.CreateIOIronMine: _Cost2Type (" ..tostring(_Cost2Type).. ") is wrong!");
+            return;
+        end
+        if _Cost2Amount and (type(_Cost2Amount) ~= "number" or _Cost2Amount < 1) then
+            error("API.CreateIOIronMine: _Cost2Amount must be above 0!");
+            return;
+        end
     end
     AddOnInteractiveMines.Global:CreateIOIronMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable);
 end
@@ -164,21 +168,25 @@ function API.CreateIOStoneMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, 
         error("API.CreateIOStoneMine: _Position (" ..tostring(_Position).. ") does not exist!");
         return;
     end
-    if GetNameOfKeyInTable(Goods, _Cost1Type) == nil then
-        error("API.CreateIOStoneMine: _Cost1Type (" ..tostring(_Cost1Type).. ") is wrong!");
-        return;
+    if _Cost1Type then
+        if GetNameOfKeyInTable(Goods, _Cost1Type) == nil then
+            error("API.CreateIOStoneMine: _Cost1Type (" ..tostring(_Cost1Type).. ") is wrong!");
+            return;
+        end
+        if _Cost1Amount and (type(_Cost1Amount) ~= "number" or _Cost1Amount < 1) then
+            error("API.CreateIOStoneMine: _Cost1Amount must be above 0!");
+            return;
+        end
     end
-    if _Cost1Amount and (type(_Cost1Amount) ~= "number" or _Cost1Amount < 1) then
-        error("API.CreateIOStoneMine: _Cost1Amount must be above 0!");
-        return;
-    end
-    if GetNameOfKeyInTable(Goods, _Cost2Type) == nil then
-        error("API.CreateIOStoneMine: _Cost2Type (" ..tostring(_Cost2Type).. ") is wrong!");
-        return;
-    end
-    if _Cost2Amount and (type(_Cost2Amount) ~= "number" or _Cost2Amount < 1) then
-        error("API.CreateIOStoneMine: _Cost2Amount must be above 0!");
-        return;
+    if _Cost2Type then
+        if GetNameOfKeyInTable(Goods, _Cost2Type) == nil then
+            error("API.CreateIOStoneMine: _Cost2Type (" ..tostring(_Cost2Type).. ") is wrong!");
+            return;
+        end
+        if _Cost2Amount and (type(_Cost2Amount) ~= "number" or _Cost2Amount < 1) then
+            error("API.CreateIOStoneMine: _Cost2Amount must be above 0!");
+            return;
+        end
     end
     AddOnInteractiveMines.Global:CreateIOStoneMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable);
 end
@@ -333,7 +341,7 @@ end
 --
 function AddOnInteractiveMines.Global.ConditionBuildIOMine(_IO, _PlayerID, _Data)
     if _Data.CustomCondition then
-        return _Data.CustomCondition(_Data) == true;
+        return _Data.CustomCondition(_IO, _PlayerID, _Data) == true;
     end
     return true;
 end
