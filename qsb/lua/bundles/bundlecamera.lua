@@ -101,7 +101,9 @@ BundleCamera = {
             ExtendedZoomAllowed = true,
         }
     },
-    Local = {},
+    Local = {
+        Data = {}
+    },
 }
 
 -- Global Script ---------------------------------------------------------------
@@ -296,6 +298,7 @@ end
 -- @local
 --
 function BundleCamera.Local:ActivateExtendedZoom()
+    self.Data.ExtendedZoomActive = true;
     Camera.RTS_SetZoomFactorMax(0.8701);
     Camera.RTS_SetZoomFactor(0.8700);
     Camera.RTS_SetZoomFactorMin(0.0999);
@@ -308,6 +311,7 @@ end
 -- @local
 --
 function BundleCamera.Local:DeactivateExtendedZoom()
+    self.Data.ExtendedZoomActive = false;
     Camera.RTS_SetZoomFactor(0.5000);
     Camera.RTS_SetZoomFactorMax(0.5001);
     Camera.RTS_SetZoomFactorMin(0.0999);
