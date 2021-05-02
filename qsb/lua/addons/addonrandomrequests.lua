@@ -1139,7 +1139,7 @@ end
 
 function b_Goal_RandomRequest:Interrupt(_Quest)
     if self.SlaveQuest and self.SlaveQuest.State == QuestState.Active then
-        API.StopQuest(self.SlaveQuest.Identifier, false);
+        API.StopQuest(self.SlaveQuest.Identifier, true);
     end
     if _Quest.PredatorMarker and Logic.IsEffectRegistered(_Quest.PredatorMarker) then
         Logic.DestroyEffect(_Quest.PredatorMarker);
