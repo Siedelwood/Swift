@@ -89,7 +89,9 @@ function Core:StackFunction(_FunctionName, _StackFunction, _Index)
                 end
             end
             ReturnValue = {self.Data.Overwrite.StackedFunctions[_FunctionName].Original(unpack(arg))};
-            return unpack(ReturnValue);
+            if ReturnValue then
+                return unpack(ReturnValue);
+            end
         end
         self:ReplaceFunction(_FunctionName, batch);
     end
@@ -125,7 +127,9 @@ function Core:AppendFunction(_FunctionName, _AppendFunction, _Index)
                 local Function = self.Data.Overwrite.AppendedFunctions[_FunctionName].Attachments[i];
                 ReturnValue = {Function(unpack(arg))};
             end
-            return unpack(ReturnValue);
+            if ReturnValue then
+                return unpack(ReturnValue);
+            end
         end
         self:ReplaceFunction(_FunctionName, batch);
     end

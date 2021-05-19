@@ -128,7 +128,7 @@ Core:RegisterBehavior(b_Goal_ActivateObject);
 -- @within Goal
 --
 function Goal_Deliver(...)
-    return b_Goal_Deliver:new(...)
+    return b_Goal_Deliver:new(...);
 end
 
 b_Goal_Deliver = {
@@ -143,52 +143,60 @@ b_Goal_Deliver = {
         { ParameterType.Custom, en = "To different player", de = "Anderer Empfänger" },
         { ParameterType.Custom, en = "Ignore capture", de = "Abfangen ignorieren" },
     },
-}
-
+};
 
 function b_Goal_Deliver:GetGoalTable()
-    local GoodType = Logic.GetGoodTypeID(self.GoodTypeName)
-    return { Objective.Deliver, GoodType, self.GoodAmount, self.OverrideTarget, self.IgnoreCapture }
+    local GoodType = Logic.GetGoodTypeID(self.GoodTypeName);
+    local Category = Logic.GetGoodCategoryForGoodType(GoodType);
+    if Category == GoodCategories.GC_Resource then
+		for i = 1, 8 do
+			local SHID = Logic.GetStoreHouse(i);
+			if SHID ~= 0 and Logic.GetIndexOnInStockByGoodType(SHID, GoodType) == -1 then
+				Logic.AddGoodToStock(SHID, GoodType, 0, true, true);
+			end
+		end
+	end	
+    return {Objective.Deliver, GoodType, self.GoodAmount, self.OverrideTarget, self.IgnoreCapture};
 end
 
 function b_Goal_Deliver:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
-        self.GoodTypeName = _Parameter
+        self.GoodTypeName = _Parameter;
     elseif (_Index == 1) then
-        self.GoodAmount = _Parameter * 1
+        self.GoodAmount = _Parameter * 1;
     elseif (_Index == 2) then
-        self.OverrideTarget = tonumber(_Parameter)
+        self.OverrideTarget = tonumber(_Parameter);
     elseif (_Index == 3) then
-        self.IgnoreCapture = AcceptAlternativeBoolean(_Parameter)
+        self.IgnoreCapture = AcceptAlternativeBoolean(_Parameter);
     end
 end
 
-function b_Goal_Deliver:GetCustomData( _Index )
-    local Data = {}
+function b_Goal_Deliver:GetCustomData(_Index)
+    local Data = {};
     if _Index == 0 then
-        for k, v in pairs( Goods ) do
-            if string.find( k, "^G_" ) then
-                table.insert( Data, k )
+        for k, v in pairs(Goods) do
+            if string.find(k, "^G_") then
+                table.insert(Data, k);
             end
         end
-        table.sort( Data )
+        table.sort(Data);
     elseif _Index == 2 then
-        table.insert( Data, "-" )
+        table.insert(Data, "-");
         for i = 1, 8 do
-            table.insert( Data, i )
+            table.insert( Data, i );
         end
     elseif _Index == 3 then
-        table.insert( Data, "true" )
-        table.insert( Data, "false" )
+        table.insert(Data, "true");
+        table.insert(Data, "false");
     else
-        assert( false )
+        assert(false);
     end
-    return Data
+    return Data;
 end
 
 function b_Goal_Deliver:GetMsgKey()
-    local GoodType = Logic.GetGoodTypeID(self.GoodTypeName)
-    local GC = Logic.GetGoodCategoryForGoodType( GoodType )
+    local GoodType = Logic.GetGoodTypeID(self.GoodTypeName);
+    local GC = Logic.GetGoodCategoryForGoodType(GoodType);
 
     local tMapping = {
         [GoodCategories.GC_Clothes] = "Quest_Deliver_GC_Clothes",
@@ -200,15 +208,15 @@ function b_Goal_Deliver:GetMsgKey()
         [GoodCategories.GC_Water] = "Quest_Deliver_GC_Water",
         [GoodCategories.GC_Weapon] = "Quest_Deliver_GC_Weapon",
         [GoodCategories.GC_Resource] = "Quest_Deliver_Resources",
-    }
+    };
 
     if GC then
-        local Key = tMapping[GC]
+        local Key = tMapping[GC];
         if Key then
-            return Key
+            return Key;
         end
     end
-    return "Quest_Deliver_Goods"
+    return "Quest_Deliver_Goods";
 end
 
 Core:RegisterBehavior(b_Goal_Deliver);
