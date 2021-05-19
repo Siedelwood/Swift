@@ -71,6 +71,21 @@ function Mission_FirstMapAction()
     InteractiveObjectDeactivate("IORR3");
     InteractiveObjectDeactivate("IORR4");
     InteractiveObjectDeactivate("IORR5");
+
+    StartSimpleJobEx(function()
+        if Logic.GetTime() > 5 then
+            API.CreateQuest {
+                Name = "Test1",
+                Sender = 2,
+                Receiver = 1,
+                Suggestion = "Deliver this shit!",
+                
+                Goal_Deliver("G_Dye", 50),
+                Trigger_Time(6)
+            }
+            return true;
+        end
+    end);
 end
 
 function SomeFunction(_Question, _Answer)
