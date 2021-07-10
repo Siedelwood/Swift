@@ -1,19 +1,30 @@
 -- Interface -------------------------------------------------------------------
 
 Core.Data.Interface = {
+    SelectedEntities = {},
+
     ChatOptionsWasShown = false,
     MessageLogWasShown = false,
     PauseScreenShown = false,
     NormalModeHidden = false,
+    BorderScrollDeactivated = false,
 }
 
 ---
 -- Zeigt den Pausebildschirm als schwarzen Hintergrund an. Wurde dieser schon
 -- eingeblendet, macht die Funktion nichts.
+-- @param[type=number] _Red   (Optional) Rotwert des Hintergrund
+-- @param[type=number] _Green (Optional) Grünwert des Hintergrund
+-- @param[type=number] _Blue  (Optional) Blauwert des Hintergrund
+-- @param[type=number] _Alpha (Optional) Alphawert des Hintergrund
 -- @within Internal
 -- @local
 --
-function Core:InterfaceActivateBlackBackground()
+function Core:InterfaceActivateBlackBackground(_Red, _Green, _Blue, _Alpha)
+    _Red   = _Red or 0;
+    _Green = _Green or 0;
+    _Blue  = _Blue or 0;
+    _Alpha = _Alpha or 255;
     if self.Data.Interface.PauseScreenShown then
         return;
     end
@@ -21,7 +32,7 @@ function Core:InterfaceActivateBlackBackground()
 
     XGUIEng.PushPage("/InGame/Root/Normal/PauseScreen", false)
     XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 1);
-    XGUIEng.SetMaterialColor("/InGame/Root/Normal/PauseScreen", 0, 0, 0, 0, 255);
+    XGUIEng.SetMaterialColor("/InGame/Root/Normal/PauseScreen", 0, _Red, _Green, _Blue, _Alpha);
 end
 
 ---
@@ -39,6 +50,37 @@ function Core:InterfaceDeactivateBlackBackground()
     XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 0);
     XGUIEng.SetMaterialColor("/InGame/Root/Normal/PauseScreen", 0, 40, 40, 40, 180);
     XGUIEng.PopPage();
+end
+
+function Core:InterfaceDeactivateBorderScroll(_PositionID)
+    if self.Data.Interface.BorderScrollDeactivated then
+        return;
+    end
+    self.Data.Interface.BorderScrollDeactivated = true;
+    GameCallback_Camera_GetBorderscrollFactor_OrigCore = GameCallback_Camera_GetBorderscrollFactor;
+	GameCallback_Camera_GetBorderscrollFactor = function() end;
+    if _PositionID then
+        Camera.RTS_FollowEntity(_PositionID);
+    end
+    Camera.RTS_SetZoomFactor(0.5000);
+    Camera.RTS_SetZoomFactorMax(0.5001);
+    Camera.RTS_SetZoomFactorMin(0.4999);
+end
+
+function Core:InterfaceActivateBorderScroll()
+    if not self.Data.Interface.BorderScrollDeactivated then
+        return;
+    end
+    self.Data.Interface.BorderScrollDeactivated = false;
+	GameCallback_Camera_GetBorderscrollFactor = GameCallback_Camera_GetBorderscrollFactor_OrigCore;
+    GameCallback_Camera_GetBorderscrollFactor_OrigCore = nil;
+    Camera.RTS_FollowEntity(0);
+    Camera.RTS_SetZoomFactor(0.5000);
+    Camera.RTS_SetZoomFactorMax(0.5001);
+    Camera.RTS_SetZoomFactorMin(0.0999);
+    if BundleCamera and BundleCamera.Local.Data.ExtendedZoomActive then
+        BundleCamera.Local:ActivateExtendedZoom();
+    end
 end
 
 ---
@@ -97,6 +139,10 @@ function Core:InterfaceDeactivateNormalInterface()
         return;
     end
     self.Data.Interface.NormalModeHidden = true;
+    for k, v in pairs({GUI.GetSelectedEntities()}) do
+        table.insert(self.Data.Interface.SelectedEntities, v);
+    end
+    GUI.ClearSelection();
 
     XGUIEng.PushPage("/InGame/Root/Normal/NotesWindow", false);
     XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 0);
@@ -153,6 +199,10 @@ function Core:InterfaceActivateNormalInterface()
         return;
     end
     self.Data.Interface.NormalModeHidden = false;
+    for k, v in pairs(self.Data.Interface.SelectedEntities) do
+        GUI.SelectEntity(v);
+    end
+    self.Data.Interface.SelectedEntities = {};
 
     XGUIEng.ShowWidget("/InGame/Root/Normal", 1);
     XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 1);

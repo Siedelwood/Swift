@@ -363,7 +363,7 @@ function BundleInteractiveObjects.Global:StartObjectConditionController()
             if v and not v:IsUsed() and v:IsActive() then
                 IO[k].m_Fullfilled = true;
                 if IO[k].m_Condition then
-                    IO[k].m_Fullfilled = v.m_Condition(v);
+                    IO[k].m_Fullfilled = v.m_Condition(v, QSB.HumanPlayerID, v.m_Data);
                 end
             end
         end

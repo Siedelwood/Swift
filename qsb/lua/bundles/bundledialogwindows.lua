@@ -154,9 +154,8 @@ function API.SimpleTextWindow(_Caption, _Content)
 end
 
 ---
--- Blendet einen Text Zeichen für Zeichen auf schwarzem Grund ein.
---
--- Diese Funktion ist der offizielle Nachfolger der Laufschrift!
+-- Blendet einen Text Zeichen für Zeichen auf schwarzem oder halbtransparentem
+-- Grund ein.
 --
 -- Der Effekt startet erst, nachdem die Map geladen ist. Wenn ein Briefing
 -- läuft, wird gewartet, bis das Briefing beendet ist. Wärhend der Effekt
@@ -168,32 +167,52 @@ end
 -- Gibt es mehr als 1 Leerzeichen hintereinander, werden alle zusammenhängenden
 -- Leerzeichen auf ein Leerzeichen reduziert!
 --
--- @param[type=string]   _Text     Anzuzeigender Text
--- @param[type=function] _Callback Funktion nach Ende des Effekt
+-- @param[type=table] _Data Konfiguration
 --
 -- @usage
--- local Text = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, "..
---              "sed diam nonumy eirmod tempor invidunt ut labore et dolore"..
---              "magna aliquyam erat, sed diam voluptua. At vero eos et"..
---              " accusam et justo duo dolores et ea rebum. Stet clita kasd"..
---              " gubergren, no sea takimata sanctus est Lorem ipsum dolor"..
---              " sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing"..
---              " elitr, sed diam nonumy eirmod tempor invidunt ut labore et"..
---              " dolore magna aliquyam erat, sed diam voluptua. At vero eos"..
---              " et accusam et justo duo dolores et ea rebum. Stet clita"..
---              " kasd gubergren, no sea takimata sanctus est Lorem ipsum"..
---              " dolor sit amet.";
--- local Callback = function(_Data)
---     -- Hier kann was passieren
--- end
--- API.SimpleTypewriter(Text, Callback);
+-- API.SimpleTypewriter {
+--     Text =     "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, "..
+--                "sed diam nonumy eirmod tempor invidunt ut labore et dolore"..
+--                "magna aliquyam erat, sed diam voluptua. At vero eos et"..
+--                " accusam et justo duo dolores et ea rebum. Stet clita kasd"..
+--                " gubergren, no sea takimata sanctus est Lorem ipsum dolor"..
+--                " sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing"..
+--                " elitr, sed diam nonumy eirmod tempor invidunt ut labore et"..
+--                " dolore magna aliquyam erat, sed diam voluptua. At vero eos"..
+--                " et accusam et justo duo dolores et ea rebum. Stet clita"..
+--                " kasd gubergren, no sea takimata sanctus est Lorem ipsum"..
+--                " dolor sit amet.",
+--     Callback = function(_Data)
+--         -- Hier kann was passieren
+--     end
+-- };
 -- @within Anwenderfunktionen
 --
-function API.SimpleTypewriter(_Text, _Callback)
+function API.SimpleTypewriter(_Data)
     if GUI then
         return;
     end
-    QSB.SimpleTypewriter:New(API.ConvertPlaceholders(API.Localize(_Text)), _Callback):Start();
+    local Text = API.ConvertPlaceholders(API.Localize(_Data.Text));
+    local Instance = QSB.SimpleTypewriter:New(Text);
+    if _Data.Callback then
+        Instance:SetCallback(_Data.Callback);
+    end
+    if _Data.Position then
+        Instance:SetPosition(_Data.Position);
+    end
+    if _Data.Speed and _Data.Speed > 0 then
+        Instance:SetSpeed(_Data.Speed);
+    end
+    if _Data.Waittime and _Data.Waittime > 0 then
+        Instance:SetWaittime(_Data.Waittime);
+    end
+    if _Data.Opacity and _Data.Opacity >= 0 and _Data.Opacity <= 1 then
+        Instance:SetOpacity(_Data.Opacity);
+    end
+    if _Data.Color then
+        Instance:SetColor(_Data.Color.R, _Data.Color.G, _Data.Color.B);
+    end
+    Instance:Start();
 end
 
 -- -------------------------------------------------------------------------- --
@@ -223,7 +242,9 @@ QSB.SimpleTypewriter = {
     m_Delay      = 15,
     m_Waittime   = 80,
     m_Speed      = 1,
+    m_Color      = {R= 0, G= 0, B= 0, A = 255},
     m_Index      = 0,
+    m_Position   = 0,
     m_Text       = nil,
     m_JobID      = nil,
     m_Callback   = nil,
@@ -232,26 +253,73 @@ QSB.SimpleTypewriter = {
 ---
 -- Erzeugt eine Neue Instanz der Schreibmaschinenschrift.
 -- @param[type=string]   _Text     Anzuzeigender Text
--- @param[type=function] _Callback Funktion, die am Ende ausgeführt wird
 -- @return[type=table] Neue Instanz
 -- @within QSB.SimpleTypewriter
 -- @local
 --
-function QSB.SimpleTypewriter:New(_Text, _Callback)
+function QSB.SimpleTypewriter:New(_Text)
     local typewriter = API.InstanceTable(self);
     typewriter.m_Text = _Text;
-    typewriter.m_Callback = _Callback;
     return typewriter;
 end
 
 ---
+-- Setzt das Callback, welches am Ende der Anzeige aufgerufen wird.
+-- @param[type=function] _Callback Funktion, die am Ende ausgeführt wird
+-- @within QSB.SimpleTypewriter
+-- @local
+--
+function QSB.SimpleTypewriter:SetCallback(_Callback)
+    self.m_Callback = _Callback;
+    return self;
+end
+
+---
+-- Setzt das Entity auf das die Kamera fixiert wird.
+-- @param _Position Skriptname oder ID
+-- @within QSB.SimpleTypewriter
+-- @local
+--
+function QSB.SimpleTypewriter:SetPosition(_Position)
+    self.m_Position = _Position;
+    return self;
+end
+
+---
+-- Legt fest, wie transparent der Hintergund dargestellt wird.
+-- @param[type=number] _Opacity Transparenz des Hintergrund
+-- @within QSB.SimpleTypewriter
+-- @local
+--
+function QSB.SimpleTypewriter:SetOpacity(_Opacity)
+    self.m_Color.A = 255 * _Opacity;
+    return self;
+end
+
+---
+-- Legt fest, welche Farbe der Hindergrund hat.
+-- @param[type=number] _Red   Rotwert des Hintergrund
+-- @param[type=number] _Green Grünwert des Hintergrund
+-- @param[type=number] _Blue  Blauwert des Hintergrund
+-- @within QSB.SimpleTypewriter
+-- @local
+--
+function QSB.SimpleTypewriter:SetColor(_Red, _Green, _Blue)
+    self.m_Color.R = _Red;
+    self.m_Color.G = _Green;
+    self.m_Color.B = _Blue;
+    return self;
+end
+
+---
 -- Stellt ein, wie viele Zeichen in einer Interation angezeigt werden.
--- @param[type=number] _Speed Anzahl an Character pro 1/10 Sekunde
+-- @param[type=number] _Speed Anzahl an Zeichen pro 1/10 Sekunde
 -- @within QSB.SimpleTypewriter
 -- @local
 --
 function QSB.SimpleTypewriter:SetSpeed(_Speed)
     self.m_Speed = _Speed;
+    return self;
 end
 
 ---
@@ -263,6 +331,7 @@ end
 --
 function QSB.SimpleTypewriter:SetWaittime(_Waittime)
     self.m_Waittime = _Waittime;
+    return self;
 end
 
 ---
@@ -274,9 +343,10 @@ end
 function QSB.SimpleTypewriter:Start()
     if self:CanBePlayed() then
         self:Play();
-        return;
+        return self;
     end
     StartSimpleHiResJobEx(self.WaitForBriefingEnd, self);
+    return self;
 end
 
 ---
@@ -290,14 +360,24 @@ function QSB.SimpleTypewriter:Play()
     end
     self.m_InitialWaittime = self.m_Delay;
     self:TokenizeText();
-    Logic.ExecuteInLuaLocalState([[
-        if BundleBriefingSystem then
-            BundleBriefingSystem.Local.Data.BriefingActive = true
-        end
-        Core:InterfaceDeactivateNormalInterface()
-        Core:InterfaceActivateBlackBackground()
-    ]]);
+    Logic.ExecuteInLuaLocalState(string.format(
+        [[
+            if BundleBriefingSystem then
+                BundleBriefingSystem.Local.Data.BriefingActive = true
+            end
+            Core:InterfaceDeactivateNormalInterface()
+            Core:InterfaceActivateBlackBackground(%d, %d, %d, %d)
+            Core:InterfaceDeactivateBorderScroll(%d)
+            GUI.ClearNotes()
+        ]],
+        self.m_Color.R,
+        self.m_Color.G,
+        self.m_Color.B,
+        self.m_Color.A,
+        GetID(self.m_Position)
+    ));
     self.m_JobID = StartSimpleHiResJobEx(self.ControllerJob, self);
+    return self;
 end
 
 ---
@@ -315,8 +395,11 @@ function QSB.SimpleTypewriter:Stop()
         end
         Core:InterfaceDeactivateBlackBackground()
         Core:InterfaceActivateNormalInterface()
+        Core:InterfaceActivateBorderScroll()
+        GUI.ClearNotes()
     ]]);
     EndJob(self.m_JobID);
+    return self;
 end
 
 ---
@@ -366,6 +449,7 @@ function QSB.SimpleTypewriter:TokenizeText()
             LastWasPlaceholder = false;
         end
     end
+    return self;
 end
 
 ---
