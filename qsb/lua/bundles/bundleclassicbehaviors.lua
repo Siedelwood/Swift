@@ -149,13 +149,13 @@ function b_Goal_Deliver:GetGoalTable()
     local GoodType = Logic.GetGoodTypeID(self.GoodTypeName);
     local Category = Logic.GetGoodCategoryForGoodType(GoodType);
     if Category == GoodCategories.GC_Resource then
-		for i = 1, 8 do
-			local SHID = Logic.GetStoreHouse(i);
-			if SHID ~= 0 and Logic.GetIndexOnInStockByGoodType(SHID, GoodType) == -1 then
-				Logic.AddGoodToStock(SHID, GoodType, 0, true, true);
-			end
-		end
-	end	
+        for i = 1, 8 do
+            local SHID = Logic.GetStoreHouse(i);
+            if SHID ~= 0 and Logic.GetIndexOnInStockByGoodType(SHID, GoodType) == -1 then
+                Logic.AddGoodToStock(SHID, GoodType, 0, true, true);
+            end
+        end
+    end    
     return {Objective.Deliver, GoodType, self.GoodAmount, self.OverrideTarget, self.IgnoreCapture};
 end
 
@@ -8619,13 +8619,13 @@ function b_Trigger_OnAtLeastXOfYQuestsSuccess:CustomFunction()
     for i = 1, self.QuestAmount do
         local QuestID = GetQuestID(self["QuestName"..i]);
         if IsValidQuest(QuestID) then
-			if (Quests[QuestID].Result == QuestResult.Success) then
-				least = least + 1
-				if least >= self.LeastAmount then
-					return true
-				end
-			end
-		end
+            if (Quests[QuestID].Result == QuestResult.Success) then
+                least = least + 1
+                if least >= self.LeastAmount then
+                    return true
+                end
+            end
+        end
     end
     return false
 end
@@ -8910,35 +8910,35 @@ function Trigger_OnEffectDestroyed(...)
 end
 
 b_Trigger_OnEffectDestroyed = {
-	Name = "Trigger_OnEffectDestroyed",
-	Description = {
-		en = "Trigger: Starts a quest after an effect was destroyed",
-		de = "Ausloeser: Startet eine Quest, nachdem ein Effekt zerstoert wurde",
-	},
-	Parameter = {
-		{ ParameterType.Default, en = "Effect name", de = "Effektname" },
-	},
+    Name = "Trigger_OnEffectDestroyed",
+    Description = {
+        en = "Trigger: Starts a quest after an effect was destroyed",
+        de = "Ausloeser: Startet eine Quest, nachdem ein Effekt zerstoert wurde",
+    },
+    Parameter = {
+        { ParameterType.Default, en = "Effect name", de = "Effektname" },
+    },
 }
 
 function b_Trigger_OnEffectDestroyed:GetTriggerTable()
-	return { Triggers.Custom2, {self, self.CustomFunction} }
+    return { Triggers.Custom2, {self, self.CustomFunction} }
 end
 
 function b_Trigger_OnEffectDestroyed:AddParameter(_Index, _Parameter)
-	if _Index == 0 then	
-		self.EffectName = _Parameter
-	end
+    if _Index == 0 then    
+        self.EffectName = _Parameter
+    end
 end
 
 function b_Trigger_OnEffectDestroyed:CustomFunction()
-	return not QSB.EffectNameToID[self.EffectName] or not Logic.IsEffectRegistered(QSB.EffectNameToID[self.EffectName]);
+    return not QSB.EffectNameToID[self.EffectName] or not Logic.IsEffectRegistered(QSB.EffectNameToID[self.EffectName]);
 end
 
 function b_Trigger_OnEffectDestroyed:Debug(_Quest)
-	if not QSB.EffectNameToID[self.EffectName] then
-		error(_Quest.Identifier.. ": " ..self.Name .. ": Effect has never existed")
-		return true
-	end
+    if not QSB.EffectNameToID[self.EffectName] then
+        error(_Quest.Identifier.. ": " ..self.Name .. ": Effect has never existed")
+        return true
+    end
 end
 Core:RegisterBehavior(b_Trigger_OnEffectDestroyed)
 
@@ -8960,55 +8960,55 @@ function Reward_SetBuildingUpgradeLevel(...)
 end
 
 b_Reward_SetBuildingUpgradeLevel = {
-	Name = "Reward_SetBuildingUpgradeLevel",
-	Description = {
-		en = "Sets the upgrade level of the specified building.",
-		de = "Legt das Upgrade-Level eines Gebaeudes fest.",
-	},
-	Parameter = {
-		{ ParameterType.ScriptName, en = "Building", de = "Gebäude" },
-		{ ParameterType.Custom, en = "Upgrade level", de = "Upgrade-Level" },
-	}
+    Name = "Reward_SetBuildingUpgradeLevel",
+    Description = {
+        en = "Sets the upgrade level of the specified building.",
+        de = "Legt das Upgrade-Level eines Gebaeudes fest.",
+    },
+    Parameter = {
+        { ParameterType.ScriptName, en = "Building", de = "Gebäude" },
+        { ParameterType.Custom, en = "Upgrade level", de = "Upgrade-Level" },
+    }
 };
  
 function b_Reward_SetBuildingUpgradeLevel:GetRewardTable()
 
-	return {Reward.Custom, self, self.CustomFunction};
+    return {Reward.Custom, self, self.CustomFunction};
 
 end
  
 function b_Reward_SetBuildingUpgradeLevel:AddParameter(_Index, _Parameter)
-	if _Index == 0 then
-		self.Building = _Parameter;
-	elseif _Index == 1 then
-		self.UpgradeLevel = tonumber(_Parameter);
-	end
+    if _Index == 0 then
+        self.Building = _Parameter;
+    elseif _Index == 1 then
+        self.UpgradeLevel = tonumber(_Parameter);
+    end
 end
  
 function b_Reward_SetBuildingUpgradeLevel:CustomFunction()
-	local building = Logic.GetEntityIDByName(self.Building);
-	local upgradeLevel = Logic.GetUpgradeLevel(building);
-	local maxUpgradeLevel = Logic.GetMaxUpgradeLevel(building);
-	if building ~= 0 
-	and Logic.IsBuilding(building) == 1 
-	and (Logic.IsBuildingUpgradable(building, true) 
-	or (maxUpgradeLevel ~= 0 
-	and maxUpgradeLevel == upgradeLevel)) 
-	then
-		Logic.SetUpgradableBuildingState(building, math.min(self.UpgradeLevel, maxUpgradeLevel), 0);
-	end
+    local building = Logic.GetEntityIDByName(self.Building);
+    local upgradeLevel = Logic.GetUpgradeLevel(building);
+    local maxUpgradeLevel = Logic.GetMaxUpgradeLevel(building);
+    if building ~= 0 
+    and Logic.IsBuilding(building) == 1 
+    and (Logic.IsBuildingUpgradable(building, true) 
+    or (maxUpgradeLevel ~= 0 
+    and maxUpgradeLevel == upgradeLevel)) 
+    then
+        Logic.SetUpgradableBuildingState(building, math.min(self.UpgradeLevel, maxUpgradeLevel), 0);
+    end
 end
 
 function b_Reward_SetBuildingUpgradeLevel:Debug(_Quest)
-	local building = Logic.GetEntityIDByName( self.Building )
-	local maxUpgradeLevel = Logic.GetMaxUpgradeLevel(building);
-	if not building or Logic.IsBuilding(building) == 0  then
-		error(_Quest.Identifier.. ": " ..self.Name .. ": Building " .. self.Building .. " is missing or no building.")
-		return true
-	elseif not self.UpgradeLevel or self.UpgradeLevel < 0 then
-		error(_Quest.Identifier.. ": " ..self.Name .. ": Upgrade level is wrong")
-		return true
-	end
+    local building = Logic.GetEntityIDByName( self.Building )
+    local maxUpgradeLevel = Logic.GetMaxUpgradeLevel(building);
+    if not building or Logic.IsBuilding(building) == 0  then
+        error(_Quest.Identifier.. ": " ..self.Name .. ": Building " .. self.Building .. " is missing or no building.")
+        return true
+    elseif not self.UpgradeLevel or self.UpgradeLevel < 0 then
+        error(_Quest.Identifier.. ": " ..self.Name .. ": Upgrade level is wrong")
+        return true
+    end
 end
 
 function b_Reward_SetBuildingUpgradeLevel:GetCustomData(_Index)

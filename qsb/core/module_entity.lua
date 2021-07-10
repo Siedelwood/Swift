@@ -106,6 +106,24 @@ function API.SendCart(_position, _player, _good, _amount, _cartOverlay, _ignoreR
         orientation = Logic.GetEntityOrientation(eID)-90;
     end
 
+    -- Macht Waren lagerbar im Lagerhaus
+    if resCat == GoodCategories.GC_Resource or _good == Goods.G_None then
+        local TypeName = Logic.GetGoodTypeName(_good);
+        local Category = Logic.GetGoodCategoryForGoodType(_good);
+        local SHID = Logic.GetStoreHouse(_player);
+        local HQID = Logic.GetHeadquarters(_player);
+        if SHID ~= 0 and Logic.GetIndexOnInStockByGoodType(SHID, _good) == -1 then
+            local CreateSlot = true;
+            if _good ~= Goods.G_Gold or (_good == Goods.G_Gold and HQID == 0) then
+                info(
+                    "API.SendCart: creating stock for " ..TypeName.. " in" ..
+                    "storehouse of player " .._player.. "."
+                );
+                Logic.AddGoodToStock(SHID, _good, 0, true, true);
+            end
+        end
+    end
+
     info("API.SendCart: Creating cart ("..
         tostring(_position) ..","..
         tostring(_player) ..","..
