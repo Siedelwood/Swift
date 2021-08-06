@@ -357,14 +357,14 @@ function ModuleInputOutputCore.Local:PrepareInputVariable()
         end
         local ChatMessage = XGUIEng.GetText("/InGame/Root/Normal/ChatInput/ChatInput");
         g_Chat.JustClosed = 1;
-        ModuleInputOutputCore.Local:selfToGlobal(ChatMessage);
+        ModuleInputOutputCore.Local:LocalToGlobal(ChatMessage);
     end
 
     GUI_Chat.Abort = function()
     end
 end
 
-function ModuleInputOutputCore.Local:selfToGlobal(_Text)
+function ModuleInputOutputCore.Local:LocalToGlobal(_Text)
     _Text = (_Text == nil and "") or _Text;
     API.SendScriptEvent(QSB.ScriptEvents.ChatClosed, _Text);
     GUI.SendScriptCommand(string.format(

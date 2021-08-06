@@ -124,7 +124,7 @@ function ModuleTradingCore.Local:OverrideMerchantPurchaseOfferClicked()
         end
 
         -- Special sales conditions
-        if not ModuleTradingCore.Local.Lambda.SaleAllowed[TraderPlayerID] then
+        if not ModuleTradingCore.Local.Lambda.PurchaseAllowed[TraderPlayerID] then
             CanBeBought = ModuleTradingCore.Local.Lambda.PurchaseAllowed[TraderPlayerID](TraderType, GoodType, PlayerID, TargetID, OfferGoodAmount, Price);
         else
             CanBeBought = ModuleTradingCore.Local.Lambda.PurchaseAllowed.Default(TraderType, GoodType, PlayerID, TargetID, OfferGoodAmount, Price);

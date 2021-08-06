@@ -5,7 +5,7 @@
 --
 -- Du kannst vordefinierte Farben in Textausgaben verwenden. Außerdem kannst
 -- du für Skriptnamen und Entitytypen Platzhalter zu definieren. Diese
--- Platzhalter können auch Lokalisiert werden.
+-- Platzhalter können auch lokalisiert werden.
 --
 -- Du kannst ferner verschiedene Input Dialoge nutzen, um Ausgaben anzuzeigen.
 -- Außerdem kannst du vom Spieler Eingaben fordern.
@@ -14,7 +14,7 @@
 --
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
--- <li><a href="Swift_0_Core.api.html">(1) Core</a></li>
+-- <li><a href="Swift_0_Core.api.html">(0) Core</a></li>
 -- </ul>
 --
 -- @within Beschreibung
@@ -35,7 +35,7 @@
 -- @usage API.Note("Das ist eine flüchtige Information!");
 --
 function API.Note(_Text)
-    ModuleInputOutputCore.Shared:Note(ModuleInputOutputCore.Shared:ConvertPlaceholders(_Text));
+    ModuleInputOutputCore.Shared:Note(_Text);
 end
 GUI_Note = API.Note;
 
@@ -53,7 +53,7 @@ GUI_Note = API.Note;
 -- @usage API.StaticNote("Das ist eine dauerhafte Information!");
 --
 function API.StaticNote(_Text)
-    ModuleInputOutputCore.Shared:StaticNote(ModuleInputOutputCore.Shared:ConvertPlaceholders(_Text));
+    ModuleInputOutputCore.Shared:StaticNote(_Text);
 end
 GUI_StaticNote = API.StaticNote;
 
@@ -71,7 +71,7 @@ GUI_StaticNote = API.StaticNote;
 -- @usage API.Message("Das ist eine Nachricht!");
 --
 function API.Message(_Text)
-    ModuleInputOutputCore.Shared:Message(ModuleInputOutputCore.Shared:ConvertPlaceholders(_Text));
+    ModuleInputOutputCore.Shared:Message(_Text);
 end
 GUI_Message = API.Message;
 
@@ -345,7 +345,7 @@ end
 ---
 -- Bereitet die Texteingabe über den Chat Input vor.
 --
--- <b<Hinweis</b>: Der Spieler kann den Input nicht mit Esc verlassen. Der Input
+-- <b>Hinweis</b>: Der Spieler kann den Input nicht mit Esc verlassen. Der Input
 -- kann nur durch Enter geschlossen werden. Das dedeutet, dass evtl. ein leerer
 -- String übergeben wird. In diesem Fall wurde nichts eingegeben.
 --
