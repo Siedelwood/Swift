@@ -238,6 +238,8 @@ function API.OverrideString()
     end
 end
 
+-- Debug
+
 ---
 -- Aktiviert oder deaktiviert Optionen des Debug Mode.
 --
@@ -305,6 +307,8 @@ function API.IsDebugShellActive()
     return Swift.m_DevelopingShell == true;
 end
 
+-- Script Events
+
 ---
 -- Legt ein neues Script Event an. Dem Event kann optional eine Funktion
 -- mitgegeben werden, die ausgeführt werden kann.
@@ -340,6 +344,8 @@ end
 function API.SendScriptEvent(_ID, ...)
     Swift:DispatchScriptEvent(_ID, unpack(arg));
 end
+
+-- Base API
 
 ---
 -- Wandelt underschiedliche Darstellungen einer Boolean in eine echte um.
@@ -693,3 +699,37 @@ function API.IsLoadscreenVisible()
     return Swift.m_LoadScreenHidden == true;
 end
 
+---
+-- Ersetzt ein Entity mit einem neuen eines anderen Typs. Skriptname,
+-- Rotation, Position und Besitzer werden übernommen.
+--
+-- <b>Hinweis</b>: Die Entity-ID ändert sich und beim Ersetzen von
+-- Spezialgebäuden kann eine Niederlage erfolgen.
+--
+-- <p><b>Alias:</b> ReplaceEntity</p>
+--
+-- @param _Entity      Entity (Skriptname oder ID)
+-- @param[type=number] _Type     Neuer Typ
+-- @param[type=number] _NewOwner (optional) Neuer Besitzer
+-- @return[type=number] Entity-ID des Entity
+-- @within Anwenderfunktionen
+-- @usage API.ReplaceEntity("Stein", Entities.XD_ScriptEntity)
+--
+function API.ReplaceEntity(_Entity, _Type, _NewOwner)
+    local eID = GetID(_Entity);
+    if eID == 0 then
+        return;
+    end
+    local pos = GetPosition(eID);
+    local player = _NewOwner or Logic.EntityGetPlayer(eID);
+    local orientation = Logic.GetEntityOrientation(eID);
+    local name = Logic.GetEntityName(eID);
+    DestroyEntity(eID);
+    -- TODO: Logging
+    if Logic.IsEntityTypeInCategory(_Type, EntityCategories.Soldier) == 1 then
+        return CreateBattalion(player, _Type, pos.X, pos.Y, 1, name, orientation);
+    else
+        return CreateEntity(player, _Type, pos, name, orientation);
+    end
+end
+ReplaceEntity = API.ReplaceEntity;

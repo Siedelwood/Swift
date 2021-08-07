@@ -115,15 +115,15 @@ end
 -- Event Jobs
 
 ModuleEventJob_OnEntityDestroyed = function()
-    local PlayerID = Event.GetPlayerID();
     local EntityID = Event.GetEntityID();
+    local PlayerID = Event.GetPlayerID();
     ModuleJobsCore.Shared:TriggerEventJobs(Events.LOGIC_EVENT_ENTITY_DESTROYED, PlayerID, EntityID);
 end
 ModuleEventJob_OnEntityHurtEntity = function()
-    local PlayerID1 = Event.GetPlayerID1();
     local EntityID1 = Event.GetEntityID1();
-    local PlayerID2 = Event.GetPlayerID2();
+    local PlayerID1 = Logic.EntityGetPlayer(EntityID1);
     local EntityID2 = Event.GetEntityID2();
+    local PlayerID2 = Logic.EntityGetPlayer(EntityID2);
     ModuleJobsCore.Shared:TriggerEventJobs(Events.LOGIC_EVENT_ENTITY_HURT_ENTITY, PlayerID1, EntityID1, PlayerID2, EntityID2);
 end
 ModuleEventJob_OnEverySecond = function()
