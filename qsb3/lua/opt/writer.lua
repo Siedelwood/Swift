@@ -15,6 +15,8 @@ OptWriter_ModuleFiles = {
     "Swift_1_JobsCore/api.lua",
     "Swift_1_ScriptingValueCore/source.lua",
     "Swift_1_ScriptingValueCore/api.lua",
+    "Swift_1_SoldierLimitCore/source.lua",
+    "Swift_1_SoldierLimitCore/api.lua",
     "Swift_1_SoundCore/source.lua",
     "Swift_1_SoundCore/api.lua",
     "Swift_1_TradingCore/source.lua",
