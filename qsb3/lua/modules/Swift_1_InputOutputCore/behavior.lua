@@ -1,6 +1,12 @@
 -- Input/Output Behavior ---------------------------------------------------- --
 
 ---
+-- Fügt Behavior zur Aufforderung einer Eingabe hinzu.
+--
+-- @set sort=true
+--
+
+---
 -- Lässt den Spieler zwischen zwei Antworten wählen.
 --
 -- Dabei kann zwischen den Labels Ja/Nein und Ok/Abbrechen gewählt werden.

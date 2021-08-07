@@ -1,4 +1,4 @@
--- Job API ------------------------------------------------------------------ --
+-- Military Core API -------------------------------------------------------- --
 
 ---
 -- Dieses Modul ermöglicht es das Soldatenlimit eines Spielers frei festzulegen.
@@ -29,7 +29,7 @@ function API.GetPlayerSoldierLimit(_PlayerID)
     if CastleID ~= 0 then
         CastleLevel = Logic.GetUpgradeLevel(CastleID) +1;
     end
-    return ModuleSoldierLimitCore.Shared:GetLimitForPlayer(_PlayerID, CastleID);
+    return ModuleMilitaryCore.Shared:GetLimitForPlayer(_PlayerID, CastleID);
 end
 
 ---
@@ -44,15 +44,15 @@ end
 -- @usage API.SetPlayerSoldierLimits(1, 100, 200, 300, 400);
 --
 function API.SetPlayerSoldierLimits(_PlayerID, _Lv1, _Lv2, _Lv3, _Lv4)
-    ModuleSoldierLimitCore.Shared:SetLimitsForPlayer(_PlayerID, _Lv1, _Lv2, _Lv3, _Lv4);
+    ModuleMilitaryCore.Shared:SetLimitsForPlayer(_PlayerID, _Lv1, _Lv2, _Lv3, _Lv4);
     if not GUI then
         Logic.ExecuteInLuaLocalState(string.format(
-            [[ModuleSoldierLimitCore.Shared:SetLimitsForPlayer(%d, %d, %d, %d, %d)]],
+            [[ModuleMilitaryCore.Shared:SetLimitsForPlayer(%d, %d, %d, %d, %d)]],
             _PlayerID, _Lv1, _Lv2, _Lv3, _Lv4
         ));
     else
         GUI.SendScriptCommand(string.format(
-            [[ModuleSoldierLimitCore.Shared:SetLimitsForPlayer(%d, %d, %d, %d, %d)]],
+            [[ModuleMilitaryCore.Shared:SetLimitsForPlayer(%d, %d, %d, %d, %d)]],
             _PlayerID, _Lv1, _Lv2, _Lv3, _Lv4
         ));
     end
