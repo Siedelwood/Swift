@@ -9,7 +9,7 @@ QSB = QSB or {};
 
 QSB.Version = "Version 3.0.0 XX/XX/20XX ALPHA";
 QSB.Language = "de";
-QSB.HumanPlayerID = 1;
+QSB.HumanPlayerID = -1;
 QSB.ScriptEvents = {};
 
 Swift = Swift or {};
@@ -61,6 +61,10 @@ function Swift:LoadCore()
         self:InitalizeDebugModeLocal();
         self:InitalizeEventsLocal();
         self:InstallBehaviorLocal();
+
+        local HumanID = GUI.GetPlayerID();
+        GUI.SendScriptCommand("QSB.HumanPlayerID = " ..HumanID);
+        QSB.HumanPlayerID = HumanID;
 
         StartSimpleHiResJob("Swift_EventJob_WaitForLoadScreenHidden");
     end

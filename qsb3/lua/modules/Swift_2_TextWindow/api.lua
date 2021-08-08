@@ -1,7 +1,8 @@
 -- TextWindow API ----------------------------------------------------------- --
 
 ---
--- 
+-- Mit diesem Modul kann ein Textfenster zur Darstellung eines Textes erteugt
+-- werden.
 --
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>

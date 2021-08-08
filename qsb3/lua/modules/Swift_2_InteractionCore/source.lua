@@ -41,7 +41,9 @@ function ModuleInteractionCore.Global:OnGameStart()
         ModuleInteractionCore.Global:ControlMarker();
     end);
     API.StartJobByEventType(Events.LOGIC_EVENT_EVERY_TURN, function()
-        ModuleInteractionCore.Global:DialogTriggerController();
+        if Logic.GetTime() > 1 then
+            ModuleInteractionCore.Global:DialogTriggerController();
+        end
     end);
 end
 
