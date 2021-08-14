@@ -319,6 +319,7 @@ function API.CreateObject(_Description)
     if GUI then
         return;
     end
+    _Description.Texture = _Description.Texture or {14, 10, 0};
     return ModuleInteractionCore.Global:CreateObject(_Description);
 end
 CreateObject = API.CreateObject;
@@ -326,6 +327,8 @@ CreateObject = API.CreateObject;
 ---
 -- Aktiviert ein Interaktives Objekt, sodass es vom Spieler
 -- aktiviert werden kann.
+--
+-- Optional kann das Objekt nur für einen bestimmten Spieler aktiviert werden.
 --
 -- Der State bestimmt, ob es immer aktiviert werden kann, oder ob der Spieler
 -- einen Helden benutzen muss. Wird der Parameter weggelassen, muss immer ein
@@ -335,19 +338,21 @@ CreateObject = API.CreateObject;
 --
 -- @param[type=string] _EntityName Skriptname des Objektes
 -- @param[type=number] _State      State des Objektes
+-- @param[type=number] _PlayerID   (Optional) Spieler-ID
 -- @within Anwenderfunktionen
 --
-function API.InteractiveObjectActivate(_ScriptName, _State)
-    if not IO[_ScriptName] then
-        API.ActivateIO(_ScriptName, _State);
-        return;
+function API.InteractiveObjectActivate(_ScriptName, _State, _PlayerID)
+    _State = _State or 0;
+    if IO[_ScriptName] then
+        local SlaveName = (IO[_ScriptName].m_Slave or _ScriptName);
+        if IO[_ScriptName].m_Slave then
+            IO_SlaveState[SlaveName] = 1;
+        end
+        ModuleInteractionCore.Global:SetObjectAvailability(SlaveName, _State, _PlayerID);
+        IO[_ScriptName]:SetActive(true);
+    else
+        ModuleInteractionCore.Global:SetObjectAvailability(_ScriptName, _State, _PlayerID);
     end
-    local ScriptName = (IO[_ScriptName].m_Slave or _ScriptName);
-    if IO[_ScriptName].m_Slave then
-        IO_SlaveState[ScriptName] = 1;
-    end
-    API.ActivateIO(ScriptName, _State);
-    IO[_ScriptName]:SetActive(true);
 end
 InteractiveObjectActivate = API.InteractiveObjectActivate;
 
@@ -355,22 +360,25 @@ InteractiveObjectActivate = API.InteractiveObjectActivate;
 -- Deaktiviert ein interaktives Objekt, sodass es nicht mehr vom Spieler
 -- benutzt werden kann.
 --
+-- Optional kann das Objekt nur für einen bestimmten Spieler deaktiviert werden.
+--
 -- <p><b>Alias</b>: InteractiveObjectDeactivate</p>
 --
 -- @param[type=string] _EntityName Scriptname des Objektes
+-- @param[type=number] _PlayerID   (Optional) Spieler-ID
 -- @within Anwenderfunktionen
 --
-function API.InteractiveObjectDeactivate(_ScriptName)
-    if not IO[_ScriptName] then
-        API.DeactivateIO(_ScriptName);
-        return;
+function API.InteractiveObjectDeactivate(_ScriptName, _PlayerID)
+    if IO[_ScriptName] then
+        local SlaveName = (IO[_ScriptName].m_Slave or _ScriptName);
+        if IO[_ScriptName].m_Slave then
+            IO_SlaveState[SlaveName] = 0;
+        end
+        ModuleInteractionCore.Global:SetObjectAvailability(SlaveName, 2, _PlayerID);
+        IO[_ScriptName]:SetActive(false);
+    else
+        ModuleInteractionCore.Global:SetObjectAvailability(_ScriptName, 2, _PlayerID);
     end
-    local ScriptName = (IO[_ScriptName].m_Slave or _ScriptName);
-    if IO[_ScriptName].m_Slave then
-        IO_SlaveState[ScriptName] = 0;
-    end
-    API.DeactivateIO(ScriptName);
-    IO[_ScriptName]:SetActive(false);
 end
 InteractiveObjectDeactivate = API.InteractiveObjectDeactivate;
 

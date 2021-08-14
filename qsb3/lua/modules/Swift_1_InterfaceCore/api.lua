@@ -3,6 +3,9 @@
 ---
 -- Dieses Modul bietet grundlegende Funktionen zur Manipulation des Interface.
 --
+-- <b>Hinweis</b>: Diese Funktionen müssen in Multiplayer Maps synchron
+-- aufgerufen werden. Entweder zu Spielbeginn oder durch Jobs.
+--
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
 -- <li><a href="Swift_0_Core.api.html">(0) Core</a></li>
@@ -51,6 +54,7 @@ function API.InterfaceSetIcon(_WidgetID, _Coordinates, _Size, _Name)
     if not GUI then
         return;
     end
+    _Coordinates = _Coordinates or {10, 14};
     ModuleInterfaceCore.Local:SetIcon(_WidgetID, _Coordinates, _Size, _Name)
 end
 

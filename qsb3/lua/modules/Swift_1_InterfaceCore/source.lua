@@ -115,21 +115,23 @@ function ModuleInterfaceCore.Local:SetPlayerPortraitByModelName(_PlayerID, _Port
 end
 
 function ModuleInterfaceCore.Local:SetIcon(_WidgetID, _Coordinates, _Size, _Name)
+    if type(_Name) == "number" then
+        _Name = "icons" .. ((_Name > 0 and _Name+1) or "");
+    end
     if _Name == nil then
-        _Name = "usericons";
+        _Name = "icons";
     end
     if _Size == nil then
         _Size = 64;
     end
-
     if _Size == 44 then
-        _Name = _Name .. ".png"
+        _Name = _Name .. ".png";
     end
     if _Size == 64 then
-        _Name = _Name .. "big.png"
+        _Name = _Name .. "big.png";
     end
     if _Size == 128 then
-        _Name = _Name .. "verybig.png"
+        _Name = _Name .. "verybig.png";
     end
 
     local u0, u1, v0, v1;
@@ -148,66 +150,81 @@ function ModuleInterfaceCore.Local:SetIcon(_WidgetID, _Coordinates, _Size, _Name
 end
 
 function ModuleInterfaceCore.Local:TextNormal(_title, _text, _disabledText)
-    _title = API.Localize(_title or "");
-    _text = API.Localize(_text or "");
-    _disabledText = API.Localize(_disabledText or "");
-
-    local TooltipContainerPath = "/InGame/Root/Normal/TooltipNormal"
-    local TooltipContainer = XGUIEng.GetWidgetID(TooltipContainerPath)
-    local TooltipNameWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/Name")
-    local TooltipDescriptionWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/Text")
-    local TooltipBGWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/BG")
-    local TooltipFadeInContainer = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn")
-    local PositionWidget = XGUIEng.GetCurrentWidgetID()
-    GUI_Tooltip.ResizeBG(TooltipBGWidget, TooltipDescriptionWidget)
-    local TooltipContainerSizeWidgets = {TooltipBGWidget}
-    GUI_Tooltip.SetPosition(TooltipContainer, TooltipContainerSizeWidgets, PositionWidget)
-    GUI_Tooltip.FadeInTooltip(TooltipFadeInContainer)
-
-    local disabled = "";
-    if XGUIEng.IsButtonDisabled(PositionWidget) == 1 and _disabledText ~= "" and _text ~= "" then
-        disabled = disabled .. "{cr}{@color:255,32,32,255}" .. _disabledText
+    if _title and _title:find("[A-Za-z0-9]+/[A-Za-z0-9]+$") then
+        _title = XGUIEng.GetStringTableText(_title);
+    end
+    if _text and _text:find("[A-Za-z0-9]+/[A-Za-z0-9]+$") then
+        _text = XGUIEng.GetStringTableText(_text);
+    end
+    if _disabledText and _disabledText:find("[A-Za-z0-9]+/[A-Za-z0-9]+$") then
+        _disabledText = XGUIEng.GetStringTableText(_disabledText);
     end
 
-    XGUIEng.SetText(TooltipNameWidget, "{center}" .. _title)
-    XGUIEng.SetText(TooltipDescriptionWidget, _text .. disabled)
-    local Height = XGUIEng.GetTextHeight(TooltipDescriptionWidget, true)
-    local W, H = XGUIEng.GetWidgetSize(TooltipDescriptionWidget)
-    XGUIEng.SetWidgetSize(TooltipDescriptionWidget, W, Height)
+    local TooltipContainerPath = "/InGame/Root/Normal/TooltipNormal";
+    local TooltipContainer = XGUIEng.GetWidgetID(TooltipContainerPath);
+    local TooltipNameWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/Name");
+    local TooltipDescriptionWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/Text");
+    local TooltipBGWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/BG");
+    local TooltipFadeInContainer = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn");
+    local PositionWidget = XGUIEng.GetCurrentWidgetID();
+    GUI_Tooltip.ResizeBG(TooltipBGWidget, TooltipDescriptionWidget);
+    local TooltipContainerSizeWidgets = {TooltipBGWidget};
+    GUI_Tooltip.SetPosition(TooltipContainer, TooltipContainerSizeWidgets, PositionWidget);
+    GUI_Tooltip.FadeInTooltip(TooltipFadeInContainer);
+
+    local title = (_title and _title) or "";
+    local text = (_text and _text) or "";
+    local disabled = "";
+    if XGUIEng.IsButtonDisabled(PositionWidget) == 1 and _disabledText then
+        disabled = disabled .. "{cr}{@color:255,32,32,255}" .. _disabledText;
+    end
+
+    XGUIEng.SetText(TooltipNameWidget, "{center}" .. title);
+    XGUIEng.SetText(TooltipDescriptionWidget, text .. disabled);
+    local Height = XGUIEng.GetTextHeight(TooltipDescriptionWidget, true);
+    local W, H = XGUIEng.GetWidgetSize(TooltipDescriptionWidget);
+    XGUIEng.SetWidgetSize(TooltipDescriptionWidget, W, Height);
 end
 
 function ModuleInterfaceCore.Local:TextCosts(_title,_text,_disabledText,_costs,_inSettlement)
     _costs = _costs or {};
-    _title = API.Localize(_title or "");
-    _text = API.Localize(_text or "");
-    _disabledText = API.Localize(_disabledText or "");
-
-    local TooltipContainerPath = "/InGame/Root/Normal/TooltipBuy"
-    local TooltipContainer = XGUIEng.GetWidgetID(TooltipContainerPath)
-    local TooltipNameWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/Name")
-    local TooltipDescriptionWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/Text")
-    local TooltipBGWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/BG")
-    local TooltipFadeInContainer = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn")
-    local TooltipCostsContainer = XGUIEng.GetWidgetID(TooltipContainerPath .. "/Costs")
-    local PositionWidget = XGUIEng.GetCurrentWidgetID()
-    GUI_Tooltip.ResizeBG(TooltipBGWidget, TooltipDescriptionWidget)
-    GUI_Tooltip.SetCosts(TooltipCostsContainer, _costs, _inSettlement)
-    local TooltipContainerSizeWidgets = {TooltipContainer, TooltipCostsContainer, TooltipBGWidget}
-    GUI_Tooltip.SetPosition(TooltipContainer, TooltipContainerSizeWidgets, PositionWidget, nil, true)
-    GUI_Tooltip.OrderTooltip(TooltipContainerSizeWidgets, TooltipFadeInContainer, TooltipCostsContainer, PositionWidget, TooltipBGWidget)
-    GUI_Tooltip.FadeInTooltip(TooltipFadeInContainer)
-
-    _disabledText = _disabledText or "";
-    local disabled = ""
-    if XGUIEng.IsButtonDisabled(PositionWidget) == 1 and _disabledText ~= "" and _text ~= "" then
-        disabled = disabled .. "{cr}{@color:255,32,32,255}" .. _disabledText
+    if _title and _title:find("[A-Za-z0-9]+/[A-Za-z0-9]+$") then
+        _title = XGUIEng.GetStringTableText(_title);
+    end
+    if _text and _text:find("[A-Za-z0-9]+/[A-Za-z0-9]+$") then
+        _text = XGUIEng.GetStringTableText(_text);
+    end
+    if _disabledText and _disabledText:find("^[A-Za-z0-9]+/[A-Za-z0-9]+$") then
+        _disabledText = XGUIEng.GetStringTableText(_disabledText);
     end
 
-    XGUIEng.SetText(TooltipNameWidget, "{center}" .. _title)
-    XGUIEng.SetText(TooltipDescriptionWidget, _text .. disabled)
-    local Height = XGUIEng.GetTextHeight(TooltipDescriptionWidget, true)
-    local W, H = XGUIEng.GetWidgetSize(TooltipDescriptionWidget)
-    XGUIEng.SetWidgetSize(TooltipDescriptionWidget, W, Height)
+    local TooltipContainerPath = "/InGame/Root/Normal/TooltipBuy";
+    local TooltipContainer = XGUIEng.GetWidgetID(TooltipContainerPath);
+    local TooltipNameWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/Name");
+    local TooltipDescriptionWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/Text");
+    local TooltipBGWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/BG");
+    local TooltipFadeInContainer = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn");
+    local TooltipCostsContainer = XGUIEng.GetWidgetID(TooltipContainerPath .. "/Costs");
+    local PositionWidget = XGUIEng.GetCurrentWidgetID();
+    GUI_Tooltip.ResizeBG(TooltipBGWidget, TooltipDescriptionWidget);
+    GUI_Tooltip.SetCosts(TooltipCostsContainer, _costs, _inSettlement);
+    local TooltipContainerSizeWidgets = {TooltipContainer, TooltipCostsContainer, TooltipBGWidget};
+    GUI_Tooltip.SetPosition(TooltipContainer, TooltipContainerSizeWidgets, PositionWidget, nil, true);
+    GUI_Tooltip.OrderTooltip(TooltipContainerSizeWidgets, TooltipFadeInContainer, TooltipCostsContainer, PositionWidget, TooltipBGWidget);
+    GUI_Tooltip.FadeInTooltip(TooltipFadeInContainer);
+
+    local title = (_title and _title) or "";
+    local text = (_text and _text) or "";
+    local disabled = "";
+    if XGUIEng.IsButtonDisabled(PositionWidget) == 1 and _disabledText then
+        disabled = disabled .. "{cr}{@color:255,32,32,255}" .. _disabledText;
+    end
+
+    XGUIEng.SetText(TooltipNameWidget, "{center}" .. title);
+    XGUIEng.SetText(TooltipDescriptionWidget, text .. disabled);
+    local Height = XGUIEng.GetTextHeight(TooltipDescriptionWidget, true);
+    local W, H = XGUIEng.GetWidgetSize(TooltipDescriptionWidget);
+    XGUIEng.SetWidgetSize(TooltipDescriptionWidget, W, Height);
 end
 
 -- -------------------------------------------------------------------------- --

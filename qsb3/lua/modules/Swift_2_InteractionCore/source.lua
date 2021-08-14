@@ -296,7 +296,14 @@ function ModuleInteractionCore.Global:SetupObject(_Object)
         Logic.InteractiveObjectAddCosts(ID, _Object.m_Costs[3], _Object.m_Costs[4]);
     end
     table.insert(HiddenTreasures, ID);
-    API.InteractiveObjectActivate(Logic.GetEntityName(ID), _Object.m_State or 0);
+    self:SetObjectAvailability(_ScriptName, _Object.m_State or 0);
+end
+
+function ModuleInteractionCore.Global:SetObjectAvailability(_ScriptName, _State, ...)
+    arg = arg or {1, 2, 3, 4, 5, 6, 7, 8};
+    for i= 1, #arg, 1 do
+        Logic.InteractiveObjectSetPlayerState(GetID(_ScriptName), arg[i], _State);
+    end
 end
 
 function ModuleInteractionCore.Global:StartObjectConditionController()
@@ -576,9 +583,12 @@ function ModuleInteractionCore.Local:ActivateInteractiveObjectControl()
                 local X, Y = GUI.GetEntityInfoScreenPosition(MasterObjectID);
                 local WidgetSize = {XGUIEng.GetWidgetScreenSize(Widget)};
                 XGUIEng.SetWidgetScreenPosition(Widget, X - (WidgetSize[1]/2), Y - (WidgetSize[2]/2));
-                -- Tooltip
+                -- Icon
                 if IO[ScriptName] then
-                    API.InterfaceSetIcon(Widget, IO[ScriptName].m_Icon, nil, nil);
+                    local a = (IO[ScriptName].m_Icon and IO[ScriptName].m_Icon[1]) or 14;
+                    local b = (IO[ScriptName].m_Icon and IO[ScriptName].m_Icon[2]) or 10;
+                    local c = (IO[ScriptName].m_Icon and IO[ScriptName].m_Icon[3]) or 0;
+                    API.InterfaceSetIcon(Widget, {a, b, c}, nil, c);
                 end
             end
         end
@@ -591,13 +601,15 @@ function ModuleInteractionCore.Local:ActivateInteractiveObjectControl()
         local ObjectID = g_Interaction.ActiveObjectsOnScreen[ButtonNumber];
         local EntityType = Logic.GetEntityType(ObjectID);
 
+        -- Fix default objects
         if g_GameExtraNo > 0 then
             local EntityTypeName = Logic.GetEntityTypeName(EntityType);
-            if Inside (EntityTypeName, {"R_StoneMine", "R_IronMine", "B_Cistern", "B_Well", "I_X_TradePostConstructionSite"}) then
+            if table.contains ({"R_StoneMine", "R_IronMine", "B_Cistern", "B_Well", "I_X_TradePostConstructionSite"}, EntityTypeName) then
                 GUI_Interaction.InteractiveObjectMouseOver_Orig_ModuleInteractionCore();
                 return;
             end
         end
+        -- Fix gold amount script names
         local EntityTypeName = Logic.GetEntityTypeName(EntityType);
         if string.find(EntityTypeName, "^I_X_") and tonumber(Logic.GetEntityName(ObjectID)) ~= nil then
             GUI_Interaction.InteractiveObjectMouseOver_Orig_ModuleInteractionCore();
@@ -716,7 +728,7 @@ QSB.NonPlayerCharacter = {};
 --
 function QSB.NonPlayerCharacter:New(_ScriptName)
     assert(self == QSB.NonPlayerCharacter, 'Can not be used from instance!');
-    local npc = API.InstanceTable(self);
+    local npc = table.copy(self);
     npc.m_NpcName  = _ScriptName;
     npc.m_NpcType  = BundleNonPlayerCharacter.Global.DefaultNpcType
     npc.m_Distance = 350;
@@ -1177,7 +1189,7 @@ QSB.InteractiveObject = {
 };
 
 function QSB.InteractiveObject:New(_Name)
-    local Object = API.InstanceTable(self);
+    local Object = table.copy(self);
     Object.m_Name = _Name;
     return Object;
 end
@@ -1233,6 +1245,7 @@ end
 
 function QSB.InteractiveObject:SetIcon(_Icon)
     self.m_Icon = _Icon;
+    self.m_Icon[3] = self.m_Icon[3] or 0;
     return self;
 end
 
