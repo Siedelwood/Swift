@@ -3,9 +3,12 @@
 ---
 -- Dieses Modul ermöglicht das Ändern des Wetters.
 --
+-- <b>Hinweis</b>: Diese Funktionen können nicht in Multiplayer Maps benutzt
+-- werden, wenn sie mit der History Edition spielbar sein sollen.
+--
 -- Es können nun relativ einfach Wetterevents und Wetteranimationen kombiniert
 -- gestartet werden.
-
+-- 
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
 -- <li><a href="Swift_1_JobsCore.api.html">(1) Jobs Core</a></li>

@@ -1096,7 +1096,7 @@ end
 
 function b_Goal_UnitsOnTerritory:Debug(_Quest)
     local territories = {Logic.GetTerritories()}
-    if tonumber(self.TerritoryID) == nil or self.TerritoryID < 0 or not Inside(self.TerritoryID,territories) then
+    if tonumber(self.TerritoryID) == nil or self.TerritoryID < 0 or not table.contains(territories, self.TerritoryID) then
         error(_Quest.Identifier.. ": " ..self.Name..": got an invalid territoryID!");
         return true;
     elseif tonumber(self.PlayerID) == nil or self.PlayerID < 0 or self.PlayerID > 8 then
@@ -2717,7 +2717,7 @@ function b_Goal_CustomVariables:Debug(_Quest)
     if not _G["QSB_CustomVariables_"..self.VariableName] then
         warn(_Quest.Identifier.. ": " ..self.Name..": variable '"..self.VariableName.."' do not exist!");
     end
-    if not Inside(self.Relation, relations) then
+    if not table.contains(relations, self.Relation) then
         error(_Quest.Identifier.. ": " ..self.Name..": '"..self.Relation.."' is an invalid relation!");
         return true;
     end
@@ -4075,7 +4075,7 @@ end
 
 function b_Reprisal_CustomVariables:Debug(_Quest)
     local operators = {"=", "+", "-", "*", "/", "^"};
-    if not Inside(self.Operator,operators) then
+    if not table.contains(operators, self.Operator) then
         error(_Quest.Identifier.. ": " ..self.Name..": got an invalid operator!");
         return true;
     elseif self.VariableName == "" then
@@ -8088,7 +8088,7 @@ function b_Trigger_CustomVariables:Debug(_Quest)
     if not _G["QSB_CustomVariables_"..self.VariableName] then
         warn(_Quest.Identifier.. ": " ..self.Name..": variable '"..self.VariableName.."' do not exist!");
     end
-    if not Inside(self.Relation,relations) then
+    if not table.contains(relations, self.Relation) then
         error(_Quest.Identifier.. ": " ..self.Name..": '"..self.Relation.."' is an invalid relation!");
         return true;
     end

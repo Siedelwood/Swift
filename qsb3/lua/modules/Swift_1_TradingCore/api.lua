@@ -4,6 +4,9 @@
 -- Modul zum Überschreiben des Verhaltens von Händlern. Es können Angebote im
 -- eigenen Lagerhaus und in fremden Lagerhäusern beeinflusst werden.
 --
+-- <b>Hinweis</b>: Diese Funktionen können nicht in Multiplayer Maps benutzt
+-- werden, wenn sie mit der History Edition spielbar sein sollen.
+--
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
 -- <li><a href="Swift_0_Core.api.html">(0) Core</a></li>

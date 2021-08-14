@@ -24,7 +24,7 @@ function ModuleWeatherCore.Global:OnGameStart()
 end
 
 function ModuleWeatherCore.Global:AddEvent(_Event, _Duration)
-    local Event = API.InstanceTable(_Event);
+    local Event = table.copy(_Event);
     Event.Duration = _Duration;
     table.insert(self.EventQueue, Event);
 end
@@ -207,7 +207,7 @@ WeatherEvent = {
 -- @usage MyEvent = WeatherEvent:New();
 --
 function WeatherEvent:New()
-    return API.InstanceTable(self);
+    return table.copy(self);
 end
 
 -- -------------------------------------------------------------------------- --

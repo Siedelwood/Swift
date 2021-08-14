@@ -48,7 +48,7 @@ QSB.SimpleTypewriter = {
 -- @local
 --
 function QSB.SimpleTypewriter:New(_Text, _Callback)
-    local typewriter = API.InstanceTable(self);
+    local typewriter = table.copy(self);
     typewriter.m_Text = _Text;
     typewriter.m_Callback = _Callback;
     return typewriter;

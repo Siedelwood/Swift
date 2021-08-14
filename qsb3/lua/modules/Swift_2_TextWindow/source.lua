@@ -83,7 +83,7 @@ QSB.TextWindow = {
 --
 function QSB.TextWindow:New(...)
     assert(self == QSB.TextWindow, "Can not be used from instance!")
-    local window           = API.InstanceTable(self);
+    local window      = table.copy(self);
     window.Caption    = arg[1] or window.Caption;
     window.Text       = arg[2] or window.Text;
     window.Action     = arg[3];
