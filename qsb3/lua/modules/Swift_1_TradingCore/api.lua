@@ -23,7 +23,7 @@
 --
 -- Parameter der Funktion:
 -- <table border="1">
--- <tr><th>Parameter</th><th>Typ</th><th>Beschreibung</th></tr>
+-- <tr><th><b>Parameter</b></th><th><b>Typ</b></th><th><b>Beschreibung</b></th></tr>
 -- <tr><td>_Price</td><td>number</td><td></td>Basispreis</tr>
 -- <tr><td>_PlayerID1</td><td>number</td><td>ID des Käufers</td></tr>
 -- <tr><td>_PlayerID2</td><td>number</td><td>ID des Verkäufers</td></tr>
@@ -54,7 +54,7 @@ end
 --
 -- Parameter der Funktion:
 -- <table border="1">
--- <tr><th>Parameter</th><th>Typ</th><th>Beschreibung</th></tr>
+-- <tr><th><b>Parameter</b></th><th><b>Typ</b></th><th><b>Beschreibung</b></th></tr>
 -- <tr><td>_Price</td><td>number</td><td></td>Basispreis</tr>
 -- <tr><td>_PlayerID1</td><td>number</td><td>ID des Käufers</td></tr>
 -- <tr><td>_PlayerID2</td><td>number</td><td>ID des Verkäufers</td></tr>
@@ -78,7 +78,7 @@ end
 --
 -- Parameter der Funktion:
 -- <table border="1">
--- <tr><th>Parameter</th><th>Typ</th><th>Beschreibung</th></tr>
+-- <tr><th><b>Parameter</b></th><th><b>Typ</b></th><th><b>Beschreibung</b></th></tr>
 -- <tr><td>_Type</td><td>number</td><td>Typ des Angebot</td></tr>
 -- <tr><td>_PlayerID1</td><td>number</td><td>ID des Käufers</td></tr>
 -- <tr><td>_PlayerID2</td><td>number</td><td>ID des Verkäufers</td></tr>
@@ -109,7 +109,7 @@ end
 --
 -- Parameter der Funktion:
 -- <table border="1">
--- <tr><th>Parameter</th><th>Typ</th><th>Beschreibung</th></tr>
+-- <tr><th><b>Parameter</b></th><th><b>Typ</b></th><th><b>Beschreibung</b></th></tr>
 -- <tr><td>_PurchaseCount</td><td>number</td><td>Zahl bereits gekaufter Angebote</td></tr>
 -- <tr><td>_Price</td><td>number</td><td></td>Aktueller Preis</tr>
 -- <tr><td>_PlayerID1</td><td>number</td><td>ID des Käufers</td></tr>
@@ -134,7 +134,7 @@ end
 --
 -- Parameter der Funktion:
 -- <table border="1">
--- <tr><th>Parameter</th><th>Typ</th><th>Beschreibung</th></tr>
+-- <tr><th><b>Parameter</b></th><th><b>Typ</b></th><th><b>Beschreibung</b></th></tr>
 -- <tr><td>_PurchaseCount</td><td>number</td><td>Zahl bereits gekaufter Angebote</td></tr>
 -- <tr><td>_Price</td><td>number</td><td></td>Aktueller Preis</tr>
 -- <tr><td>_PlayerID1</td><td>number</td><td>ID des Käufers</td></tr>
@@ -166,7 +166,7 @@ end
 --
 -- Parameter der Funktion:
 -- <table border="1">
--- <tr><th>Parameter</th><th>Typ</th><th>Beschreibung</th></tr>
+-- <tr><th><b>Parameter</b></th><th><b>Typ</b></th><th><b>Beschreibung</b></th></tr>
 -- <tr><td>_PlayerID1</td><td>number</td><td>ID des Käufers</td></tr>
 -- <tr><td>_PlayerID2</td><td>number</td><td>ID des Verkäufers</td></tr>
 -- <tr><td>_Type</td><td>number</td><td>Typ des Angebot</td></tr>
@@ -192,20 +192,12 @@ end
 --
 -- Parameter der Funktion:
 -- <table border="1">
--- <tr><th>Parameter</th><th>Typ</th><th>Beschreibung</th></tr>
+-- <tr><th><b>Parameter</b></th><th><b>Typ</b></th><th><b>Beschreibung</b></th></tr>
 -- <tr><td>_PlayerID1</td><td>number</td><td>ID des Käufers</td></tr>
 -- <tr><td>_PlayerID2</td><td>number</td><td>ID des Verkäufers</td></tr>
 -- <tr><td>_Type</td><td>number</td><td>Typ des Angebot</td></tr>
 -- <tr><td>_Amount</td><td>number</td><td>Verkaufte Menge</td></tr>
 -- <tr><td>_UnitPrice</td><td>number</td><td>Stückpreis</td></tr>
--- </table>
---
--- Angebotstypen:
--- <table border="1">
--- <tr><th>Typ</th><th>Variable</th></tr>
--- <tr><td>Söldner</td><td>g_Merchant.MercenaryTrader</td></tr>
--- <tr><td>Unterhalter</td><td>g_Merchant.EntertainerTrader</td></tr>
--- <tr><td>Ware</td><td>g_Merchant.GoodTrader</td></tr>
 -- </table>
 --
 -- <b>Hinweis:</b> Die Funktion kann nur im lokalen Skript verwendet werden!
@@ -233,20 +225,12 @@ end
 --
 -- Parameter der Funktion:
 -- <table border="1">
--- <tr><th>Parameter</th><th>Typ</th><th>Beschreibung</th></tr>
+-- <tr><th><b>Parameter</b></th><th><b>Typ</b></th><th><b>Beschreibung</b></th></tr>
 -- <tr><td>_PlayerID1</td><td>number</td><td>ID des Käufers</td></tr>
 -- <tr><td>_PlayerID2</td><td>number</td><td>ID des Verkäufers</td></tr>
 -- <tr><td>_Type</td><td>number</td><td>Typ des Angebot</td></tr>
 -- <tr><td>_Amount</td><td>number</td><td>Verkaufte Menge</td></tr>
 -- <tr><td>_UnitPrice</td><td>number</td><td>Stückpreis</td></tr>
--- </table>
---
--- Angebotstypen:
--- <table border="1">
--- <tr><th>Typ</th><th>Variable</th></tr>
--- <tr><td>Söldner</td><td>g_Merchant.MercenaryTrader</td></tr>
--- <tr><td>Unterhalter</td><td>g_Merchant.EntertainerTrader</td></tr>
--- <tr><td>Ware</td><td>g_Merchant.GoodTrader</td></tr>
 -- </table>
 --
 -- <b>Hinweis:</b> Die Funktion kann nur im lokalen Skript verwendet werden!
@@ -267,7 +251,7 @@ end
 --
 -- Parameter der Funktion:
 -- <table border="1">
--- <tr><th>Parameter</th><th>Typ</th><th>Beschreibung</th></tr>
+-- <tr><th><b>Parameter</b></th><th><b>Typ</b></th><th><b>Beschreibung</b></th></tr>
 -- <tr><td>_Type</td><td>number</td><td>Warentyp</td></tr>
 -- <tr><td>_PlayerID1</td><td>number</td><td>ID des Verkäufers</td></tr>
 -- <tr><td>_PlayerID2</td><td>number</td><td>ID des Käufers</td></tr>
@@ -298,7 +282,7 @@ end
 --
 -- Parameter der Funktion:
 -- <table border="1">
--- <tr><th>Parameter</th><th>Typ</th><th>Beschreibung</th></tr>
+-- <tr><th><b>Parameter</b></th><th><b>Typ</b></th><th><b>Beschreibung</b></th></tr>
 -- <tr><td>_Type</td><td>number</td><td>Warentyp</td></tr>
 -- <tr><td>_PlayerID1</td><td>number</td><td>ID des Verkäufers</td></tr>
 -- <tr><td>_PlayerID2</td><td>number</td><td>ID des Käufers</td></tr>
@@ -322,7 +306,7 @@ end
 --
 -- Parameter der Funktion:
 -- <table border="1">
--- <tr><th>Parameter</th><th>Typ</th><th>Beschreibung</th></tr>
+-- <tr><th><b>Parameter</b></th><th><b>Typ</b></th><th><b>Beschreibung</b></th></tr>
 -- <tr><td>_Price</td><td>number</td><td>Verkaufspreis</td></tr>
 -- <tr><td>_PlayerID1</td><td>number</td><td>ID des Verkäufers</td></tr>
 -- <tr><td>_PlayerID2</td><td>number</td><td>ID des Käufers</td></tr>
@@ -353,7 +337,7 @@ end
 --
 -- Parameter der Funktion:
 -- <table border="1">
--- <tr><th>Parameter</th><th>Typ</th><th>Beschreibung</th></tr>
+-- <tr><th><b>Parameter</b></th><th><b>Typ</b></th><th><b>Beschreibung</b></th></tr>
 -- <tr><td>_Price</td><td>number</td><td>Verkaufspreis</td></tr>
 -- <tr><td>_PlayerID1</td><td>number</td><td>ID des Verkäufers</td></tr>
 -- <tr><td>_PlayerID2</td><td>number</td><td>ID des Käufers</td></tr>
@@ -377,7 +361,7 @@ end
 --
 -- Parameter der Funktion:
 -- <table border="1">
--- <tr><th>Parameter</th><th>Typ</th><th>Beschreibung</th></tr>
+-- <tr><th><b>Parameter</b></th><th><b>Typ</b></th><th><b>Beschreibung</b></th></tr>
 -- <tr><td>_PlayerID1</td><td>number</td><td>ID des Verkäufers</td></tr>
 -- <tr><td>_PlayerID2</td><td>number</td><td>ID des Käufers</td></tr>
 -- <tr><td>_Amount</td><td>number</td><td>Verkaufte Menge</td></tr>
@@ -390,7 +374,7 @@ end
 -- @param[type=number] _Function Evaluationsfunktion
 -- @within Anwenderfunktionen
 --
--- @usage API.SaleSetDeflationForPlayer(2, MyCalculationFunction);
+-- @usage API.SaleSetConditionForPlayer(2, MyCalculationFunction);
 --
 function API.SaleSetConditionForPlayer(_PlayerID, _Function)
     if not GUI then
@@ -409,7 +393,7 @@ end
 --
 -- Parameter der Funktion:
 -- <table border="1">
--- <tr><th>Parameter</th><th>Typ</th><th>Beschreibung</th></tr>
+-- <tr><th><b>Parameter</b></th><th><b>Typ</b></th><th><b>Beschreibung</b></th></tr>
 -- <tr><td>_PlayerID1</td><td>number</td><td>ID des Verkäufers</td></tr>
 -- <tr><td>_PlayerID2</td><td>number</td><td>ID des Käufers</td></tr>
 -- <tr><td>_Amount</td><td>number</td><td>Verkaufte Menge</td></tr>
@@ -421,7 +405,7 @@ end
 -- @param[type=number] _Function Evaluationsfunktion
 -- @within Anwenderfunktionen
 --
--- @usage API.SaleSetDefaultDeflation(MyCalculationFunction);
+-- @usage API.SaleSetDefaultCondition(MyCalculationFunction);
 --
 function API.SaleSetDefaultCondition(_Function)
     API.SaleSetConditionForPlayer(nil, _Function)
