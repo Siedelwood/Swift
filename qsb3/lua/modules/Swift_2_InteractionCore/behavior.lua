@@ -55,6 +55,44 @@ end
 
 Swift:RegisterBehavior(b_Goal_ActivateSeveralObjects);
 
+-- -------------------------------------------------------------------------- --
+
+-- API.CreateObject muss zur Initialisierung verwendet werden
+b_Reward_ObjectInit.CustomFunction = function(self, _Quest)
+    local Data = {
+        Name        = self.ScriptName,
+        State       = self.UsingState,
+        Distance    = self.Distance,
+        Waittime    = self.Waittime,
+    };
+
+    local Reward = {};
+    if self.RewardType and self.RewardType ~= "-" then
+        table.insert(Costs, Goods[self.RewardType]);
+        table.insert(Costs, self.RewardAmount);
+    end
+    if #Reward > 0 then
+        Data.Reward = Reward;
+    end
+
+    local Costs = {};
+    if self.FirstCostType and self.FirstCostType ~= "-" then
+        table.insert(Costs, Goods[self.FirstCostType]);
+        table.insert(Costs, self.FirstCostAmount);
+    end
+    if self.SecondCostType and self.SecondCostType ~= "-" then
+        table.insert(Costs, Goods[self.SecondCostType]);
+        table.insert(Costs, self.SecondCostAmount);
+    end
+    if #Costs > 0 then
+        Data.Costs = Costs;
+    end
+
+    API.CreateObject(Data);
+end
+
+-- -------------------------------------------------------------------------- --
+
 ---
 -- Der Held muss einen Nichtspielercharakter ansprechen.
 --

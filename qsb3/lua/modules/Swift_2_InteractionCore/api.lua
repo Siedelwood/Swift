@@ -218,12 +218,15 @@ TalkedToNPC = API.NpcHasSpoken;
 -- @param[type=boolean] _Flag Repositionierung an/aus
 -- @within Anwenderfunktionen
 --
-function API.SetUseRepositionByDefault(_Flag)
+function API.NpcUseRepositionByDefault(_Flag)
     ModuleInteractionCore.Global.UseRepositionByDefault = _Flag == true;
 end
 
 ---
--- Erzeugt ein interaktives Objekt.
+-- Erzeugt ein einfaches interaktives Objekt.
+--
+-- Dabei können alle Entities als interaktive Objekte behandelt werden, nicht
+-- nur die, die eigentlich dafür vorgesehen sind.
 --
 -- Die Parameter des interaktiven Objektes werden durch seine Beschreibung
 -- festgelegt. Die Beschreibung ist eine Table, die bestimmte Werte für das
@@ -242,22 +245,6 @@ end
 -- <td>nein</td>
 -- </tr>
 -- <tr>
--- <td>Title</td>
--- <td>Der angezeigter Name im Beschreibungsfeld.</td>
--- <td>ja</td>
--- </tr>
--- <tr>
--- <td>Text</td>
--- <td>Der Beschreibungstext, der im Tooltip angezeigt wird.</td>
--- <td>ja</td>
--- </tr>
--- <tr>
--- <td>Texture</td>
--- <td>Bestimmt die Icongrafik, die angezeigt wird. Dabei kann es sich um
--- eine Ingame-Grafik oder eine eigene Grafik halten.</td>
--- <td>ja</td>
--- </tr>
--- <tr>
 -- <td>Distance</td>
 -- <td>Die minimale Entfernung zum Objekt, die ein Held benötigt um das
 -- objekt zu aktivieren.</td>
@@ -265,8 +252,7 @@ end
 -- </tr>
 -- <tr>
 -- <td>Waittime</td>
--- <td>Die Zeit, die ein Held benötigt, um das Objekt zu aktivieren. Die
--- Wartezeit ist nur für I_X_ Entities verfügbar.</td>
+-- <td>Die Zeit, die ein Held benötigt, um das Objekt zu aktivieren.</td>
 -- <td>ja</td>
 -- </tr>
 -- <tr>
@@ -280,49 +266,248 @@ end
 -- <td>ja</td>
 -- </tr>
 -- <tr>
--- <td>Callback</td>
--- <td>Eine Funktion, die ausgeführt wird, sobald das Objekt aktiviert wird.</td>
--- <td>ja</td>
--- </tr>
--- <tr>
--- <td>Condition</td>
--- <td>Eine Funktion, die vor der Aktivierung eine Beringung prüft.</td>
--- <td>ja</td>
--- </tr>
--- <tr>
 -- <td>State</td>
 -- <td>Bestimmt, wie sich der Button des interaktiven Objektes verhält.</td>
 -- <td>ja</td>
 -- </tr>
 -- </table>
 --
--- Zusätzlich können beliebige weitere Felder an das Objekt angehangen
--- werden. Sie sind ausnahmslos im Callback und in der Condition des Objektes
--- abrufbar.
---
+-- <p><b>Alias:</b> API.CreateObject</p>
 -- <p><b>Alias:</b> CreateObject</p>
 --
 -- @param[type=table] _Description Beschreibung
 -- @within Anwenderfunktionen
+-- @see API.SetObjectUnused
+-- @see API.InteractiveObjectActivate
+-- @see API.InteractiveObjectDeactivate
+-- @see API.SetObjectHeadline
+-- @see API.SetObjectDescription
+-- @see API.SetObjectDisabledText
+-- @see API.SetObjectIcon
+-- @see API.SetObjectCondition
+-- @see API.SetObjectCallback
 --
 -- @usage
--- -- Ein einfaches Objekt erstellen:
 -- CreateObject {
 --     Name     = "hut",
 --     Distance = 1500,
---     Callback = function(_Data)
---         API.Note("Do something...");
---     end,
--- }
+--     Reward   = {Goods.G_Gold, 1000},
+-- };
 --
-function API.CreateObject(_Description)
+function API.SetupObject(_Description)
     if GUI then
         return;
     end
-    _Description.Texture = _Description.Texture or {14, 10, 0};
     return ModuleInteractionCore.Global:CreateObject(_Description);
 end
-CreateObject = API.CreateObject;
+API.CreateObject = API.SetupObject;
+CreateObject = API.SetupObject;
+
+---
+-- Setzt den Benutzt-Status eines interaktiven Objektes zurück. Das Objekt muss
+-- dann wieder per Skript aktiviert werden, damit es im Spiel ausgelöst werden.
+--
+-- @param[type=string] _ScriptName Skriptname des Objekt 
+-- @within Anwenderfunktionen
+-- @see API.SetObjectUnused
+-- @see API.InteractiveObjectActivate
+-- @see API.InteractiveObjectDeactivate
+-- @usage API.SetObjectUnused("MyObject");
+--
+function API.SetObjectUnused(_ScriptName)
+    if GUI or not IO[_ScriptName] then
+        return;
+    end
+    ModuleInteractionCore.Global:ResetObject(IO[_ScriptName]);
+    API.InteractiveObjectDeactivate(_ScriptName);
+end
+ResetObject = API.SetObjectUnused;
+
+---
+-- Ändert den angezeigten Titel eines interaktiven Objecktes.
+--
+-- Der übergebene Text kann ein normaler Text sein, ein Stringtable-Eintrag,
+-- eine lokalisierte Table oder eine Funktion, welche den Text bestimmt.
+--
+-- @param[type=string] _ScriptName Skriptname des Objekt 
+-- @param              _Text       Angezeigter Text
+-- @within Anwenderfunktionen
+-- @see API.SetupObject
+-- @usage -- Fester Text
+-- API.SetObjectHeadline("MyObject", "Titel");
+-- -- Lokalisierter Text
+-- API.SetObjectHeadline("MyObject", {de = "Titel", en = "Title"});
+-- -- Stringtable-Eintrag
+-- API.SetObjectHeadline("MyObject", "UI_ObjectNames/B_PalisadeGate");
+-- -- Eigene Funktion
+-- API.SetObjectHeadline("MyObject", function(_Name, _ObjectID, _PlayerID)
+--     if SomeCondition then
+--         return {de = "Titel", en = "Title"};
+--     end
+--     return "UI_ObjectNames/InteractiveObjectAvailable";
+-- end);
+--
+function API.SetObjectHeadline(_ScriptName, _Text)
+    if GUI then
+        return;
+    end
+    if not IsExisting(_ScriptName) then
+        error("API.SetObjectHeadline: Object " ..tostring(_ScriptName).. " does not exist!");
+        return;
+    end
+    ModuleInteractionCore.Global:SetObjectLambda(_ScriptName, "ObjectHeadline", _Text);
+end
+
+---
+-- Ändert den angezeigten Text eines interaktiven Objecktes.
+--
+-- Der übergebene Text kann ein normaler Text sein, ein Stringtable-Eintrag,
+-- eine lokalisierte Table oder eine Funktion, welche den Text bestimmt.
+--
+-- @param[type=string] _ScriptName Skriptname des Objekt 
+-- @param              _Text       Angezeigter Text
+-- @within Anwenderfunktionen
+-- @see API.SetupObject
+-- @usage -- Fester Text
+-- API.SetObjectDescription("MyObject", "Das ist ein Text");
+-- -- Lokalisierter Text
+-- API.SetObjectDescription("MyObject", {de = "Das ist ein Text", en = "This is some text"});
+-- -- Stringtable-Eintrag
+-- API.SetObjectDescription("MyObject", "UI_ObjectDescription/B_PalisadeGate");
+-- -- Eigene Funktion
+-- API.SetObjectDescription("MyObject", function(_Name, _ObjectID, _PlayerID)
+--     if SomeCondition then
+--         return {de = "Das ist ein Text", en = "This is some text"};
+--     end
+--     return "UI_ObjectDescription/InteractiveObjectAvailable";
+-- end);
+--
+function API.SetObjectDescription(_ScriptName, _Text)
+    if GUI then
+        return;
+    end
+    if not IsExisting(_ScriptName) then
+        error("API.SetObjectDescription: Object " ..tostring(_ScriptName).. " does not exist!");
+        return;
+    end
+    ModuleInteractionCore.Global:SetObjectLambda(_ScriptName, "ObjectDescription", _Text);
+end
+
+---
+-- Ändert den angezeigten Grund, dass ein Objekt nicht verfügbar ist.
+--
+-- Der übergebene Text kann ein normaler Text sein, ein Stringtable-Eintrag,
+-- eine lokalisierte Table oder eine Funktion, welche den Text bestimmt.
+--
+-- @param[type=string] _ScriptName Skriptname des Objekt 
+-- @param              _Text       Angezeigter Text
+-- @within Anwenderfunktionen
+-- @see API.SetupObject
+-- @usage -- Fester Text
+-- API.SetObjectDisabledText("MyObject", "Das ist der Grund");
+-- -- Lokalisierter Text
+-- API.SetObjectDisabledText("MyObject", {de = "Das ist der Grund", en = "That's the reason"});
+-- -- Stringtable-Eintrag
+-- API.SetObjectDisabledText("MyObject", "UI_ButtonDisabled/InteractiveObjectAvailable");
+-- -- Eigene Funktion
+-- API.SetObjectDisabledText("MyObject", function(_Name, _ObjectID, _PlayerID)
+--     if SomeCondition then
+--         return {de = "Das ist der Grund", en = "That's the reason"};
+--     end
+--     return "UI_ButtonDisabled/InteractiveObjectAvailable";
+-- end);
+--
+function API.SetObjectDisabledText(_ScriptName, _Text)
+    if GUI then
+        return;
+    end
+    if not IsExisting(_ScriptName) then
+        error("API.SetObjectDisabledText: Object " ..tostring(_ScriptName).. " does not exist!");
+        return;
+    end
+    ModuleInteractionCore.Global:SetObjectLambda(_ScriptName, "ObjectDisabledText", _Text);
+end
+
+---
+-- Ändert das angezeigte Icon des Buttons.
+--
+-- Es kann entweder die Icon Matrix übergeben werden oder eine Funktion, die
+-- eine Icon Matrix zurück gibt.
+--
+-- @param[type=string] _ScriptName Skriptname des Objekt
+-- @param              _Icon       Verwendetes Icon
+-- @within Anwenderfunktionen
+-- @see API.SetupObject
+-- @usage -- Festes Icon
+-- API.SetObjectIcon("MyObject", {1, 1});
+-- -- Eigene Funktion
+-- API.SetObjectIcon("MyObject", function(_Name, _ObjectID, _PlayerID)
+--     if SomeCondition then
+--         return {1, 4};
+--     end
+--     return {1, 1};
+-- end);
+--
+function API.SetObjectIcon(_ScriptName, _Icon)
+    if GUI then
+        return;
+    end
+    if not IsExisting(_ScriptName) then
+        error("API.SetObjectIcon: Object " ..tostring(_ScriptName).. " does not exist!");
+        return;
+    end
+    ModuleInteractionCore.Global:SetObjectLambda(_ScriptName, "ObjectIconTexture", _Icon);
+end
+
+---
+-- Setzt die Aktivierungsbedingung für das interaktive Objekt.
+--
+-- Die Funktion muss true zurückgeben, wenn das Objekt aktiviert werden kann,
+-- sonst false.
+--
+-- @param[type=string]   _ScriptName Skriptname des Objekt
+-- @param[type=function] _Lambda     Funktion
+-- @within Anwenderfunktionen
+-- @see API.SetupObject
+-- @usage API.SetObjectCondition("MyObject", function(_Name, _ObjectID, _PlayerID)
+--     if _PlayerID == 1 then
+--         return true;
+--     end
+--     return false;
+-- end);
+--
+function API.SetObjectCondition(_ScriptName, _Lambda)
+    if GUI then
+        return;
+    end
+    if not IsExisting(_ScriptName) then
+        error("API.SetObjectCondition: Object " ..tostring(_ScriptName).. " does not exist!");
+        return;
+    end
+    ModuleInteractionCore.Global:SetObjectLambda(_ScriptName, "ObjectCondition", _Lambda);
+end
+
+---
+-- Setzt die Aktion bei erfolgreicher Aktivierung des interaktiven Objekt.
+--
+-- @param[type=string]   _ScriptName Skriptname des Objekt
+-- @param[type=function] _Lambda     Funktion
+-- @within Anwenderfunktionen
+-- @see API.SetupObject
+-- @usage API.SetObjectCallback("MyObject", function(_Name, _ObjectID, _PlayerID)
+--     -- Mach was hier
+-- end);
+--
+function API.SetObjectCallback(_ScriptName, _Lambda)
+    if GUI then
+        return;
+    end
+    if not IsExisting(_ScriptName) then
+        error("API.SetObjectCallback: Object " ..tostring(_ScriptName).. " does not exist!");
+        return;
+    end
+    ModuleInteractionCore.Global:SetObjectLambda(_ScriptName, "ObjectClickAction", _Lambda);
+end
 
 ---
 -- Aktiviert ein Interaktives Objekt, sodass es vom Spieler
@@ -388,6 +573,7 @@ InteractiveObjectDeactivate = API.InteractiveObjectDeactivate;
 -- Im Questfenster werden die Namen von Custom Objects als ungesetzt angezeigt.
 -- Mit dieser Funktion kann ein Name angelegt werden.
 --
+-- <p><b>Alias:</b> API.SetObjectCustomName</p>
 -- <p><b>Alias:</b> AddCustomIOName</p>
 --
 -- @param[type=string] _Key  Typname des Entity
@@ -395,15 +581,16 @@ InteractiveObjectDeactivate = API.InteractiveObjectDeactivate;
 -- @within Anwenderfunktionen
 --
 -- @usage
--- API.InteractiveObjectSetName("D_X_ChestClosed", {de = "Schatztruhe", en = "Treasure");
--- API.InteractiveObjectSetName("D_X_ChestOpenEmpty", "Leere Schatztruhe");
+-- API.SetObjectCustomName("D_X_ChestClosed", {de = "Schatztruhe", en = "Treasure");
+-- API.SetObjectCustomName("D_X_ChestOpenEmpty", "Leere Schatztruhe");
 --
-function API.InteractiveObjectSetName(_Key, _Text)
+function API.SetObjectCustomName(_Key, _Text)
     _Text = API.ConvertPlaceholders(API.Localize(_Text));
     if GUI then
         return;
     end
     IO_UserDefindedNames[_Key] = _Text;
 end
-AddCustomIOName = API.InteractiveObjectSetName;
+API.InteractiveObjectSetName = API.SetObjectCustomName;
+AddCustomIOName = API.SetObjectCustomName;
 

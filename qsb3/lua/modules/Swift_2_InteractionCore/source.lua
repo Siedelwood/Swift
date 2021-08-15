@@ -13,6 +13,17 @@ ModuleInteractionCore = {
         LastHeroEntityID = 0,
         DefaultNpcType = 1,
         UseRepositionByDefault = true,
+
+        Lambda = {
+            IO = {
+                ObjectHeadline = {},
+                ObjectDescription = {},
+                ObjectDisabledText = {},
+                ObjectIconTexture = {},
+                ObjectClickAction = {},
+                ObjectCondition = {},
+            },
+        }
     };
     Local  = {};
     -- This is a shared structure but the values are asynchronous!
@@ -29,10 +40,17 @@ function ModuleInteractionCore.Global:OnGameStart()
     IO_SlaveToMaster = {};
     IO_SlaveState = {};
 
+    IO_Headlines = {};
+    IO_Descriptions = {};
+    IO_DisabledTexts = {};
+    IO_IconTextures = {};
+    IO_Conditions = {};
+
     self:OverrideVanillaBehavior();
     self:HackOnInteractionEvent();
     self:StartObjectConditionController();
     self:OverrideQuestFunctions();
+    self:CreateDefaultInteractionLambdas();
 
     API.StartJobByEventType(Events.LOGIC_EVENT_ENTITY_DESTROYED, function()
         ModuleInteractionCore.Global:OnEntityDestroyed();
@@ -45,6 +63,67 @@ function ModuleInteractionCore.Global:OnGameStart()
             ModuleInteractionCore.Global:DialogTriggerController();
         end
     end);
+end
+
+function ModuleInteractionCore.Global:CreateDefaultInteractionLambdas()
+    local TitleLambda = function(_Data)
+        local Key, DisabledKey = self:GetObjectDefaultKeys(_Data);
+        return "UI_ObjectNames/" ..Key;
+    end
+    self.Lambda.IO.ObjectHeadline.Default = TitleLambda;
+
+    local TextLambda = function(_Data)
+        local Key, DisabledKey = self:GetObjectDefaultKeys(_Data);
+        return "UI_ObjectDescription/" ..Key;
+    end
+    self.Lambda.IO.ObjectDescription.Default = TextLambda;
+
+    local DisabledLambda = function(_Data)
+        local Key, DisabledKey = self:GetObjectDefaultKeys(_Data);
+        return (DisabledKey and "UI_ButtonDisabled/" ..DisabledKey) or nil;
+    end
+    self.Lambda.IO.ObjectDisabledText.Default = DisabledLambda;
+
+    local IconLambda = function(_Data)
+        return {14, 10, 0};
+    end
+    self.Lambda.IO.ObjectIconTexture.Default = IconLambda;
+
+    local ConditionLambda = function(_Data)
+        return true;
+    end
+    self.Lambda.IO.ObjectCondition.Default = ConditionLambda;
+
+    local ActionLambda = function(_Data)
+        return;
+    end
+    self.Lambda.IO.ObjectClickAction.Default = ActionLambda;
+end
+
+function ModuleInteractionCore.Global:SetObjectLambda(_ScriptName, _FieldName, _Lambda)
+    local Lambda = _Lambda;
+    if Lambda ~= nil and type(Lambda) ~= "function" then
+        Lambda = function()
+            return _Lambda;
+        end;
+    end
+    self.Lambda.IO[_FieldName][_ScriptName] = Lambda;
+end
+
+function ModuleInteractionCore.Global:GetObjectDefaultKeys(_Data)
+    -- Get IO name
+    local ScriptName = (_Data.m_Slave and _Data.m_Slave) or _Data.m_Name;
+    local ObjectID = GetID(ScriptName);
+    -- Get keys
+    local Key = "InteractiveObjectAvailable";
+    if Logic.InteractiveObjectGetAvailability(ObjectID) == false then
+        Key = "InteractiveObjectNotAvailable";
+    end
+    local DisabledKey;
+    if Logic.InteractiveObjectHasPlayerEnoughSpaceForRewards(ObjectID, QSB.HumanPlayerID) == false then
+        DisabledKey = "InteractiveObjectAvailableReward";
+    end
+    return Key, DisabledKey;
 end
 
 function ModuleInteractionCore.Global:OverrideQuestFunctions()
@@ -222,13 +301,16 @@ function ModuleInteractionCore.Global:CreateObject(_Description)
     local Object = QSB.InteractiveObject:New(_Description.Name)
         :SetDistance(_Description.Distance)
         :SetWaittime(_Description.Waittime)
-        :SetCaption(_Description.Title)
-        :SetDescription(_Description.Text)
-        :SetAction(_Description.Callback)
-        :SetCondition(_Description.Condition)
         :SetState(_Description.State)
-        :SetIcon(_Description.Texture)
         :SetData(_Description);
+
+    -- DEPRECATED: Legacy Code Fallback
+    self:SetObjectLambda(_Description.Name, "ObjectCondition", _Description.Condition);
+    self:SetObjectLambda(_Description.Name, "ObjectClickAction", _Description.Callback);
+    self:SetObjectLambda(_Description.Name, "ObjectIconTexture", _Description.Texture);
+    self:SetObjectLambda(_Description.Name, "ObjectHeadline", _Description.Title);
+    self:SetObjectLambda(_Description.Name, "ObjectDescription", _Description.Text);
+    self:SetObjectLambda(_Description.Name, "ObjectDisabledText", _Description.DisabledText);
     
     -- Belohnung setzen
     if _Description.Reward then
@@ -247,7 +329,7 @@ function ModuleInteractionCore.Global:CreateObject(_Description)
     -- Aktivieren
     IO[_Description.Name] = Object;
     self:SetupObject(IO[_Description.Name]);
-    Logic.ExecuteInLuaLocalState("ModuleInteractionCore.Local:UpdateReferenceTables()");
+    Logic.ExecuteInLuaLocalState("ModuleInteractionCore.Local:ForceFullGlobalReferenceUpdate()");
     return Object;
 end
 
@@ -295,12 +377,21 @@ function ModuleInteractionCore.Global:SetupObject(_Object)
     if _Object.m_Costs and _Object.m_Costs[3] then
         Logic.InteractiveObjectAddCosts(ID, _Object.m_Costs[3], _Object.m_Costs[4]);
     end
+    self:ResetObject(_Object);
+end
+
+function ModuleInteractionCore.Global:ResetObject(_Object)
+    local ID = GetID((_Object.m_Slave and _Object.m_Slave) or _Object.m_Name);
+    RemoveInteractiveObjectFromOpenedList(ID);
     table.insert(HiddenTreasures, ID);
-    self:SetObjectAvailability(_ScriptName, _Object.m_State or 0);
+    Logic.InteractiveObjectSetAvailability(ID, true);
+    self:SetObjectAvailability(ID, _Object.m_State or 0);
+    _Object:SetUsed(false);
+    _Object:SetActive(true);
 end
 
 function ModuleInteractionCore.Global:SetObjectAvailability(_ScriptName, _State, ...)
-    arg = arg or {1, 2, 3, 4, 5, 6, 7, 8};
+    arg = ((not arg or #arg == 0) and {1, 2, 3, 4, 5, 6, 7, 8}) or arg;
     for i= 1, #arg, 1 do
         Logic.InteractiveObjectSetPlayerState(GetID(_ScriptName), arg[i], _State);
     end
@@ -310,12 +401,61 @@ function ModuleInteractionCore.Global:StartObjectConditionController()
     StartSimpleHiResJobEx(function()
         for k, v in pairs(IO) do
             if v and not v:IsUsed() and v:IsActive() then
-                IO[k].m_Fullfilled = true;
-                if IO[k].m_Condition then
-                    IO[k].m_Fullfilled = v.m_Condition(v);
+                -- Condition
+                local ConditionLambda = ModuleInteractionCore.Global.Lambda.IO.ObjectCondition.Default;
+                if ModuleInteractionCore.Global.Lambda.IO.ObjectCondition[k] then
+                    ConditionLambda = ModuleInteractionCore.Global.Lambda.IO.ObjectCondition[k];
                 end
+                IO_Conditions[k] = ConditionLambda(k, GetID((v.m_Slave and v.m_Slave) or k), QSB.HumanPlayerID);
+
+                -- Title
+                local TitleLambda = ModuleInteractionCore.Global.Lambda.IO.ObjectHeadline.Default;
+                if ModuleInteractionCore.Global.Lambda.IO.ObjectHeadline[k] then
+                    TitleLambda = ModuleInteractionCore.Global.Lambda.IO.ObjectHeadline[k];
+                end
+                local Title = TitleLambda(k, GetID((v.m_Slave and v.m_Slave) or k), QSB.HumanPlayerID);
+                if type(Title) == "table" then
+                    Title = API.ConvertPlaceholders(API.Localize(Title));
+                end
+                IO_Headlines[k] = Title;
+
+                -- Text
+                local TextLambda = ModuleInteractionCore.Global.Lambda.IO.ObjectDescription.Default;
+                if ModuleInteractionCore.Global.Lambda.IO.ObjectDescription[k] then
+                    TextLambda = ModuleInteractionCore.Global.Lambda.IO.ObjectDescription[k];
+                end
+                local Text = TextLambda(k, GetID((v.m_Slave and v.m_Slave) or k), QSB.HumanPlayerID);
+                if type(Text) == "table" then
+                    Text = API.ConvertPlaceholders(API.Localize(Text));
+                end
+                IO_Descriptions[k] = Text;
+
+                -- Disabled
+                local DisabledLambda = ModuleInteractionCore.Global.Lambda.IO.ObjectDisabledText.Default;
+                if ModuleInteractionCore.Global.Lambda.IO.ObjectDisabledText[k] then
+                    DisabledLambda = ModuleInteractionCore.Global.Lambda.IO.ObjectDisabledText[k];
+                end
+                local Disabled = DisabledLambda(k, GetID((v.m_Slave and v.m_Slave) or k), QSB.HumanPlayerID);
+                if type(Disabled) == "table" then
+                    Disabled = API.ConvertPlaceholders(API.Localize(Disabled));
+                end
+                IO_DisabledTexts[k] = Disabled;
+
+                -- Icon
+                local IconLambda = ModuleInteractionCore.Global.Lambda.IO.ObjectIconTexture.Default;
+                if ModuleInteractionCore.Global.Lambda.IO.ObjectIconTexture[k] then
+                    IconLambda = ModuleInteractionCore.Global.Lambda.IO.ObjectIconTexture[k];
+                end
+                IO_IconTextures[k] = IconLambda(k, GetID((v.m_Slave and v.m_Slave) or k), QSB.HumanPlayerID);
             end
         end
+
+        -- Force reference update
+        Logic.ExecuteInLuaLocalState("ModuleInteractionCore.Local:UpdateHeadlineReferenceTable()");
+        Logic.ExecuteInLuaLocalState("ModuleInteractionCore.Local:UpdateDescriptionReferenceTable()");
+        Logic.ExecuteInLuaLocalState("ModuleInteractionCore.Local:UpdateDisabledTextReferenceTable()");
+        Logic.ExecuteInLuaLocalState("ModuleInteractionCore.Local:UpdateIconTexturesReferenceTable()");
+        Logic.ExecuteInLuaLocalState("ModuleInteractionCore.Local:UpdateConditionReferenceTable()");
     end);
 end
 
@@ -358,18 +498,18 @@ function ModuleInteractionCore.Global:HackOnInteractionEvent()
     GameCallback_OnObjectInteraction = function(_EntityID, _PlayerID)
         OnInteractiveObjectOpened(_EntityID, _PlayerID);
         OnTreasureFound(_EntityID, _PlayerID);
+        -- Get real object name
         local ScriptName = Logic.GetEntityName(_EntityID);
-        
-        for k,v in pairs(IO)do
-            if k == ScriptName or v.m_Slave == ScriptName then
-                if not v.m_Used then
-                    IO[k].m_Used = true;
-                    if v.m_Action then
-                        v.m_Action(v, _PlayerID, v.m_Data);
-                    end
-                end
-            end
+        if IO_SlaveToMaster[ScriptName] then
+            ScriptName = IO_SlaveToMaster[ScriptName];
         end
+        -- Call object action
+        local Lambda = ModuleInteractionCore.Global.Lambda.IO.ObjectClickAction.Default;
+        if ModuleInteractionCore.Global.Lambda.IO.ObjectClickAction[ScriptName] then
+            Lambda = ModuleInteractionCore.Global.Lambda.IO.ObjectClickAction[ScriptName];
+        end
+        IO[ScriptName]:SetUsed(true);
+        Lambda(ScriptName, _EntityID, _PlayerID);
     end
 
     QuestTemplate.AreObjectsActivated = function(self, _ObjectList)
@@ -383,7 +523,7 @@ function ModuleInteractionCore.Global:HackOnInteractionEvent()
             end
 
             if IO[EntityName] then
-                if IO[EntityName].m_Used ~= true then
+                if IO[EntityName]:IsUsed() ~= true then
                     return false;
                 end
             elseif Logic.IsInteractiveObject(_ObjectList[-i]) then
@@ -414,7 +554,7 @@ function ModuleInteractionCore.Global:OnEntityDestroyed()
             return;
         end
         ModuleInteractionCore.Global:SetupObject(Object);
-        if Object.m_Used == true or (IO_SlaveState[SlaveName] and IO_SlaveState[SlaveName] == 0) then
+        if Object:IsUsed() == true or (IO_SlaveState[SlaveName] and IO_SlaveState[SlaveName] == 0) then
             API.InteractiveObjectDeactivate(Object.m_Slave);
         end
         info("new slave created for master " ..MasterName.. ".");
@@ -424,7 +564,7 @@ end
 -- Local Script ------------------------------------------------------------- --
 
 function ModuleInteractionCore.Local:OnGameStart()
-    self:UpdateReferenceTables();
+    self:ForceFullGlobalReferenceUpdate();
     self:ActivateInteractiveObjectControl();
     self:OverrideQuestFunctions();
 end
@@ -523,10 +663,36 @@ function ModuleInteractionCore.Local:OverrideQuestFunctions()
     end
 end
 
-function ModuleInteractionCore.Local:UpdateReferenceTables()
+function ModuleInteractionCore.Local:ForceFullGlobalReferenceUpdate()
     IO = Logic.CreateReferenceToTableInGlobaLuaState("IO");
     IO_UserDefindedNames = Logic.CreateReferenceToTableInGlobaLuaState("IO_UserDefindedNames");
     IO_SlaveToMaster = Logic.CreateReferenceToTableInGlobaLuaState("IO_SlaveToMaster");
+
+    self:UpdateHeadlineReferenceTable();
+    self:UpdateDescriptionReferenceTable();
+    self:UpdateDisabledTextReferenceTable();
+    self:UpdateIconTexturesReferenceTable();
+    self:UpdateConditionReferenceTable();
+end
+
+function ModuleInteractionCore.Local:UpdateHeadlineReferenceTable()
+    IO_Headlines = Logic.CreateReferenceToTableInGlobaLuaState("IO_Headlines");
+end
+
+function ModuleInteractionCore.Local:UpdateDescriptionReferenceTable()
+    IO_Descriptions = Logic.CreateReferenceToTableInGlobaLuaState("IO_Descriptions");
+end
+
+function ModuleInteractionCore.Local:UpdateDisabledTextReferenceTable()
+    IO_DisabledTexts = Logic.CreateReferenceToTableInGlobaLuaState("IO_DisabledTexts");
+end
+
+function ModuleInteractionCore.Local:UpdateIconTexturesReferenceTable()
+    IO_IconTextures = Logic.CreateReferenceToTableInGlobaLuaState("IO_IconTextures");
+end
+
+function ModuleInteractionCore.Local:UpdateConditionReferenceTable()
+    IO_Conditions = Logic.CreateReferenceToTableInGlobaLuaState("IO_Conditions");
 end
 
 function ModuleInteractionCore.Local:ActivateInteractiveObjectControl()
@@ -545,7 +711,7 @@ function ModuleInteractionCore.Local:ActivateInteractiveObjectControl()
             GUI_Interaction.InteractiveObjectClicked_Orig_ModuleInteractionCore();
             return;
         end
-        if not IO[ScriptName].m_Fullfilled then
+        if not IO_Conditions[ScriptName] then
             Message(XGUIEng.GetStringTableText("UI_ButtonDisabled/PromoteKnight"));
             return;
         end
@@ -555,7 +721,7 @@ function ModuleInteractionCore.Local:ActivateInteractiveObjectControl()
             local CathedralID = Logic.GetCathedral(PlayerID);
             local CastleID    = Logic.GetHeadquarters(PlayerID);
             if CathedralID == nil or CathedralID == 0 or CastleID == nil or CastleID == 0 then
-                API.Note("DEBUG: Player does not have special buildings!");
+                API.Note("DEBUG: Player needs special buildings when using activation costs!");
                 return;
             end
         end
@@ -584,10 +750,10 @@ function ModuleInteractionCore.Local:ActivateInteractiveObjectControl()
                 local WidgetSize = {XGUIEng.GetWidgetScreenSize(Widget)};
                 XGUIEng.SetWidgetScreenPosition(Widget, X - (WidgetSize[1]/2), Y - (WidgetSize[2]/2));
                 -- Icon
-                if IO[ScriptName] then
-                    local a = (IO[ScriptName].m_Icon and IO[ScriptName].m_Icon[1]) or 14;
-                    local b = (IO[ScriptName].m_Icon and IO[ScriptName].m_Icon[2]) or 10;
-                    local c = (IO[ScriptName].m_Icon and IO[ScriptName].m_Icon[3]) or 0;
+                if IO_IconTextures[ScriptName] then
+                    local a = (IO_IconTextures[ScriptName][1]) or 14;
+                    local b = (IO_IconTextures[ScriptName][2]) or 10;
+                    local c = (IO_IconTextures[ScriptName][3]) or 0;
                     API.InterfaceSetIcon(Widget, {a, b, c}, nil, c);
                 end
             end
@@ -627,13 +793,40 @@ function ModuleInteractionCore.Local:ActivateInteractiveObjectControl()
 
         local CheckSettlement;
         if IO[ScriptName] and IO[ScriptName].m_Used ~= true then
-            local Title = IO[ScriptName].m_Caption or XGUIEng.GetStringTableText("UI_ObjectNames/InteractiveObjectAvailable");
-            local Text  = IO[ScriptName].m_Description or XGUIEng.GetStringTableText("UI_ObjectDescription/InteractiveObjectAvailable");
+            -- Get keys
+            local Key = "InteractiveObjectAvailable";
+            if Logic.InteractiveObjectGetAvailability(ObjectID) == false then
+                Key = "InteractiveObjectNotAvailable";
+            end
+            local DisabledKey;
+            if Logic.InteractiveObjectHasPlayerEnoughSpaceForRewards(ObjectID, PlayerID) == false then
+                DisabledKey = "InteractiveObjectAvailableReward";
+            end
+
+            -- Title
+            local Title = IO_Headlines[ScriptName] or "UI_ObjectNames/" ..Key;
+            if Title and Title:find("^[A-Za-z0-9_]+/[A-Za-z0-9_]+$") then
+                Title = XGUIEng.GetStringTableText(Title);
+            end
+            -- Text
+            local Text = IO_Descriptions[ScriptName] or "UI_ObjectDescription/" ..Key;
+            if Text and Text:find("^[A-Za-z0-9_]+/[A-Za-z0-9_]+$") then
+                Text = XGUIEng.GetStringTableText(Text);
+            end
+            -- Disabled reason
+            local Disabled = IO_DisabledTexts[ScriptName];
+            if Disabled and Disabled:find("^[A-Za-z0-9_]+/[A-Za-z0-9_]+$") then
+                Disabled = XGUIEng.GetStringTableText(Disabled);
+            end
+
+            -- Costs
             Costs = IO[ScriptName].m_Costs;
-            if Costs and Costs[1] and Logic.GetGoodCategoryForGoodType(Costs[1]) ~= GoodCategories.GC_Resource then
+            if Costs and Costs[1] and Costs[1] ~= Goods.G_Gold and Logic.GetGoodCategoryForGoodType(Costs[1]) ~= GoodCategories.GC_Resource then
                 CheckSettlement = true;
             end
-            API.InterfaceSetTooltipCosts(Title, Text, nil, {Costs[1], Costs[2], Costs[3], Costs[4]}, CheckSettlement);
+
+            -- Actual tooltip
+            API.InterfaceSetTooltipCosts(Title, Text, Disabled, {Costs[1], Costs[2], Costs[3], Costs[4]}, CheckSettlement);
             return;
         end
     end
@@ -1171,21 +1364,22 @@ end
 -- -------------------------------------------------------------------------- --
 
 QSB.InteractiveObject = {
-    m_Name        = nil,
-    m_State       = 0,
-    m_Distance    = 1000,
-    m_Waittime    = 5,
-    m_Used        = false,
-    m_Fullfilled  = false,
-    m_Active      = true,
-    m_Slave       = nil,
-    m_Caption     = nil,
-    m_Description = nil,
-    m_Condition   = nil,
-    m_Action      = nil,
-    m_Icon        = {14, 10},
-    m_Costs       = {},
-    m_Reward      = {},
+    m_Name         = nil,
+    m_State        = 0,
+    m_Distance     = 1000,
+    m_Waittime     = 5,
+    m_Used         = false,
+    m_Fullfilled   = false,
+    m_Active       = true,
+    m_Slave        = nil,
+    m_Caption      = nil,
+    m_Description  = nil,
+    m_DisabledText = nil,
+    m_Condition    = nil,
+    m_Action       = nil,
+    m_Icon         = {14, 10},
+    m_Costs        = {},
+    m_Reward       = {},
 };
 
 function QSB.InteractiveObject:New(_Name)
@@ -1209,20 +1403,6 @@ function QSB.InteractiveObject:SetState(_State)
     return self;
 end
 
-function QSB.InteractiveObject:SetCaption(_Text)
-    if _Text then
-        self.m_Caption = API.ConvertPlaceholders(API.Localize(_Text));
-    end
-    return self;
-end
-
-function QSB.InteractiveObject:SetDescription(_Text)
-    if _Text then
-        self.m_Description = API.ConvertPlaceholders(API.Localize(_Text));
-    end
-    return self;
-end
-
 function QSB.InteractiveObject:SetCosts(...)
     self.m_Costs = {unpack(arg)};
     return self;
@@ -1233,19 +1413,11 @@ function QSB.InteractiveObject:SetReward(...)
     return self;
 end
 
-function QSB.InteractiveObject:SetCondition(_Function)
-    self.m_Condition = _Function;
-    return self;
-end
-
-function QSB.InteractiveObject:SetAction(_Function)
-    self.m_Action = _Function;
-    return self;
-end
-
 function QSB.InteractiveObject:SetIcon(_Icon)
     self.m_Icon = _Icon;
-    self.m_Icon[3] = self.m_Icon[3] or 0;
+    if type(self.m_Icon) == "table" then
+        self.m_Icon[3] = self.m_Icon[3] or 0;
+    end
     return self;
 end
 

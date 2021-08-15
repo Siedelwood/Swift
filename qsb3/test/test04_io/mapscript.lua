@@ -86,7 +86,7 @@ function CreateTestObject()
         Text     = "Bockwurst",
         Texture  = {1, 1},
         Condition = function(_Data)
-            return false;
+            return true;
         end,
         Callback = function(_Data)
             API.Note("it work's!");
