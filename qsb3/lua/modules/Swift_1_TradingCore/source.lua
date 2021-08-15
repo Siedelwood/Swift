@@ -21,7 +21,6 @@ ModuleTradingCore = {
             SaleDeflation         = {},
             SaleAllowed           = {},
         },
-        Event = {},
         ShowKnightTraderAbility = true;
     },
     -- This is a shared structure but the values are asynchronous!
@@ -31,23 +30,23 @@ ModuleTradingCore = {
 -- Global ------------------------------------------------------------------- --
 
 function ModuleTradingCore.Global:OnGameStart()
-    self.Event.GoodsSold = API.RegisterScriptEvent("Event_GoodsSold", nil);
-    self.Event.GoodsPurchased = API.RegisterScriptEvent("Event_GoodsPurchased", nil);
+    QSB.ScriptEvents.GoodsSold = API.RegisterScriptEvent("Event_GoodsSold", nil);
+    QSB.ScriptEvents.GoodsPurchased = API.RegisterScriptEvent("Event_GoodsPurchased", nil);
 end
 
 function ModuleTradingCore.Global:SendEventGoodsPurchased(_TraderType, _Good, _P1, _P2, _Amount, _Price)
-    API.SendScriptEvent(self.Event.GoodsPurchased, _TraderType, _Good, _P1, _P2, _Amount, _Price);
+    API.SendScriptEvent(QSB.ScriptEvents.GoodsPurchased, _TraderType, _Good, _P1, _P2, _Amount, _Price);
 end
 
 function ModuleTradingCore.Global:SendEventGoodsSold(_Good, _P1, _P2, _Amount, _Price)
-    API.SendScriptEvent(self.Event.GoodsSold, _Good, _P1, _P2, _Amount, _Price);
+    API.SendScriptEvent(QSB.ScriptEvents.GoodsSold, _Good, _P1, _P2, _Amount, _Price);
 end
 
 -- Local -------------------------------------------------------------------- --
 
 function ModuleTradingCore.Local:OnGameStart()
-    self.Event.GoodsSold = API.RegisterScriptEvent("Event_GoodsSold", nil);
-    self.Event.GoodsPurchased = API.RegisterScriptEvent("Event_GoodsPurchased", nil);
+    QSB.ScriptEvents.GoodsSold = API.RegisterScriptEvent("Event_GoodsSold", nil);
+    QSB.ScriptEvents.GoodsPurchased = API.RegisterScriptEvent("Event_GoodsPurchased", nil);
 
     self:OverrideMerchantComputePurchasePrice();
     self:OverrideMerchantComputeSellingPrice();
@@ -163,7 +162,7 @@ function ModuleTradingCore.Local:OverrideMerchantPurchaseOfferClicked()
                     StartKnightVoiceForPermanentSpecialAbility(Entities.U_KnightTrading);
                 end
 
-                API.SendScriptEvent(self.Event.GoodsBought, TraderType, GoodType, PlayerID, TargetID, OfferGoodAmount, Price);
+                API.SendScriptEvent(QSB.ScriptEvents.GoodsBought, TraderType, GoodType, PlayerID, TargetID, OfferGoodAmount, Price);
                 GUI.SendScriptCommand(string.format(
                     "ModuleTradingCore.Global:SendEventGoodsPurchased(%d, %d, %d, %d, %d, %d)",
                     TraderType,
@@ -264,7 +263,7 @@ function ModuleTradingCore.Local:OverrideMerchantSellGoodsClicked()
                 g_Trade.SellToPlayers[TargetID][g_Trade.GoodType] = g_Trade.SellToPlayers[TargetID][g_Trade.GoodType] + g_Trade.GoodAmount;
             end
 
-            API.SendScriptEvent(self.Event.GoodsSold, g_Trade.GoodType, PlayerID, TargetID, g_Trade.GoodAmount, Price);
+            API.SendScriptEvent(QSB.ScriptEvents.GoodsSold, g_Trade.GoodType, PlayerID, TargetID, g_Trade.GoodAmount, Price);
             GUI.SendScriptCommand(string.format(
                 "ModuleTradingCore.Global:SendEventGoodsSold(%d, %d, %d, %d, %d)",
                 g_Trade.GoodType,
