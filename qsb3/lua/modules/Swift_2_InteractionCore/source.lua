@@ -46,11 +46,12 @@ function ModuleInteractionCore.Global:OnGameStart()
     IO_IconTextures = {};
     IO_Conditions = {};
 
-    self:OverrideVanillaBehavior();
-    self:HackOnInteractionEvent();
+    QSB.ScriptEvents.InteractiveObjectClicked = API.RegisterScriptEvent("Event_InteractiveObjectClicked", nil);
+    QSB.ScriptEvents.InteractiveObjectActivated = API.RegisterScriptEvent("Event_InteractiveObjectActivated", nil);
+
+    self:CreateDefaultInteractionLambdas();
     self:StartObjectConditionController();
     self:OverrideQuestFunctions();
-    self:CreateDefaultInteractionLambdas();
 
     API.StartJobByEventType(Events.LOGIC_EVENT_ENTITY_DESTROYED, function()
         ModuleInteractionCore.Global:OnEntityDestroyed();
@@ -63,6 +64,17 @@ function ModuleInteractionCore.Global:OnGameStart()
             ModuleInteractionCore.Global:DialogTriggerController();
         end
     end);
+end
+
+function ModuleInteractionCore.Global:OnEvent(_ID, _Event, _PlayerID, _ScriptName, _EntityID)
+    if _ID == QSB.ScriptEvents.InteractiveObjectActivated then
+        local Lambda = ModuleInteractionCore.Global.Lambda.IO.ObjectClickAction.Default;
+        if ModuleInteractionCore.Global.Lambda.IO.ObjectClickAction[_ScriptName] then
+            Lambda = ModuleInteractionCore.Global.Lambda.IO.ObjectClickAction[_ScriptName];
+        end
+        IO[_ScriptName]:SetUsed(true);
+        Lambda(_ScriptName, _EntityID, _PlayerID);
+    end
 end
 
 function ModuleInteractionCore.Global:CreateDefaultInteractionLambdas()
@@ -98,32 +110,6 @@ function ModuleInteractionCore.Global:CreateDefaultInteractionLambdas()
         return;
     end
     self.Lambda.IO.ObjectClickAction.Default = ActionLambda;
-end
-
-function ModuleInteractionCore.Global:SetObjectLambda(_ScriptName, _FieldName, _Lambda)
-    local Lambda = _Lambda;
-    if Lambda ~= nil and type(Lambda) ~= "function" then
-        Lambda = function()
-            return _Lambda;
-        end;
-    end
-    self.Lambda.IO[_FieldName][_ScriptName] = Lambda;
-end
-
-function ModuleInteractionCore.Global:GetObjectDefaultKeys(_Data)
-    -- Get IO name
-    local ScriptName = (_Data.m_Slave and _Data.m_Slave) or _Data.m_Name;
-    local ObjectID = GetID(ScriptName);
-    -- Get keys
-    local Key = "InteractiveObjectAvailable";
-    if Logic.InteractiveObjectGetAvailability(ObjectID) == false then
-        Key = "InteractiveObjectNotAvailable";
-    end
-    local DisabledKey;
-    if Logic.InteractiveObjectHasPlayerEnoughSpaceForRewards(ObjectID, QSB.HumanPlayerID) == false then
-        DisabledKey = "InteractiveObjectAvailableReward";
-    end
-    return Key, DisabledKey;
 end
 
 function ModuleInteractionCore.Global:OverrideQuestFunctions()
@@ -167,6 +153,26 @@ function ModuleInteractionCore.Global:OverrideQuestFunctions()
                 end
             end
         end
+    end
+
+    -- Object stuff --
+
+    GameCallback_OnObjectInteraction = function(_EntityID, _PlayerID)
+        OnInteractiveObjectOpened(_EntityID, _PlayerID);
+        OnTreasureFound(_EntityID, _PlayerID);
+
+        local ScriptName = Logic.GetEntityName(_EntityID);
+        if IO_SlaveToMaster[ScriptName] then
+            ScriptName = IO_SlaveToMaster[ScriptName];
+        end
+
+        API.SendScriptEvent(QSB.ScriptEvents.InteractiveObjectActivated, _PlayerID, ScriptName, _EntityID);
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.SendScriptEvent(QSB.ScriptEvents.InteractiveObjectActivated, %d, "%s", %d)]],
+            _EntityID,
+            ScriptName,
+            _PlayerID
+        ));
     end
 
     -- Quest stuff --
@@ -245,7 +251,42 @@ function ModuleInteractionCore.Global:OverrideQuestFunctions()
             end
         end
     end
+
+    QuestTemplate.AreObjectsActivated = function(self, _ObjectList)
+        for i=1, _ObjectList[0] do
+            if not _ObjectList[-i] then
+                _ObjectList[-i] = GetEntityId(_ObjectList[i]);
+            end
+            local EntityName = Logic.GetEntityName(_ObjectList[-i]);
+            if IO_SlaveToMaster[EntityName] then
+                EntityName = IO_SlaveToMaster[EntityName];
+            end
+
+            if IO[EntityName] then
+                if IO[EntityName]:IsUsed() ~= true then
+                    return false;
+                end
+            elseif Logic.IsInteractiveObject(_ObjectList[-i]) then
+                if not IsInteractiveObjectOpen(_ObjectList[-i]) then
+                    return false;
+                end
+            end
+        end
+        return true;
+    end
 end
+
+function ModuleInteractionCore.Global:SetObjectLambda(_ScriptName, _FieldName, _Lambda)
+    local Lambda = _Lambda;
+    if Lambda ~= nil and type(Lambda) ~= "function" then
+        Lambda = function()
+            return _Lambda;
+        end;
+    end
+    self.Lambda.IO[_FieldName][_ScriptName] = Lambda;
+end
+
+-- -------------------------------------------------------------------------- --
 
 function ModuleInteractionCore.Global:SetDefaultNPCType(_Type)
     self.DefaultNpcType = _Type;
@@ -291,6 +332,8 @@ function ModuleInteractionCore.Global:DialogTriggerController()
     end
 end
 ModuleInteractionCore_DialogTriggerJob = ModuleInteractionCore.Global.DialogTriggerController;
+
+-- -------------------------------------------------------------------------- --
 
 function ModuleInteractionCore.Global:CreateObject(_Description)
     -- Objekt erstellen
@@ -397,6 +440,49 @@ function ModuleInteractionCore.Global:SetObjectAvailability(_ScriptName, _State,
     end
 end
 
+function ModuleInteractionCore.Global:OnEntityDestroyed()
+    local DestryoedEntityID = Event.GetEntityID();
+    local SlaveName  = Logic.GetEntityName(DestryoedEntityID);
+    local MasterName = IO_SlaveToMaster[SlaveName];
+    if SlaveName and MasterName then
+        local Object = IO[MasterName];
+        if not Object then
+            return;
+        end
+        info("slave " ..SlaveName.. " of master " ..MasterName.. " has been deleted!");
+        info("try to create new slave...");
+        IO_SlaveToMaster[SlaveName] = nil;
+        local SlaveID = self:CreateSlaveObject(Object);
+        if not IsExisting(SlaveID) then
+            error("failed to create slave!");
+            return;
+        end
+        ModuleInteractionCore.Global:SetupObject(Object);
+        if Object:IsUsed() == true or (IO_SlaveState[SlaveName] and IO_SlaveState[SlaveName] == 0) then
+            API.InteractiveObjectDeactivate(Object.m_Slave);
+        end
+        info("new slave created for master " ..MasterName.. ".");
+    end
+end
+
+-- -------------------------------------------------------------------------- --
+
+function ModuleInteractionCore.Global:GetObjectDefaultKeys(_Data)
+    -- Get IO name
+    local ScriptName = (_Data.m_Slave and _Data.m_Slave) or _Data.m_Name;
+    local ObjectID = GetID(ScriptName);
+    -- Get keys
+    local Key = "InteractiveObjectAvailable";
+    if Logic.InteractiveObjectGetAvailability(ObjectID) == false then
+        Key = "InteractiveObjectNotAvailable";
+    end
+    local DisabledKey;
+    if Logic.InteractiveObjectHasPlayerEnoughSpaceForRewards(ObjectID, QSB.HumanPlayerID) == false then
+        DisabledKey = "InteractiveObjectAvailableReward";
+    end
+    return Key, DisabledKey;
+end
+
 function ModuleInteractionCore.Global:StartObjectConditionController()
     StartSimpleHiResJobEx(function()
         for k, v in pairs(IO) do
@@ -450,256 +536,31 @@ function ModuleInteractionCore.Global:StartObjectConditionController()
             end
         end
 
-        -- Force reference update
-        Logic.ExecuteInLuaLocalState("ModuleInteractionCore.Local:UpdateHeadlineReferenceTable()");
-        Logic.ExecuteInLuaLocalState("ModuleInteractionCore.Local:UpdateDescriptionReferenceTable()");
-        Logic.ExecuteInLuaLocalState("ModuleInteractionCore.Local:UpdateDisabledTextReferenceTable()");
-        Logic.ExecuteInLuaLocalState("ModuleInteractionCore.Local:UpdateIconTexturesReferenceTable()");
-        Logic.ExecuteInLuaLocalState("ModuleInteractionCore.Local:UpdateConditionReferenceTable()");
+        -- Force partial reference update
+        Logic.ExecuteInLuaLocalState("ModuleInteractionCore.Local:ForceObjectLambdaResultReferenceUpdate()");
     end);
-end
-
-function ModuleInteractionCore.Global:OverrideVanillaBehavior()
-    if b_Reward_ObjectInit then
-        b_Reward_ObjectInit.CustomFunction = function(_Behavior, _Quest)
-            local eID = GetID(_Behavior.ScriptName);
-            if eID == 0 then
-                return;
-            end
-            QSB.InitalizedObjekts[eID] = _Quest.Identifier;
-            
-            local RewardTable = nil;
-            if _Behavior.RewardType and _Behavior.RewardType ~= "-" then
-                RewardTable = {Goods[_Behavior.RewardType], _Behavior.RewardAmount};
-            end
-
-            local CostsTable = nil;
-            if _Behavior.FirstCostType and _Behavior.FirstCostType ~= "-" then
-                CostsTable = {Goods[_Behavior.FirstCostType], _Behavior.FirstCostAmount};
-                if _Behavior.SecondCostType and _Behavior.SecondCostType ~= "-" then
-                    table.insert(CostsTable, Goods[_Behavior.SecondCostType]);
-                    table.insert(CostsTable, _Behavior.SecondCostAmount);
-                end
-            end
-
-            API.CreateObject{
-                Name        = _Behavior.ScriptName,
-                State       = _Behavior.UsingState or 0,
-                Distance    = _Behavior.Distance,
-                Waittime    = _Behavior.Waittime,
-                Reward      = RewardTable,
-                Costs       = CostsTable,
-            };
-        end
-    end
-end
-
-function ModuleInteractionCore.Global:HackOnInteractionEvent()
-    GameCallback_OnObjectInteraction = function(_EntityID, _PlayerID)
-        OnInteractiveObjectOpened(_EntityID, _PlayerID);
-        OnTreasureFound(_EntityID, _PlayerID);
-        -- Get real object name
-        local ScriptName = Logic.GetEntityName(_EntityID);
-        if IO_SlaveToMaster[ScriptName] then
-            ScriptName = IO_SlaveToMaster[ScriptName];
-        end
-        -- Call object action
-        local Lambda = ModuleInteractionCore.Global.Lambda.IO.ObjectClickAction.Default;
-        if ModuleInteractionCore.Global.Lambda.IO.ObjectClickAction[ScriptName] then
-            Lambda = ModuleInteractionCore.Global.Lambda.IO.ObjectClickAction[ScriptName];
-        end
-        IO[ScriptName]:SetUsed(true);
-        Lambda(ScriptName, _EntityID, _PlayerID);
-    end
-
-    QuestTemplate.AreObjectsActivated = function(self, _ObjectList)
-        for i=1, _ObjectList[0] do
-            if not _ObjectList[-i] then
-                _ObjectList[-i] = GetEntityId(_ObjectList[i]);
-            end
-            local EntityName = Logic.GetEntityName(_ObjectList[-i]);
-            if IO_SlaveToMaster[EntityName] then
-                EntityName = IO_SlaveToMaster[EntityName];
-            end
-
-            if IO[EntityName] then
-                if IO[EntityName]:IsUsed() ~= true then
-                    return false;
-                end
-            elseif Logic.IsInteractiveObject(_ObjectList[-i]) then
-                if not IsInteractiveObjectOpen(_ObjectList[-i]) then
-                    return false;
-                end
-            end
-        end
-        return true;
-    end
-end
-
-function ModuleInteractionCore.Global:OnEntityDestroyed()
-    local DestryoedEntityID = Event.GetEntityID();
-    local SlaveName  = Logic.GetEntityName(DestryoedEntityID);
-    local MasterName = IO_SlaveToMaster[SlaveName];
-    if SlaveName and MasterName then
-        local Object = IO[MasterName];
-        if not Object then
-            return;
-        end
-        info("slave " ..SlaveName.. " of master " ..MasterName.. " has been deleted!");
-        info("try to create new slave...");
-        IO_SlaveToMaster[SlaveName] = nil;
-        local SlaveID = self:CreateSlaveObject(Object);
-        if not IsExisting(SlaveID) then
-            error("failed to create slave!");
-            return;
-        end
-        ModuleInteractionCore.Global:SetupObject(Object);
-        if Object:IsUsed() == true or (IO_SlaveState[SlaveName] and IO_SlaveState[SlaveName] == 0) then
-            API.InteractiveObjectDeactivate(Object.m_Slave);
-        end
-        info("new slave created for master " ..MasterName.. ".");
-    end
 end
 
 -- Local Script ------------------------------------------------------------- --
 
 function ModuleInteractionCore.Local:OnGameStart()
+    QSB.ScriptEvents.InteractiveObjectClicked = API.RegisterScriptEvent("Event_InteractiveObjectClicked", nil);
+    QSB.ScriptEvents.InteractiveObjectActivated = API.RegisterScriptEvent("Event_InteractiveObjectActivated", nil);
+
     self:ForceFullGlobalReferenceUpdate();
-    self:ActivateInteractiveObjectControl();
-    self:OverrideQuestFunctions();
+    self:OverrideGameFunctions();
 end
 
-function ModuleInteractionCore.Local:OverrideQuestFunctions()
+function ModuleInteractionCore.Local:OverrideGameFunctions()
     g_CurrentDisplayedQuestID = 0;
 
-    GUI_Interaction.DisplayQuestObjective_Orig_ModuleInteractionCore = GUI_Interaction.DisplayQuestObjective
-    GUI_Interaction.DisplayQuestObjective = function(_QuestIndex, _MessageKey)
-        local QuestIndexTemp = tonumber(_QuestIndex);
-        if QuestIndexTemp then
-            _QuestIndex = QuestIndexTemp;
-        end
+    -- Interface --
 
-        local Quest, QuestType = GUI_Interaction.GetPotentialSubQuestAndType(_QuestIndex);
-        local QuestObjectivesPath = "/InGame/Root/Normal/AlignBottomLeft/Message/QuestObjectives";
-        XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomLeft/Message/QuestObjectives", 0);
-        local QuestObjectiveContainer;
-        local QuestTypeCaption;
-
-        local ParentQuest = Quests[_QuestIndex];
-        local ParentQuestIdentifier;
-        if ParentQuest ~= nil
-        and type(ParentQuest) == "table" then
-            ParentQuestIdentifier = ParentQuest.Identifier;
-        end
-        local HookTable = {};
-
-        g_CurrentDisplayedQuestID = _QuestIndex;
-
-        if QuestType == Objective.Distance then
-            QuestObjectiveContainer = QuestObjectivesPath .. "/List";
-            QuestTypeCaption = Wrapped_GetStringTableText(_QuestIndex, "UI_Texts/QuestInteraction");
-            local ObjectList = {};
-
-            if Quest.Objectives[1].Data[1] == -65565 then
-                QuestObjectiveContainer = QuestObjectivesPath .. "/Distance";
-                QuestTypeCaption = Wrapped_GetStringTableText(_QuestIndex, "UI_Texts/QuestMoveHere");
-                SetIcon(QuestObjectiveContainer .. "/QuestTypeIcon",{7,10});
-
-                local MoverEntityID = GetEntityId(Quest.Objectives[1].Data[2]);
-                local MoverEntityType = Logic.GetEntityType(MoverEntityID);
-                local MoverIcon = g_TexturePositions.Entities[MoverEntityType];
-                if not MoverIcon then
-                    MoverIcon = {7, 9};
-                end
-                SetIcon(QuestObjectiveContainer .. "/IconMover", MoverIcon);
-
-                local TargetEntityID = GetEntityId(Quest.Objectives[1].Data[3]);
-                local TargetEntityType = Logic.GetEntityType(TargetEntityID);
-                local TargetIcon = g_TexturePositions.Entities[TargetEntityType];
-                if not TargetIcon then
-                    TargetIcon = {14, 10};
-                end
-
-                local IconWidget = QuestObjectiveContainer .. "/IconTarget";
-                local ColorWidget = QuestObjectiveContainer .. "/TargetPlayerColor";
-
-                SetIcon(IconWidget, TargetIcon);
-                XGUIEng.SetMaterialColor(ColorWidget, 0, 255, 255, 255, 0);
-
-                SetIcon(QuestObjectiveContainer .. "/QuestTypeIcon",{16,12});
-                local caption = {
-                    de = "Gespräch beginnen",
-                    en = "Start conversation",
-                };
-                QuestTypeCaption = API.Localize(caption);
-
-                XGUIEng.SetText(QuestObjectiveContainer.."/Caption","{center}"..QuestTypeCaption);
-                XGUIEng.ShowWidget(QuestObjectiveContainer, 1);
-            else
-                GUI_Interaction.DisplayQuestObjective_Orig_ModuleInteractionCore(_QuestIndex, _MessageKey);
-            end
-        else
-            GUI_Interaction.DisplayQuestObjective_Orig_ModuleInteractionCore(_QuestIndex, _MessageKey);
-        end
-    end
-
-    GUI_Interaction.GetEntitiesOrTerritoryListForQuest_Orig_ModuleInteractionCore = GUI_Interaction.GetEntitiesOrTerritoryListForQuest
-    GUI_Interaction.GetEntitiesOrTerritoryListForQuest = function( _Quest, _QuestType )
-        local EntityOrTerritoryList = {}
-        local IsEntity = true
-
-        if _QuestType == Objective.Distance then
-            if _Quest.Objectives[1].Data[1] == -65565 then
-                local Entity = GetEntityId(_Quest.Objectives[1].Data[3]);
-                table.insert(EntityOrTerritoryList, Entity);
-            else
-                return GUI_Interaction.GetEntitiesOrTerritoryListForQuest_Orig_ModuleInteractionCore( _Quest, _QuestType );
-            end
-
-        else
-            return GUI_Interaction.GetEntitiesOrTerritoryListForQuest_Orig_ModuleInteractionCore( _Quest, _QuestType );
-        end
-        return EntityOrTerritoryList, IsEntity
-    end
-end
-
-function ModuleInteractionCore.Local:ForceFullGlobalReferenceUpdate()
-    IO = Logic.CreateReferenceToTableInGlobaLuaState("IO");
-    IO_UserDefindedNames = Logic.CreateReferenceToTableInGlobaLuaState("IO_UserDefindedNames");
-    IO_SlaveToMaster = Logic.CreateReferenceToTableInGlobaLuaState("IO_SlaveToMaster");
-
-    self:UpdateHeadlineReferenceTable();
-    self:UpdateDescriptionReferenceTable();
-    self:UpdateDisabledTextReferenceTable();
-    self:UpdateIconTexturesReferenceTable();
-    self:UpdateConditionReferenceTable();
-end
-
-function ModuleInteractionCore.Local:UpdateHeadlineReferenceTable()
-    IO_Headlines = Logic.CreateReferenceToTableInGlobaLuaState("IO_Headlines");
-end
-
-function ModuleInteractionCore.Local:UpdateDescriptionReferenceTable()
-    IO_Descriptions = Logic.CreateReferenceToTableInGlobaLuaState("IO_Descriptions");
-end
-
-function ModuleInteractionCore.Local:UpdateDisabledTextReferenceTable()
-    IO_DisabledTexts = Logic.CreateReferenceToTableInGlobaLuaState("IO_DisabledTexts");
-end
-
-function ModuleInteractionCore.Local:UpdateIconTexturesReferenceTable()
-    IO_IconTextures = Logic.CreateReferenceToTableInGlobaLuaState("IO_IconTextures");
-end
-
-function ModuleInteractionCore.Local:UpdateConditionReferenceTable()
-    IO_Conditions = Logic.CreateReferenceToTableInGlobaLuaState("IO_Conditions");
-end
-
-function ModuleInteractionCore.Local:ActivateInteractiveObjectControl()
     GUI_Interaction.InteractiveObjectClicked_Orig_ModuleInteractionCore = GUI_Interaction.InteractiveObjectClicked
     GUI_Interaction.InteractiveObjectClicked = function()
         local i = tonumber(XGUIEng.GetWidgetNameByID(XGUIEng.GetCurrentWidgetID()));
         local EntityID = g_Interaction.ActiveObjectsOnScreen[i];
+        local PlayerID = GUI.GetPlayerID();
         if not EntityID then
             return;
         end
@@ -707,26 +568,29 @@ function ModuleInteractionCore.Local:ActivateInteractiveObjectControl()
         if IO_SlaveToMaster[ScriptName] then
             ScriptName = IO_SlaveToMaster[ScriptName];
         end
-        if not IO[ScriptName] then
-            GUI_Interaction.InteractiveObjectClicked_Orig_ModuleInteractionCore();
-            return;
-        end
-        if not IO_Conditions[ScriptName] then
-            Message(XGUIEng.GetStringTableText("UI_ButtonDisabled/PromoteKnight"));
-            return;
-        end
-
-        if type(IO[ScriptName].m_Costs) == "table" and #IO[ScriptName].m_Costs ~= 0 then
-            local PlayerID    = GUI.GetPlayerID();
-            local CathedralID = Logic.GetCathedral(PlayerID);
-            local CastleID    = Logic.GetHeadquarters(PlayerID);
-            if CathedralID == nil or CathedralID == 0 or CastleID == nil or CastleID == 0 then
-                API.Note("DEBUG: Player needs special buildings when using activation costs!");
+        if IO[ScriptName] then
+            if not IO_Conditions[ScriptName] then
+                Message(XGUIEng.GetStringTableText("UI_ButtonDisabled/PromoteKnight"));
                 return;
             end
+            if type(IO[ScriptName].m_Costs) == "table" and #IO[ScriptName].m_Costs ~= 0 then
+                local CathedralID = Logic.GetCathedral(PlayerID);
+                local CastleID    = Logic.GetHeadquarters(PlayerID);
+                if CathedralID == nil or CathedralID == 0 or CastleID == nil or CastleID == 0 then
+                    API.Note("DEBUG: Player needs special buildings when using activation costs!");
+                    return;
+                end
+            end
         end
-
+        
         GUI_Interaction.InteractiveObjectClicked_Orig_ModuleInteractionCore();
+        API.SendScriptEvent(QSB.ScriptEvents.InteractiveObjectClicked, PlayerID, ScriptName, EntityID);
+        GUI.SendScriptCommand(string.format(
+            [[API.SendScriptEvent(QSB.ScriptEvents.InteractiveObjectClicked, %d, "%s", %d)]],
+            PlayerID,
+            ScriptName,
+            EntityID
+        ));
     end
     
     GUI_Interaction.InteractiveObjectUpdate_Orig_ModuleInteractionCore = GUI_Interaction.InteractiveObjectUpdate;
@@ -831,7 +695,9 @@ function ModuleInteractionCore.Local:ActivateInteractiveObjectControl()
         end
     end
 
-    GUI_Interaction.DisplayQuestObjective_Orig_ModuleInteractionCore = GUI_Interaction.DisplayQuestObjective;
+    -- Quest --
+
+    GUI_Interaction.DisplayQuestObjective_Orig_ModuleInteractionCore = GUI_Interaction.DisplayQuestObjective
     GUI_Interaction.DisplayQuestObjective = function(_QuestIndex, _MessageKey)
         local QuestIndexTemp = tonumber(_QuestIndex);
         if QuestIndexTemp then
@@ -854,7 +720,50 @@ function ModuleInteractionCore.Local:ActivateInteractiveObjectControl()
 
         g_CurrentDisplayedQuestID = _QuestIndex;
 
-        if QuestType == Objective.Object then
+        if QuestType == Objective.Distance then
+            QuestObjectiveContainer = QuestObjectivesPath .. "/List";
+            QuestTypeCaption = Wrapped_GetStringTableText(_QuestIndex, "UI_Texts/QuestInteraction");
+            local ObjectList = {};
+
+            if Quest.Objectives[1].Data[1] == -65565 then
+                QuestObjectiveContainer = QuestObjectivesPath .. "/Distance";
+                QuestTypeCaption = Wrapped_GetStringTableText(_QuestIndex, "UI_Texts/QuestMoveHere");
+                SetIcon(QuestObjectiveContainer .. "/QuestTypeIcon",{7,10});
+
+                local MoverEntityID = GetEntityId(Quest.Objectives[1].Data[2]);
+                local MoverEntityType = Logic.GetEntityType(MoverEntityID);
+                local MoverIcon = g_TexturePositions.Entities[MoverEntityType];
+                if not MoverIcon then
+                    MoverIcon = {7, 9};
+                end
+                SetIcon(QuestObjectiveContainer .. "/IconMover", MoverIcon);
+
+                local TargetEntityID = GetEntityId(Quest.Objectives[1].Data[3]);
+                local TargetEntityType = Logic.GetEntityType(TargetEntityID);
+                local TargetIcon = g_TexturePositions.Entities[TargetEntityType];
+                if not TargetIcon then
+                    TargetIcon = {14, 10};
+                end
+
+                local IconWidget = QuestObjectiveContainer .. "/IconTarget";
+                local ColorWidget = QuestObjectiveContainer .. "/TargetPlayerColor";
+
+                SetIcon(IconWidget, TargetIcon);
+                XGUIEng.SetMaterialColor(ColorWidget, 0, 255, 255, 255, 0);
+
+                SetIcon(QuestObjectiveContainer .. "/QuestTypeIcon",{16,12});
+                local caption = {
+                    de = "Gespräch beginnen",
+                    en = "Start conversation",
+                };
+                QuestTypeCaption = API.Localize(caption);
+
+                XGUIEng.SetText(QuestObjectiveContainer.."/Caption","{center}"..QuestTypeCaption);
+                XGUIEng.ShowWidget(QuestObjectiveContainer, 1);
+            else
+                GUI_Interaction.DisplayQuestObjective_Orig_ModuleInteractionCore(_QuestIndex, _MessageKey);
+            end
+        elseif QuestType == Objective.Object then
             QuestObjectiveContainer = QuestObjectivesPath .. "/List";
             QuestTypeCaption = Wrapped_GetStringTableText(_QuestIndex, "UI_Texts/QuestInteraction");
             local ObjectList = {};
@@ -901,6 +810,43 @@ function ModuleInteractionCore.Local:ActivateInteractiveObjectControl()
             GUI_Interaction.DisplayQuestObjective_Orig_ModuleInteractionCore(_QuestIndex, _MessageKey);
         end
     end
+
+    GUI_Interaction.GetEntitiesOrTerritoryListForQuest_Orig_ModuleInteractionCore = GUI_Interaction.GetEntitiesOrTerritoryListForQuest
+    GUI_Interaction.GetEntitiesOrTerritoryListForQuest = function( _Quest, _QuestType )
+        local EntityOrTerritoryList = {}
+        local IsEntity = true
+
+        if _QuestType == Objective.Distance then
+            if _Quest.Objectives[1].Data[1] == -65565 then
+                local Entity = GetEntityId(_Quest.Objectives[1].Data[3]);
+                table.insert(EntityOrTerritoryList, Entity);
+            else
+                return GUI_Interaction.GetEntitiesOrTerritoryListForQuest_Orig_ModuleInteractionCore( _Quest, _QuestType );
+            end
+
+        else
+            return GUI_Interaction.GetEntitiesOrTerritoryListForQuest_Orig_ModuleInteractionCore( _Quest, _QuestType );
+        end
+        return EntityOrTerritoryList, IsEntity
+    end
+end
+
+-- -------------------------------------------------------------------------- --
+
+function ModuleInteractionCore.Local:ForceFullGlobalReferenceUpdate()
+    IO = Logic.CreateReferenceToTableInGlobaLuaState("IO");
+    IO_UserDefindedNames = Logic.CreateReferenceToTableInGlobaLuaState("IO_UserDefindedNames");
+    IO_SlaveToMaster = Logic.CreateReferenceToTableInGlobaLuaState("IO_SlaveToMaster");
+
+    self:ForceObjectLambdaResultReferenceUpdate();
+end
+
+function ModuleInteractionCore.Local:ForceObjectLambdaResultReferenceUpdate()
+    IO_Headlines = Logic.CreateReferenceToTableInGlobaLuaState("IO_Headlines");
+    IO_Descriptions = Logic.CreateReferenceToTableInGlobaLuaState("IO_Descriptions");
+    IO_DisabledTexts = Logic.CreateReferenceToTableInGlobaLuaState("IO_DisabledTexts");
+    IO_IconTextures = Logic.CreateReferenceToTableInGlobaLuaState("IO_IconTextures");
+    IO_Conditions = Logic.CreateReferenceToTableInGlobaLuaState("IO_Conditions");
 end
 
 -- -------------------------------------------------------------------------- --
@@ -1369,15 +1315,8 @@ QSB.InteractiveObject = {
     m_Distance     = 1000,
     m_Waittime     = 5,
     m_Used         = false,
-    m_Fullfilled   = false,
     m_Active       = true,
     m_Slave        = nil,
-    m_Caption      = nil,
-    m_Description  = nil,
-    m_DisabledText = nil,
-    m_Condition    = nil,
-    m_Action       = nil,
-    m_Icon         = {14, 10},
     m_Costs        = {},
     m_Reward       = {},
 };

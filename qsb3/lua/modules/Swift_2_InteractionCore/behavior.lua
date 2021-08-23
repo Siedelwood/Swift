@@ -10,10 +10,10 @@
 ---
 -- Der Spieler muss bis zu 4 interaktive Objekte benutzen.
 --
--- @param[type=string] _ScriptName1 Erstes Objekt
--- @param[type=string] _ScriptName2 (optional) Zweites Objekt
--- @param[type=string] _ScriptName3 (optional) Drittes Objekt
--- @param[type=string] _ScriptName4 (optional) Viertes Objekt
+-- @param[type=string] _Object1 Erstes Objekt
+-- @param[type=string] _Object2 (optional) Zweites Objekt
+-- @param[type=string] _Object3 (optional) Drittes Objekt
+-- @param[type=string] _Object4 (optional) Viertes Objekt
 --
 -- @within Goal
 --
@@ -54,42 +54,6 @@ function b_Goal_ActivateSeveralObjects:GetMsgKey()
 end
 
 Swift:RegisterBehavior(b_Goal_ActivateSeveralObjects);
-
--- -------------------------------------------------------------------------- --
-
--- API.CreateObject muss zur Initialisierung verwendet werden
-b_Reward_ObjectInit.CustomFunction = function(self, _Quest)
-    local Data = {
-        Name        = self.ScriptName,
-        State       = self.UsingState,
-        Distance    = self.Distance,
-        Waittime    = self.Waittime,
-    };
-
-    local Reward = {};
-    if self.RewardType and self.RewardType ~= "-" then
-        table.insert(Costs, Goods[self.RewardType]);
-        table.insert(Costs, self.RewardAmount);
-    end
-    if #Reward > 0 then
-        Data.Reward = Reward;
-    end
-
-    local Costs = {};
-    if self.FirstCostType and self.FirstCostType ~= "-" then
-        table.insert(Costs, Goods[self.FirstCostType]);
-        table.insert(Costs, self.FirstCostAmount);
-    end
-    if self.SecondCostType and self.SecondCostType ~= "-" then
-        table.insert(Costs, Goods[self.SecondCostType]);
-        table.insert(Costs, self.SecondCostAmount);
-    end
-    if #Costs > 0 then
-        Data.Costs = Costs;
-    end
-
-    API.CreateObject(Data);
-end
 
 -- -------------------------------------------------------------------------- --
 
@@ -144,4 +108,376 @@ function b_Goal_NPC:GetIcon()
 end
 
 Swift:RegisterBehavior(b_Goal_NPC);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Ändert den angezeigten Titel eines interaktiven Objektes.
+--
+-- @param _ScriptName Skriptname des interaktiven Objektes
+-- @param _Headline   Text
+--
+-- @within Reprisal
+--
+function Reprisal_InteractiveObjectSetHeadline(...)
+    return b_Reprisal_InteractiveObjectSetHeadline:new(...);
+end
+
+b_Reprisal_InteractiveObjectSetHeadline = {
+    Name = "Reprisal_InteractiveObjectSetHeadline",
+    Description = {
+        en = "Reward: Changes the name of the interactive object in the tooltip.",
+        de = "Lohn: Ändert den angezeigten Titel eines interaktiven Objektes.",
+    },
+    Parameter = {
+        { ParameterType.ScriptName, en = "Interactive object", de = "Interaktives Objekt" },
+        { ParameterType.Custom,     en = "Text",   de = "Text" },
+    },
+}
+
+function b_Reprisal_InteractiveObjectSetHeadline:GetReprisalTable()
+    return { Reprisal.Custom,{self, self.CustomFunction} }
+end
+
+function b_Reprisal_InteractiveObjectSetHeadline:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.ScriptName = _Parameter
+    elseif (_Index == 1) then
+        self.Lambda = _Parameter
+    end
+end
+
+function b_Reprisal_InteractiveObjectSetHeadline:CustomFunction(_Quest)
+    API.SetObjectHeadline(self.ScriptName, _G[self.Lambda] or self.Lambda);
+end
+
+function b_Reprisal_InteractiveObjectSetHeadline:Debug(_Quest)
+    if not IsExisting(self.ScriptName) == false then
+        error(_Quest.Identifier.. ": " ..self.Name..": '"..self.ScriptName.."' does not exist!");
+        return true;
+    end
+    if self.Lambda == nil or self.Lambda == "" then
+        error(_Quest.Identifier.. ": " ..self.Name..": Text is empty!");
+        return true;
+    end
+    return false;
+end
+
+Swift:RegisterBehavior(b_Reprisal_InteractiveObjectSetHeadline);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Ändert den angezeigten Beschreibungstext eines interaktiven Objektes.
+--
+-- @param _ScriptName  Skriptname des interaktiven Objektes
+-- @param _Description Text
+--
+-- @within Reprisal
+--
+function Reprisal_InteractiveObjectSetDescription(...)
+    return b_Reprisal_InteractiveObjectSetDescription:new(...);
+end
+
+b_Reprisal_InteractiveObjectSetDescription = {
+    Name = "Reprisal_InteractiveObjectSetDescription",
+    Description = {
+        en = "Reward: Changes the description text of the interactive object.",
+        de = "Lohn: Ändert den angezeigten Beschreibungstext eines interaktiven Objektes.",
+    },
+    Parameter = {
+        { ParameterType.ScriptName, en = "Interactive object", de = "Interaktives Objekt" },
+        { ParameterType.Custom,     en = "Text",   de = "Text" },
+    },
+}
+
+function b_Reprisal_InteractiveObjectSetDescription:GetReprisalTable()
+    return { Reprisal.Custom,{self, self.CustomFunction} }
+end
+
+function b_Reprisal_InteractiveObjectSetDescription:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.ScriptName = _Parameter
+    elseif (_Index == 1) then
+        self.Lambda = _Parameter
+    end
+end
+
+function b_Reprisal_InteractiveObjectSetDescription:CustomFunction(_Quest)
+    API.SetObjectDescription(self.ScriptName, _G[self.Lambda] or self.Lambda);
+end
+
+function b_Reprisal_InteractiveObjectSetDescription:Debug(_Quest)
+    if not IsExisting(self.ScriptName) == false then
+        error(_Quest.Identifier.. ": " ..self.Name..": '"..self.ScriptName.."' does not exist!");
+        return true;
+    end
+    if self.Lambda == nil or self.Lambda == "" then
+        error(_Quest.Identifier.. ": " ..self.Name..": Text is empty!");
+        return true;
+    end
+    return false;
+end
+
+Swift:RegisterBehavior(b_Reprisal_InteractiveObjectSetDescription);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Ändert den Informationstext wenn ein Objekt nicht verfügbar ist.
+--
+-- @param _ScriptName   Skriptname des interaktiven Objektes
+-- @param _DisabledText Text
+--
+-- @within Reprisal
+--
+function Reprisal_InteractiveObjectSetDisabledText(...)
+    return b_Reprisal_InteractiveObjectSetDisabledText:new(...);
+end
+
+b_Reprisal_InteractiveObjectSetDisabledText = {
+    Name = "Reprisal_InteractiveObjectSetDisabledText",
+    DisabledText = {
+        en = "Reward: Changes the disabled text of an interactive object.",
+        de = "Lohn: Ändert den Informationstext wenn ein Objekt nicht verfügbar ist.",
+    },
+    Parameter = {
+        { ParameterType.ScriptName, en = "Interactive object", de = "Interaktives Objekt" },
+        { ParameterType.Custom,     en = "Text",   de = "Text" },
+    },
+}
+
+function b_Reprisal_InteractiveObjectSetDisabledText:GetReprisalTable()
+    return { Reprisal.Custom,{self, self.CustomFunction} }
+end
+
+function b_Reprisal_InteractiveObjectSetDisabledText:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.ScriptName = _Parameter
+    elseif (_Index == 1) then
+        self.Lambda = _Parameter
+    end
+end
+
+function b_Reprisal_InteractiveObjectSetDisabledText:CustomFunction(_Quest)
+    API.SetObjectDisabledText(self.ScriptName, _G[self.Lambda] or self.Lambda);
+end
+
+function b_Reprisal_InteractiveObjectSetDisabledText:Debug(_Quest)
+    if not IsExisting(self.ScriptName) == false then
+        error(_Quest.Identifier.. ": " ..self.Name..": '"..self.ScriptName.."' does not exist!");
+        return true;
+    end
+    if self.Lambda == nil or self.Lambda == "" then
+        error(_Quest.Identifier.. ": " ..self.Name..": Text is empty!");
+        return true;
+    end
+    return false;
+end
+
+Swift:RegisterBehavior(b_Reprisal_InteractiveObjectSetDisabledText);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Ändert den Informationstext wenn ein Objekt nicht verfügbar ist.
+--
+-- @param _ScriptName   Skriptname des interaktiven Objektes
+-- @param _X            X in Icon-Matrix
+-- @param _Y            Y in Icon-Matrix
+-- @param _Z            Spiel (0 = AeK, 1 = RdO)
+--
+-- @within Reprisal
+--
+function Reprisal_InteractiveObjectSetIconTexture(...)
+    return b_Reprisal_InteractiveObjectSetIconTexture:new(...);
+end
+
+b_Reprisal_InteractiveObjectSetIconTexture = {
+    Name = "Reprisal_InteractiveObjectSetIconTexture",
+    DisabledText = {
+        en = "Reward: Changes the disabled text of an interactive object.",
+        de = "Lohn: Ändert den Informationstext wenn ein Objekt nicht verfügbar ist.",
+    },
+    Parameter = {
+        { ParameterType.ScriptName, en = "Interactive object",      de = "Interaktives Objekt" },
+        { ParameterType.Number,     en = "X in icon matrix",        de = "X in Icon-Matrix" },
+        { ParameterType.Number,     en = "Y in icon matrix",        de = "Y in Icon-Matrix" },
+        { ParameterType.Number,     en = "Game (0 = RoaE, 1 = ER)", de = "Spiel (0 = AeK, 1 = RdO)" },
+    },
+}
+
+function b_Reprisal_InteractiveObjectSetIconTexture:GetReprisalTable()
+    return { Reprisal.Custom,{self, self.CustomFunction} }
+end
+
+function b_Reprisal_InteractiveObjectSetIconTexture:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.ScriptName = _Parameter
+    elseif (_Index == 1) then
+        self.X = _Parameter * 1
+    elseif (_Index == 2) then
+        self.Y = _Parameter * 1
+    elseif (_Index == 3) then
+        self.Z = _Parameter * 1
+    end
+end
+
+function b_Reprisal_InteractiveObjectSetIconTexture:CustomFunction(_Quest)
+    API.SetObjectIcon(self.ScriptName, {self.X, self.Y, self.Z});
+end
+
+function b_Reprisal_InteractiveObjectSetIconTexture:Debug(_Quest)
+    if not IsExisting(self.ScriptName) == false then
+        error(_Quest.Identifier.. ": " ..self.Name..": '"..self.ScriptName.."' does not exist!");
+        return true;
+    end
+    if self.Z ~= 0 or self.Z ~= 1 then
+        error(_Quest.Identifier.. ": " ..self.Name..": Z must be 0 or 1!");
+        return true;
+    end
+    if self.X <= 0 or self.X > (self.Z == 0 and 16) or 8 then
+        error(_Quest.Identifier.. ": " ..self.Name..": X is not in range!");
+        return true;
+    end
+    if self.Y <= 0 or self.Y > (self.Z == 0 and 16) or 8 then
+        error(_Quest.Identifier.. ": " ..self.Name..": Y is not in range!");
+        return true;
+    end
+    return false;
+end
+
+Swift:RegisterBehavior(b_Reprisal_InteractiveObjectSetIconTexture);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Ändert den angezeigten Titel eines interaktiven Objektes.
+--
+-- @param _ScriptName Skriptname des interaktiven Objektes
+-- @param _Headline   Text oder Funktion im Skript
+--
+-- @within Reward
+--
+function Reward_InteractiveObjectSetHeadline(...)
+    return b_Reward_InteractiveObjectSetHeadline:new(...);
+end
+
+b_Reward_InteractiveObjectSetHeadline = Swift:CopyTable(b_Reprisal_InteractiveObjectSetHeadline);
+b_Reward_InteractiveObjectSetHeadline.Name             = "Reward_InteractiveObjectSetHeadline";
+b_Reward_InteractiveObjectSetHeadline.GetReprisalTable = nil;
+
+b_Reward_InteractiveObjectSetHeadline.GetRewardTable = function(self, _Quest)
+    return { Reward.Custom,{self, self.CustomFunction} }
+end
+
+Swift:RegisterBehavior(b_Reward_InteractiveObjectSetHeadline);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Ändert den angezeigten Beschreibungstext eines interaktiven Objektes.
+--
+-- @param _ScriptName  Skriptname des interaktiven Objektes
+-- @param _Description Text oder Funktion im Skript
+--
+-- @within Reward
+--
+function Reward_InteractiveObjectSetDescription(...)
+    return b_Reward_InteractiveObjectSetDescription:new(...);
+end
+
+b_Reward_InteractiveObjectSetDescription = Swift:CopyTable(b_Reprisal_InteractiveObjectSetDescription);
+b_Reward_InteractiveObjectSetDescription.Name             = "Reward_InteractiveObjectSetDescription";
+b_Reward_InteractiveObjectSetDescription.GetReprisalTable = nil;
+
+b_Reward_InteractiveObjectSetDescription.GetRewardTable = function(self, _Quest)
+    return { Reward.Custom,{self, self.CustomFunction} }
+end
+
+Swift:RegisterBehavior(b_Reward_InteractiveObjectSetDescription);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Ändert den Informationstext wenn ein Objekt nicht verfügbar ist.
+--
+-- @param _ScriptName   Skriptname des interaktiven Objektes
+-- @param _DisabledText Text oder Funktion im Skript
+--
+-- @within Reward
+--
+function Reward_InteractiveObjectSetDisabledText(...)
+    return b_Reward_InteractiveObjectSetDisabledText:new(...);
+end
+
+b_Reward_InteractiveObjectSetDisabledText = Swift:CopyTable(b_Reprisal_InteractiveObjectSetDisabledText);
+b_Reward_InteractiveObjectSetDisabledText.Name             = "Reward_InteractiveObjectSetDisabledText";
+b_Reward_InteractiveObjectSetDisabledText.GetReprisalTable = nil;
+
+b_Reward_InteractiveObjectSetDisabledText.GetRewardTable = function(self, _Quest)
+    return { Reward.Custom,{self, self.CustomFunction} }
+end
+
+Swift:RegisterBehavior(b_Reward_InteractiveObjectSetDisabledText);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Ändert den Informationstext wenn ein Objekt nicht verfügbar ist.
+--
+-- @param _ScriptName   Skriptname des interaktiven Objektes
+-- @param _X            X in Icon-Matrix
+-- @param _Y            Y in Icon-Matrix
+-- @param _Z            Spiel (0 = AeK, 1 = RdO)
+--
+-- @within Reward
+--
+function Reward_InteractiveObjectSetIconTexture(...)
+    return b_Reward_InteractiveObjectSetIconTexture:new(...);
+end
+
+b_Reward_InteractiveObjectSetIconTexture = Swift:CopyTable(b_Reprisal_InteractiveObjectSetIconTexture);
+b_Reward_InteractiveObjectSetIconTexture.Name             = "Reward_InteractiveObjectSetIconTexture";
+b_Reward_InteractiveObjectSetIconTexture.GetReprisalTable = nil;
+
+b_Reward_InteractiveObjectSetIconTexture.GetRewardTable = function(self, _Quest)
+    return { Reward.Custom,{self, self.CustomFunction} }
+end
+
+Swift:RegisterBehavior(b_Reward_InteractiveObjectSetIconTexture);
+
+-- -------------------------------------------------------------------------- --
+
+-- API.CreateObject muss zur Initialisierung verwendet werden
+b_Reward_ObjectInit.CustomFunction = function(_Behavior, _Quest)
+    local eID = GetID(_Behavior.ScriptName);
+    if eID == 0 then
+        return;
+    end
+    QSB.InitalizedObjekts[eID] = _Quest.Identifier;
+    
+    local RewardTable = nil;
+    if _Behavior.RewardType and _Behavior.RewardType ~= "-" then
+        RewardTable = {Goods[_Behavior.RewardType], _Behavior.RewardAmount};
+    end
+
+    local CostsTable = nil;
+    if _Behavior.FirstCostType and _Behavior.FirstCostType ~= "-" then
+        CostsTable = {Goods[_Behavior.FirstCostType], _Behavior.FirstCostAmount};
+        if _Behavior.SecondCostType and _Behavior.SecondCostType ~= "-" then
+            table.insert(CostsTable, Goods[_Behavior.SecondCostType]);
+            table.insert(CostsTable, _Behavior.SecondCostAmount);
+        end
+    end
+
+    API.CreateObject{
+        Name        = _Behavior.ScriptName,
+        State       = _Behavior.UsingState or 0,
+        Distance    = _Behavior.Distance,
+        Waittime    = _Behavior.Waittime,
+        Reward      = RewardTable,
+        Costs       = CostsTable,
+    };
+end
 
