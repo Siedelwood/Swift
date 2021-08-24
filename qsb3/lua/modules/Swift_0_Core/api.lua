@@ -348,6 +348,40 @@ end
 -- Base API
 
 ---
+-- Speichert den Wert der Custom Variable im globalen und lokalen Skript.
+--
+-- Des weiteren wird in beiden Umgebungen ein Event ausgelöst, wenn der Wert
+-- gesetzt wird. Das Event bekommt den Namen der Variable, den alten Wert und
+-- den neuen Wert übergeben.
+--
+-- @param[type=boolean] _Name  Name der Custom Variable
+-- @param               _Value Neuer Wert
+-- @within Anwenderfunktionen
+--
+-- @usage local Value = API.ObtainCustomVariable("MyVariable", 0);
+--
+function API.SaveCustomVariable(_Name, _Value)
+    Swift:SetCustomVariable(_Name, _Value);
+end
+
+---
+-- Gibt den aktuellen Wert der Custom Variable zurück oder den Default-Wert.
+-- @param[type=boolean] _Name    Name der Custom Variable
+-- @param               _Default (Optional) Defaultwert falls leer
+-- @return Wert
+-- @within Anwenderfunktionen
+--
+-- @usage local Value = API.ObtainCustomVariable("MyVariable", 0);
+--
+function API.ObtainCustomVariable(_Name, _Default)
+    local Value = QSB.CustomVariable[_Name];
+    if not Value and _Default then
+        Value = _Default;
+    end
+    return Value;
+end
+
+---
 -- Wandelt underschiedliche Darstellungen einer Boolean in eine echte um.
 --
 -- Jeder String, der mit j, t, y oder + beginnt, wird als true interpretiert.
@@ -495,6 +529,10 @@ function API.FailQuest(_QuestName, _NoMessage)
         Quest:RemoveQuestMarkers();
         Quest:Fail();
         Swift:DispatchScriptEvent(QSB.ScriptEvents.QuestFailure, QuestID);
+        Logic.ExecuteInLuaLocalState(string.format(
+            "Swift:DispatchScriptEvent(QSB.ScriptEvents.QuestFailure, %d)",
+            QuestID
+        ));
     end
 end
 FailQuestByName = API.FailQuest;
@@ -612,6 +650,10 @@ function API.RestartQuest(_QuestName, _NoMessage)
             StartSimpleJobEx(_G[QuestTemplate.Loop], Quest.QueueID);
         end
         Swift:DispatchScriptEvent(QSB.ScriptEvents.QuestReset, QuestID);
+        Logic.ExecuteInLuaLocalState(string.format(
+            "Swift:DispatchScriptEvent(QSB.ScriptEvents.QuestReset, %d)",
+            QuestID
+        ));
         return QuestID, Quest;
     end
 end
@@ -638,6 +680,10 @@ function API.StartQuest(_QuestName, _NoMessage)
         Quest:SetIconOverride();
         Quest:Trigger();
         Swift:DispatchScriptEvent(QSB.ScriptEvents.QuestTrigger, QuestID);
+        Logic.ExecuteInLuaLocalState(string.format(
+            "Swift:DispatchScriptEvent(QSB.ScriptEvents.QuestTrigger, %d)",
+            QuestID
+        ));
     end
 end
 StartQuestByName = API.StartQuest;
@@ -663,6 +709,10 @@ function API.StopQuest(_QuestName, _NoMessage)
         Quest:RemoveQuestMarkers();
         Quest:Interrupt(-1);
         Swift:DispatchScriptEvent(QSB.ScriptEvents.QuestInterrupt, QuestID);
+        Logic.ExecuteInLuaLocalState(string.format(
+            "Swift:DispatchScriptEvent(QSB.ScriptEvents.QuestInterrupt, %d)",
+            QuestID
+        ));
     end
 end
 StopQuestByName = API.StopQuest;
@@ -687,6 +737,10 @@ function API.WinQuest(_QuestName, _NoMessage)
         Quest:RemoveQuestMarkers();
         Quest:Success();
         Swift:DispatchScriptEvent(QSB.ScriptEvents.QuestSuccess, QuestID);
+        Logic.ExecuteInLuaLocalState(string.format(
+            "Swift:DispatchScriptEvent(QSB.ScriptEvents.QuestSuccess, %d)",
+            QuestID
+        ));
     end
 end
 WinQuestByName = API.WinQuest;

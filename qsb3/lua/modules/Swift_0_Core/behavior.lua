@@ -2675,31 +2675,34 @@ function b_Goal_CustomVariables:AddParameter(_Index, _Parameter)
 end
 
 function b_Goal_CustomVariables:CustomFunction()
-    _G["QSB_CustomVariables_"..self.VariableName] = _G["QSB_CustomVariables_"..self.VariableName] or 0;
+    local Value1 = API.ObtainCustomVariable("BehaviorVariable_" ..self.VariableName, 0);
+    local Value2 = self.Value;
+    if type(self.Value) == "string" then
+        Value2 = API.ObtainCustomVariable("BehaviorVariable_" ..self.Value, 0);
+    end
 
-    local Value = (type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value];
     if self.Relation == "==" then
-        if _G["QSB_CustomVariables_"..self.VariableName] == Value then
+        if Value1 == Value2 then
             return true;
         end
     elseif self.Relation == "~=" then
-        if _G["QSB_CustomVariables_"..self.VariableName] == Value then
+        if Value1 == Value2 then
             return true;
         end
     elseif self.Relation == "<" then
-        if _G["QSB_CustomVariables_"..self.VariableName] < Value then
+        if Value1 < Value2 then
             return true;
         end
     elseif self.Relation == "<=" then
-        if _G["QSB_CustomVariables_"..self.VariableName] <= Value then
+        if Value1 <= Value2 then
             return true;
         end
     elseif self.Relation == ">=" then
-        if _G["QSB_CustomVariables_"..self.VariableName] >= Value then
+        if Value1 >= Value2 then
             return true;
         end
     else
-        if _G["QSB_CustomVariables_"..self.VariableName] > Value then
+        if Value1 > Value2 then
             return true;
         end
     end
@@ -2714,7 +2717,7 @@ function b_Goal_CustomVariables:Debug(_Quest)
     local relations = {"==", "~=", "<=", "<", ">", ">="}
     local results    = {true, false, nil}
 
-    if not _G["QSB_CustomVariables_"..self.VariableName] then
+    if not API.ObtainCustomVariable("BehaviorVariable_" ..self.VariableName) then
         warn(_Quest.Identifier.. ": " ..self.Name..": variable '"..self.VariableName.."' do not exist!");
     end
     if not table.contains(relations, self.Relation) then
@@ -4050,23 +4053,26 @@ function b_Reprisal_CustomVariables:AddParameter(_Index, _Parameter)
 end
 
 function b_Reprisal_CustomVariables:CustomFunction()
-    _G["QSB_CustomVariables_"..self.VariableName] = _G["QSB_CustomVariables_"..self.VariableName] or 0;
-    local oldValue = _G["QSB_CustomVariables_"..self.VariableName];
+    local Value1 = API.ObtainCustomVariable("BehaviorVariable_" ..self.VariableName, 0);
+    local Value2 = self.Value;
+    if type(self.Value) == "string" then
+        Value2 = API.ObtainCustomVariable("BehaviorVariable_" ..self.Value, 0);
+    end
 
     if self.Operator == "=" then
-        _G["QSB_CustomVariables_"..self.VariableName] = (type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value];
+        Value1 = Value2;
     elseif self.Operator == "+" then
-        _G["QSB_CustomVariables_"..self.VariableName] = oldValue + (type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value];
+        Value1 = Value1 + Value2;
     elseif self.Operator == "-" then
-        _G["QSB_CustomVariables_"..self.VariableName] = oldValue - (type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value];
+        Value1 = Value1 - Value2;
     elseif self.Operator == "*" then
-        _G["QSB_CustomVariables_"..self.VariableName] = oldValue * (type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value];
+        Value1 = Value1 * Value2;
     elseif self.Operator == "/" then
-        _G["QSB_CustomVariables_"..self.VariableName] = oldValue / (type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value];
+        Value1 = Value1 / Value2;
     elseif self.Operator == "^" then
-        _G["QSB_CustomVariables_"..self.VariableName] = oldValue ^ (type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value];
-
+        Value1 = Value1 % Value2;
     end
+    API.SaveCustomVariable("BehaviorVariable_"..self.VariableName, Value1);
 end
 
 function b_Reprisal_CustomVariables:GetCustomData( _Index )
@@ -8057,20 +8063,24 @@ function b_Trigger_CustomVariables:AddParameter(_Index, _Parameter)
 end
 
 function b_Trigger_CustomVariables:CustomFunction()
-    _G["QSB_CustomVariables_"..self.VariableName] = _G["QSB_CustomVariables_"..self.VariableName] or 0;
+    local Value1 = API.ObtainCustomVariable("BehaviorVariable_" ..self.VariableName, 0);
+    local Value2 = self.Value;
+    if type(self.Value) == "string" then
+        Value2 = API.ObtainCustomVariable("BehaviorVariable_" ..self.Value, 0);
+    end
 
     if self.Relation == "==" then
-        return _G["QSB_CustomVariables_"..self.VariableName] == ((type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value]);
+        return Value1 == Value2;
     elseif self.Relation ~= "~=" then
-        return _G["QSB_CustomVariables_"..self.VariableName] ~= ((type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value]);
+        return Value1 ~= Value2;
     elseif self.Relation == ">" then
-        return _G["QSB_CustomVariables_"..self.VariableName] > ((type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value]);
+        return Value1 > Value2;
     elseif self.Relation == ">=" then
-        return _G["QSB_CustomVariables_"..self.VariableName] >= ((type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value]);
+        return Value1 >= Value2;
     elseif self.Relation == "<=" then
-        return _G["QSB_CustomVariables_"..self.VariableName] <= ((type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value]);
+        return Value1 <= Value2;
     else
-        return _G["QSB_CustomVariables_"..self.VariableName] < ((type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value]);
+        return Value1 < Value2;
     end
     return false;
 end
@@ -8085,7 +8095,7 @@ function b_Trigger_CustomVariables:Debug(_Quest)
     local relations = {"==", "~=", "<=", "<", ">", ">="}
     local results    = {true, false, nil}
 
-    if not _G["QSB_CustomVariables_"..self.VariableName] then
+    if not API.ObtainCustomVariable("BehaviorVariable_" ..self.VariableName) then
         warn(_Quest.Identifier.. ": " ..self.Name..": variable '"..self.VariableName.."' do not exist!");
     end
     if not table.contains(relations, self.Relation) then

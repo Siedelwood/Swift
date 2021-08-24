@@ -11,6 +11,7 @@ QSB.Version = "Version 3.0.0 XX/XX/20XX ALPHA";
 QSB.Language = "de";
 QSB.HumanPlayerID = -1;
 QSB.ScriptEvents = {};
+QSB.CustomVariable = {};
 
 Swift = Swift or {};
 
@@ -381,8 +382,17 @@ function Swift:InitalizeEventsGlobal()
     QSB.ScriptEvents.QuestReset = Swift:CreateScriptEvent("Event_QuestReset", nil);
     QSB.ScriptEvents.QuestSuccess = Swift:CreateScriptEvent("Event_QuestSuccess", nil);
     QSB.ScriptEvents.QuestTrigger = Swift:CreateScriptEvent("Event_QuestTrigger", nil);
+
+    QSB.ScriptEvents.CustomValueChanged = Swift:CreateScriptEvent("Event_CustomValueChanged", nil);
 end
 function Swift:InitalizeEventsLocal()
+    QSB.ScriptEvents.QuestFailure = Swift:CreateScriptEvent("Event_QuestFailure", nil);
+    QSB.ScriptEvents.QuestInterrupt = Swift:CreateScriptEvent("Event_QuestInterrupt", nil);
+    QSB.ScriptEvents.QuestReset = Swift:CreateScriptEvent("Event_QuestReset", nil);
+    QSB.ScriptEvents.QuestSuccess = Swift:CreateScriptEvent("Event_QuestSuccess", nil);
+    QSB.ScriptEvents.QuestTrigger = Swift:CreateScriptEvent("Event_QuestTrigger", nil);
+
+    QSB.ScriptEvents.CustomValueChanged = Swift:CreateScriptEvent("Event_CustomValueChanged", nil);
 end
 
 function Swift:CreateScriptEvent(_Name, _Function)
@@ -437,6 +447,47 @@ function Swift:DispatchScriptEvent(_ID, ...)
                 v[2](unpack(arg));
             end
         end
+    end
+end
+
+-- Custom Variable
+
+function Swift:GetCustomVariable(_Name)
+    return QSB.CustomVariable[_Name];
+end
+
+function Swift:SetCustomVariable(_Name, _Value)
+    Swift:UpdateCustomVariable(_Name, _Value);
+    local Value = tostring(_Value);
+    if type(_Value) ~= "number" then
+        Value = [["]] ..Value.. [["]];
+    end
+    local Execution = string.format([[Swift:UpdateCustomVariable("%s", %s)]], _Name, Value);
+    if GUI then
+        GUI.SendScriptCommand(Execution);
+    else
+        Logic.ExecuteInLuaLocalState(Execution);
+    end
+end
+
+function Swift:UpdateCustomVariable(_Name, _Value)
+    if QSB.CustomVariable[_Name] then
+        local Old = QSB.CustomVariable[_Name];
+        QSB.CustomVariable[_Name] = _Value;
+        Swift:DispatchScriptEvent(
+            QSB.ScriptEvents.CustomValueChanged,
+            _Name,
+            Old,
+            _Value
+        );
+    else
+        QSB.CustomVariable[_Name] = _Value;
+        Swift:DispatchScriptEvent(
+            QSB.ScriptEvents.CustomValueChanged,
+            _Name,
+            nil,
+            _Value
+        );
     end
 end
 
