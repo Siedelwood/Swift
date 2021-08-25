@@ -116,20 +116,38 @@ function Swift:InitalizeQsbDebugShell()
     GUI_Chat.Confirm = function()
         local MotherWidget = "/InGame/Root/Normal/ChatInput";
         Input.GameMode();
-        XGUIEng.ShowWidget(MotherWidget,0);
+        XGUIEng.ShowWidget(MotherWidget, 0);
         Swift.m_ChatBoxInput = XGUIEng.GetText(MotherWidget.. "/ChatInput");
         g_Chat.JustClosed = 1;
         Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
     end
 
     QSB_DEBUG_InputBoxJob = function()
-        local MotherWidget = "/InGame/Root/Normal/ChatInput";
+        -- Not allowed
         if not Swift.m_DevelopingShell then
             return true;
         end
+        -- Better module installed
+        if ModuleInputOutputCore then
+            API.ShowTextInput();
+            return true;
+        end
+        -- Call cheap version
+        Swift:DisplayQsbDebugShell();
+    end
+    
+    Input.KeyBindDown(Keys.ModifierShift + Keys.OemPipe, "Swift:OpenQsbDebugShell()", 2);
+end
+
+function Swift:OpenQsbDebugShell()
+    StartSimpleHiResJob('QSB_DEBUG_InputBoxJob');
+end
+
+function Swift:DisplayQsbDebugShell()
+    local MotherWidget = "/InGame/Root/Normal/ChatInput";
         if not Swift.m_DebugInputShown then
             Input.ChatMode();
-            Game.GameTimeSetFactor( GUI.GetPlayerID(), 0 );
+            Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
             XGUIEng.ShowWidget(MotherWidget, 1);
             XGUIEng.SetText(MotherWidget.. "/ChatInput", "");
             XGUIEng.SetFocus(MotherWidget.. "/ChatInput");
@@ -150,9 +168,6 @@ function Swift:InitalizeQsbDebugShell()
             Swift.m_DebugInputShown = nil;
             return true;
         end
-    end
-    
-    Input.KeyBindDown(Keys.ModifierShift + Keys.OemPipe, "StartSimpleHiResJob('QSB_DEBUG_InputBoxJob')", 2);
 end
 
 function Swift:ConfirmQsbDebugShell()

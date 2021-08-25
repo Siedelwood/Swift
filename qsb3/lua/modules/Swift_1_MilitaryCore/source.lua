@@ -21,9 +21,9 @@ ModuleMilitaryCore = {
 -- -------------------------------------------------------------------------- --
 
 function ModuleMilitaryCore.Global:OnGameStart()
-    ModuleMilitaryCore.Shared.Event.ProducedThief = API.RegisterScriptEvent("Event_ProducedThief", nil);
-    ModuleMilitaryCore.Shared.Event.ProducedBattalion = API.RegisterScriptEvent("Event_ProducedBattalion", nil);
-    ModuleMilitaryCore.Shared.Event.RefilledBattalion = API.RegisterScriptEvent("Event_RefilledBattalion", nil);
+    QSB.ScriptEvents.ProducedThief = API.RegisterScriptEvent("Event_ProducedThief", nil);
+    QSB.ScriptEvents.ProducedBattalion = API.RegisterScriptEvent("Event_ProducedBattalion", nil);
+    QSB.ScriptEvents.RefilledBattalion = API.RegisterScriptEvent("Event_RefilledBattalion", nil);
 
     ModuleMilitaryCore.Shared:InitLimits();
 end
@@ -35,9 +35,9 @@ function ModuleMilitaryCore.Global:ProduceUnit(_PlayerID, _BarrackID, _UnitType,
     self:SubFromPlayerGoods(_PlayerID, _BarrackID, _Costs);
     if _UnitType == Entities.U_Thief then
         local ID = Logic.CreateEntityOnUnblockedLand(_UnitType, x1, y1, o-90, _PlayerID);
-        API.SendScriptEvent(ModuleMilitaryCore.Shared.Event.ProducedThief, ID, _BarrackID, _Costs);
+        API.SendScriptEvent(QSB.ScriptEvents.ProducedThief, ID, _BarrackID, _Costs);
         Logic.ExecuteInLuaLocalState(string.format(
-            [[API.SendScriptEvent(ModuleMilitaryCore.Shared.Event.ProducedThief, %d, %d, %s)]],
+            [[API.SendScriptEvent(QSB.ScriptEvents.ProducedThief, %d, %d, %s)]],
             ID,
             _BarrackID,
             table.tostring(_Costs)
@@ -45,9 +45,9 @@ function ModuleMilitaryCore.Global:ProduceUnit(_PlayerID, _BarrackID, _UnitType,
     else
         local ID = Logic.CreateBattalionOnUnblockedLand(_UnitType, x1, y1, 0-90, _PlayerID, 6);
         Logic.MoveSettler(ID, x2, y2, -1);
-        API.SendScriptEvent(ModuleMilitaryCore.Shared.Event.ProducedBattalion, ID, _BarrackID, _Costs);
+        API.SendScriptEvent(QSB.ScriptEvents.ProducedBattalion, ID, _BarrackID, _Costs);
         Logic.ExecuteInLuaLocalState(string.format(
-            [[API.SendScriptEvent(ModuleMilitaryCore.Shared.Event.ProducedBattalion, %d, %d, %s)]],
+            [[API.SendScriptEvent(QSB.ScriptEvents.ProducedBattalion, %d, %d, %s)]],
             ID,
             _BarrackID,
             table.tostring(_Costs)
@@ -100,9 +100,9 @@ function ModuleMilitaryCore.Global:RefillBattalion(_PlayerID, _BarrackID, _Leade
     ));
     self:SubFromPlayerGoods(_PlayerID, _BarrackID, _Costs);
 
-    API.SendScriptEvent(ModuleMilitaryCore.Shared.Event.RefilledBattalion, ID, _BarrackID, _Costs);
+    API.SendScriptEvent(QSB.ScriptEvents.RefilledBattalion, ID, _BarrackID, _Costs);
     Logic.ExecuteInLuaLocalState(string.format(
-        [[API.SendScriptEvent(ModuleMilitaryCore.Shared.Event.RefilledBattalion, %d, %d, %d, %d, %s)]],
+        [[API.SendScriptEvent(QSB.ScriptEvents.RefilledBattalion, %d, %d, %d, %d, %s)]],
         ID,
         _BarrackID,
         LeaderSoldiers,
@@ -127,9 +127,9 @@ end
 -- -------------------------------------------------------------------------- --
 
 function ModuleMilitaryCore.Local:OnGameStart()
-    ModuleMilitaryCore.Shared.Event.ProducedThief = API.RegisterScriptEvent("Event_ProducedThief", nil);
-    ModuleMilitaryCore.Shared.Event.ProducedBattalion = API.RegisterScriptEvent("Event_ProducedBattalion", nil);
-    ModuleMilitaryCore.Shared.Event.RefilledBattalion = API.RegisterScriptEvent("Event_RefilledBattalion", nil);
+    QSB.ScriptEvents.ProducedThief = API.RegisterScriptEvent("Event_ProducedThief", nil);
+    QSB.ScriptEvents.ProducedBattalion = API.RegisterScriptEvent("Event_ProducedBattalion", nil);
+    QSB.ScriptEvents.RefilledBattalion = API.RegisterScriptEvent("Event_RefilledBattalion", nil);
 
     ModuleMilitaryCore.Shared:InitLimits();
     self:OverrideUI();
