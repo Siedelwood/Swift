@@ -53,7 +53,7 @@ function ModuleWeatherCore.Global:ActivateEvent()
     local Event = table.remove(self.EventQueue, 1);
     self.ActiveEvent = Event;
     Logic.ExecuteInLuaLocalState([[
-        ModuleWeatherCore.Local.ActiveEvent = ]] ..API.ConvertTableToString(Event).. [[
+        ModuleWeatherCore.Local.ActiveEvent = ]] ..table.tostring(Event).. [[
         ModuleWeatherCore.Local:DisplayEvent()
     ]]);
 

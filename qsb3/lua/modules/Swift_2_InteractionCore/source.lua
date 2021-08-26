@@ -74,6 +74,8 @@ function ModuleInteractionCore.Global:OnEvent(_ID, _Event, _PlayerID, _ScriptNam
         end
         IO[_ScriptName]:SetUsed(true);
         Lambda(_ScriptName, _EntityID, _PlayerID);
+    elseif _ID == QSB.ScriptEvents.ChatClosed then
+        self:ProcessChatInput(_Text);
     end
 end
 
@@ -449,23 +451,58 @@ function ModuleInteractionCore.Global:OnEntityDestroyed()
         if not Object then
             return;
         end
-        info("slave " ..SlaveName.. " of master " ..MasterName.. " has been deleted!");
-        info("try to create new slave...");
+        info("slave " ..SlaveName.. " of master " ..MasterName.. " has been deleted!", true);
+        info("try to create new slave...", true);
         IO_SlaveToMaster[SlaveName] = nil;
         local SlaveID = self:CreateSlaveObject(Object);
         if not IsExisting(SlaveID) then
-            error("failed to create slave!");
+            error("failed to create slave!", true);
             return;
         end
         ModuleInteractionCore.Global:SetupObject(Object);
         if Object:IsUsed() == true or (IO_SlaveState[SlaveName] and IO_SlaveState[SlaveName] == 0) then
             API.InteractiveObjectDeactivate(Object.m_Slave);
         end
-        info("new slave created for master " ..MasterName.. ".");
+        info("new slave created for master " ..MasterName.. ".", true);
     end
 end
 
 -- -------------------------------------------------------------------------- --
+
+function ModuleInteractionCore.Global:ProcessChatInput(_Text)
+    local Commands = ModuleInputOutputCore.Shared:CommandTokenizer(_Text);
+    for i= 1, #Commands, 1 do
+        if Commands[1] == "enableobject" then
+            local State = (Commands[3] and tonumber(Commands[3])) or nil;
+            local PlayerID = (Commands[4] and tonumber(Commands[4])) or nil;
+            if not IsExisting(Commands[2]) then
+                error("object " ..Commands[2].. " does not exist!");
+                return;
+            end
+            API.InteractiveObjectActivate(Commands[2], State, PlayerID);
+            info("activated object " ..Commands[2].. ".");
+        elseif Commands[1] == "disableobject" then
+            local PlayerID = (Commands[3] and tonumber(Commands[3])) or nil;
+            if not IsExisting(Commands[2]) then
+                error("object " ..Commands[2].. " does not exist!");
+                return;
+            end
+            API.InteractiveObjectDeactivate(Commands[2], PlayerID);
+            info("deactivated object " ..Commands[2].. ".");
+        elseif Commands[1] == "initobject" then
+            if not IsExisting(Commands[2]) then
+                error("object " ..Commands[2].. " does not exist!");
+                return;
+            end
+            API.SetupObject({
+                Name     = Commands[2],
+                Waittime = 0,
+                State    = 0
+            });
+            info("quick initalization of object " ..Commands[2].. ".");
+        end
+    end
+end
 
 function ModuleInteractionCore.Global:GetObjectDefaultKeys(_Data)
     -- Get IO name

@@ -21,6 +21,12 @@ function ModuleQuestCore.Global:OnGameStart()
     Quest_Loop = self.QuestLoop;
 end
 
+function ModuleQuestCore.Global:OnEvent(_ID, _Event, _Text)
+    if _ID == QSB.ScriptEvents.ChatClosed then
+        self:ProcessChatInput(_Text);
+    end
+end
+
 function ModuleQuestCore.Global:QuestMessage(_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor, _QuestName)
     self.QuestMessageID = self.QuestMessageID +1;
 
@@ -334,6 +340,51 @@ function ModuleQuestCore.Global:SerializeBehavior(_Data, _CustomType, _Typ)
     end
     Info = Info.. "}";
     return Info;
+end
+
+-- -------------------------------------------------------------------------- --
+
+function ModuleQuestCore.Global:FindQuestNames(_Pattern, _ExactName)
+    local FoundQuests = FindQuestsByName(_Pattern, _ExactName);
+    if #FoundQuests == 0 then
+        return {};
+    end
+    local NamesOfFoundQuests = {};
+    for i= 1, #FoundQuests, 1 do
+        table.insert(NamesOfFoundQuests, FoundQuests[i].Identifier);
+    end
+    return NamesOfFoundQuests;
+end
+
+function ModuleQuestCore.Global:ProcessChatInput(_Text)
+    local Commands = ModuleInputOutputCore.Shared:CommandTokenizer(_Text);
+    for i= 1, #Commands, 1 do
+        if Commands[1] == "fail" or Commands[1] == "restart"
+        or Commands[1] == "start" or Commands[1] == "stop"
+        or Commands[1] == "win" then
+            local FoundQuests = self:FindQuestNames(Commands[2], true);
+            if #FoundQuests ~= 1 then
+                error("Unable to find quest containing '" ..Commands[2].. "'");
+                return;
+            end
+            if Commands[1] == "fail" then
+                API.FailQuest(FoundQuests[1]);
+                info("fail quest '" ..FoundQuests[1].. "'");
+            elseif Commands[1] == "restart" then
+                API.RestartQuest(FoundQuests[1]);
+                info("restart quest '" ..FoundQuests[1].. "'");
+            elseif Commands[1] == "start" then
+                API.StartQuest(FoundQuests[1]);
+                info("trigger quest '" ..FoundQuests[1].. "'");
+            elseif Commands[1] == "stop" then
+                API.StopQuest(FoundQuests[1]);
+                info("interrupt quest '" ..FoundQuests[1].. "'");
+            elseif Commands[1] == "win" then
+                API.WinQuest(FoundQuests[1]);
+                info("win quest '" ..FoundQuests[1].. "'");
+            end
+        end
+    end
 end
 
 -- -------------------------------------------------------------------------- --
