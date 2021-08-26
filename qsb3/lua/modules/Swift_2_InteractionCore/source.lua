@@ -46,7 +46,9 @@ function ModuleInteractionCore.Global:OnGameStart()
     IO_IconTextures = {};
     IO_Conditions = {};
 
-    QSB.ScriptEvents.InteractiveObjectClicked = API.RegisterScriptEvent("Event_InteractiveObjectClicked", nil);
+    QSB.ScriptEvents.LegitimateNpcInteraction   = API.RegisterScriptEvent("Event_LegitimateNpcInteraction", nil);
+    QSB.ScriptEvents.WrongHeroNpcInteraction    = API.RegisterScriptEvent("Event_WrongHeroNpcInteraction", nil);
+    QSB.ScriptEvents.InteractiveObjectClicked   = API.RegisterScriptEvent("Event_InteractiveObjectClicked", nil);
     QSB.ScriptEvents.InteractiveObjectActivated = API.RegisterScriptEvent("Event_InteractiveObjectActivated", nil);
 
     self:CreateDefaultInteractionLambdas();
@@ -120,41 +122,11 @@ function ModuleInteractionCore.Global:OverrideQuestFunctions()
     GameCallback_OnNPCInteraction_Orig_QSB_NPC_Rewrite = GameCallback_OnNPCInteraction
     GameCallback_OnNPCInteraction = function(_EntityID, _PlayerID)
         GameCallback_OnNPCInteraction_Orig_QSB_NPC_Rewrite(_EntityID, _PlayerID)
-        Quest_OnNPCInteraction(_EntityID, _PlayerID)
-    end
-
-    Quest_OnNPCInteraction = function(_EntityID, _PlayerID)
-        local KnightIDs = {};
-        Logic.GetKnights(_PlayerID, KnightIDs);
-
-        local ClosestKnightID = 0;
-        local ClosestKnightDistance = Logic.WorldGetSize();
-        for i= 1, #KnightIDs, 1 do
-            local DistanceBetween = Logic.GetDistanceBetweenEntities(KnightIDs[i], _EntityID);
-            if DistanceBetween < ClosestKnightDistance then
-                ClosestKnightDistance = DistanceBetween;
-                ClosestKnightID = KnightIDs[i];
-            end
-        end
+        local ClosestKnightID = ModuleInteractionCore.Global:GetClosestKnight(_EntityID, _PlayerID)
         ModuleInteractionCore.Global.LastHeroEntityID = ClosestKnightID;
         local NPC = QSB.NonPlayerCharacter:GetInstance(_EntityID);
         ModuleInteractionCore.Global.LastNpcEntityID = NPC:GetID();
-
-        if NPC then
-            NPC:RotateActors();
-            NPC:RepositionHero();
-            NPC.m_TalkedTo = ClosestKnightID;
-            if NPC:HasTalkedTo() then
-                NPC:Deactivate();
-                if NPC.m_Callback then
-                    NPC.m_Callback(NPC, ClosestKnightID);
-                end
-            else
-                if NPC.m_WrongHeroCallback then
-                    NPC.m_WrongHeroCallback(NPC, ClosestKnightID);
-                end
-            end
-        end
+        ModuleInteractionCore.Global:ExecuteNpcInteraction();
     end
 
     -- Object stuff --
@@ -296,6 +268,58 @@ end
 
 function ModuleInteractionCore.Global:SetUseRepositionByDefault(_Flag)
     self.UseRepositionByDefault = _Flag == true;
+end
+
+function ModuleInteractionCore.Global:GetClosestKnight(_EntityID, _PlayerID)
+    local KnightIDs = {};
+    Logic.GetKnights(_PlayerID, KnightIDs);
+
+    local ClosestKnightID = 0;
+    local ClosestKnightDistance = Logic.WorldGetSize();
+    for i= 1, #KnightIDs, 1 do
+        local DistanceBetween = Logic.GetDistanceBetweenEntities(KnightIDs[i], _EntityID);
+        if DistanceBetween < ClosestKnightDistance then
+            ClosestKnightDistance = DistanceBetween;
+            ClosestKnightID = KnightIDs[i];
+        end
+    end
+    return ClosestKnightID;
+end
+
+function ModuleInteractionCore.Global:ExecuteNpcInteraction()
+    local HeroID = ModuleInteractionCore.Global.LastHeroEntityID;
+    local NpcID = ModuleInteractionCore.Global.LastNpcEntityID;
+
+    local NPC = QSB.NonPlayerCharacter:GetInstance(NpcID);
+    if NPC then
+        NPC:RotateActors();
+        NPC:RepositionHero();
+        NPC.m_TalkedTo = HeroID;
+        if NPC:HasTalkedTo() then
+            NPC:Deactivate();
+            if NPC.m_Callback then
+                NPC.m_Callback(NPC, HeroID);
+            end
+
+            API.SendScriptEvent(QSB.ScriptEvents.LegitimateNpcInteraction, NpcID, HeroID);
+            Logic.ExecuteInLuaLocalState(string.format(
+                [[API.SendScriptEvent(QSB.ScriptEvents.LegitimateNpcInteraction, %d, %d)]],
+                NpcID,
+                HeroID
+            ));
+        else
+            if NPC.m_WrongHeroCallback then
+                NPC.m_WrongHeroCallback(NPC, HeroID);
+            end
+
+            API.SendScriptEvent(QSB.ScriptEvents.WrongHeroNpcInteraction, NpcID, HeroID);
+            Logic.ExecuteInLuaLocalState(string.format(
+                [[API.SendScriptEvent(QSB.ScriptEvents.WrongHeroNpcInteraction, %d, %d)]],
+                NpcID,
+                HeroID
+            ));
+        end
+    end
 end
 
 function ModuleInteractionCore.Global:GetControllingPlayer()
@@ -581,7 +605,9 @@ end
 -- Local Script ------------------------------------------------------------- --
 
 function ModuleInteractionCore.Local:OnGameStart()
-    QSB.ScriptEvents.InteractiveObjectClicked = API.RegisterScriptEvent("Event_InteractiveObjectClicked", nil);
+    QSB.ScriptEvents.LegitimateNpcInteraction   = API.RegisterScriptEvent("Event_LegitimateNpcInteraction", nil);
+    QSB.ScriptEvents.WrongHeroNpcInteraction    = API.RegisterScriptEvent("Event_WrongHeroNpcInteraction", nil);
+    QSB.ScriptEvents.InteractiveObjectClicked   = API.RegisterScriptEvent("Event_InteractiveObjectClicked", nil);
     QSB.ScriptEvents.InteractiveObjectActivated = API.RegisterScriptEvent("Event_InteractiveObjectActivated", nil);
 
     self:ForceFullGlobalReferenceUpdate();
