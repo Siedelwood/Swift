@@ -93,17 +93,23 @@ GUI_ClearNotes = API.ClearNotes;
 ---
 -- Ermittelt den lokalisierten Text anhand der eingestellten Sprache der QSB.
 --
--- Wird ein normaler String übergeben, wird dieser sofort zurückgegeben. Im
--- Gegensatz zur Funktion im Core Modul wird hier immer sichergestellt, dass
--- die Rückgabe ein String ist.
---
--- <b>Hinweis</b>: Diese Funktion ersetzt die Lokalisierung aus dem Core Modul.
+-- Wird ein normaler String übergeben, wird dieser sofort zurückgegeben. Bei
+-- einem Table mit einem passenden Sprach-Key (de, en) wird die entsprechende
+-- Sprache zurückgegeben. Sollte ein Nested Table übergeben werden, werden alle
+-- Texte innerhalb des Tables rekursiv übersetzt als Table zurückgegeben. Alle
+-- anderen Werte sind nicht in der Rückgabe enthalten.
 --
 -- @param _Text Anzeigetext (String oder Table)
--- @return[type=string] Message
+-- @return Übersetzten Text oder Table mit Texten
 -- @within Anwenderfunktionen
 --
--- @usage local Text = API.Localize({de = "Deutsch", en = "English"});
+-- @usage -- Einstufige Table
+-- local Text = API.Localize({de = "Deutsch", en = "English"});
+-- -- Rückgabe: "Deutsch"
+--
+-- -- Mehrstufige Table
+-- API.Localize{{de = "Deutsch", en = "English"}, {{1,2,3,4, de = "A", en = "B"}}}
+-- -- Rückgabe: {"Normaler Table", {"A"}}
 --
 function API.Localize(_Text)
     return ModuleInputOutputCore.Shared:Localize(_Text);
@@ -145,7 +151,7 @@ end
 -- <tr><td>lucid</td>   <td>Transparent</td>  <td>0,0,0,0</td></tr>
 -- </table>
 --
--- @param _Message Text oder Table mit Texten
+-- @param[type=string] _Message Text
 -- @return Ersetzter Text
 -- @within Anwenderfunktionen
 --

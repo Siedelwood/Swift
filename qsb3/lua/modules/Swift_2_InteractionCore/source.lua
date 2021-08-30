@@ -77,7 +77,7 @@ function ModuleInteractionCore.Global:OnEvent(_ID, _Event, _PlayerID, _ScriptNam
         IO[_ScriptName]:SetUsed(true);
         Lambda(_ScriptName, _EntityID, _PlayerID);
     elseif _ID == QSB.ScriptEvents.ChatClosed then
-        self:ProcessChatInput(_Text);
+        self:ProcessChatInput(_PlayerID);
     end
 end
 

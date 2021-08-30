@@ -1,7 +1,7 @@
 -- Interface API ------------------------------------------------------------ --
 
 ---
--- Dieses Modul bietet grundlegende Funktionen zur Manipulation des Interface.
+-- Dieses Modul bietet grundlegende Funktionen zur Steuerung des Interface.
 --
 -- <b>Hinweis</b>: Diese Funktionen müssen in Multiplayer Maps synchron
 -- aufgerufen werden. Entweder zu Spielbeginn oder durch Jobs.

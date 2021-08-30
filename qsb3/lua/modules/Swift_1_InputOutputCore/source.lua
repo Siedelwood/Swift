@@ -344,6 +344,7 @@ end
 
 function ModuleInputOutputCore.Local:PrepareInputVariable()
     GUI.SendScriptCommand("API.SendScriptEvent(QSB.ScriptEvents.ChatOpened)");
+    API.SendScriptEvent(QSB.ScriptEvents.ChatOpened);
 
     GUI_Chat.Abort_Orig_ModuleInputOutputCore = GUI_Chat.Abort_Orig_ModuleInputOutputCore or GUI_Chat.Abort;
     GUI_Chat.Confirm_Orig_ModuleInputOutputCore = GUI_Chat.Confirm_Orig_ModuleInputOutputCore or GUI_Chat.Confirm;
@@ -411,16 +412,22 @@ function ModuleInputOutputCore.Shared:ClearNotes()
 end
 
 function ModuleInputOutputCore.Shared:Localize(_Text)
-    if type(_Text) ~= "table" or (_Text.de == nil or _Text.en == nil) then
-        return tostring(_Text);
+    local LocalizedText;
+    if type(_Text) == "table" then
+        LocalizedText = {};
+        if _Text.de == nil or _Text.en == nil then
+            for k,v in pairs(_Text) do
+                if type(v) == "table" then
+                    LocalizedText[k] = self:Localize(v);
+                end
+            end
+        else
+            LocalizedText = _Text[QSB.Language];
+        end
+    else
+        LocalizedText = tostring(_Text);
     end
-    if _Text[QSB.Language] then
-        return tostring(_Text[QSB.Language]);
-    end
-    if _Text.en then
-        return tostring(_Text.en);
-    end
-    return tostring(_Text);
+    return LocalizedText;
 end
 
 function ModuleInputOutputCore.Shared:ConvertPlaceholders(_Text)
