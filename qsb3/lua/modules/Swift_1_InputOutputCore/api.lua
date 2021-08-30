@@ -129,7 +129,7 @@ end
 -- Ersetze {COLOR} in deinen Texten mit einer der gelisteten Farben.
 --
 -- <table border="1">
--- <tr><th>Platzhalter</th><th>Farbe</th><th>RGBA</th></tr>
+-- <tr><th><b>Platzhalter</b></th><th><b>Farbe</b></th><th><b>RGBA</b></th></tr>
 --
 -- <tr><td>red</td>     <td>Rot</td>          <td>255,80,80,255</td></tr>
 -- <tr><td>blue</td>    <td>Blau</td>         <td>104,104,232,255</td></tr>

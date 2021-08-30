@@ -22,6 +22,8 @@ OptLoader_ModuleFiles = {
     "Swift_2_InteractionCore/api.lua",
     "Swift_2_QuestCore/source.lua",
     "Swift_2_QuestCore/api.lua",
+    "Swift_2_SelectionCore/source.lua",
+    "Swift_2_SelectionCore/api.lua",
     "Swift_2_TextWindow/source.lua",
     "Swift_2_TextWindow/api.lua",
     "Swift_2_Typewriter/source.lua",
