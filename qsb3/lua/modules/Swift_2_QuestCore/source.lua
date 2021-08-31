@@ -41,7 +41,7 @@ function ModuleQuestCore.Global:QuestMessage(_Text, _Sender, _Receiver, _Ancesto
         (_Sender or 1),
         (_Receiver or 1),
         { {Objective.Dummy} },
-        { self:GetRealTimeWaitInlineTrigger(_Ancestor, _AncestorWt) },
+        { self:GetWaitTimeInlineTrigger(_Ancestor, _AncestorWt) },
         0, nil, nil, _Callback, nil, false, (_Text ~= nil), nil, nil, _Text, nil
     );
     return CreatedQuest.Identifier;
@@ -149,9 +149,8 @@ function ModuleQuestCore.Global:QuestValidateQuestName(_Name)
     return string.find(_Name, "^[A-Za-z0-9_ @ÄÖÜäöüß]+$") ~= nil;
 end
 
--- This triggers a quest message after an certain amount of time has passed in
--- the real world. The game speed does not affect this.
-function ModuleQuestCore.Global:GetRealTimeWaitInlineTrigger(_Ancestor, _AncestorWt)
+-- This triggers a quest message after an certain amount of seconds passed.
+function ModuleQuestCore.Global:GetWaitTimeInlineTrigger(_Ancestor, _AncestorWt)
     return {
         Triggers.Custom2, {
             {QuestName = _Ancestor, WaitTime = _AncestorWt or 1,},
@@ -161,8 +160,8 @@ function ModuleQuestCore.Global:GetRealTimeWaitInlineTrigger(_Ancestor, _Ancesto
                 end
                 local QuestID = GetQuestID(_Data.QuestName);
                 if (Quests[QuestID] and Quests[QuestID].State == QuestState.Over and Quests[QuestID].Result ~= QuestResult.Interrupted) then
-                    _Data.WaitTimeTimer = _Data.WaitTimeTimer or API.RealTimeGetSecondsPassedSinceGameStart();
-                    if API.RealTimeGetSecondsPassedSinceGameStart() >= _Data.WaitTimeTimer + _Data.WaitTime then
+                    _Data.WaitTimeTimer = _Data.WaitTimeTimer or math.floor(Logic.GetTime());
+                    if math.floor(Logic.GetTime()) >= _Data.WaitTimeTimer + _Data.WaitTime then
                         return true;
                     end
                 end

@@ -8,9 +8,13 @@
 -- Jobs abfragen, wie viele Sekunden in Echtzeit vergangen sind. Echtzeit hat
 -- den Vorteil, dass die eingestellte Spielgeschwindigkeit egal ist.
 --
+-- Die Wartezeiten von Questdialogen werden durch dieses Modul in Echtzeit statt
+-- in Ingame Zeit gemessen. Diese Änderung geschieht vollautomatisch.
+--
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
 -- <li><a href="Swift_1_JobsCore.api.html">(1) Jobs Core</a></li>
+-- <li><a href="Swift_2_QuestCore.api.html">(2) Quests Core</a></li>
 -- </ul>
 --
 -- @within Beschreibung

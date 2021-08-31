@@ -1,7 +1,7 @@
 {
-    "name": "Swift_2_SelectionCore",
+    "name": "Swift_4_TextWindow",
     "version": "1.0.0",
-    "caption": "(2) Selection Core",
+    "caption": "(4) TextWindow",
     "shortdesc": "",
     "description": "",
     "files": [
@@ -10,6 +10,8 @@
     ],
     "dependencies": [
         "Swift_0_Core",
-        "Swift_1_InterfaceCore"
+        "Swift_1_InputOutputCore",
+        "Swift_1_DisplayCore",
+        "Swift_1_JobsCore"
     ]
 }

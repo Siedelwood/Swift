@@ -45,5 +45,30 @@ end
 
 -- -------------------------------------------------------------------------- --
 
+-- This triggers a quest message after an certain amount of time has passed in
+-- the real world. The game speed does not affect this.
+function ModuleQuestCore.Global:GetWaitTimeInlineTrigger(_Ancestor, _AncestorWt)
+    return {
+        Triggers.Custom2, {
+            {QuestName = _Ancestor, WaitTime = _AncestorWt or 1,},
+            function(_Data, _Quest)
+                if not _Data.QuestName then
+                    return true;
+                end
+                local QuestID = GetQuestID(_Data.QuestName);
+                if (Quests[QuestID] and Quests[QuestID].State == QuestState.Over and Quests[QuestID].Result ~= QuestResult.Interrupted) then
+                    _Data.WaitTimeTimer = _Data.WaitTimeTimer or ModuleJobsRealtime.Shared.SecondsSinceGameStart;
+                    if ModuleJobsRealtime.Shared.SecondsSinceGameStart >= _Data.WaitTimeTimer + _Data.WaitTime then
+                        return true;
+                    end
+                end
+                return false;
+            end
+        }
+    };
+end
+
+-- -------------------------------------------------------------------------- --
+
 Swift:RegisterModules(ModuleJobsRealtime);
 
