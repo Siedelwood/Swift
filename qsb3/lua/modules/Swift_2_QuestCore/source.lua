@@ -37,7 +37,7 @@ function ModuleQuestCore.Global:QuestMessage(_Text, _Sender, _Receiver, _Ancesto
 
     -- Quest erzeugen
     local _, CreatedQuest = QuestTemplate:New(
-        (_QuestName ~= nil and _QuestName) or "QSB_QuestMessage_" ..self.QuestMessageID,
+        (_QuestName ~= nil and _QuestName) or ("QSB_QuestMessage_" ..self.QuestMessageID),
         (_Sender or 1),
         (_Receiver or 1),
         { {Objective.Dummy} },

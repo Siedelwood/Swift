@@ -107,7 +107,7 @@ end
 -- @usage local Converted = API.ConvertIntegerToFloat(Value)
 --
 function API.ConvertIntegerToFloat(_Value)
-    return ModuleScriptingValue.Shared:ScriptingValueIntegerToFloat(num);
+    return ModuleScriptingValue.Shared:ScriptingValueIntegerToFloat(_Value);
 end
 
 ---
@@ -120,6 +120,6 @@ end
 -- @usage local Converted = API.ConvertFloatToInteger(Value)
 --
 function API.ConvertFloatToInteger(_Value)
-    return ModuleScriptingValue.Shared:ScriptingValueFloatToInteger(num);
+    return ModuleScriptingValue.Shared:ScriptingValueFloatToInteger(_Value);
 end
 

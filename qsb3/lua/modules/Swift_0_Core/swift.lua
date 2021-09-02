@@ -283,7 +283,7 @@ function Swift:Log(_Text, _Verbose)
             ));
             return;
         end
-        GUI.AddStaticNote(_text);
+        GUI.AddStaticNote(_Text);
     end
 end
 
@@ -412,12 +412,18 @@ function Swift:CreateScriptEventAction(_ID, _Function)
         local Index;
         local EventName = self.m_ScriptEventRegister[_ID][1];
         self.m_ScriptEventActions[_ID] = self.m_ScriptEventActions[_ID] or {};
-        table.insert(self.m_ScriptEventActions[_ID], {EventName, _Function});
+        table.insert(self.m_ScriptEventActions[_ID], {EventName, _Function, true});
         Index = #self.m_ScriptEventActions[_ID];
         debug(string.format("Bind script event action %s for event %d", EventName, _ID), true);
         return Index;
     end
     return 0;
+end
+
+function Swift:SetScriptEventActionActive(_EventID, _ActionID, _Flag)
+    if self.m_ScriptEventActions[_EventID] and self.m_ScriptEventActions[_EventID][_ActionID] then
+        self.m_ScriptEventActions[_EventID][_ActionID][3] = _Flag == true;
+    end
 end
 
 function Swift:DispatchScriptEvent(_ID, ...)
@@ -443,7 +449,7 @@ function Swift:DispatchScriptEvent(_ID, ...)
     -- Dispatch user events
     if self.m_ScriptEventActions[_ID] then
         for k, v in pairs(self.m_ScriptEventActions[_ID]) do
-            if v and v[2] then
+            if v and v[2] and v[3] then
                 v[2](unpack(arg));
             end
         end

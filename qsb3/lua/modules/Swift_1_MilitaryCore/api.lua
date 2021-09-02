@@ -27,7 +27,7 @@
 -- @usage local Limit = API.GetPlayerSoldierLimit(1);
 --
 function API.GetPlayerSoldierLimit(_PlayerID)
-    local CastleID = Logic.GetHeadquarters(PlayerID);
+    local CastleID = Logic.GetHeadquarters(_PlayerID);
     local CastleLevel = 1;
     if CastleID ~= 0 then
         CastleLevel = Logic.GetUpgradeLevel(CastleID) +1;

@@ -186,7 +186,7 @@ function API.OverrideTable()
             k = oldmeta.KeySave;
             if meta == nil then
                 QSB.Metatable.Weak[k] = nil;
-                metatabQSB.Metatablele.Metas[k] = nil;
+                QSB.Metatablele.Metas[k] = nil;
                 return;
             end
         else
@@ -310,27 +310,38 @@ end
 -- Script Events
 
 ---
--- Legt ein neues Script Event an. Dem Event kann optional eine Funktion
--- mitgegeben werden, die ausgeführt werden kann.
+-- Legt ein neues Script Event an.
 --
 -- @param[type=string]   _Name     Identifier des Event
--- @param[type=function] _Function (Optional) Funktionsreferenz
 -- @return[type=number] ID des neuen Script Event
 -- @within Anwenderfunktionen
 --
-function API.RegisterScriptEvent(_Name, _Function)
-    return Swift:CreateScriptEvent(_Name, _Function);
+function API.RegisterScriptEvent(_Name)
+    return Swift:CreateScriptEvent(_Name, nil);
 end
 
 ---
 -- Legt eine neue Reaktion zu einem Skriptevent an.
 --
--- @param[type=string]   ID        ID des Event
+-- @param[type=number]   ID        ID des Event
 -- @param[type=function] _Function Funktionsreferenz
+-- @return[type=number] ID der neuen Reaktion
 -- @within Anwenderfunktionen
 --
 function API.RegisterScriptEventAction(_ID, _Function)
     return Swift:CreateScriptEventAction(_ID, _Function);
+end
+
+---
+-- Deaktiviert oder aktiviert eine Reaktion auf ein Event.
+--
+-- @param[type=number]  _EventID  ID des Event
+-- @param[type=number]  _ActionID ID der Reaktion
+-- @param[type=boolean] _Flag     Inaktiv Flag
+-- @within Anwenderfunktionen
+--
+function API.DisableScriptEventAction(_EventID, _ActionID, _Flag)
+    return Swift:SetScriptEventActionActive(_EventID, _ActionID, not _Flag);
 end
 
 ---
@@ -521,7 +532,8 @@ IsValidQuestName = API.IsValidQuestName;
 -- @within Anwenderfunktionen
 --
 function API.FailQuest(_QuestName, _NoMessage)
-    local Quest = Quests[GetQuestID(_QuestName)];
+    local QuestID = GetQuestID(_QuestName);
+    local Quest = Quests[QuestID];
     if Quest then
         if not _NoMessage then
             Logic.DEBUG_AddNote("fail quest " .._QuestName);
@@ -671,7 +683,8 @@ RestartQuestByName = API.RestartQuest;
 -- @within Anwenderfunktionen
 --
 function API.StartQuest(_QuestName, _NoMessage)
-    local Quest = Quests[GetQuestID(_QuestName)];
+    local QuestID = GetQuestID(_QuestName);
+    local Quest = Quests[QuestID];
     if Quest then
         if not _NoMessage then
             Logic.DEBUG_AddNote("start quest " .._QuestName);
@@ -701,7 +714,8 @@ StartQuestByName = API.StartQuest;
 -- @within Anwenderfunktionen
 --
 function API.StopQuest(_QuestName, _NoMessage)
-    local Quest = Quests[GetQuestID(_QuestName)];
+    local QuestID = GetQuestID(_QuestName);
+    local Quest = Quests[QuestID];
     if Quest then
         if not _NoMessage then
             Logic.DEBUG_AddNote("interrupt quest " .._QuestName);
@@ -729,7 +743,8 @@ StopQuestByName = API.StopQuest;
 -- @within Anwenderfunktionen
 --
 function API.WinQuest(_QuestName, _NoMessage)
-    local Quest = Quests[GetQuestID(_QuestName)];
+    local QuestID = GetQuestID(_QuestName);
+    local Quest = Quests[QuestID];
     if Quest then
         if not _NoMessage then
             Logic.DEBUG_AddNote("win quest " .._QuestName);

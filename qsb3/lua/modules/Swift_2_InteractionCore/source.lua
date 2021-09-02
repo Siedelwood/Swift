@@ -46,10 +46,10 @@ function ModuleInteractionCore.Global:OnGameStart()
     IO_IconTextures = {};
     IO_Conditions = {};
 
-    QSB.ScriptEvents.LegitimateNpcInteraction   = API.RegisterScriptEvent("Event_LegitimateNpcInteraction", nil);
-    QSB.ScriptEvents.WrongHeroNpcInteraction    = API.RegisterScriptEvent("Event_WrongHeroNpcInteraction", nil);
-    QSB.ScriptEvents.InteractiveObjectClicked   = API.RegisterScriptEvent("Event_InteractiveObjectClicked", nil);
-    QSB.ScriptEvents.InteractiveObjectActivated = API.RegisterScriptEvent("Event_InteractiveObjectActivated", nil);
+    QSB.ScriptEvents.LegitimateNpcInteraction   = API.RegisterScriptEvent("Event_LegitimateNpcInteraction");
+    QSB.ScriptEvents.WrongHeroNpcInteraction    = API.RegisterScriptEvent("Event_WrongHeroNpcInteraction");
+    QSB.ScriptEvents.InteractiveObjectClicked   = API.RegisterScriptEvent("Event_InteractiveObjectClicked");
+    QSB.ScriptEvents.InteractiveObjectActivated = API.RegisterScriptEvent("Event_InteractiveObjectActivated");
 
     self:CreateDefaultInteractionLambdas();
     self:StartObjectConditionController();
@@ -229,7 +229,7 @@ function ModuleInteractionCore.Global:OverrideQuestFunctions()
     QuestTemplate.AreObjectsActivated = function(self, _ObjectList)
         for i=1, _ObjectList[0] do
             if not _ObjectList[-i] then
-                _ObjectList[-i] = GetEntityId(_ObjectList[i]);
+                _ObjectList[-i] = GetID(_ObjectList[i]);
             end
             local EntityName = Logic.GetEntityName(_ObjectList[-i]);
             if IO_SlaveToMaster[EntityName] then
@@ -605,10 +605,10 @@ end
 -- Local Script ------------------------------------------------------------- --
 
 function ModuleInteractionCore.Local:OnGameStart()
-    QSB.ScriptEvents.LegitimateNpcInteraction   = API.RegisterScriptEvent("Event_LegitimateNpcInteraction", nil);
-    QSB.ScriptEvents.WrongHeroNpcInteraction    = API.RegisterScriptEvent("Event_WrongHeroNpcInteraction", nil);
-    QSB.ScriptEvents.InteractiveObjectClicked   = API.RegisterScriptEvent("Event_InteractiveObjectClicked", nil);
-    QSB.ScriptEvents.InteractiveObjectActivated = API.RegisterScriptEvent("Event_InteractiveObjectActivated", nil);
+    QSB.ScriptEvents.LegitimateNpcInteraction   = API.RegisterScriptEvent("Event_LegitimateNpcInteraction");
+    QSB.ScriptEvents.WrongHeroNpcInteraction    = API.RegisterScriptEvent("Event_WrongHeroNpcInteraction");
+    QSB.ScriptEvents.InteractiveObjectClicked   = API.RegisterScriptEvent("Event_InteractiveObjectClicked");
+    QSB.ScriptEvents.InteractiveObjectActivated = API.RegisterScriptEvent("Event_InteractiveObjectActivated");
 
     self:ForceFullGlobalReferenceUpdate();
     self:OverrideGameFunctions();
@@ -619,7 +619,7 @@ function ModuleInteractionCore.Local:OverrideGameFunctions()
 
     -- Interface --
 
-    GUI_Interaction.InteractiveObjectClicked_Orig_ModuleInteractionCore = GUI_Interaction.InteractiveObjectClicked
+    GUI_Interaction.InteractiveObjectClicked_Orig_ModuleInteractionCore = GUI_Interaction.InteractiveObjectClicked;
     GUI_Interaction.InteractiveObjectClicked = function()
         local i = tonumber(XGUIEng.GetWidgetNameByID(XGUIEng.GetCurrentWidgetID()));
         local EntityID = g_Interaction.ActiveObjectsOnScreen[i];
@@ -731,12 +731,12 @@ function ModuleInteractionCore.Local:OverrideGameFunctions()
             end
 
             -- Title
-            local Title = IO_Headlines[ScriptName] or "UI_ObjectNames/" ..Key;
+            local Title = IO_Headlines[ScriptName] or ("UI_ObjectNames/" ..Key);
             if Title and Title:find("^[A-Za-z0-9_]+/[A-Za-z0-9_]+$") then
                 Title = XGUIEng.GetStringTableText(Title);
             end
             -- Text
-            local Text = IO_Descriptions[ScriptName] or "UI_ObjectDescription/" ..Key;
+            local Text = IO_Descriptions[ScriptName] or ("UI_ObjectDescription/" ..Key);
             if Text and Text:find("^[A-Za-z0-9_]+/[A-Za-z0-9_]+$") then
                 Text = XGUIEng.GetStringTableText(Text);
             end
@@ -793,7 +793,7 @@ function ModuleInteractionCore.Local:OverrideGameFunctions()
                 QuestTypeCaption = Wrapped_GetStringTableText(_QuestIndex, "UI_Texts/QuestMoveHere");
                 SetIcon(QuestObjectiveContainer .. "/QuestTypeIcon",{7,10});
 
-                local MoverEntityID = GetEntityId(Quest.Objectives[1].Data[2]);
+                local MoverEntityID = GetID(Quest.Objectives[1].Data[2]);
                 local MoverEntityType = Logic.GetEntityType(MoverEntityID);
                 local MoverIcon = g_TexturePositions.Entities[MoverEntityType];
                 if not MoverIcon then
@@ -801,7 +801,7 @@ function ModuleInteractionCore.Local:OverrideGameFunctions()
                 end
                 SetIcon(QuestObjectiveContainer .. "/IconMover", MoverIcon);
 
-                local TargetEntityID = GetEntityId(Quest.Objectives[1].Data[3]);
+                local TargetEntityID = GetID(Quest.Objectives[1].Data[3]);
                 local TargetEntityType = Logic.GetEntityType(TargetEntityID);
                 local TargetIcon = g_TexturePositions.Entities[TargetEntityType];
                 if not TargetIcon then
@@ -836,7 +836,7 @@ function ModuleInteractionCore.Local:OverrideGameFunctions()
                 if Logic.IsEntityDestroyed(Quest.Objectives[1].Data[i]) then
                     ObjectType = g_Interaction.SavedQuestEntityTypes[_QuestIndex][i];
                 else
-                    ObjectType = Logic.GetEntityType(GetEntityId(Quest.Objectives[1].Data[i]));
+                    ObjectType = Logic.GetEntityType(GetID(Quest.Objectives[1].Data[i]));
                 end
                 local ObjectEntityName = Logic.GetEntityName(Quest.Objectives[1].Data[i]);
                 local ObjectName = "";
@@ -881,7 +881,7 @@ function ModuleInteractionCore.Local:OverrideGameFunctions()
 
         if _QuestType == Objective.Distance then
             if _Quest.Objectives[1].Data[1] == -65565 then
-                local Entity = GetEntityId(_Quest.Objectives[1].Data[3]);
+                local Entity = GetID(_Quest.Objectives[1].Data[3]);
                 table.insert(EntityOrTerritoryList, Entity);
             else
                 return GUI_Interaction.GetEntitiesOrTerritoryListForQuest_Orig_ModuleInteractionCore( _Quest, _QuestType );

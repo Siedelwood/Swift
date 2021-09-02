@@ -30,8 +30,8 @@ ModuleTradingCore = {
 -- Global ------------------------------------------------------------------- --
 
 function ModuleTradingCore.Global:OnGameStart()
-    QSB.ScriptEvents.GoodsSold = API.RegisterScriptEvent("Event_GoodsSold", nil);
-    QSB.ScriptEvents.GoodsPurchased = API.RegisterScriptEvent("Event_GoodsPurchased", nil);
+    QSB.ScriptEvents.GoodsSold = API.RegisterScriptEvent("Event_GoodsSold");
+    QSB.ScriptEvents.GoodsPurchased = API.RegisterScriptEvent("Event_GoodsPurchased");
 end
 
 function ModuleTradingCore.Global:SendEventGoodsPurchased(_TraderType, _Good, _P1, _P2, _Amount, _Price)
@@ -45,8 +45,8 @@ end
 -- Local -------------------------------------------------------------------- --
 
 function ModuleTradingCore.Local:OnGameStart()
-    QSB.ScriptEvents.GoodsSold = API.RegisterScriptEvent("Event_GoodsSold", nil);
-    QSB.ScriptEvents.GoodsPurchased = API.RegisterScriptEvent("Event_GoodsPurchased", nil);
+    QSB.ScriptEvents.GoodsSold = API.RegisterScriptEvent("Event_GoodsSold");
+    QSB.ScriptEvents.GoodsPurchased = API.RegisterScriptEvent("Event_GoodsPurchased");
 
     self:OverrideMerchantComputePurchasePrice();
     self:OverrideMerchantComputeSellingPrice();
@@ -93,7 +93,7 @@ function ModuleTradingCore.Local:OverrideMerchantPurchaseOfferClicked()
                 end
             end
         elseif TraderType == g_Merchant.EntertainerTrader then
-            GoodType, OfferGoodAmount, OfferAmount, AmountPrices = Logic.GetEntertainerTraderOffer(storehouse,offers[offerIndex],player);
+            GoodType, OfferGoodAmount, OfferAmount, AmountPrices = Logic.GetEntertainerTraderOffer(BuildingID, OfferIndex, BuildingID);
             if Logic.CanFitAnotherEntertainerOnMarketplace(PlayersMarketPlaceID) == false then
                 CanBeBought = false;
                 local MessageText = XGUIEng.GetStringTableText("Feedback_TextLines/TextLine_MerchantMarketplaceFull");
@@ -124,9 +124,9 @@ function ModuleTradingCore.Local:OverrideMerchantPurchaseOfferClicked()
 
         -- Special sales conditions
         if not ModuleTradingCore.Local.Lambda.PurchaseAllowed[TraderPlayerID] then
-            CanBeBought = ModuleTradingCore.Local.Lambda.PurchaseAllowed[TraderPlayerID](TraderType, GoodType, PlayerID, TargetID, OfferGoodAmount, Price);
+            CanBeBought = ModuleTradingCore.Local.Lambda.PurchaseAllowed[TraderPlayerID](TraderType, GoodType, PlayerID, TraderPlayerID, OfferGoodAmount, AmountPrices);
         else
-            CanBeBought = ModuleTradingCore.Local.Lambda.PurchaseAllowed.Default(TraderType, GoodType, PlayerID, TargetID, OfferGoodAmount, Price);
+            CanBeBought = ModuleTradingCore.Local.Lambda.PurchaseAllowed.Default(TraderType, GoodType, PlayerID, TraderPlayerID, OfferGoodAmount, AmountPrices);
         end
         if not CanBeBought then
             local MessageText = XGUIEng.GetStringTableText("Feedback_TextLines/TextLine_GenericNotReadyYet");
@@ -162,13 +162,13 @@ function ModuleTradingCore.Local:OverrideMerchantPurchaseOfferClicked()
                     StartKnightVoiceForPermanentSpecialAbility(Entities.U_KnightTrading);
                 end
 
-                API.SendScriptEvent(QSB.ScriptEvents.GoodsBought, TraderType, GoodType, PlayerID, TargetID, OfferGoodAmount, Price);
+                API.SendScriptEvent(QSB.ScriptEvents.GoodsBought, TraderType, GoodType, PlayerID, TraderPlayerID, OfferGoodAmount, Price);
                 GUI.SendScriptCommand(string.format(
                     "ModuleTradingCore.Global:SendEventGoodsPurchased(%d, %d, %d, %d, %d, %d)",
                     TraderType,
                     GoodType,
                     PlayerID,
-                    TargetID,
+                    TraderPlayerID,
                     OfferGoodAmount,
                     Price
                 ));
@@ -338,7 +338,7 @@ function ModuleTradingCore.Local:OverrideMerchantComputeSellingPrice()
         local BasePrice = MerchantSystem.BasePrices[_GoodType];
         return (BasePrice == nil and 3) or BasePrice;
     end
-    self.Lambda.SaleBasePrice.Default = PriceLambda;
+    self.Lambda.SaleBasePrice.Default = BasePriceLambda;
 
     -- Override max deflation
     local DeflationLambda = function(_Price, _PlayerID, _TargetPlayerID)
@@ -366,6 +366,7 @@ function ModuleTradingCore.Local:OverrideMerchantComputeSellingPrice()
         and g_Trade.SellToPlayers[_TargetPlayerID][_GoodType] ~= nil then
             GoodsSoldToTargetPlayer = g_Trade.SellToPlayers[_TargetPlayerID][_GoodType];
         end
+        local Modifier = math.ceil(BasePrice / 4);
 
         -- Calculate the max deflation
         local MaxToSubstract

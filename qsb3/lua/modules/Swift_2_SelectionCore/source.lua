@@ -85,7 +85,7 @@ ModuleSelectionCore = {
 -- Global ------------------------------------------------------------------- --
 
 function ModuleSelectionCore.Global:OnGameStart()
-    QSB.ScriptEvents.SelectionChanged = Swift:CreateScriptEvent("Event_SelectionChanged", nil);
+    QSB.ScriptEvents.SelectionChanged = API.RegisterScriptEvent("Event_SelectionChanged");
 end
 
 function ModuleSelectionCore.Global:OnEvent(_ID, _Event, _PlayerID, _OldSelection, _NewSelection)
@@ -166,7 +166,7 @@ end
 -- Local -------------------------------------------------------------------- --
 
 function ModuleSelectionCore.Local:OnGameStart()
-    QSB.ScriptEvents.SelectionChanged = Swift:CreateScriptEvent("Event_SelectionChanged", nil);
+    QSB.ScriptEvents.SelectionChanged = API.RegisterScriptEvent("Event_SelectionChanged");
 
     self:OverrideSelection();
     self:OverwriteMilitaryCommands();
@@ -399,9 +399,11 @@ function ModuleSelectionCore.Local:OverwriteMultiselectIcon()
         end
         if EntityType == Entities.U_SiegeEngineCart then
             local TooltipData = API.Localize(ModuleSelectionCore.Local.Tooltips.TrebuchetCart);
+            ---@diagnostic disable-next-line: undefined-field
             API.InterfaceSetTooltipNormal(TooltipData.Title, TooltipData.Text);
         elseif EntityType == Entities.U_Trebuchet then
             local TooltipData = API.Localize(ModuleSelectionCore.Local.Tooltips.Trebuchet);
+            ---@diagnostic disable-next-line: undefined-field
             API.InterfaceSetTooltipNormal(TooltipData.Title, TooltipData.Text);
         end
     end
@@ -518,6 +520,7 @@ function ModuleSelectionCore.Local:OverwriteThiefDeliver()
             return;
         end
         local Text = API.Localize(ModuleSelectionCore.Local.Tooltips.ReleaseSoldiers);
+        ---@diagnostic disable-next-line: undefined-field
         API.InterfaceSetTooltipNormal(Text.Title, Text.Text, Text.Disabled);
     end
 
@@ -680,12 +683,14 @@ function ModuleSelectionCore.Local:OverwriteNamesAndDescription()
 
         if XGUIEng.GetWidgetID(MotherWidget.. "/MapFrame/KnightButton") == CurrentWidgetID then
             local Text = API.Localize(ModuleSelectionCore.Local.Tooltips.KnightButton);
+            ---@diagnostic disable-next-line: undefined-field
             API.InterfaceSetTooltipNormal(Text.Title, Text.Text);
             return;
         end
 
         if XGUIEng.GetWidgetID(MotherWidget.. "/MapFrame/BattalionButton") == CurrentWidgetID then
             local Text = API.Localize(ModuleSelectionCore.Local.Tooltips.BattalionButton);
+            ---@diagnostic disable-next-line: undefined-field
             API.InterfaceSetTooltipNormal(Text.Title, Text.Text);
             return;
         end
@@ -701,6 +706,7 @@ function ModuleSelectionCore.Local:OverwriteNamesAndDescription()
                     local GuardedEntity = Logic.GetGuardedEntityID(SelectedEntity);
                     if GuardianEntity == 0 and GuardedEntity == 0 then
                         local Text = API.Localize(ModuleSelectionCore.Local.Tooltips.ReleaseSoldiers);
+                        ---@diagnostic disable-next-line: undefined-field
                         API.InterfaceSetTooltipNormal(Text.Title, Text.Text, Text.Disabled);
                         return;
                     end

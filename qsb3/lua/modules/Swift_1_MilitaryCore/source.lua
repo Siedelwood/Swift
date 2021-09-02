@@ -15,15 +15,22 @@ ModuleMilitaryCore = {
     Shared = {
         Event = {},
         SoldierLimits = {},
-    };
+    },
+
+    Text = {
+        DestroySoldiers = {
+            de = "{center}SOLDATEN ZERSTÖREN {cr}{cr}von der Partei: %s{cr}{cr}Anzahl: %d",
+            en = "{center}DESTROY SOLDIERS {cr}{cr}from faction: %s{cr}{cr}Amount: %d",
+        },
+    }
 };
 
 -- -------------------------------------------------------------------------- --
 
 function ModuleMilitaryCore.Global:OnGameStart()
-    QSB.ScriptEvents.ProducedThief = API.RegisterScriptEvent("Event_ProducedThief", nil);
-    QSB.ScriptEvents.ProducedBattalion = API.RegisterScriptEvent("Event_ProducedBattalion", nil);
-    QSB.ScriptEvents.RefilledBattalion = API.RegisterScriptEvent("Event_RefilledBattalion", nil);
+    QSB.ScriptEvents.ProducedThief = API.RegisterScriptEvent("Event_ProducedThief");
+    QSB.ScriptEvents.ProducedBattalion = API.RegisterScriptEvent("Event_ProducedBattalion");
+    QSB.ScriptEvents.RefilledBattalion = API.RegisterScriptEvent("Event_RefilledBattalion");
 
     ModuleMilitaryCore.Shared:InitLimits();
 end
@@ -127,9 +134,9 @@ end
 -- -------------------------------------------------------------------------- --
 
 function ModuleMilitaryCore.Local:OnGameStart()
-    QSB.ScriptEvents.ProducedThief = API.RegisterScriptEvent("Event_ProducedThief", nil);
-    QSB.ScriptEvents.ProducedBattalion = API.RegisterScriptEvent("Event_ProducedBattalion", nil);
-    QSB.ScriptEvents.RefilledBattalion = API.RegisterScriptEvent("Event_RefilledBattalion", nil);
+    QSB.ScriptEvents.ProducedThief = API.RegisterScriptEvent("Event_ProducedThief");
+    QSB.ScriptEvents.ProducedBattalion = API.RegisterScriptEvent("Event_ProducedBattalion");
+    QSB.ScriptEvents.RefilledBattalion = API.RegisterScriptEvent("Event_RefilledBattalion");
 
     ModuleMilitaryCore.Shared:InitLimits();
     self:OverrideUI();

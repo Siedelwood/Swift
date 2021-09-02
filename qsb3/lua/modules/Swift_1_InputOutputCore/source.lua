@@ -53,8 +53,8 @@ function ModuleInputOutputCore.Global:OnGameStart()
     Swift.GetTextOfDesiredLanguage = function(self, _Table)
         return ModuleInputOutputCore.Shared:Localize(_Table);
     end
-    QSB.ScriptEvents.ChatOpened = Swift:CreateScriptEvent("Event_ChatOpened", nil);
-    QSB.ScriptEvents.ChatClosed = Swift:CreateScriptEvent("Event_ChatClosed", nil);
+    QSB.ScriptEvents.ChatOpened = API.RegisterScriptEvent("Event_ChatOpened");
+    QSB.ScriptEvents.ChatClosed = API.RegisterScriptEvent("Event_ChatClosed");
     API.AddSaveGameAction(function ()
         Logic.ExecuteInLuaLocalState("ModuleInputOutputCore.Local.DialogAltF4Hotkey()");
     end);
@@ -86,6 +86,8 @@ function ModuleInputOutputCore.Local:OnGameStart()
     Swift.GetTextOfDesiredLanguage = function(self, _Table)
         return ModuleInputOutputCore.Shared:Localize(_Table);
     end
+    QSB.ScriptEvents.ChatOpened = API.RegisterScriptEvent("Event_ChatOpened");
+    QSB.ScriptEvents.ChatClosed = API.RegisterScriptEvent("Event_ChatClosed");
     self:OverrideDebugInput();
     self:DialogOverwriteOriginal();
     self:DialogAltF4Hotkey();
@@ -381,7 +383,7 @@ function ModuleInputOutputCore.Shared:Note(_Text)
     if Swift:IsGlobalEnvironment() then
         Logic.DEBUG_AddNote(_Text);
     else
-        GUI.AddNote(_text);
+        GUI.AddNote(_Text);
     end
 end
 
@@ -391,7 +393,7 @@ function ModuleInputOutputCore.Shared:StaticNote(_Text)
         Logic.ExecuteInLuaLocalState(string.format([[GUI.AddStaticNote("%s")]], _Text));
         return;
     end
-    GUI.AddStaticNote(_text);
+    GUI.AddStaticNote(_Text);
 end
 
 function ModuleInputOutputCore.Shared:Message(_Text)
