@@ -79,6 +79,48 @@ function Mission_FirstMapAction()
     API.ActivateDebugMode(true, false, true, true);
 end
 
+function CreateTestNPCQuest()
+    AddQuest {
+        Name        = "TestNpcQuest1",
+        Suggestion  = "Speak to this npc.",
+        Success     = "You done well!",
+        Receiver    = 1,
+
+        Goal_NPC("npc1", "-"),
+        Trigger_Time(0),
+    }
+
+    AddQuest {
+        Name        = "TestNpcQuest2",
+        Suggestion  = "Speak to this npc.",
+        Success     = "You done well!",
+        Receiver    = 2,
+
+        Goal_NPC("npc2", "-"),
+        Trigger_Time(0),
+    }
+end
+
+function CreateTestNPCs()
+    -- Player 1 can speak to this npc.
+    API.NpcCompose {
+        Name     = "npc1",
+        PlayerID = 1,
+        Callback = function(_Npc, _Hero)
+            API.Note("It work's!");
+        end,
+    }
+
+    -- Player 1 isn't allowed to speak to this npc.
+    API.NpcCompose {
+        Name     = "npc2",
+        PlayerID = 2,
+        Callback = function(_Npc, _Hero)
+            API.Note("It does not work!");
+        end,
+    }
+end
+
 function CreateTestObject()
     CreateObject {
         Name     = "IO1",

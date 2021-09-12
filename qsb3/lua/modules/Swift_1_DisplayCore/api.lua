@@ -73,11 +73,6 @@ end
 -- @within Anwenderfunktionen
 --
 function API.ActivateCinematicState()
-    if GUI then
-        GUI.SendScriptCommand("ModuleDisplayCore.Shared.CinematicState = true");
-        ModuleDisplayCore.Shared.CinematicState = true;
-        return;
-    end
     Logic.ExecuteInLuaLocalState("ModuleDisplayCore.Shared.CinematicState = true");
     ModuleDisplayCore.Shared.CinematicState = true;
 end
@@ -89,11 +84,6 @@ end
 -- @within Anwenderfunktionen
 --
 function API.DeactivateCinematicState()
-    if GUI then
-        GUI.SendScriptCommand("ModuleDisplayCore.Shared.CinematicState = false");
-        ModuleDisplayCore.Shared.CinematicState = false;
-        return;
-    end
     Logic.ExecuteInLuaLocalState("ModuleDisplayCore.Shared.CinematicState = false");
     ModuleDisplayCore.Shared.CinematicState = false;
 end

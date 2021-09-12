@@ -88,7 +88,7 @@ b_Goal_NPC = {
     },
 }
 
-function b_Goal_NPC:GetGoalTable(_Quest)
+function b_Goal_NPC:GetGoalTable()
     return {Objective.Distance, -65565, self.Hero, self.NPC, self}
 end
 

@@ -177,10 +177,16 @@ function API.InterfaceSetPlayerName(_playerID,_name)
     assert(type(_playerID) == "number");
     assert(type(_name) == "string");
     if not GUI then
-        Logic.ExecuteInLuaLocalState("SetPlayerName(".._playerID..",'".._name.."')");
-    else
-        GUI_MissionStatistic.PlayerNames[_playerID] = _name;
-        GUI.SendScriptCommand("QSB.PlayerNames[".._playerID.."] = '".._name.."'");
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[
+                GUI_MissionStatistic.PlayerNames[%d] = "%s"
+                QSB.PlayerNames[%d] = "%s"
+            ]],
+            _playerID,
+            _name,
+            _playerID,
+            _name
+        ));
     end
     QSB.PlayerNames[_playerID] = _name;
 end

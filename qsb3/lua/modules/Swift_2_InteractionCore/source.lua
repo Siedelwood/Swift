@@ -11,7 +11,7 @@ ModuleInteractionCore = {
         SlaveSequence = 0,
         LastNpcEntityID = 0,
         LastHeroEntityID = 0,
-        DefaultNpcType = 1,
+        DefaultNpcType = 0,
         UseRepositionByDefault = true,
 
         Lambda = {
@@ -47,7 +47,7 @@ function ModuleInteractionCore.Global:OnGameStart()
     IO_Conditions = {};
 
     QSB.ScriptEvents.LegitimateNpcInteraction   = API.RegisterScriptEvent("Event_LegitimateNpcInteraction");
-    QSB.ScriptEvents.WrongHeroNpcInteraction    = API.RegisterScriptEvent("Event_WrongHeroNpcInteraction");
+    QSB.ScriptEvents.WrongPartnerNpcInteraction = API.RegisterScriptEvent("Event_WrongPartnerNpcInteraction");
     QSB.ScriptEvents.InteractiveObjectClicked   = API.RegisterScriptEvent("Event_InteractiveObjectClicked");
     QSB.ScriptEvents.InteractiveObjectActivated = API.RegisterScriptEvent("Event_InteractiveObjectActivated");
 
@@ -207,16 +207,21 @@ function ModuleInteractionCore.Global:OverrideQuestFunctions()
                     objective.Completed = false;
                 else
                     if not data[4].NpcInstance then
-                        local NPC = QSB.NonPlayerCharacter:New(data[3]);
-                        NPC:SetDialogPartner(data[2]);
+                        local NPC = API.NpcCompose {
+                            Name     = data[3],
+                            Hero     = data[2],
+                            PlayerID = self.ReceivingPlayer,
+                            Callback = function(_Npc, _Hero)
+                            end,
+                        }
                         data[4].NpcInstance = NPC;
                     end
-                    if data[4].NpcInstance:HasTalkedTo(data[2]) then
+                    if API.NpcHasSpoken(data[3]) then
                         objective.Completed = true;
                     end
                     if not objective.Completed then
-                        if not data[4].NpcInstance:IsActive() then
-                            data[4].NpcInstance:Activate();
+                        if not API.NpcIsActive(data[3]) then
+                            API.NpcActivate(data[3]);
                         end
                     end
                 end
@@ -288,13 +293,17 @@ end
 
 function ModuleInteractionCore.Global:ExecuteNpcInteraction()
     local HeroID = ModuleInteractionCore.Global.LastHeroEntityID;
+    local HeroPlayerID = Logic.EntityGetPlayer(HeroID);
     local NpcID = ModuleInteractionCore.Global.LastNpcEntityID;
 
     local NPC = QSB.NonPlayerCharacter:GetInstance(NpcID);
     if NPC then
         NPC:RotateActors();
         NPC:RepositionHero();
-        NPC.m_TalkedTo = HeroID;
+        
+        if (NPC.m_PlayerID == nil or NPC.m_PlayerID == HeroPlayerID) then
+            NPC.m_TalkedTo = HeroID;
+        end
         if NPC:HasTalkedTo() then
             NPC:Deactivate();
             if NPC.m_Callback then
@@ -308,22 +317,18 @@ function ModuleInteractionCore.Global:ExecuteNpcInteraction()
                 HeroID
             ));
         else
-            if NPC.m_WrongHeroCallback then
-                NPC.m_WrongHeroCallback(NPC, HeroID);
+            if NPC.m_WrongPartnerCallback then
+                NPC.m_WrongPartnerCallback(NPC, HeroID);
             end
 
-            API.SendScriptEvent(QSB.ScriptEvents.WrongHeroNpcInteraction, NpcID, HeroID);
+            API.SendScriptEvent(QSB.ScriptEvents.WrongPartnerNpcInteraction, NpcID, HeroID);
             Logic.ExecuteInLuaLocalState(string.format(
-                [[API.SendScriptEvent(QSB.ScriptEvents.WrongHeroNpcInteraction, %d, %d)]],
+                [[API.SendScriptEvent(QSB.ScriptEvents.WrongPartnerNpcInteraction, %d, %d)]],
                 NpcID,
                 HeroID
             ));
         end
     end
-end
-
-function ModuleInteractionCore.Global:GetControllingPlayer()
-    return QSB.HumanPlayerID;
 end
 
 function ModuleInteractionCore.Global:ControlMarker()
@@ -336,20 +341,21 @@ end
 ModuleInteractionCore_ControlMarkerJob = ModuleInteractionCore.Global.ControlMarker;
 
 function ModuleInteractionCore.Global:DialogTriggerController()
-    local PlayerID = ModuleInteractionCore.Global:GetControllingPlayer();
-    local PlayersKnights = {};
-    Logic.GetKnights(PlayerID, PlayersKnights);
-    for i= 1, #PlayersKnights, 1 do
-        if Logic.GetCurrentTaskList(PlayersKnights[i]) == "TL_NPC_INTERACTION" then
-            for k, v in pairs(QSB.NonPlayerCharacterObjects) do
-                if v and v.m_TalkedTo == nil and v.m_Distance >= 350 then
-                    local x1 = math.floor(API.GetFloat(PlayersKnights[i], QSB.ScriptingValue.Destination.X));
-                    local y1 = math.floor(API.GetFloat(PlayersKnights[i], QSB.ScriptingValue.Destination.Y));
-                    local x2, y2 = Logic.EntityGetPos(GetID(k));
-                    if x1 == math.floor(x2) and y1 == math.floor(y2) then
-                        if IsExisting(k) and IsNear(PlayersKnights[i], k, v.m_Distance) then
-                            GameCallback_OnNPCInteraction(GetID(k), PlayerID);
-                            return;
+    for PlayerID = 1, 8, 1 do
+        local PlayersKnights = {};
+        Logic.GetKnights(PlayerID, PlayersKnights);
+        for i= 1, #PlayersKnights, 1 do
+            if Logic.GetCurrentTaskList(PlayersKnights[i]) == "TL_NPC_INTERACTION" then
+                for k, v in pairs(QSB.NonPlayerCharacterObjects) do
+                    if v and v.m_TalkedTo == nil and v.m_Distance >= 350 then
+                        local x1 = math.floor(API.GetFloat(PlayersKnights[i], QSB.ScriptingValue.Destination.X));
+                        local y1 = math.floor(API.GetFloat(PlayersKnights[i], QSB.ScriptingValue.Destination.Y));
+                        local x2, y2 = Logic.EntityGetPos(GetID(k));
+                        if x1 == math.floor(x2) and y1 == math.floor(y2) then
+                            if IsExisting(k) and IsNear(PlayersKnights[i], k, v.m_Distance) then
+                                GameCallback_OnNPCInteraction(GetID(k), PlayerID);
+                                return;
+                            end
                         end
                     end
                 end
@@ -357,7 +363,6 @@ function ModuleInteractionCore.Global:DialogTriggerController()
         end
     end
 end
-ModuleInteractionCore_DialogTriggerJob = ModuleInteractionCore.Global.DialogTriggerController;
 
 -- -------------------------------------------------------------------------- --
 
@@ -537,10 +542,7 @@ function ModuleInteractionCore.Global:GetObjectDefaultKeys(_Data)
     if Logic.InteractiveObjectGetAvailability(ObjectID) == false then
         Key = "InteractiveObjectNotAvailable";
     end
-    local DisabledKey;
-    if Logic.InteractiveObjectHasPlayerEnoughSpaceForRewards(ObjectID, QSB.HumanPlayerID) == false then
-        DisabledKey = "InteractiveObjectAvailableReward";
-    end
+    local DisabledKey = "InteractiveObjectAvailableReward";
     return Key, DisabledKey;
 end
 
@@ -553,14 +555,14 @@ function ModuleInteractionCore.Global:StartObjectConditionController()
                 if ModuleInteractionCore.Global.Lambda.IO.ObjectCondition[k] then
                     ConditionLambda = ModuleInteractionCore.Global.Lambda.IO.ObjectCondition[k];
                 end
-                IO_Conditions[k] = ConditionLambda(k, GetID((v.m_Slave and v.m_Slave) or k), QSB.HumanPlayerID);
+                IO_Conditions[k] = ConditionLambda(v);
 
                 -- Title
                 local TitleLambda = ModuleInteractionCore.Global.Lambda.IO.ObjectHeadline.Default;
                 if ModuleInteractionCore.Global.Lambda.IO.ObjectHeadline[k] then
                     TitleLambda = ModuleInteractionCore.Global.Lambda.IO.ObjectHeadline[k];
                 end
-                local Title = TitleLambda(k, GetID((v.m_Slave and v.m_Slave) or k), QSB.HumanPlayerID);
+                local Title = TitleLambda(v);
                 if type(Title) == "table" then
                     Title = API.ConvertPlaceholders(API.Localize(Title));
                 end
@@ -571,7 +573,7 @@ function ModuleInteractionCore.Global:StartObjectConditionController()
                 if ModuleInteractionCore.Global.Lambda.IO.ObjectDescription[k] then
                     TextLambda = ModuleInteractionCore.Global.Lambda.IO.ObjectDescription[k];
                 end
-                local Text = TextLambda(k, GetID((v.m_Slave and v.m_Slave) or k), QSB.HumanPlayerID);
+                local Text = TextLambda(v);
                 if type(Text) == "table" then
                     Text = API.ConvertPlaceholders(API.Localize(Text));
                 end
@@ -582,7 +584,7 @@ function ModuleInteractionCore.Global:StartObjectConditionController()
                 if ModuleInteractionCore.Global.Lambda.IO.ObjectDisabledText[k] then
                     DisabledLambda = ModuleInteractionCore.Global.Lambda.IO.ObjectDisabledText[k];
                 end
-                local Disabled = DisabledLambda(k, GetID((v.m_Slave and v.m_Slave) or k), QSB.HumanPlayerID);
+                local Disabled = DisabledLambda(v);
                 if type(Disabled) == "table" then
                     Disabled = API.ConvertPlaceholders(API.Localize(Disabled));
                 end
@@ -593,7 +595,7 @@ function ModuleInteractionCore.Global:StartObjectConditionController()
                 if ModuleInteractionCore.Global.Lambda.IO.ObjectIconTexture[k] then
                     IconLambda = ModuleInteractionCore.Global.Lambda.IO.ObjectIconTexture[k];
                 end
-                IO_IconTextures[k] = IconLambda(k, GetID((v.m_Slave and v.m_Slave) or k), QSB.HumanPlayerID);
+                IO_IconTextures[k] = IconLambda(v);
             end
         end
 
@@ -606,7 +608,7 @@ end
 
 function ModuleInteractionCore.Local:OnGameStart()
     QSB.ScriptEvents.LegitimateNpcInteraction   = API.RegisterScriptEvent("Event_LegitimateNpcInteraction");
-    QSB.ScriptEvents.WrongHeroNpcInteraction    = API.RegisterScriptEvent("Event_WrongHeroNpcInteraction");
+    QSB.ScriptEvents.WrongPartnerNpcInteraction = API.RegisterScriptEvent("Event_WrongPartnerNpcInteraction");
     QSB.ScriptEvents.InteractiveObjectClicked   = API.RegisterScriptEvent("Event_InteractiveObjectClicked");
     QSB.ScriptEvents.InteractiveObjectActivated = API.RegisterScriptEvent("Event_InteractiveObjectActivated");
 
@@ -932,7 +934,7 @@ function QSB.NonPlayerCharacter:New(_ScriptName)
     assert(self == QSB.NonPlayerCharacter, 'Can not be used from instance!');
     local npc = table.copy(self);
     npc.m_NpcName  = _ScriptName;
-    npc.m_NpcType  = BundleNonPlayerCharacter.Global.DefaultNpcType
+    npc.m_NpcType  = ModuleInteractionCore.Global.DefaultNpcType
     npc.m_Distance = 350;
     if Logic.IsKnight(GetID(_ScriptName)) then
         npc.m_Distance = 400;
@@ -978,7 +980,7 @@ end
 --
 function QSB.NonPlayerCharacter:GetNpcId()
     assert(self == QSB.NonPlayerCharacter, 'Can not be used from instance!');
-    return BundleNonPlayerCharacter.Global.LastNpcEntityID;
+    return ModuleInteractionCore.Global.LastNpcEntityID;
 end
 
 ---
@@ -991,7 +993,7 @@ end
 --
 function QSB.NonPlayerCharacter:GetHeroId()
     assert(self == QSB.NonPlayerCharacter, 'Can not be used from instance!');
-    return BundleNonPlayerCharacter.Global.LastHeroEntityID;
+    return ModuleInteractionCore.Global.LastHeroEntityID;
 end
 
 ---
@@ -1044,7 +1046,9 @@ function QSB.NonPlayerCharacter:Activate(_Type)
     assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
     if IsExisting(self.m_NpcName) then
         Logic.SetOnScreenInformation(self:GetID(), _Type or self.m_NpcType);
-        self:ShowMarker();
+        if self.m_NpcType == ModuleInteractionCore.Global.DefaultNpcType then
+            self:ShowMarker();
+        end
     end
     return self;
 end
@@ -1165,6 +1169,20 @@ function QSB.NonPlayerCharacter:SetDialogPartner(_HeroName)
 end
 
 ---
+-- Setzt den Spieler, dem erlaubt ist mit dem NPC zu sprechen.
+--
+-- @param[type=string] _PlayerID ID des Spielers
+-- @return[type=table] self
+-- @within QSB.NonPlayerCharacter
+-- @local
+--
+function QSB.NonPlayerCharacter:SetDialogPartnerPlayer(_PlayerID)
+    assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
+    self.m_PlayerID = _PlayerID;
+    return self;
+end
+
+---
 -- Setzt das Callback für den Fall, dass ein falscher Held den
 -- NPC anspricht.
 --
@@ -1175,7 +1193,7 @@ end
 --
 function QSB.NonPlayerCharacter:SetWrongPartnerCallback(_Callback)
     assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
-    self.m_WrongHeroCallback = _Callback;
+    self.m_WrongPartnerCallback = _Callback;
     return self;
 end
 
@@ -1206,7 +1224,7 @@ function QSB.NonPlayerCharacter:RotateActors()
     if self.m_RepositionOnAction == false then
         return;
     end
-    local PlayerID = Logic.EntityGetPlayer(BundleNonPlayerCharacter.Global.LastHeroEntityID);
+    local PlayerID = Logic.EntityGetPlayer(ModuleInteractionCore.Global.LastHeroEntityID);
     local PlayerKnights = {};
     Logic.GetKnights(PlayerID, PlayerKnights);
     for k, v in pairs(PlayerKnights) do
@@ -1220,7 +1238,7 @@ function QSB.NonPlayerCharacter:RotateActors()
             LookAt(v, self.m_NpcName);
         end
     end
-    API.Confront(self.m_NpcName, BundleNonPlayerCharacter.Global.LastHeroEntityID)
+    API.Confront(self.m_NpcName, ModuleInteractionCore.Global.LastHeroEntityID)
 end
 
 ---
@@ -1239,7 +1257,7 @@ function QSB.NonPlayerCharacter:RepositionHero()
     if self.m_RepositionOnAction == false then
         return;
     end
-    local HeroID = BundleNonPlayerCharacter.Global.LastHeroEntityID;
+    local HeroID = ModuleInteractionCore.Global.LastHeroEntityID;
     local NPCID  = GetID(self.m_NpcName);
     if GetDistance(HeroID, NPCID) < self.m_Distance -50 then
         -- Position des NPC bestimmen
@@ -1347,7 +1365,7 @@ end
 --
 function QSB.NonPlayerCharacter:ControlMarker()
     -- Nur, wenn Standard-NPC
-    if self.m_NpcType == 1 then
+    if self.m_NpcType == ModuleInteractionCore.Global.DefaultNpcType then
         if self:IsActive() and not self:HasTalkedTo() then
             -- Blinken
             if self:IsMarkerVisible() then
@@ -1367,6 +1385,8 @@ function QSB.NonPlayerCharacter:ControlMarker()
         if IsBriefingActive and IsBriefingActive() then
             self:HideMarker();
         end
+    else
+        self:HideMarker();
     end
 end
 

@@ -9,7 +9,7 @@ QSB = QSB or {};
 
 QSB.Version = "Version 3.0.0 XX/XX/20XX ALPHA";
 QSB.Language = "de";
-QSB.HumanPlayerID = -1;
+QSB.HumanPlayerID = 1;
 QSB.ScriptEvents = {};
 QSB.CustomVariable = {};
 
@@ -41,7 +41,7 @@ Swift = {
     m_Language                  = "de";
     m_Environment               = "global";
     m_HistoryEdition            = false;
-    m_LogLevel                  = 4;
+    m_LogLevel                  = 2;
 };
 
 function Swift:LoadCore()
@@ -273,17 +273,21 @@ LOG_LEVEL_WARNING = 2;
 LOG_LEVEL_ERROR   = 1;
 LOG_LEVEL_OFF     = 0;
 
-function Swift:Log(_Text, _Verbose)
+function Swift:Log(_Text, _Level, _Verbose)
     Framework.WriteToLog(_Text);
     if _Verbose then
         if self:IsGlobalEnvironment() then
-            Logic.ExecuteInLuaLocalState(string.format(
-                [[GUI.AddStaticNote("%s")]],
-                _Text
-            ));
+            if Swift.m_LogLevel >= _Level then
+                Logic.ExecuteInLuaLocalState(string.format(
+                    [[GUI.AddStaticNote("%s")]],
+                    _Text
+                ));
+            end
             return;
         end
-        GUI.AddStaticNote(_Text);
+        if Swift.m_LogLevel >= _Level then
+            GUI.AddStaticNote(_Text);
+        end
     end
 end
 
@@ -298,24 +302,16 @@ function Swift:SetLogLevel(_Level)
 end
 
 function debug(_Text, _Silent)
-    if Swift.m_LogLevel >= 4 then
-        Swift:Log("DEBUG: " .._Text, not _Silent);
-    end
+    Swift:Log("DEBUG: " .._Text, LOG_LEVEL_ALL, not _Silent);
 end
 function info(_Text, _Silent)
-    if Swift.m_LogLevel >= 3 then
-        Swift:Log("INFO: " .._Text, not _Silent);
-    end
+    Swift:Log("INFO: " .._Text, LOG_LEVEL_INFO, not _Silent);
 end
 function warn(_Text, _Silent)
-    if Swift.m_LogLevel >= 2 then
-        Swift:Log("WARNING: " .._Text, not _Silent);
-    end
+    Swift:Log("WARNING: " .._Text, LOG_LEVEL_WARNING, not _Silent);
 end
 function error(_Text, _Silent)
-    if Swift.m_LogLevel >= 1 then
-        Swift:Log("ERROR: " .._Text, not _Silent);
-    end
+    Swift:Log("ERROR: " .._Text, LOG_LEVEL_ERROR, not _Silent);
 end
 
 -- Lua base functions

@@ -54,8 +54,8 @@
 -- <td>Skriptname eines Helden, mit dem der NPC sprechen will.</td>
 -- </tr>
 -- <tr>
--- <td>WrongHeroMessage</td>
--- <td>Eine optionale Nachricht, wenn der falsche Held angesprochen wird.</td>
+-- <td>WrongPartnerMessage</td>
+-- <td>Eine optionale Nachricht, wenn ein Held oder der Spieler den NPC nicht ansprechen kann.</td>
 -- </tr>
 -- <tr>
 -- <td>Callback</td>
@@ -84,13 +84,14 @@
 --
 function API.NpcCompose(_Data)
     local WronHeroCallback = function(_Npc)
-        if _Npc.WrongHeroMessage then
-            API.Note(_Npc.WrongHeroMessage);
+        if _Npc.WrongPartnerMessage then
+            API.Note(_Npc.WrongPartnerMessage);
         end
     end
 
     local NPC = QSB.NonPlayerCharacter:New(_Data.Name);
     NPC:SetDialogPartner(_Data.Hero);
+    NPC:SetDialogPartnerPlayer(_Data.PlayerID);
     NPC:SetWrongPartnerCallback(WronHeroCallback);
     NPC:SetCallback(_Data.Callback);
     NPC:SetType(_Data.Type or 1);
@@ -145,6 +146,27 @@ function API.NpcActivate(_Entity)
     NPC:Activate();
 end
 EnableNPC = API.NpcActivate;
+
+---
+-- Prüft, ob das Entity als NPC aktiv ist.
+--
+-- <p><b>Alias:</b> NpcIsActive</P>
+--
+-- @param _Entity Nichtspieler-Charakter (Skriptname oder ID)
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- if API.NpcIsActive("horst") then
+--
+function API.NpcIsActive(_Entity)
+    local ScriptName = Logic.GetEntityName(GetID(_Entity));
+    local NPC = QSB.NonPlayerCharacter:GetInstance(ScriptName);
+    return NPC and NPC:IsActive();
+end
+NpcIsActive = API.NpcIsActive;
+
+
+-- NpcInstance:IsActive()
 
 ---
 -- Deaktiviert einen NPC, sodass dieser nicht angesprochen werden kann.

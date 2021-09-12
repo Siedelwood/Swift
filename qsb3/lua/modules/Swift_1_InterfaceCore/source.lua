@@ -13,6 +13,8 @@ ModuleInterfaceCore = {
     Shared = {};
 }
 
+QSB.PlayerNames = {};
+
 -- Global ------------------------------------------------------------------- --
 
 function ModuleInterfaceCore.Global:OnGameStart()

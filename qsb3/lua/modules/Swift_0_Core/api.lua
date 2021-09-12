@@ -802,3 +802,80 @@ function API.ReplaceEntity(_Entity, _Type, _NewOwner)
     end
 end
 ReplaceEntity = API.ReplaceEntity;
+
+---
+-- Rotiert ein Entity, sodass es zum Ziel schaut.
+--
+-- <p><b>Alias:</b> LookAt</p>
+--
+-- @param _entity         Entity (Skriptname oder ID)
+-- @param _entityToLookAt Ziel (Skriptname oder ID)
+-- @param[type=number]    _offsetEntity Winkel Offset
+-- @within Anwenderfunktionen
+-- @usage API.LookAt("Hakim", "Alandra")
+--
+function API.LookAt(_entity, _entityToLookAt, _offsetEntity)
+    local entity = GetEntityId(_entity);
+    local entityTLA = GetEntityId(_entityToLookAt);
+    if not IsExisting(entity) or not IsExisting(entityTLA) then
+        warn("API.LookAt: One entity is invalid or dead!");
+        return;
+    end
+    local eX, eY = Logic.GetEntityPosition(entity);
+    local eTLAX, eTLAY = Logic.GetEntityPosition(entityTLA);
+    local orientation = math.deg( math.atan2( (eTLAY - eY) , (eTLAX - eX) ) );
+    if Logic.IsBuilding(entity) == 1 then
+        orientation = orientation - 90;
+    end
+    _offsetEntity = _offsetEntity or 0;
+    info("API.LookAt: Entity " ..entity.. " is looking at " ..entityTLA);
+    Logic.SetOrientation(entity, API.Round(orientation + _offsetEntity));
+end
+LookAt = API.LookAt;
+
+---
+-- Lässt zwei Entities sich gegenseitig anschauen.
+--
+-- <p><b>Alias:</b> ConfrontEntities</p>
+--
+-- @param _entity         Entity (Skriptname oder ID)
+-- @param _entityToLookAt Ziel (Skriptname oder ID)
+-- @within Anwenderfunktionen
+-- @usage API.Confront("Hakim", "Alandra")
+--
+function API.Confront(_entity, _entityToLookAt)
+    API.LookAt(_entity, _entityToLookAt);
+    API.LookAt(_entityToLookAt, _entity);
+end
+ConfrontEntities = API.LookAt;
+
+---
+-- Bestimmt die Distanz zwischen zwei Punkten. Es können Entity-IDs,
+-- Skriptnamen oder Positionstables angegeben werden.
+--
+-- Wenn die Distanz nicht bestimmt werden kann, wird -1 zurückgegeben.
+--
+-- <p><b>Alias:</b> GetDistance</p>
+--
+-- @param _pos1 Erste Vergleichsposition (Skriptname, ID oder Positions-Table)
+-- @param _pos2 Zweite Vergleichsposition (Skriptname, ID oder Positions-Table)
+-- @return[type=number] Entfernung zwischen den Punkten
+-- @within Anwenderfunktionen
+-- @usage local Distance = API.GetDistance("HQ1", Logic.GetKnightID(1))
+--
+function API.GetDistance( _pos1, _pos2 )
+    if (type(_pos1) == "string") or (type(_pos1) == "number") then
+        _pos1 = GetPosition(_pos1);
+    end
+    if (type(_pos2) == "string") or (type(_pos2) == "number") then
+        _pos2 = GetPosition(_pos2);
+    end
+    if type(_pos1) ~= "table" or type(_pos2) ~= "table" then
+        warn("API.GetDistance: Distance could not be calculated!");
+        return -1;
+    end
+    local xDistance = (_pos1.X - _pos2.X);
+    local yDistance = (_pos1.Y - _pos2.Y);
+    return math.sqrt((xDistance^2) + (yDistance^2));
+end
+GetDistance = API.GetDistance;

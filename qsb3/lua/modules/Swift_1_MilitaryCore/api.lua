@@ -53,10 +53,5 @@ function API.SetPlayerSoldierLimits(_PlayerID, _Lv1, _Lv2, _Lv3, _Lv4)
             [[ModuleMilitaryCore.Shared:SetLimitsForPlayer(%d, %d, %d, %d, %d)]],
             _PlayerID, _Lv1, _Lv2, _Lv3, _Lv4
         ));
-    else
-        GUI.SendScriptCommand(string.format(
-            [[ModuleMilitaryCore.Shared:SetLimitsForPlayer(%d, %d, %d, %d, %d)]],
-            _PlayerID, _Lv1, _Lv2, _Lv3, _Lv4
-        ));
     end
 end
