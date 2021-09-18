@@ -1,0 +1,94 @@
+-- -------------------------------------------------------------------------- --
+-- Module Dialog Typewriter                                                   --
+-- -------------------------------------------------------------------------- --
+
+ModuleExtendedCamera = {
+    Properties = {
+        Name = "ModuleExtendedCamera",
+    },
+
+    Global = {},
+    Local = {
+        ExtendedZoomAllowed = true,
+    },
+    -- This is a shared structure but the values are asynchronous!
+    Shared = {};
+}
+
+-- Global Script ---------------------------------------------------------------
+
+function ModuleExtendedCamera.Global:OnGameStart()
+    API.AddSaveGameAction(function()
+        Logic.ExecuteInLuaLocalState([[ModuleExtendedCamera.Local:OnSaveGameLoaded()]]);
+    end);
+end
+
+-- Local Script ----------------------------------------------------------------
+
+function ModuleExtendedCamera.Local:OnGameStart()
+    self:RegisterExtendedZoomHotkey();
+    self:ActivateExtendedZoomHotkey();
+end
+
+function ModuleExtendedCamera.Local:SetCameraToEntity(_Entity, _Rotation, _ZoomFactor)
+    local pos = GetPosition(_Entity);
+    local rotation = (_Rotation or -45);
+    local zoomFactor = (_ZoomFactor or 0.5);
+    Camera.RTS_SetLookAtPosition(pos.X, pos.Y);
+    Camera.RTS_SetRotationAngle(rotation);
+    Camera.RTS_SetZoomFactor(zoomFactor);
+end
+
+function ModuleExtendedCamera.Local:RegisterExtendedZoomHotkey()
+    API.AddHotKey(
+        {de = "Strg + Umschalt + K",
+         en = "Ctrl + Shift + K"},
+        {de = "Alternativen Zoom ein/aus",
+         en = "Alternative zoom on/off"}
+    )
+end
+
+function ModuleExtendedCamera.Local:ActivateExtendedZoomHotkey()
+    Input.KeyBindDown(
+        Keys.ModifierControl + Keys.ModifierShift + Keys.K,
+        "ModuleExtendedCamera.Local:ToggleExtendedZoom()",
+        2,
+        false
+    );
+end
+
+function ModuleExtendedCamera.Local:ToggleExtendedZoom()
+    if self.ExtendedZoomAllowed then
+        if self.ExtendedZoomActive then
+            self:DeactivateExtendedZoom();
+        else
+            self:ActivateExtendedZoom();
+        end
+    end
+end
+
+function ModuleExtendedCamera.Local:ActivateExtendedZoom()
+    self.ExtendedZoomActive = true;
+    Camera.RTS_SetZoomFactorMax(0.8701);
+    Camera.RTS_SetZoomFactor(0.8700);
+    Camera.RTS_SetZoomFactorMin(0.0999);
+end
+
+function ModuleExtendedCamera.Local:DeactivateExtendedZoom()
+    self.ExtendedZoomActive = false;
+    Camera.RTS_SetZoomFactor(0.5000);
+    Camera.RTS_SetZoomFactorMax(0.5001);
+    Camera.RTS_SetZoomFactorMin(0.0999);
+end
+
+function ModuleExtendedCamera.Local:OnSaveGameLoaded()
+    if self.ExtendedZoomActive then
+        self:ActivateExtendedZoom();
+    end
+    self:ActivateExtendedZoomHotkey();
+end
+
+-- -------------------------------------------------------------------------- --
+
+Swift:RegisterModules(ModuleExtendedCamera);
+

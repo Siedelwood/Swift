@@ -27,6 +27,8 @@ OptLoader_ModuleFiles = {
     "Swift_2_SelectionCore/api.lua",
     "Swift_2_WeatherCore/source.lua",
     "Swift_2_WeatherCore/api.lua",
+    "Swift_4_ExtendedCamera/source.lua",
+    "Swift_4_ExtendedCamera/api.lua",
     "Swift_4_JobsRealtime/source.lua",
     "Swift_4_JobsRealtime/api.lua",
     "Swift_4_TextWindow/source.lua",

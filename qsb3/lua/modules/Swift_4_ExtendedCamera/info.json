@@ -1,0 +1,17 @@
+{
+    "name": "Swift_4_ExtendedCamera",
+    "version": "1.0.0",
+    "caption": "(4) ExtendedCamera",
+    "shortdesc": "",
+    "description": "",
+    "files": [
+        "source.lua",
+        "api.lua"
+    ],
+    "dependencies": [
+        "Swift_0_Core",
+        "Swift_1_InputOutputCore",
+        "Swift_1_DisplayCore",
+        "Swift_1_JobsCore"
+    ]
+}

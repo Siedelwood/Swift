@@ -793,15 +793,15 @@ ReplaceEntity = API.ReplaceEntity;
 -- @usage API.LookAt("Hakim", "Alandra")
 --
 function API.LookAt(_entity, _entityToLookAt, _offsetEntity)
-    local entity = GetEntityId(_entity);
-    local entityTLA = GetEntityId(_entityToLookAt);
+    local entity = GetID(_entity);
+    local entityTLA = GetID(_entityToLookAt);
     if not IsExisting(entity) or not IsExisting(entityTLA) then
         warn("API.LookAt: One entity is invalid or dead!");
         return;
     end
     local eX, eY = Logic.GetEntityPosition(entity);
     local eTLAX, eTLAY = Logic.GetEntityPosition(entityTLA);
-    local orientation = math.deg( math.atan2( (eTLAY - eY) , (eTLAX - eX) ) );
+    local orientation = math.deg(math.atan2((eTLAY - eY) , (eTLAX - eX)));
     if Logic.IsBuilding(entity) == 1 then
         orientation = orientation - 90;
     end
