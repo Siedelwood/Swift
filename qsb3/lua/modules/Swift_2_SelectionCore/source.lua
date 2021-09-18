@@ -312,9 +312,9 @@ function ModuleSelectionCore.Local:OnSelectionCanged(_Source)
     local EntityID = GUI.GetSelectedEntity();
     local EntityType = Logic.GetEntityType(EntityID);
 
-    local OldSelectionString = table.tostring(self.SelectedEntities or {});
+    local OldSelectionString = Swift:ConvertTableToString(self.SelectedEntities or {});
     self.SelectedEntities = SelectedEntities;
-    local NewSelectionString = table.tostring(self.SelectedEntities or {});
+    local NewSelectionString = Swift:ConvertTableToString(self.SelectedEntities or {});
 
     API.SendScriptEvent(QSB.ScriptEvents.SelectionChanged, PlayerID, OldSelection, SelectedEntities);
     GUI.SendScriptCommand(string.format(

@@ -139,29 +139,7 @@ function API.OverrideTable()
     -- @within table
     --
     table.tostring = function(t)
-        assert(type(t) == "table");
-        local s = "{";
-        for k, v in pairs(t) do
-            local key;
-            if (tonumber(k)) then
-                key = ""..k;
-            else
-                key = "\""..k.."\"";
-            end
-            if type(v) == "table" then
-                s = s .. "[" .. key .. "] = " .. table.tostring(v) .. ", ";
-            elseif type(v) == "number" then
-                s = s .. "[" .. key .. "] = " .. v .. ", ";
-            elseif type(v) == "string" then
-                s = s .. "[" .. key .. "] = \"" .. v .. "\", ";
-            elseif type(v) == "boolean" or type(v) == "nil" then
-                s = s .. "[" .. key .. "] = " .. tostring(v) .. ", ";
-            else
-                s = s .. "[" .. key .. "] = \"" .. tostring(v) .. "\", ";
-            end
-        end
-        s = s .. "}";
-        return s;
+        return Swift:ConvertTableToString(t);
     end
 
     ---

@@ -324,6 +324,32 @@ function Swift:OverrideString()
     API.OverrideString();
 end
 
+function Swift:ConvertTableToString(_Table)
+    assert(type(_Table) == "table");
+    local String = "{";
+    for k, v in pairs(_Table) do
+        local key;
+        if (tonumber(k)) then
+            key = ""..k;
+        else
+            key = "\""..k.."\"";
+        end
+        if type(v) == "table" then
+            String = String .. "[" .. key .. "] = " .. table.tostring(v) .. ", ";
+        elseif type(v) == "number" then
+            String = String .. "[" .. key .. "] = " .. v .. ", ";
+        elseif type(v) == "string" then
+            String = String .. "[" .. key .. "] = \"" .. v .. "\", ";
+        elseif type(v) == "boolean" or type(v) == "nil" then
+            String = String .. "[" .. key .. "] = " .. tostring(v) .. ", ";
+        else
+            String = String .. "[" .. key .. "] = \"" .. tostring(v) .. "\", ";
+        end
+    end
+    String = String .. "}";
+    return String;
+end
+
 -- Save Game Callback
 
 function Swift:RegisterLoadAction(_Action)
