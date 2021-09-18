@@ -272,3 +272,39 @@ function API.InterfaceSetPlayerPortrait(_PlayerID, _Portrait)
     ModuleInterfaceCore.Local:SetPlayerPortraitByModelName(_PlayerID, _Portrait);
 end
 
+---
+-- Fügt eine Beschreibung zu einem selbst gewählten Hotkey hinzu.
+--
+-- Ist der Hotkey bereits vorhanden, wird -1 zurückgegeben.
+--
+-- @param[type=string] _Key         Tastenkombination
+-- @param[type=string] _Description Beschreibung des Hotkey
+-- @return[type=number] Index oder Fehlercode
+-- @within Anwenderfunktionen
+--
+function API.AddHotKey(_Key, _Description)
+    if not GUI then
+        return;
+    end
+    g_KeyBindingsOptions.Descriptions = nil;
+    table.insert(ModuleInterfaceCore.Local.HotkeyDescriptions, {_Key, _Description});
+    return #ModuleInterfaceCore.Local.HotkeyDescriptions;
+end
+
+---
+-- Entfernt eine Beschreibung eines selbst gewählten Hotkeys.
+--
+-- @param[type=number] _Index Index in Table
+-- @within Anwenderfunktionen
+--
+function API.RemoveHotKey(_Index)
+    if not GUI then
+        return;
+    end
+    if type(_Index) ~= "number" or _Index > #ModuleInterfaceCore.Local.HotkeyDescriptions then
+        error("API.RemoveHotKey: No candidate found or Index is nil!");
+        return;
+    end
+    ModuleInterfaceCore.Local.HotkeyDescriptions[_Index] = nil;
+end
+
