@@ -3,8 +3,7 @@
 ---
 -- Modul für die Eingabe durch den Spieler und die Ausgabe von Texten.
 --
--- <b>Hinweis</b>: Diese Funktionen können nicht in Multiplayer Maps benutzt
--- werden, wenn sie mit der History Edition spielbar sein sollen.
+-- <b>Hinweis</b>: Diese Funktionalität ist im Multiplayer nicht verfügbar.
 --
 -- Du kannst vordefinierte Farben in Textausgaben verwenden. Außerdem kannst
 -- du für Skriptnamen und Entitytypen Platzhalter zu definieren. Diese

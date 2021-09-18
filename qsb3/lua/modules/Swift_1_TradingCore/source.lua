@@ -48,6 +48,9 @@ function ModuleTradingCore.Local:OnGameStart()
     QSB.ScriptEvents.GoodsSold = API.RegisterScriptEvent("Event_GoodsSold");
     QSB.ScriptEvents.GoodsPurchased = API.RegisterScriptEvent("Event_GoodsPurchased");
 
+    if Framework.IsNetworkGame() then
+        return;
+    end
     self:OverrideMerchantComputePurchasePrice();
     self:OverrideMerchantComputeSellingPrice();
     self:OverrideMerchantSellGoodsClicked();

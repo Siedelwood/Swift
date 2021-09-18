@@ -1,7 +1,7 @@
 -- Extended Camera API ------------------------------------------------------ --
 
 ---
--- 
+-- Ermöglicht die Verwendung des absoluten Zoom Limit.
 --
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
@@ -64,7 +64,6 @@ SetCameraToPlayerKnight = API.FocusCameraOnKnight;
 --
 function API.FocusCameraOnEntity(_Entity, _Rotation, _ZoomFactor)
     if not GUI then
-        ---@diagnostic disable-next-line: ambiguity-1
         local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
         Logic.ExecuteInLuaLocalState("API.FocusCameraOnEntity(" ..Subject.. ", " ..tostring(_Rotation).. ", " ..tostring(_ZoomFactor).. ")");
         return;

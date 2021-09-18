@@ -55,6 +55,10 @@ function ModuleInputOutputCore.Global:OnGameStart()
     end
     QSB.ScriptEvents.ChatOpened = API.RegisterScriptEvent("Event_ChatOpened");
     QSB.ScriptEvents.ChatClosed = API.RegisterScriptEvent("Event_ChatClosed");
+
+    if Framework.IsNetworkGame() then
+        return;
+    end
     API.AddSaveGameAction(function ()
         Logic.ExecuteInLuaLocalState("ModuleInputOutputCore.Local.DialogAltF4Hotkey()");
     end);
@@ -88,6 +92,10 @@ function ModuleInputOutputCore.Local:OnGameStart()
     end
     QSB.ScriptEvents.ChatOpened = API.RegisterScriptEvent("Event_ChatOpened");
     QSB.ScriptEvents.ChatClosed = API.RegisterScriptEvent("Event_ChatClosed");
+
+    if Framework.IsNetworkGame() then
+        return;
+    end
     self:OverrideDebugInput();
     self:DialogOverwriteOriginal();
     self:DialogAltF4Hotkey();

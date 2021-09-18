@@ -3,8 +3,7 @@
 ---
 -- Die Optionen für selektierte Einheiten kann individualisiert werden.
 --
--- <b>Hinweis</b>: Diese Funktionen können nicht in Multiplayer Maps benutzt
--- werden, wenn sie mit der History Edition spielbar sein sollen.
+-- <b>Hinweis</b>: Diese Funktionalität ist im Multiplayer nicht verfügbar.
 --
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>

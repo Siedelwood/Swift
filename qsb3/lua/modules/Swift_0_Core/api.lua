@@ -228,7 +228,7 @@ end
 -- @param[type=boolean] _TraceQuests      Quest Trace an/aus
 -- @param[type=boolean] _DevelopingCheats Cheats an/aus
 -- @param[type=boolean] _DevelopingShell  Eingabeaufforderung an/aus
--- @within Anwenderfunktionen
+-- @within Debug
 --
 function API.ActivateDebugMode(_CheckAtRun, _TraceQuests, _DevelopingCheats, _DevelopingShell)
     Swift:ActivateDebugMode(
@@ -246,7 +246,7 @@ end
 -- inmpelentieren. Das Core Modul übernimmt diese Aufgabe nicht!
 --
 -- @return[type=boolean] Option Aktiv
--- @within Anwenderfunktionen
+-- @within Debug
 --
 function API.IsDebugBehaviorCheckActive()
     return Swift.m_CheckAtRun == true;
@@ -256,7 +256,7 @@ end
 -- Prüft, ob Quest Trace benutzt wird.
 --
 -- @return[type=boolean] Option Aktiv
--- @within Anwenderfunktionen
+-- @within Debug
 --
 function API.IsDebugQuestTraceActive()
     return Swift.m_TraceQuests == true;
@@ -266,7 +266,7 @@ end
 -- Prüft, ob die Cheats aktiviert sind.
 --
 -- @return[type=boolean] Option Aktiv
--- @within Anwenderfunktionen
+-- @within Debug
 --
 function API.IsDebugCheatsActive()
     return Swift.m_DevelopingCheats == true;
@@ -279,7 +279,7 @@ end
 -- Siehe die Doku dieser Module.
 --
 -- @return[type=boolean] Option Aktiv
--- @within Anwenderfunktionen
+-- @within Debug
 --
 function API.IsDebugShellActive()
     return Swift.m_DevelopingShell == true;
@@ -292,7 +292,7 @@ end
 --
 -- @param[type=string]   _Name     Identifier des Event
 -- @return[type=number] ID des neuen Script Event
--- @within Anwenderfunktionen
+-- @within Event
 --
 function API.RegisterScriptEvent(_Name)
     return Swift:CreateScriptEvent(_Name, nil);
@@ -304,7 +304,7 @@ end
 -- @param[type=number]   ID        ID des Event
 -- @param[type=function] _Function Funktionsreferenz
 -- @return[type=number] ID der neuen Reaktion
--- @within Anwenderfunktionen
+-- @within Event
 --
 function API.RegisterScriptEventAction(_ID, _Function)
     return Swift:CreateScriptEventAction(_ID, _Function);
@@ -316,7 +316,7 @@ end
 -- @param[type=number]  _EventID  ID des Event
 -- @param[type=number]  _ActionID ID der Reaktion
 -- @param[type=boolean] _Flag     Inaktiv Flag
--- @within Anwenderfunktionen
+-- @within Event
 --
 function API.DisableScriptEventAction(_EventID, _ActionID, _Flag)
     return Swift:SetScriptEventActionActive(_EventID, _ActionID, not _Flag);
@@ -328,7 +328,7 @@ end
 --
 -- @param[type=number] _ID ID des Event
 -- @param              ... Optionale Parameter
--- @within Anwenderfunktionen
+-- @within Event
 --
 function API.SendScriptEvent(_ID, ...)
     Swift:DispatchScriptEvent(_ID, unpack(arg));
@@ -345,7 +345,7 @@ end
 --
 -- @param[type=boolean] _Name  Name der Custom Variable
 -- @param               _Value Neuer Wert
--- @within Anwenderfunktionen
+-- @within Sonstige
 --
 -- @usage local Value = API.ObtainCustomVariable("MyVariable", 0);
 --
@@ -358,7 +358,7 @@ end
 -- @param[type=boolean] _Name    Name der Custom Variable
 -- @param               _Default (Optional) Defaultwert falls leer
 -- @return Wert
--- @within Anwenderfunktionen
+-- @within Sonstige
 --
 -- @usage local Value = API.ObtainCustomVariable("MyVariable", 0);
 --
@@ -382,7 +382,7 @@ end
 --
 -- @param _Value Wahrheitswert
 -- @return[type=boolean] Wahrheitswert
--- @within Anwenderfunktionen
+-- @within Sonstige
 -- @local
 --
 -- @usage local Bool = API.ToBoolean("+")  --> Bool = true
@@ -404,7 +404,7 @@ AcceptAlternativeBoolean = API.ToBoolean;
 -- @param[type=string] _Value         Zu rundender Wert
 -- @param[type=string] _DecimalDigits Maximale Dezimalstellen
 -- @return[type=number] Abgerundete Zahl
--- @within Anwenderfunktionen
+-- @within Sonstige
 --
 function API.Round(_Value, _DecimalDigits)
     _DecimalDigits = _DecimalDigits or 2;
@@ -453,7 +453,7 @@ Round = API.Round;
 --
 -- @param[type=string] _Name Name des Quest
 -- @return[type=number] ID des Quest
--- @within Anwenderfunktionen
+-- @within Quest
 --
 function API.GetQuestID(_Name)
     if type(_Name) == "number" then
@@ -477,7 +477,7 @@ GetQuestID = API.GetQuestID;
 --
 -- @param[type=number] _QuestID ID oder Name des Quest
 -- @return[type=boolean] Quest existiert
--- @within Anwenderfunktionen
+-- @within Quest
 --
 function API.IsValidQuest(_QuestID)
     return Quests[_QuestID] ~= nil or Quests[API.GetQuestID(_QuestID)] ~= nil;
@@ -491,7 +491,7 @@ IsValidQuest = API.IsValidQuest;
 --
 -- @param[type=number] _Name Name des Quest
 -- @return[type=boolean] Name ist gültig
--- @within Anwenderfunktionen
+-- @within Quest
 --
 function API.IsValidQuestName(_Name)
     return string.find(_Name, "^[A-Za-z0-9_ @ÄÖÜäöüß]+$") ~= nil;
@@ -507,7 +507,7 @@ IsValidQuestName = API.IsValidQuestName;
 --
 -- @param[type=string]  _QuestName Name des Quest
 -- @param[type=boolean] _NoMessage Meldung nicht anzeigen
--- @within Anwenderfunktionen
+-- @within Quest
 --
 function API.FailQuest(_QuestName, _NoMessage)
     local QuestID = GetQuestID(_QuestName);
@@ -542,7 +542,7 @@ FailQuestByName = API.FailQuest;
 --
 -- @param[type=string]  _QuestName Name des Quest
 -- @param[type=boolean] _NoMessage Meldung nicht anzeigen
--- @within Anwenderfunktionen
+-- @within Quest
 --
 function API.RestartQuest(_QuestName, _NoMessage)
     local QuestID = GetQuestID(_QuestName);
@@ -658,7 +658,7 @@ RestartQuestByName = API.RestartQuest;
 --
 -- @param[type=string]  _QuestName Name des Quest
 -- @param[type=boolean] _NoMessage Meldung nicht anzeigen
--- @within Anwenderfunktionen
+-- @within Quest
 --
 function API.StartQuest(_QuestName, _NoMessage)
     local QuestID = GetQuestID(_QuestName);
@@ -689,7 +689,7 @@ StartQuestByName = API.StartQuest;
 --
 -- @param[type=string]  _QuestName Name des Quest
 -- @param[type=boolean] _NoMessage Meldung nicht anzeigen
--- @within Anwenderfunktionen
+-- @within Quest
 --
 function API.StopQuest(_QuestName, _NoMessage)
     local QuestID = GetQuestID(_QuestName);
@@ -718,7 +718,7 @@ StopQuestByName = API.StopQuest;
 --
 -- @param[type=string]  _QuestName Name des Quest
 -- @param[type=boolean] _NoMessage Meldung nicht anzeigen
--- @within Anwenderfunktionen
+-- @within Quest
 --
 function API.WinQuest(_QuestName, _NoMessage)
     local QuestID = GetQuestID(_QuestName);
@@ -759,7 +759,7 @@ end
 -- @param[type=number] _Type     Neuer Typ
 -- @param[type=number] _NewOwner (optional) Neuer Besitzer
 -- @return[type=number] Entity-ID des Entity
--- @within Anwenderfunktionen
+-- @within Entity
 -- @usage API.ReplaceEntity("Stein", Entities.XD_ScriptEntity)
 --
 function API.ReplaceEntity(_Entity, _Type, _NewOwner)
@@ -789,7 +789,7 @@ ReplaceEntity = API.ReplaceEntity;
 -- @param _entity         Entity (Skriptname oder ID)
 -- @param _entityToLookAt Ziel (Skriptname oder ID)
 -- @param[type=number]    _offsetEntity Winkel Offset
--- @within Anwenderfunktionen
+-- @within Entity
 -- @usage API.LookAt("Hakim", "Alandra")
 --
 function API.LookAt(_entity, _entityToLookAt, _offsetEntity)
@@ -818,7 +818,7 @@ LookAt = API.LookAt;
 --
 -- @param _entity         Entity (Skriptname oder ID)
 -- @param _entityToLookAt Ziel (Skriptname oder ID)
--- @within Anwenderfunktionen
+-- @within Entity
 -- @usage API.Confront("Hakim", "Alandra")
 --
 function API.Confront(_entity, _entityToLookAt)
@@ -838,7 +838,7 @@ ConfrontEntities = API.LookAt;
 -- @param _pos1 Erste Vergleichsposition (Skriptname, ID oder Positions-Table)
 -- @param _pos2 Zweite Vergleichsposition (Skriptname, ID oder Positions-Table)
 -- @return[type=number] Entfernung zwischen den Punkten
--- @within Anwenderfunktionen
+-- @within Position
 -- @usage local Distance = API.GetDistance("HQ1", Logic.GetKnightID(1))
 --
 function API.GetDistance( _pos1, _pos2 )
@@ -857,3 +857,203 @@ function API.GetDistance( _pos1, _pos2 )
     return math.sqrt((xDistance^2) + (yDistance^2));
 end
 GetDistance = API.GetDistance;
+
+---
+-- Lokalisiert ein Entity auf der Map. Es können sowohl Skriptnamen als auch
+-- IDs verwendet werden. Wenn das Entity nicht gefunden wird, wird eine
+-- Tabelle mit XYZ = 0 zurückgegeben.
+--
+-- <p><b>Alias:</b> GetPosition</p>
+--
+-- @param _Entity Entity (Skriptname oder ID)
+-- @return[type=table] Positionstabelle {X= x, Y= y, Z= z}
+-- @within Position
+-- @usage local Position = API.LocateEntity("Hans")
+--
+function API.LocateEntity(_Entity)
+    if (type(_Entity) == "table") then
+        return _Entity;
+    end
+    if (not IsExisting(_Entity)) then
+        warn("API.LocateEntity: Entity (" ..tostring(_Entity).. ") does not exist!");
+        return {X= 0, Y= 0, Z= 0};
+    end
+    local x, y, z = Logic.EntityGetPos(GetID(_Entity));
+    return {X= API.Round(x), Y= API.Round(y), Z= API.Round(y)};
+end
+GetPosition = API.LocateEntity;
+
+---
+-- Bestimmt die Durchschnittsposition mehrerer Entities.
+--
+-- <p><b>Alias:</b> GetAveragePosition</p>
+--
+-- @param ... Positionen mit Komma getrennt
+-- @return[type=table] Durchschnittsposition aller Positionen
+-- @within Position
+-- @usage local Center = API.GetGeometricFocus("Hakim", "Marcus", "Alandra");
+--
+function API.GetGeometricFocus(...)
+    local SumX = 0;
+    local SumY = 0;
+    local SumZ = 0;
+    for i= 1, #arg, 1 do
+        local Position = arg[i];
+        if type(arg[i]) ~= "table" then
+            Position = GetPosition(arg[i]);
+        end
+        SumX = SumX + Position.X;
+        SumY = SumY + Position.Y;
+        if Position.Z then
+            SumZ = SumZ + Position.Z;
+        end
+    end
+    return {
+        X= 1/#arg * SumX,
+        Y= 1/#arg * SumY,
+        Z= 1/#arg * SumZ
+    };
+end
+GetAveragePosition = API.GetGeometricFocus;
+
+---
+-- Gib eine Position auf einer Linie im relativen Abstand zur ersten Position
+-- zurück.
+--
+-- @param               _Pos1       Erste Position
+-- @param               _Pos2       Zweite Position
+-- @param[type=number]  _Percentage Entfernung zu Erster Position
+-- @return[type=table] Position auf Linie
+-- @within Position
+-- @usage local Position = API.GetLinePosition("HQ1", "HQ2", 0.75);
+--
+function API.GetLinePosition(_Pos1, _Pos2, _Percentage)
+    if _Percentage > 1 then
+        _Percentage = _Percentage / 100;
+    end
+
+    if not API.ValidatePosition(_Pos1) and not IsExisting(_Pos1) then
+        error("API.GetLinePosition: _Pos1 does not exist or is invalid position!");
+        return;
+    end
+    local Pos1 = _Pos1;
+    if type(Pos1) ~= "table" then
+        Pos1 = GetPosition(Pos1);
+    end
+
+    if not API.ValidatePosition(_Pos2) and not IsExisting(_Pos2) then
+        error("API.GetLinePosition: _Pos1 does not exist or is invalid position!");
+        return;
+    end
+    local Pos2 = _Pos2;
+    if type(Pos2) ~= "table" then
+        Pos2 = GetPosition(Pos2);
+    end
+
+	local dx = Pos2.X - Pos1.X;
+	local dy = Pos2.Y - Pos1.Y;
+    return {X= Pos1.X+(dx*_Percentage), Y= Pos1.Y+(dy*_Percentage)};
+end
+
+---
+-- Gib Positionen im gleichen Abstand auf der Linie zurück.
+--
+-- @param               _Pos1    Erste Position
+-- @param               _Pos2    Zweite Position
+-- @param[type=number]  _Periode Anzahl an Positionen
+-- @return[type=table] Positionen auf Linie
+-- @within Position
+-- @usage local PositionList = API.GetLinePosition("HQ1", "HQ2", 6);
+--
+function API.GetLinePositions(_Pos1, _Pos2, _Periode)
+    local PositionList = {};
+    for i= 0, 100, (1/_Periode)*100 do
+        local Section = API.GetLinePosition(_Pos1, _Pos2, i);
+        table.insert(PositionList, Section);
+    end
+    return PositionList;
+end
+
+---
+-- Gibt eine Position auf einer Kreisbahn um einen Punkt zurück.
+--
+-- @param               _Target          Entity oder Position
+-- @param[type=number]  _Distance        Entfernung um das Zentrum
+-- @param[type=number]  _Angle           Winkel auf dem Kreis
+-- @return[type=table] Position auf Kreisbahn
+-- @within Position
+-- @usage local Position = API.GetCirclePosition("HQ1", 3000, -45);
+--
+function API.GetCirclePosition(_Target, _Distance, _Angle)
+    if not API.ValidatePosition(_Target) and not IsExisting(_Target) then
+        error("API.GetCirclePosition: _target does not exist or is invalid position!");
+        return;
+    end
+
+    local Position = _Target;
+    local Orientation = 0+ (_Angle or 0);
+    if type(_Target) ~= "table" then
+        local EntityID = GetID(_Target);
+        Orientation = Logic.GetEntityOrientation(EntityID)+(_Angle or 0);
+        Position = GetPosition(EntityID);
+    end
+
+    local Result = {
+        X= Position.X+_Distance * math.cos(math.rad(Orientation)),
+        Y= Position.Y+_Distance * math.sin(math.rad(Orientation)),
+        Z= Position.Z
+    };
+    return Result;
+end
+API.GetRelatiePos = API.GetCirclePosition;
+
+---
+-- Gibt Positionen im gleichen Abstand auf der Kreisbahn zurück.
+--
+-- @param               _Target          Entity oder Position
+-- @param[type=number]  _Distance        Entfernung um das Zentrum
+-- @param[type=number]  _Periode         Anzahl an Positionen
+-- @param[type=number]  _Offset          Start Offset
+-- @return[type=table] Positionend auf Kreisbahn
+-- @within Position
+-- @usage local PositionList = API.GetCirclePosition("Position", 3000, 6, 45);
+--
+function API.GetCirclePositions(_Target, _Distance, _Periode, _Offset)
+    local Periode = Round(360 / _Periode, 0);
+    local PositionList = {};
+    for i= (Periode + _Offset), (360 + _Offset) do
+        local Section = API.GetCirclePosition(_Target, _Distance, i);
+        table.insert(PositionList, Section);
+    end
+    return PositionList;
+end
+
+---
+-- Prüft, ob eine Positionstabelle eine gültige Position enthält.
+--
+-- Eine Position ist Ungültig, wenn sie sich nicht auf der Welt befindet.
+-- Das ist der Fall bei negativen Werten oder Werten, welche die Größe
+-- der Welt übersteigen.
+--
+-- <p><b>Alias:</b> IsValidPosition</p>
+--
+-- @param[type=table] _pos Positionstable {X= x, Y= y}
+-- @return[type=boolean] Position ist valide
+-- @within Position
+--
+function API.ValidatePosition(_pos)
+    if type(_pos) == "table" then
+        if (_pos.X ~= nil and type(_pos.X) == "number") and (_pos.Y ~= nil and type(_pos.Y) == "number") then
+            local world = {Logic.WorldGetSize()}
+            if _pos.Z and _pos.Z < 0 then
+                return false;
+            end
+            if _pos.X <= world[1] and _pos.X >= 0 and _pos.Y <= world[2] and _pos.Y >= 0 then
+                return true;
+            end
+        end
+    end
+    return false;
+end
+IsValidPosition = API.ValidatePosition;
+

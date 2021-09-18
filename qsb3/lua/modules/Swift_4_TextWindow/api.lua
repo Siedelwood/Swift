@@ -4,8 +4,7 @@
 -- Mit diesem Modul kann ein Textfenster zur Darstellung eines Textes erteugt
 -- werden.
 --
--- <b>Hinweis</b>: Diese Funktionen können nicht in Multiplayer Maps benutzt
--- werden, wenn sie mit der History Edition spielbar sein sollen.
+-- <b>Hinweis</b>: Diese Funktionalitit ist im Multiplayer nicht verfügbar.
 --
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>

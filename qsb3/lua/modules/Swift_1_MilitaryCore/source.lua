@@ -32,6 +32,9 @@ function ModuleMilitaryCore.Global:OnGameStart()
     QSB.ScriptEvents.ProducedBattalion = API.RegisterScriptEvent("Event_ProducedBattalion");
     QSB.ScriptEvents.RefilledBattalion = API.RegisterScriptEvent("Event_RefilledBattalion");
 
+    if Framework.IsNetworkGame() then
+        return;
+    end
     ModuleMilitaryCore.Shared:InitLimits();
 end
 
@@ -138,6 +141,9 @@ function ModuleMilitaryCore.Local:OnGameStart()
     QSB.ScriptEvents.ProducedBattalion = API.RegisterScriptEvent("Event_ProducedBattalion");
     QSB.ScriptEvents.RefilledBattalion = API.RegisterScriptEvent("Event_RefilledBattalion");
 
+    if Framework.IsNetworkGame() then
+        return;
+    end
     ModuleMilitaryCore.Shared:InitLimits();
     self:OverrideUI();
 end

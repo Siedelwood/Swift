@@ -6,8 +6,7 @@
 -- <b>Hinweis</b>: Wird nichts eingestellt, wird der Standard verwendet. Das
 -- Limit ist dann 25, 43, 61, 91 (je nach Ausbaustufe der Burg).
 --
--- <b>Hinweis</b>: Diese Funktionen können nicht in Multiplayer Maps benutzt
--- werden, wenn sie mit der History Edition spielbar sein sollen.
+-- <b>Hinweis</b>: Diese Funktionalität ist im Multiplayer nicht verfügbar.
 --
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
