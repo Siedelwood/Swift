@@ -30,6 +30,8 @@ OptLoader_ModuleFiles = {
     "Swift_3_KnightTitleRequirements/source.lua",
     "Swift_3_KnightTitleRequirements/api.lua",
     "Swift_3_KnightTitleRequirements/requirements.lua",
+    "Swift_3_LifestockBreeding/api.lua",
+    "Swift_3_LifestockBreeding/requirements.lua",
     "Swift_4_ExtendedCamera/source.lua",
     "Swift_4_ExtendedCamera/api.lua",
     "Swift_4_JobsRealtime/source.lua",

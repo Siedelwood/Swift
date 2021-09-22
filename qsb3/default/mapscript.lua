@@ -18,8 +18,6 @@ function Mission_FirstMapAction()
         Startup_StartGoods();
         Startup_Diplomacy();
     end
-    Mission_InitPlayers();
-    Mission_InitMerchants();
     Mission_OnQsbLoaded();
 end
 

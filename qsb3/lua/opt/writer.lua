@@ -33,6 +33,8 @@ OptWriter_ModuleFiles = {
     "Swift_2_WeatherCore/api.lua",
     "Swift_3_KnightTitleRequirements/source.lua",
     "Swift_3_KnightTitleRequirements/api.lua",
+    "Swift_3_LifestockBreeding/source.lua",
+    "Swift_3_LifestockBreeding/api.lua",
     "Swift_4_ExtendedCamera/source.lua",
     "Swift_4_ExtendedCamera/api.lua",
     "Swift_4_JobsRealtime/source.lua",

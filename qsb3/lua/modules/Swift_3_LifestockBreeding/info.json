@@ -1,0 +1,16 @@
+{
+    "name": "Swift_3_LifestockBreeding",
+    "version": "1.0.0",
+    "caption": "(3) Lifestock Breeding",
+    "shortdesc": "",
+    "description": "",
+    "files": [
+        "source.lua",
+        "api.lua"
+    ],
+    "dependencies": [
+        "Swift_1_JobsCore",
+        "Swift_1_InterfaceCore",
+        "Swift_1_ScriptingValueCore"
+    ]
+}
