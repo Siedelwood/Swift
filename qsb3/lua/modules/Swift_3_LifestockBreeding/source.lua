@@ -86,13 +86,13 @@ function ModuleLifestockBreeding.Global:GetScale(_Entity)
     local ID = GetID(_Entity);
     local SV = QSB.ScriptingValue.Size;
     local IntVal = Logic.GetEntityScriptingValue(ID, SV);
-    return Core:ScriptingValueIntegerToFloat(IntVal);
+    return API.ConvertIntegerToFloat(IntVal);
 end
 
 function ModuleLifestockBreeding.Global:SetScale(_Entity, _Scale)
     local ID = GetID(_Entity);
     local SV = QSB.ScriptingValue.Size;
-    local IntVal = Core:ScriptingValueFloatToInteger(_Scale);
+    local IntVal = API.ConvertFloatToInteger(_Scale);
     Logic.SetEntityScriptingValue(ID, SV, IntVal);
 end
 

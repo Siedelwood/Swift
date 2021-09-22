@@ -1057,3 +1057,83 @@ function API.ValidatePosition(_pos)
 end
 IsValidPosition = API.ValidatePosition;
 
+---
+-- Sendet einen Handelskarren zu dem Spieler. Startet der Karren von einem
+-- Gebäude, wird immer die Position des Eingangs genommen.
+--
+-- <p><b>Alias:</b> SendCart</p>
+--
+-- @param _position                        Position (Skriptname oder Positionstable)
+-- @param[type=number] _player             Zielspieler
+-- @param[type=number] _good               Warentyp
+-- @param[type=number] _amount             Warenmenge
+-- @param[type=number] _cartOverlay        (optional) Overlay für Goldkarren
+-- @param[type=boolean] _ignoreReservation (optional) Marktplatzreservation ignorieren
+-- @return[type=number] Entity-ID des erzeugten Wagens
+-- @within Anwenderfunktionen
+-- @usage -- API-Call
+-- API.SendCart(Logic.GetStoreHouse(1), 2, Goods.G_Grain, 45)
+-- -- Legacy-Call mit ID-Speicherung
+-- local ID = SendCart("Position_1", 5, Goods.G_Wool, 5)
+--
+function API.SendCart(_position, _player, _good, _amount, _cartOverlay, _ignoreReservation)
+    local eID = GetID(_position);
+    if not IsExisting(eID) then
+        return;
+    end
+    local ID;
+    local x,y,z = Logic.EntityGetPos(eID);
+    local resCat = Logic.GetGoodCategoryForGoodType(_good);
+    local orientation = 0;
+    if Logic.IsBuilding(eID) == 1 then
+        x,y = Logic.GetBuildingApproachPosition(eID);
+        orientation = Logic.GetEntityOrientation(eID)-90;
+    end
+
+    -- Macht Waren lagerbar im Lagerhaus
+    if resCat == GoodCategories.GC_Resource or _good == Goods.G_None then
+        local TypeName = Logic.GetGoodTypeName(_good);
+        local Category = Logic.GetGoodCategoryForGoodType(_good);
+        local SHID = Logic.GetStoreHouse(_player);
+        local HQID = Logic.GetHeadquarters(_player);
+        if SHID ~= 0 and Logic.GetIndexOnInStockByGoodType(SHID, _good) == -1 then
+            local CreateSlot = true;
+            if _good ~= Goods.G_Gold or (_good == Goods.G_Gold and HQID == 0) then
+                info(
+                    "API.SendCart: creating stock for " ..TypeName.. " in" ..
+                    "storehouse of player " .._player.. "."
+                );
+                Logic.AddGoodToStock(SHID, _good, 0, true, true);
+            end
+        end
+    end
+
+    info("API.SendCart: Creating cart ("..
+        tostring(_position) ..","..
+        tostring(_player) ..","..
+        Logic.GetGoodTypeName(_good) ..","..
+        tostring(_amount) ..","..
+        tostring(_cartOverlay) ..","..
+        tostring(_ignoreReservation) ..
+    ")");
+
+    if resCat == GoodCategories.GC_Resource then
+        ID = Logic.CreateEntityOnUnblockedLand(Entities.U_ResourceMerchant, x, y,orientation,_player)
+    elseif _good == Goods.G_Medicine then
+        ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Medicus, x, y,orientation,_player)
+    elseif _good == Goods.G_Gold or _good == Goods.G_None or _good == Goods.G_Information then
+        if _cartOverlay then
+            ID = Logic.CreateEntityOnUnblockedLand(_cartOverlay, x, y,orientation,_player)
+        else
+            ID = Logic.CreateEntityOnUnblockedLand(Entities.U_GoldCart, x, y,orientation,_player)
+        end
+    else
+        ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Marketer, x, y,orientation,_player)
+    end
+    info("API.SendCart: Executing hire merchant...");
+    Logic.HireMerchant( ID, _player, _good, _amount, _player, _ignoreReservation)
+    info("API.SendCart: Cart has been send successfully.");
+    return ID
+end
+SendCart = API.SendCart;
+

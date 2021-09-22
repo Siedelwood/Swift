@@ -32,6 +32,15 @@ ModuleTradingCore = {
 function ModuleTradingCore.Global:OnGameStart()
     QSB.ScriptEvents.GoodsSold = API.RegisterScriptEvent("Event_GoodsSold");
     QSB.ScriptEvents.GoodsPurchased = API.RegisterScriptEvent("Event_GoodsPurchased");
+    self:OverwriteBasePricesAndRefreshRates();
+end
+
+function ModuleTradingCore.Global:OnEvent(_ID, _Event, _TraderType, _Good, _P1, _P2, _Amount, _Price)
+    if _ID == QSB.ScriptEvents.GoodsPurchased then
+        if false and not Framework.IsNetworkGame() then
+            self:PerformFakeTrade(_TraderType, _Good, _P1, _P2, _Amount, _Price);
+        end
+    end
 end
 
 function ModuleTradingCore.Global:SendEventGoodsPurchased(_TraderType, _Good, _P1, _P2, _Amount, _Price)
@@ -40,6 +49,59 @@ end
 
 function ModuleTradingCore.Global:SendEventGoodsSold(_Good, _P1, _P2, _Amount, _Price)
     API.SendScriptEvent(QSB.ScriptEvents.GoodsSold, _Good, _P1, _P2, _Amount, _Price);
+end
+
+function ModuleTradingCore.Global:OverwriteBasePricesAndRefreshRates()
+    MerchantSystem.BasePrices[Entities.U_CatapultCart] = MerchantSystem.BasePrices[Entities.U_CatapultCart] or 1000;
+    MerchantSystem.BasePrices[Entities.U_BatteringRamCart] = MerchantSystem.BasePrices[Entities.U_BatteringRamCart] or 450;
+    MerchantSystem.BasePrices[Entities.U_SiegeTowerCart] = MerchantSystem.BasePrices[Entities.U_SiegeTowerCart] or 600;
+    MerchantSystem.BasePrices[Entities.U_AmmunitionCart] = MerchantSystem.BasePrices[Entities.U_AmmunitionCart] or 180;
+    MerchantSystem.BasePrices[Entities.U_MilitarySword_RedPrince] = MerchantSystem.BasePrices[Entities.U_MilitarySword_RedPrince] or 150;
+    MerchantSystem.BasePrices[Entities.U_MilitarySword] = MerchantSystem.BasePrices[Entities.U_MilitarySword] or 150;
+    MerchantSystem.BasePrices[Entities.U_MilitaryBow_RedPrince] = MerchantSystem.BasePrices[Entities.U_MilitaryBow_RedPrince] or 220;
+    MerchantSystem.BasePrices[Entities.U_MilitaryBow] = MerchantSystem.BasePrices[Entities.U_MilitaryBow] or 220;
+
+    MerchantSystem.RefreshRates[Entities.U_CatapultCart] = MerchantSystem.RefreshRates[Entities.U_CatapultCart] or 270;
+    MerchantSystem.RefreshRates[Entities.U_BatteringRamCart] = MerchantSystem.RefreshRates[Entities.U_BatteringRamCart] or 190;
+    MerchantSystem.RefreshRates[Entities.U_SiegeTowerCart] = MerchantSystem.RefreshRates[Entities.U_SiegeTowerCart] or 220;
+    MerchantSystem.RefreshRates[Entities.U_AmmunitionCart] = MerchantSystem.RefreshRates[Entities.U_AmmunitionCart] or 150;
+    MerchantSystem.RefreshRates[Entities.U_MilitaryBow_RedPrince] = MerchantSystem.RefreshRates[Entities.U_MilitarySword_RedPrince] or 150;
+    MerchantSystem.RefreshRates[Entities.U_MilitarySword] = MerchantSystem.RefreshRates[Entities.U_MilitarySword] or 150;
+    MerchantSystem.RefreshRates[Entities.U_MilitaryBow_RedPrince] = MerchantSystem.RefreshRates[Entities.U_MilitaryBow_RedPrince] or 150;
+    MerchantSystem.RefreshRates[Entities.U_MilitaryBow] = MerchantSystem.RefreshRates[Entities.U_MilitaryBow] or 150;
+
+    if g_GameExtraNo >= 1 then
+        MerchantSystem.BasePrices[Entities.U_MilitaryBow_Khana] = MerchantSystem.BasePrices[Entities.U_MilitaryBow_Khana] or 220;
+        MerchantSystem.BasePrices[Entities.U_MilitarySword_Khana] = MerchantSystem.BasePrices[Entities.U_MilitarySword_Khana] or 150;
+
+        MerchantSystem.RefreshRates[Entities.U_MilitaryBow_Khana] = MerchantSystem.RefreshRates[Entities.U_MilitaryBow_Khana] or 150;
+        MerchantSystem.RefreshRates[Entities.U_MilitaryBow_Khana] = MerchantSystem.RefreshRates[Entities.U_MilitarySword_Khana] or 150;
+    end
+end
+
+function ModuleTradingCore.Global:PerformFakeTrade(_TraderType, _Good, _P1, _P2, _Amount, _Price)
+    local StoreHouse1 = Logic.GetStoreHouse(_P1);
+    local StoreHouse2 = Logic.GetStoreHouse(_P2);
+
+    local Orientation = Logic.GetEntityOrientation(StoreHouse2);
+    if _TraderType == g_Merchant.GoodTrader then
+        if Logic.GetGoodCategoryForGoodType(_Good) ~= GoodCategories.GC_Animal then
+            API.SendCart(StoreHouse2, _P1, _Good, _Amount, nil, false);
+            -- TODO: Alter offer
+        end
+    elseif _TraderType == g_Merchant.MercenaryTrader then
+        local x,y = Logic.GetBuildingApproachPosition(StoreHouse2);
+        local ID  = Logic.CreateBattalionOnUnblockedLand(_Good, x, y, Orientation, _P1);
+        Logic.MoveSettler(ID, x, y, -1);
+        -- TODO: Alter offer
+    else
+        local x,y = Logic.GetBuildingApproachPosition(StoreHouse2);
+        local ID  = Logic.CreateEntityOnUnblockedLand(_Good, x, y, Orientation, _P1);
+        Logic.HireEntertainer(ID, _P1);
+        -- TODO: Alter offer
+    end
+    API.SendCart(StoreHouse1, _P2, Goods.G_Gold, _Price, nil, false);
+    AddGood(Goods.G_Gold, _P1, (-1) * _Price);
 end
 
 -- Local -------------------------------------------------------------------- --
@@ -54,7 +116,68 @@ function ModuleTradingCore.Local:OnGameStart()
     self:OverrideMerchantComputePurchasePrice();
     self:OverrideMerchantComputeSellingPrice();
     self:OverrideMerchantSellGoodsClicked();
+    self:OverrideMerchantPurchaseOfferUpdate();
     self:OverrideMerchantPurchaseOfferClicked();
+end
+
+function ModuleTradingCore.Local:OverrideMerchantPurchaseOfferUpdate()
+    GUI_Merchant.OfferUpdate = function(_ButtonIndex)
+        local CurrentWidgetID   = XGUIEng.GetCurrentWidgetID();
+        local CurrentWidgetMotherID = XGUIEng.GetWidgetsMotherID(CurrentWidgetID);
+        local PlayerID          = GUI.GetPlayerID();
+        local BuildingID        = g_Merchant.ActiveMerchantBuilding;
+        if BuildingID == 0
+        or Logic.IsEntityDestroyed(BuildingID) == true then
+            return;
+        end
+        if g_Merchant.Offers[_ButtonIndex] == nil then
+            XGUIEng.ShowWidget(CurrentWidgetMotherID,0);
+            return;
+        end
+        local TraderType = g_Merchant.Offers[_ButtonIndex].TraderType;
+        local OfferIndex = g_Merchant.Offers[_ButtonIndex].OfferIndex;
+        local GoodType, OfferGoodAmount, OfferAmount, AmountPrices = 0,0,0,0;
+        if TraderType == g_Merchant.GoodTrader then
+            GoodType, OfferGoodAmount, OfferAmount, AmountPrices = Logic.GetGoodTraderOffer(BuildingID,OfferIndex,PlayerID);
+            if GoodType == Goods.G_Sheep
+            or GoodType == Goods.G_Cow then
+                OfferGoodAmount = 5;
+            end
+            SetIcon(CurrentWidgetID, g_TexturePositions.Goods[GoodType]);
+        elseif TraderType == g_Merchant.MercenaryTrader then
+            GoodType, OfferGoodAmount, OfferAmount, AmountPrices = Logic.GetMercenaryOffer(BuildingID,OfferIndex,PlayerID);
+            local TypeName = Logic.GetEntityTypeName(GoodType);
+            if GoodType == Entities.U_Thief then
+                OfferGoodAmount = 1;
+            elseif string.find(TypeName, "U_MilitarySword")
+            or     string.find(TypeName, "U_MilitaryBow") then
+                OfferGoodAmount = 6;
+            elseif string.find(TypeName, "Cart") then
+                OfferGoodAmount = 1;
+            else
+                OfferGoodAmount = OfferGoodAmount;
+            end
+            SetIcon(CurrentWidgetID, g_TexturePositions.Entities[GoodType]);
+        elseif TraderType == g_Merchant.EntertainerTrader then
+            GoodType, OfferGoodAmount, OfferAmount, AmountPrices = Logic.GetEntertainerTraderOffer(BuildingID,OfferIndex,PlayerID);
+            if not (Logic.CanHireEntertainer(PlayerID) == true
+            and Logic.EntertainerIsOnTheMap(GoodType) == false) then
+                OfferAmount = 0;
+            end
+            SetIcon(CurrentWidgetID, g_TexturePositions.Entities[GoodType]);
+        end
+
+        local OfferAmountWidget = XGUIEng.GetWidgetPathByID(CurrentWidgetMotherID) .. "/OfferAmount";
+        XGUIEng.SetText(OfferAmountWidget, "{center}" .. OfferAmount);
+        local OfferGoodAmountWidget = XGUIEng.GetWidgetPathByID(CurrentWidgetMotherID) .. "/OfferGoodAmount";
+        XGUIEng.SetText(OfferGoodAmountWidget, "{center}" .. OfferGoodAmount);
+
+        if OfferAmount == 0 then
+            XGUIEng.DisableButton(CurrentWidgetID,1);
+        else
+            XGUIEng.DisableButton(CurrentWidgetID,0);
+        end
+    end
 end
 
 function ModuleTradingCore.Local:OverrideMerchantPurchaseOfferClicked()
@@ -63,6 +186,14 @@ function ModuleTradingCore.Local:OverrideMerchantPurchaseOfferClicked()
         return true;
     end
     self.Lambda.PurchaseAllowed.Default = PurchaseAllowedLambda;
+
+    local BuyLock = {Locked = false};
+
+    GameCallback_MerchantInteraction = function( _BuildingID, _PlayerID, _OfferID )
+        if _PlayerID == GUI.GetPlayerID() then
+            BuyLock.Locked = false;
+        end
+    end
     
     GUI_Merchant.OfferClicked = function(_ButtonIndex)
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
@@ -104,9 +235,12 @@ function ModuleTradingCore.Local:OverrideMerchantPurchaseOfferClicked()
             end
         elseif TraderType == g_Merchant.MercenaryTrader then
             GoodType, OfferGoodAmount, OfferAmount, AmountPrices = Logic.GetMercenaryOffer(BuildingID, OfferIndex, PlayerID);
-            local GoodTypeName        = Logic.GetGoodTypeName(GoodType);
+            local GoodTypeName        = Logic.GetEntityTypeName(GoodType);
             local CurrentSoldierCount = Logic.GetCurrentSoldierCount(PlayerID);
             local CurrentSoldierLimit = Logic.GetCurrentSoldierLimit(PlayerID);
+            if API.GetPlayerSoldierLimit then
+                CurrentSoldierLimit = API.GetPlayerSoldierLimit(PlayerID);
+            end
             local SoldierSize;
             if GoodType == Entities.U_Thief then
                 SoldierSize = 1;
@@ -126,15 +260,17 @@ function ModuleTradingCore.Local:OverrideMerchantPurchaseOfferClicked()
         end
 
         -- Special sales conditions
-        if not ModuleTradingCore.Local.Lambda.PurchaseAllowed[TraderPlayerID] then
-            CanBeBought = ModuleTradingCore.Local.Lambda.PurchaseAllowed[TraderPlayerID](TraderType, GoodType, PlayerID, TraderPlayerID, OfferGoodAmount, AmountPrices);
-        else
-            CanBeBought = ModuleTradingCore.Local.Lambda.PurchaseAllowed.Default(TraderType, GoodType, PlayerID, TraderPlayerID, OfferGoodAmount, AmountPrices);
-        end
-        if not CanBeBought then
-            local MessageText = XGUIEng.GetStringTableText("Feedback_TextLines/TextLine_GenericNotReadyYet");
-            Message(MessageText);
-            return;
+        if CanBeBought then
+            if ModuleTradingCore.Local.Lambda.PurchaseAllowed[TraderPlayerID] then
+                CanBeBought = ModuleTradingCore.Local.Lambda.PurchaseAllowed[TraderPlayerID](TraderType, GoodType, PlayerID, TraderPlayerID, OfferGoodAmount, AmountPrices);
+            else
+                CanBeBought = ModuleTradingCore.Local.Lambda.PurchaseAllowed.Default(TraderType, GoodType, PlayerID, TraderPlayerID, OfferGoodAmount, AmountPrices);
+            end
+            if not CanBeBought then
+                local MessageText = XGUIEng.GetStringTableText("Feedback_TextLines/TextLine_GenericNotReadyYet");
+                Message(MessageText);
+                return;
+            end
         end
 
         if CanBeBought == true then
@@ -159,7 +295,10 @@ function ModuleTradingCore.Local:OverrideMerchantPurchaseOfferClicked()
                 end
                 BuyLock.Locked = true;
                 GUI.ChangeMerchantOffer(BuildingID, PlayerID, OfferIndex, Price);
-                GUI.BuyMerchantOffer(BuildingID, PlayerID, OfferIndex);
+                -- TODO: Geändertes Soldatenlimit
+                -- if Framework.IsNetworkGame() then
+                    GUI.BuyMerchantOffer(BuildingID, PlayerID, OfferIndex);
+                -- end
                 Sound.FXPlay2DSound("ui\\menu_click");
                 if ModuleTradingCore.Local.ShowKnightTraderAbility then
                     StartKnightVoiceForPermanentSpecialAbility(Entities.U_KnightTrading);

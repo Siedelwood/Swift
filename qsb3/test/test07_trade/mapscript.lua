@@ -78,6 +78,7 @@ function Mission_FirstMapAction()
 
     API.ActivateDebugMode(true, false, true, true);
 
-    AddGood(Goods.G_Carcass, 100, 1);
-    AddGood(Goods.G_Grain, 100, 1);
+    API.AddGoodOffer(2, Goods.G_Beer, 1);
+    API.AddGoodOffer(2, Goods.G_Bread, 3);
+    API.AddMercenaryOffer(2, Entities.U_CatapultCart, 3);
 end
