@@ -15,6 +15,8 @@
 -- müssen also immer mit Ja oder Nein beantwortbar sein oder auf Okay und
 -- Abbrechen passen.
 --
+-- <b>Hinweis</b>: Dieses Behavior kann nicht im Multiplayer verwendet werden.
+--
 -- @param _Text   Fenstertext
 -- @param _Title  Fenstertitel
 -- @param _Labels Label der Buttons
@@ -53,6 +55,9 @@ function b_Goal_Decide:AddParameter( _Index, _Parameter )
 end
 
 function b_Goal_Decide:CustomFunction(_Quest)
+    if Framewok.IsNetworkGame() then
+        return false;
+    end
     if not IsBriefingActive or (IsBriefingActive and IsBriefingActive() == false) then
         if not QSB.GoalDecideDialogDisplayed then
             local buttons = (self.Buttons and "true") or "nil"
@@ -89,6 +94,14 @@ function b_Goal_Decide:GetCustomData(_Index)
     end
 end
 
+function b_Goal_Decide:Debug(_Quest)
+    if Framewok.IsNetworkGame() then
+        error(_Quest.Identifier.. ": " ..self.Name..": Can not be used in multiplayer!");
+        return true;
+    end
+    return false;
+end
+
 function b_Goal_Decide:Reset()
     QSB.GoalDecideDialogDisplayed = nil;
 end
@@ -111,6 +124,8 @@ Swift:RegisterBehavior(b_Goal_Decide);
 -- den übrigen Versuchen angezeigt. Optional kann eine Nachricht angegeben
 -- werden, die stattdessen nach <u>jeder</u> Falscheingabe, <u>außer</u> der
 -- letzten, angezeigt wird.
+--
+-- <b>Hinweis</b>: Dieses Behavior kann nicht im Multiplayer verwendet werden.
 --
 -- @param _Passwords Liste der Passwörter
 -- @param _Trials    Anzahl versuche (0 für unendlich)
@@ -158,6 +173,10 @@ function b_Goal_InputDialog:AddParameter(_Index, _Parameter)
 end
 
 function b_Goal_InputDialog:CustomFunction(_Quest)
+    if Framewok.IsNetworkGame() then
+        return false;
+    end
+
     if not self.Shown then
         if (not self.Trials) or (self.Trials) == 0 then
             QSB.GoalInputDialogQuest = _Quest.Identifier;
@@ -216,6 +235,10 @@ function b_Goal_InputDialog:LowerCase(_Text)
 end
 
 function b_Goal_InputDialog:Debug(_Quest)
+    if Framewok.IsNetworkGame() then
+        error(_Quest.Identifier.. ": " ..self.Name..": Can not be used in multiplayer!");
+        return true;
+    end
     return false;
 end
 
