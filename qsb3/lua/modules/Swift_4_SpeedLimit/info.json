@@ -1,0 +1,14 @@
+{
+    "name": "Swift_4_SpeedLimit",
+    "version": "1.0.0",
+    "caption": "(4) Game Speed Limit",
+    "shortdesc": "",
+    "description": "",
+    "files": [
+        "source.lua",
+        "api.lua"
+    ],
+    "dependencies": [
+        "Swift_0_Core"
+    ]
+}

@@ -34,6 +34,8 @@ OptLoader_ModuleFiles = {
     "Swift_4_ExtendedCamera/api.lua",
     "Swift_4_JobsRealtime/source.lua",
     "Swift_4_JobsRealtime/api.lua",
+    "Swift_4_SpeedLimit/source.lua",
+    "Swift_4_SpeedLimit/api.lua",
     "Swift_4_TextWindow/source.lua",
     "Swift_4_TextWindow/api.lua",
     "Swift_4_Typewriter/source.lua",
