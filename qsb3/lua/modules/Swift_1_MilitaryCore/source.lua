@@ -283,6 +283,9 @@ function ModuleMilitaryCore.Shared:SetLimitsForPlayer(_PlayerID, _Lv1, _Lv2, _Lv
 end
 
 function ModuleMilitaryCore.Shared:GetLimitForPlayer(_PlayerID, _Level)
+    if Framework.IsNetworkGame() then
+        return Logic.GetCurrentSoldierLimit(_PlayerID);
+    end
     return self.SoldierLimits[_PlayerID][_Level];
 end
 

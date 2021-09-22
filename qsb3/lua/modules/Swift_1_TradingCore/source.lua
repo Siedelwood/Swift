@@ -83,21 +83,20 @@ function ModuleTradingCore.Global:PerformFakeTrade(_TraderType, _Good, _P1, _P2,
     local StoreHouse1 = Logic.GetStoreHouse(_P1);
     local StoreHouse2 = Logic.GetStoreHouse(_P2);
 
-    local Orientation = Logic.GetEntityOrientation(StoreHouse2);
-    if _TraderType == g_Merchant.GoodTrader then
+    local Orientation = Logic.GetEntityOrientation(StoreHouse2) - 90;
+    if _TraderType == 0 then
         if Logic.GetGoodCategoryForGoodType(_Good) ~= GoodCategories.GC_Animal then
             API.SendCart(StoreHouse2, _P1, _Good, _Amount, nil, false);
             -- TODO: Alter offer
         end
-    elseif _TraderType == g_Merchant.MercenaryTrader then
+    elseif _TraderType == 1 then
         local x,y = Logic.GetBuildingApproachPosition(StoreHouse2);
         local ID  = Logic.CreateBattalionOnUnblockedLand(_Good, x, y, Orientation, _P1);
         Logic.MoveSettler(ID, x, y, -1);
         -- TODO: Alter offer
     else
         local x,y = Logic.GetBuildingApproachPosition(StoreHouse2);
-        local ID  = Logic.CreateEntityOnUnblockedLand(_Good, x, y, Orientation, _P1);
-        Logic.HireEntertainer(ID, _P1);
+        Logic.HireEntertainer(_Good, _P1, x, y);
         -- TODO: Alter offer
     end
     API.SendCart(StoreHouse1, _P2, Goods.G_Gold, _Price, nil, false);
