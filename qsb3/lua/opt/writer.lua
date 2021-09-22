@@ -25,6 +25,8 @@ OptWriter_ModuleFiles = {
     "Swift_2_InteractionCore/source.lua",
     "Swift_2_InteractionCore/api.lua",
     "Swift_2_InteractionCore/behavior.lua",
+    "Swift_2_KnightTitleRequirements/source.lua",
+    "Swift_2_KnightTitleRequirements/api.lua",
     "Swift_2_QuestCore/source.lua",
     "Swift_2_QuestCore/api.lua",
     "Swift_2_SelectionCore/source.lua",
@@ -40,6 +42,7 @@ OptWriter_ModuleFiles = {
     "Swift_4_Typewriter/source.lua",
     "Swift_4_Typewriter/api.lua",
 
+    "Swift_2_KnightTitleRequirements/requirements.lua",
     "Swift_0_Core/selfload.lua",
 };
 

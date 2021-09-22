@@ -14,6 +14,9 @@ if not MapEditor and not GUI then
     gvMission.MusicRootPath    = "music/";
     gvMission.PlaylistRootPath = "config/sound/";
     API.Install();
+    if ModuleKnightTitleRequirements then
+        InitKnightTitleTables();
+    end
 
     Logic.ExecuteInLuaLocalState([[
         gvMission = gvMission or {};
@@ -24,6 +27,9 @@ if not MapEditor and not GUI then
 
         Script.Load(gvMission.ContentPath.. "questsystembehavior.lua");
         API.Install();
+        if ModuleKnightTitleRequirements then
+            InitKnightTitleTables();
+        end
         if Mission_LocalOnQsbLoaded then
             Mission_LocalOnQsbLoaded();
         end

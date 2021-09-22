@@ -18,6 +18,8 @@ function Mission_FirstMapAction()
         Startup_StartGoods();
         Startup_Diplomacy();
     end
+    Mission_InitPlayers();
+    Mission_InitMerchants();
     Mission_OnQsbLoaded();
 end
 
@@ -46,8 +48,8 @@ end
 -- Beispiel:
 -- DoNotStartAIForPlayer(2); -> Keine KI (oder Banditenskript) für Spieler 2
 --
--- function Mission_InitPlayers()
--- end
+function Mission_InitPlayers()
+end
 
 -- -------------------------------------------------------------------------- --
 -- Diese Funktion setzt den Startmonat. Es muss zwingend immer einmalig ein
@@ -79,8 +81,8 @@ end
 -- Logic.TradePost_SetTradeDefinition(TPID, 2, Goods.G_RawFish, 24, Goods.G_Salt, 12);
 -- Logic.TradePost_SetTradeDefinition(TPID, 3, Goods.G_Wood, 24, Goods.G_Iron, 12);
 --
--- function Mission_InitMerchants()
--- end
+function Mission_InitMerchants()
+end
 
 -- -------------------------------------------------------------------------- --
 -- In dieser Funktion können eigene Funktionrn aufgerufen werden. Sie werden
@@ -92,8 +94,6 @@ function Mission_OnQsbLoaded()
     -- Assistenten Quests starten
     -- (Auskommentieren, wenn nicht benötigt)
     CreateQuests();
-
-
 end
 
 -- -------------------------------------------------------------------------- --
