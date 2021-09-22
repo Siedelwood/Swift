@@ -1,0 +1,14 @@
+{
+    "name": "Swift_4_GraphVizExport",
+    "version": "1.0.0",
+    "caption": "(4) GraphViz Export",
+    "shortdesc": "",
+    "description": "",
+    "files": [
+        "source.lua",
+        "api.lua"
+    ],
+    "dependencies": [
+        "Swift_2_QuestCore"
+    ]
+}

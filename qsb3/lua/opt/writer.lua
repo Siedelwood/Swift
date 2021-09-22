@@ -37,6 +37,8 @@ OptWriter_ModuleFiles = {
     "Swift_3_LifestockBreeding/api.lua",
     "Swift_4_ExtendedCamera/source.lua",
     "Swift_4_ExtendedCamera/api.lua",
+    "Swift_4_GraphVizExport/source.lua",
+    "Swift_4_GraphVizExport/api.lua",
     "Swift_4_JobsRealtime/source.lua",
     "Swift_4_JobsRealtime/api.lua",
     "Swift_4_SpeedLimit/source.lua",
