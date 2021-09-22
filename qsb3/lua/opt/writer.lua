@@ -25,14 +25,14 @@ OptWriter_ModuleFiles = {
     "Swift_2_InteractionCore/source.lua",
     "Swift_2_InteractionCore/api.lua",
     "Swift_2_InteractionCore/behavior.lua",
-    "Swift_2_KnightTitleRequirements/source.lua",
-    "Swift_2_KnightTitleRequirements/api.lua",
     "Swift_2_QuestCore/source.lua",
     "Swift_2_QuestCore/api.lua",
     "Swift_2_SelectionCore/source.lua",
     "Swift_2_SelectionCore/api.lua",
     "Swift_2_WeatherCore/source.lua",
     "Swift_2_WeatherCore/api.lua",
+    "Swift_3_KnightTitleRequirements/source.lua",
+    "Swift_3_KnightTitleRequirements/api.lua",
     "Swift_4_ExtendedCamera/source.lua",
     "Swift_4_ExtendedCamera/api.lua",
     "Swift_4_JobsRealtime/source.lua",
@@ -44,7 +44,7 @@ OptWriter_ModuleFiles = {
     "Swift_4_Typewriter/source.lua",
     "Swift_4_Typewriter/api.lua",
 
-    "Swift_2_KnightTitleRequirements/requirements.lua",
+    "Swift_3_KnightTitleRequirements/requirements.lua",
     "Swift_0_Core/selfload.lua",
 };
 
