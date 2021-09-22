@@ -4,8 +4,6 @@
 -- Modul zum Überschreiben des Verhaltens von Händlern. Es können Angebote im
 -- eigenen Lagerhaus und in fremden Lagerhäusern beeinflusst werden.
 --
--- <b>Hinweis</b>: Diese Funktionalität ist im Multiplayer nicht verfügbar.
---
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
 -- <li><a href="Swift_0_Core.api.html">(0) Core</a></li>
@@ -350,7 +348,7 @@ end
 -- @usage API.SaleSetDefaultDeflation(MyCalculationFunction);
 --
 function API.SaleSetDefaultDeflation(_Function)
-    API.SaleSetDeflationForPlayer(nil, _Function)
+    API.SaleSetDeflationForPlayer(nil, _Function);
 end
 
 ---
@@ -407,6 +405,157 @@ end
 -- @usage API.SaleSetDefaultCondition(MyCalculationFunction);
 --
 function API.SaleSetDefaultCondition(_Function)
-    API.SaleSetConditionForPlayer(nil, _Function)
+    API.SaleSetConditionForPlayer(nil, _Function);
+end
+
+---
+-- Lässt einen NPC-Spieler einem anderen Spieler Waren anbieten.
+--
+-- Ein NPC-Spieler kann verschiedenen Spielern verschiedene Angebote machen. Das
+-- bedeutet Spieler A kann Brote erhalten und Spieler B stattdessen Würste.
+--
+-- @param[type=number] _VendorID    Spieler-ID des Verkäufers
+-- @param[type=number] _ReceiverID  Spieler-ID des Angebotempfängers
+-- @param[type=number] _OfferType   Typ der Angebote
+-- @param[type=number] _OfferAmount Menge an Angeboten
+-- @param[type=number] _RefreshRate (Optional) Regenerationsrate des Angebot
+-- @within Anwenderfunktionen
+--
+-- @usage -- Spieler 2 bietet Spieler 1 Brot an
+-- API.AddGoodOffer(2, 1, Goods.G_Bread, 2);
+-- -- Spieler 2 bietet Spieler 3 Eisen an
+-- API.AddGoodOffer(2, 3, Goods.G_Iron, 4, 180);
+--
+function API.AddGoodOffer(_VendorID, _ReceiverID, _OfferType, _OfferAmount, _RefreshRate)
+    _OfferType = (type(_OfferType) == "string" and Goods[_OfferType]) or _OfferType;
+    
+    local VendorStoreID = Logic.GetStoreHouse(_VendorID);
+    local ReceiverHeroID = Logic.GetKnightID(_ReceiverID);
+    AddGoodToTradeBlackList(_VendorID, _OfferType);
+
+    -- Good cart type
+    local MarketerType = Entities.U_Marketer;
+    if _OfferType == Goods.G_Medicine then
+        MarketerType = Entities.U_Medicus;
+    end
+    -- Refresh rate
+    if _RefreshRate == nil then
+        _RefreshRate = MerchantSystem.RefreshRates[_OfferType] or 0;
+    end
+    -- Offer amount (Crimson Sabatt hack)
+    local WaggonLoad = 9;
+    if ReceiverHeroID ~= 0 and Logic.GetEntityType(ReceiverHeroID) == Entities.U_KnightSabatta then
+        WaggonLoad = 10;
+    end
+    if _OfferType == Goods.G_Cow or _OfferType == Goods.G_Sheep then
+        WaggonLoad = 5;
+    end
+
+    return Logic.AddGoodTraderOffer(
+        VendorStoreID,
+        _OfferAmount,
+        Goods.G_Gold,
+        0,
+        _OfferType,
+        WaggonLoad,
+        _ReceiverID,
+        _RefreshRate,
+        MarketerType,
+        Entities.U_ResourceMerchant
+    );
+end
+-- Compability option
+function AddOffer(_Merchant, _NumberOfOffers, _GoodType, _RefreshRate, _PlayerID)
+    local VendorID = Logic.EntityGetPlayer(GetID(_Merchant));
+    return API.AddGoodOffer(VendorID, _PlayerID, _GoodType, _NumberOfOffers, _RefreshRate);
+end
+
+---
+-- Lässt einen NPC-Spieler einem anderen Spieler Söldner anbieten.
+--
+-- Ein NPC-Spieler kann verschiedenen Spielern verschiedene Angebote machen. Das
+-- bedeutet Spieler A kann Schwertkämpfer erhalten und Spieler B stattdessen
+-- Bogenschützen.
+--
+-- <b>Hinweis</b>: Stadtlagerhäuser können keine Söldner anbieten!
+--
+-- @param[type=number] _VendorID    Spieler-ID des Verkäufers
+-- @param[type=number] _ReceiverID  Spieler-ID des Angebotempfängers
+-- @param[type=number] _OfferType   Typ der Söldner
+-- @param[type=number] _OfferAmount Menge an Söldnern
+-- @param[type=number] _RefreshRate (Optional) Regenerationsrate des Angebot
+-- @within Anwenderfunktionen
+--
+-- @usage -- Spieler 2 bietet Spieler 1 Sölder an
+-- API.AddMercenaryOffer(2, 1, Entities.U_MilitaryBandit_Melee_SE, 3);
+--
+function API.AddMercenaryOffer(_VendorID, _ReceiverID, _OfferType, _OfferAmount, _RefreshRate)
+    _OfferType = (type(_OfferType) == "string" and Entities[_OfferType]) or _OfferType;
+    
+    local VendorStoreID = Logic.GetStoreHouse(_VendorID);
+
+    -- Refresh rate
+    if _RefreshRate == nil then
+        _RefreshRate = MerchantSystem.RefreshRates[_OfferType] or 0;
+    end
+    -- Soldier count (Display hack for unusual mercenaries)
+    local SoldierCount = 3;
+    local TypeName = Logic.GetEntityTypeName(_OfferType) or "";
+    if string.find(TypeName, "MilitaryBow") or string.find(TypeName, "MilitarySword") then
+        SoldierCount = 6;
+    elseif string.find(TypeName,"Cart") then
+        SoldierCount = 0;
+    end
+
+    return Logic.AddMercenaryTraderOffer(
+        VendorStoreID,
+        _OfferAmount,
+        Goods.G_Gold,
+        0,
+        _OfferType,
+        SoldierCount,
+        _ReceiverID,
+        _RefreshRate
+    );
+end
+-- Compability option
+function AddMercenaryOffer(_Mercenary, _Amount, _Type, _RefreshRate, _PlayerID)
+    local VendorID = Logic.EntityGetPlayer(GetID(_Mercenary));
+    return API.AddMercenaryOffer(VendorID, _PlayerID or 1, _Type, _Amount, _RefreshRate);
+end
+
+---
+-- Lässt einen NPC-Spieler einem anderen Spieler einen Entertainer anbieten.
+--
+-- Ein NPC-Spieler kann verschiedenen Spielern verschiedene Angebote machen. Das
+-- bedeutet Spieler A kann Stälzengänger erhalten und Spieler B stattdessen
+-- Gewichtheber.
+--
+-- @param[type=number] _VendorID    Spieler-ID des Verkäufers
+-- @param[type=number] _ReceiverID  Spieler-ID des Angebotempfängers
+-- @param[type=number] _OfferType   Typ des Entertainer
+-- @within Anwenderfunktionen
+--
+-- @usage -- Spieler 2 bietet Spieler 1 einen Feuerschlucker an
+-- API.AddEntertainerOffer(2, 1, Entities.NA_FireEater);
+--
+function API.AddEntertainerOffer(_VendorID, _ReceiverID, _OfferType)
+    _OfferType = (type(_OfferType) == "string" and Entities[_OfferType]) or _OfferType;
+    
+    local VendorStoreID = Logic.GetStoreHouse(_VendorID);
+    return Logic.AddEntertainerTraderOffer(
+        VendorStoreID,
+        1,
+        Goods.G_Gold,
+        0,
+        _OfferType,
+        _ReceiverID,
+        0
+    );
+end
+-- Compability option
+function AddEntertainerOffer(_Merchant, _EntertainerType, _PlayerID)
+    local VendorID = Logic.EntityGetPlayer(GetID(_Merchant));
+    return API.AddEntertainerOffer(VendorID, _PlayerID or 1, _EntertainerType);
 end
 
