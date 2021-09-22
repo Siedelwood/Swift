@@ -9,7 +9,7 @@ QSB = QSB or {};
 
 QSB.Version = "Version 3.0.0 XX/XX/20XX ALPHA";
 QSB.Language = "de";
-QSB.HumanPlayerID = 1;
+QSB.HumanPlayerID = -1;
 QSB.ScriptEvents = {};
 QSB.CustomVariable = {};
 
@@ -63,10 +63,12 @@ function Swift:LoadCore()
         self:InitalizeEventsLocal();
         self:InstallBehaviorLocal();
 
-        local HumanID = GUI.GetPlayerID();
-        GUI.SendScriptCommand("QSB.HumanPlayerID = " ..HumanID);
-        QSB.HumanPlayerID = HumanID;
-
+        -- Human player ID makes only sense in singleplayer context
+        if not Framework.IsNetworkGame() then
+            local HumanID = GUI.GetPlayerID();
+            GUI.SendScriptCommand("QSB.HumanPlayerID = " ..HumanID);
+            QSB.HumanPlayerID = HumanID;
+        end
         StartSimpleHiResJob("Swift_EventJob_WaitForLoadScreenHidden");
     end
 
