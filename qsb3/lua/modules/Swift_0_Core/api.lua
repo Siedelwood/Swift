@@ -464,11 +464,11 @@ Round = API.Round;
 -- @param[type=function] _Function Bedingungsprüfung
 -- @within Anwenderfunktionen
 --
-function API.AddDoQuicksaveCondition(_Function)
+function API.AddBlockQuicksaveCondition(_Function)
     if not GUI or type(_Function) ~= "function" then
         return;
     end
-    Swift:AddDoQuicksaveCondition(_Function);
+    Swift:AddBlockQuicksaveCondition(_Function);
 end
 
 ---

@@ -1,6 +1,12 @@
--- -------------------------------------------------------------------------- --
--- Module Dialog Typewriter                                                   --
--- -------------------------------------------------------------------------- --
+--[[
+Swift_4_ExtendedCamera/Source
+
+Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+
+This file is part of Swift. Swift is created by totalwarANGEL.
+You may use and modify this file unter the terms of the MIT licence.
+(See https://en.wikipedia.org/wiki/MIT_License)
+]]
 
 ModuleExtendedCamera = {
     Properties = {
@@ -28,6 +34,15 @@ end
 function ModuleExtendedCamera.Local:OnGameStart()
     self:RegisterExtendedZoomHotkey();
     self:ActivateExtendedZoomHotkey();
+end
+
+function ModuleExtendedCamera.Local:OnEvent(_ID, _Event)
+    if _ID == QSB.ScriptEvents.BorderScrollReset then
+        if self.ExtendedZoomActive then
+            Camera.RTS_SetZoomFactorMax(0.8701);
+            Camera.RTS_SetZoomFactorMin(0.0999);
+        end
+    end
 end
 
 function ModuleExtendedCamera.Local:SetCameraToEntity(_Entity, _Rotation, _ZoomFactor)

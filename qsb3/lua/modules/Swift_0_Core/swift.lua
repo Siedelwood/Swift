@@ -275,7 +275,7 @@ end
 
 function Swift:OverrideDoQuicksave()
     -- Quicksave must not be possible while loading map
-    self:AddDoQuicksaveCondition(function()
+    self:AddBlockQuicksaveCondition(function()
         return GUI and XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") ~= 0;
     end);
 
@@ -288,7 +288,7 @@ function Swift:OverrideDoQuicksave()
     end
 end
 
-function Swift:AddDoQuicksaveCondition(_Function)
+function Swift:AddBlockQuicksaveCondition(_Function)
     table.insert(self.m_NoQuicksaveConditions, _Function);
 end
 

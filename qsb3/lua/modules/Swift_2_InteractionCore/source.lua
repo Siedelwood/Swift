@@ -1,6 +1,12 @@
--- -------------------------------------------------------------------------- --
--- Module Text Tools                                                          --
--- -------------------------------------------------------------------------- --
+--[[
+Swift_2_InteractionCore/Source
+
+Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+
+This file is part of Swift. Swift is created by totalwarANGEL.
+You may use and modify this file unter the terms of the MIT licence.
+(See https://en.wikipedia.org/wiki/MIT_License)
+]]
 
 ModuleInteractionCore = {
     Properties = {
@@ -1382,7 +1388,7 @@ function QSB.NonPlayerCharacter:ControlMarker()
             end
         end
         -- Während Briefings immer verstecken
-        if IsBriefingActive and IsBriefingActive() then
+        if API.IsCinematicEventActive() then
             self:HideMarker();
         end
     else

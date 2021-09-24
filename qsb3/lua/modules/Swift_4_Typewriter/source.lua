@@ -1,6 +1,12 @@
--- -------------------------------------------------------------------------- --
--- Module Dialog Typewriter                                                   --
--- -------------------------------------------------------------------------- --
+--[[
+Swift_4_Typewriter/Source
+
+Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+
+This file is part of Swift. Swift is created by totalwarANGEL.
+You may use and modify this file unter the terms of the MIT licence.
+(See https://en.wikipedia.org/wiki/MIT_License)
+]]
 
 ModuleTypewriter = {
     Properties = {
@@ -26,6 +32,8 @@ function ModuleTypewriter.Local:OnGameStart()
 end
 
 -- Typewriter class ------------------------------------------------------------
+
+QSB.SimpleTypewriterCounter = 0;
 
 QSB.SimpleTypewriter = {
     m_Tokens     = {},
@@ -105,7 +113,10 @@ end
 -- @local
 --
 function QSB.SimpleTypewriter:Play()
-    API.ActivateCinematicState();
+    QSB.SimpleTypewriterCounter = QSB.SimpleTypewriterCounter +1;
+    local Name = "CinmaticEventTypewriter" ..QSB.SimpleTypewriterCounter;
+    self.m_CinematicEventName = Name;
+    API.StartCinematicEvent(Name);
     if self.m_PaintBlack then
         API.ActivateBlackScreen();
     end
@@ -121,7 +132,7 @@ end
 -- @local
 --
 function QSB.SimpleTypewriter:Stop()
-    API.DeactivateCinematicState();
+    API.FinishCinematicEvent(self.m_CinematicEventName);
     API.DeactivateBlackScreen();
     API.ActivateNormalInterface();
     EndJob(self.m_JobID);
@@ -186,10 +197,7 @@ function QSB.SimpleTypewriter:CanBePlayed()
     if API.IsLoadscreenVisible() then
         return false;
     end
-    if API.IsCinematicState() then
-        return false;
-    end
-    if AddOnCutsceneSystem and IsCutsceneActive() then
+    if API.IsCinematicEventActive() then
         return false;
     end
     return true;

@@ -1,18 +1,30 @@
--- -------------------------------------------------------------------------- --
--- Module Dialog Tools                                                        --
--- -------------------------------------------------------------------------- --
+--[[
+Swift_1_DisplayCore/Source
+
+Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+
+This file is part of Swift. Swift is created by totalwarANGEL.
+You may use and modify this file unter the terms of the MIT licence.
+(See https://en.wikipedia.org/wiki/MIT_License)
+]]
 
 ModuleDisplayCore = {
     Properties = {
         Name = "ModuleDisplayCore",
     },
 
-    Global = {},
+    Global = {
+        CinematicEventID = 0,
+        CinematicEventStatus = {},
+    },
     Local = {
+        CinematicEventStatus = {},
+
         ChatOptionsWasShown = false,
         MessageLogWasShown = false,
         PauseScreenShown = false,
         NormalModeHidden = false,
+        BorderScrollDeactivated = false,
     },
     -- This is a shared structure but the values are asynchronous!
     Shared = {};
@@ -21,37 +33,89 @@ ModuleDisplayCore = {
 -- Global ------------------------------------------------------------------- --
 
 function ModuleDisplayCore.Global:OnGameStart()
+    QSB.ScriptEvents.CinematicActivated = API.RegisterScriptEvent("Event_CinematicEventActivated");
+    QSB.ScriptEvents.CinematicConcluded = API.RegisterScriptEvent("Event_CinematicEventConcluded");
+
+    QSB.ScriptEvents.BorderScrollLocked = API.RegisterScriptEvent("Event_BorderScrollLocked");
+    QSB.ScriptEvents.BorderScrollReset = API.RegisterScriptEvent("Event_BorderScrollReset");
+    QSB.ScriptEvents.GameInterfaceShown = API.RegisterScriptEvent("Event_GameInterfaceShown");
+    QSB.ScriptEvents.GameInterfaceHidden = API.RegisterScriptEvent("Event_GameInterfaceHidden");
+    QSB.ScriptEvents.BlackScreenShown = API.RegisterScriptEvent("Event_BlackScreenShown");
+    QSB.ScriptEvents.BlackScreenHidden = API.RegisterScriptEvent("Event_BlackScreenHidden");
+end
+
+function ModuleDisplayCore.Global:OnEvent(_ID, _Event, _InfoID)
+    if _ID == QSB.ScriptEvents.CinematicActivated then
+        self.CinematicEventStatus[_InfoID] = 1;
+    elseif _ID == QSB.ScriptEvents.CinematicConcluded then
+        self.CinematicEventStatus[_InfoID] = 2;
+    end
+end
+
+function ModuleDisplayCore.Global:GetNewCinematicEventID()
+    self.CinematicEventID = self.CinematicEventID +1;
+    return self.CinematicEventID;
+end
+
+function ModuleDisplayCore.Global:GetCinematicEventStatus(_InfoID)
+    return self.CinematicEventStatus[_InfoID] or 0;
+end
+
+function ModuleDisplayCore.Global:ActivateCinematicEvent()
+    local ID = self:GetNewCinematicEventID();
+    API.SendScriptEvent(QSB.ScriptEvents.CinematicActivated, ID);
+    return ID;
+end
+
+function ModuleDisplayCore.Global:ConcludeCinematicEvent(_ID)
+    API.SendScriptEvent(QSB.ScriptEvents.CinematicConcluded, _ID);
 end
 
 -- Local -------------------------------------------------------------------- --
 
 function ModuleDisplayCore.Local:OnGameStart()
+    QSB.ScriptEvents.CinematicActivated = API.RegisterScriptEvent("Event_CinematicEventActivated");
+    QSB.ScriptEvents.CinematicConcluded = API.RegisterScriptEvent("Event_CinematicEventConcluded");
+
+    QSB.ScriptEvents.BorderScrollLocked = API.RegisterScriptEvent("Event_BorderScrollLocked");
+    QSB.ScriptEvents.BorderScrollReset  = API.RegisterScriptEvent("Event_BorderScrollReset");
+    QSB.ScriptEvents.GameInterfaceShown = API.RegisterScriptEvent("Event_GameInterfaceShown");
+    QSB.ScriptEvents.GameInterfaceHidden = API.RegisterScriptEvent("Event_GameInterfaceHidden");
+    QSB.ScriptEvents.BlackScreenShown = API.RegisterScriptEvent("Event_BlackScreenShown");
+    QSB.ScriptEvents.BlackScreenHidden = API.RegisterScriptEvent("Event_BlackScreenHidden");
+
     self:OverrideInterfaceUpdateForCinematicMode();
 end
 
-function ModuleDisplayCore.Local:InterfaceActivateBlackBackground()
-    if self.PauseScreenShown then
-        return;
+function ModuleDisplayCore.Local:OnEvent(_ID, _Event, _InfoID)
+    if _ID == QSB.ScriptEvents.CinematicActivated then
+        self.CinematicEventStatus[_InfoID] = 1;
+    elseif _ID == QSB.ScriptEvents.CinematicConcluded then
+        self.CinematicEventStatus[_InfoID] = 2;
     end
-    self.PauseScreenShown = true;
-
-    XGUIEng.PushPage("/InGame/Root/Normal/PauseScreen", false)
-    XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 1);
-    XGUIEng.SetMaterialColor("/InGame/Root/Normal/PauseScreen", 0, 0, 0, 0, 255);
 end
 
-function ModuleDisplayCore.Local:InterfaceDeactivateBlackBackground()
-    if not self.PauseScreenShown then
-        return;
-    end
-    self.PauseScreenShown = false;
-
-    XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 0);
-    XGUIEng.SetMaterialColor("/InGame/Root/Normal/PauseScreen", 0, 40, 40, 40, 180);
-    XGUIEng.PopPage();
+function ModuleDisplayCore.Local:GetCinematicEventStatus(_InfoID)
+    return self.CinematicEventStatus[_InfoID] or 0;
 end
 
 function ModuleDisplayCore.Local:OverrideInterfaceUpdateForCinematicMode()
+    Swift:AddBlockQuicksaveCondition(function()
+        if ModuleDisplayCore.Local.NormalModeHidden
+        or ModuleDisplayCore.Local.BorderScrollDeactivated
+        or ModuleDisplayCore.Local.PauseScreenShown
+        or API.IsCinematicEventActive() then
+            return true;
+        end
+    end);
+
+    GameCallback_GameSpeedChanged_Orig_ModuleDisplayCoreInterface = GameCallback_GameSpeedChanged;
+    GameCallback_GameSpeedChanged = function(_Speed)
+        if not ModuleDisplayCore.Local.PauseScreenShown then
+            GameCallback_GameSpeedChanged_Orig_ModuleDisplayCoreInterface(_Speed);
+        end
+    end
+    
     MissionTimerUpdate_Orig_ModuleDisplayCoreInterface = MissionTimerUpdate;
     MissionTimerUpdate = function()
         MissionTimerUpdate_Orig_ModuleDisplayCoreInterface();
@@ -89,6 +153,64 @@ function ModuleDisplayCore.Local:OverrideInterfaceUpdateForCinematicMode()
             end
         end
     end
+end
+
+function ModuleDisplayCore.Local:InterfaceActivateBlackBackground()
+    if self.PauseScreenShown then
+        return;
+    end
+    self.PauseScreenShown = true;
+
+    XGUIEng.PushPage("/InGame/Root/Normal/PauseScreen", false)
+    XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 1);
+    XGUIEng.SetMaterialColor("/InGame/Root/Normal/PauseScreen", 0, 0, 0, 0, 255);
+
+    API.SendScriptEvent(QSB.ScriptEvents.BlackScreenShown);
+end
+
+function ModuleDisplayCore.Local:InterfaceDeactivateBlackBackground()
+    if not self.PauseScreenShown then
+        return;
+    end
+    self.PauseScreenShown = false;
+
+    XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 0);
+    XGUIEng.SetMaterialColor("/InGame/Root/Normal/PauseScreen", 0, 40, 40, 40, 180);
+    XGUIEng.PopPage();
+
+    API.SendScriptEvent(QSB.ScriptEvents.BlackScreenHidden);
+end
+
+function ModuleDisplayCore.Local:InterfaceDeactivateBorderScroll(_PositionID)
+    if self.BorderScrollDeactivated then
+        return;
+    end
+    self.BorderScrollDeactivated = true;
+    GameCallback_Camera_GetBorderscrollFactor_Orig_Interface = GameCallback_Camera_GetBorderscrollFactor;
+	GameCallback_Camera_GetBorderscrollFactor = function() end;
+    if _PositionID then
+        Camera.RTS_FollowEntity(_PositionID);
+    end
+    Camera.RTS_SetZoomFactor(0.5000);
+    Camera.RTS_SetZoomFactorMax(0.5001);
+    Camera.RTS_SetZoomFactorMin(0.4999);
+
+    API.SendScriptEvent(QSB.ScriptEvents.BorderScrollLocked);
+end
+
+function ModuleDisplayCore.Local:InterfaceActivateBorderScroll()
+    if not self.BorderScrollDeactivated then
+        return;
+    end
+    self.BorderScrollDeactivated = false;
+	GameCallback_Camera_GetBorderscrollFactor = GameCallback_Camera_GetBorderscrollFactor_Orig_Interface;
+    GameCallback_Camera_GetBorderscrollFactor_Orig_Interface = nil;
+    Camera.RTS_FollowEntity(0);
+    Camera.RTS_SetZoomFactor(0.5000);
+    Camera.RTS_SetZoomFactorMax(0.5001);
+    Camera.RTS_SetZoomFactorMin(0.0999);
+
+    API.SendScriptEvent(QSB.ScriptEvents.BorderScrollReset);
 end
 
 function ModuleDisplayCore.Local:InterfaceDeactivateNormalInterface()
@@ -139,6 +261,8 @@ function ModuleDisplayCore.Local:InterfaceDeactivateNormalInterface()
     if g_GameExtraNo > 0 then
         XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Tradepost", 0);
     end
+
+    API.SendScriptEvent(QSB.ScriptEvents.GameInterfaceHidden);
 end
 
 function ModuleDisplayCore.Local:InterfaceActivateNormalInterface()
@@ -189,6 +313,8 @@ function ModuleDisplayCore.Local:InterfaceActivateNormalInterface()
     if g_GameExtraNo > 0 then
         XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Tradepost", 1);
     end
+
+    API.SendScriptEvent(QSB.ScriptEvents.GameInterfaceShown);
 end
 
 -- -------------------------------------------------------------------------- --

@@ -1,4 +1,12 @@
--- Display API -------------------------------------------------------------- --
+--[[
+Swift_1_DisplayCore/API
+
+Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+
+This file is part of Swift. Swift is created by totalwarANGEL.
+You may use and modify this file unter the terms of the MIT licence.
+(See https://en.wikipedia.org/wiki/MIT_License)
+]]
 
 ---
 -- Dieses Modul bietet rudimentäre Funktionen zur Veränderung des Interface und
@@ -12,6 +20,14 @@
 -- @within Beschreibung
 -- @set sort=true
 --
+
+QSB.CinematicEvents = {};
+
+CinematicEventStatus = {
+    NotTriggered = 0,
+    Active = 1,
+    Concluded = 2,
+}
 
 ---
 -- Blendet einen schwarzen Hintergrund über der Spielwelt aber hinter dem
@@ -67,33 +83,97 @@ function API.DeactivateNormalInterface()
 end
 
 ---
--- Aktiviert den Cinematic State und sagt dem Framework, dass jetzt ein Effekt
--- im Kinomodus aktiv ist.
+-- Akliviert border Scroll wieder und löst die Fixierung auf ein Entity auf.
 --
 -- @within Anwenderfunktionen
 --
-function API.ActivateCinematicState()
-    Logic.ExecuteInLuaLocalState("ModuleDisplayCore.Shared.CinematicState = true");
-    ModuleDisplayCore.Shared.CinematicState = true;
+function API.ActivateBorderScroll()
+    if not GUI then
+        Logic.ExecuteInLuaLocalState("ModuleDisplayCore.Local:InterfaceActivateBorderScroll()");
+        return;
+    end
+    ModuleDisplayCore.Local:InterfaceActivateBorderScroll();
 end
 
 ---
--- Deaktiviert den Cinematic State und teilt dem Framework mit, dass der
--- Kinomodus jetzt beendet wurde.
+-- Deaktiviert Randscrollen und setzt die Kamera optional auf das Ziel
 --
+-- @param[type=number] _Position (Optional) Entity auf das die Kamera schaut
 -- @within Anwenderfunktionen
 --
-function API.DeactivateCinematicState()
-    Logic.ExecuteInLuaLocalState("ModuleDisplayCore.Shared.CinematicState = false");
-    ModuleDisplayCore.Shared.CinematicState = false;
+function API.DeactivateBorderScroll(_Position)
+    local PositionID;
+    if _Position then
+        PositionID = GetID(_Position);
+    end
+    if not GUI then
+        Logic.ExecuteInLuaLocalState(string.format(
+            "ModuleDisplayCore.Local:InterfaceDeactivateBorderScroll(%d)",
+            (PositionID or 0)
+        ));
+        return;
+    end
+    ModuleDisplayCore.Local:InterfaceDeactivateBorderScroll(PositionID);
 end
 
 ---
--- Gibt zurück, ob gerade ein Effekt im Kinomodus läuft.
--- @return[type=boolean] Cinematic State ist Aktiv
+-- Propagiert den Beginn des cinematischen Events.
+--
+-- @param[type=string] Bezeichner
 -- @within Anwenderfunktionen
 --
-function API.IsCinematicState()
-    return ModuleDisplayCore.Shared.CinematicState == true;
+function API.StartCinematicEvent(_Name)
+    if GUI then
+        return;
+    end
+    local ID = ModuleDisplayCore.Global:ActivateCinematicEvent();
+    QSB.CinematicEvents[_Name] = ID;
+end
+
+---
+-- Propagiert das Ende des cinematischen Events.
+--
+-- @param[type=string] Bezeichner
+-- @within Anwenderfunktionen
+--
+function API.FinishCinematicEvent(_Name)
+    if GUI then
+        return;
+    end
+    if QSB.CinematicEvents[_Name] then
+        ModuleDisplayCore.Global:ConcludeCinematicEvent(QSB.CinematicEvents[_Name]);
+    end
+end
+
+---
+-- Gibt den Status des cinematischen Event zurück.
+--
+-- @param[type=string] Bezeichner
+-- @return[type=number] Event Status
+-- @within Anwenderfunktionen
+--
+function API.GetCinematicEventStatus(_Name)
+    if QSB.CinematicEvents[_Name] then
+        if GUI then
+            return ModuleDisplayCore.Local:GetCinematicEventStatus(QSB.CinematicEvents[_Name]);
+        end
+        return ModuleDisplayCore.Global:GetCinematicEventStatus(QSB.CinematicEvents[_Name]);
+    end
+    return CinematicEventStatus.NotTriggered;
+end
+
+---
+-- Prüft ob gerade ein cinematisches Event aktiv ist.
+--
+-- @return[type=boolean] Event aktiv
+-- @within Anwenderfunktionen
+--
+function API.IsCinematicEventActive()
+    for k, v in pairs(QSB.CinematicEvents) do
+        if API.GetCinematicEventStatus(k) == CinematicEventStatus.Active then
+            return true;
+        end
+    end
+    return false;
 end
 

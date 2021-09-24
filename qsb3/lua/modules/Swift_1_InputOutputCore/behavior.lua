@@ -1,4 +1,13 @@
--- Input/Output Behavior ---------------------------------------------------- --
+--[[
+Swift_2_InputOutputCore/Behavior
+
+Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+
+This file is part of Swift. Swift is created by totalwarANGEL.
+You may use and modify this file unter the terms of the MIT licence.
+(See https://en.wikipedia.org/wiki/MIT_License)
+]]
+
 
 ---
 -- Fügt Behavior zur Aufforderung einer Eingabe hinzu.
@@ -58,7 +67,7 @@ function b_Goal_Decide:CustomFunction(_Quest)
     if Framewok.IsNetworkGame() then
         return false;
     end
-    if not IsBriefingActive or (IsBriefingActive and IsBriefingActive() == false) then
+    if not API.IsCinematicEventActive or (API.IsCinematicEventActive and API.IsCinematicEventActive() == false) then
         if not QSB.GoalDecideDialogDisplayed then
             local buttons = (self.Buttons and "true") or "nil"
             QSB.GoalDecideDialogDisplayed = true;
@@ -191,7 +200,7 @@ function b_Goal_InputDialog:CustomFunction(_Quest)
         end
     end
 
-    if not IsBriefingActive or (IsBriefingActive and IsBriefingActive() == false) then
+    if not API.IsCinematicEventActive or (API.IsCinematicEventActive and API.IsCinematicEventActive() == false) then
         if _Quest.InputDialogResult then
             if self.Password ~= nil and self.Password ~= "" then
                 self.Shown = nil;
