@@ -39,5 +39,11 @@ end
 -- Die QSB ist im lokalen Skript initialisiert.
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Mission_LocalOnQsbLoaded()
+    -- NeverDoQuicksaves();
 end
 
+function NeverDoQuicksaves()
+    Swift:AddDoQuicksaveCondition(function()
+        return true;
+    end)
+end

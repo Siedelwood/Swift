@@ -70,7 +70,7 @@ function QSB.GraphViz:Init()
     CreateQuest_Orig_ModuleGraphVizExport = API.CreateQuest;
     API.CreateQuest = function(_Data)
         local QuestName, QuestAmount = CreateQuest_Orig_ModuleGraphVizExport(_Data);
-        local Data = QSB.GraphViz:AddQuestDefaults(API.InstanceTable(_Data));
+        local Data = QSB.GraphViz:AddQuestDefaults(table.copy(_Data));
         QSB.GraphViz.Quests[#QSB.GraphViz.Quests+1] = Data;
         return QuestName, QuestAmount;
     end

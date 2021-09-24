@@ -1,6 +1,12 @@
--- -------------------------------------------------------------------------- --
--- Selfload                                                                   --
--- -------------------------------------------------------------------------- --
+--[[
+Swift_0_Core/Selfload
+
+Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+
+This file is part of Swift. Swift is created by totalwarANGEL.
+You may use and modify this file unter the terms of the MIT licence.
+(See https://en.wikipedia.org/wiki/MIT_License)
+]]
 
 if not MapEditor and not GUI then
     local MapTypeFolder = "externalmap";
@@ -13,10 +19,6 @@ if not MapEditor and not GUI then
     gvMission.ContentPath      = "maps/" ..MapTypeFolder.. "/" ..Framework.GetCurrentMapName() .. "/";
     gvMission.MusicRootPath    = "music/";
     gvMission.PlaylistRootPath = "config/sound/";
-    API.Install();
-    if ModuleKnightTitleRequirements then
-        InitKnightTitleTables();
-    end
 
     Logic.ExecuteInLuaLocalState([[
         gvMission = gvMission or {};
@@ -34,5 +36,10 @@ if not MapEditor and not GUI then
             Mission_LocalOnQsbLoaded();
         end
     ]]);
+    
+    API.Install();
+    if ModuleKnightTitleRequirements then
+        InitKnightTitleTables();
+    end
 end
 

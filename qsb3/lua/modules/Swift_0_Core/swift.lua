@@ -1,8 +1,12 @@
--- -------------------------------------------------------------------------- --
--- ########################################################################## --
--- #  Swift                                                                 # --
--- ########################################################################## --
--- -------------------------------------------------------------------------- --
+--[[
+Swift_0_Core/Swift
+
+Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+
+This file is part of Swift. Swift is created by totalwarANGEL.
+You may use and modify this file unter the terms of the MIT licence.
+(See https://en.wikipedia.org/wiki/MIT_License)
+]]
 
 API = API or {};
 QSB = QSB or {};
@@ -41,6 +45,7 @@ Swift = {
     m_Language                  = "de";
     m_Environment               = "global";
     m_HistoryEdition            = false;
+    m_NoQuicksaveConditions     = {};
     m_LogLevel                  = 2;
 };
 
@@ -62,6 +67,7 @@ function Swift:LoadCore()
         self:InitalizeDebugModeLocal();
         self:InitalizeEventsLocal();
         self:InstallBehaviorLocal();
+        self:OverrideDoQuicksave();
 
         -- Human player ID makes only sense in singleplayer context
         if not Framework.IsNetworkGame() then
@@ -265,6 +271,34 @@ end
 
 function Swift:IsHistoryEdition()
     return self.m_HistoryEdition == true;
+end
+
+function Swift:OverrideDoQuicksave()
+    -- Quicksave must not be possible while loading map
+    self:AddDoQuicksaveCondition(function()
+        return GUI and XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") ~= 0;
+    end);
+
+    KeyBindings_SaveGame_Orig_Module_SaveGame = KeyBindings_SaveGame;
+    KeyBindings_SaveGame = function()
+        if not Swift:CanDoQuicksave() then
+            return;
+        end
+        KeyBindings_SaveGame_Orig_Module_SaveGame();
+    end
+end
+
+function Swift:AddDoQuicksaveCondition(_Function)
+    table.insert(self.m_NoQuicksaveConditions, _Function);
+end
+
+function Swift:CanDoQuicksave()
+    for i= 1, #self.m_NoQuicksaveConditions, 1 do
+        if self.m_NoQuicksaveConditions[i]() then
+            return false;
+        end
+    end
+    return true;
 end
 
 -- Logging

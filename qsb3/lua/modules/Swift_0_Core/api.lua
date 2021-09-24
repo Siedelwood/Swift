@@ -1,4 +1,12 @@
--- Core API ----------------------------------------------------------------- --
+--[[
+Swift_0_Core/API
+
+Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+
+This file is part of Swift. Swift is created by totalwarANGEL.
+You may use and modify this file unter the terms of the MIT licence.
+(See https://en.wikipedia.org/wiki/MIT_License)
+]]
 
 ---
 -- Stellt wichtige Kernfunktionen bereit.
@@ -446,6 +454,24 @@ end
 Round = API.Round;
 
 ---
+-- Fügt eine Bedingung für Quicksaves hinzu.
+--
+-- Die Bedingungsfunktion erwartet keine Parameter und muss true zurückgeben,
+-- kein Quicksave möglich sein soll.
+--
+-- <b>Hinweis:</b> Nur im lokalen Skript möglich!
+--
+-- @param[type=function] _Function Bedingungsprüfung
+-- @within Anwenderfunktionen
+--
+function API.AddDoQuicksaveCondition(_Function)
+    if not GUI or type(_Function) ~= "function" then
+        return;
+    end
+    Swift:AddDoQuicksaveCondition(_Function);
+end
+
+---
 -- Gibt die ID des Quests mit dem angegebenen Namen zurück. Existiert der
 -- Quest nicht, wird nil zurückgegeben.
 --
@@ -871,6 +897,9 @@ GetDistance = API.GetDistance;
 -- @usage local Position = API.LocateEntity("Hans")
 --
 function API.LocateEntity(_Entity)
+    if _Entity == nil then
+        return {X= 1, Y= 1, Z= 1};
+    end
     if (type(_Entity) == "table") then
         return _Entity;
     end
