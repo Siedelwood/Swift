@@ -1,7 +1,21 @@
 #!/bin/bash
+
+# build unifile qsb
 lua writer.lua
 cd ../../luaminifyer
 ./LuaMinify.sh ../lua/var/qsb.lua
 cd ../lua/var
 #rm qsb.lua
 #mv qsb_min.lua qsb.lua
+
+# copy to shipment repo
+cd ../..
+mkdir --parents Swift/modules
+rm -rf Swift/modules/*
+cp -r lua/modules/* Swift/modules
+mkdir --parents Swift/default
+rm -rf Swift/default/*
+cp -r default/* Swift/default
+mkdir --parents Swift/doc
+rm -rf Swift/doc/*
+cp -r doc/* Swift/doc
