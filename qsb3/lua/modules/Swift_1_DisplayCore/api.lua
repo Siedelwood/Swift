@@ -117,16 +117,17 @@ function API.DeactivateBorderScroll(_Position)
 end
 
 ---
--- Propagiert den Beginn des cinematischen Events.
+-- Propagiert den Beginn des cinematischen Events und bindet es an den Spieler.
 --
 -- @param[type=string] Bezeichner
+-- @param[type=number] ID des Spielers
 -- @within Anwenderfunktionen
 --
-function API.StartCinematicEvent(_Name)
+function API.StartCinematicEvent(_Name, _PlayerID)
     if GUI then
         return;
     end
-    local ID = ModuleDisplayCore.Global:ActivateCinematicEvent();
+    local ID = ModuleDisplayCore.Global:ActivateCinematicEvent(_PlayerID);
     QSB.CinematicEvents[_Name] = ID;
 end
 
@@ -163,15 +164,32 @@ function API.GetCinematicEventStatus(_Name)
 end
 
 ---
--- Prüft ob gerade ein cinematisches Event aktiv ist.
+-- Gibt den Spieler zurück, an den das cinematische Event gebunden ist.
 --
+-- @param[type=string] Bezeichner
+-- @return[type=number] ID des Spielers
+-- @within Anwenderfunktionen
+--
+function API.GetCinematicEventPlayerID(_Name)
+    if GUI then
+        return ModuleDisplayCore.Local:GetCinematicEventPlayerID(QSB.CinematicEvents[_Name]);
+    end
+    ModuleDisplayCore.Global:GetCinematicEventPlayerID(QSB.CinematicEvents[_Name]);
+end
+
+---
+-- Prüft ob gerade ein cinematisches Event für den Spieler aktiv ist.
+--
+-- @param[type=number] ID des Spielers
 -- @return[type=boolean] Event aktiv
 -- @within Anwenderfunktionen
 --
-function API.IsCinematicEventActive()
+function API.IsCinematicEventActive(_PlayerID)
     for k, v in pairs(QSB.CinematicEvents) do
-        if API.GetCinematicEventStatus(k) == CinematicEventStatus.Active then
-            return true;
+        if API.GetCinematicEventPlayerID(k) == _PlayerID then
+            if API.GetCinematicEventStatus(k) == CinematicEventStatus.Active then
+                return true;
+            end
         end
     end
     return false;
