@@ -20,12 +20,14 @@ ModuleDialogSystem = {
 
         Text = {
             Continue = {
-                de = "{cr}{cr}{grey}(Weiter mit ESC)",
-                en = "{cr}{cr}{grey}(Continue with ESC)"
+                de = "{cr}{cr}{azure}(Weiter mit ESC)",
+                en = "{cr}{cr}{azure}(Continue with ESC)"
             }
         },
     },
-    Local = {},
+    Local = {
+        Dialog = {},
+    },
     -- This is a shared structure but the values are asynchronous!
     Shared = {},
 };
@@ -163,6 +165,17 @@ function ModuleDialogSystem.Local:StartDialog(_PlayerID)
         API.DeactivateBorderScroll();
         XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 1);
         XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles", 1);
+        XGUIEng.ShowWidget("/InGame/Root/3dWorldView", 0);
+        GUI.ClearSelection();
+
+        -- Make camera backup
+        if not self.Dialog[_PlayerID] then
+            self.Dialog[_PlayerID] = {
+                Rotation = Camera.RTS_GetRotationAngle();
+                Zoom     = Camera.RTS_GetZoomFactor();
+                Position = {Camera.RTS_GetLookAtPosition()}
+            };
+        end
     end
 end
 
@@ -170,14 +183,27 @@ function ModuleDialogSystem.Local:EndDialog(_PlayerID)
     if GUI.GetPlayerID() == _PlayerID then
         API.ActivateNormalInterface();
         API.ActivateBorderScroll();
-        Camera.RTS_FollowEntity(0);
         XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 0);
         XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles", 0);
+        XGUIEng.ShowWidget("/InGame/Root/3dWorldView", 1);
+
+        -- Load camera backup
+        Camera.RTS_FollowEntity(0);
+        if self.Dialog[_PlayerID] then
+            Camera.RTS_SetRotationAngle(self.Dialog[_PlayerID].Rotation);
+            Camera.RTS_SetZoomFactor(self.Dialog[_PlayerID].Zoom);
+            Camera.RTS_SetLookAtPosition(
+                self.Dialog[_PlayerID].Position[1],
+                self.Dialog[_PlayerID].Position[2]
+            );
+            self.Dialog[_PlayerID] = nil;
+        end
     end
 end
 
 function ModuleDialogSystem.Local:DisplayPage(_PlayerID, _PageData)
     if GUI.GetPlayerID() == _PlayerID then
+        GUI.ClearSelection();
         if _PageData.Target then
             Camera.RTS_FollowEntity(GetID(_PageData.Target));
         else
@@ -187,7 +213,9 @@ function ModuleDialogSystem.Local:DisplayPage(_PlayerID, _PageData)
             Camera.RTS_ScrollSetLookAt(_PageData.Position.X, _PageData.Position.Y);
         end
         if _PageData.Zoom then
+            Camera.RTS_SetZoomFactorMin(_PageData.Zoom -0.00001);
             Camera.RTS_SetZoomFactor(_PageData.Zoom);
+            Camera.RTS_SetZoomFactorMax(_PageData.Zoom +0.00001);
         end
         if _PageData.Rotation then
             Camera.RTS_SetRotationAngle(_PageData.Rotation);

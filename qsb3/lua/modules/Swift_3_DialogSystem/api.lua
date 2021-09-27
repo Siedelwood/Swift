@@ -31,10 +31,13 @@ end
 
 function API.AddDialogPages(_Dialog)
     local AP = function(_Page)
-        if not _Page.Rotation and _Page.Target ~= nil then
+        if _Page.Rotation == nil and _Page.Target ~= nil then
             local ID = GetID(_Page.Target);
             local Orientation = Logic.GetEntityOrientation(ID) +90;
             _Page.Rotation = Orientation;
+        end
+        if _Page.Zoom == nil then
+            _Page.Zoom = 0.15;
         end
         table.insert(_Dialog, _Page);
         return _Page;
