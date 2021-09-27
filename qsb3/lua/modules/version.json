@@ -1,0 +1,12 @@
+{
+    "version": "3.x.x",
+    "history": [
+        {
+            "version": "3.x.x",
+            "date": "XX.XX.20XX",
+            "changes": [
+                "Initial Release"
+            ]
+        }
+    ]
+}
