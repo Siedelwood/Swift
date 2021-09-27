@@ -1,7 +1,7 @@
 {
-    "name": "Swift_4_GraphVizExport",
+    "name": "Swift_2_WeatherManipulation",
     "version": "1.0.0",
-    "caption": "(4) GraphViz Export",
+    "caption": "(2) Weather Manipulation",
     "shortdesc": "",
     "description": "",
     "files": [
@@ -9,6 +9,7 @@
         "api.lua"
     ],
     "dependencies": [
-        "Swift_2_Quests"
+        "Swift_0_Core",
+        "Swift_1_JobsCore"
     ]
 }

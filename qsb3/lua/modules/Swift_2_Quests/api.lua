@@ -73,7 +73,7 @@ function API.CreateQuest(_Data)
         error("API.CreateQuest: A quest named " ..tostring(_Data.Name).. " already exists!");
         return;
     end
-    return ModuleQuestCore.Global:QuestCreateNewQuest(_Data);
+    return ModuleQuests.Global:QuestCreateNewQuest(_Data);
 end
 AddQuest = API.CreateQuest;
 
@@ -114,7 +114,7 @@ function API.CreateQuestMessage(_Text, _Sender, _Receiver, _AncestorWt, _Callbac
         error("API.GetResourceOfProduct: _Receiver is wrong!");
         return;
     end
-    return ModuleQuestCore.Global:QuestMessage(_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor);
+    return ModuleQuests.Global:QuestMessage(_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor);
 end
 QuestMessage = API.CreateQuestMessage;
 
@@ -177,7 +177,7 @@ function API.CreateQuestDialog(_Messages)
             _Messages[i][7] = _Messages.Name;
             _Messages[i][4] = _Messages[i-1][4];
         end
-        QuestName = ModuleQuestCore.Global:QuestMessage(unpack(_Messages[i]));
+        QuestName = ModuleQuests.Global:QuestMessage(unpack(_Messages[i]));
         table.insert(GeneratedQuests, QuestName);
     end
 

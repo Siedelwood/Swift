@@ -88,7 +88,7 @@ function API.WeatherEventRegister(_Event, _Duration)
         log("API.WeatherEventStart: Invalid weather event!", LEVEL_ERROR);
         return;
     end
-    ModuleWeatherCore.Global:AddEvent(_Event, _Duration);
+    ModuleWeatherManipulation.Global:AddEvent(_Event, _Duration);
 end
 
 ---
@@ -114,12 +114,12 @@ function API.WeatherEventRegisterLoop(_Event)
     
     _Event.Loop = function(_Data)
         if _Data.Duration <= 36 then
-            ModuleWeatherCore.Global:AddEvent(_Event, _Data.Name, 120);
-            ModuleWeatherCore.Global:StopEvent();
-            ModuleWeatherCore.Global:ActivateEvent();
+            ModuleWeatherManipulation.Global:AddEvent(_Event, _Data.Name, 120);
+            ModuleWeatherManipulation.Global:StopEvent();
+            ModuleWeatherManipulation.Global:ActivateEvent();
         end
     end
-    ModuleWeatherCore.Global:AddEvent(_Event, 120);
+    ModuleWeatherManipulation.Global:AddEvent(_Event, 120);
 end
 
 ---
@@ -130,8 +130,8 @@ end
 -- @within WeatherEvent
 --
 function API.WeatherEventNext()
-    ModuleWeatherCore.Global:StopEvent();
-    ModuleWeatherCore.Global:ActivateEvent();
+    ModuleWeatherManipulation.Global:StopEvent();
+    ModuleWeatherManipulation.Global:ActivateEvent();
 end
 
 ---
@@ -143,7 +143,7 @@ function API.WeatherEventAbort()
         return;
     end
     GUI.SendScriptCommand("Display.StopAllEnvironmentSettingsSequences()");
-    ModuleWeatherCore.Global:StopEvent();
+    ModuleWeatherManipulation.Global:StopEvent();
 end
 
 ---
@@ -158,8 +158,8 @@ function API.WeatherEventPurge()
     if GUI then
         return;
     end
-    ModuleWeatherCore.Global:PurgeAllEvents();
+    ModuleWeatherManipulation.Global:PurgeAllEvents();
     GUI.SendScriptCommand("Display.StopAllEnvironmentSettingsSequences()");
-    ModuleWeatherCore.Global:StopEvent();
+    ModuleWeatherManipulation.Global:StopEvent();
 end
 

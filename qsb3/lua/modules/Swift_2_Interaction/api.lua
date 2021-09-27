@@ -103,7 +103,7 @@ function API.NpcCompose(_Data)
     NPC:SetWrongPartnerCallback(WronHeroCallback);
     NPC:SetCallback(_Data.Callback);
     NPC:SetType(_Data.Type or 1);
-    if  ModuleInteractionCore.Global.UseRepositionByDefault
+    if  ModuleInteraction.Global.UseRepositionByDefault
     and _Data.Reposition == nil then
         _Data.Reposition = true;
     end
@@ -249,7 +249,7 @@ TalkedToNPC = API.NpcHasSpoken;
 -- @within Anwenderfunktionen
 --
 function API.NpcUseRepositionByDefault(_Flag)
-    ModuleInteractionCore.Global.UseRepositionByDefault = _Flag == true;
+    ModuleInteraction.Global.UseRepositionByDefault = _Flag == true;
 end
 
 ---
@@ -328,7 +328,7 @@ function API.SetupObject(_Description)
     if GUI then
         return;
     end
-    return ModuleInteractionCore.Global:CreateObject(_Description);
+    return ModuleInteraction.Global:CreateObject(_Description);
 end
 API.CreateObject = API.SetupObject;
 CreateObject = API.SetupObject;
@@ -348,7 +348,7 @@ function API.SetObjectUnused(_ScriptName)
     if GUI or not IO[_ScriptName] then
         return;
     end
-    ModuleInteractionCore.Global:ResetObject(IO[_ScriptName]);
+    ModuleInteraction.Global:ResetObject(IO[_ScriptName]);
     API.InteractiveObjectDeactivate(_ScriptName);
 end
 ResetObject = API.SetObjectUnused;
@@ -385,7 +385,7 @@ function API.SetObjectHeadline(_ScriptName, _Text)
         error("API.SetObjectHeadline: Object " ..tostring(_ScriptName).. " does not exist!");
         return;
     end
-    ModuleInteractionCore.Global:SetObjectLambda(_ScriptName, "ObjectHeadline", _Text);
+    ModuleInteraction.Global:SetObjectLambda(_ScriptName, "ObjectHeadline", _Text);
 end
 
 ---
@@ -420,7 +420,7 @@ function API.SetObjectDescription(_ScriptName, _Text)
         error("API.SetObjectDescription: Object " ..tostring(_ScriptName).. " does not exist!");
         return;
     end
-    ModuleInteractionCore.Global:SetObjectLambda(_ScriptName, "ObjectDescription", _Text);
+    ModuleInteraction.Global:SetObjectLambda(_ScriptName, "ObjectDescription", _Text);
 end
 
 ---
@@ -455,7 +455,7 @@ function API.SetObjectDisabledText(_ScriptName, _Text)
         error("API.SetObjectDisabledText: Object " ..tostring(_ScriptName).. " does not exist!");
         return;
     end
-    ModuleInteractionCore.Global:SetObjectLambda(_ScriptName, "ObjectDisabledText", _Text);
+    ModuleInteraction.Global:SetObjectLambda(_ScriptName, "ObjectDisabledText", _Text);
 end
 
 ---
@@ -486,7 +486,7 @@ function API.SetObjectIcon(_ScriptName, _Icon)
         error("API.SetObjectIcon: Object " ..tostring(_ScriptName).. " does not exist!");
         return;
     end
-    ModuleInteractionCore.Global:SetObjectLambda(_ScriptName, "ObjectIconTexture", _Icon);
+    ModuleInteraction.Global:SetObjectLambda(_ScriptName, "ObjectIconTexture", _Icon);
 end
 
 ---
@@ -514,7 +514,7 @@ function API.SetObjectCondition(_ScriptName, _Lambda)
         error("API.SetObjectCondition: Object " ..tostring(_ScriptName).. " does not exist!");
         return;
     end
-    ModuleInteractionCore.Global:SetObjectLambda(_ScriptName, "ObjectCondition", _Lambda);
+    ModuleInteraction.Global:SetObjectLambda(_ScriptName, "ObjectCondition", _Lambda);
 end
 
 ---
@@ -536,7 +536,7 @@ function API.SetObjectCallback(_ScriptName, _Lambda)
         error("API.SetObjectCallback: Object " ..tostring(_ScriptName).. " does not exist!");
         return;
     end
-    ModuleInteractionCore.Global:SetObjectLambda(_ScriptName, "ObjectClickAction", _Lambda);
+    ModuleInteraction.Global:SetObjectLambda(_ScriptName, "ObjectClickAction", _Lambda);
 end
 
 ---
@@ -563,10 +563,10 @@ function API.InteractiveObjectActivate(_ScriptName, _State, _PlayerID)
         if IO[_ScriptName].m_Slave then
             IO_SlaveState[SlaveName] = 1;
         end
-        ModuleInteractionCore.Global:SetObjectAvailability(SlaveName, _State, _PlayerID);
+        ModuleInteraction.Global:SetObjectAvailability(SlaveName, _State, _PlayerID);
         IO[_ScriptName]:SetActive(true);
     else
-        ModuleInteractionCore.Global:SetObjectAvailability(_ScriptName, _State, _PlayerID);
+        ModuleInteraction.Global:SetObjectAvailability(_ScriptName, _State, _PlayerID);
     end
 end
 InteractiveObjectActivate = API.InteractiveObjectActivate;
@@ -589,10 +589,10 @@ function API.InteractiveObjectDeactivate(_ScriptName, _PlayerID)
         if IO[_ScriptName].m_Slave then
             IO_SlaveState[SlaveName] = 0;
         end
-        ModuleInteractionCore.Global:SetObjectAvailability(SlaveName, 2, _PlayerID);
+        ModuleInteraction.Global:SetObjectAvailability(SlaveName, 2, _PlayerID);
         IO[_ScriptName]:SetActive(false);
     else
-        ModuleInteractionCore.Global:SetObjectAvailability(_ScriptName, 2, _PlayerID);
+        ModuleInteraction.Global:SetObjectAvailability(_ScriptName, 2, _PlayerID);
     end
 end
 InteractiveObjectDeactivate = API.InteractiveObjectDeactivate;

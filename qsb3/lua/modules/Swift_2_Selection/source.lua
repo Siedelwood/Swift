@@ -2,9 +2,9 @@
 -- Module Dialog Tools                                                        --
 -- -------------------------------------------------------------------------- --
 
-ModuleSelectionCore = {
+ModuleSelection = {
     Properties = {
-        Name = "ModuleSelectionCore",
+        Name = "ModuleSelection",
     },
 
     Global = {
@@ -84,17 +84,17 @@ ModuleSelectionCore = {
 
 -- Global ------------------------------------------------------------------- --
 
-function ModuleSelectionCore.Global:OnGameStart()
+function ModuleSelection.Global:OnGameStart()
     QSB.ScriptEvents.SelectionChanged = API.RegisterScriptEvent("Event_SelectionChanged");
 end
 
-function ModuleSelectionCore.Global:OnEvent(_ID, _Event, _PlayerID, _OldSelection, _NewSelection)
+function ModuleSelection.Global:OnEvent(_ID, _Event, _PlayerID, _OldSelection, _NewSelection)
     if _ID == QSB.ScriptEvents.SelectionChanged then
         self.SelectedEntities = _NewSelection or {};
     end
 end
 
-function ModuleSelectionCore.Global:MilitaryDisambleTrebuchet(_EntityID)
+function ModuleSelection.Global:MilitaryDisambleTrebuchet(_EntityID)
     local x,y,z = Logic.EntityGetPos(_EntityID);
     local PlayerID = Logic.EntityGetPlayer(_EntityID);
 
@@ -127,7 +127,7 @@ function ModuleSelectionCore.Global:MilitaryDisambleTrebuchet(_EntityID)
     ]]);
 end
 
-function ModuleSelectionCore.Global:MilitaryErectTrebuchet(_EntityID)
+function ModuleSelection.Global:MilitaryErectTrebuchet(_EntityID)
     local x,y,z = Logic.EntityGetPos(_EntityID);
     local PlayerID = Logic.EntityGetPlayer(_EntityID);
 
@@ -165,7 +165,7 @@ end
 
 -- Local -------------------------------------------------------------------- --
 
-function ModuleSelectionCore.Local:OnGameStart()
+function ModuleSelection.Local:OnGameStart()
     QSB.ScriptEvents.SelectionChanged = API.RegisterScriptEvent("Event_SelectionChanged");
 
     if Framework.IsNetworkGame() then
@@ -183,15 +183,15 @@ function ModuleSelectionCore.Local:OnGameStart()
     self:OverwriteNamesAndDescription();
 end
 
-function ModuleSelectionCore.Local:OverrideSelection()
-    GameCallback_GUI_SelectionChanged_Orig_ModuleSelectionCore = GameCallback_GUI_SelectionChanged;
+function ModuleSelection.Local:OverrideSelection()
+    GameCallback_GUI_SelectionChanged_Orig_ModuleSelection = GameCallback_GUI_SelectionChanged;
     GameCallback_GUI_SelectionChanged = function(_Source)
-        GameCallback_GUI_SelectionChanged_Orig_ModuleSelectionCore(_Source);
-        ModuleSelectionCore.Local:OnSelectionCanged(_Source);
+        GameCallback_GUI_SelectionChanged_Orig_ModuleSelection(_Source);
+        ModuleSelection.Local:OnSelectionCanged(_Source);
     end
 end
 
-function ModuleSelectionCore.Local:OverwriteMilitaryCommands()
+function ModuleSelection.Local:OverwriteMilitaryCommands()
     GUI_Military.StandGroundClicked = function()
         Sound.FXPlay2DSound( "ui\\menu_click");
         local SelectedEntities = {GUI.GetSelectedEntities()};
@@ -229,24 +229,24 @@ function ModuleSelectionCore.Local:OverwriteMilitaryCommands()
     end
 end
 
-function ModuleSelectionCore.Local:OverwriteMilitaryErect()
-    GUI_Military.ErectClicked_Orig_ModuleSelectionCore = GUI_Military.ErectClicked;
+function ModuleSelection.Local:OverwriteMilitaryErect()
+    GUI_Military.ErectClicked_Orig_ModuleSelection = GUI_Military.ErectClicked;
     GUI_Military.ErectClicked = function()
-        GUI_Military.ErectClicked_Orig_ModuleSelectionCore();
+        GUI_Military.ErectClicked_Orig_ModuleSelection();
         local PlayerID = GUI.GetPlayerID();
         local SelectedEntities = {GUI.GetSelectedEntities()};
         for i=1, #SelectedEntities, 1 do
             local EntityType = Logic.GetEntityType(SelectedEntities[i]);
             if EntityType == Entities.U_SiegeEngineCart then
                 GUI.SendScriptCommand(string.format(
-                    [[ModuleSelectionCore.Global:MilitaryErectTrebuchet(%d)]],
+                    [[ModuleSelection.Global:MilitaryErectTrebuchet(%d)]],
                     SelectedEntities[i]
                 ));
             end
         end
     end
 
-    GUI_Military.ErectUpdate_Orig_ModuleSelectionCore = GUI_Military.ErectUpdate;
+    GUI_Military.ErectUpdate_Orig_ModuleSelection = GUI_Military.ErectUpdate;
     GUI_Military.ErectUpdate = function()
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
         local SiegeCartID = GUI.GetSelectedEntity();
@@ -256,28 +256,28 @@ function ModuleSelectionCore.Local:OverwriteMilitaryErect()
             XGUIEng.DisableButton(CurrentWidgetID, 0);
             SetIcon(CurrentWidgetID, {12, 6});
         else
-            GUI_Military.ErectUpdate_Orig_ModuleSelectionCore();
+            GUI_Military.ErectUpdate_Orig_ModuleSelection();
         end
     end
 
-    GUI_Military.ErectMouseOver_Orig_ModuleSelectionCore = GUI_Military.ErectMouseOver;
+    GUI_Military.ErectMouseOver_Orig_ModuleSelection = GUI_Military.ErectMouseOver;
     GUI_Military.ErectMouseOver = function()
         local SiegeCartID = GUI.GetSelectedEntity();
         local TooltipTextKey;
         if Logic.GetEntityType(SiegeCartID) == Entities.U_SiegeEngineCart then
             TooltipTextKey = "ErectCatapult";
         else
-            GUI_Military.ErectMouseOver_Orig_ModuleSelectionCore();
+            GUI_Military.ErectMouseOver_Orig_ModuleSelection();
             return;
         end
         GUI_Tooltip.TooltipNormal(TooltipTextKey, "Erect");
     end
 end
 
-function ModuleSelectionCore.Local:OverwriteMilitaryDisamble()
-    GUI_Military.DisassembleClicked_Orig_ModuleSelectionCore = GUI_Military.DisassembleClicked;
+function ModuleSelection.Local:OverwriteMilitaryDisamble()
+    GUI_Military.DisassembleClicked_Orig_ModuleSelection = GUI_Military.DisassembleClicked;
     GUI_Military.DisassembleClicked = function()
-        GUI_Military.DisassembleClicked_Orig_ModuleSelectionCore();
+        GUI_Military.DisassembleClicked_Orig_ModuleSelection();
 
         local PlayerID = GUI.GetPlayerID();
         local SelectedEntities = {GUI.GetSelectedEntities()};
@@ -285,14 +285,14 @@ function ModuleSelectionCore.Local:OverwriteMilitaryDisamble()
             local EntityType = Logic.GetEntityType(SelectedEntities[i]);
             if EntityType == Entities.U_Trebuchet then
                 GUI.SendScriptCommand(string.format(
-                    [[ModuleSelectionCore.Global:MilitaryDisambleTrebuchet(%d)]],
+                    [[ModuleSelection.Global:MilitaryDisambleTrebuchet(%d)]],
                     SelectedEntities[i]
                 ));
             end
         end
     end
 
-    GUI_Military.DisassembleUpdate_Orig_ModuleSelectionCore = GUI_Military.DisassembleUpdate;
+    GUI_Military.DisassembleUpdate_Orig_ModuleSelection = GUI_Military.DisassembleUpdate;
     GUI_Military.DisassembleUpdate = function()
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
         local PlayerID = GUI.GetPlayerID();
@@ -303,12 +303,12 @@ function ModuleSelectionCore.Local:OverwriteMilitaryDisamble()
             XGUIEng.DisableButton(CurrentWidgetID, 0);
             SetIcon(CurrentWidgetID, {12, 9});
         else
-            GUI_Military.DisassembleUpdate_Orig_ModuleSelectionCore();
+            GUI_Military.DisassembleUpdate_Orig_ModuleSelection();
         end
     end
 end
 
-function ModuleSelectionCore.Local:OnSelectionCanged(_Source)
+function ModuleSelection.Local:OnSelectionCanged(_Source)
     local OldSelection = self.SelectedEntities or {};
     local SelectedEntities = {GUI.GetSelectedEntities()};
     local PlayerID = GUI.GetPlayerID();
@@ -350,8 +350,8 @@ function ModuleSelectionCore.Local:OnSelectionCanged(_Source)
     end
 end
 
-function ModuleSelectionCore.Local:OverwriteMultiselectIcon()
-    GUI_MultiSelection.IconUpdate_Orig_ModuleSelectionCore = GUI_MultiSelection.IconUpdate;
+function ModuleSelection.Local:OverwriteMultiselectIcon()
+    GUI_MultiSelection.IconUpdate_Orig_ModuleSelection = GUI_MultiSelection.IconUpdate;
     GUI_MultiSelection.IconUpdate = function()
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
         local CurrentMotherID = XGUIEng.GetWidgetsMotherID(CurrentWidgetID);
@@ -365,7 +365,7 @@ function ModuleSelectionCore.Local:OverwriteMultiselectIcon()
         local EntityMaxHealth = Logic.GetEntityMaxHealth(EntityID);
 
         if EntityType ~= Entities.U_SiegeEngineCart and EntityType ~= Entities.U_Trebuchet then
-            GUI_MultiSelection.IconUpdate_Orig_ModuleSelectionCore();
+            GUI_MultiSelection.IconUpdate_Orig_ModuleSelection();
             return;
         end
         if Logic.IsEntityAlive(EntityID) == false then
@@ -387,7 +387,7 @@ function ModuleSelectionCore.Local:OverwriteMultiselectIcon()
         XGUIEng.SetProgressBarValues(HealthWidgetPath,HealthState, 100);
     end
 
-    GUI_MultiSelection.IconMouseOver_Orig_ModuleSelectionCore = GUI_MultiSelection.IconMouseOver;
+    GUI_MultiSelection.IconMouseOver_Orig_ModuleSelection = GUI_MultiSelection.IconMouseOver;
     GUI_MultiSelection.IconMouseOver = function()
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
         local CurrentMotherID = XGUIEng.GetWidgetsMotherID(CurrentWidgetID);
@@ -397,21 +397,21 @@ function ModuleSelectionCore.Local:OverwriteMultiselectIcon()
         local EntityType = Logic.GetEntityType(EntityID);
 
         if EntityType ~= Entities.U_SiegeEngineCart and EntityType ~= Entities.U_Trebuchet then
-            GUI_MultiSelection.IconMouseOver_Orig_ModuleSelectionCore();
+            GUI_MultiSelection.IconMouseOver_Orig_ModuleSelection();
             return;
         end
         if EntityType == Entities.U_SiegeEngineCart then
-            local TooltipData = API.Localize(ModuleSelectionCore.Local.Tooltips.TrebuchetCart);
+            local TooltipData = API.Localize(ModuleSelection.Local.Tooltips.TrebuchetCart);
             API.InterfaceSetTooltipNormal(TooltipData.Title, TooltipData.Text);
         elseif EntityType == Entities.U_Trebuchet then
-            local TooltipData = API.Localize(ModuleSelectionCore.Local.Tooltips.Trebuchet);
+            local TooltipData = API.Localize(ModuleSelection.Local.Tooltips.Trebuchet);
             API.InterfaceSetTooltipNormal(TooltipData.Title, TooltipData.Text);
         end
     end
 end
 
-function ModuleSelectionCore.Local:OverwriteMilitaryDismount()
-    GUI_Military.DismountClicked_Orig_ModuleSelectionCore = GUI_Military.DismountClicked;
+function ModuleSelection.Local:OverwriteMilitaryDismount()
+    GUI_Military.DismountClicked_Orig_ModuleSelection = GUI_Military.DismountClicked;
     GUI_Military.DismountClicked = function()
         local Selected = GUI.GetSelectedEntity();
         local Type = Logic.GetEntityType(Selected);
@@ -419,16 +419,16 @@ function ModuleSelectionCore.Local:OverwriteMilitaryDismount()
         local Guardian = Logic.GetGuardianEntityID(Selected);
 
         if Guarded ~= 0 and Logic.EntityGetPlayer(Guarded) ~= GUI.GetPlayerID() then
-            GUI_Military.DismountClicked_Orig_ModuleSelectionCore();
+            GUI_Military.DismountClicked_Orig_ModuleSelection();
             return;
         end
         if Logic.IsKnight(Selected) or Logic.IsEntityInCategory(Selected, EntityCategories.AttackableMerchant) == 1 then
-            GUI_Military.DismountClicked_Orig_ModuleSelectionCore();
+            GUI_Military.DismountClicked_Orig_ModuleSelection();
             return;
         end
 
         if Logic.IsLeader(Selected) == 1 and Guarded == 0 then
-            if ModuleSelectionCore.Local.MilitaryRelease then
+            if ModuleSelection.Local.MilitaryRelease then
                 Sound.FXPlay2DSound( "ui\\menu_click");
                 local Soldiers = {Logic.GetSoldiersAttachedToLeader(Selected)};
                 GUI.SendScriptCommand(string.format([[DestroyEntity(%d)]], Soldiers[#Soldiers]));
@@ -440,16 +440,16 @@ function ModuleSelectionCore.Local:OverwriteMilitaryDismount()
         or Type == Entities.U_CatapultCart or Type == Entities.U_SiegeTowerCart
         or Type == Entities.U_MilitaryBatteringRam or Entities.U_MilitaryCatapult
         or Type == Entities.U_MilitarySiegeTower then
-            if ModuleSelectionCore.Local.SiegeEngineRelease and Guardian == 0 then
+            if ModuleSelection.Local.SiegeEngineRelease and Guardian == 0 then
                 Sound.FXPlay2DSound( "ui\\menu_click");
                 GUI.SendScriptCommand(string.format([[DestroyEntity(%d)]], Selected));
             else
-                GUI_Military.DismountClicked_Orig_ModuleSelectionCore();
+                GUI_Military.DismountClicked_Orig_ModuleSelection();
             end
         end
     end
 
-    GUI_Military.DismountUpdate_Orig_ModuleSelectionCore = GUI_Military.DismountUpdate;
+    GUI_Military.DismountUpdate_Orig_ModuleSelection = GUI_Military.DismountUpdate;
     GUI_Military.DismountUpdate = function()
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
         local Selected = GUI.GetSelectedEntity();
@@ -460,18 +460,18 @@ function ModuleSelectionCore.Local:OverwriteMilitaryDismount()
         SetIcon(CurrentWidgetID, {12, 1});
         if Guarded ~= 0 and Logic.EntityGetPlayer(Guarded) ~= GUI.GetPlayerID() then
             XGUIEng.DisableButton(CurrentWidgetID, 0);
-            GUI_Military.DismountUpdate_Orig_ModuleSelectionCore();
+            GUI_Military.DismountUpdate_Orig_ModuleSelection();
             return;
         end
         if Logic.IsKnight(Selected) or Logic.IsEntityInCategory(Selected, EntityCategories.AttackableMerchant) == 1 then
             XGUIEng.DisableButton(CurrentWidgetID, 0);
-            GUI_Military.DismountUpdate_Orig_ModuleSelectionCore();
+            GUI_Military.DismountUpdate_Orig_ModuleSelection();
             return;
         end
         SetIcon(CurrentWidgetID, {14, 12});
 
         if Type == Entities.U_MilitaryLeader then
-            if not ModuleSelectionCore.Local.MilitaryRelease then
+            if not ModuleSelection.Local.MilitaryRelease then
                 XGUIEng.DisableButton(CurrentWidgetID, 1);
             else
                 XGUIEng.DisableButton(CurrentWidgetID, 0);
@@ -487,7 +487,7 @@ function ModuleSelectionCore.Local:OverwriteMilitaryDismount()
                 SetIcon(CurrentWidgetID, {12, 1});
                 XGUIEng.DisableButton(CurrentWidgetID, 0);
             else
-                if not ModuleSelectionCore.Local.SiegeEngineRelease then
+                if not ModuleSelection.Local.SiegeEngineRelease then
                     XGUIEng.DisableButton(CurrentWidgetID, 1);
                 else
                     XGUIEng.DisableButton(CurrentWidgetID, 0);
@@ -497,11 +497,11 @@ function ModuleSelectionCore.Local:OverwriteMilitaryDismount()
     end
 end
 
-function ModuleSelectionCore.Local:OverwriteThiefDeliver()
-    GUI_Thief.ThiefDeliverClicked_Orig_ModuleSelectionCore = GUI_Thief.ThiefDeliverClicked;
+function ModuleSelection.Local:OverwriteThiefDeliver()
+    GUI_Thief.ThiefDeliverClicked_Orig_ModuleSelection = GUI_Thief.ThiefDeliverClicked;
     GUI_Thief.ThiefDeliverClicked = function()
-        if not ModuleSelectionCore.Local.ThiefRelease then
-            GUI_Thief.ThiefDeliverClicked_Orig_ModuleSelectionCore();
+        if not ModuleSelection.Local.ThiefRelease then
+            GUI_Thief.ThiefDeliverClicked_Orig_ModuleSelection();
             return;
         end
 
@@ -514,20 +514,20 @@ function ModuleSelectionCore.Local:OverwriteThiefDeliver()
         GUI.SendScriptCommand(string.format([[DestroyEntity(%d)]], ThiefID));
     end
 
-    GUI_Thief.ThiefDeliverMouseOver_Orig_ModuleSelectionCore = GUI_Thief.ThiefDeliverMouseOver;
+    GUI_Thief.ThiefDeliverMouseOver_Orig_ModuleSelection = GUI_Thief.ThiefDeliverMouseOver;
     GUI_Thief.ThiefDeliverMouseOver = function()
-        if not ModuleSelectionCore.Local.ThiefRelease then
-            GUI_Thief.ThiefDeliverMouseOver_Orig_ModuleSelectionCore();
+        if not ModuleSelection.Local.ThiefRelease then
+            GUI_Thief.ThiefDeliverMouseOver_Orig_ModuleSelection();
             return;
         end
-        local Text = API.Localize(ModuleSelectionCore.Local.Tooltips.ReleaseSoldiers);
+        local Text = API.Localize(ModuleSelection.Local.Tooltips.ReleaseSoldiers);
         API.InterfaceSetTooltipNormal(Text.Title, Text.Text, Text.Disabled);
     end
 
-    GUI_Thief.ThiefDeliverUpdate_Orig_ModuleSelectionCore = GUI_Thief.ThiefDeliverUpdate;
+    GUI_Thief.ThiefDeliverUpdate_Orig_ModuleSelection = GUI_Thief.ThiefDeliverUpdate;
     GUI_Thief.ThiefDeliverUpdate = function()
-        if not ModuleSelectionCore.Local.ThiefRelease then
-            GUI_Thief.ThiefDeliverUpdate_Orig_ModuleSelectionCore();
+        if not ModuleSelection.Local.ThiefRelease then
+            GUI_Thief.ThiefDeliverUpdate_Orig_ModuleSelection();
             return;
         end
 
@@ -542,7 +542,7 @@ function ModuleSelectionCore.Local:OverwriteThiefDeliver()
     end
 end
 
-function ModuleSelectionCore.Local:OverwriteSelectKnight()
+function ModuleSelection.Local:OverwriteSelectKnight()
     GUI_Knight.JumpToButtonClicked = function()
         local PlayerID = GUI.GetPlayerID();
         local KnightID = Logic.GetKnightID(PlayerID);
@@ -576,12 +576,12 @@ function ModuleSelectionCore.Local:OverwriteSelectKnight()
     end
 end
 
-function ModuleSelectionCore.Local:OverwriteSelectAllUnits()
+function ModuleSelection.Local:OverwriteSelectAllUnits()
     GUI_MultiSelection.SelectAllPlayerUnitsClicked = function()
         if XGUIEng.IsModifierPressed(Keys.ModifierShift) then
-            ModuleSelectionCore.Local:ExtendedLeaderSortOrder();
+            ModuleSelection.Local:ExtendedLeaderSortOrder();
         else
-            ModuleSelectionCore.Local:NormalLeaderSortOrder();
+            ModuleSelection.Local:NormalLeaderSortOrder();
         end
 
         Sound.FXPlay2DSound("ui\\menu_click");
@@ -604,7 +604,7 @@ function ModuleSelectionCore.Local:OverwriteSelectAllUnits()
     end
 end
 
-function ModuleSelectionCore.Local:NormalLeaderSortOrder()
+function ModuleSelection.Local:NormalLeaderSortOrder()
     g_MultiSelection = {};
     g_MultiSelection.EntityList = {};
     g_MultiSelection.Highlighted = {};
@@ -638,7 +638,7 @@ function ModuleSelectionCore.Local:NormalLeaderSortOrder()
     end
 end
 
-function ModuleSelectionCore.Local:ExtendedLeaderSortOrder()
+function ModuleSelection.Local:ExtendedLeaderSortOrder()
     g_MultiSelection = {};
     g_MultiSelection.EntityList = {};
     g_MultiSelection.Highlighted = {};
@@ -675,20 +675,20 @@ function ModuleSelectionCore.Local:ExtendedLeaderSortOrder()
     end
 end
 
-function ModuleSelectionCore.Local:OverwriteNamesAndDescription()
-    GUI_Tooltip.SetNameAndDescription_Orig_ModuleSelectionCore = GUI_Tooltip.SetNameAndDescription;
+function ModuleSelection.Local:OverwriteNamesAndDescription()
+    GUI_Tooltip.SetNameAndDescription_Orig_ModuleSelection = GUI_Tooltip.SetNameAndDescription;
     GUI_Tooltip.SetNameAndDescription = function(_TooltipNameWidget, _TooltipDescriptionWidget, _OptionalTextKeyName, _OptionalDisabledTextKeyName, _OptionalMissionTextFileBoolean)
         local MotherWidget = "/InGame/Root/Normal/AlignBottomRight";
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
 
         if XGUIEng.GetWidgetID(MotherWidget.. "/MapFrame/KnightButton") == CurrentWidgetID then
-            local Text = API.Localize(ModuleSelectionCore.Local.Tooltips.KnightButton);
+            local Text = API.Localize(ModuleSelection.Local.Tooltips.KnightButton);
             API.InterfaceSetTooltipNormal(Text.Title, Text.Text);
             return;
         end
 
         if XGUIEng.GetWidgetID(MotherWidget.. "/MapFrame/BattalionButton") == CurrentWidgetID then
-            local Text = API.Localize(ModuleSelectionCore.Local.Tooltips.BattalionButton);
+            local Text = API.Localize(ModuleSelection.Local.Tooltips.BattalionButton);
             API.InterfaceSetTooltipNormal(Text.Title, Text.Text);
             return;
         end
@@ -703,7 +703,7 @@ function ModuleSelectionCore.Local:OverwriteNamesAndDescription()
                     local GuardianEntity = Logic.GetGuardianEntityID(SelectedEntity);
                     local GuardedEntity = Logic.GetGuardedEntityID(SelectedEntity);
                     if GuardianEntity == 0 and GuardedEntity == 0 then
-                        local Text = API.Localize(ModuleSelectionCore.Local.Tooltips.ReleaseSoldiers);
+                        local Text = API.Localize(ModuleSelection.Local.Tooltips.ReleaseSoldiers);
                         API.InterfaceSetTooltipNormal(Text.Title, Text.Text, Text.Disabled);
                         return;
                     end
@@ -711,11 +711,11 @@ function ModuleSelectionCore.Local:OverwriteNamesAndDescription()
             end
         end
 
-        GUI_Tooltip.SetNameAndDescription_Orig_ModuleSelectionCore(_TooltipNameWidget, _TooltipDescriptionWidget, _OptionalTextKeyName, _OptionalDisabledTextKeyName, _OptionalMissionTextFileBoolean);
+        GUI_Tooltip.SetNameAndDescription_Orig_ModuleSelection(_TooltipNameWidget, _TooltipDescriptionWidget, _OptionalTextKeyName, _OptionalDisabledTextKeyName, _OptionalMissionTextFileBoolean);
     end
 end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleSelectionCore);
+Swift:RegisterModules(ModuleSelection);
 

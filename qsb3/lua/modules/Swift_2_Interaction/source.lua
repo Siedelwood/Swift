@@ -8,9 +8,9 @@ You may use and modify this file unter the terms of the MIT licence.
 (See https://en.wikipedia.org/wiki/MIT_License)
 ]]
 
-ModuleInteractionCore = {
+ModuleInteraction = {
     Properties = {
-        Name = "ModuleInteractionCore",
+        Name = "ModuleInteraction",
     },
 
     Global = {
@@ -40,7 +40,7 @@ QSB.NonPlayerCharacterObjects = {};
 
 -- Global Script ------------------------------------------------------------ --
 
-function ModuleInteractionCore.Global:OnGameStart()
+function ModuleInteraction.Global:OnGameStart()
     IO = {};
     IO_UserDefindedNames = {};
     IO_SlaveToMaster = {};
@@ -62,23 +62,23 @@ function ModuleInteractionCore.Global:OnGameStart()
     self:OverrideQuestFunctions();
 
     API.StartJobByEventType(Events.LOGIC_EVENT_ENTITY_DESTROYED, function()
-        ModuleInteractionCore.Global:OnEntityDestroyed();
+        ModuleInteraction.Global:OnEntityDestroyed();
     end);
     API.StartJobByEventType(Events.LOGIC_EVENT_EVERY_SECOND, function()
-        ModuleInteractionCore.Global:ControlMarker();
+        ModuleInteraction.Global:ControlMarker();
     end);
     API.StartJobByEventType(Events.LOGIC_EVENT_EVERY_TURN, function()
         if Logic.GetTime() > 1 then
-            ModuleInteractionCore.Global:DialogTriggerController();
+            ModuleInteraction.Global:DialogTriggerController();
         end
     end);
 end
 
-function ModuleInteractionCore.Global:OnEvent(_ID, _Event, _PlayerID, _ScriptName, _EntityID)
+function ModuleInteraction.Global:OnEvent(_ID, _Event, _PlayerID, _ScriptName, _EntityID)
     if _ID == QSB.ScriptEvents.InteractiveObjectActivated then
-        local Lambda = ModuleInteractionCore.Global.Lambda.IO.ObjectClickAction.Default;
-        if ModuleInteractionCore.Global.Lambda.IO.ObjectClickAction[_ScriptName] then
-            Lambda = ModuleInteractionCore.Global.Lambda.IO.ObjectClickAction[_ScriptName];
+        local Lambda = ModuleInteraction.Global.Lambda.IO.ObjectClickAction.Default;
+        if ModuleInteraction.Global.Lambda.IO.ObjectClickAction[_ScriptName] then
+            Lambda = ModuleInteraction.Global.Lambda.IO.ObjectClickAction[_ScriptName];
         end
         IO[_ScriptName]:SetUsed(true);
         Lambda(_ScriptName, _EntityID, _PlayerID);
@@ -87,7 +87,7 @@ function ModuleInteractionCore.Global:OnEvent(_ID, _Event, _PlayerID, _ScriptNam
     end
 end
 
-function ModuleInteractionCore.Global:CreateDefaultInteractionLambdas()
+function ModuleInteraction.Global:CreateDefaultInteractionLambdas()
     local TitleLambda = function(_Data)
         local Key, DisabledKey = self:GetObjectDefaultKeys(_Data);
         return "UI_ObjectNames/" ..Key;
@@ -122,17 +122,17 @@ function ModuleInteractionCore.Global:CreateDefaultInteractionLambdas()
     self.Lambda.IO.ObjectClickAction.Default = ActionLambda;
 end
 
-function ModuleInteractionCore.Global:OverrideQuestFunctions()
+function ModuleInteraction.Global:OverrideQuestFunctions()
     -- NPC stuff --
 
     GameCallback_OnNPCInteraction_Orig_QSB_NPC_Rewrite = GameCallback_OnNPCInteraction
     GameCallback_OnNPCInteraction = function(_EntityID, _PlayerID)
         GameCallback_OnNPCInteraction_Orig_QSB_NPC_Rewrite(_EntityID, _PlayerID)
-        local ClosestKnightID = ModuleInteractionCore.Global:GetClosestKnight(_EntityID, _PlayerID)
-        ModuleInteractionCore.Global.LastHeroEntityID = ClosestKnightID;
+        local ClosestKnightID = ModuleInteraction.Global:GetClosestKnight(_EntityID, _PlayerID)
+        ModuleInteraction.Global.LastHeroEntityID = ClosestKnightID;
         local NPC = QSB.NonPlayerCharacter:GetInstance(_EntityID);
-        ModuleInteractionCore.Global.LastNpcEntityID = NPC:GetID();
-        ModuleInteractionCore.Global:ExecuteNpcInteraction();
+        ModuleInteraction.Global.LastNpcEntityID = NPC:GetID();
+        ModuleInteraction.Global:ExecuteNpcInteraction();
     end
 
     -- Object stuff --
@@ -157,27 +157,27 @@ function ModuleInteractionCore.Global:OverrideQuestFunctions()
 
     -- Quest stuff --
 
-    QuestTemplate.RemoveQuestMarkers_Orig_ModuleInteractionCore = QuestTemplate.RemoveQuestMarkers
+    QuestTemplate.RemoveQuestMarkers_Orig_ModuleInteraction = QuestTemplate.RemoveQuestMarkers
     QuestTemplate.RemoveQuestMarkers = function(self)
         for i=1, self.Objectives[0] do
             if self.Objectives[i].Type == Objective.Distance then
                 if self.Objectives[i].Data[1] ~= -65565 then
-                    QuestTemplate.RemoveQuestMarkers_Orig_ModuleInteractionCore(self);
+                    QuestTemplate.RemoveQuestMarkers_Orig_ModuleInteraction(self);
                 else
                     QuestTemplate.RemoveNPCMarkers(self);
                 end
             else
-                QuestTemplate.RemoveQuestMarkers_Orig_ModuleInteractionCore(self);
+                QuestTemplate.RemoveQuestMarkers_Orig_ModuleInteraction(self);
             end
         end
     end
 
-    QuestTemplate.ShowQuestMarkers_Orig_ModuleInteractionCore = QuestTemplate.ShowQuestMarkers
+    QuestTemplate.ShowQuestMarkers_Orig_ModuleInteraction = QuestTemplate.ShowQuestMarkers
     QuestTemplate.ShowQuestMarkers = function(self)
         for i=1, self.Objectives[0] do
             if self.Objectives[i].Type == Objective.Distance then
                 if self.Objectives[i].Data[1] ~= -65565 then
-                    QuestTemplate.ShowQuestMarkers_Orig_ModuleInteractionCore(self);
+                    QuestTemplate.ShowQuestMarkers_Orig_ModuleInteraction(self);
                 end
             end
         end
@@ -196,7 +196,7 @@ function ModuleInteractionCore.Global:OverrideQuestFunctions()
         end
     end
 
-    QuestTemplate.IsObjectiveCompleted_Orig_ModuleInteractionCore = QuestTemplate.IsObjectiveCompleted;
+    QuestTemplate.IsObjectiveCompleted_Orig_ModuleInteraction = QuestTemplate.IsObjectiveCompleted;
     QuestTemplate.IsObjectiveCompleted = function(self, objective)
         local objectiveType = objective.Type;
         local data = objective.Data;
@@ -205,7 +205,7 @@ function ModuleInteractionCore.Global:OverrideQuestFunctions()
         end
 
         if objectiveType ~= Objective.Distance then
-            return self:IsObjectiveCompleted_Orig_ModuleInteractionCore(objective);
+            return self:IsObjectiveCompleted_Orig_ModuleInteraction(objective);
         else
             if data[1] == -65565 then
                 if not IsExisting(data[3]) then
@@ -232,7 +232,7 @@ function ModuleInteractionCore.Global:OverrideQuestFunctions()
                     end
                 end
             else
-                return self:IsObjectiveCompleted_Orig_ModuleInteractionCore(objective);
+                return self:IsObjectiveCompleted_Orig_ModuleInteraction(objective);
             end
         end
     end
@@ -261,7 +261,7 @@ function ModuleInteractionCore.Global:OverrideQuestFunctions()
     end
 end
 
-function ModuleInteractionCore.Global:SetObjectLambda(_ScriptName, _FieldName, _Lambda)
+function ModuleInteraction.Global:SetObjectLambda(_ScriptName, _FieldName, _Lambda)
     local Lambda = _Lambda;
     if Lambda ~= nil and type(Lambda) ~= "function" then
         Lambda = function()
@@ -273,15 +273,15 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-function ModuleInteractionCore.Global:SetDefaultNPCType(_Type)
+function ModuleInteraction.Global:SetDefaultNPCType(_Type)
     self.DefaultNpcType = _Type;
 end
 
-function ModuleInteractionCore.Global:SetUseRepositionByDefault(_Flag)
+function ModuleInteraction.Global:SetUseRepositionByDefault(_Flag)
     self.UseRepositionByDefault = _Flag == true;
 end
 
-function ModuleInteractionCore.Global:GetClosestKnight(_EntityID, _PlayerID)
+function ModuleInteraction.Global:GetClosestKnight(_EntityID, _PlayerID)
     local KnightIDs = {};
     Logic.GetKnights(_PlayerID, KnightIDs);
 
@@ -297,10 +297,10 @@ function ModuleInteractionCore.Global:GetClosestKnight(_EntityID, _PlayerID)
     return ClosestKnightID;
 end
 
-function ModuleInteractionCore.Global:ExecuteNpcInteraction()
-    local HeroID = ModuleInteractionCore.Global.LastHeroEntityID;
+function ModuleInteraction.Global:ExecuteNpcInteraction()
+    local HeroID = ModuleInteraction.Global.LastHeroEntityID;
     local HeroPlayerID = Logic.EntityGetPlayer(HeroID);
-    local NpcID = ModuleInteractionCore.Global.LastNpcEntityID;
+    local NpcID = ModuleInteraction.Global.LastNpcEntityID;
 
     local NPC = QSB.NonPlayerCharacter:GetInstance(NpcID);
     if NPC then
@@ -337,16 +337,16 @@ function ModuleInteractionCore.Global:ExecuteNpcInteraction()
     end
 end
 
-function ModuleInteractionCore.Global:ControlMarker()
+function ModuleInteraction.Global:ControlMarker()
     for k, v in pairs(QSB.NonPlayerCharacterObjects) do
         if IsExisting(v:GetID()) then
             v:ControlMarker();
         end
     end
 end
-ModuleInteractionCore_ControlMarkerJob = ModuleInteractionCore.Global.ControlMarker;
+ModuleInteraction_ControlMarkerJob = ModuleInteraction.Global.ControlMarker;
 
-function ModuleInteractionCore.Global:DialogTriggerController()
+function ModuleInteraction.Global:DialogTriggerController()
     for PlayerID = 1, 8, 1 do
         local PlayersKnights = {};
         Logic.GetKnights(PlayerID, PlayersKnights);
@@ -372,7 +372,7 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-function ModuleInteractionCore.Global:CreateObject(_Description)
+function ModuleInteraction.Global:CreateObject(_Description)
     -- Objekt erstellen
     local ID = GetID(_Description.Name);
     if ID == 0 then
@@ -409,11 +409,11 @@ function ModuleInteractionCore.Global:CreateObject(_Description)
     -- Aktivieren
     IO[_Description.Name] = Object;
     self:SetupObject(IO[_Description.Name]);
-    Logic.ExecuteInLuaLocalState("ModuleInteractionCore.Local:ForceFullGlobalReferenceUpdate()");
+    Logic.ExecuteInLuaLocalState("ModuleInteraction.Local:ForceFullGlobalReferenceUpdate()");
     return Object;
 end
 
-function ModuleInteractionCore.Global:CreateSlaveObject(_Object)
+function ModuleInteraction.Global:CreateSlaveObject(_Object)
     -- Generate new name
     self.SlaveSequence = self.SlaveSequence +1;
     local Name = "QSB_SlaveObject_" ..self.SlaveSequence;
@@ -438,7 +438,7 @@ function ModuleInteractionCore.Global:CreateSlaveObject(_Object)
     return SlaveID;
 end
 
-function ModuleInteractionCore.Global:SetupObject(_Object)
+function ModuleInteraction.Global:SetupObject(_Object)
     local ID = GetID((_Object.m_Slave and _Object.m_Slave) or _Object.m_Name);
     Logic.InteractiveObjectClearCosts(ID);
     Logic.InteractiveObjectClearRewards(ID);
@@ -460,7 +460,7 @@ function ModuleInteractionCore.Global:SetupObject(_Object)
     self:ResetObject(_Object);
 end
 
-function ModuleInteractionCore.Global:ResetObject(_Object)
+function ModuleInteraction.Global:ResetObject(_Object)
     local ID = GetID((_Object.m_Slave and _Object.m_Slave) or _Object.m_Name);
     RemoveInteractiveObjectFromOpenedList(ID);
     table.insert(HiddenTreasures, ID);
@@ -470,14 +470,14 @@ function ModuleInteractionCore.Global:ResetObject(_Object)
     _Object:SetActive(true);
 end
 
-function ModuleInteractionCore.Global:SetObjectAvailability(_ScriptName, _State, ...)
+function ModuleInteraction.Global:SetObjectAvailability(_ScriptName, _State, ...)
     arg = ((not arg or #arg == 0) and {1, 2, 3, 4, 5, 6, 7, 8}) or arg;
     for i= 1, #arg, 1 do
         Logic.InteractiveObjectSetPlayerState(GetID(_ScriptName), arg[i], _State);
     end
 end
 
-function ModuleInteractionCore.Global:OnEntityDestroyed()
+function ModuleInteraction.Global:OnEntityDestroyed()
     local DestryoedEntityID = Event.GetEntityID();
     local SlaveName  = Logic.GetEntityName(DestryoedEntityID);
     local MasterName = IO_SlaveToMaster[SlaveName];
@@ -494,7 +494,7 @@ function ModuleInteractionCore.Global:OnEntityDestroyed()
             error("failed to create slave!", true);
             return;
         end
-        ModuleInteractionCore.Global:SetupObject(Object);
+        ModuleInteraction.Global:SetupObject(Object);
         if Object:IsUsed() == true or (IO_SlaveState[SlaveName] and IO_SlaveState[SlaveName] == 0) then
             API.InteractiveObjectDeactivate(Object.m_Slave);
         end
@@ -504,7 +504,7 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-function ModuleInteractionCore.Global:ProcessChatInput(_Text)
+function ModuleInteraction.Global:ProcessChatInput(_Text)
     local Commands = ModuleInputOutputCore.Shared:CommandTokenizer(_Text);
     for i= 1, #Commands, 1 do
         if Commands[1] == "enableobject" then
@@ -539,7 +539,7 @@ function ModuleInteractionCore.Global:ProcessChatInput(_Text)
     end
 end
 
-function ModuleInteractionCore.Global:GetObjectDefaultKeys(_Data)
+function ModuleInteraction.Global:GetObjectDefaultKeys(_Data)
     -- Get IO name
     local ScriptName = (_Data.m_Slave and _Data.m_Slave) or _Data.m_Name;
     local ObjectID = GetID(ScriptName);
@@ -552,21 +552,21 @@ function ModuleInteractionCore.Global:GetObjectDefaultKeys(_Data)
     return Key, DisabledKey;
 end
 
-function ModuleInteractionCore.Global:StartObjectConditionController()
+function ModuleInteraction.Global:StartObjectConditionController()
     StartSimpleHiResJobEx(function()
         for k, v in pairs(IO) do
             if v and not v:IsUsed() and v:IsActive() then
                 -- Condition
-                local ConditionLambda = ModuleInteractionCore.Global.Lambda.IO.ObjectCondition.Default;
-                if ModuleInteractionCore.Global.Lambda.IO.ObjectCondition[k] then
-                    ConditionLambda = ModuleInteractionCore.Global.Lambda.IO.ObjectCondition[k];
+                local ConditionLambda = ModuleInteraction.Global.Lambda.IO.ObjectCondition.Default;
+                if ModuleInteraction.Global.Lambda.IO.ObjectCondition[k] then
+                    ConditionLambda = ModuleInteraction.Global.Lambda.IO.ObjectCondition[k];
                 end
                 IO_Conditions[k] = ConditionLambda(v);
 
                 -- Title
-                local TitleLambda = ModuleInteractionCore.Global.Lambda.IO.ObjectHeadline.Default;
-                if ModuleInteractionCore.Global.Lambda.IO.ObjectHeadline[k] then
-                    TitleLambda = ModuleInteractionCore.Global.Lambda.IO.ObjectHeadline[k];
+                local TitleLambda = ModuleInteraction.Global.Lambda.IO.ObjectHeadline.Default;
+                if ModuleInteraction.Global.Lambda.IO.ObjectHeadline[k] then
+                    TitleLambda = ModuleInteraction.Global.Lambda.IO.ObjectHeadline[k];
                 end
                 local Title = TitleLambda(v);
                 if type(Title) == "table" then
@@ -575,9 +575,9 @@ function ModuleInteractionCore.Global:StartObjectConditionController()
                 IO_Headlines[k] = Title;
 
                 -- Text
-                local TextLambda = ModuleInteractionCore.Global.Lambda.IO.ObjectDescription.Default;
-                if ModuleInteractionCore.Global.Lambda.IO.ObjectDescription[k] then
-                    TextLambda = ModuleInteractionCore.Global.Lambda.IO.ObjectDescription[k];
+                local TextLambda = ModuleInteraction.Global.Lambda.IO.ObjectDescription.Default;
+                if ModuleInteraction.Global.Lambda.IO.ObjectDescription[k] then
+                    TextLambda = ModuleInteraction.Global.Lambda.IO.ObjectDescription[k];
                 end
                 local Text = TextLambda(v);
                 if type(Text) == "table" then
@@ -586,9 +586,9 @@ function ModuleInteractionCore.Global:StartObjectConditionController()
                 IO_Descriptions[k] = Text;
 
                 -- Disabled
-                local DisabledLambda = ModuleInteractionCore.Global.Lambda.IO.ObjectDisabledText.Default;
-                if ModuleInteractionCore.Global.Lambda.IO.ObjectDisabledText[k] then
-                    DisabledLambda = ModuleInteractionCore.Global.Lambda.IO.ObjectDisabledText[k];
+                local DisabledLambda = ModuleInteraction.Global.Lambda.IO.ObjectDisabledText.Default;
+                if ModuleInteraction.Global.Lambda.IO.ObjectDisabledText[k] then
+                    DisabledLambda = ModuleInteraction.Global.Lambda.IO.ObjectDisabledText[k];
                 end
                 local Disabled = DisabledLambda(v);
                 if type(Disabled) == "table" then
@@ -597,22 +597,22 @@ function ModuleInteractionCore.Global:StartObjectConditionController()
                 IO_DisabledTexts[k] = Disabled;
 
                 -- Icon
-                local IconLambda = ModuleInteractionCore.Global.Lambda.IO.ObjectIconTexture.Default;
-                if ModuleInteractionCore.Global.Lambda.IO.ObjectIconTexture[k] then
-                    IconLambda = ModuleInteractionCore.Global.Lambda.IO.ObjectIconTexture[k];
+                local IconLambda = ModuleInteraction.Global.Lambda.IO.ObjectIconTexture.Default;
+                if ModuleInteraction.Global.Lambda.IO.ObjectIconTexture[k] then
+                    IconLambda = ModuleInteraction.Global.Lambda.IO.ObjectIconTexture[k];
                 end
                 IO_IconTextures[k] = IconLambda(v);
             end
         end
 
         -- Force partial reference update
-        Logic.ExecuteInLuaLocalState("ModuleInteractionCore.Local:ForceObjectLambdaResultReferenceUpdate()");
+        Logic.ExecuteInLuaLocalState("ModuleInteraction.Local:ForceObjectLambdaResultReferenceUpdate()");
     end);
 end
 
 -- Local Script ------------------------------------------------------------- --
 
-function ModuleInteractionCore.Local:OnGameStart()
+function ModuleInteraction.Local:OnGameStart()
     QSB.ScriptEvents.LegitimateNpcInteraction   = API.RegisterScriptEvent("Event_LegitimateNpcInteraction");
     QSB.ScriptEvents.WrongPartnerNpcInteraction = API.RegisterScriptEvent("Event_WrongPartnerNpcInteraction");
     QSB.ScriptEvents.InteractiveObjectClicked   = API.RegisterScriptEvent("Event_InteractiveObjectClicked");
@@ -622,12 +622,12 @@ function ModuleInteractionCore.Local:OnGameStart()
     self:OverrideGameFunctions();
 end
 
-function ModuleInteractionCore.Local:OverrideGameFunctions()
+function ModuleInteraction.Local:OverrideGameFunctions()
     g_CurrentDisplayedQuestID = 0;
 
     -- Interface --
 
-    GUI_Interaction.InteractiveObjectClicked_Orig_ModuleInteractionCore = GUI_Interaction.InteractiveObjectClicked;
+    GUI_Interaction.InteractiveObjectClicked_Orig_ModuleInteraction = GUI_Interaction.InteractiveObjectClicked;
     GUI_Interaction.InteractiveObjectClicked = function()
         local i = tonumber(XGUIEng.GetWidgetNameByID(XGUIEng.GetCurrentWidgetID()));
         local EntityID = g_Interaction.ActiveObjectsOnScreen[i];
@@ -654,7 +654,7 @@ function ModuleInteractionCore.Local:OverrideGameFunctions()
             end
         end
         
-        GUI_Interaction.InteractiveObjectClicked_Orig_ModuleInteractionCore();
+        GUI_Interaction.InteractiveObjectClicked_Orig_ModuleInteraction();
         API.SendScriptEvent(QSB.ScriptEvents.InteractiveObjectClicked, PlayerID, ScriptName, EntityID);
         GUI.SendScriptCommand(string.format(
             [[API.SendScriptEvent(QSB.ScriptEvents.InteractiveObjectClicked, %d, "%s", %d)]],
@@ -664,9 +664,9 @@ function ModuleInteractionCore.Local:OverrideGameFunctions()
         ));
     end
     
-    GUI_Interaction.InteractiveObjectUpdate_Orig_ModuleInteractionCore = GUI_Interaction.InteractiveObjectUpdate;
+    GUI_Interaction.InteractiveObjectUpdate_Orig_ModuleInteraction = GUI_Interaction.InteractiveObjectUpdate;
     GUI_Interaction.InteractiveObjectUpdate = function()
-        GUI_Interaction.InteractiveObjectUpdate_Orig_ModuleInteractionCore();
+        GUI_Interaction.InteractiveObjectUpdate_Orig_ModuleInteraction();
         if g_Interaction.ActiveObjects == nil then
             return;
         end
@@ -695,7 +695,7 @@ function ModuleInteractionCore.Local:OverrideGameFunctions()
         end
     end
 
-    GUI_Interaction.InteractiveObjectMouseOver_Orig_ModuleInteractionCore = GUI_Interaction.InteractiveObjectMouseOver;
+    GUI_Interaction.InteractiveObjectMouseOver_Orig_ModuleInteraction = GUI_Interaction.InteractiveObjectMouseOver;
     GUI_Interaction.InteractiveObjectMouseOver = function()
         local PlayerID = GUI.GetPlayerID();
         local ButtonNumber = tonumber(XGUIEng.GetWidgetNameByID(XGUIEng.GetCurrentWidgetID()));
@@ -706,14 +706,14 @@ function ModuleInteractionCore.Local:OverrideGameFunctions()
         if g_GameExtraNo > 0 then
             local EntityTypeName = Logic.GetEntityTypeName(EntityType);
             if table.contains ({"R_StoneMine", "R_IronMine", "B_Cistern", "B_Well", "I_X_TradePostConstructionSite"}, EntityTypeName) then
-                GUI_Interaction.InteractiveObjectMouseOver_Orig_ModuleInteractionCore();
+                GUI_Interaction.InteractiveObjectMouseOver_Orig_ModuleInteraction();
                 return;
             end
         end
         -- Fix gold amount script names
         local EntityTypeName = Logic.GetEntityTypeName(EntityType);
         if string.find(EntityTypeName, "^I_X_") and tonumber(Logic.GetEntityName(ObjectID)) ~= nil then
-            GUI_Interaction.InteractiveObjectMouseOver_Orig_ModuleInteractionCore();
+            GUI_Interaction.InteractiveObjectMouseOver_Orig_ModuleInteraction();
             return;
         end
 
@@ -768,7 +768,7 @@ function ModuleInteractionCore.Local:OverrideGameFunctions()
 
     -- Quest --
 
-    GUI_Interaction.DisplayQuestObjective_Orig_ModuleInteractionCore = GUI_Interaction.DisplayQuestObjective
+    GUI_Interaction.DisplayQuestObjective_Orig_ModuleInteraction = GUI_Interaction.DisplayQuestObjective
     GUI_Interaction.DisplayQuestObjective = function(_QuestIndex, _MessageKey)
         local QuestIndexTemp = tonumber(_QuestIndex);
         if QuestIndexTemp then
@@ -832,7 +832,7 @@ function ModuleInteractionCore.Local:OverrideGameFunctions()
                 XGUIEng.SetText(QuestObjectiveContainer.."/Caption","{center}"..QuestTypeCaption);
                 XGUIEng.ShowWidget(QuestObjectiveContainer, 1);
             else
-                GUI_Interaction.DisplayQuestObjective_Orig_ModuleInteractionCore(_QuestIndex, _MessageKey);
+                GUI_Interaction.DisplayQuestObjective_Orig_ModuleInteraction(_QuestIndex, _MessageKey);
             end
         elseif QuestType == Objective.Object then
             QuestObjectiveContainer = QuestObjectivesPath .. "/List";
@@ -878,11 +878,11 @@ function ModuleInteractionCore.Local:OverrideGameFunctions()
             XGUIEng.SetText(QuestObjectiveContainer.."/Caption","{center}"..QuestTypeCaption);
             XGUIEng.ShowWidget(QuestObjectiveContainer, 1);
         else
-            GUI_Interaction.DisplayQuestObjective_Orig_ModuleInteractionCore(_QuestIndex, _MessageKey);
+            GUI_Interaction.DisplayQuestObjective_Orig_ModuleInteraction(_QuestIndex, _MessageKey);
         end
     end
 
-    GUI_Interaction.GetEntitiesOrTerritoryListForQuest_Orig_ModuleInteractionCore = GUI_Interaction.GetEntitiesOrTerritoryListForQuest
+    GUI_Interaction.GetEntitiesOrTerritoryListForQuest_Orig_ModuleInteraction = GUI_Interaction.GetEntitiesOrTerritoryListForQuest
     GUI_Interaction.GetEntitiesOrTerritoryListForQuest = function( _Quest, _QuestType )
         local EntityOrTerritoryList = {}
         local IsEntity = true
@@ -892,11 +892,11 @@ function ModuleInteractionCore.Local:OverrideGameFunctions()
                 local Entity = GetID(_Quest.Objectives[1].Data[3]);
                 table.insert(EntityOrTerritoryList, Entity);
             else
-                return GUI_Interaction.GetEntitiesOrTerritoryListForQuest_Orig_ModuleInteractionCore( _Quest, _QuestType );
+                return GUI_Interaction.GetEntitiesOrTerritoryListForQuest_Orig_ModuleInteraction( _Quest, _QuestType );
             end
 
         else
-            return GUI_Interaction.GetEntitiesOrTerritoryListForQuest_Orig_ModuleInteractionCore( _Quest, _QuestType );
+            return GUI_Interaction.GetEntitiesOrTerritoryListForQuest_Orig_ModuleInteraction( _Quest, _QuestType );
         end
         return EntityOrTerritoryList, IsEntity
     end
@@ -904,7 +904,7 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-function ModuleInteractionCore.Local:ForceFullGlobalReferenceUpdate()
+function ModuleInteraction.Local:ForceFullGlobalReferenceUpdate()
     IO = Logic.CreateReferenceToTableInGlobaLuaState("IO");
     IO_UserDefindedNames = Logic.CreateReferenceToTableInGlobaLuaState("IO_UserDefindedNames");
     IO_SlaveToMaster = Logic.CreateReferenceToTableInGlobaLuaState("IO_SlaveToMaster");
@@ -912,7 +912,7 @@ function ModuleInteractionCore.Local:ForceFullGlobalReferenceUpdate()
     self:ForceObjectLambdaResultReferenceUpdate();
 end
 
-function ModuleInteractionCore.Local:ForceObjectLambdaResultReferenceUpdate()
+function ModuleInteraction.Local:ForceObjectLambdaResultReferenceUpdate()
     IO_Headlines = Logic.CreateReferenceToTableInGlobaLuaState("IO_Headlines");
     IO_Descriptions = Logic.CreateReferenceToTableInGlobaLuaState("IO_Descriptions");
     IO_DisabledTexts = Logic.CreateReferenceToTableInGlobaLuaState("IO_DisabledTexts");
@@ -940,7 +940,7 @@ function QSB.NonPlayerCharacter:New(_ScriptName)
     assert(self == QSB.NonPlayerCharacter, 'Can not be used from instance!');
     local npc = table.copy(self);
     npc.m_NpcName  = _ScriptName;
-    npc.m_NpcType  = ModuleInteractionCore.Global.DefaultNpcType
+    npc.m_NpcType  = ModuleInteraction.Global.DefaultNpcType
     npc.m_Distance = 350;
     if Logic.IsKnight(GetID(_ScriptName)) then
         npc.m_Distance = 400;
@@ -986,7 +986,7 @@ end
 --
 function QSB.NonPlayerCharacter:GetNpcId()
     assert(self == QSB.NonPlayerCharacter, 'Can not be used from instance!');
-    return ModuleInteractionCore.Global.LastNpcEntityID;
+    return ModuleInteraction.Global.LastNpcEntityID;
 end
 
 ---
@@ -999,7 +999,7 @@ end
 --
 function QSB.NonPlayerCharacter:GetHeroId()
     assert(self == QSB.NonPlayerCharacter, 'Can not be used from instance!');
-    return ModuleInteractionCore.Global.LastHeroEntityID;
+    return ModuleInteraction.Global.LastHeroEntityID;
 end
 
 ---
@@ -1052,7 +1052,7 @@ function QSB.NonPlayerCharacter:Activate(_Type)
     assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
     if IsExisting(self.m_NpcName) then
         Logic.SetOnScreenInformation(self:GetID(), _Type or self.m_NpcType);
-        if self.m_NpcType == ModuleInteractionCore.Global.DefaultNpcType then
+        if self.m_NpcType == ModuleInteraction.Global.DefaultNpcType then
             self:ShowMarker();
         end
     end
@@ -1230,7 +1230,7 @@ function QSB.NonPlayerCharacter:RotateActors()
     if self.m_RepositionOnAction == false then
         return;
     end
-    local PlayerID = Logic.EntityGetPlayer(ModuleInteractionCore.Global.LastHeroEntityID);
+    local PlayerID = Logic.EntityGetPlayer(ModuleInteraction.Global.LastHeroEntityID);
     local PlayerKnights = {};
     Logic.GetKnights(PlayerID, PlayerKnights);
     for k, v in pairs(PlayerKnights) do
@@ -1244,7 +1244,7 @@ function QSB.NonPlayerCharacter:RotateActors()
             LookAt(v, self.m_NpcName);
         end
     end
-    API.Confront(self.m_NpcName, ModuleInteractionCore.Global.LastHeroEntityID)
+    API.Confront(self.m_NpcName, ModuleInteraction.Global.LastHeroEntityID)
 end
 
 ---
@@ -1263,7 +1263,7 @@ function QSB.NonPlayerCharacter:RepositionHero()
     if self.m_RepositionOnAction == false then
         return;
     end
-    local HeroID = ModuleInteractionCore.Global.LastHeroEntityID;
+    local HeroID = ModuleInteraction.Global.LastHeroEntityID;
     local NPCID  = GetID(self.m_NpcName);
     if GetDistance(HeroID, NPCID) < self.m_Distance -50 then
         -- Position des NPC bestimmen
@@ -1371,7 +1371,7 @@ end
 --
 function QSB.NonPlayerCharacter:ControlMarker()
     -- Nur, wenn Standard-NPC
-    if self.m_NpcType == ModuleInteractionCore.Global.DefaultNpcType then
+    if self.m_NpcType == ModuleInteraction.Global.DefaultNpcType then
         if self:IsActive() and not self:HasTalkedTo() then
             -- Blinken
             if self:IsMarkerVisible() then
@@ -1479,5 +1479,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleInteractionCore);
+Swift:RegisterModules(ModuleInteraction);
 

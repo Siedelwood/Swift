@@ -2,9 +2,9 @@
 -- Module Weather                                                             --
 -- -------------------------------------------------------------------------- --
 
-ModuleWeatherCore = {
+ModuleWeatherManipulation = {
     Properties = {
-        Name = "ModuleWeatherCore",
+        Name = "ModuleWeatherManipulation",
     },
 
     Global = {
@@ -18,18 +18,18 @@ ModuleWeatherCore = {
 
 -- Global ------------------------------------------------------------------- --
 
-function ModuleWeatherCore.Global:OnGameStart()
+function ModuleWeatherManipulation.Global:OnGameStart()
     API.AddSaveGameAction(self.OnSaveGameLoaded);
     API.StartJob(self.EventController);
 end
 
-function ModuleWeatherCore.Global:AddEvent(_Event, _Duration)
+function ModuleWeatherManipulation.Global:AddEvent(_Event, _Duration)
     local Event = table.copy(_Event);
     Event.Duration = _Duration;
     table.insert(self.EventQueue, Event);
 end
 
-function ModuleWeatherCore.Global:PurgeAllEvents()
+function ModuleWeatherManipulation.Global:PurgeAllEvents()
     if #self.EventQueue > 0 then
         for i= #self.EventQueue, 1 -1 do
             self.EventQueue:remove(i);
@@ -37,7 +37,7 @@ function ModuleWeatherCore.Global:PurgeAllEvents()
     end
 end
 
-function ModuleWeatherCore.Global:NextEvent()
+function ModuleWeatherManipulation.Global:NextEvent()
     if not self:IsEventActive() then
         if #self.EventQueue > 0 then
             self:ActivateEvent();
@@ -45,7 +45,7 @@ function ModuleWeatherCore.Global:NextEvent()
     end
 end
 
-function ModuleWeatherCore.Global:ActivateEvent()
+function ModuleWeatherManipulation.Global:ActivateEvent()
     if #self.EventQueue == 0 then
         return;
     end
@@ -53,8 +53,8 @@ function ModuleWeatherCore.Global:ActivateEvent()
     local Event = table.remove(self.EventQueue, 1);
     self.ActiveEvent = Event;
     Logic.ExecuteInLuaLocalState([[
-        ModuleWeatherCore.Local.ActiveEvent = ]] ..table.tostring(Event).. [[
-        ModuleWeatherCore.Local:DisplayEvent()
+        ModuleWeatherManipulation.Local.ActiveEvent = ]] ..table.tostring(Event).. [[
+        ModuleWeatherManipulation.Local:DisplayEvent()
     ]]);
 
     Logic.WeatherEventClearGoodTypesNotGrowing();
@@ -79,59 +79,59 @@ function ModuleWeatherCore.Global:ActivateEvent()
     Logic.ActivateWeatherEvent();
 end
 
-function ModuleWeatherCore.Global:StopEvent()
-    Logic.ExecuteInLuaLocalState("ModuleWeatherCore.Local.ActiveEvent = nil");
-    ModuleWeatherCore.Global.ActiveEvent = nil;
+function ModuleWeatherManipulation.Global:StopEvent()
+    Logic.ExecuteInLuaLocalState("ModuleWeatherManipulation.Local.ActiveEvent = nil");
+    ModuleWeatherManipulation.Global.ActiveEvent = nil;
     Logic.DeactivateWeatherEvent();
 end
 
-function ModuleWeatherCore.Global:GetEventRemainingTime()
+function ModuleWeatherManipulation.Global:GetEventRemainingTime()
     if not self:IsEventActive() then
         return 0;
     end
     return self.ActiveEvent.Duration;
 end
 
-function ModuleWeatherCore.Global:IsEventActive()
+function ModuleWeatherManipulation.Global:IsEventActive()
     return self.ActiveEvent ~= nil;
 end
 
-function ModuleWeatherCore.Global.OnSaveGameLoaded()
-    if ModuleWeatherCore.Global:IsEventActive() then
+function ModuleWeatherManipulation.Global.OnSaveGameLoaded()
+    if ModuleWeatherManipulation.Global:IsEventActive() then
         Logic.ExecuteInLuaLocalState([[
             Display.StopAllEnvironmentSettingsSequences()
-            ModuleWeatherCore.Local:DisplayEvent(]] ..ModuleWeatherCore.Global:GetEventRemainingTime().. [[)
+            ModuleWeatherManipulation.Local:DisplayEvent(]] ..ModuleWeatherManipulation.Global:GetEventRemainingTime().. [[)
         ]]);
     end
 end
 
-function ModuleWeatherCore.Global.EventController()
-    if ModuleWeatherCore.Global:IsEventActive() then
-        ModuleWeatherCore.Global.ActiveEvent.Duration = ModuleWeatherCore.Global.ActiveEvent.Duration -1;
-        if ModuleWeatherCore.Global.ActiveEvent.Loop then
-            ModuleWeatherCore.Global.ActiveEvent:Loop();
+function ModuleWeatherManipulation.Global.EventController()
+    if ModuleWeatherManipulation.Global:IsEventActive() then
+        ModuleWeatherManipulation.Global.ActiveEvent.Duration = ModuleWeatherManipulation.Global.ActiveEvent.Duration -1;
+        if ModuleWeatherManipulation.Global.ActiveEvent.Loop then
+            ModuleWeatherManipulation.Global.ActiveEvent:Loop();
         end
         
-        if ModuleWeatherCore.Global.ActiveEvent.Duration == 0 then
-            ModuleWeatherCore.Global:StopEvent();
-            ModuleWeatherCore.Global:NextEvent();
+        if ModuleWeatherManipulation.Global.ActiveEvent.Duration == 0 then
+            ModuleWeatherManipulation.Global:StopEvent();
+            ModuleWeatherManipulation.Global:NextEvent();
         end
     end
 end
 
 -- Local -------------------------------------------------------------------- --
 
-function ModuleWeatherCore.Local:OnGameStart()
+function ModuleWeatherManipulation.Local:OnGameStart()
 end
 
-function ModuleWeatherCore.Local:DisplayEvent(_Duration)
+function ModuleWeatherManipulation.Local:DisplayEvent(_Duration)
     if self:IsEventActive() then
         local SequenceID = Display.AddEnvironmentSettingsSequence(self.ActiveEvent.GFX);
         Display.PlayEnvironmentSettingsSequence(SequenceID, _Duration or self.ActiveEvent.Duration);
     end
 end
 
-function ModuleWeatherCore.Local:IsEventActive()
+function ModuleWeatherManipulation.Local:IsEventActive()
     return self.ActiveEvent ~= nil;
 end
 
@@ -212,5 +212,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleWeatherCore);
+Swift:RegisterModules(ModuleWeatherManipulation);
 

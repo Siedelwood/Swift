@@ -2,9 +2,9 @@
 -- Module Quests                                                              --
 -- -------------------------------------------------------------------------- --
 
-ModuleQuestCore = {
+ModuleQuests = {
     Properties = {
-        Name = "ModuleQuestCore",
+        Name = "ModuleQuests",
     },
 
     Global = {
@@ -17,17 +17,17 @@ ModuleQuestCore = {
 
 -- Global Script ---------------------------------------------------------------
 
-function ModuleQuestCore.Global:OnGameStart()
+function ModuleQuests.Global:OnGameStart()
     Quest_Loop = self.QuestLoop;
 end
 
-function ModuleQuestCore.Global:OnEvent(_ID, _Event, _Text)
+function ModuleQuests.Global:OnEvent(_ID, _Event, _Text)
     if _ID == QSB.ScriptEvents.ChatClosed then
         self:ProcessChatInput(_Text);
     end
 end
 
-function ModuleQuestCore.Global:QuestMessage(_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor, _QuestName)
+function ModuleQuests.Global:QuestMessage(_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor, _QuestName)
     self.QuestMessageID = self.QuestMessageID +1;
 
     -- Lokalisierung
@@ -47,7 +47,7 @@ function ModuleQuestCore.Global:QuestMessage(_Text, _Sender, _Receiver, _Ancesto
     return CreatedQuest.Identifier;
 end
 
-function ModuleQuestCore.Global:QuestCreateNewQuest(_Data)
+function ModuleQuests.Global:QuestCreateNewQuest(_Data)
     if not _Data.Name then
         QSB.AutomaticQuestNameCounter = (QSB.AutomaticQuestNameCounter or 0) +1;
         _Data.Name = string.format("AutoNamed_Quest_%d", QSB.AutomaticQuestNameCounter);
@@ -79,7 +79,7 @@ function ModuleQuestCore.Global:QuestCreateNewQuest(_Data)
 
     -- Daten validieren
     if not self:QuestValidateQuestData(QuestData) then
-        error("ModuleQuestCore: Failed to vaidate quest data. Table has been copied to log.");
+        error("ModuleQuests: Failed to vaidate quest data. Table has been copied to log.");
         API.DumpTable(QuestData, "Quest");
         return;
     end
@@ -128,7 +128,7 @@ function ModuleQuestCore.Global:QuestCreateNewQuest(_Data)
     return _Data.Name, Quests[0];
 end
 
-function ModuleQuestCore.Global:QuestValidateQuestData(_Data)
+function ModuleQuests.Global:QuestValidateQuestData(_Data)
     return (
         (type(_Data[1]) == "string" and self:QuestValidateQuestName(_Data[1]) and Quests[GetQuestID(_Data[1])] == nil) and
         (type(_Data[2]) == "number" and _Data[2] >= 1 and _Data[2] <= 8) and
@@ -145,12 +145,12 @@ function ModuleQuestCore.Global:QuestValidateQuestData(_Data)
     );
 end
 
-function ModuleQuestCore.Global:QuestValidateQuestName(_Name)
+function ModuleQuests.Global:QuestValidateQuestName(_Name)
     return string.find(_Name, "^[A-Za-z0-9_ @ÄÖÜäöüß]+$") ~= nil;
 end
 
 -- This triggers a quest message after an certain amount of seconds passed.
-function ModuleQuestCore.Global:GetWaitTimeInlineTrigger(_Ancestor, _AncestorWt)
+function ModuleQuests.Global:GetWaitTimeInlineTrigger(_Ancestor, _AncestorWt)
     return {
         Triggers.Custom2, {
             {QuestName = _Ancestor, WaitTime = _AncestorWt or 1,},
@@ -176,7 +176,7 @@ end
 -- lock the game if fully relying on this trigger without thinking! This is
 -- only here to ensure functionality in case of errors and NOT to support the
 -- sloth of mappers!
-function ModuleQuestCore.Global:GetFreeSpaceInlineTrigger()
+function ModuleQuests.Global:GetFreeSpaceInlineTrigger()
     return {
         Triggers.Custom2, {
             {},
@@ -197,7 +197,7 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-function ModuleQuestCore.Global.QuestLoop(_arguments)
+function ModuleQuests.Global.QuestLoop(_arguments)
     local self = JobQueue_GetParameter(_arguments);
     if self.LoopCallback ~= nil then
         self:LoopCallback();
@@ -206,7 +206,7 @@ function ModuleQuestCore.Global.QuestLoop(_arguments)
         local triggered = true;
         for i = 1, self.Triggers[0] do
             -- Write Trigger to Log
-            local Text = ModuleQuestCore.Global:SerializeBehavior(self.Triggers[i], Triggers.Custom2, 4);
+            local Text = ModuleQuests.Global:SerializeBehavior(self.Triggers[i], Triggers.Custom2, 4);
             if Text then
                 debug("Quest '" ..self.Identifier.. "' " ..Text, true);
             end
@@ -223,7 +223,7 @@ function ModuleQuestCore.Global.QuestLoop(_arguments)
         local anyFalse = false;
         for i = 1, self.Objectives[0] do
             -- Write Trigger to Log
-            local Text = ModuleQuestCore.Global:SerializeBehavior(self.Objectives[i], Objective.Custom2, 1);
+            local Text = ModuleQuests.Global:SerializeBehavior(self.Objectives[i], Objective.Custom2, 1);
             if Text then
                 debug("Quest '" ..self.Identifier.. "' " ..Text, true);
             end
@@ -270,7 +270,7 @@ function ModuleQuestCore.Global.QuestLoop(_arguments)
         if self.Result == QuestResult.Success then
             for i = 1, self.Rewards[0] do
                 -- Write Trigger to Log
-                local Text = ModuleQuestCore.Global:SerializeBehavior(self.Rewards[i], Reward.Custom, 3);
+                local Text = ModuleQuests.Global:SerializeBehavior(self.Rewards[i], Reward.Custom, 3);
                 if Text then
                     debug("Quest '" ..self.Identifier.. "' " ..Text, true);
                 end
@@ -280,7 +280,7 @@ function ModuleQuestCore.Global.QuestLoop(_arguments)
         elseif self.Result == QuestResult.Failure then
             for i = 1, self.Reprisals[0] do
                 -- Write Trigger to Log
-                local Text = ModuleQuestCore.Global:SerializeBehavior(self.Reprisals[i], Reprisal.Custom, 3);
+                local Text = ModuleQuests.Global:SerializeBehavior(self.Reprisals[i], Reprisal.Custom, 3);
                 if Text then
                     debug("Quest '" ..self.Identifier.. "' " ..Text, true);
                 end
@@ -295,7 +295,7 @@ function ModuleQuestCore.Global.QuestLoop(_arguments)
     end
 end
 
-function ModuleQuestCore.Global:SerializeBehavior(_Data, _CustomType, _Typ)
+function ModuleQuests.Global:SerializeBehavior(_Data, _CustomType, _Typ)
     local BehaviorType = "Objective";
     local BehaTable = Objective;
     if _Typ == 2 then
@@ -343,7 +343,7 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-function ModuleQuestCore.Global:FindQuestNames(_Pattern, _ExactName)
+function ModuleQuests.Global:FindQuestNames(_Pattern, _ExactName)
     local FoundQuests = FindQuestsByName(_Pattern, _ExactName);
     if #FoundQuests == 0 then
         return {};
@@ -355,7 +355,7 @@ function ModuleQuestCore.Global:FindQuestNames(_Pattern, _ExactName)
     return NamesOfFoundQuests;
 end
 
-function ModuleQuestCore.Global:ProcessChatInput(_Text)
+function ModuleQuests.Global:ProcessChatInput(_Text)
     local Commands = ModuleInputOutputCore.Shared:CommandTokenizer(_Text);
     for i= 1, #Commands, 1 do
         if Commands[1] == "fail" or Commands[1] == "restart"
@@ -388,5 +388,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleQuestCore);
+Swift:RegisterModules(ModuleQuests);
 

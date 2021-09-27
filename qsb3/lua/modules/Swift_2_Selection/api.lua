@@ -27,7 +27,7 @@ function API.DisableReleaseThieves(_Flag)
         Logic.ExecuteInLuaLocalState("API.DisableReleaseThieves(" ..tostring(_Flag).. ")");
         return;
     end
-    ModuleSelectionCore.Local.ThiefRelease = not _Flag;
+    ModuleSelection.Local.ThiefRelease = not _Flag;
 end
 
 ---
@@ -43,7 +43,7 @@ function API.DisableReleaseSiegeEngines(_Flag)
         Logic.ExecuteInLuaLocalState("API.DisableReleaseSiegeEngines(" ..tostring(_Flag).. ")");
         return;
     end
-    ModuleSelectionCore.Local.SiegeEngineRelease = not _Flag;
+    ModuleSelection.Local.SiegeEngineRelease = not _Flag;
 end
 
 ---
@@ -59,7 +59,7 @@ function API.DisableReleaseSoldiers(_Flag)
         Logic.ExecuteInLuaLocalState("API.DisableReleaseSoldiers(" ..tostring(_Flag).. ")");
         return;
     end
-    ModuleSelectionCore.Local.MilitaryRelease = not _Flag;
+    ModuleSelection.Local.MilitaryRelease = not _Flag;
 end
 
 ---
@@ -79,7 +79,7 @@ function API.IsEntityInSelection(_Entity)
         local EntityID = GetID(_Entity);
         local SelectedEntities;
         if not GUI then
-            SelectedEntities = ModuleSelectionCore.Global.SelectedEntities;
+            SelectedEntities = ModuleSelection.Global.SelectedEntities;
         else
             SelectedEntities = {GUI.GetSelectedEntities()};
         end
@@ -108,7 +108,7 @@ IsEntitySelected = API.IsEntityInSelection;
 function API.GetSelectedEntity()
     local SelectedEntity;
     if not GUI then
-        SelectedEntity = ModuleSelectionCore.Global.SelectedEntities[1];
+        SelectedEntity = ModuleSelection.Global.SelectedEntities[1];
     else
         SelectedEntity = GUI.GetSelectedEntity();
     end
@@ -128,7 +128,7 @@ GetSelectedEntity = API.GetSelectedEntity;
 function API.GetSelectedEntities()
     local SelectedEntities;
     if not GUI then
-        SelectedEntities = ModuleSelectionCore.Global.SelectedEntities;
+        SelectedEntities = ModuleSelection.Global.SelectedEntities;
     else
         SelectedEntities = {GUI.GetSelectedEntities()};
     end

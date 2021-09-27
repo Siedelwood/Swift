@@ -47,7 +47,7 @@ end
 
 -- This triggers a quest message after an certain amount of time has passed in
 -- the real world. The game speed does not affect this.
-function ModuleQuestCore.Global:GetWaitTimeInlineTrigger(_Ancestor, _AncestorWt)
+function ModuleQuests.Global:GetWaitTimeInlineTrigger(_Ancestor, _AncestorWt)
     return {
         Triggers.Custom2, {
             {QuestName = _Ancestor, WaitTime = _AncestorWt or 1,},
