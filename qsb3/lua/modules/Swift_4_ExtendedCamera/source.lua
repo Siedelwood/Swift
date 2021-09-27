@@ -24,9 +24,6 @@ ModuleExtendedCamera = {
 -- Global Script ---------------------------------------------------------------
 
 function ModuleExtendedCamera.Global:OnGameStart()
-    API.AddSaveGameAction(function()
-        Logic.ExecuteInLuaLocalState([[ModuleExtendedCamera.Local:OnSaveGameLoaded()]]);
-    end);
 end
 
 -- Local Script ----------------------------------------------------------------
@@ -34,6 +31,15 @@ end
 function ModuleExtendedCamera.Local:OnGameStart()
     self:RegisterExtendedZoomHotkey();
     self:ActivateExtendedZoomHotkey();
+end
+
+function ModuleExtendedCamera.Local:OnEvent(_ID, _Event, _Text)
+    if _ID == QSB.ScriptEvents.SaveGameLoaded then
+        if self.ExtendedZoomActive then
+            self:ActivateExtendedZoom();
+        end
+        self:ActivateExtendedZoomHotkey();
+    end
 end
 
 function ModuleExtendedCamera.Local:OnEvent(_ID, _Event)
@@ -94,13 +100,6 @@ function ModuleExtendedCamera.Local:DeactivateExtendedZoom()
     Camera.RTS_SetZoomFactor(0.5000);
     Camera.RTS_SetZoomFactorMax(0.5001);
     Camera.RTS_SetZoomFactorMin(0.0999);
-end
-
-function ModuleExtendedCamera.Local:OnSaveGameLoaded()
-    if self.ExtendedZoomActive then
-        self:ActivateExtendedZoom();
-    end
-    self:ActivateExtendedZoomHotkey();
 end
 
 -- -------------------------------------------------------------------------- --

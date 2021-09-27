@@ -60,6 +60,7 @@ function Swift:LoadCore()
         self:InitalizeDebugModeGlobal();
         self:InitalizeEventsGlobal();
         self:InstallBehaviorGlobal();
+        self:OverrideSaveLoadedCallback();
         self:OverrideQuestSystemGlobal();
     end
 
@@ -67,6 +68,7 @@ function Swift:LoadCore()
         self:InitalizeDebugModeLocal();
         self:InitalizeEventsLocal();
         self:InstallBehaviorLocal();
+        self:OverrideEscapeCallback();
         self:OverrideDoQuicksave();
 
         -- Human player ID makes only sense in singleplayer context
@@ -78,9 +80,6 @@ function Swift:LoadCore()
         StartSimpleHiResJob("Swift_EventJob_WaitForLoadScreenHidden");
     end
 
-    Swift:RegisterLoadAction(function ()
-        Swift:RestoreAfterLoad();
-    end);
     self:LoadExternFiles();
     -- Must be done last
     self:LoadBehaviors();
@@ -379,71 +378,27 @@ function Swift:ConvertTableToString(_Table)
     return String;
 end
 
--- Save Game Callback
-
-function Swift:RegisterLoadAction(_Action)
-    if (type(_Action) ~= "function") then
-        assert(false, "Action must be a function!");
-        return;
-    end
-    table.insert(self.m_LoadActionRegister, _Action);
-end
-
-function Swift:CallSaveGameActions()
-    -- Core actions
-    for i= 1, #self.m_LoadActionRegister, 1 do
-        self.m_LoadActionRegister[i](self);
-    end
-    -- Module actions
-    for i= 1, #self.m_ModuleRegister, 1 do
-        if self.m_ModuleRegister[i]["Global"] and self.m_ModuleRegister[i]["Global"].OnSaveGameLoaded then
-            self.m_ModuleRegister[i]["Global"]:OnSaveGameLoaded();
-        end
-    end
-end
-
-function Swift:RestoreAfterLoad()
-    debug("Loading save game", true);
-    self:OverrideString();
-    self:OverrideTable();
-    if self:IsGlobalEnvironment() then
-        self:GlobalRestoreDebugAfterLoad();
-    end
-    if self:IsLocalEnvironment() then
-        self:LocalRestoreDebugAfterLoad();
-    end
-end
-
-do
-    if Mission_OnSaveGameLoaded then
-        local Mission_OnSaveGameLoaded_Orig = Mission_OnSaveGameLoaded;
-        Mission_OnSaveGameLoaded = function()
-            Mission_OnSaveGameLoaded_Orig();
-            Logic.ExecuteInLuaLocalState([[Swift:CallSaveGameActions()]]);
-            Swift:CallSaveGameActions();
-        end
-    end
-end
-
 -- Script Events
 
 function Swift:InitalizeEventsGlobal()
+    QSB.ScriptEvents.SaveGameLoaded = Swift:CreateScriptEvent("Event_SaveGameLoaded", nil);
+    QSB.ScriptEvents.EscapePressed = Swift:CreateScriptEvent("Event_EscapePressed", nil);
     QSB.ScriptEvents.QuestFailure = Swift:CreateScriptEvent("Event_QuestFailure", nil);
     QSB.ScriptEvents.QuestInterrupt = Swift:CreateScriptEvent("Event_QuestInterrupt", nil);
     QSB.ScriptEvents.QuestReset = Swift:CreateScriptEvent("Event_QuestReset", nil);
     QSB.ScriptEvents.QuestSuccess = Swift:CreateScriptEvent("Event_QuestSuccess", nil);
     QSB.ScriptEvents.QuestTrigger = Swift:CreateScriptEvent("Event_QuestTrigger", nil);
-
     QSB.ScriptEvents.CustomValueChanged = Swift:CreateScriptEvent("Event_CustomValueChanged", nil);
     QSB.ScriptEvents.LanguageSelected = Swift:CreateScriptEvent("Event_LanguageSelected", nil);
 end
 function Swift:InitalizeEventsLocal()
+    QSB.ScriptEvents.SaveGameLoaded = Swift:CreateScriptEvent("Event_SaveGameLoaded", nil);
+    QSB.ScriptEvents.EscapePressed = Swift:CreateScriptEvent("Event_EscapePressed", nil);
     QSB.ScriptEvents.QuestFailure = Swift:CreateScriptEvent("Event_QuestFailure", nil);
     QSB.ScriptEvents.QuestInterrupt = Swift:CreateScriptEvent("Event_QuestInterrupt", nil);
     QSB.ScriptEvents.QuestReset = Swift:CreateScriptEvent("Event_QuestReset", nil);
     QSB.ScriptEvents.QuestSuccess = Swift:CreateScriptEvent("Event_QuestSuccess", nil);
     QSB.ScriptEvents.QuestTrigger = Swift:CreateScriptEvent("Event_QuestTrigger", nil);
-
     QSB.ScriptEvents.CustomValueChanged = Swift:CreateScriptEvent("Event_CustomValueChanged", nil);
     QSB.ScriptEvents.LanguageSelected = Swift:CreateScriptEvent("Event_LanguageSelected", nil);
 end
@@ -509,6 +464,48 @@ function Swift:DispatchScriptEvent(_ID, ...)
     end
 end
 
+-- Save Game Callback
+
+function Swift:OverrideSaveLoadedCallback()
+    if Mission_OnSaveGameLoaded then
+        Mission_OnSaveGameLoaded_Orig_Swift = Mission_OnSaveGameLoaded;
+        Mission_OnSaveGameLoaded = function()
+            Mission_OnSaveGameLoaded_Orig_Swift();
+
+            Swift:RestoreAfterLoad();
+            Swift:DispatchScriptEvent(QSB.ScriptEvents.SaveGameLoaded);
+            Logic.ExecuteInLuaLocalState("Swift:DispatchScriptEvent(QSB.ScriptEvents.SaveGameLoaded)");
+        end
+    end
+end
+
+function Swift:RestoreAfterLoad()
+    debug("Loading save game", true);
+    self:OverrideString();
+    self:OverrideTable();
+    if self:IsGlobalEnvironment() then
+        self:GlobalRestoreDebugAfterLoad();
+    end
+    if self:IsLocalEnvironment() then
+        self:LocalRestoreDebugAfterLoad();
+    end
+end
+
+-- Escape Callback
+
+function Swift:OverrideEscapeCallback()
+    GameCallback_Escape_Orig_Swift = GameCallback_Escape;
+    GameCallback_Escape = function()
+        GameCallback_Escape_Orig_Swift();
+
+        Swift:DispatchScriptEvent(QSB.ScriptEvents.EscapePressed, GUI.GetPlayerID());
+        GUI.SendScriptCommand(string.format(
+            [[Swift:DispatchScriptEvent(QSB.ScriptEvents.EscapePressed, %d)]],
+            GUI.GetPlayerID()
+        ));
+    end
+end
+
 -- Custom Variable
 
 function Swift:GetCustomVariable(_Name)
@@ -563,22 +560,12 @@ function Swift:ChangeSystemLanguage(_Language)
     self.m_Language = _Language;
     QSB.Language = self.m_Language;
 
-    -- Change internal language stuff
-    for i= 1, #self.m_ModuleRegister, 1 do
-        if self.m_ModuleRegister[i]["Global"] and self.m_ModuleRegister[i]["Global"].OnLanguageSelected then
-            self.m_ModuleRegister[i]["Global"]:OnLanguageSelected(OldLanguage, NewLanguage);
-        end
-        if self.m_ModuleRegister[i]["Local"] and self.m_ModuleRegister[i]["Local"].OnLanguageSelected then
-            self.m_ModuleRegister[i]["Local"]:OnLanguageSelected(OldLanguage, NewLanguage);
-        end
-    end
-
-    -- Call event to be catched by the user
-    Swift:DispatchScriptEvent(
-        QSB.ScriptEvents.LanguageSelected,
+    Swift:DispatchScriptEvent(QSB.ScriptEvents.LanguageSelected, OldLanguage, NewLanguage);
+    Logic.ExecuteInLuaLocalState(string.format(
+        [[Swift:DispatchScriptEvent(QSB.ScriptEvents.LanguageSelected, "%s", "%s")]],
         OldLanguage,
         NewLanguage
-    );
+    ));
 end
 
 function Swift:GetTextOfDesiredLanguage(_Table)

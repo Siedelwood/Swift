@@ -19,8 +19,18 @@ ModuleWeatherManipulation = {
 -- Global ------------------------------------------------------------------- --
 
 function ModuleWeatherManipulation.Global:OnGameStart()
-    API.AddSaveGameAction(self.OnSaveGameLoaded);
-    API.StartJob(self.EventController);
+    StartHiResJobEx(self.EventController);
+end
+
+function ModuleWeatherManipulation.Global:OnEvent(_ID, _Event, _Text)
+    if _ID == QSB.ScriptEvents.SaveGameLoaded then
+        if self:IsEventActive() then
+            Logic.ExecuteInLuaLocalState([[
+                Display.StopAllEnvironmentSettingsSequences()
+                ModuleWeatherManipulation.Local:DisplayEvent(]] ..self:GetEventRemainingTime().. [[)
+            ]]);
+        end
+    end
 end
 
 function ModuleWeatherManipulation.Global:AddEvent(_Event, _Duration)

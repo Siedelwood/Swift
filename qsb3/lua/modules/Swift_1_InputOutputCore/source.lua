@@ -65,9 +65,6 @@ function ModuleInputOutputCore.Global:OnGameStart()
     if Framework.IsNetworkGame() then
         return;
     end
-    API.AddSaveGameAction(function ()
-        Logic.ExecuteInLuaLocalState("ModuleInputOutputCore.Local.DialogAltF4Hotkey()");
-    end);
 end
 
 function ModuleInputOutputCore.Global:OnEvent(_ID, _Event, _Text)
@@ -105,6 +102,12 @@ function ModuleInputOutputCore.Local:OnGameStart()
     self:OverrideDebugInput();
     self:DialogOverwriteOriginal();
     self:DialogAltF4Hotkey();
+end
+
+function ModuleInputOutputCore.Local:OnEvent(_ID, _Event, _Text)
+    if _ID == QSB.ScriptEvents.SaveGameLoaded then
+        self:DialogAltF4Hotkey();
+    end
 end
 
 -- Override the original usage of the chat box to make it compatible to this

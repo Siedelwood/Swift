@@ -829,10 +829,6 @@ function API.WinQuest(_QuestName, _NoMessage)
 end
 WinQuestByName = API.WinQuest;
 
-function API.AddSaveGameAction(_Function)
-    Swift:RegisterLoadAction(_Function);
-end
-
 function API.IsLoadscreenVisible()
     return Swift.m_LoadScreenHidden == true;
 end
