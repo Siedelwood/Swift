@@ -1,10 +1,9 @@
 -- Speed Limit API ---------------------------------------------------------- --
 
 ---
--- Dieses Modul stellt die als "Speedbremse" bekannte Funktionalität zur 
--- Verfügung. Die maximale Beschleunigung des Spiels kann gesteuert werden.
+-- Dieses Modul erlaubt die maximale Beschleunigung des Spiels zu steuern.
 --
--- Wenn die Geschwindigkeit festgelegt werden soll, muss zuerst bestimmt werden
+-- Wenn die Geschwindigkeit festgelegt werden soll, muss zuerst bestimmt werden,
 -- wo die Obergrenze liegt.
 -- <pre>API.SpeedLimitSet(1)</pre>
 -- Diese Festlegung gilt solange, bis sie irgend wann einmal geändert wird.

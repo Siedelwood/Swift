@@ -29,6 +29,31 @@ function API.Install()
     Swift:LoadModules();
 end
 
+---
+-- Prüft, ob das laufende Spiel in der History Edition gespielt wird.
+--
+-- @return[type=boolean] Spiel ist History Edition
+-- @within Anwenderfunktionen
+--
+function API.IsHistoryEdition()
+    return Swift:IsHistoryEdition();
+end
+
+---
+-- Prüft, ob das laufende Spiel eine Multiplayerpartie in der History Edition
+-- ist.
+--
+-- <b>Hinweis</b>: Es ist unmöglich, dass Original und History Edition in einer
+-- Partie aufeinander treffen, da die alten Server längst abgeschaltet und die
+-- Option zum LAN-Spiel in der HE nicht verfügbar ist.
+--
+-- @return[type=boolean] Spiel ist History Edition
+-- @within Anwenderfunktionen
+--
+function API.IsHistoryEditionNetworkGame()
+    return API.IsHistoryEdition() and Framework.IsNetworkGame();
+end
+
 -- Lua base functions
 
 function API.OverrideTable()

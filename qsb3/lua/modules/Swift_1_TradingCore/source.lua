@@ -37,7 +37,7 @@ end
 
 function ModuleTradingCore.Global:OnEvent(_ID, _Event, _TraderType, _Good, _P1, _P2, _Amount, _Price)
     if _ID == QSB.ScriptEvents.GoodsPurchased then
-        if false and not Framework.IsNetworkGame() then
+        if false and not API.IsHistoryEditionNetworkGame() then
             self:PerformFakeTrade(_TraderType, _Good, _P1, _P2, _Amount, _Price);
         end
     end
@@ -109,7 +109,7 @@ function ModuleTradingCore.Local:OnGameStart()
     QSB.ScriptEvents.GoodsSold = API.RegisterScriptEvent("Event_GoodsSold");
     QSB.ScriptEvents.GoodsPurchased = API.RegisterScriptEvent("Event_GoodsPurchased");
 
-    if Framework.IsNetworkGame() then
+    if API.IsHistoryEditionNetworkGame() then
         return;
     end
     self:OverrideMerchantComputePurchasePrice();
@@ -295,7 +295,7 @@ function ModuleTradingCore.Local:OverrideMerchantPurchaseOfferClicked()
                 BuyLock.Locked = true;
                 GUI.ChangeMerchantOffer(BuildingID, PlayerID, OfferIndex, Price);
                 -- TODO: Geändertes Soldatenlimit
-                -- if Framework.IsNetworkGame() then
+                -- if API.IsHistoryEditionNetworkGame() then
                     GUI.BuyMerchantOffer(BuildingID, PlayerID, OfferIndex);
                 -- end
                 Sound.FXPlay2DSound("ui\\menu_click");
