@@ -70,8 +70,10 @@ function QSB.GraphViz:Init()
     CreateQuest_Orig_ModuleGraphVizExport = API.CreateQuest;
     API.CreateQuest = function(_Data)
         local QuestName, QuestAmount = CreateQuest_Orig_ModuleGraphVizExport(_Data);
-        local Data = QSB.GraphViz:AddQuestDefaults(table.copy(_Data));
-        QSB.GraphViz.Quests[#QSB.GraphViz.Quests+1] = Data;
+        if not QuestName:find("DialogSystemQuest") then
+            local Data = QSB.GraphViz:AddQuestDefaults(table.copy(_Data));
+            QSB.GraphViz.Quests[#QSB.GraphViz.Quests+1] = Data;
+        end
         return QuestName, QuestAmount;
     end
     AddQuest = API.CreateQuest;
