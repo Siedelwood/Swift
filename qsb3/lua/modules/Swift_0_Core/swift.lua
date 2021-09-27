@@ -165,13 +165,6 @@ function Swift:ChangeCustomQuestCaptionText(_Text, _Quest)
     end
 end
 
-function Swift:GetTextOfDesiredLanguage(_Table)
-    if _Table[QSB.Language] then
-        return _Table[QSB.Language];
-    end
-    return _Table["en"] or "ERROR_NO_TEXT";
-end
-
 -- Behavior
 
 function Swift:LoadBehaviors()
@@ -442,6 +435,7 @@ function Swift:InitalizeEventsGlobal()
     QSB.ScriptEvents.QuestTrigger = Swift:CreateScriptEvent("Event_QuestTrigger", nil);
 
     QSB.ScriptEvents.CustomValueChanged = Swift:CreateScriptEvent("Event_CustomValueChanged", nil);
+    QSB.ScriptEvents.LanguageSelected = Swift:CreateScriptEvent("Event_LanguageSelected", nil);
 end
 function Swift:InitalizeEventsLocal()
     QSB.ScriptEvents.QuestFailure = Swift:CreateScriptEvent("Event_QuestFailure", nil);
@@ -451,6 +445,7 @@ function Swift:InitalizeEventsLocal()
     QSB.ScriptEvents.QuestTrigger = Swift:CreateScriptEvent("Event_QuestTrigger", nil);
 
     QSB.ScriptEvents.CustomValueChanged = Swift:CreateScriptEvent("Event_CustomValueChanged", nil);
+    QSB.ScriptEvents.LanguageSelected = Swift:CreateScriptEvent("Event_LanguageSelected", nil);
 end
 
 function Swift:CreateScriptEvent(_Name, _Function)
@@ -559,21 +554,59 @@ end
 
 function Swift:DetectLanguage()
     self.m_Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
-    self:ChangeSystemLanguage(self.m_Language);
+    QSB.Language = self.m_Language;
 end
 
 function Swift:ChangeSystemLanguage(_Language)
+    local OldLanguage = self.m_Language;
+    local NewLanguage = _Language;
     self.m_Language = _Language;
-    QSB.Language = _Language;
-    -- TODO: Change defaults of Swift here
+    QSB.Language = self.m_Language;
+
+    -- Change internal language stuff
     for i= 1, #self.m_ModuleRegister, 1 do
         if self.m_ModuleRegister[i]["Global"] and self.m_ModuleRegister[i]["Global"].OnLanguageSelected then
-            self.m_ModuleRegister[i]["Global"]:OnLanguageSelected(_Language);
+            self.m_ModuleRegister[i]["Global"]:OnLanguageSelected(OldLanguage, NewLanguage);
         end
         if self.m_ModuleRegister[i]["Local"] and self.m_ModuleRegister[i]["Local"].OnLanguageSelected then
-            self.m_ModuleRegister[i]["Local"]:OnLanguageSelected(_Language);
+            self.m_ModuleRegister[i]["Local"]:OnLanguageSelected(OldLanguage, NewLanguage);
         end
     end
+
+    -- Call event to be catched by the user
+    Swift:DispatchScriptEvent(
+        QSB.ScriptEvents.LanguageSelected,
+        OldLanguage,
+        NewLanguage
+    );
+end
+
+function Swift:GetTextOfDesiredLanguage(_Table)
+    if type(_Table) == "table" then
+        if _Table[QSB.Language] then
+            return _Table[QSB.Language];
+        end
+    end
+    return _Table["en"] or "ERROR_NO_TEXT";
+end
+
+function Swift:Localize(_Text)
+    local LocalizedText;
+    if type(_Text) == "table" then
+        LocalizedText = {};
+        if _Text.en == nil and _Text[QSB.Language] == nil then
+            for k,v in pairs(_Text) do
+                if type(v) == "table" then
+                    LocalizedText[k] = self:Localize(v);
+                end
+            end
+        else
+            LocalizedText = Swift:GetTextOfDesiredLanguage(_Text);
+        end
+    else
+        LocalizedText = tostring(_Text);
+    end
+    return LocalizedText;
 end
 
 -- Utils

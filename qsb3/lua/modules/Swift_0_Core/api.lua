@@ -379,6 +379,46 @@ function API.ObtainCustomVariable(_Name, _Default)
 end
 
 ---
+-- Ermittelt den lokalisierten Text anhand der eingestellten Sprache der QSB.
+--
+-- Wird ein normaler String übergeben, wird dieser sofort zurückgegeben. Bei
+-- einem Table mit einem passenden Sprach-Key (de, en) wird die entsprechende
+-- Sprache zurückgegeben. Sollte ein Nested Table übergeben werden, werden alle
+-- Texte innerhalb des Tables rekursiv übersetzt als Table zurückgegeben. Alle
+-- anderen Werte sind nicht in der Rückgabe enthalten.
+--
+-- @param _Text Anzeigetext (String oder Table)
+-- @return Übersetzten Text oder Table mit Texten
+-- @within Anwenderfunktionen
+--
+-- @usage -- Einstufige Table
+-- local Text = API.Localize({de = "Deutsch", en = "English"});
+-- -- Rückgabe: "Deutsch"
+--
+-- -- Mehrstufige Table
+-- API.Localize{{de = "Deutsch", en = "English"}, {{1,2,3,4, de = "A", en = "B"}}}
+-- -- Rückgabe: {"Deutsch", {"A"}}
+--
+function API.Localize(_Text)
+    return Swift:Localize(_Text);
+end
+
+---
+-- Stellt die angegebene Sprache zur Verwendung durch die QSB ein.
+--
+-- Alle von der QSB erzeugten Texte werden der übergebenen Sprache angepasst.
+--
+-- @param _Language Genutzte Sprache
+-- @within Anwenderfunktionen
+--
+function API.ChangeDesiredLanguage(_Language)
+    if GUI or type(_Language) ~= "string" or _Language:len() ~= 2 then
+        return;
+    end
+    Swift:ChangeSystemLanguage(_Language);
+end
+
+---
 -- Wandelt underschiedliche Darstellungen einer Boolean in eine echte um.
 --
 -- Jeder String, der mit j, t, y oder + beginnt, wird als true interpretiert.

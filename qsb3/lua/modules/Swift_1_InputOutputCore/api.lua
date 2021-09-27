@@ -98,31 +98,6 @@ end
 GUI_ClearNotes = API.ClearNotes;
 
 ---
--- Ermittelt den lokalisierten Text anhand der eingestellten Sprache der QSB.
---
--- Wird ein normaler String übergeben, wird dieser sofort zurückgegeben. Bei
--- einem Table mit einem passenden Sprach-Key (de, en) wird die entsprechende
--- Sprache zurückgegeben. Sollte ein Nested Table übergeben werden, werden alle
--- Texte innerhalb des Tables rekursiv übersetzt als Table zurückgegeben. Alle
--- anderen Werte sind nicht in der Rückgabe enthalten.
---
--- @param _Text Anzeigetext (String oder Table)
--- @return Übersetzten Text oder Table mit Texten
--- @within Anwenderfunktionen
---
--- @usage -- Einstufige Table
--- local Text = API.Localize({de = "Deutsch", en = "English"});
--- -- Rückgabe: "Deutsch"
---
--- -- Mehrstufige Table
--- API.Localize{{de = "Deutsch", en = "English"}, {{1,2,3,4, de = "A", en = "B"}}}
--- -- Rückgabe: {"Normaler Table", {"A"}}
---
-function API.Localize(_Text)
-    return ModuleInputOutputCore.Shared:Localize(_Text);
-end
-
----
 -- Ersetzt alle Platzhalter im Text oder in der Table.
 --
 -- Mögliche Platzhalter:
@@ -257,10 +232,14 @@ function API.DialogInfoBox(_Title, _Text, _Action)
         if _Action and type(_Action) ~= "string" then
             return;
         end
+
+        local Title = (type(_Title) == "table" and table.tostring(_Title)) or "\"" .._Title.. "\"";
+        local Text  = (type(_Text) == "table" and table.tostring(_Text)) or "\"" .._Text.. "\"";
+
         Logic.ExecuteInLuaLocalState(string.format(
             [[ModuleInputOutputCore.Local:OpenDialog(%s, %s, %s)]],
-            API.ConvertPlaceholders(API.Localize(_Title)),
-            API.ConvertPlaceholders(API.Localize(_Text)),
+            Title,
+            Text,
             _Action
         ));
         return;
@@ -300,10 +279,14 @@ function API.DialogRequestBox(_Title, _Text, _Action, _OkCancel)
         if _Action and type(_Action) ~= "string" then
             return;
         end
+
+        local Title = (type(_Title) == "table" and table.tostring(_Title)) or "\"" .._Title.. "\"";
+        local Text  = (type(_Text) == "table" and table.tostring(_Text)) or "\"" .._Text.. "\"";
+
         Logic.ExecuteInLuaLocalState(string.format(
             [[ModuleInputOutputCore.Local:OpenRequesterDialog(%s, %s, %s, %s)]],
-            API.ConvertPlaceholders(API.Localize(_Title)),
-            API.ConvertPlaceholders(API.Localize(_Text)),
+            Title,
+            Text,
             _Action,
             tostring(_OkCancel == true)
         ));
@@ -343,10 +326,14 @@ function API.DialogSelectBox(_Title, _Text, _Action, _List)
         if _Action and type(_Action) ~= "string" then
             return;
         end
+
+        local Title = (type(_Title) == "table" and table.tostring(_Title)) or "\"" .._Title.. "\"";
+        local Text  = (type(_Text) == "table" and table.tostring(_Text)) or "\"" .._Text.. "\"";
+
         Logic.ExecuteInLuaLocalState(string.format(
             [[ModuleInputOutputCore.Local:OpenSelectionDialog(%s, %s, %s, %s)]],
-            API.ConvertPlaceholders(API.Localize(_Title)),
-            API.ConvertPlaceholders(API.Localize(_Text)),
+            Title,
+            Text,
             _Action,
             table.toString(_List)
         ));

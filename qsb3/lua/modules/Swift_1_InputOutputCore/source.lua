@@ -393,7 +393,7 @@ end
 -- Shared ------------------------------------------------------------------- --
 
 function ModuleInputOutputCore.Shared:Note(_Text)
-    _Text = self:ConvertPlaceholders(self:Localize(_Text));
+    _Text = self:ConvertPlaceholders(Swift:Localize(_Text));
     if Swift:IsGlobalEnvironment() then
         Logic.DEBUG_AddNote(_Text);
     else
@@ -402,7 +402,7 @@ function ModuleInputOutputCore.Shared:Note(_Text)
 end
 
 function ModuleInputOutputCore.Shared:StaticNote(_Text)
-    _Text = self:ConvertPlaceholders(self:Localize(_Text));
+    _Text = self:ConvertPlaceholders(Swift:Localize(_Text));
     if Swift:IsGlobalEnvironment() then
         Logic.ExecuteInLuaLocalState(string.format([[GUI.AddStaticNote("%s")]], _Text));
         return;
@@ -411,7 +411,7 @@ function ModuleInputOutputCore.Shared:StaticNote(_Text)
 end
 
 function ModuleInputOutputCore.Shared:Message(_Text)
-    _Text = self:ConvertPlaceholders(self:Localize(_Text));
+    _Text = self:ConvertPlaceholders(Swift:Localize(_Text));
     if Swift:IsGlobalEnvironment() then
         Logic.ExecuteInLuaLocalState(string.format([[Message("%s")]], _Text));
         return;
@@ -427,25 +427,6 @@ function ModuleInputOutputCore.Shared:ClearNotes()
     GUI.ClearNotes();
 end
 
-function ModuleInputOutputCore.Shared:Localize(_Text)
-    local LocalizedText;
-    if type(_Text) == "table" then
-        LocalizedText = {};
-        if _Text.de == nil or _Text.en == nil then
-            for k,v in pairs(_Text) do
-                if type(v) == "table" then
-                    LocalizedText[k] = self:Localize(v);
-                end
-            end
-        else
-            LocalizedText = _Text[QSB.Language];
-        end
-    else
-        LocalizedText = tostring(_Text);
-    end
-    return LocalizedText;
-end
-
 function ModuleInputOutputCore.Shared:ConvertPlaceholders(_Text)
     local s1, e1, s2, e2;
     while true do
@@ -453,11 +434,11 @@ function ModuleInputOutputCore.Shared:ConvertPlaceholders(_Text)
         if _Text:find("{name:") then
             Before, Placeholder, After, s1, e1, s2, e2 = self:SplicePlaceholderText(_Text, "{name:");
             Replacement = self.Placeholders.Names[Placeholder];
-            _Text = Before .. self:Localize(Replacement or "ERROR_PLACEHOLDER_NOT_FOUND") .. After;
+            _Text = Before .. Swift:Localize(Replacement or "ERROR_PLACEHOLDER_NOT_FOUND") .. After;
         elseif _Text:find("{type:") then
             Before, Placeholder, After, s1, e1, s2, e2 = self:SplicePlaceholderText(_Text, "{type:");
             Replacement = self.Placeholders.EntityTypes[Placeholder];
-            _Text = Before .. self:Localize(Replacement or "ERROR_PLACEHOLDER_NOT_FOUND") .. After;
+            _Text = Before .. Swift:Localize(Replacement or "ERROR_PLACEHOLDER_NOT_FOUND") .. After;
         end
         if s1 == nil or e1 == nil or s2 == nil or e2 == nil then
             break;
