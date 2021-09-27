@@ -471,8 +471,8 @@ function Swift:OverrideSaveLoadedCallback()
         Mission_OnSaveGameLoaded_Orig_Swift = Mission_OnSaveGameLoaded;
         Mission_OnSaveGameLoaded = function()
             Mission_OnSaveGameLoaded_Orig_Swift();
-
             Swift:RestoreAfterLoad();
+            Logic.ExecuteInLuaLocalState("Swift:RestoreAfterLoad()");
             Swift:DispatchScriptEvent(QSB.ScriptEvents.SaveGameLoaded);
             Logic.ExecuteInLuaLocalState("Swift:DispatchScriptEvent(QSB.ScriptEvents.SaveGameLoaded)");
         end
@@ -573,8 +573,9 @@ function Swift:GetTextOfDesiredLanguage(_Table)
         if _Table[QSB.Language] then
             return _Table[QSB.Language];
         end
+        return "ERROR_NO_TEXT";
     end
-    return _Table["en"] or "ERROR_NO_TEXT";
+    return "ERROR_NO_TEXT";
 end
 
 function Swift:Localize(_Text)

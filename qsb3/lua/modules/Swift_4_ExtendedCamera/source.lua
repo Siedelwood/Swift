@@ -33,17 +33,13 @@ function ModuleExtendedCamera.Local:OnGameStart()
     self:ActivateExtendedZoomHotkey();
 end
 
-function ModuleExtendedCamera.Local:OnEvent(_ID, _Event, _Text)
+function ModuleExtendedCamera.Local:OnEvent(_ID, _Event)
     if _ID == QSB.ScriptEvents.SaveGameLoaded then
         if self.ExtendedZoomActive then
             self:ActivateExtendedZoom();
         end
         self:ActivateExtendedZoomHotkey();
-    end
-end
-
-function ModuleExtendedCamera.Local:OnEvent(_ID, _Event)
-    if _ID == QSB.ScriptEvents.BorderScrollReset then
+    elseif _ID == QSB.ScriptEvents.BorderScrollReset then
         if self.ExtendedZoomActive then
             Camera.RTS_SetZoomFactorMax(0.8701);
             Camera.RTS_SetZoomFactorMin(0.0999);
@@ -73,7 +69,7 @@ function ModuleExtendedCamera.Local:ActivateExtendedZoomHotkey()
     Input.KeyBindDown(
         Keys.ModifierControl + Keys.ModifierShift + Keys.K,
         "ModuleExtendedCamera.Local:ToggleExtendedZoom()",
-        2,
+        30,
         false
     );
 end

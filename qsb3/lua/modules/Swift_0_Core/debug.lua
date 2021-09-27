@@ -107,12 +107,13 @@ function Swift:InitalizeDebugHotkeys()
 end
 
 function Swift:InitalizeQsbDebugHotkeys()
-    Input.KeyBindDown(Keys.ModifierControl + Keys.ModifierAlt + Keys.R, "Swift:ExecuteQsbDebugHotkey('RestartMap')", 2);
+    Input.KeyBindDown(Keys.ModifierControl + Keys.ModifierShift + Keys.ModifierAlt + Keys.R, "Swift:ExecuteQsbDebugHotkey('RestartMap')", 30, false);
 end
 
 function Swift:ExecuteQsbDebugHotkey(_Type)
     if self.m_DevelopingCheats then
         if _Type == 'RestartMap' then
+            Camera.RTS_FollowEntity(0);
             Framework.RestartMap();
         end
     end
@@ -135,16 +136,11 @@ function Swift:InitalizeQsbDebugShell()
         if not Swift.m_DevelopingShell then
             return true;
         end
-        -- Better module installed
-        if ModuleInputOutputCore then
-            API.ShowTextInput();
-            return true;
-        end
         -- Call cheap version
         Swift:DisplayQsbDebugShell();
     end
 
-    Input.KeyBindDown(Keys.ModifierControl + Keys.X, "Swift:OpenQsbDebugShell()", 2);
+    Input.KeyBindDown(Keys.ModifierControl + Keys.X, "Swift:OpenQsbDebugShell()", 30, false);
 end
 
 function Swift:OpenQsbDebugShell()

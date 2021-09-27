@@ -830,7 +830,7 @@ end
 WinQuestByName = API.WinQuest;
 
 function API.IsLoadscreenVisible()
-    return Swift.m_LoadScreenHidden == true;
+    return Swift.m_LoadScreenHidden ~= true;
 end
 
 ---

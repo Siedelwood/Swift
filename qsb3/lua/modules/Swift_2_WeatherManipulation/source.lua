@@ -19,10 +19,10 @@ ModuleWeatherManipulation = {
 -- Global ------------------------------------------------------------------- --
 
 function ModuleWeatherManipulation.Global:OnGameStart()
-    StartHiResJobEx(self.EventController);
+    StartSimpleHiResJobEx(self.EventController);
 end
 
-function ModuleWeatherManipulation.Global:OnEvent(_ID, _Event, _Text)
+function ModuleWeatherManipulation.Global:OnEvent(_ID, _Event)
     if _ID == QSB.ScriptEvents.SaveGameLoaded then
         if self:IsEventActive() then
             Logic.ExecuteInLuaLocalState([[

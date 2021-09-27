@@ -31,6 +31,11 @@ end
 
 function API.AddDialogPages(_Dialog)
     local AP = function(_Page)
+        if not _Page.Rotation and _Page.Target ~= nil then
+            local ID = GetID(_Page.Target);
+            local Orientation = Logic.GetEntityOrientation(ID) +90;
+            _Page.Rotation = Orientation;
+        end
         table.insert(_Dialog, _Page);
         return _Page;
     end

@@ -56,9 +56,6 @@ ModuleInputOutputCore = {
 -- Global ------------------------------------------------------------------- --
 
 function ModuleInputOutputCore.Global:OnGameStart()
-    Swift.GetTextOfDesiredLanguage = function(self, _Table)
-        return ModuleInputOutputCore.Shared:Localize(_Table);
-    end
     QSB.ScriptEvents.ChatOpened = API.RegisterScriptEvent("Event_ChatOpened");
     QSB.ScriptEvents.ChatClosed = API.RegisterScriptEvent("Event_ChatClosed");
 
@@ -90,15 +87,13 @@ end
 -- Local -------------------------------------------------------------------- --
 
 function ModuleInputOutputCore.Local:OnGameStart()
-    Swift.GetTextOfDesiredLanguage = function(self, _Table)
-        return ModuleInputOutputCore.Shared:Localize(_Table);
-    end
     QSB.ScriptEvents.ChatOpened = API.RegisterScriptEvent("Event_ChatOpened");
     QSB.ScriptEvents.ChatClosed = API.RegisterScriptEvent("Event_ChatClosed");
 
     if Framework.IsNetworkGame() then
         return;
     end
+    self:OverrideQuicksave();
     self:OverrideDebugInput();
     self:DialogOverwriteOriginal();
     self:DialogAltF4Hotkey();
@@ -106,7 +101,31 @@ end
 
 function ModuleInputOutputCore.Local:OnEvent(_ID, _Event, _Text)
     if _ID == QSB.ScriptEvents.SaveGameLoaded then
+        self:OverrideDebugInput();
         self:DialogAltF4Hotkey();
+    end
+end
+
+function ModuleInputOutputCore.Local:OverrideQuicksave()
+    Swift:AddBlockQuicksaveCondition(function()
+        return ModuleInputOutputCore.Local.DialogWindowShown;
+    end);
+    
+    KeyBindings_SaveGame = function()
+        if not Swift:CanDoQuicksave() then
+            return;
+        end
+        if g_Throneroom ~= nil
+        or Framework and Framework.IsNetworkGame()
+        or XGUIEng.IsWidgetShownEx("/InGame/MissionStatistic") == 1
+        or GUI_Window.IsOpen("MissionEndScreen")
+        or XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 1
+        or XGUIEng.IsWidgetShownEx("/InGame/Dialog") == 1 then
+            return;
+        end
+        OpenDialog("{cr}{cr}" .. XGUIEng.GetStringTableText("UI_Texts/Saving_center") .. "{cr}{cr}" .. "QuickSave", XGUIEng.GetStringTableText("UI_Texts/MainMenuSaveGame_center"))
+        XGUIEng.ShowWidget("/InGame/Dialog/Ok", 0);
+        Dialog_SetUpdateCallback(KeyBindings_SaveGame_Delayed);
     end
 end
 
@@ -114,7 +133,10 @@ end
 -- module. Otherwise there would be no reaction whatsoever to console commands.
 function ModuleInputOutputCore.Local:OverrideDebugInput()
     Swift.InitalizeQsbDebugShell = function(self)
-        Input.KeyBindDown(Keys.ModifierControl + Keys.X, "API.ShowTextInput()", 2);
+        if not self.m_DevelopingShell then
+            return;
+        end
+        Input.KeyBindDown(Keys.ModifierControl + Keys.X, "API.ShowTextInput()", 30, false);
     end
     Swift:InitalizeQsbDebugShell();
 end
@@ -230,10 +252,7 @@ function ModuleInputOutputCore.Local:OpenDialog(_Title, _Text, _Action)
 
         XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/QuickSave", 0);
         XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/SaveGame", 0);
-        if not KeyBindings_SaveGame_Orig_QSB_Windows then
-            KeyBindings_SaveGame_Orig_QSB_Windows = KeyBindings_SaveGame;
-            KeyBindings_SaveGame = function() end;
-        end
+        self.DialogWindowShown = true;
         Game.GameTimeSetFactor(GUI.GetPlayerID(), 0.0000001);
         XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 1);
     else
@@ -322,10 +341,7 @@ function ModuleInputOutputCore.Local:RestoreSaveGame()
         XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/QuickSave", 1);
         XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/SaveGame", 1);
     end
-    if KeyBindings_SaveGame_Orig_QSB_Windows then
-        KeyBindings_SaveGame = KeyBindings_SaveGame_Orig_QSB_Windows;
-        KeyBindings_SaveGame_Orig_QSB_Windows = nil;
-    end
+    self.DialogWindowShown = false;
 end
 
 function ModuleInputOutputCore.Local:DialogOverwriteOriginal()

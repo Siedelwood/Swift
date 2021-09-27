@@ -25,9 +25,7 @@ ModuleDialogSystem = {
             }
         },
     },
-    Local = {
-        Dialog = {},
-    },
+    Local = {},
     -- This is a shared structure but the values are asynchronous!
     Shared = {},
 };
@@ -35,7 +33,11 @@ ModuleDialogSystem = {
 -- Global ------------------------------------------------------------------- --
 
 function ModuleDialogSystem.Global:OnGameStart()
-    StartSimpleHiResJob(function()
+    for i= 1, 8 do
+        ModuleDialogSystem.Global.DialogQueue[i] = {};
+    end
+    
+    StartSimpleHiResJobEx(function()
         for i= 1, 8 do
             if ModuleDialogSystem.Global:CanStartDialog(i) then
                 if #ModuleDialogSystem.Global.DialogQueue[i] > 0 then
@@ -46,10 +48,10 @@ function ModuleDialogSystem.Global:OnGameStart()
     end);
 end
 
-function ModuleDialogSystem.Global:OnEvent(_ID, _PlayerID)
+function ModuleDialogSystem.Global:OnEvent(_ID, _Event, _PlayerID)
     if _ID == QSB.ScriptEvents.EscapePressed then
-        if self.Dialog[_PlayerID] ~= nil and self.Dialog[_PlayerID].Options == nil then
-            if Logic.GetTime() - self.Dialog[_PlayerID].PageStartedTime >= 4 then
+        if self.Dialog[_PlayerID] ~= nil then
+            if Logic.GetTime() - self.Dialog[_PlayerID].PageStartedTime >= 6 then
                 self:NextPage(_PlayerID);
             end
         end
@@ -70,7 +72,10 @@ function ModuleDialogSystem.Global:EndDialog(_PlayerID)
     if #self.DialogQueue[_PlayerID] > 0 then
         return;
     end
-    Logic.ExecuteInLuaLocalState("ModuleDialogSystem.Local:EndDialog()");
+    Logic.ExecuteInLuaLocalState(string.format(
+        "ModuleDialogSystem.Local:EndDialog(%d)",
+        _PlayerID
+    ));
 end
 
 function ModuleDialogSystem.Global:CanStartDialog(_PlayerID)
@@ -89,40 +94,52 @@ function ModuleDialogSystem.Global:NextDialog(_PlayerID)
             self.Dialog[_PlayerID]:Starting();
         end
 
-        Logic.ExecuteInLuaLocalState("ModuleDialogSystem.Local:StartDialog()");
+        Logic.ExecuteInLuaLocalState(string.format(
+            "ModuleDialogSystem.Local:StartDialog(%d)",
+            _PlayerID
+        ));
         self:NextPage(_PlayerID);
     end
 end
 
 function ModuleDialogSystem.Global:NextPage(_PlayerID)
-    if not self.Dialog[_PlayerID] then
+    if self.Dialog[_PlayerID] == nil then
         return;
     end
 
     self.Dialog[_PlayerID].CurrentPage = self.Dialog[_PlayerID].CurrentPage +1;
     self.Dialog[_PlayerID].PageStartedTime = Logic.GetTime();
+    if self.DialogQueue[_PlayerID].PageQuest then
+        API.StopQuest(self.DialogQueue[_PlayerID].PageQuest, true);
+    end
 
     local PageID = self.Dialog[_PlayerID].CurrentPage;
-    if PageID <= #self.Dialog[_PlayerID] then
-        if self.DialogQueue[_PlayerID].PageQuest then
-            API.StopQuest(self.DialogQueue[_PlayerID].PageQuest, true);
+    if PageID <= #self.Dialog[_PlayerID][2] then
+        if self.Dialog[_PlayerID][2][PageID].Action then
+            self.Dialog[_PlayerID][2][PageID]:Action();
         end
         self.DialogQueue[_PlayerID].PageQuest = self:DisplayPage(_PlayerID, PageID);
+    else
+        self:EndDialog(_PlayerID);
     end
 end
 
-function ModuleDialogSystem.Global:DisplayPage(_PlayerID, _Page)
-    if not self.Dialog[_PlayerID] then
+function ModuleDialogSystem.Global:DisplayPage(_PlayerID, _PageID)
+    if self.Dialog[_PlayerID] == nil then
         return;
     end
 
     self.DialogPageCounter = self.DialogPageCounter +1;
+    local Page = self.Dialog[_PlayerID][2][_PageID];
     local QuestName = "DialogSystemQuest_" .._PlayerID.. "_" ..self.DialogPageCounter;
-    local QuestText = API.ConvertPlaceholders(API.Localize(_Page.Text));
-    local Continue  = API.ConvertPlaceholders(API.Localize(self.Text.Continue));
+    local QuestText = API.ConvertPlaceholders(API.Localize(Page.Text));
+    local Extension  = API.ConvertPlaceholders(API.Localize(self.Text.Continue));
     AddQuest {
         Name        = QuestName,
-        Suggestion  = QuestText .. QuestText,
+        Suggestion  = QuestText .. Extension,
+        Sender      = Page.Sender or _PlayerID,
+        Receiver    = _PlayerID,
+
         Goal_NoChange(),
         Trigger_Time(0),
     }
@@ -130,7 +147,7 @@ function ModuleDialogSystem.Global:DisplayPage(_PlayerID, _Page)
     Logic.ExecuteInLuaLocalState(string.format(
         [[ModuleDialogSystem.Local:DisplayPage(%d, %s)]],
         _PlayerID,
-        table.tostring(self.Dialog[_PlayerID][_Page])
+        table.tostring(Page)
     ));
     return QuestName;
 end
@@ -149,11 +166,13 @@ function ModuleDialogSystem.Local:StartDialog(_PlayerID)
     end
 end
 
-function ModuleDialogSystem.Local:EndDialog()
+function ModuleDialogSystem.Local:EndDialog(_PlayerID)
     if GUI.GetPlayerID() == _PlayerID then
         API.ActivateNormalInterface();
         API.ActivateBorderScroll();
         Camera.RTS_FollowEntity(0);
+        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 0);
+        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles", 0);
     end
 end
 
@@ -168,10 +187,10 @@ function ModuleDialogSystem.Local:DisplayPage(_PlayerID, _PageData)
             Camera.RTS_ScrollSetLookAt(_PageData.Position.X, _PageData.Position.Y);
         end
         if _PageData.Zoom then
-            Camera.RTS_SetScrollFactor(_PageData.Zoom);
+            Camera.RTS_SetZoomFactor(_PageData.Zoom);
         end
         if _PageData.Rotation then
-            Camera.RTS_SetRotAngle(_PageData.Rotation);
+            Camera.RTS_SetRotationAngle(_PageData.Rotation);
         end
     end
 end

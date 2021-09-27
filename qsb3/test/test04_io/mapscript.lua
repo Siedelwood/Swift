@@ -79,6 +79,38 @@ function Mission_FirstMapAction()
     API.ActivateDebugMode(true, false, true, true);
 end
 
+function CreateTestNPCDialogQuest()
+    AddQuest {
+        Name        = "TestNpcQuest1",
+        Suggestion  = "Speak to this npc.",
+        Receiver    = 1,
+
+        Goal_NPC("npc1", "-"),
+        Reward_MapScriptFunction(CreateTestNPCDialogBriefing, "TestDialog", 1),
+        Trigger_Time(0),
+    }
+end
+
+function CreateTestNPCDialogBriefing(_Name, _PlayerID)
+    local Dialog = {};
+    local AP = API.AddDialogPages(Dialog);
+
+    AP {
+        Text   = "Das ist ein Test!",
+        Sender = 2,
+        Target = "npc1",
+        Zoom   = 0.1,
+    }
+    AP {
+        Text   = "Wunderbar! Es scheint zu funktionieren.",
+        Sender = 1,
+        Target = Logic.GetKnightID(_PlayerID),
+        Zoom   = 0.1,
+    }
+
+    return API.StartDialog(Dialog, _Name, _PlayerID);
+end
+
 function CreateTestNPCQuest()
     AddQuest {
         Name        = "TestNpcQuest1",
