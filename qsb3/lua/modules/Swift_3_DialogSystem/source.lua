@@ -54,7 +54,10 @@ function ModuleDialogSystem.Global:OnEvent(_ID, _Event, _PlayerID)
     if _ID == QSB.ScriptEvents.EscapePressed then
         if self.Dialog[_PlayerID] ~= nil then
             if Logic.GetTime() - self.Dialog[_PlayerID].PageStartedTime >= 6 then
-                self:NextPage(_PlayerID);
+                local PageID = self.Dialog[_PlayerID].CurrentPage;
+                if not self.Dialog[_PlayerID][2][PageID].Options then
+                    self:NextPage(_PlayerID);
+                end
             end
         end
     end
@@ -63,21 +66,23 @@ end
 function ModuleDialogSystem.Global:StartDialog(_Name, _PlayerID, _Data)
     self.DialogQueue[_PlayerID] = self.DialogQueue[_PlayerID] or {};
     table.insert(self.DialogQueue[_PlayerID], {_Name, _Data});
+    if _Data.EnableGlobalInvulnerability then
+        Logic.SetGlobalInvulnerability(1);
+    end
 end
 
 function ModuleDialogSystem.Global:EndDialog(_PlayerID)
     API.FinishCinematicEvent(self.Dialog[_PlayerID].Name);
+    Logic.SetGlobalInvulnerability(0);
     if self.Dialog[_PlayerID].Finished then
         self.Dialog[_PlayerID]:Finished();
     end
-    self.Dialog[_PlayerID] = nil;
-    if #self.DialogQueue[_PlayerID] > 0 then
-        return;
-    end
     Logic.ExecuteInLuaLocalState(string.format(
-        "ModuleDialogSystem.Local:EndDialog(%d)",
-        _PlayerID
+        "ModuleDialogSystem.Local:EndDialog(%d, %s)",
+        _PlayerID,
+        table.tostring(self.Dialog[_PlayerID])
     ));
+    self.Dialog[_PlayerID] = nil;
 end
 
 function ModuleDialogSystem.Global:CanStartDialog(_PlayerID)
@@ -97,8 +102,9 @@ function ModuleDialogSystem.Global:NextDialog(_PlayerID)
         end
 
         Logic.ExecuteInLuaLocalState(string.format(
-            "ModuleDialogSystem.Local:StartDialog(%d)",
-            _PlayerID
+            "ModuleDialogSystem.Local:StartDialog(%d, %s)",
+            _PlayerID,
+            table.tostring(Dialog)
         ));
         self:NextPage(_PlayerID);
     end
@@ -116,13 +122,50 @@ function ModuleDialogSystem.Global:NextPage(_PlayerID)
     end
 
     local PageID = self.Dialog[_PlayerID].CurrentPage;
-    if PageID <= #self.Dialog[_PlayerID][2] then
-        if self.Dialog[_PlayerID][2][PageID].Action then
-            self.Dialog[_PlayerID][2][PageID]:Action();
-        end
-        self.DialogQueue[_PlayerID].PageQuest = self:DisplayPage(_PlayerID, PageID);
-    else
+    if PageID == -1 or PageID == 0 then
         self:EndDialog(_PlayerID);
+        return;
+    end
+    if type(self.Dialog[_PlayerID][2][PageID]) == "table" then
+        if PageID <= #self.Dialog[_PlayerID][2] then
+            if self.Dialog[_PlayerID][2][PageID].Action then
+                self.Dialog[_PlayerID][2][PageID]:Action();
+            end
+            self.DialogQueue[_PlayerID].PageQuest = self:DisplayPage(_PlayerID, PageID);
+        else
+            self:EndDialog(_PlayerID);
+        end
+    else
+        local Target = self:GetPageIDByName(self.Dialog[_PlayerID][2][PageID]);
+        self.Dialog[_PlayerID].CurrentPage = Target -1;
+        self:NextPage(_PlayerID);
+    end
+end
+
+function ModuleDialogSystem.Global:OnOptionSelected(_PlayerID, _OptionID)
+    if self.Dialog[_PlayerID] == nil then
+        return;
+    end
+    local PageID = self.Dialog[_PlayerID].CurrentPage;
+    if type(self.Dialog[_PlayerID][2][PageID]) ~= "table" then
+        return;
+    end
+    if self.Dialog[_PlayerID][2][PageID].Options then
+        local Option;
+        for i= 1, #self.Dialog[_PlayerID][2][PageID].Options, 1 do
+            if self.Dialog[_PlayerID][2][PageID].Options[i].ID == _OptionID then
+                Option = self.Dialog[_PlayerID][2][PageID].Options[i];
+            end
+        end
+        if Option ~= nil then
+            local Target = Option[2];
+            if type(Option[2]) == "function" then
+                Target = Option[2](Option, _PlayerID);
+            end
+            self.Dialog[_PlayerID][2][PageID].Options.Selected = Option.ID;
+            self.Dialog[_PlayerID].CurrentPage = self:GetPageIDByName(Target) -1;
+            self:NextPage(_PlayerID);
+        end
     end
 end
 
@@ -135,11 +178,15 @@ function ModuleDialogSystem.Global:DisplayPage(_PlayerID, _PageID)
     local Page = self.Dialog[_PlayerID][2][_PageID];
     local QuestName = "DialogSystemQuest_" .._PlayerID.. "_" ..self.DialogPageCounter;
     local QuestText = API.ConvertPlaceholders(API.Localize(Page.Text));
-    local Extension  = API.ConvertPlaceholders(API.Localize(self.Text.Continue));
+    local Extension = "";
+    if not Page.Options and self.Dialog[_PlayerID].SkippingAllowed then
+        Extension = API.ConvertPlaceholders(API.Localize(self.Text.Continue));
+    end
+    local Sender = Page.Sender or _PlayerID;
     AddQuest {
         Name        = QuestName,
         Suggestion  = QuestText .. Extension,
-        Sender      = Page.Sender or _PlayerID,
+        Sender      = (Sender == -1 and _PlayerID) or Sender,
         Receiver    = _PlayerID,
 
         Goal_NoChange(),
@@ -154,12 +201,37 @@ function ModuleDialogSystem.Global:DisplayPage(_PlayerID, _PageID)
     return QuestName;
 end
 
+function ModuleDialogSystem.Global:GetPageIDByName(_Name)
+    if type(_Name) == "string" then
+        if self.Dialog[_PlayerID] ~= nil then
+            for i= 1, #self.Dialog[_PlayerID][2], 1 do
+                if self.Dialog[_PlayerID][2].Name == _Name then
+                    return i;
+                end
+            end
+        end
+        return 0;
+    end
+    return _Name;
+end
+
 -- Local -------------------------------------------------------------------- --
 
 function ModuleDialogSystem.Local:OnGameStart()
+    StartSimpleHiResJobEx(function()
+        for i= 1, 8 do
+            if GUI.GetPlayerID() == i and ModuleDialogSystem.Local.Dialog[i] then
+                if ModuleDialogSystem.Local.Dialog[i].ShowActor then
+                    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 1);
+                else
+                    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 0);
+                end
+            end
+        end
+    end);
 end
 
-function ModuleDialogSystem.Local:StartDialog(_PlayerID)
+function ModuleDialogSystem.Local:StartDialog(_PlayerID, _Data)
     if GUI.GetPlayerID() == _PlayerID then
         API.DeactivateNormalInterface();
         API.DeactivateBorderScroll();
@@ -170,16 +242,28 @@ function ModuleDialogSystem.Local:StartDialog(_PlayerID)
 
         -- Make camera backup
         if not self.Dialog[_PlayerID] then
-            self.Dialog[_PlayerID] = {
-                Rotation = Camera.RTS_GetRotationAngle();
-                Zoom     = Camera.RTS_GetZoomFactor();
-                Position = {Camera.RTS_GetLookAtPosition()}
+            self.Dialog[_PlayerID] = {};
+            self.Dialog[_PlayerID].Backup = {
+                Rotation = Camera.RTS_GetRotationAngle(),
+                Zoom     = Camera.RTS_GetZoomFactor(),
+                Position = {Camera.RTS_GetLookAtPosition()},
+                Speed    = Game.GameTimeGetFactor(_PlayerID),
             };
+        end
+
+        if _Data.HideFog then
+            Display.SetRenderFogOfWar(0);
+        end
+        if _Data.HideBorderPins then
+            Display.SetRenderBorderPins(0);
+        end
+        if not Framework.IsNetworkGame() then
+            Game.GameTimeSetFactor(_PlayerID, 1);
         end
     end
 end
 
-function ModuleDialogSystem.Local:EndDialog(_PlayerID)
+function ModuleDialogSystem.Local:EndDialog(_PlayerID, _Data)
     if GUI.GetPlayerID() == _PlayerID then
         API.ActivateNormalInterface();
         API.ActivateBorderScroll();
@@ -189,21 +273,30 @@ function ModuleDialogSystem.Local:EndDialog(_PlayerID)
 
         -- Load camera backup
         Camera.RTS_FollowEntity(0);
-        if self.Dialog[_PlayerID] then
-            Camera.RTS_SetRotationAngle(self.Dialog[_PlayerID].Rotation);
-            Camera.RTS_SetZoomFactor(self.Dialog[_PlayerID].Zoom);
-            Camera.RTS_SetLookAtPosition(
-                self.Dialog[_PlayerID].Position[1],
-                self.Dialog[_PlayerID].Position[2]
-            );
-            self.Dialog[_PlayerID] = nil;
+        if self.Dialog[_PlayerID].Backup then
+            if _Data.RestoreCamera then
+                Camera.RTS_SetRotationAngle(self.Dialog[_PlayerID].Backup.Rotation);
+                Camera.RTS_SetZoomFactor(self.Dialog[_PlayerID].Backup.Zoom);
+                Camera.RTS_SetLookAtPosition(
+                    self.Dialog[_PlayerID].Backup.Position[1],
+                    self.Dialog[_PlayerID].Backup.Position[2]
+                );
+            end
+            if _Data.RestoreGameSpeed and not Framework.IsNetworkGame() then
+                Game.GameTimeSetFactor(_PlayerID, self.Dialog[_PlayerID].Backup.Speed);
+            end
+            self.Dialog[_PlayerID].Backup = nil;
         end
+
+        Display.SetRenderFogOfWar(1);
+        Display.SetRenderBorderPins(1);
     end
 end
 
 function ModuleDialogSystem.Local:DisplayPage(_PlayerID, _PageData)
     if GUI.GetPlayerID() == _PlayerID then
         GUI.ClearSelection();
+        self.Dialog[_PlayerID].ShowActor = _PageData.Sender ~= -1;
         if _PageData.Target then
             Camera.RTS_FollowEntity(GetID(_PageData.Target));
         else
@@ -220,7 +313,18 @@ function ModuleDialogSystem.Local:DisplayPage(_PlayerID, _PageData)
         if _PageData.Rotation then
             Camera.RTS_SetRotationAngle(_PageData.Rotation);
         end
+        if _PageData.Options then
+            -- TODO: Display options
+        end
     end
+end
+
+function ModuleDialogSystem.Local:OnOptionSelected(_PlayerID, _OptionID)
+    GUI.SendScriptCommand(string.format(
+        "ModuleDialogSystem.Local:OnOptionSelected(%d, %d)",
+        _PlayerID,
+        _OptionID
+    ))
 end
 
 -- -------------------------------------------------------------------------- --
