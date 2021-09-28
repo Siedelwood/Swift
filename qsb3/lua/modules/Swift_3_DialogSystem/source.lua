@@ -41,11 +41,7 @@ function ModuleDialogSystem.Global:OnGameStart()
     
     StartSimpleHiResJobEx(function()
         for i= 1, 8 do
-            if ModuleDialogSystem.Global:CanStartDialog(i) then
-                if #ModuleDialogSystem.Global.DialogQueue[i] > 0 then
-                    ModuleDialogSystem.Global:NextDialog(i);
-                end
-            end
+            ModuleDialogSystem.Global:Update(i);
         end
     end);
 end
@@ -55,7 +51,7 @@ function ModuleDialogSystem.Global:OnEvent(_ID, _Event, _PlayerID)
         if self.Dialog[_PlayerID] ~= nil then
             if Logic.GetTime() - self.Dialog[_PlayerID].PageStartedTime >= 6 then
                 local PageID = self.Dialog[_PlayerID].CurrentPage;
-                if not self.Dialog[_PlayerID][2][PageID].Options then
+                if not self.Dialog[_PlayerID][2][PageID].MC then
                     self:NextPage(_PlayerID);
                 end
             end
@@ -95,6 +91,7 @@ function ModuleDialogSystem.Global:NextDialog(_PlayerID)
         API.StartCinematicEvent(Dialog[1], _PlayerID);
 
         Dialog.Name = Dialog[1];
+        Dialog.PlayerID = _PlayerID;
         Dialog.CurrentPage = 0;
         self.Dialog[_PlayerID] = Dialog;
         if self.Dialog[_PlayerID].Starting then
@@ -126,7 +123,16 @@ function ModuleDialogSystem.Global:NextPage(_PlayerID)
         self:EndDialog(_PlayerID);
         return;
     end
-    if type(self.Dialog[_PlayerID][2][PageID]) == "table" then
+    local Page = self.Dialog[_PlayerID][2][PageID];
+    if type(Page) == "table" then
+        if Page.MC then
+            for i= 1, #Page.MC, 1 do
+                if Page[i][3] then
+                    self.Dialog[_PlayerID][2][PageID].Disabled = Page[i][3](_PlayerID, PageID)
+                end
+            end
+        end
+        
         if PageID <= #self.Dialog[_PlayerID][2] then
             if self.Dialog[_PlayerID][2][PageID].Action then
                 self.Dialog[_PlayerID][2][PageID]:Action();
@@ -150,19 +156,23 @@ function ModuleDialogSystem.Global:OnOptionSelected(_PlayerID, _OptionID)
     if type(self.Dialog[_PlayerID][2][PageID]) ~= "table" then
         return;
     end
-    if self.Dialog[_PlayerID][2][PageID].Options then
+    local Page = self.Dialog[_PlayerID][2][PageID];
+    if Page.MC then
         local Option;
-        for i= 1, #self.Dialog[_PlayerID][2][PageID].Options, 1 do
-            if self.Dialog[_PlayerID][2][PageID].Options[i].ID == _OptionID then
-                Option = self.Dialog[_PlayerID][2][PageID].Options[i];
+        for i= 1, #Page.MC, 1 do
+            if Page.MC[i][3] == _OptionID then
+                if Page.Remove then
+                    self.Dialog[_PlayerID][2][PageID].MC[i].Visible = false;
+                end
+                Option = Page.MC[i][2];
             end
         end
         if Option ~= nil then
             local Target = Option[2];
             if type(Option[2]) == "function" then
-                Target = Option[2](Option, _PlayerID);
+                Target = Option[2](_PlayerID, PageID);
             end
-            self.Dialog[_PlayerID][2][PageID].Options.Selected = Option.ID;
+            self.Dialog[_PlayerID][2][PageID].MC.Selected = Option.ID;
             self.Dialog[_PlayerID].CurrentPage = self:GetPageIDByName(Target) -1;
             self:NextPage(_PlayerID);
         end
@@ -179,7 +189,7 @@ function ModuleDialogSystem.Global:DisplayPage(_PlayerID, _PageID)
     local QuestName = "DialogSystemQuest_" .._PlayerID.. "_" ..self.DialogPageCounter;
     local QuestText = API.ConvertPlaceholders(API.Localize(Page.Text));
     local Extension = "";
-    if not Page.Options and self.Dialog[_PlayerID].SkippingAllowed then
+    if not Page.MC and self.Dialog[_PlayerID].SkippingAllowed then
         Extension = API.ConvertPlaceholders(API.Localize(self.Text.Continue));
     end
     local Sender = Page.Sender or _PlayerID;
@@ -201,6 +211,17 @@ function ModuleDialogSystem.Global:DisplayPage(_PlayerID, _PageID)
     return QuestName;
 end
 
+function ModuleDialogSystem.Global:GetCurrentDialog(_PlayerID)
+    return self.Dialog[_PlayerID];
+end
+
+function ModuleDialogSystem.Global:GetCurrentDialogPage(_PlayerID)
+    if self.Dialog[_PlayerID] then
+        local PageID = self.Dialog[_PlayerID].CurrentPage;
+        return self.Dialog[_PlayerID][PageID];
+    end
+end
+
 function ModuleDialogSystem.Global:GetPageIDByName(_Name)
     if type(_Name) == "string" then
         if self.Dialog[_PlayerID] ~= nil then
@@ -215,18 +236,20 @@ function ModuleDialogSystem.Global:GetPageIDByName(_Name)
     return _Name;
 end
 
+function ModuleDialogSystem.Global:Update(_PlayerID)
+    if self:CanStartDialog(_PlayerID) then
+        if #self.DialogQueue[_PlayerID] > 0 then
+            self:NextDialog(_PlayerID);
+        end
+    end
+end
+
 -- Local -------------------------------------------------------------------- --
 
 function ModuleDialogSystem.Local:OnGameStart()
     StartSimpleHiResJobEx(function()
         for i= 1, 8 do
-            if GUI.GetPlayerID() == i and ModuleDialogSystem.Local.Dialog[i] then
-                if ModuleDialogSystem.Local.Dialog[i].ShowActor then
-                    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 1);
-                else
-                    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 0);
-                end
-            end
+            ModuleDialogSystem.Local:Update(i);
         end
     end);
 end
@@ -313,18 +336,80 @@ function ModuleDialogSystem.Local:DisplayPage(_PlayerID, _PageData)
         if _PageData.Rotation then
             Camera.RTS_SetRotationAngle(_PageData.Rotation);
         end
-        if _PageData.Options then
-            -- TODO: Display options
+        if _PageData.MC then
+            self:ShowOptionsDialog(_PlayerID, _PageData);
         end
     end
 end
 
-function ModuleDialogSystem.Local:OnOptionSelected(_PlayerID, _OptionID)
+function ModuleDialogSystem.Local:ShowOptionsDialog(_PlayerID, _PageData)
+    local Screen = {GUI.GetScreenSize()};
+    local Widget = "/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer";
+
+    self.Dialog[_PlayerID].MCSelectionBoxPosition = {
+        XGUIEng.GetWidgetScreenPosition(Widget)
+    };
+
+    local Listbox = XGUIEng.GetWidgetID(Widget .. "/ListBox");
+    XGUIEng.ListBoxPopAll(Listbox);
+    self.Dialog[_PlayerID].MCSelectionOptionsMap = {};
+    for i=1, #_PageData.MC, 1 do
+        if _PageData.MC.Visible and not _PageData.MC.Disabled then
+            XGUIEng.ListBoxPushItem(Listbox, _PageData.MC[i][1]);
+            table.insert(self.Dialog[_PlayerID].MCSelectionOptionsMap, _PageData.MC[i].ID);
+        end
+    end
+    XGUIEng.ListBoxSetSelectedIndex(Listbox, 0);
+
+    local wSize = {XGUIEng.GetWidgetScreenSize(Widget)};
+    local xFactor = (Screen[1]/1920);
+    -- local xFix = math.ceil((Screen[1] /2) - (wSize[1] /2));
+    local xFix = math.ceil((Screen[1] * 0.12) + (wSize[1] /2));
+    if _PageData.Sender == -1 then
+        xFix = math.ceil((Screen[1] * 0.02) + (wSize[1] /2));
+    end
+    local yFix = math.ceil(Screen[2] - (wSize[2] -90));
+    XGUIEng.SetWidgetScreenPosition(Widget, xFix, yFix);
+    XGUIEng.PushPage(Widget, false);
+    XGUIEng.ShowWidget(Widget, 1);
+
+    self.Dialog[_PlayerID].MCSelectionIsShown = true;
+end
+
+function ModuleDialogSystem.Local:OnOptionSelected(_PlayerID)
+    local Widget = "/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer";
+    local Position = self.Data.MCSelectionBoxPosition;
+    XGUIEng.SetWidgetScreenPosition(Widget, Position[1], Position[2]);
+    XGUIEng.ShowWidget(Widget, 0);
+    XGUIEng.PopPage();
+
+    local Selected = XGUIEng.ListBoxGetSelectedIndex(Widget .. "/ListBox")+1;
+    local AnswerID = self.Dialog[_PlayerID].MCSelectionOptionsMap[Selected];
     GUI.SendScriptCommand(string.format(
         "ModuleDialogSystem.Local:OnOptionSelected(%d, %d)",
         _PlayerID,
-        _OptionID
+        AnswerID
     ))
+end
+
+function ModuleDialogSystem.Local:Update(_PlayerID)
+    if GUI.GetPlayerID() == _PlayerID and self.Dialog[_PlayerID] then
+        -- Actor
+        if self.Dialog[_PlayerID].ShowActor then
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 1);
+        else
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 0);
+        end
+
+        -- Multiple Choice
+        if self.Dialog[_PlayerID].MCSelectionIsShown then
+            local Widget = "/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer";
+            if XGUIEng.IsWidgetShown(Widget) == 0 then
+                self.Dialog[_PlayerID].MCSelectionIsShown = false;
+                self:OnOptionSelected(_PlayerID);
+            end
+        end
+    end
 end
 
 -- -------------------------------------------------------------------------- --

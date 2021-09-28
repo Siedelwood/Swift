@@ -33,8 +33,8 @@ function API.AddDialogPages(_Dialog)
     local AP = function(_Page)
         if type(_Page) == "table" then
             _Page.GetSelected = function(self)
-                if self.Options then
-                    return self.Options.Selected;
+                if self.MC then
+                    return self.MC.Selected;
                 end
                 return 0;
             end
@@ -47,11 +47,11 @@ function API.AddDialogPages(_Dialog)
             if _Page.Zoom == nil then
                 _Page.Zoom = 0.15;
             end
-            if _Page.Options == nil then
-                for j= 1, #_Page.Options, 1 do
-                    _Page.Options[j].ID = j;
-                    _Page.Options[j].Selected = 0;
-                    _Page.Options[j].Visible = true;
+            if _Page.MC == nil then
+                for j= 1, #_Page.MC, 1 do
+                    _Page.MC[j].ID = j;
+                    _Page.MC[j].Selected = 0;
+                    _Page.MC[j].Visible = true;
                 end
             end
         else
