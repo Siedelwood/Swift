@@ -123,6 +123,7 @@ function QSB.SimpleTypewriter:Play()
     API.DeactivateNormalInterface();
     self.m_InitialWaittime = self.m_Delay;
     self:TokenizeText();
+    Logic.ExecuteInLuaLocalState("Input.CutsceneMode()");
     self.m_JobID = StartSimpleHiResJobEx(self.ControllerJob, self);
 end
 
@@ -135,6 +136,7 @@ function QSB.SimpleTypewriter:Stop()
     API.FinishCinematicEvent(self.m_CinematicEventName);
     API.DeactivateBlackScreen();
     API.ActivateNormalInterface();
+    Logic.ExecuteInLuaLocalState("Input.GameMode()");
     EndJob(self.m_JobID);
 end
 

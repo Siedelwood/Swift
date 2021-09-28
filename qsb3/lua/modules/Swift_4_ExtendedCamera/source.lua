@@ -69,8 +69,7 @@ function ModuleExtendedCamera.Local:ActivateExtendedZoomHotkey()
     Input.KeyBindDown(
         Keys.ModifierControl + Keys.ModifierShift + Keys.K,
         "ModuleExtendedCamera.Local:ToggleExtendedZoom()",
-        30,
-        false
+        2
     );
 end
 

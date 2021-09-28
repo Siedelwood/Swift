@@ -47,7 +47,7 @@ function API.AddDialogPages(_Dialog)
             if _Page.Zoom == nil then
                 _Page.Zoom = 0.15;
             end
-            if _Page.MC == nil then
+            if _Page.MC ~= nil then
                 for j= 1, #_Page.MC, 1 do
                     _Page.MC[j].ID = j;
                     _Page.MC[j].Selected = 0;
@@ -70,8 +70,9 @@ function API.AddDialogPages(_Dialog)
         local Position = table.remove(arg, 1);
         local Text     = table.remove(arg, 1);
         local Dialog   = table.remove(arg, 1);
+        local Action;
         if type(arg[1]) == "function" then
-            local Action = table.remove(arg, 1);
+            Action = table.remove(arg, 1);
         end
         return AP {
             Name   = Name,

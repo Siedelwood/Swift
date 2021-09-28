@@ -80,6 +80,8 @@ function Mission_FirstMapAction()
 end
 
 function CreateTestNPCDialogQuest()
+    ReplaceEntity("npc1", Entities.U_KnightSabatta);
+    
     AddQuest {
         Name        = "TestNpcQuest1",
         Suggestion  = "Speak to this npc.",
@@ -96,17 +98,52 @@ function CreateTestNPCDialogBriefing(_Name, _PlayerID)
     local AP = API.AddDialogPages(Dialog);
 
     AP {
+        Name   = "StartPage",
         Text   = "Das ist ein Test!",
-        Sender = 2,
+        Sender = -1,
         Target = "npc1",
         Zoom   = 0.1,
+        MC     = {
+            {"Machen wir weiter...", "ContinuePage"},
+            {"Schluss jetzt!", "EndPage"}
+        }
     }
+
     AP {
+        Name   = "ContinuePage",
         Text   = "Wunderbar! Es scheint zu funktionieren.",
         Sender = 1,
         Target = Logic.GetKnightID(_PlayerID),
         Zoom   = 0.1,
     }
+    AP {
+        Text   = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr.",
+        Sender = -1,
+        Target = "npc1",
+        Zoom   = 0.1,
+    }
+    AP {
+        Text   = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor.",
+        Sender = -1,
+        Target = "npc1",
+        Zoom   = 0.1,
+    }
+    AP {
+        Text   = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
+        Sender = -1,
+        Target = "npc1",
+        Zoom   = 0.1,
+    }
+    AP("StartPage");
+
+    AP {
+        Name   = "EndPage",
+        Text   = "Gut, dann eben nicht!",
+        Sender = -1,
+        Target = "npc1",
+        Zoom   = 0.1,
+    }
+
 
     return API.StartDialog(Dialog, _Name, _PlayerID);
 end
