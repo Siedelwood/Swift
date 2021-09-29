@@ -103,6 +103,12 @@ function ModuleInputOutputCore.Local:OnEvent(_ID, _Event, _Text)
     if _ID == QSB.ScriptEvents.SaveGameLoaded then
         self:OverrideDebugInput();
         self:DialogAltF4Hotkey();
+    elseif _ID == QSB.ScriptEvents.ChatClosed then
+        if _Text:find("^>.*$") then
+            GUI.SendScriptCommand(_Text:sub(3), true);
+        elseif _Text:find("^>>.*$") then
+            GUI.SendScriptCommand(_Text:sub(4), false);
+        end
     end
 end
 

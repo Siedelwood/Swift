@@ -177,6 +177,12 @@ end
 function Swift:ConfirmQsbDebugShell()
     if Swift.m_ChatBoxInput == "restartmap" then
         Framework.RestartMap();
+    else
+        if string.find(Swift.m_ChatBoxInput, "^>.*$") then
+            GUI.SendScriptCommand(_string.sub(Swift.m_ChatBoxInput, 3), true);
+        elseif string.find(Swift.m_ChatBoxInput, "^>>.*$") then
+            GUI.SendScriptCommand(_string.sub(Swift.m_ChatBoxInput, 4), false);
+        end
     end
 end
 
