@@ -25,8 +25,8 @@ ModuleDialogSystem = {
     Shared = {
         Text = {
             Continue = {
-                de = "{cr}{cr}{azure}{ra}(Weiter mit ESC)",
-                en = "{cr}{cr}{azure}{ra}(Continue with ESC)"
+                de = "{cr}{cr}{azure}{@ra}(Weiter mit ESC)",
+                en = "{cr}{cr}{azure}{@ra}(Continue with ESC)"
             }
         },
     },
@@ -115,8 +115,8 @@ function ModuleDialogSystem.Global:NextPage(_PlayerID)
 
     self.Dialog[_PlayerID].CurrentPage = self.Dialog[_PlayerID].CurrentPage +1;
     self.Dialog[_PlayerID].PageStartedTime = Logic.GetTime();
-    if self.DialogQueue[_PlayerID].PageQuest then
-        API.StopQuest(self.DialogQueue[_PlayerID].PageQuest, true);
+    if self.Dialog[_PlayerID].PageQuest then
+        API.StopQuest(self.Dialog[_PlayerID].PageQuest, true);
     end
 
     local PageID = self.Dialog[_PlayerID].CurrentPage;
@@ -138,7 +138,7 @@ function ModuleDialogSystem.Global:NextPage(_PlayerID)
             if self.Dialog[_PlayerID][2][PageID].Action then
                 self.Dialog[_PlayerID][2][PageID]:Action();
             end
-            self.DialogQueue[_PlayerID].PageQuest = self:DisplayPage(_PlayerID, PageID);
+            self.Dialog[_PlayerID].PageQuest = self:DisplayPage(_PlayerID, PageID);
         else
             self:EndDialog(_PlayerID);
         end
@@ -267,6 +267,11 @@ function ModuleDialogSystem.Local:StartDialog(_PlayerID, _Data)
         Input.CutsceneMode();
         GUI.ClearSelection();
 
+        -- Subtitles position backup
+        self.Dialog[_PlayerID].SubtitlesPosition = {
+            XGUIEng.GetWidgetScreenPosition("/InGame/Root/Normal/AlignBottomLeft/SubTitles")
+        };
+
         -- Make camera backup
         if not self.Dialog[_PlayerID] then
             self.Dialog[_PlayerID] = {};
@@ -301,6 +306,9 @@ function ModuleDialogSystem.Local:EndDialog(_PlayerID, _Data)
         XGUIEng.ShowWidget("/InGame/Root/3dWorldView", 1);
         Input.GameMode()
 
+        -- Load subtitles backup
+        self:ResetSubtitlesPosition(_PlayerID);
+
         -- Load camera backup
         Camera.RTS_FollowEntity(0);
         if self.Dialog[_PlayerID].Backup then
@@ -315,9 +323,9 @@ function ModuleDialogSystem.Local:EndDialog(_PlayerID, _Data)
             if _Data.RestoreGameSpeed and not Framework.IsNetworkGame() then
                 Game.GameTimeSetFactor(_PlayerID, self.Dialog[_PlayerID].Backup.Speed);
             end
-            self.Dialog[_PlayerID].Backup = nil;
         end
 
+        self.Dialog[_PlayerID] = nil;
         Display.SetRenderFogOfWar(1);
         Display.SetRenderBorderPins(1);
     end
@@ -326,14 +334,18 @@ end
 function ModuleDialogSystem.Local:DisplayPage(_PlayerID, _PageData)
     if GUI.GetPlayerID() == _PlayerID then
         GUI.ClearSelection();
-        self.Dialog[_PlayerID].ShowActor = _PageData.Sender ~= -1;
-        if self.Dialog[_PlayerID].ShowActor then
+
+        self.Dialog[_PlayerID].PageData = _PageData;
+        if _PageData.Sender ~= -1 then
             XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 1);
             XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles/Update", 1);
+            self:ResetSubtitlesPosition(_PlayerID);
         else
             XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 0);
             XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles/Update", 0);
-            self:SetText(_PlayerID, _PageData);
+            self:ResetSubtitlesPosition(_PlayerID);
+            self:SetSubtitlesText(_PlayerID);
+            self:SetSubtitlesPosition(_PlayerID);
         end
 
         if _PageData.Target then
@@ -353,61 +365,111 @@ function ModuleDialogSystem.Local:DisplayPage(_PlayerID, _PageData)
             Camera.RTS_SetRotationAngle(_PageData.Rotation);
         end
         if _PageData.MC then
-            self:ShowOptionsDialog(_PlayerID, _PageData);
+            self:SetOptionsDialogContent(_PlayerID);
         end
     end
 end
 
-function ModuleDialogSystem.Local:SetText(_PlayerID, _PageData)
-    local QuestText = API.ConvertPlaceholders(API.Localize(_PageData.Text));
+function ModuleDialogSystem.Local:SetSubtitlesText(_PlayerID)
+    local PageData = self.Dialog[_PlayerID].PageData;
+    local MotherWidget = "/InGame/Root/Normal/AlignBottomLeft/SubTitles";
+    local QuestText = API.ConvertPlaceholders(API.Localize(PageData.Text));
     local Extension = "";
-    if not self.Dialog[_PlayerID].DisableSkipping and not _PageData.DisableSkipping and not _PageData.MC then
+    if not self.Dialog[_PlayerID].DisableSkipping and not PageData.DisableSkipping and not PageData.MC then
         Extension = API.ConvertPlaceholders(API.Localize(ModuleDialogSystem.Shared.Text.Continue));
     end
-    XGUIEng.SetText("/InGame/Root/Normal/AlignBottomLeft/SubTitles/VoiceText1", QuestText .. Extension);
-    local Height = XGUIEng.GetTextHeight("/InGame/Root/Normal/AlignBottomLeft/SubTitles/VoiceText1", true);
-    local W, H = XGUIEng.GetWidgetSize("/InGame/Root/Normal/AlignBottomLeft/SubTitles/VoiceText1");
-    if self.Dialog[_PlayerID].ShowActor then
-        XGUIEng.SetWidgetSize("/InGame/Root/Normal/AlignBottomLeft/SubTitles/BG", W + 10, Height + 120);
-    else
-        XGUIEng.SetWidgetSize("/InGame/Root/Normal/AlignBottomLeft/SubTitles/BG", W + 10, Height + 30);
-    end
-    local X,Y = XGUIEng.GetWidgetLocalPosition("/InGame/Root/Normal/AlignBottomLeft/SubTitles");
-    Y = 675 - (Height - ((self.Dialog[_PlayerID].ShowActor and 0) or 90));
-    XGUIEng.SetWidgetLocalPosition("/InGame/Root/Normal/AlignBottomLeft/SubTitles", X, Y );
+    XGUIEng.SetText(MotherWidget.. "/VoiceText1", QuestText .. Extension);
 end
 
-function ModuleDialogSystem.Local:ShowOptionsDialog(_PlayerID, _PageData)
+function ModuleDialogSystem.Local:SetSubtitlesPosition(_PlayerID)
+    local PageData = self.Dialog[_PlayerID].PageData;
+    local MotherWidget = "/InGame/Root/Normal/AlignBottomLeft/SubTitles";
+    local Height = XGUIEng.GetTextHeight(MotherWidget.. "/VoiceText1", true);
+    local W, H = XGUIEng.GetWidgetSize(MotherWidget.. "/VoiceText1");
+
+    local X,Y = XGUIEng.GetWidgetLocalPosition(MotherWidget);
+    if PageData.Sender ~= -1 then
+        XGUIEng.SetWidgetSize(MotherWidget.. "/BG", W + 10, Height + 120);
+        Y = 675 - Height;
+        XGUIEng.SetWidgetLocalPosition(MotherWidget, X, Y);
+    else
+        XGUIEng.SetWidgetSize(MotherWidget.. "/BG", W + 10, Height + 30);
+        if PageData.Anchor then
+            local SW, SH = XGUIEng.GetWidgetSize("Normal");
+            local TargetID = GetID(PageData.Anchor);
+            local TX, TY = GUI.GetEntityInfoScreenPosition(TargetID);
+            TX = TX or 0;
+            TY = TY or 0;
+
+            local IsRight = TX > SW/2;
+            local IsUpper = TY <= SH/2;
+
+            local BoxX = TX + ((IsRight and W/2 +20) or ((-1)*(W/2 +20)));
+            if BoxX < 0 then
+                BoxX = 0;
+            end
+            if BoxX > SW - W then
+                BoxX = SW - W;
+            end
+            local BoxY = TY + ((IsUpper and ((-1)*(H/2 +20))) or (H/2 +20));
+            if BoxY < 0 then
+                BoxY = 0;
+            end
+            if BoxY > SH - H then
+                BoxY = SH - H;
+            end
+            XGUIEng.SetWidgetLocalPosition(MotherWidget, BoxX, BoxY);
+        else
+            Y = 675 - (Height - 90);
+            XGUIEng.SetWidgetLocalPosition(MotherWidget, X, Y);
+        end
+    end
+end
+
+function ModuleDialogSystem.Local:ResetSubtitlesPosition(_PlayerID)
+    local Position = self.Dialog[_PlayerID].SubtitlesPosition;
+    local SubtitleWidget = "/InGame/Root/Normal/AlignBottomLeft/SubTitles";
+    XGUIEng.SetWidgetScreenPosition(SubtitleWidget, Position[1], Position[2]);
+end
+
+function ModuleDialogSystem.Local:SetOptionsDialogContent(_PlayerID)
+    local Widget = "/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer";
+    local PageData = self.Dialog[_PlayerID].PageData;
+
+    local Listbox = XGUIEng.GetWidgetID(Widget .. "/ListBox");
+    XGUIEng.ListBoxPopAll(Listbox);
+    self.Dialog[_PlayerID].MCSelectionOptionsMap = {};
+    for i=1, #PageData.MC, 1 do
+        if PageData.MC[i].Visible and not PageData.MC[i].Disabled then
+            XGUIEng.ListBoxPushItem(Listbox, PageData.MC[i][1]);
+            table.insert(self.Dialog[_PlayerID].MCSelectionOptionsMap, PageData.MC[i].ID);
+        end
+    end
+    XGUIEng.ListBoxSetSelectedIndex(Listbox, 0);
+
+    self:SetOptionsDialogPosition(_PlayerID);
+    self.Dialog[_PlayerID].MCSelectionIsShown = true;
+end
+
+function ModuleDialogSystem.Local:SetOptionsDialogPosition(_PlayerID)
     local Screen = {GUI.GetScreenSize()};
     local Widget = "/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer";
+    local PageData = self.Dialog[_PlayerID].PageData;
 
     self.Dialog[_PlayerID].MCSelectionBoxPosition = {
         XGUIEng.GetWidgetScreenPosition(Widget)
     };
 
-    local Listbox = XGUIEng.GetWidgetID(Widget .. "/ListBox");
-    XGUIEng.ListBoxPopAll(Listbox);
-    self.Dialog[_PlayerID].MCSelectionOptionsMap = {};
-    for i=1, #_PageData.MC, 1 do
-        if _PageData.MC[i].Visible and not _PageData.MC[i].Disabled then
-            XGUIEng.ListBoxPushItem(Listbox, _PageData.MC[i][1]);
-            table.insert(self.Dialog[_PlayerID].MCSelectionOptionsMap, _PageData.MC[i].ID);
-        end
-    end
-    XGUIEng.ListBoxSetSelectedIndex(Listbox, 0);
-
     local wSize = {XGUIEng.GetWidgetScreenSize(Widget)};
     local xFix = math.ceil((Screen[1] * 0.06) + (wSize[1] /2));
     local yFix = math.ceil(Screen[2] - (wSize[2] + 60 * (Screen[2]/540)));
-    if not self.Dialog[_PlayerID].ShowActor then
+    if PageData.Sender == -1 then
         xFix = 30 * (Screen[1]/960);
         yFix = math.ceil(Screen[2] - (wSize[2] + 65 * (Screen[2]/540)));
     end
     XGUIEng.SetWidgetScreenPosition(Widget, xFix, yFix);
     XGUIEng.PushPage(Widget, false);
     XGUIEng.ShowWidget(Widget, 1);
-
-    self.Dialog[_PlayerID].MCSelectionIsShown = true;
 end
 
 function ModuleDialogSystem.Local:OnOptionSelected(_PlayerID)

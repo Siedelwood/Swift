@@ -32,6 +32,14 @@ end
 function API.AddDialogPages(_Dialog)
     local AP = function(_Page)
         if type(_Page) == "table" then
+            if _Page.Position and _Page.Target then
+                error(string.format(
+                    "AP (Dialog System): (Page %d) Position and Target can not be used both at the same time!",
+                    (#_Dialog +1)
+                ));
+                return;
+            end
+            
             _Page.GetSelected = function(self)
                 if self.MC then
                     return self.MC.Selected;
@@ -87,10 +95,10 @@ function API.AddDialogPages(_Dialog)
 end
 
 function AP(_Data)
-    error("AP is not bound to a dialog!");
+    error("AP (Dialog System): not bound to a dialog!");
 end
 
 function ASP(_Data)
-    error("ASP is not bound to a dialog!");
+    error("ASP (Dialog System): not bound to a dialog!");
 end
 
