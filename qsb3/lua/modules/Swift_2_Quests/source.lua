@@ -21,6 +21,15 @@ ModuleQuests = {
 
 function ModuleQuests.Global:OnGameStart()
     Quest_Loop = self.QuestLoop;
+
+    -- Stop quest from triggering when cinematic event takes place
+    table.insert(self.ExternalTriggerConditions, function(_PlayerID, _Quest)
+        return not API.IsCinematicEventActive(_PlayerID);
+    end);
+    -- Disable quest timers when cinematic event takes place
+    table.insert(self.ExternalTimerConditions, function(_PlayerID, _Quest)
+        return not API.IsCinematicEventActive(_PlayerID);
+    end);
 end
 
 function ModuleQuests.Global:OnEvent(_ID, _Event, _Text)
@@ -231,16 +240,17 @@ function ModuleQuests.Global.QuestLoop(_arguments)
             self:Trigger();
         end
     elseif self.State == QuestState.Active then
+        -- External condition
+        for i= 1, #self.ExternalTimerConditions, 1 do
+            if not self.ExternalTimerConditions[i](self.ReceivingPlayer, self) then
+                self.StartTime = self.StartTime +1;
+                break;
+            end
+        end
+        
         local allTrue = true;
         local anyFalse = false;
         for i = 1, self.Objectives[0] do
-            -- External condition
-            for i= 1, #self.ExternalTimerConditions, 1 do
-                if not self.ExternalTimerConditions[i](self.ReceivingPlayer, self, self.Objectives[i]) then
-                    self.StartTime = self.StartTime +1;
-                    break;
-                end
-            end
             -- Write Trigger to Log
             local Text = ModuleQuests.Global:SerializeBehavior(self.Objectives[i], Objective.Custom2, 1);
             if Text then
