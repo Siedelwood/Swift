@@ -58,7 +58,7 @@ end
 function ModuleDialogSystem.Global:OnEvent(_ID, _Event, _PlayerID)
     if _ID == QSB.ScriptEvents.EscapePressed then
         if self.Dialog[_PlayerID] ~= nil then
-            if Logic.GetTime() - self.Dialog[_PlayerID].PageStartedTime >= 6 then
+            if Logic.GetTime() - self.Dialog[_PlayerID].PageStartedTime >= 2 then
                 local PageID = self.Dialog[_PlayerID].CurrentPage;
                 local Page = self.Dialog[_PlayerID][2][PageID];
                 if not self.Dialog[_PlayerID].DisableSkipping and not Page.DisableSkipping and not Page.MC then
@@ -72,9 +72,6 @@ end
 function ModuleDialogSystem.Global:StartDialog(_Name, _PlayerID, _Data)
     self.DialogQueue[_PlayerID] = self.DialogQueue[_PlayerID] or {};
     table.insert(self.DialogQueue[_PlayerID], {_Name, _Data});
-    if _Data.EnableGlobalInvulnerability then
-        Logic.SetGlobalInvulnerability(1);
-    end
 end
 
 function ModuleDialogSystem.Global:EndDialog(_PlayerID)
@@ -100,6 +97,9 @@ function ModuleDialogSystem.Global:NextDialog(_PlayerID)
         local Dialog = table.remove(self.DialogQueue[_PlayerID], 1);
         API.StartCinematicEvent(Dialog[1], _PlayerID);
 
+        if Dialog.EnableGlobalInvulnerability then
+            Logic.SetGlobalInvulnerability(1);
+        end
         Dialog.Name = Dialog[1];
         Dialog.PlayerID = _PlayerID;
         Dialog.CurrentPage = 0;
