@@ -79,7 +79,7 @@ function Reward_Dialog(...)
     return b_Reward_Dialog:new(...);
 end
 
-b_Reward_Dialog = API.InstanceTable(b_Reprisal_Dialog);
+b_Reward_Dialog = Swift:CopyTable(b_Reprisal_Dialog);
 b_Reward_Dialog.Name = "Reward_Dialog";
 b_Reward_Dialog.Description.en = "Reward: Calls a function to start an new dialog briefing.";
 b_Reward_Dialog.Description.de = "Lohn: Ruft die Funktion auf und startet den enthaltenen Dialog.";

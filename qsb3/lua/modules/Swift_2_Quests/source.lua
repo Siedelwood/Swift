@@ -217,8 +217,8 @@ function ModuleQuests.Global.QuestLoop(_arguments)
     if self.State == QuestState.NotTriggered then
         local triggered = true;
         -- Are triggers active?
-        for i= 1, #self.ExternalTriggerConditions, 1 do
-            if not self.ExternalTriggerConditions[i](self.ReceivingPlayer, self) then
+        for i= 1, #ModuleQuests.Global.ExternalTriggerConditions, 1 do
+            if not ModuleQuests.Global.ExternalTriggerConditions[i](self.ReceivingPlayer, self) then
                 triggered = false;
                 break;
             end
@@ -242,16 +242,16 @@ function ModuleQuests.Global.QuestLoop(_arguments)
         end
     elseif self.State == QuestState.Active then
         -- Do timers tick?
-        for i= 1, #self.ExternalTimerConditions, 1 do
-            if not self.ExternalTimerConditions[i](self.ReceivingPlayer, self) then
+        for i= 1, #ModuleQuests.Global.ExternalTimerConditions, 1 do
+            if not ModuleQuests.Global.ExternalTimerConditions[i](self.ReceivingPlayer, self) then
                 self.StartTime = self.StartTime +1;
                 break;
             end
         end
         -- Are goals checked?
         local CheckBehavior = true;
-        for i= 1, #self.ExternalDecisionConditions, 1 do
-            if not self.ExternalDecisionConditions[i](self.ReceivingPlayer, self) then
+        for i= 1, #ModuleQuests.Global.ExternalDecisionConditions, 1 do
+            if not ModuleQuests.Global.ExternalDecisionConditions[i](self.ReceivingPlayer, self) then
                 CheckBehavior = false;
                 break;
             end

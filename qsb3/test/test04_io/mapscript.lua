@@ -83,7 +83,7 @@ function CreateTestNPCDialogQuest()
     ReplaceEntity("npc1", Entities.U_KnightSabatta);
     
     AddQuest {
-        Name        = "TestNpcQuest1",
+        Name        = "TestNpcQuest3",
         Suggestion  = "Speak to this npc.",
         Receiver    = 1,
 
@@ -119,19 +119,22 @@ function CreateTestNPCDialogBriefing(_Name, _PlayerID)
     AP {
         Text   = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr.",
         Sender = -1,
-        Target = "npc1",
+        Target = Logic.GetKnightID(_PlayerID),
+        Anchor = "npc1",
         Zoom   = 0.1,
     }
     AP {
         Text   = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor.",
         Sender = -1,
-        Target = "npc1",
+        Target = Logic.GetKnightID(_PlayerID),
+        Anchor = Logic.GetKnightID(_PlayerID),
         Zoom   = 0.1,
     }
     AP {
         Text   = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
         Sender = -1,
-        Target = "npc1",
+        Target = Logic.GetKnightID(_PlayerID),
+        Anchor = "npc1",
         Zoom   = 0.1,
     }
     AP("StartPage");

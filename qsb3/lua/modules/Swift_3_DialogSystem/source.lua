@@ -25,8 +25,8 @@ ModuleDialogSystem = {
     Shared = {
         Text = {
             Continue = {
-                de = "{cr}{cr}{azure}{@ra}(Weiter mit ESC)",
-                en = "{cr}{cr}{azure}{@ra}(Continue with ESC)"
+                de = "{cr}{cr}{azure}(Weiter mit ESC)",
+                en = "{cr}{cr}{azure}(Continue with ESC)"
             }
         },
     },
@@ -43,7 +43,7 @@ function ModuleDialogSystem.Global:OnGameStart()
     -- prevent flickering when a quest ends. Dialog quests themselves must run!
     API.AddDisableDecisionCondition(function(_PlayerID, _Quest)
         if ModuleDialogSystem.Global.Dialog[_PlayerID] ~= nil then
-            return string.contains("DialogSystemQuest_");
+            return _Quest.Identifier:contains("DialogSystemQuest_");
         end
         return true;
     end);
@@ -97,13 +97,13 @@ function ModuleDialogSystem.Global:NextDialog(_PlayerID)
         local Dialog = table.remove(self.DialogQueue[_PlayerID], 1);
         API.StartCinematicEvent(Dialog[1], _PlayerID);
 
-        if Dialog.EnableGlobalInvulnerability then
-            Logic.SetGlobalInvulnerability(1);
-        end
         Dialog.Name = Dialog[1];
         Dialog.PlayerID = _PlayerID;
         Dialog.CurrentPage = 0;
         self.Dialog[_PlayerID] = Dialog;
+        if Dialog.EnableGlobalInvulnerability then
+            Logic.SetGlobalInvulnerability(1);
+        end
         if self.Dialog[_PlayerID].Starting then
             self.Dialog[_PlayerID]:Starting();
         end
@@ -276,21 +276,20 @@ function ModuleDialogSystem.Local:StartDialog(_PlayerID, _Data)
         Input.CutsceneMode();
         GUI.ClearSelection();
 
+        self.Dialog[_PlayerID] = self.Dialog[_PlayerID] or {};
+
         -- Subtitles position backup
         self.Dialog[_PlayerID].SubtitlesPosition = {
             XGUIEng.GetWidgetScreenPosition("/InGame/Root/Normal/AlignBottomLeft/SubTitles")
         };
 
         -- Make camera backup
-        if not self.Dialog[_PlayerID] then
-            self.Dialog[_PlayerID] = {};
-            self.Dialog[_PlayerID].Backup = {
-                Rotation = Camera.RTS_GetRotationAngle(),
-                Zoom     = Camera.RTS_GetZoomFactor(),
-                Position = {Camera.RTS_GetLookAtPosition()},
-                Speed    = Game.GameTimeGetFactor(_PlayerID),
-            };
-        end
+        self.Dialog[_PlayerID].Backup = {
+            Rotation = Camera.RTS_GetRotationAngle(),
+            Zoom     = Camera.RTS_GetZoomFactor(),
+            Position = {Camera.RTS_GetLookAtPosition()},
+            Speed    = Game.GameTimeGetFactor(_PlayerID),
+        };
 
         if _Data.HideFog then
             Display.SetRenderFogOfWar(0);
@@ -402,36 +401,9 @@ function ModuleDialogSystem.Local:SetSubtitlesPosition(_PlayerID)
         Y = 675 - Height;
         XGUIEng.SetWidgetLocalPosition(MotherWidget, X, Y);
     else
-        XGUIEng.SetWidgetSize(MotherWidget.. "/BG", W + 10, Height + 30);
-        if PageData.Anchor then
-            local SW, SH = XGUIEng.GetWidgetSize("Normal");
-            local TargetID = GetID(PageData.Anchor);
-            local TX, TY = GUI.GetEntityInfoScreenPosition(TargetID);
-            TX = TX or 0;
-            TY = TY or 0;
-
-            local IsRight = TX > SW/2;
-            local IsUpper = TY <= SH/2;
-
-            local BoxX = TX + ((IsRight and W/2 +20) or ((-1)*(W/2 +20)));
-            if BoxX < 0 then
-                BoxX = 0;
-            end
-            if BoxX > SW - W then
-                BoxX = SW - W;
-            end
-            local BoxY = TY + ((IsUpper and ((-1)*(H/2 +20))) or (H/2 +20));
-            if BoxY < 0 then
-                BoxY = 0;
-            end
-            if BoxY > SH - H then
-                BoxY = SH - H;
-            end
-            XGUIEng.SetWidgetLocalPosition(MotherWidget, BoxX, BoxY);
-        else
-            Y = 675 - (Height - 90);
-            XGUIEng.SetWidgetLocalPosition(MotherWidget, X, Y);
-        end
+        XGUIEng.SetWidgetSize(MotherWidget.. "/BG", W + 10, Height + 35);
+        Y = 675 - (Height - 90);
+        XGUIEng.SetWidgetLocalPosition(MotherWidget, X, Y);
     end
 end
 
