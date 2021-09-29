@@ -11,6 +11,7 @@ ModuleQuests = {
         QuestMessageID = 0,
         ExternalTriggerConditions = {},
         ExternalTimerConditions = {},
+        ExternalDecisionConditions = {},
     };
     Local = {};
     -- This is a shared structure but the values are asynchronous!
@@ -215,7 +216,7 @@ function ModuleQuests.Global.QuestLoop(_arguments)
     end
     if self.State == QuestState.NotTriggered then
         local triggered = true;
-        -- External condition
+        -- Are triggers active?
         for i= 1, #self.ExternalTriggerConditions, 1 do
             if not self.ExternalTriggerConditions[i](self.ReceivingPlayer, self) then
                 triggered = false;
@@ -240,57 +241,66 @@ function ModuleQuests.Global.QuestLoop(_arguments)
             self:Trigger();
         end
     elseif self.State == QuestState.Active then
-        -- External condition
+        -- Do timers tick?
         for i= 1, #self.ExternalTimerConditions, 1 do
             if not self.ExternalTimerConditions[i](self.ReceivingPlayer, self) then
                 self.StartTime = self.StartTime +1;
                 break;
             end
         end
-        
-        local allTrue = true;
-        local anyFalse = false;
-        for i = 1, self.Objectives[0] do
-            -- Write Trigger to Log
-            local Text = ModuleQuests.Global:SerializeBehavior(self.Objectives[i], Objective.Custom2, 1);
-            if Text then
-                debug("Quest '" ..self.Identifier.. "' " ..Text, true);
+        -- Are goals checked?
+        local CheckBehavior = true;
+        for i= 1, #self.ExternalDecisionConditions, 1 do
+            if not self.ExternalDecisionConditions[i](self.ReceivingPlayer, self) then
+                CheckBehavior = false;
+                break;
             end
-            -- Check Goal
-            local completed = self:IsObjectiveCompleted(self.Objectives[i]);
-            
-            if self.Objectives[i].Type == Objective.Deliver and completed == nil then
-                if self.Objectives[i].Data[4] == nil then
-                    self.Objectives[i].Data[4] = 0;
-                end
-                if self.Objectives[i].Data[3] ~= nil then
-                    self.Objectives[i].Data[4] = self.Objectives[i].Data[4] + 1;
-                end
-                
-                local st = self.StartTime;
-                local sd = self.Duration;
-                local dt = self.Objectives[i].Data[4];
-                local sum = self.StartTime + self.Duration - self.Objectives[i].Data[4];
-                if self.Duration > 0 and self.StartTime + self.Duration + self.Objectives[i].Data[4] < Logic.GetTime() then
-                    completed = false;
-                end
-            else
-                if self.Duration > 0 and self.StartTime + self.Duration < Logic.GetTime() then
-                    if completed == nil and
-                        (self.Objectives[i].Type == Objective.Protect or self.Objectives[i].Type == Objective.Dummy or self.Objectives[i].Type == Objective.NoChange) then
-                        completed = true;
-                    elseif completed == nil or self.Objectives[i].Type == Objective.DummyFail then
-                        completed = false;
-                   end
-                end
-            end
-            allTrue = (completed == true) and allTrue;
-            anyFalse = completed == false or anyFalse;
         end
-        if allTrue then
-            self:Success();
-        elseif anyFalse then
-            self:Fail();
+        if CheckBehavior then
+            local allTrue = true;
+            local anyFalse = false;
+            for i = 1, self.Objectives[0] do
+                -- Write Trigger to Log
+                local Text = ModuleQuests.Global:SerializeBehavior(self.Objectives[i], Objective.Custom2, 1);
+                if Text then
+                    debug("Quest '" ..self.Identifier.. "' " ..Text, true);
+                end
+                -- Check Goal
+                local completed = self:IsObjectiveCompleted(self.Objectives[i]);
+                
+                if self.Objectives[i].Type == Objective.Deliver and completed == nil then
+                    if self.Objectives[i].Data[4] == nil then
+                        self.Objectives[i].Data[4] = 0;
+                    end
+                    if self.Objectives[i].Data[3] ~= nil then
+                        self.Objectives[i].Data[4] = self.Objectives[i].Data[4] + 1;
+                    end
+                    
+                    local st = self.StartTime;
+                    local sd = self.Duration;
+                    local dt = self.Objectives[i].Data[4];
+                    local sum = self.StartTime + self.Duration - self.Objectives[i].Data[4];
+                    if self.Duration > 0 and self.StartTime + self.Duration + self.Objectives[i].Data[4] < Logic.GetTime() then
+                        completed = false;
+                    end
+                else
+                    if self.Duration > 0 and self.StartTime + self.Duration < Logic.GetTime() then
+                        if completed == nil and
+                            (self.Objectives[i].Type == Objective.Protect or self.Objectives[i].Type == Objective.Dummy or self.Objectives[i].Type == Objective.NoChange) then
+                            completed = true;
+                        elseif completed == nil or self.Objectives[i].Type == Objective.DummyFail then
+                            completed = false;
+                    end
+                    end
+                end
+                allTrue = (completed == true) and allTrue;
+                anyFalse = completed == false or anyFalse;
+            end
+            if allTrue then
+                self:Success();
+            elseif anyFalse then
+                self:Fail();
+            end
         end
     else
         if self.IsEventQuest == true then

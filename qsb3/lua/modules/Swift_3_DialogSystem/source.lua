@@ -39,7 +39,16 @@ function ModuleDialogSystem.Global:OnGameStart()
         ModuleDialogSystem.Global.DialogQueue[i] = {};
     end
     
-    StartSimpleHiResJobEx(function()
+    -- Quests can not be decided while a dialog is active. This must be done to
+    -- prevent flickering when a quest ends. Dialog quests themselves must run!
+    API.AddDisableDecisionCondition(function(_PlayerID, _Quest)
+        if ModuleDialogSystem.Global.Dialog[_PlayerID] ~= nil then
+            return string.contains("DialogSystemQuest_");
+        end
+        return true;
+    end);
+    -- Updates the dialog queue for all players
+    API.StartHiResJob(function()
         for i= 1, 8 do
             ModuleDialogSystem.Global:Update(i);
         end

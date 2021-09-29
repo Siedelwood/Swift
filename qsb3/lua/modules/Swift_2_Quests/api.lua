@@ -149,6 +149,21 @@ function API.AddDisableTimerCondition(_Function)
 end
 
 ---
+-- Fügt eine Prüfung hinzu, ob für laufende Quests Ziele geprüft werden. Sollen
+-- keine Ziele geprüft werden muss false zurückgegeben werden, sonst true.
+--
+-- @param[type=function] _Function Prüffunktion
+-- @within Anwenderfunktionen
+-- @local
+--
+function API.AddDisableDecisionCondition(_Function)
+    if GUI then
+        return;
+    end
+    table.insert(ModuleQuests.Global.ExternalDecisionConditions, _Function);
+end
+
+---
 -- <b>Deprecated</b>
 --
 -- Erzeugt aus einer Table mit Daten eine Reihe von Nachrichten, die nach
