@@ -9,6 +9,8 @@ ModuleQuests = {
 
     Global = {
         QuestMessageID = 0,
+        ExternalTriggerConditions = {},
+        ExternalTimerConditions = {},
     };
     Local = {};
     -- This is a shared structure but the values are asynchronous!
@@ -204,14 +206,24 @@ function ModuleQuests.Global.QuestLoop(_arguments)
     end
     if self.State == QuestState.NotTriggered then
         local triggered = true;
-        for i = 1, self.Triggers[0] do
-            -- Write Trigger to Log
-            local Text = ModuleQuests.Global:SerializeBehavior(self.Triggers[i], Triggers.Custom2, 4);
-            if Text then
-                debug("Quest '" ..self.Identifier.. "' " ..Text, true);
+        -- External condition
+        for i= 1, #self.ExternalTriggerConditions, 1 do
+            if not self.ExternalTriggerConditions[i](self.ReceivingPlayer, self) then
+                triggered = false;
+                break;
             end
-            -- Check Trigger
-            triggered = triggered and self:IsTriggerActive(self.Triggers[i]);
+        end
+        -- Normal condition
+        if triggered then
+            for i = 1, self.Triggers[0] do
+                -- Write Trigger to Log
+                local Text = ModuleQuests.Global:SerializeBehavior(self.Triggers[i], Triggers.Custom2, 4);
+                if Text then
+                    debug("Quest '" ..self.Identifier.. "' " ..Text, true);
+                end
+                -- Check Trigger
+                triggered = triggered and self:IsTriggerActive(self.Triggers[i]);
+            end
         end
         if triggered then
             self:SetMsgKeyOverride();
@@ -222,6 +234,13 @@ function ModuleQuests.Global.QuestLoop(_arguments)
         local allTrue = true;
         local anyFalse = false;
         for i = 1, self.Objectives[0] do
+            -- External condition
+            for i= 1, #self.ExternalTimerConditions, 1 do
+                if not self.ExternalTimerConditions[i](self.ReceivingPlayer, self, self.Objectives[i]) then
+                    self.StartTime = self.StartTime +1;
+                    break;
+                end
+            end
             -- Write Trigger to Log
             local Text = ModuleQuests.Global:SerializeBehavior(self.Objectives[i], Objective.Custom2, 1);
             if Text then

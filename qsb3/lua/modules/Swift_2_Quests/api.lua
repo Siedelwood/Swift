@@ -119,6 +119,38 @@ end
 QuestMessage = API.CreateQuestMessage;
 
 ---
+-- Fügt eine Prüfung hinzu, ob Quests getriggert werden. Soll ein Quest nicht
+-- getriggert werden, muss false zurückgegeben werden, sonst true.
+--
+-- @param[type=function] _Function Prüffunktion
+-- @within Anwenderfunktionen
+-- @local
+--
+function API.AddDisableTriggerCondition(_Function)
+    if GUI then
+        return;
+    end
+    table.insert(ModuleQuests.Global.ExternalTriggerConditions, _Function);
+end
+
+---
+-- Fügt eine Prüfung hinzu, ob für laufende Quests Zeit vergeht. Soll keine Zeit
+-- vergehen für einen Quest muss false zurückgegeben werden, sonst true.
+--
+-- @param[type=function] _Function Prüffunktion
+-- @within Anwenderfunktionen
+-- @local
+--
+function API.AddDisableTimerCondition(_Function)
+    if GUI then
+        return;
+    end
+    table.insert(ModuleQuests.Global.ExternalTimerConditions, _Function);
+end
+
+---
+-- <b>Deprecated</b>
+--
 -- Erzeugt aus einer Table mit Daten eine Reihe von Nachrichten, die nach
 -- einander angezeigt werden.
 --
@@ -190,6 +222,8 @@ end
 QuestDialog = API.CreateQuestDialog;
 
 ---
+-- <b>Deprecated</b>
+--
 -- Unterbricht einen laufenden oder noch nicht gestarteten Quest-Dialog.
 --
 -- Die Funktion kann entweder anhand eines Dialognamen den Dialog zurücksetzen
@@ -221,6 +255,8 @@ end
 QuestDialogInterrupt = API.InterruptQuestDialog;
 
 ---
+-- <b>Deprecated</b>
+--
 -- Setzt einen Quest-Dialog zurück sodass er erneut gestartet werden kann.
 --
 -- Die Funktion kann entweder anhand eines Dialognamen den Dialog zurücksetzen
