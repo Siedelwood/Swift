@@ -47,16 +47,16 @@ function ModuleTradingCore.Global:OnGameStart()
     self:OverwriteBasePricesAndRefreshRates();
 end
 
-function ModuleTradingCore.Global:OnEvent(_ID, _Event, _TraderType, _Good, _P1, _P2, _Amount, _Price)
+function ModuleTradingCore.Global:OnEvent(_ID, _Event, _TraderType, _OfferID, _Good, _P1, _P2, _Amount, _Price)
     if _ID == QSB.ScriptEvents.GoodsPurchased then
-        if false and not API.IsHistoryEditionNetworkGame() then
-            self:PerformFakeTrade(_TraderType, _Good, _P1, _P2, _Amount, _Price);
+        if not API.IsHistoryEditionNetworkGame() then
+            self:PerformFakeTrade(_TraderType, _OfferID, _Good, _P1, _P2, _Amount, _Price);
         end
     end
 end
 
-function ModuleTradingCore.Global:SendEventGoodsPurchased(_TraderType, _Good, _P1, _P2, _Amount, _Price)
-    API.SendScriptEvent(QSB.ScriptEvents.GoodsPurchased, _TraderType, _Good, _P1, _P2, _Amount, _Price);
+function ModuleTradingCore.Global:SendEventGoodsPurchased(_TraderType, _OfferID, _Good, _P1, _P2, _Amount, _Price)
+    API.SendScriptEvent(QSB.ScriptEvents.GoodsPurchased, _TraderType, _OfferID, _Good, _P1, _P2, _Amount, _Price);
 end
 
 function ModuleTradingCore.Global:SendEventGoodsSold(_Good, _P1, _P2, _Amount, _Price)
@@ -91,7 +91,7 @@ function ModuleTradingCore.Global:OverwriteBasePricesAndRefreshRates()
     end
 end
 
-function ModuleTradingCore.Global:PerformFakeTrade(_TraderType, _Good, _P1, _P2, _Amount, _Price)
+function ModuleTradingCore.Global:PerformFakeTrade(_TraderType, _OfferID, _Good, _P1, _P2, _Amount, _Price)
     local StoreHouse1 = Logic.GetStoreHouse(_P1);
     local StoreHouse2 = Logic.GetStoreHouse(_P2);
 
@@ -115,12 +115,20 @@ function ModuleTradingCore.Global:PerformFakeTrade(_TraderType, _Good, _P1, _P2,
     -- Alter offer amount
     local NewAmount = 0;
     local OfferInfo = self:GetStorehouseInformation(_P2);
-    for i= 1, #OfferInfo[4] do
-        if OfferInfo[4][i][3] == _Good and OfferInfo[4][i][5] > 0 then
-            NewAmount = OfferInfo[4][i][5] -1;
+    for i= 1, #OfferInfo[1] do
+        if OfferInfo[1][i][3] == _Good and OfferInfo[1][i][5] > 0 then
+            NewAmount = OfferInfo[1][i][5] -1;
         end
     end
     self:ModifyTradeOffer(_P2, _Good, NewAmount);
+
+    -- Update local
+    Logic.ExecuteInLuaLocalState(string.format(
+        "GameCallback_MerchantInteraction(%d, %d, %d)",
+        StoreHouse2,
+        _P1,
+        _OfferID
+    ))
 end
 
 function ModuleTradingCore.Global:GetStorehouseInformation(_PlayerID)
@@ -421,10 +429,11 @@ function ModuleTradingCore.Local:OverrideMerchantPurchaseOfferClicked()
                     StartKnightVoiceForPermanentSpecialAbility(Entities.U_KnightTrading);
                 end
 
-                API.SendScriptEvent(QSB.ScriptEvents.GoodsBought, TraderType, GoodType, PlayerID, TraderPlayerID, OfferGoodAmount, Price);
+                API.SendScriptEvent(QSB.ScriptEvents.GoodsBought, TraderType, OfferIndex, GoodType, PlayerID, TraderPlayerID, OfferGoodAmount, Price);
                 GUI.SendScriptCommand(string.format(
-                    "ModuleTradingCore.Global:SendEventGoodsPurchased(%d, %d, %d, %d, %d, %d)",
+                    "ModuleTradingCore.Global:SendEventGoodsPurchased(%d, %d, %d, %d, %d, %d, %d)",
                     TraderType,
+                    OfferIndex,
                     GoodType,
                     PlayerID,
                     TraderPlayerID,

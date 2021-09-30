@@ -123,3 +123,234 @@ function API.ConvertFloatToInteger(_Value)
     return ModuleScriptingValue.Shared:ScriptingValueFloatToInteger(_Value);
 end
 
+---
+-- Gibt den Größenfaktor des Entity zurück.
+--
+-- Der Faktor gibt an, um wie viel die Größe des Entity verändert wurde, im
+-- Vergleich zur normalen Größe. Faktor 1 entspricht der normalen Größe.
+--
+-- <b>Alias</b>: GetScale
+--
+-- @param _Entity Entity (Scriptname oder ID)
+-- @return[type=number] Größenfaktor des Entity
+-- @within Anwenderfunktionen
+--
+function API.GetEntityScale(_Entity)
+    if not IsExisting(_Entity) then
+        error("API.EntityGetScale: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return 0;
+    end
+    return API.GetFloat(_Entity, QSB.ScriptingValue.Size);
+end
+GetScale = API.GetEntityScale;
+
+---
+-- Setzt die Größe des Entity. Wenn es sich um einen Siedler handelt, wird
+-- versucht einen neuen Speed Factor zu setzen.
+--
+-- <b>Alias</b>: SetScale
+--
+-- @param              _Entity Entity (Scriptname oder ID)
+-- @param[type=number] _Scale Neuer Größenfaktor
+-- @within Anwenderfunktionen
+--
+function API.SetEntityScale(_Entity, _Scale)
+    if GUI then
+        return;
+    end
+    if not IsExisting(_Entity) then
+        error("API.SetEntityScale: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return;
+    end
+    if type(_Scale) ~= "number" or _Scale <= 0 then
+        error("API.SetEntityScale: _Scale (" ..tostring(_Scale).. ") must be a number above zero!");
+        return;
+    end
+    local EntityID = GetID(_Entity);
+    if EntityID > 0 then
+        API.SetInteger(EntityID, QSB.ScriptingValue.Size, _Scale);
+        if Logic.IsSettler(EntityID) == 1 then
+            Logic.SetSpeedFactor(EntityID, _Scale);
+        end
+    end
+end
+SetScale = API.SetEntityScale;
+
+---
+-- Gibt den Besitzer des Entity zurück.
+--
+-- <b>Alias</b>: GetPlayer
+--
+-- @param[type=string] _Entity Scriptname des Entity
+-- @return[type=number] Besitzer des Entity
+-- @within Anwenderfunktionen
+--
+function API.GetEntityPlayer(_Entity)
+    if not IsExisting(_Entity) then
+        error("API.GetEntityPlayer: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return 0;
+    end
+    return API.GetInteger(_Entity, QSB.ScriptingValue.Player);
+end
+GetPlayer = API.GetEntityPlayer;
+
+---
+-- Setzt den Besitzer des Entity.
+--
+-- <b>Alias</b>: SetPlayer
+--
+-- @param               _Entity  Entity (Scriptname oder ID)
+-- @param[type=number] _PlayerID ID des Besitzers
+-- @within Anwenderfunktionen
+--
+function API.SetEntityPlayer(_Entity, _PlayerID)
+    if GUI then
+        return;
+    end
+    if not IsExisting(_Entity) then
+        error("API.SetEntityPlayer: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return;
+    end
+    if type(_PlayerID) ~= "number" or _PlayerID < 0 or _PlayerID > 8 then
+        error("API.SetEntityPlayer: _PlayerID (" ..tostring(_PlayerID).. ") must be a number between 0 and 8!");
+        return;
+    end
+    local EntityID = GetID(_Entity);
+    if EntityID > 0 then
+        if API.IsEntityInAtLeastOneCategory (
+            EntityID,
+            EntityCategories.Leader,
+            EntityCategories.CattlePasture,
+            EntityCategories.SheepPasture
+        ) then
+            Logic.ChangeSettlerPlayerID(EntityID, _PlayerID);
+        else
+            API.SetInteger(EntityID, QSB.ScriptingValue.Player, _PlayerID);
+        end
+    end
+end
+SetPlayer = API.SetEntityPlayer;
+
+---
+-- Gibt zurück, ob das Entity sichtbar ist.
+--
+-- <b>Alias</b>: IsVisible
+--
+-- @param _Entity Entity (Scriptname oder ID)
+-- @return[type=boolean] Ist sichtbar
+-- @within Anwenderfunktionen
+--
+function API.IsEntityVisible(_Entity)
+    if not IsExisting(_Entity) then
+        error("API.IsEntityVisible: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return false;
+    end
+    return API.GetInteger(_Entity, QSB.ScriptingValue.Visible) == 801280;
+end
+IsVisible = API.IsEntityVisible;
+
+---
+-- Ändert die Sichtbarkeit des Entity.
+--
+-- <b>Alias</b>: SetVisible
+--
+-- @param               _Entity   Entity (Scriptname oder ID)
+-- @param[type=boolean] _Visible (Optional) Sichtbarkeit ändern
+-- @within Anwenderfunktionen
+--
+function API.SetEntityVisible(_Entity, _Visble)
+    if GUI then
+        return;
+    end
+    local EntityID = GetID(_Entity);
+    if EntityID == 0 then
+        error("API.SetEntityVisible: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return;
+    end
+    Logic.SetVisible(EntityID, _Visble == true);
+end
+SetVisible = API.SetEntityVisible;
+
+---
+-- Gibt zurück, ob eine NPC-Interaktion mit dem Siedler möglich ist.
+--
+-- <b>Alias</b>: IsNpc
+--
+-- @param _Entity Entity (Scriptname oder ID)
+-- @return[type=boolean] Ist NPC
+-- @within Anwenderfunktionen
+--
+function API.IsEntityActiveNpc(_Entity)
+    local EntityID = GetID(_Entity);
+    if EntityID > 0 then
+        return API.GetInteger(EntityID, 6) > 0;
+    end
+    error("API.IsEntityActiveNpc: _Entity (" ..tostring(_Entity).. ") does not exist!");
+    return false;
+end
+IsNpc = API.IsEntityActiveNpc;
+
+---
+-- Gibt das Bewegungsziel des Entity zurück.
+--
+-- <b>Alias</b>: GetDestination
+--
+-- @param _Entity Entity (Scriptname oder ID)
+-- @return[type=table] Positionstabelle
+-- @within Anwenderfunktionen
+--
+function API.GetEntityMovementTarget(_Entity)
+    if GUI then
+        return;
+    end
+    local EntityID = GetID(_Entity);
+    if EntityID > 0 then
+        return {
+            X= API.GetFloat(EntityID, QSB.ScriptingValue.Destination.X),
+            Y= API.GetFloat(EntityID, QSB.ScriptingValue.Destination.Y),
+            Z= 0
+        };
+    end
+    error("API.GetEntityMovementTarget: _Entity (" ..tostring(_Entity).. ") does not exist!");
+    return {X= 0, Y= 0, Z= 0};
+end
+GetDestination = API.GetEntityMovementTarget;
+
+-- Override
+
+API.ChangeEntityHealth = function(_Entity, _Health, _Relative)
+    if GUI then
+        return;
+    end
+    local EntityID = GetID(_Entity);
+    if EntityID > 0 then
+        local MaxHealth = Logic.GetEntityMaxHealth(EntityID);
+        if type(_Health) ~= "number" or _Health < 0 then
+            error("API.ChangeEntityHealth: _Health " ..tostring(_Health).. "must be 0 or greater!");
+            return
+        end
+        _Health = (_Health > MaxHealth and MaxHealth) or _Health;
+        if Logic.IsLeader(EntityID) == 1 then
+            for k, v in pairs(API.GetGroupSoldiers(EntityID)) do
+                API.ChangeEntityHealth(v, _Health, _Relative);
+            end
+        else
+            local OldHealth = Logic.GetEntityHealth(EntityID);
+            local NewHealth = _Health;
+            if _Relative then
+                _Health = (_Health < 0 and 0) or _Health;
+                _Health = (_Health > 100 and 100) or _Health;
+                NewHealth = math.ceil((MaxHealth) * (_Health/100));
+            end
+            if NewHealth == 0 then
+                Logic.HurtEntity(EntityID, OldHealth);
+            else
+                API.SetInteger(EntityID, QSB.ScriptingValue.Health, NewHealth);
+            end
+        end
+        return;
+    end
+    error("API.ChangeEntityHealth: _Entity (" ..tostring(_Entity).. ") does not exist!");
+end
+SetHealth = API.ChangeEntityHealth;
+

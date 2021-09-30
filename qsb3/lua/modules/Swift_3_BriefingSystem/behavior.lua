@@ -84,7 +84,7 @@ function Reward_Briefing(...)
     return b_Reward_Briefing:new(...);
 end
 
-b_Reward_Briefing = API.InstanceTable(b_Reprisal_Briefing);
+b_Reward_Briefing = Swift:CopyTable(b_Reprisal_Briefing);
 b_Reward_Briefing.Name = "Reward_Briefing";
 b_Reward_Briefing.Description.en = "Reward: Calls a function to start an new briefing.";
 b_Reward_Briefing.Description.de = "Lohn: Ruft die Funktion auf und startet das enthaltene Briefing.";

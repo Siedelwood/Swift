@@ -325,7 +325,7 @@ function API.AddBriefingPages(_Briefing)
         -- Rotation angleichen
         local Rotation = ModuleBriefingSystem.Global:NormalizeRotationForEntity(Position[1]);
         -- Größe abgleichen
-        local SizeSV = QSB.ScriptingValues[QSB.ScriptingValues.Game].Size;
+        local SizeSV = QSB.ScriptingValue.Size;
         local Size = Logic.GetEntityScriptingValue(GetID(Position[1]), SizeSV);
         Position[2] = Position[2] * Core:ScriptingValueIntegerToFloat(Size);
     

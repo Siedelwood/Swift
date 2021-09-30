@@ -65,7 +65,7 @@ function ModuleBriefingSystem.Global:OnGameStart()
     end
 
     API.StartHiResJob(function()
-        ModuleBriefingSystem.Global.BriefingExecutionController()
+        ModuleBriefingSystem.Global:BriefingExecutionController()
     end);
 end
 
@@ -240,7 +240,7 @@ function ModuleBriefingSystem.Global:TransformAnimations(_PlayerID)
                 -- Relative Angabe
                 if #v[i] == 9 then
                     table.insert(self.CurrentBriefing[_PlayerID][PageID].Animations, {
-                        Duration = v[i][9] or 2 * 60,
+                        Duration = v[i][9] or (2 * 60),
 
                         Start = {
                             Position = (type(v[i][1]) ~= "table" and {v[i][1],0}) or v[i][1],
@@ -258,7 +258,7 @@ function ModuleBriefingSystem.Global:TransformAnimations(_PlayerID)
                 -- Vektorisierte Angabe
                 elseif #v[i] == 5 then
                     table.insert(self.CurrentBriefing[_PlayerID][PageID].Animations, {
-                        Duration = v[i][5] or 2 * 60,
+                        Duration = v[i][5] or (2 * 60),
 
                         Start = {
                             Position = (type(v[i][1]) ~= "table" and {v[i][1],0}) or v[i][1],
@@ -347,9 +347,9 @@ function ModuleBriefingSystem.Global:BriefingExecutionController()
                     if Logic.GetTime() > self.CurrentPage[i].Started + Duration then
                         local PageID = self.CurrentBriefing[i].Page;
                         if not self.CurrentPage[i].NoHistory then
-                            Logic.ExecuteInLuaLocalState(string.fomat(
+                            Logic.ExecuteInLuaLocalState(string.format(
                                 "table.insert(ModuleBriefingSystem.Local.CurrentBriefing[%d].PageHistory, %d)",
-                                _PlayerID,
+                                i,
                                 PageID
                             ));
                         end
@@ -549,7 +549,7 @@ function ModuleBriefingSystem.Local:LocalOnMCConfirmed(_PlayerID)
             local AnswerID = self.CurrentPage[_PlayerID].MC.Map[Selected];
             for i= #self.CurrentPage[_PlayerID].MC, 1, -1 do
                 if self.CurrentPage[_PlayerID].MC[i].ID == AnswerID and self.CurrentPage[_PlayerID].MC[i].Remove then
-                    GUI.SendScriptCommand(string.formt(
+                    GUI.SendScriptCommand(string.format(
                         "self.CurrentPage[%d].MC[%d].Invisible = true",
                         _PlayerID,
                         i
@@ -601,8 +601,8 @@ function ModuleBriefingSystem.Local:ThroneRoomCameraControl(_PlayerID)
 
             -- Kamera
             if GUI.GetPlayerID() == _PlayerID then
-                local PX, PY, PZ = self:GetPagePosition();
-                local LX, LY, LZ = self:GetPageLookAt();
+                local PX, PY, PZ = self:GetPagePosition(_PlayerID);
+                local LX, LY, LZ = self:GetPageLookAt(_PlayerID);
                 if PX and not LX then
                     LX, LY, LZ, PX, PY, PZ = self:GetCameraProperties();
                 end
@@ -707,7 +707,7 @@ function ModuleBriefingSystem.Local:GetPagePosition(_PlayerID)
     return x, y, z;
 end
 
-function ModuleBriefingSystem.Local:GetPageLookAt()
+function ModuleBriefingSystem.Local:GetPageLookAt(_PlayerID)
     local LookAt, FlyTo;
     if self.CurrentBriefing[_PlayerID].CurrentAnimation then
         LookAt = self.CurrentBriefing[_PlayerID].CurrentAnimation.Start.LookAt;

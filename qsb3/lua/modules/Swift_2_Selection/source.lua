@@ -431,7 +431,10 @@ function ModuleSelection.Local:OverwriteMilitaryDismount()
             if ModuleSelection.Local.MilitaryRelease then
                 Sound.FXPlay2DSound( "ui\\menu_click");
                 local Soldiers = {Logic.GetSoldiersAttachedToLeader(Selected)};
-                GUI.SendScriptCommand(string.format([[DestroyEntity(%d)]], Soldiers[#Soldiers]));
+                GUI.SendScriptCommand(string.format(
+                    [[DestroyEntity(%d)]],
+                    Soldiers[#Soldiers]
+                ));
                 return;
             end
         end
@@ -442,7 +445,10 @@ function ModuleSelection.Local:OverwriteMilitaryDismount()
         or Type == Entities.U_MilitarySiegeTower then
             if ModuleSelection.Local.SiegeEngineRelease and Guardian == 0 then
                 Sound.FXPlay2DSound( "ui\\menu_click");
-                GUI.SendScriptCommand(string.format([[DestroyEntity(%d)]], Selected));
+                GUI.SendScriptCommand(string.format(
+                    [[DestroyEntity(%d)]],
+                    Selected
+                ));
             else
                 GUI_Military.DismountClicked_Orig_ModuleSelection();
             end

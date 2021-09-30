@@ -354,10 +354,9 @@ function ModuleInteraction.Global:DialogTriggerController()
             if Logic.GetCurrentTaskList(PlayersKnights[i]) == "TL_NPC_INTERACTION" then
                 for k, v in pairs(QSB.NonPlayerCharacterObjects) do
                     if v and v.m_TalkedTo == nil and v.m_Distance >= 350 then
-                        local x1 = math.floor(API.GetFloat(PlayersKnights[i], QSB.ScriptingValue.Destination.X));
-                        local y1 = math.floor(API.GetFloat(PlayersKnights[i], QSB.ScriptingValue.Destination.Y));
-                        local x2, y2 = Logic.EntityGetPos(GetID(k));
-                        if x1 == math.floor(x2) and y1 == math.floor(y2) then
+                        local Target = API.GetEntityMovementTarget(PlayersKnights[i]);
+                        local x, y = Logic.EntityGetPos(GetID(k));
+                        if math.floor(Target.X) == math.floor(x) and math.floor(Target.Y) == math.floor(y) then
                             if IsExisting(k) and IsNear(PlayersKnights[i], k, v.m_Distance) then
                                 GameCallback_OnNPCInteraction(GetID(k), PlayerID);
                                 return;
@@ -1086,7 +1085,7 @@ end
 --
 function QSB.NonPlayerCharacter:IsActive()
     assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
-    return Logic.GetEntityScriptingValue(self:GetID(), 6) > 0;
+    return API.IsEntityActiveNpc(self:GetID());
 end
 
 ---
@@ -1156,7 +1155,7 @@ end
 --
 function QSB.NonPlayerCharacter:SetTalkDistance(_Distance)
     assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
-    self.m_Distance = _Distance or 350;
+    self.m_Distance = _Distance or 300;
     return self;
 end
 
@@ -1234,17 +1233,15 @@ function QSB.NonPlayerCharacter:RotateActors()
     local PlayerKnights = {};
     Logic.GetKnights(PlayerID, PlayerKnights);
     for k, v in pairs(PlayerKnights) do
-        -- Alle Helden stoppen, die sich zu NPC bewegen
-        local x1 = math.floor(API.GetFloat(v, QSB.ScriptingValue.Destination.X));
-        local y1 = math.floor(API.GetFloat(v, QSB.ScriptingValue.Destination.Y));
-        local x2, y2 = Logic.EntityGetPos(GetID(self.m_NpcName));
-        if x1 == math.floor(x2) and y1 == math.floor(y2) then
+        local Target = API.GetEntityMovementTarget(v);
+        local x, y = Logic.EntityGetPos(GetID(self.m_ScriptName));
+        if math.floor(Target.X) == math.floor(x) and math.floor(Target.Y) == math.floor(y) then
             local x, y, z = Logic.EntityGetPos(v);
             Logic.MoveEntity(v, x, y);
             LookAt(v, self.m_NpcName);
         end
     end
-    API.Confront(self.m_NpcName, ModuleInteraction.Global.LastHeroEntityID)
+    API.Confront(self.m_NpcName, ModuleInteraction.Global.LastHeroEntityID);
 end
 
 ---
@@ -1265,7 +1262,7 @@ function QSB.NonPlayerCharacter:RepositionHero()
     end
     local HeroID = ModuleInteraction.Global.LastHeroEntityID;
     local NPCID  = GetID(self.m_NpcName);
-    if GetDistance(HeroID, NPCID) < self.m_Distance -50 then
+    if GetDistance(HeroID, NPCID) <= self.m_Distance then
         -- Position des NPC bestimmen
         local Orientation = Logic.GetEntityOrientation(NPCID);
         local x1, y1, z1 = Logic.EntityGetPos(NPCID);
@@ -1326,8 +1323,8 @@ end
 function QSB.NonPlayerCharacter:ShowMarker()
     assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
     if self.m_NpcType == 1 and IsExisting(self.m_MarkerID) then
-        local EntityScale = API.GetFloat(self:GetID(), QSB.ScriptingValue.Size);
-        API.SetFloat(self.m_MarkerID, QSB.ScriptingValue.Size, EntityScale);
+        local EntityScale = API.GetEntityScale(self:GetID());
+        API.SetEntityScale(self.m_MarkerID, EntityScale);
         Logic.SetModel(self.m_MarkerID, Models.Effects_E_Wealth);
         Logic.SetVisible(self.m_MarkerID, true);
     end

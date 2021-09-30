@@ -424,7 +424,7 @@ end
 --
 function API.AddGoodOffer(_VendorID, _OfferType, _OfferAmount, _RefreshRate)
     _OfferType = (type(_OfferType) == "string" and Goods[_OfferType]) or _OfferType;
-    local OfferID, TraderID = ExternalTradingAnalysis.Global:GetOfferAndTrader(_VendorID, _OfferType);
+    local OfferID, TraderID = ModuleTradingCore.Global:GetOfferAndTrader(_VendorID, _OfferType);
     if OfferID ~= -1 and TraderID ~= -1 then
         warn(string.format(
             "Good offer for type %s already exists for player %d!",
@@ -482,7 +482,7 @@ end
 --
 function API.AddMercenaryOffer(_VendorID, _OfferType, _OfferAmount, _RefreshRate)
     _OfferType = (type(_OfferType) == "string" and Entities[_OfferType]) or _OfferType;
-    local OfferID, TraderID = ExternalTradingAnalysis.Global:GetOfferAndTrader(_VendorID, _OfferType);
+    local OfferID, TraderID = ModuleTradingCore.Global:GetOfferAndTrader(_VendorID, _OfferType);
     if OfferID ~= -1 and TraderID ~= -1 then
         warn(string.format(
             "Mercenary offer for type %s already exists for player %d!",
@@ -504,7 +504,6 @@ function API.AddMercenaryOffer(_VendorID, _OfferType, _OfferAmount, _RefreshRate
     if string.find(TypeName, "MilitaryBow") or string.find(TypeName, "MilitarySword") then
         SoldierCount = 6;
     elseif string.find(TypeName,"Cart") then
-        API.Note("Cart")
         SoldierCount = 0;
     end
 
@@ -537,7 +536,7 @@ end
 --
 function API.AddEntertainerOffer(_VendorID, _OfferType)
     _OfferType = (type(_OfferType) == "string" and Entities[_OfferType]) or _OfferType;
-    local OfferID, TraderID = ExternalTradingAnalysis.Global:GetOfferAndTrader(_VendorID, _OfferType);
+    local OfferID, TraderID = ModuleTradingCore.Global:GetOfferAndTrader(_VendorID, _OfferType);
     if OfferID ~= -1 and TraderID ~= -1 then
         warn(string.format(
             "Entertainer offer for type %s already exists for player %d!",

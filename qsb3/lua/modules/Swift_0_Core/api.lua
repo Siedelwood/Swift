@@ -834,6 +834,8 @@ function API.IsLoadscreenVisible()
     return Swift.m_LoadScreenHidden ~= true;
 end
 
+-- Entity
+
 ---
 -- Ersetzt ein Entity mit einem neuen eines anderen Typs. Skriptname,
 -- Rotation, Position und Besitzer werden übernommen.
@@ -868,6 +870,76 @@ function API.ReplaceEntity(_Entity, _Type, _NewOwner)
     end
 end
 ReplaceEntity = API.ReplaceEntity;
+
+---
+-- Gibt den Typen des Entity zurück.
+--
+-- <b>Alias</b>: GetType
+--
+-- @param _Entity Entity (Scriptname oder ID)
+-- @return[type=number] Typ des Entity
+-- @within Anwenderfunktionen
+--
+function API.GetEntityType(_Entity)
+    local EntityID = GetID(_Entity);
+    if EntityID > 0 then
+        return Logic.GetEntityType(EntityID);
+    end
+    error("API.EntityGetType: _Entity (" ..tostring(_Entity).. ") must be a leader with soldiers!");
+    return 0;
+end
+GetType = API.GetEntityType
+
+---
+-- Gibt den Typnamen des Entity zurück.
+--
+-- <b>Alias</b>: GetTypeName
+--
+-- @param _Entity Entity (Scriptname oder ID)
+-- @return[type=string] Typname des Entity
+-- @within Anwenderfunktionen
+--
+function API.GetEntityTypeName(_Entity)
+    if not IsExisting(_Entity) then
+        error("API.GetEntityTypeName: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return;
+    end
+    return Logic.GetEntityTypeName(API.GetEntityType(_Entity));
+end
+GetTypeName = API.GetEntityTypeName;
+
+---
+-- Setzt das Entity oder das Battalion verwundbar oder unverwundbar.
+--
+-- <b>Alias</b>: SetVulnerable
+-- 
+-- @param               _Entity Entity (Scriptname oder ID)
+-- @param[type=boolean] _Flag Verwundbar
+-- @within Anwenderfunktionen
+--
+function API.SetEntityVulnerableFlag(_Entity, _Flag)
+    if GUI then
+        return;
+    end
+    local EntityID = GetID(_Entity);
+    local VulnerabilityFlag = (_Flag and 1) or 0;
+    if EntityID > 0 then
+        if API.CountSoldiersOfGroup(EntityID) > 0 then
+            for k, v in pairs(API.GetGroupSoldiers(EntityID)) do
+                Logic.SetEntityInvulnerabilityFlag(v, VulnerabilityFlag);
+            end
+        end
+        Logic.SetEntityInvulnerabilityFlag(EntityID, VulnerabilityFlag);
+    end
+end
+SetVulnerable = API.SetEntityVulnerableFlag;
+
+MakeVulnerable = function(_Entity)
+    API.SetEntityVulnerableFlag(_Entity, false);
+end
+MakeInvulnerable = function(_Entity)
+    API.SetEntityVulnerableFlag(_Entity, true);
+end
 
 ---
 -- Rotiert ein Entity, sodass es zum Ziel schaut.
@@ -945,6 +1017,362 @@ function API.GetDistance( _pos1, _pos2 )
     return math.sqrt((xDistance^2) + (yDistance^2));
 end
 GetDistance = API.GetDistance;
+
+---
+-- Sendet einen Handelskarren zu dem Spieler. Startet der Karren von einem
+-- Gebäude, wird immer die Position des Eingangs genommen.
+--
+-- <p><b>Alias:</b> SendCart</p>
+--
+-- @param _position                        Position (Skriptname oder Positionstable)
+-- @param[type=number] _player             Zielspieler
+-- @param[type=number] _good               Warentyp
+-- @param[type=number] _amount             Warenmenge
+-- @param[type=number] _cartOverlay        (optional) Overlay für Goldkarren
+-- @param[type=boolean] _ignoreReservation (optional) Marktplatzreservation ignorieren
+-- @return[type=number] Entity-ID des erzeugten Wagens
+-- @within Anwenderfunktionen
+-- @usage -- API-Call
+-- API.SendCart(Logic.GetStoreHouse(1), 2, Goods.G_Grain, 45)
+-- -- Legacy-Call mit ID-Speicherung
+-- local ID = SendCart("Position_1", 5, Goods.G_Wool, 5)
+--
+function API.SendCart(_position, _player, _good, _amount, _cartOverlay, _ignoreReservation)
+    local eID = GetID(_position);
+    if not IsExisting(eID) then
+        return;
+    end
+    local ID;
+    local x,y,z = Logic.EntityGetPos(eID);
+    local resCat = Logic.GetGoodCategoryForGoodType(_good);
+    local orientation = 0;
+    if Logic.IsBuilding(eID) == 1 then
+        x,y = Logic.GetBuildingApproachPosition(eID);
+        orientation = Logic.GetEntityOrientation(eID)-90;
+    end
+
+    -- Macht Waren lagerbar im Lagerhaus
+    if resCat == GoodCategories.GC_Resource or _good == Goods.G_None then
+        local TypeName = Logic.GetGoodTypeName(_good);
+        local Category = Logic.GetGoodCategoryForGoodType(_good);
+        local SHID = Logic.GetStoreHouse(_player);
+        local HQID = Logic.GetHeadquarters(_player);
+        if SHID ~= 0 and Logic.GetIndexOnInStockByGoodType(SHID, _good) == -1 then
+            local CreateSlot = true;
+            if _good ~= Goods.G_Gold or (_good == Goods.G_Gold and HQID == 0) then
+                info(
+                    "API.SendCart: creating stock for " ..TypeName.. " in" ..
+                    "storehouse of player " .._player.. "."
+                );
+                Logic.AddGoodToStock(SHID, _good, 0, true, true);
+            end
+        end
+    end
+
+    info("API.SendCart: Creating cart ("..
+        tostring(_position) ..","..
+        tostring(_player) ..","..
+        Logic.GetGoodTypeName(_good) ..","..
+        tostring(_amount) ..","..
+        tostring(_cartOverlay) ..","..
+        tostring(_ignoreReservation) ..
+    ")");
+
+    if resCat == GoodCategories.GC_Resource then
+        ID = Logic.CreateEntityOnUnblockedLand(Entities.U_ResourceMerchant, x, y,orientation,_player)
+    elseif _good == Goods.G_Medicine then
+        ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Medicus, x, y,orientation,_player)
+    elseif _good == Goods.G_Gold or _good == Goods.G_None or _good == Goods.G_Information then
+        if _cartOverlay then
+            ID = Logic.CreateEntityOnUnblockedLand(_cartOverlay, x, y,orientation,_player)
+        else
+            ID = Logic.CreateEntityOnUnblockedLand(Entities.U_GoldCart, x, y,orientation,_player)
+        end
+    else
+        ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Marketer, x, y,orientation,_player)
+    end
+    info("API.SendCart: Executing hire merchant...");
+    Logic.HireMerchant( ID, _player, _good, _amount, _player, _ignoreReservation)
+    info("API.SendCart: Cart has been send successfully.");
+    return ID
+end
+SendCart = API.SendCart;
+
+---
+-- Setzt die Gesundheit des Entity. Optional kann die Gesundheit relativ zur
+-- maximalen Gesundheit geändert werden.
+--
+-- <b>Alias</b>: SetHealth
+--
+-- @param               _Entity   Entity (Scriptname oder ID)
+-- @param[type=number]  _Health   Neue aktuelle Gesundheit
+-- @param[type=boolean] _Relative (Optional) Relativ zur maximalen Gesundheit
+-- @within Anwenderfunktionen
+--
+function API.ChangeEntityHealth(_Entity, _Health, _Relative)
+    if GUI then
+        return;
+    end
+    local EntityID = GetID(_Entity);
+    if EntityID > 0 then
+        local MaxHealth = Logic.GetEntityMaxHealth(EntityID);
+        if type(_Health) ~= "number" or _Health < 0 then
+            error("API.ChangeEntityHealth: _Health " ..tostring(_Health).. "must be 0 or greater!");
+            return
+        end
+        _Health = (_Health > MaxHealth and MaxHealth) or _Health;
+        if Logic.IsLeader(EntityID) == 1 then
+            for k, v in pairs(API.GetGroupSoldiers(EntityID)) do
+                API.ChangeEntityHealth(v, _Health, _Relative);
+            end
+        else
+            local OldHealth = Logic.GetEntityHealth(EntityID);
+            local NewHealth = _Health;
+            if _Relative then
+                _Health = (_Health < 0 and 0) or _Health;
+                _Health = (_Health > 100 and 100) or _Health;
+                NewHealth = math.ceil((MaxHealth) * (_Health/100));
+            end
+            if NewHealth > OldHealth then
+                Logic.HealEntity(EntityID, NewHealth - OldHealth);
+            elseif NewHealth < OldHealth then
+                Logic.HurtEntity(EntityID, OldHealth - NewHealth);
+            end
+        end
+        return;
+    end
+    error("API.ChangeEntityHealth: _Entity (" ..tostring(_Entity).. ") does not exist!");
+end
+SetHealth = API.ChangeEntityHealth;
+
+---
+-- Gibt alle Kategorien zurück, zu denen das Entity gehört.
+--
+-- <b>Alias</b>: GetCategories
+--
+-- @param              _Entity Entity (Skriptname oder ID)
+-- @return[type=table] Kategorien des Entity
+-- @within Internal
+-- @local
+--
+function API.GetEntityCategoyList(_Entity)
+    local EntityID = GetID(_Entity);
+    if EntityID == 0 then
+        error("API.GetEntityCategoyList: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return {};
+    end
+    local Categories = {};
+    for k, v in pairs(EntityCategories) do
+        if Logic.IsEntityInCategory(EntityID, v) == 1 then 
+            Categories[#Categories+1] = v;
+        end
+    end
+    return Categories;
+end
+GetCategories = API.GetEntityCategoyList;
+
+---
+-- Prüft, ob das Entity mindestens eine der Kategorien hat.
+--
+-- <b>Alias</b>: IsInCategory
+--
+-- @param              _Entity Entity (Skriptname oder ID)
+-- @param[type=number] ...     Liste mit Kategorien
+-- @return[type=boolean] Entity hat Kategorie
+-- @within Internal
+-- @local
+--
+function API.IsEntityInAtLeastOneCategory(_Entity, ...)
+    local EntityID = GetID(_Entity);
+    if EntityID > 0 then
+        for k, v in pairs(arg) do
+            if Inside(v, API.GetEntityCategoyList(_Entity)) then
+                return true;
+            end
+        end
+        return;
+    end
+    error("API.IsEntityInAtLeastOneCategory: _Entity (" ..tostring(_Entity).. ") does not exist!");
+    return false;
+end
+IsInCategory = API.IsEntityInAtLeastOneCategory;
+
+---
+-- Gibt die aktuelle Tasklist des Entity zurück.
+--
+-- <b>Alias</b>: GetTask
+--
+-- @param _Entity Entity (Scriptname oder ID)
+-- @return[type=number] Tasklist
+-- @within Anwenderfunktionen
+--
+function API.GetEntityTaskList(_Entity)
+    local EntityID = GetID(_Entity);
+    if EntityID == 0 then
+        error("API.GetEntityTaskList: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return 0;
+    end
+    local CurrentTask = Logic.GetCurrentTaskList(EntityID) or "";
+    return TaskLists[CurrentTask];
+end
+GetTask = API.GetEntityTaskList;
+
+---
+-- Weist dem Entity ein Neues Model zu.
+--
+-- <b>Alias</b>: SetModel
+--
+-- @param              _Entity  Entity (Scriptname oder ID)
+-- @param[type=number] _NewModel Neues Model
+-- @param[type=number] _AnimSet  (optional) Animation Set
+-- @within Anwenderfunktionen
+--
+function API.SetEntityModel(_Entity, _NewModel, _AnimSet)
+    if GUI then
+        return;
+    end
+    local EntityID = GetID(_Entity);
+    if EntityID == 0 then
+        error("API.SetEntityModel: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return;
+    end
+    if type(_NewModel) ~= "number" or _NewModel < 1 then
+        error("API.SetEntityModel: _NewModel (" ..tostring(_NewModel).. ") is wrong!");
+        return;
+    end
+    if _AnimSet and (type(_AnimSet) ~= "number" or _AnimSet < 1) then
+        error("API.SetEntityModel: _AnimSet (" ..tostring(_AnimSet).. ") is wrong!");
+        return;
+    end
+    if not _AnimSet then
+        Logic.SetModel(EntityID, _NewModel);
+    else
+        Logic.SetModelAndAnimSet(EntityID, _NewModel, _AnimSet);
+    end
+end
+SetModel = API.SetEntityModel;
+
+---
+-- Setzt die aktuelle Tasklist des Entity.
+--
+-- <b>Alias</b>: SetTask
+--
+-- @param              _Entity  Entity (Scriptname oder ID)
+-- @param[type=number] _NewTask Neuer Task
+-- @within Anwenderfunktionen
+--
+function API.SetEntityTaskList(_Entity, _NewTask)
+    if GUI then
+        return;
+    end
+    local EntityID = GetID(_Entity);
+    if EntityID == 0 then
+        error("API.SetEntityTaskList: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return;
+    end
+    if type(_NewTask) ~= "number" or _NewTask < 1 then
+        error("API.SetEntityTaskList: _NewTask (" ..tostring(_NewTask).. ") is wrong!");
+        return;
+    end
+    Logic.SetTaskList(EntityID, _NewTask);
+end
+SetTask = API.SetEntityTaskList;
+
+---
+-- Gibt die Ausrichtung des Entity zurück.
+--
+-- <b>Alias</b>: GetOrientation
+--
+-- @param               _Entity  Entity (Scriptname oder ID)
+-- @return[type=number] Ausrichtung in Grad
+-- @within Anwenderfunktionen
+--
+function API.GetEntityOrientation(_Entity)
+    local EntityID = GetID(_Entity);
+    if EntityID > 0 then
+        return API.Round(Logic.GetEntityOrientation(EntityID));
+    end
+    error("API.GetEntityOrientation: _Entity (" ..tostring(_Entity).. ") does not exist!");
+    return 0;
+end
+GetOrientation = API.GetEntityOrientation;
+
+---
+-- Setzt die Ausrichtung des Entity.
+--
+-- <b>Alias</b>: SetOrientation
+--
+-- @param               _Entity  Entity (Scriptname oder ID)
+-- @param[type=number] _Orientation Neue Ausrichtung
+-- @within Anwenderfunktionen
+--
+function API.SetEntityOrientation(_Entity, _Orientation)
+    if GUI then
+        return;
+    end
+    local EntityID = GetID(_Entity);
+    if EntityID > 0 then
+        if type(_Orientation) ~= "number" then
+            error("API.SetEntityOrientation: _Orientation is wrong!");
+            return
+        end
+        Logic.SetOrientation(EntityID, API.Round(_Orientation));
+    else
+        error("API.SetEntityOrientation: _Entity (" ..tostring(_Entity).. ") does not exist!");
+    end
+end
+SetOrientation = API.SetEntityOrientation;
+
+---
+-- Gibt die Menge an Rohstoffen des Entity zurück. Optional kann
+-- eine neue Menge gesetzt werden.
+--
+-- <b>Alias</b>: GetResource
+--
+-- @param _Entity  Entity (Scriptname oder ID)
+-- @return[type=number] Menge an Rohstoffen
+-- @within Anwenderfunktionen
+--
+function API.GetResourceAmount(_Entity)
+    local EntityID = GetID(_Entity);
+    if EntityID > 0 then
+        return Logic.GetResourceDoodadGoodAmount(EntityID);
+    end
+    error("API.GetResourceAmount: _Entity (" ..tostring(_Entity).. ") does not exist!");
+    return 0;
+end
+GetResource = API.GetResourceAmount
+
+---
+-- Setzt die Menge an Rohstoffen des Entity.
+--
+-- <b>Alias</b>: SetResource
+--
+-- @param              _Entity  Entity (Scriptname oder ID)
+-- @param[type=number] _Amount Menge an Rohstoffen
+-- @within Anwenderfunktionen
+--
+function API.SetResourceAmount(_Entity, _Amount)
+    if GUI then
+        return;
+    end
+    local EntityID = GetID(_Entity);
+    if EntityID > 0 or Logic.GetResourceDoodadGoodType(EntityID) > 0 then
+        if type(_Amount) ~= "number" or _Amount < 0 then
+            error("API.SetResourceAmount: _Amount must be 0 or greater!");
+            return
+        end
+        if Logic.GetResourceDoodadGoodAmount(EntityID) == 0 then
+            EntityID = API.ReplaceEntity(EntityID, Logic.GetEntityType(EntityID));
+        end
+        Logic.SetResourceDoodadGoodAmount(EntityID, _Amount);
+    else
+        error("API.SetResourceAmount: _Entity (" ..tostring(_Entity).. ") does not exist or is not a resource entity!");
+    end
+end
+SetResource = API.SetResourceAmount;
+
+-- Position
 
 ---
 -- Lokalisiert ein Entity auf der Map. Es können sowohl Skriptnamen als auch
@@ -1077,7 +1505,7 @@ end
 --
 function API.GetCirclePosition(_Target, _Distance, _Angle)
     if not API.ValidatePosition(_Target) and not IsExisting(_Target) then
-        error("API.GetCirclePosition: _target does not exist or is invalid position!");
+        error("API.GetCirclePosition: _Target does not exist or is invalid position!");
         return;
     end
 
@@ -1139,7 +1567,7 @@ function API.ValidatePosition(_pos)
             if _pos.Z and _pos.Z < 0 then
                 return false;
             end
-            if _pos.X <= world[1] and _pos.X >= 0 and _pos.Y <= world[2] and _pos.Y >= 0 then
+            if _pos.X <= world[1] and _pos.X > 0 and _pos.Y <= world[2] and _pos.Y > 0 then
                 return true;
             end
         end
@@ -1148,83 +1576,153 @@ function API.ValidatePosition(_pos)
 end
 IsValidPosition = API.ValidatePosition;
 
+-- Group
+
 ---
--- Sendet einen Handelskarren zu dem Spieler. Startet der Karren von einem
--- Gebäude, wird immer die Position des Eingangs genommen.
+-- Gibt die Mänge an Soldaten zurück, die dem Entity unterstehen
 --
--- <p><b>Alias:</b> SendCart</p>
+-- <b>Alias</b>: CoundSoldiers
 --
--- @param _position                        Position (Skriptname oder Positionstable)
--- @param[type=number] _player             Zielspieler
--- @param[type=number] _good               Warentyp
--- @param[type=number] _amount             Warenmenge
--- @param[type=number] _cartOverlay        (optional) Overlay für Goldkarren
--- @param[type=boolean] _ignoreReservation (optional) Marktplatzreservation ignorieren
--- @return[type=number] Entity-ID des erzeugten Wagens
+-- @param _Entity Entity (Skriptname oder ID)
+-- @return[type=number] Menge an Soldaten
 -- @within Anwenderfunktionen
--- @usage -- API-Call
--- API.SendCart(Logic.GetStoreHouse(1), 2, Goods.G_Grain, 45)
--- -- Legacy-Call mit ID-Speicherung
--- local ID = SendCart("Position_1", 5, Goods.G_Wool, 5)
 --
-function API.SendCart(_position, _player, _good, _amount, _cartOverlay, _ignoreReservation)
-    local eID = GetID(_position);
-    if not IsExisting(eID) then
+function API.CountSoldiersOfGroup(_Entity)
+    local EntityID = GetID(_Entity);
+    if EntityID == 0 then
+        error("API.CountSoldiersOfGroup: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return 0;
+    end
+    if Logic.IsLeader(EntityID) == 0 then
+        return 0;
+    end
+    local SoldierTable = {Logic.GetSoldiersAttachedToLeader(EntityID)};
+    return SoldierTable[1];
+end
+CoundSoldiers = API.CountSoldiersOfGroup;
+
+---
+-- Gibt die IDs aller Soldaten zurück, die zum Battalion gehören.
+--
+-- <b>Alias</b>: GetSoldiers
+--
+-- @param _Entity Entity (Skriptname oder ID)
+-- @return[type=table] Liste aller Soldaten
+-- @within Anwenderfunktionen
+--
+function API.GetGroupSoldiers(_Entity)
+    local EntityID = GetID(_Entity);
+    if EntityID == 0 then
+        error("API.GetGroupSoldiers: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return {};
+    end
+    if Logic.IsLeader(EntityID) == 0 then
+        return {};
+    end
+    local SoldierTable = {Logic.GetSoldiersAttachedToLeader(EntityID)};
+    table.remove(SoldierTable, 1);
+    return SoldierTable;
+end
+GetSoldiers = API.GetGroupSoldiers;
+
+---
+-- Gibt den Leader des Soldaten zurück.
+--
+-- <b>Alias</b>: GetLeader
+--
+-- @param _Entity Entity (Skriptname oder ID)
+-- @return[type=number] Menge an Soldaten
+-- @within Anwenderfunktionen
+--
+function API.GetGroupLeader(_Entity)
+    local EntityID = GetID(_Entity);
+    if EntityID == 0 then
+        error("API.GetGroupLeader: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return 0;
+    end
+    if Logic.IsEntityInCategory(EntityID, EntityCategories.Soldier) == 0 then 
+        return 0;
+    end
+    return Logic.SoldierGetLeaderEntityID(EntityID);
+end
+GetLeader = API.GetGroupLeader;
+
+---
+-- Heilt das Entity um die angegebene Menge an Gesundheit.
+--
+-- <b>Alias</b>: HealEntity
+--
+-- @param               _Entity   Entity (Scriptname oder ID)
+-- @param[type=number]  _Amount   Geheilte Gesundheit
+-- @within Anwenderfunktionen
+--
+function API.GroupHeal(_Entity, _Amount)
+    if GUI then
         return;
     end
-    local ID;
-    local x,y,z = Logic.EntityGetPos(eID);
-    local resCat = Logic.GetGoodCategoryForGoodType(_good);
-    local orientation = 0;
-    if Logic.IsBuilding(eID) == 1 then
-        x,y = Logic.GetBuildingApproachPosition(eID);
-        orientation = Logic.GetEntityOrientation(eID)-90;
+    local EntityID = GetID(_Entity);
+    if EntityID == 0 or Logic.IsLeader(EntityID) == 1 then
+        error("API.GroupHeal: _Entity (" ..tostring(_Entity).. ") must be an existing leader!");
+        return;
     end
-
-    -- Macht Waren lagerbar im Lagerhaus
-    if resCat == GoodCategories.GC_Resource or _good == Goods.G_None then
-        local TypeName = Logic.GetGoodTypeName(_good);
-        local Category = Logic.GetGoodCategoryForGoodType(_good);
-        local SHID = Logic.GetStoreHouse(_player);
-        local HQID = Logic.GetHeadquarters(_player);
-        if SHID ~= 0 and Logic.GetIndexOnInStockByGoodType(SHID, _good) == -1 then
-            local CreateSlot = true;
-            if _good ~= Goods.G_Gold or (_good == Goods.G_Gold and HQID == 0) then
-                info(
-                    "API.SendCart: creating stock for " ..TypeName.. " in" ..
-                    "storehouse of player " .._player.. "."
-                );
-                Logic.AddGoodToStock(SHID, _good, 0, true, true);
-            end
-        end
+    if type(_Amount) ~= "number" or _Amount < 0 then
+        error("API.GroupHeal: _Amount (" ..tostring(_Amount).. ") must greatier than 0!");
+        return;
     end
-
-    info("API.SendCart: Creating cart ("..
-        tostring(_position) ..","..
-        tostring(_player) ..","..
-        Logic.GetGoodTypeName(_good) ..","..
-        tostring(_amount) ..","..
-        tostring(_cartOverlay) ..","..
-        tostring(_ignoreReservation) ..
-    ")");
-
-    if resCat == GoodCategories.GC_Resource then
-        ID = Logic.CreateEntityOnUnblockedLand(Entities.U_ResourceMerchant, x, y,orientation,_player)
-    elseif _good == Goods.G_Medicine then
-        ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Medicus, x, y,orientation,_player)
-    elseif _good == Goods.G_Gold or _good == Goods.G_None or _good == Goods.G_Information then
-        if _cartOverlay then
-            ID = Logic.CreateEntityOnUnblockedLand(_cartOverlay, x, y,orientation,_player)
-        else
-            ID = Logic.CreateEntityOnUnblockedLand(Entities.U_GoldCart, x, y,orientation,_player)
-        end
-    else
-        ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Marketer, x, y,orientation,_player)
-    end
-    info("API.SendCart: Executing hire merchant...");
-    Logic.HireMerchant( ID, _player, _good, _amount, _player, _ignoreReservation)
-    info("API.SendCart: Cart has been send successfully.");
-    return ID
+    API.ChangeEntityHealth(EntityID, Logic.GetEntityHealth(EntityID) + _Amount);
 end
-SendCart = API.SendCart;
+HealEntity = API.GroupHeal;
+
+---
+-- Verwundet ein Entity oder ein Battallion um die angegebene
+-- Menge an Schaden. Bei einem Battalion wird der Schaden solange
+-- auf Soldaten aufgeteilt, bis er komplett verrechnet wurde.
+--
+-- <b>Alias</b>: HurtEntity
+--
+-- @param               _Entity   Entity (Scriptname oder ID)
+-- @param[type=number] _Damage   Schaden
+-- @param[type=string] _Attacker Angreifer
+-- @within Anwenderfunktionen
+--
+function API.GroupHurt(_Entity, _Damage, _Attacker)
+    if GUI then
+        return;
+    end
+    local EntityID = GetID(_Entity);
+    if EntityID == 0 then
+        error("API.GroupHurt: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return;
+    end
+    if API.IsEntityInAtLeastOneCategory(EntityID, EntityCategories.Soldier) then
+        API.GroupHurt(API.GetGroupLeader(EntityID), _Damage);
+        return;
+    end
+
+    local EntityToHurt = EntityID;
+    local IsLeader = Logic.IsLeader(EntityToHurt) == 1;
+    if IsLeader then
+        EntityToHurt = API.GetGroupSoldiers(EntityToHurt)[1];
+    end
+    if type(_Damage) ~= "number" or _Damage < 0 then
+        error("API.GroupHurt: _Damage (" ..tostring(_Damage).. ") must be greater than 0!");
+        return;
+    end
+
+    local Health = Logic.GetEntityHealth(EntityToHurt);
+    if EntityToHurt then
+        if Health <= _Damage then
+            _Damage = _Damage - Health;
+            Logic.HurtEntity(EntityToHurt, Health);
+            Swift:TriggerEntityKilledCallbacks(EntityToHurt, _Attacker);
+            if IsLeader and _Damage > 0 then
+                API.GroupHurt(EntityToHurt, _Damage);
+            end
+        else
+            Logic.HurtEntity(EntityToHurt, _Damage);
+            Swift:TriggerEntityKilledCallbacks(EntityToHurt, _Attacker);
+        end
+    end
+end
+HurtEntity = API.GroupHurt;
 

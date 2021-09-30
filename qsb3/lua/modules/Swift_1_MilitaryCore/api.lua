@@ -31,7 +31,7 @@ function API.GetPlayerSoldierLimit(_PlayerID)
     if CastleID ~= 0 then
         CastleLevel = Logic.GetUpgradeLevel(CastleID) +1;
     end
-    return ModuleMilitaryCore.Shared:GetLimitForPlayer(_PlayerID, CastleID);
+    return ModuleMilitaryCore.Shared:GetLimitForPlayer(_PlayerID, CastleLevel);
 end
 
 ---

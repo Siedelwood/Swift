@@ -383,6 +383,27 @@ function Swift:ConvertTableToString(_Table)
     return String;
 end
 
+-- Game Callbacks
+
+function Swift:TriggerEntityKilledCallbacks(_Entity, _Attacker)
+    local DefenderID = GetID(_Entity);
+    local AttackerID = GetID(_Attacker or 0);
+    if AttackerID == 0 or DefenderID == 0 or Logic.GetEntityHealth(DefenderID) > 0 then
+        return;
+    end
+    local x, y, z     = Logic.EntityGetPos(DefenderID);
+    local DefPlayerID = Logic.EntityGetPlayer(DefenderID);
+    local DefType     = Logic.GetEntityType(DefenderID);
+    local AttPlayerID = Logic.EntityGetPlayer(AttackerID);
+    local AttType     = Logic.GetEntityType(AttackerID);
+
+    GameCallback_EntityKilled(DefenderID, DefPlayerID, AttackerID, AttPlayerID, DefType, AttType);
+    Logic.ExecuteInLuaLocalState(string.format(
+        "GameCallback_Feedback_EntityKilled(%d, %d, %d, %d,%d, %d, %f, %f)",
+        DefenderID, DefPlayerID, AttackerID, AttPlayerID, DefType, AttType, x, y
+    ));
+end
+
 -- Script Events
 
 function Swift:InitalizeEventsGlobal()

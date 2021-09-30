@@ -11,6 +11,13 @@ You may use and modify this file unter the terms of the MIT licence.
 -- -------------------------------------------------------------------------- --
 
 ---
+-- Fügt Behavior zur Steuerung von Dialogen hinzu.
+--
+-- @set sort=true
+--
+
+
+---
 -- Ruft die Funktion auf und startet den enthaltenen Dialog.
 --
 -- Jeder Dialog braucht einen eindeutigen Namen!
