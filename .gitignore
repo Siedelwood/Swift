@@ -3,8 +3,7 @@ doctest/
 app/
 tmp/
 */ldoc/*
-qsb/doc/*
-qsb3/doc/*
+qsb3/doc/html
 qsb3/Swift/*
 qsb/lua/core.lua
 var/
