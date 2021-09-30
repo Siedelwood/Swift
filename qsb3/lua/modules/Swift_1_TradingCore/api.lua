@@ -424,6 +424,15 @@ end
 --
 function API.AddGoodOffer(_VendorID, _OfferType, _OfferAmount, _RefreshRate)
     _OfferType = (type(_OfferType) == "string" and Goods[_OfferType]) or _OfferType;
+    local OfferID, TraderID = ExternalTradingAnalysis.Global:GetOfferAndTrader(_VendorID, _OfferType);
+    if OfferID ~= -1 and TraderID ~= -1 then
+        warn(string.format(
+            "Good offer for type %s already exists for player %d!",
+            Logic.GetGoodTypeName(_OfferType),
+            _VendorID
+        ));
+        return;
+    end
     
     local VendorStoreID = Logic.GetStoreHouse(_VendorID);
     AddGoodToTradeBlackList(_VendorID, _OfferType);
@@ -473,6 +482,15 @@ end
 --
 function API.AddMercenaryOffer(_VendorID, _OfferType, _OfferAmount, _RefreshRate)
     _OfferType = (type(_OfferType) == "string" and Entities[_OfferType]) or _OfferType;
+    local OfferID, TraderID = ExternalTradingAnalysis.Global:GetOfferAndTrader(_VendorID, _OfferType);
+    if OfferID ~= -1 and TraderID ~= -1 then
+        warn(string.format(
+            "Mercenary offer for type %s already exists for player %d!",
+            Logic.GetEntityTypeName(_OfferType),
+            _VendorID
+        ));
+        return;
+    end
     
     local VendorStoreID = Logic.GetStoreHouse(_VendorID);
 
@@ -519,6 +537,15 @@ end
 --
 function API.AddEntertainerOffer(_VendorID, _OfferType)
     _OfferType = (type(_OfferType) == "string" and Entities[_OfferType]) or _OfferType;
+    local OfferID, TraderID = ExternalTradingAnalysis.Global:GetOfferAndTrader(_VendorID, _OfferType);
+    if OfferID ~= -1 and TraderID ~= -1 then
+        warn(string.format(
+            "Entertainer offer for type %s already exists for player %d!",
+            Logic.GetEntityTypeName(_OfferType),
+            _VendorID
+        ));
+        return;
+    end
     
     local VendorStoreID = Logic.GetStoreHouse(_VendorID);
     return Logic.AddEntertainerTraderOffer(
@@ -535,5 +562,131 @@ end
 function AddEntertainerOffer(_Merchant, _EntertainerType)
     local VendorID = Logic.EntityGetPlayer(GetID(_Merchant));
     return API.AddEntertainerOffer(VendorID, _EntertainerType);
+end
+
+---
+-- Gibt die Handelsinformationen des Spielers aus. In dem Objekt stehen
+-- ID des Spielers, ID des Lagerhaus, Menge an Angeboten insgesamt und
+-- alle Angebote der Händlertypen.
+--
+-- @param[type=number] _PlayerID Player ID
+-- @return[type=table] Angebotsinformationen
+-- @within Anwenderfunktionen
+--
+-- @usage local Info = API.GetOfferInformation(2);
+--
+-- -- Info enthält:
+-- -- Info = {
+-- --      Player = 2,
+-- --      Storehouse = 26796.
+-- --      OfferCount = 2,
+-- --      {
+-- --          Händler-ID, Angebots-ID, Angebotstyp, Wagenladung, Angebotsmenge
+-- --          {0, 0, Goods.G_Gems, 9, 2},
+-- --          {0, 1, Goods.G_Milk, 9, 4},
+-- --      },
+-- -- };
+--
+function API.GetOfferInformation(_PlayerID)
+    if GUI then
+        return;
+    end
+    return ModuleTradingCore.Global:GetStorehouseInformation(_PlayerID);
+end
+
+---
+-- Gibt die Menge an Angeboten im Lagerhaus des Spielers zurück. Wenn
+-- der Spieler kein Lagerhaus hat, wird 0 zurückgegeben.
+--
+-- @param[type=number] _PlayerID Player ID
+-- @return[type=number] Anzahl angebote
+-- @within Anwenderfunktionen
+--
+-- @usage -- Angebote von Spieler 5 zählen
+-- local Count = API.GetOfferCount(5);
+--
+function API.GetOfferCount(_PlayerID)
+    if GUI then
+        return;
+    end
+    return ModuleTradingCore.Global:GetOfferCount(_PlayerID);
+end
+
+---
+-- Gibt zurück, ob das Angebot vom angegebenen Spieler im Lagerhaus zum
+-- Verkauf angeboten wird.
+--
+-- @param[type=number] _PlayerID Player ID
+-- @param[type=number] _GoodOrEntityType Warentyp oder Entitytyp
+-- @return[type=boolean] Ware wird angeboten
+-- @within Anwenderfunktionen
+--
+-- @usage -- Wird die Ware angeboten?
+-- if API.IsGoodOrUnitOffered(4, Goods.G_Bread) then
+--     API.Note("Brot wird von Spieler 4 angeboten.");
+-- end
+--
+function API.IsGoodOrUnitOffered(_PlayerID, _GoodOrEntityType)
+    if GUI then
+        return;
+    end
+    local OfferID, TraderID = ModuleTradingCore.Global:GetOfferAndTrader(_PlayerID, _GoodOrEntityType);
+    return OfferID ~= 1 and TraderID ~= 1;
+end
+
+function API.GetTradeOfferWaggonAmount(_PlayerID, _GoodOrEntityType)
+    local Amount = -1;
+    local OfferInfo = self:GetStorehouseInformation(_P2);
+    for i= 1, #OfferInfo[4] do
+        if OfferInfo[4][i][3] == _Good and OfferInfo[4][i][5] > 0 then
+            Amount = OfferInfo[4][i][5];
+        end
+    end
+    return Amount;
+end
+
+---
+-- Entfernt das Angebot vom Lagerhaus des Spielers, wenn es vorhanden
+-- ist. Es wird immer nur das erste Angebot des Typs entfernt.
+--
+-- @param[type=number] _PlayerID Player ID
+-- @param[type=number] _GoodOrEntityType Warentyp oder Entitytyp
+-- @within Anwenderfunktionen
+--
+-- @usage -- Keinen Käse mehr verkaufen
+-- API.RemoveTradeOffer(7, Goods.G_Cheese);
+--
+function API.RemoveTradeOffer(_PlayerID, _GoodOrEntityType)
+    if GUI then
+        return;
+    end
+    return ModuleTradingCore.Global:RemoveTradeOffer(_PlayerID, _GoodOrEntityType);
+end
+
+---
+-- Ändert die aktuelle Menge des Angebots im Händelrgebäude.
+--
+-- Es kann ein beliebiger positiver Wert gesetzt werden. Es gibt keine
+-- Beschränkungen.
+--
+-- <b>Hinweis</b>: Wird eine höherer Wert gesetzt, als das ursprüngliche
+-- Maximum, regenerieren sich die zusätzlichen Angebote nicht.
+--
+-- @param[type=number] _PlayerID Player ID
+-- @param[type=number] _GoodOrEntityType ID des Händlers im Gebäude
+-- @param[type=number] _NewAmount Neue Menge an Angeboten
+-- @within Anwenderfunktionen
+--
+-- @usage -- Angebote voll auffüllen
+-- API.ModifyTradeOffer(7, Goods.G_Cheese, -1);
+-- API.ModifyTradeOffer(7, Goods.U_MilitarySword);
+-- -- 2 Angebote auffüllen
+-- API.ModifyTradeOffer(7, Goods.G_Dye, 2);
+--
+function API.ModifyTradeOffer(_PlayerID, _GoodOrEntityType, _NewAmount)
+    if GUI then
+        return;
+    end
+    return ModuleTradingCore.Global:ModifyTradeOffer(_PlayerID, _GoodOrEntityType, _NewAmount);
 end
 

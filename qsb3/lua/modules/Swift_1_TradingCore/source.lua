@@ -8,6 +8,11 @@ ModuleTradingCore = {
     },
 
     Global = {
+        Analysis = {
+            PlayerOffersAmount = {
+                [1] = {}, [2] = {}, [3] = {}, [4] = {}, [5] = {}, [6] = {}, [7] = {}, [8] = {},
+            };
+        },
         Lambda = {},
         Event = {},
     },
@@ -25,6 +30,13 @@ ModuleTradingCore = {
     },
     -- This is a shared structure but the values are asynchronous!
     Shared = {},
+};
+
+QSB.TraderTypes = {
+    GoodTrader        = 0,
+    MercenaryTrader   = 1,
+    EntertainerTrader = 2,
+    Unknown           = 3,
 };
 
 -- Global ------------------------------------------------------------------- --
@@ -83,24 +95,131 @@ function ModuleTradingCore.Global:PerformFakeTrade(_TraderType, _Good, _P1, _P2,
     local StoreHouse1 = Logic.GetStoreHouse(_P1);
     local StoreHouse2 = Logic.GetStoreHouse(_P2);
 
+    -- Perform transaction
     local Orientation = Logic.GetEntityOrientation(StoreHouse2) - 90;
     if _TraderType == 0 then
         if Logic.GetGoodCategoryForGoodType(_Good) ~= GoodCategories.GC_Animal then
             API.SendCart(StoreHouse2, _P1, _Good, _Amount, nil, false);
-            -- TODO: Alter offer
         end
     elseif _TraderType == 1 then
         local x,y = Logic.GetBuildingApproachPosition(StoreHouse2);
         local ID  = Logic.CreateBattalionOnUnblockedLand(_Good, x, y, Orientation, _P1);
         Logic.MoveSettler(ID, x, y, -1);
-        -- TODO: Alter offer
     else
         local x,y = Logic.GetBuildingApproachPosition(StoreHouse2);
         Logic.HireEntertainer(_Good, _P1, x, y);
-        -- TODO: Alter offer
     end
     API.SendCart(StoreHouse1, _P2, Goods.G_Gold, _Price, nil, false);
     AddGood(Goods.G_Gold, _P1, (-1) * _Price);
+
+    -- Alter offer amount
+    local NewAmount = 0;
+    local OfferInfo = self:GetStorehouseInformation(_P2);
+    for i= 1, #OfferInfo[4] do
+        if OfferInfo[4][i][3] == _Good and OfferInfo[4][i][5] > 0 then
+            NewAmount = OfferInfo[4][i][5] -1;
+        end
+    end
+    self:ModifyTradeOffer(_P2, _Good, NewAmount);
+end
+
+function ModuleTradingCore.Global:GetStorehouseInformation(_PlayerID)
+    local BuildingID = Logic.GetStoreHouse(_PlayerID);
+
+    local StorehouseData = {
+        Player      = _PlayerID,
+        Storehouse  = BuildingID,
+        OfferCount  = 0,
+        {},
+    };
+
+    local NumberOfMerchants = Logic.GetNumberOfMerchants(Logic.GetStoreHouse(_PlayerID));
+    local AmountOfOffers = 0;
+
+    if BuildingID ~= 0 then
+        for Index = 0, NumberOfMerchants, 1 do
+            local Offers = {Logic.GetMerchantOfferIDs(BuildingID, Index, _PlayerID)};
+            for i= 1, #Offers, 1 do
+                local type, goodAmount, offerAmount, prices = 0, 0, 0, 0;
+                if Logic.IsGoodTrader(BuildingID, Index) then
+                    type, goodAmount, offerAmount, prices = Logic.GetGoodTraderOffer(BuildingID, Offers[i], _PlayerID);
+                    if type == Goods.G_Sheep or type == Goods.G_Cow then
+                        goodAmount = 5;
+                    end
+                elseif Logic.IsMercenaryTrader(BuildingID, Index) then
+                    type, goodAmount, offerAmount, prices = Logic.GetMercenaryOffer(BuildingID, Offers[i], _PlayerID);
+                elseif Logic.IsEntertainerTrader(BuildingID, Index) then
+                    type, goodAmount, offerAmount, prices = Logic.GetEntertainerTraderOffer(BuildingID, Offers[i], _PlayerID);
+                end
+
+                AmountOfOffers = AmountOfOffers +1;
+                local OfferData = {Index, Offers[i], type, goodAmount, offerAmount};
+                table.insert(StorehouseData[1], OfferData);
+            end
+        end
+    end
+
+    StorehouseData.OfferCount = AmountOfOffers;
+    return StorehouseData;
+end
+
+function ModuleTradingCore.Global:GetOfferCount(_PlayerID)
+    local Offers = self:GetStorehouseInformation(_PlayerID);
+    if Offers then
+        return Offers.OfferCount;
+    end
+    return 0;
+end
+
+function ModuleTradingCore.Global:GetOfferAndTrader(_PlayerID, _GoodOrEntityType)
+    local Info = self:GetStorehouseInformation(_PlayerID);
+    if Info then
+        for j=1, #Info[1], 1 do
+            if Info[1][j][3] == _GoodOrEntityType then
+                return Info[1][j][2], Info[1][j][1], Info.Storehouse;
+            end
+        end
+    end
+    return -1, -1, -1;
+end
+
+function ModuleTradingCore.Global:GetTraderType(_BuildingID, _TraderID)
+    if Logic.IsGoodTrader(_BuildingID, _TraderID) == true then
+        return QSB.TraderTypes.GoodTrader;
+    elseif Logic.IsMercenaryTrader(_BuildingID, _TraderID) == true then
+        return QSB.TraderTypes.MercenaryTrader;
+    elseif Logic.IsEntertainerTrader(_BuildingID, _TraderID) == true then
+        return QSB.TraderTypes.EntertainerTrader;
+    else
+        return QSB.TraderTypes.Unknown;
+    end
+end
+
+function ModuleTradingCore.Global:RemoveTradeOffer(_PlayerID, _GoodOrEntityType)
+    local OfferID, TraderID, BuildingID = self:GetOfferAndTrader(_PlayerID, _GoodOrEntityType);
+    if not IsExisting(BuildingID) then
+        return;
+    end
+    -- Wird benötigt, weil bei RemoveOffer die Trader-IDs vertauscht sind.
+    local MappedTraderID = (TraderID == 1 and 2) or (TraderID == 2 and 1) or 0;
+    Logic.RemoveOffer(BuildingID, MappedTraderID, OfferID);
+end
+
+function ModuleTradingCore.Global:ModifyTradeOffer(_PlayerID, _GoodOrEntityType, _NewAmount)
+    local OfferID, TraderID, BuildingID = self:GetOfferAndTrader(_PlayerID, _GoodOrEntityType);
+    if not IsExisting(BuildingID) then
+        return;
+    end
+
+    -- Menge == -1 oder Menge == nil bedeutet Maximum
+    if _NewAmount == nil or _NewAmount == -1 then
+        _NewAmount = self.Analysis.PlayerOffersAmount[_PlayerID][_GoodOrEntityType];
+    end
+    -- Werte größer als das Maximum werden nicht erneuert!
+    if self.Analysis.PlayerOffersAmount[_PlayerID][_GoodOrEntityType] and self.Analysis.PlayerOffersAmount[_PlayerID][_GoodOrEntityType] < _NewAmount then
+        _NewAmount = self.Analysis.PlayerOffersAmount[_PlayerID][_GoodOrEntityType];
+    end
+    Logic.ModifyTraderOffer(BuildingID, OfferID, _NewAmount, TraderID);
 end
 
 -- Local -------------------------------------------------------------------- --
@@ -294,9 +413,8 @@ function ModuleTradingCore.Local:OverrideMerchantPurchaseOfferClicked()
                 end
                 BuyLock.Locked = true;
                 GUI.ChangeMerchantOffer(BuildingID, PlayerID, OfferIndex, Price);
-                -- TODO: Geändertes Soldatenlimit
                 -- if API.IsHistoryEditionNetworkGame() then
-                    GUI.BuyMerchantOffer(BuildingID, PlayerID, OfferIndex);
+                --    GUI.BuyMerchantOffer(BuildingID, PlayerID, OfferIndex);
                 -- end
                 Sound.FXPlay2DSound("ui\\menu_click");
                 if ModuleTradingCore.Local.ShowKnightTraderAbility then
