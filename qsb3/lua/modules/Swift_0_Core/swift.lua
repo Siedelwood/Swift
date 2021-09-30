@@ -81,7 +81,6 @@ function Swift:LoadCore()
     end
 
     self:LoadExternFiles();
-    -- Must be done last
     self:LoadBehaviors();
 end
 
@@ -89,11 +88,17 @@ end
 
 function Swift:LoadModules()
     for i= 1, #self.m_ModuleRegister, 1 do
-        if self:IsGlobalEnvironment() and self.m_ModuleRegister[i]["Global"].OnGameStart then
-            self.m_ModuleRegister[i]["Global"]:OnGameStart();
+        if self:IsGlobalEnvironment() then 
+            self.m_ModuleRegister[i]["Local"] = nil;
+            if self.m_ModuleRegister[i]["Global"].OnGameStart then
+                self.m_ModuleRegister[i]["Global"]:OnGameStart();
+            end
         end
-        if self:IsLocalEnvironment() and self.m_ModuleRegister[i]["Local"].OnGameStart then
-            self.m_ModuleRegister[i]["Local"]:OnGameStart();
+        if self:IsLocalEnvironment() then
+            self.m_ModuleRegister[i]["Global"] = nil;
+            if self.m_ModuleRegister[i]["Local"].OnGameStart then
+                self.m_ModuleRegister[i]["Local"]:OnGameStart();
+            end
         end
     end
 end

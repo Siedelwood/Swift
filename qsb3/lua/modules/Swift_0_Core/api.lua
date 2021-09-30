@@ -27,6 +27,7 @@ QSB.Metatable = {Init = false, Weak = {}, Metas = {}, Key = 0};
 function API.Install()
     Swift:LoadCore();
     Swift:LoadModules();
+    collectgarbage("collect");
 end
 
 ---
