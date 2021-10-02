@@ -28,8 +28,17 @@ Name: "german"; MessagesFile: "compiler:Languages\German.isl"
 
 [Files]
 Source: "E:\Repositories\symfonia\bin\MapIconator.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "E:\Repositories\symfonia\bin\MapIconator.jar"; DestDir: "{app}"; Flags: ignoreversion
-Source: "E:\Repositories\symfonia\bin\MapIconator.ico"; DestDir: "{app}"; Flags: ignoreversion
+; Source: "E:\Repositories\symfonia\bin\MapIconator.jar"; DestDir: "{app}"; Flags: ignoreversion
+; Source: "E:\Repositories\symfonia\bin\MapIconator.ico"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Repositories\symfonia\app\swapplicationupdater\var\updater.jar"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Repositories\symfonia\app\swapplicationupdater\var\logback-spring.xml"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Repositories\symfonia\app\swapplicationupdater\src\main\resources\application.properties"; DestDir: "{app}\config"; Flags: ignoreversion
+Source: "E:\Repositories\symfonia\app\swapplicationupdater\src\main\resources\application-mapicon.properties"; DestDir: "{app}\config"; Flags: ignoreversion
+Source: "E:\Repositories\symfonia\app\swapplicationupdater\var\jre\*"; DestDir: "{app}\jre"; Flags: ignoreversion recursesubdirs
+
+[UninstallDelete]
+Type: filesandordirs; Name: "{%USERPROFILE}\Siedelwood\MapIconator"
+Type: filesandordirs; Name: "{app}\mapiconatordeployment"
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
