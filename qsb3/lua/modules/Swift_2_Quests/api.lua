@@ -12,8 +12,8 @@
 --
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
+-- <li><a href="Swift_1_DisplayCore.api.html">(1) Display Core</a></li>
 -- <li><a href="Swift_1_InputOutputCore.api.html">(1) Input/Output Core</a></li>
--- <li><a href="Swift_2_JobsRealtime.api.html">(2) Jobs Realtime</a></li>
 -- </ul>
 --
 -- @within Beschreibung

@@ -79,6 +79,13 @@ function Mission_FirstMapAction()
     API.ActivateDebugMode(true, false, true, true);
 end
 
+function CreateTestChests()
+    API.CreateRandomGoldChest("chest1");
+    API.CreateRandomResourceChest("chest2");
+    API.CreateRandomLuxuryChest("chest3");
+    API.CreateRandomTreasure("IO1", Goods.G_Gold, 200, 400);
+end
+
 function CreateTestNPCDialogQuest()
     ReplaceEntity("npc1", Entities.U_KnightSabatta);
     

@@ -1,0 +1,16 @@
+{
+    "name": "Swift_4_InteractiveChests",
+    "version": "1.0.0",
+    "caption": "(4) Interactive Chests",
+    "shortdesc": "",
+    "description": "",
+    "files": [
+        "source.lua",
+        "api.lua",
+        "behavior.lua"
+    ],
+    "dependencies": [
+        "Swift_0_Core",
+        "Swift_2_Interaction"
+    ]
+}
