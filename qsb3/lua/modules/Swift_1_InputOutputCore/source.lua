@@ -94,9 +94,13 @@ function ModuleInputOutputCore.Local:OnGameStart()
         return;
     end
     self:OverrideQuicksave();
-    self:OverrideDebugInput();
     self:DialogOverwriteOriginal();
     self:DialogAltF4Hotkey();
+    -- Some kind of wierd timing problem...
+    API.StartJob(function()
+        self:OverrideDebugInput();
+        return true;
+    end);
 end
 
 function ModuleInputOutputCore.Local:OnEvent(_ID, _Event, _Text)
@@ -142,7 +146,7 @@ function ModuleInputOutputCore.Local:OverrideDebugInput()
         if not self.m_DevelopingShell then
             return;
         end
-        Input.KeyBindDown(Keys.ModifierControl + Keys.X, "API.ShowTextInput()", 30, false);
+        Input.KeyBindDown(Keys.ModifierControl + Keys.X, "API.ShowTextInput()", 2, false);
     end
     Swift:InitalizeQsbDebugShell();
 end
@@ -150,7 +154,7 @@ end
 function ModuleInputOutputCore.Local:DialogAltF4Hotkey()
     StartSimpleJobEx(function ()
         if not API.IsLoadscreenVisible() then
-            Input.KeyBindDown(Keys.ModifierAlt + Keys.F4, "ModuleInputOutputCore.Local:DialogAltF4Action()", 30, false);
+            Input.KeyBindDown(Keys.ModifierAlt + Keys.F4, "ModuleInputOutputCore.Local:DialogAltF4Action()", 2, false);
             return true;
         end
     end);
