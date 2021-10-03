@@ -34,10 +34,10 @@ end
 -- @within Goal
 --
 function Goal_DestroySoldiers(...)
-    return b_Goal_DestroySoldiers:new(...);
+    return B_Goal_DestroySoldiers:new(...);
 end
 
-b_Goal_DestroySoldiers = {
+B_Goal_DestroySoldiers = {
     Name = "Goal_DestroySoldiers",
     Description = {
         en = "Goal: Destroy a given amount of enemy soldiers",
@@ -50,11 +50,11 @@ b_Goal_DestroySoldiers = {
     },
 }
 
-function b_Goal_DestroySoldiers:GetGoalTable()
+function B_Goal_DestroySoldiers:GetGoalTable()
     return {Objective.Custom2, {self, self.CustomFunction} }
 end
 
-function b_Goal_DestroySoldiers:AddParameter(_Index, _Parameter)
+function B_Goal_DestroySoldiers:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.AttackingPlayer = _Parameter * 1
     elseif (_Index == 1) then
@@ -64,7 +64,7 @@ function b_Goal_DestroySoldiers:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Goal_DestroySoldiers:CustomFunction(_Quest)
+function B_Goal_DestroySoldiers:CustomFunction(_Quest)
     if not _Quest.QuestDescription or _Quest.QuestDescription == "" then
         local PlayerName = GetPlayerName(self.AttackedPlayer) or "";
         Swift:ChangeCustomQuestCaptionText(
@@ -84,7 +84,7 @@ function b_Goal_DestroySoldiers:CustomFunction(_Quest)
     return self.KillsNeeded <= currentKills - self.SaveAmount or nil
 end
 
-function b_Goal_DestroySoldiers:Debug(_Quest)
+function B_Goal_DestroySoldiers:Debug(_Quest)
     if Logic.GetStoreHouse(self.AttackingPlayer) == 0 then
         error(_Quest.Identifier.. ": " ..self.Name .. ": Player " .. self.AttackinPlayer .. " is dead :-(")
         return true
@@ -97,13 +97,13 @@ function b_Goal_DestroySoldiers:Debug(_Quest)
     end
 end
 
-function b_Goal_DestroySoldiers:GetIcon()
+function B_Goal_DestroySoldiers:GetIcon()
     return {7,12}
 end
 
-function b_Goal_DestroySoldiers:Reset()
+function B_Goal_DestroySoldiers:Reset()
     self.SaveAmount = nil
 end
 
-Swift:RegisterBehavior(b_Goal_DestroySoldiers)
+Swift:RegisterBehavior(B_Goal_DestroySoldiers)
 

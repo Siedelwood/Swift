@@ -33,10 +33,10 @@ You may use and modify this file unter the terms of the MIT licence.
 -- @within Goal
 --
 function Goal_Decide(...)
-    return b_Goal_Decide:new(...);
+    return B_Goal_Decide:new(...);
 end
 
-b_Goal_Decide = {
+B_Goal_Decide = {
     Name = "Goal_Decide",
     Description = {
         en = "Opens a Yes/No Dialog. Decision = Quest Result",
@@ -49,11 +49,11 @@ b_Goal_Decide = {
     },
 }
 
-function b_Goal_Decide:GetGoalTable()
+function B_Goal_Decide:GetGoalTable()
     return { Objective.Custom2, { self, self.CustomFunction } }
 end
 
-function b_Goal_Decide:AddParameter( _Index, _Parameter )
+function B_Goal_Decide:AddParameter( _Index, _Parameter )
     if (_Index == 0) then
         self.Text = _Parameter
     elseif (_Index == 1) then
@@ -63,7 +63,7 @@ function b_Goal_Decide:AddParameter( _Index, _Parameter )
     end
 end
 
-function b_Goal_Decide:CustomFunction(_Quest)
+function B_Goal_Decide:CustomFunction(_Quest)
     if Framewok.IsNetworkGame() then
         return false;
     end
@@ -93,17 +93,17 @@ function b_Goal_Decide:CustomFunction(_Quest)
     end
 end
 
-function b_Goal_Decide:GetIcon()
+function B_Goal_Decide:GetIcon()
     return {4,12}
 end
 
-function b_Goal_Decide:GetCustomData(_Index)
+function B_Goal_Decide:GetCustomData(_Index)
     if _Index == 2 then
         return { "Yes/No", "Ok/Cancel" }
     end
 end
 
-function b_Goal_Decide:Debug(_Quest)
+function B_Goal_Decide:Debug(_Quest)
     if Framewok.IsNetworkGame() then
         error(_Quest.Identifier.. ": " ..self.Name..": Can not be used in multiplayer!");
         return true;
@@ -111,11 +111,11 @@ function b_Goal_Decide:Debug(_Quest)
     return false;
 end
 
-function b_Goal_Decide:Reset()
+function B_Goal_Decide:Reset()
     QSB.GoalDecideDialogDisplayed = nil;
 end
 
-Swift:RegisterBehavior(b_Goal_Decide);
+Swift:RegisterBehavior(B_Goal_Decide);
 
 -- -------------------------------------------------------------------------- --
 
@@ -143,10 +143,10 @@ Swift:RegisterBehavior(b_Goal_Decide);
 -- @within Goal
 --
 function Goal_InputDialog(...)
-    return b_Goal_InputDialog:new(...);
+    return B_Goal_InputDialog:new(...);
 end
 
-b_Goal_InputDialog  = {
+B_Goal_InputDialog  = {
     Name = "Goal_InputDialog",
     Description = {
         en = "Goal: Player must type in something. The passwords have to be seperated by ; and whitespaces will be ignored.",
@@ -163,11 +163,11 @@ b_Goal_InputDialog  = {
     }
 }
 
-function b_Goal_InputDialog:GetGoalTable()
+function B_Goal_InputDialog:GetGoalTable()
     return { Objective.Custom2, {self, self.CustomFunction}}
 end
 
-function b_Goal_InputDialog:AddParameter(_Index, _Parameter)
+function B_Goal_InputDialog:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.Password = self:LowerCase(_Parameter or "");
     elseif (_Index == 1) then
@@ -181,7 +181,7 @@ function b_Goal_InputDialog:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Goal_InputDialog:CustomFunction(_Quest)
+function B_Goal_InputDialog:CustomFunction(_Quest)
     if Framewok.IsNetworkGame() then
         return false;
     end
@@ -220,7 +220,7 @@ function b_Goal_InputDialog:CustomFunction(_Quest)
     end
 end
 
-function b_Goal_InputDialog:OnWrongInput(_Quest)
+function B_Goal_InputDialog:OnWrongInput(_Quest)
     if self.Trials > 0 and not self.Message then
         local lang = QSB.Language;
         Logic.DEBUG_AddNote(self.DefaultMessage .. self.TrialCounter);
@@ -233,7 +233,7 @@ function b_Goal_InputDialog:OnWrongInput(_Quest)
     self.Shown = nil;
 end
 
-function b_Goal_InputDialog:LowerCase(_Text)
+function B_Goal_InputDialog:LowerCase(_Text)
     _Text = _Text:lower(_Text);
     -- Umlaute manuell austauschen
     -- FIXME: Ausländische Umlaute auch anpassen.
@@ -243,7 +243,7 @@ function b_Goal_InputDialog:LowerCase(_Text)
     return _Text;
 end
 
-function b_Goal_InputDialog:Debug(_Quest)
+function B_Goal_InputDialog:Debug(_Quest)
     if Framewok.IsNetworkGame() then
         error(_Quest.Identifier.. ": " ..self.Name..": Can not be used in multiplayer!");
         return true;
@@ -251,20 +251,20 @@ function b_Goal_InputDialog:Debug(_Quest)
     return false;
 end
 
-function b_Goal_InputDialog:GetIcon()
+function B_Goal_InputDialog:GetIcon()
     return {12,2};
 end
 
-function b_Goal_InputDialog:Reset(_Quest)
+function B_Goal_InputDialog:Reset(_Quest)
     QSB.GoalInputDialogQuest = nil;
     _Quest.InputDialogResult = nil;
     self.TrialCounter = nil;
     self.Shown = nil;
 end
 
-function b_Goal_InputDialog:Interrupt(_Quest)
+function B_Goal_InputDialog:Interrupt(_Quest)
     self:Reset(_Quest);
 end
 
-Swift:RegisterBehavior(b_Goal_InputDialog);
+Swift:RegisterBehavior(B_Goal_InputDialog);
 

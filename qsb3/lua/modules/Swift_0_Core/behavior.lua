@@ -161,10 +161,10 @@ end
 -- @within Reward
 --
 function Reward_DEBUG(...)
-    return b_Reward_DEBUG:new(...);
+    return B_Reward_DEBUG:new(...);
 end
 
-b_Reward_DEBUG = {
+B_Reward_DEBUG = {
     Name = "Reward_DEBUG",
     Description = {
         en = "Reward: Start the debug mode. See documentation for more information.",
@@ -178,11 +178,11 @@ b_Reward_DEBUG = {
     },
 }
 
-function b_Reward_DEBUG:GetRewardTable(__quest_)
+function B_Reward_DEBUG:GetRewardTable(__quest_)
     return { Reward.Custom, {self, self.CustomFunction} }
 end
 
-function b_Reward_DEBUG:AddParameter(_Index, _Parameter)
+function B_Reward_DEBUG:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.CheckWhileRuntime = API.ToBoolean(_Parameter);
     elseif (_Index == 1) then
@@ -194,15 +194,15 @@ function b_Reward_DEBUG:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Reward_DEBUG:CustomFunction(__quest_)
+function B_Reward_DEBUG:CustomFunction(__quest_)
     API.ActivateDebugMode(self.CheckWhileRuntime, self.UseQuestTrace, self.DevelopingCheats, self.DevelopingShell);
 end
 
-function b_Reward_DEBUG:GetCustomData(_Index)
+function B_Reward_DEBUG:GetCustomData(_Index)
     return {"true","false"};
 end
 
-Swift:RegisterBehavior(b_Reward_DEBUG);
+Swift:RegisterBehavior(B_Reward_DEBUG);
 
 -- GOALS -------------------------------------------------------------------- --
 
@@ -214,10 +214,10 @@ Swift:RegisterBehavior(b_Reward_DEBUG);
 -- @within Goal
 --
 function Goal_ActivateObject(...)
-    return b_Goal_ActivateObject:new(...);
+    return B_Goal_ActivateObject:new(...);
 end
 
-b_Goal_ActivateObject = {
+B_Goal_ActivateObject = {
     Name = "Goal_ActivateObject",
     Description = {
         en = "Goal: Activate an interactive object",
@@ -228,21 +228,21 @@ b_Goal_ActivateObject = {
     },
 }
 
-function b_Goal_ActivateObject:GetGoalTable()
+function B_Goal_ActivateObject:GetGoalTable()
     return {Objective.Object, { self.ScriptName } }
 end
 
-function b_Goal_ActivateObject:AddParameter(_Index, _Parameter)
+function B_Goal_ActivateObject:AddParameter(_Index, _Parameter)
    if _Index == 0 then
         self.ScriptName = _Parameter
    end
 end
 
-function b_Goal_ActivateObject:GetMsgKey()
+function B_Goal_ActivateObject:GetMsgKey()
     return "Quest_Object_Activate"
 end
 
-Swift:RegisterBehavior(b_Goal_ActivateObject);
+Swift:RegisterBehavior(B_Goal_ActivateObject);
 
 -- -------------------------------------------------------------------------- --
 
@@ -262,10 +262,10 @@ Swift:RegisterBehavior(b_Goal_ActivateObject);
 -- @within Goal
 --
 function Goal_Deliver(...)
-    return b_Goal_Deliver:new(...)
+    return B_Goal_Deliver:new(...)
 end
 
-b_Goal_Deliver = {
+B_Goal_Deliver = {
     Name = "Goal_Deliver",
     Description = {
         en = "Goal: Deliver goods to quest giver or to another player.",
@@ -280,12 +280,12 @@ b_Goal_Deliver = {
 }
 
 
-function b_Goal_Deliver:GetGoalTable()
+function B_Goal_Deliver:GetGoalTable()
     local GoodType = Logic.GetGoodTypeID(self.GoodTypeName)
     return { Objective.Deliver, GoodType, self.GoodAmount, self.OverrideTarget, self.IgnoreCapture }
 end
 
-function b_Goal_Deliver:AddParameter(_Index, _Parameter)
+function B_Goal_Deliver:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.GoodTypeName = _Parameter
     elseif (_Index == 1) then
@@ -297,7 +297,7 @@ function b_Goal_Deliver:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Goal_Deliver:GetCustomData( _Index )
+function B_Goal_Deliver:GetCustomData( _Index )
     local Data = {}
     if _Index == 0 then
         for k, v in pairs( Goods ) do
@@ -320,7 +320,7 @@ function b_Goal_Deliver:GetCustomData( _Index )
     return Data
 end
 
-function b_Goal_Deliver:GetMsgKey()
+function B_Goal_Deliver:GetMsgKey()
     local GoodType = Logic.GetGoodTypeID(self.GoodTypeName)
     local GC = Logic.GetGoodCategoryForGoodType( GoodType )
 
@@ -345,7 +345,7 @@ function b_Goal_Deliver:GetMsgKey()
     return "Quest_Deliver_Goods"
 end
 
-Swift:RegisterBehavior(b_Goal_Deliver);
+Swift:RegisterBehavior(B_Goal_Deliver);
 
 -- -------------------------------------------------------------------------- --
 
@@ -365,10 +365,10 @@ Swift:RegisterBehavior(b_Goal_Deliver);
 -- @within Goal
 --
 function Goal_Diplomacy(...)
-    return b_Goal_Diplomacy:new(...);
+    return B_Goal_Diplomacy:new(...);
 end
 
-b_Goal_Diplomacy = {
+B_Goal_Diplomacy = {
     Name = "Goal_Diplomacy",
     Description = {
         en = "Goal: A diplomatic state must b reached. Can be lower than current state or higher.",
@@ -392,11 +392,11 @@ b_Goal_Diplomacy = {
     },
 }
 
-function b_Goal_Diplomacy:GetGoalTable()
+function B_Goal_Diplomacy:GetGoalTable()
     return { Objective.Custom2, {self, self.CustomFunction}};
 end
 
-function b_Goal_Diplomacy:ChangeCaption(_Quest)
+function B_Goal_Diplomacy:ChangeCaption(_Quest)
     local PlayerName = GetPlayerName(self.PlayerID) or "";
     local Text = string.format(
         Swift:GetTextOfDesiredLanguage(self.TextPattern),
@@ -406,7 +406,7 @@ function b_Goal_Diplomacy:ChangeCaption(_Quest)
     Swift:ChangeCustomQuestCaptionText(Text, _Quest);
 end
 
-function b_Goal_Diplomacy:CustomFunction(_Quest)
+function B_Goal_Diplomacy:CustomFunction(_Quest)
     self:ChangeCaption(_Quest);
     if self.Relation == "<=" then
         if GetDiplomacyState(_Quest.ReceivingPlayer, self.PlayerID) <= self.DiplState then
@@ -423,7 +423,7 @@ function b_Goal_Diplomacy:CustomFunction(_Quest)
     end
 end
 
-function b_Goal_Diplomacy:AddParameter(_Index, _Parameter)
+function B_Goal_Diplomacy:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.PlayerID = _Parameter * 1
     elseif (_Index == 1) then
@@ -433,11 +433,11 @@ function b_Goal_Diplomacy:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Goal_Diplomacy:GetIcon()
+function B_Goal_Diplomacy:GetIcon()
     return {6, 3};
 end
 
-function b_Goal_Diplomacy:GetCustomData(_Index)
+function B_Goal_Diplomacy:GetCustomData(_Index)
     if _Index == 1 then
         return {">=", "<=", "=="};
     elseif _Index == 2 then
@@ -445,7 +445,7 @@ function b_Goal_Diplomacy:GetCustomData(_Index)
     end
 end
 
-Swift:RegisterBehavior(b_Goal_Diplomacy);
+Swift:RegisterBehavior(B_Goal_Diplomacy);
 
 -- -------------------------------------------------------------------------- --
 
@@ -460,10 +460,10 @@ Swift:RegisterBehavior(b_Goal_Diplomacy);
 -- @within Goal
 --
 function Goal_DiscoverPlayer(...)
-    return b_Goal_DiscoverPlayer:new(...);
+    return B_Goal_DiscoverPlayer:new(...);
 end
 
-b_Goal_DiscoverPlayer = {
+B_Goal_DiscoverPlayer = {
     Name = "Goal_DiscoverPlayer",
     Description = {
         en = "Goal: Discover the home territory of another player.",
@@ -474,17 +474,17 @@ b_Goal_DiscoverPlayer = {
     },
 }
 
-function b_Goal_DiscoverPlayer:GetGoalTable()
+function B_Goal_DiscoverPlayer:GetGoalTable()
     return {Objective.Discover, 2, { self.PlayerID } }
 end
 
-function b_Goal_DiscoverPlayer:AddParameter(_Index, _Parameter)
+function B_Goal_DiscoverPlayer:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.PlayerID = _Parameter * 1
     end
 end
 
-function b_Goal_DiscoverPlayer:GetMsgKey()
+function B_Goal_DiscoverPlayer:GetMsgKey()
     local tMapping = {
         [PlayerCategories.BanditsCamp] = "Quest_Discover",
         [PlayerCategories.City] = "Quest_Discover_City",
@@ -502,7 +502,7 @@ function b_Goal_DiscoverPlayer:GetMsgKey()
     return "Quest_Discover"
 end
 
-Swift:RegisterBehavior(b_Goal_DiscoverPlayer);
+Swift:RegisterBehavior(B_Goal_DiscoverPlayer);
 
 -- -------------------------------------------------------------------------- --
 
@@ -517,10 +517,10 @@ Swift:RegisterBehavior(b_Goal_DiscoverPlayer);
 -- @within Goal
 --
 function Goal_DiscoverTerritory(...)
-    return b_Goal_DiscoverTerritory:new(...);
+    return B_Goal_DiscoverTerritory:new(...);
 end
 
-b_Goal_DiscoverTerritory = {
+B_Goal_DiscoverTerritory = {
     Name = "Goal_DiscoverTerritory",
     Description = {
         en = "Goal: Discover a territory",
@@ -531,11 +531,11 @@ b_Goal_DiscoverTerritory = {
     },
 }
 
-function b_Goal_DiscoverTerritory:GetGoalTable()
+function B_Goal_DiscoverTerritory:GetGoalTable()
     return { Objective.Discover, 1, { self.TerritoryID  } }
 end
 
-function b_Goal_DiscoverTerritory:AddParameter(_Index, _Parameter)
+function B_Goal_DiscoverTerritory:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.TerritoryID = tonumber(_Parameter)
         if not self.TerritoryID then
@@ -545,11 +545,11 @@ function b_Goal_DiscoverTerritory:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Goal_DiscoverTerritory:GetMsgKey()
+function B_Goal_DiscoverTerritory:GetMsgKey()
     return "Quest_Discover_Territory"
 end
 
-Swift:RegisterBehavior(b_Goal_DiscoverTerritory);
+Swift:RegisterBehavior(B_Goal_DiscoverTerritory);
 
 -- -------------------------------------------------------------------------- --
 
@@ -568,10 +568,10 @@ Swift:RegisterBehavior(b_Goal_DiscoverTerritory);
 -- @within Goal
 --
 function Goal_DestroyPlayer(...)
-    return b_Goal_DestroyPlayer:new(...);
+    return B_Goal_DestroyPlayer:new(...);
 end
 
-b_Goal_DestroyPlayer = {
+B_Goal_DestroyPlayer = {
     Name = "Goal_DestroyPlayer",
     Description = {
         en = "Goal: Destroy a player (destroy a main building)",
@@ -582,18 +582,18 @@ b_Goal_DestroyPlayer = {
     },
 }
 
-function b_Goal_DestroyPlayer:GetGoalTable()
+function B_Goal_DestroyPlayer:GetGoalTable()
     assert( self.PlayerID <= 8 and self.PlayerID >= 1, "Error in " .. self.Name .. ": GetGoalTable: PlayerID is invalid")
     return { Objective.DestroyPlayers, self.PlayerID }
 end
 
-function b_Goal_DestroyPlayer:AddParameter(_Index, _Parameter)
+function B_Goal_DestroyPlayer:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.PlayerID = _Parameter * 1
     end
 end
 
-function b_Goal_DestroyPlayer:GetMsgKey()
+function B_Goal_DestroyPlayer:GetMsgKey()
     local tMapping = {
         [PlayerCategories.BanditsCamp] = "Quest_DestroyPlayers_Bandits",
         [PlayerCategories.City] = "Quest_DestroyPlayers_City",
@@ -612,7 +612,7 @@ function b_Goal_DestroyPlayer:GetMsgKey()
     return "Quest_DestroyEntities_Building"
 end
 
-Swift:RegisterBehavior(b_Goal_DestroyPlayer)
+Swift:RegisterBehavior(B_Goal_DestroyPlayer)
 
 -- -------------------------------------------------------------------------- --
 
@@ -629,10 +629,10 @@ Swift:RegisterBehavior(b_Goal_DestroyPlayer)
 -- @within Goal
 --
 function Goal_StealInformation(...)
-    return b_Goal_StealInformation:new(...);
+    return B_Goal_StealInformation:new(...);
 end
 
-b_Goal_StealInformation = {
+B_Goal_StealInformation = {
     Name = "Goal_StealInformation",
     Description = {
         en = "Goal: Steal information from another players castle",
@@ -643,7 +643,7 @@ b_Goal_StealInformation = {
     },
 }
 
-function b_Goal_StealInformation:GetGoalTable()
+function B_Goal_StealInformation:GetGoalTable()
 
     local Target = Logic.GetHeadquarters(self.PlayerID)
     if not Target or Target == 0 then
@@ -654,7 +654,7 @@ function b_Goal_StealInformation:GetGoalTable()
 
 end
 
-function b_Goal_StealInformation:AddParameter(_Index, _Parameter)
+function B_Goal_StealInformation:AddParameter(_Index, _Parameter)
 
     if (_Index == 0) then
         self.PlayerID = _Parameter * 1
@@ -662,12 +662,12 @@ function b_Goal_StealInformation:AddParameter(_Index, _Parameter)
 
 end
 
-function b_Goal_StealInformation:GetMsgKey()
+function B_Goal_StealInformation:GetMsgKey()
     return "Quest_Steal_Info"
 
 end
 
-Swift:RegisterBehavior(b_Goal_StealInformation);
+Swift:RegisterBehavior(B_Goal_StealInformation);
 
 -- -------------------------------------------------------------------------- --
 
@@ -682,10 +682,10 @@ Swift:RegisterBehavior(b_Goal_StealInformation);
 -- @within Goal
 --
 function Goal_DestroyAllPlayerUnits(...)
-    return b_Goal_DestroyAllPlayerUnits:new(...);
+    return B_Goal_DestroyAllPlayerUnits:new(...);
 end
 
-b_Goal_DestroyAllPlayerUnits = {
+B_Goal_DestroyAllPlayerUnits = {
     Name = "Goal_DestroyAllPlayerUnits",
     Description = {
         en = "Goal: Destroy all units owned by player (be careful with script entities)",
@@ -696,17 +696,17 @@ b_Goal_DestroyAllPlayerUnits = {
     },
 }
 
-function b_Goal_DestroyAllPlayerUnits:GetGoalTable()
+function B_Goal_DestroyAllPlayerUnits:GetGoalTable()
     return { Objective.DestroyAllPlayerUnits, self.PlayerID }
 end
 
-function b_Goal_DestroyAllPlayerUnits:AddParameter(_Index, _Parameter)
+function B_Goal_DestroyAllPlayerUnits:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.PlayerID = _Parameter * 1
     end
 end
 
-function b_Goal_DestroyAllPlayerUnits:GetMsgKey()
+function B_Goal_DestroyAllPlayerUnits:GetMsgKey()
     local tMapping = {
         [PlayerCategories.BanditsCamp] = "Quest_DestroyPlayers_Bandits",
         [PlayerCategories.City] = "Quest_DestroyPlayers_City",
@@ -725,7 +725,7 @@ function b_Goal_DestroyAllPlayerUnits:GetMsgKey()
     return "Quest_DestroyEntities"
 end
 
-Swift:RegisterBehavior(b_Goal_DestroyAllPlayerUnits);
+Swift:RegisterBehavior(B_Goal_DestroyAllPlayerUnits);
 
 -- -------------------------------------------------------------------------- --
 
@@ -743,10 +743,10 @@ Swift:RegisterBehavior(b_Goal_DestroyAllPlayerUnits);
 -- @within Goal
 --
 function Goal_DestroyScriptEntity(...)
-    return b_Goal_DestroyScriptEntity:new(...);
+    return B_Goal_DestroyScriptEntity:new(...);
 end
 
-b_Goal_DestroyScriptEntity = {
+B_Goal_DestroyScriptEntity = {
     Name = "Goal_DestroyScriptEntity",
     Description = {
         en = "Goal: Destroy an entity",
@@ -757,17 +757,17 @@ b_Goal_DestroyScriptEntity = {
     },
 }
 
-function b_Goal_DestroyScriptEntity:GetGoalTable()
+function B_Goal_DestroyScriptEntity:GetGoalTable()
     return {Objective.DestroyEntities, 1, { self.ScriptName } }
 end
 
-function b_Goal_DestroyScriptEntity:AddParameter(_Index, _Parameter)
+function B_Goal_DestroyScriptEntity:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.ScriptName = _Parameter
     end
 end
 
-function b_Goal_DestroyScriptEntity:GetMsgKey()
+function B_Goal_DestroyScriptEntity:GetMsgKey()
     if Logic.IsEntityAlive(self.ScriptName) then
         local ID = GetID(self.ScriptName)
         if ID and ID ~= 0 then
@@ -794,7 +794,7 @@ function b_Goal_DestroyScriptEntity:GetMsgKey()
     return "Quest_DestroyEntities"
 end
 
-Swift:RegisterBehavior(b_Goal_DestroyScriptEntity);
+Swift:RegisterBehavior(B_Goal_DestroyScriptEntity);
 
 -- -------------------------------------------------------------------------- --
 
@@ -811,10 +811,10 @@ Swift:RegisterBehavior(b_Goal_DestroyScriptEntity);
 -- @within Goal
 --
 function Goal_DestroyType(...)
-    return b_Goal_DestroyType:new(...);
+    return B_Goal_DestroyType:new(...);
 end
 
-b_Goal_DestroyType = {
+B_Goal_DestroyType = {
     Name = "Goal_DestroyType",
     Description = {
         en = "Goal: Destroy entity types",
@@ -827,11 +827,11 @@ b_Goal_DestroyType = {
     },
 }
 
-function b_Goal_DestroyType:GetGoalTable()
+function B_Goal_DestroyType:GetGoalTable()
     return {Objective.DestroyEntities, 2, Entities[self.EntityName], self.Amount, self.PlayerID }
 end
 
-function b_Goal_DestroyType:AddParameter(_Index, _Parameter)
+function B_Goal_DestroyType:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.EntityName = _Parameter
     elseif (_Index == 1) then
@@ -842,7 +842,7 @@ function b_Goal_DestroyType:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Goal_DestroyType:GetCustomData( _Index )
+function B_Goal_DestroyType:GetCustomData( _Index )
     local Data = {}
     if _Index == 0 then
         for k, v in pairs( Entities ) do
@@ -861,7 +861,7 @@ function b_Goal_DestroyType:GetCustomData( _Index )
     return Data
 end
 
-function b_Goal_DestroyType:GetMsgKey()
+function B_Goal_DestroyType:GetMsgKey()
     local ID = self.EntityName
     if Logic.IsEntityTypeInCategory( ID, EntityCategories.AttackableBuilding ) == 1 then
         return "Quest_DestroyEntities_Building"
@@ -881,7 +881,7 @@ function b_Goal_DestroyType:GetMsgKey()
     return "Quest_DestroyEntities"
 end
 
-Swift:RegisterBehavior(b_Goal_DestroyType);
+Swift:RegisterBehavior(B_Goal_DestroyType);
 
 -- -------------------------------------------------------------------------- --
 
@@ -899,10 +899,10 @@ Swift:RegisterBehavior(b_Goal_DestroyType);
 -- @within Goal
 --
 function Goal_EntityDistance(...)
-    return b_Goal_EntityDistance:new(...);
+    return B_Goal_EntityDistance:new(...);
 end
 
-b_Goal_EntityDistance = {
+B_Goal_EntityDistance = {
     Name = "Goal_EntityDistance",
     Description = {
         en = "Goal: Distance between two entities",
@@ -916,11 +916,11 @@ b_Goal_EntityDistance = {
     },
 }
 
-function b_Goal_EntityDistance:GetGoalTable()
+function B_Goal_EntityDistance:GetGoalTable()
     return { Objective.Custom2, {self, self.CustomFunction} }
 end
 
-function b_Goal_EntityDistance:AddParameter(_Index, _Parameter)
+function B_Goal_EntityDistance:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.Entity1 = _Parameter
     elseif (_Index == 1) then
@@ -932,7 +932,7 @@ function b_Goal_EntityDistance:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Goal_EntityDistance:CustomFunction(_Quest)
+function B_Goal_EntityDistance:CustomFunction(_Quest)
     if Logic.IsEntityDestroyed( self.Entity1 ) or Logic.IsEntityDestroyed( self.Entity2 ) then
         return false
     end
@@ -944,7 +944,7 @@ function b_Goal_EntityDistance:CustomFunction(_Quest)
     end
 end
 
-function b_Goal_EntityDistance:GetCustomData( _Index )
+function B_Goal_EntityDistance:GetCustomData( _Index )
     local Data = {}
     if _Index == 2 then
         table.insert( Data, ">" )
@@ -955,7 +955,7 @@ function b_Goal_EntityDistance:GetCustomData( _Index )
     return Data
 end
 
-function b_Goal_EntityDistance:Debug(_Quest)
+function B_Goal_EntityDistance:Debug(_Quest)
     if not IsExisting(self.Entity1) or not IsExisting(self.Entity2) then
         error(_Quest.Identifier.. ": " ..self.Name..": At least 1 of the entities for distance check don't exist!");
         return true;
@@ -963,7 +963,7 @@ function b_Goal_EntityDistance:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Goal_EntityDistance);
+Swift:RegisterBehavior(B_Goal_EntityDistance);
 
 -- -------------------------------------------------------------------------- --
 
@@ -979,10 +979,10 @@ Swift:RegisterBehavior(b_Goal_EntityDistance);
 -- @within Goal
 --
 function Goal_KnightDistance(...)
-    return b_Goal_KnightDistance:new(...);
+    return B_Goal_KnightDistance:new(...);
 end
 
-b_Goal_KnightDistance = {
+B_Goal_KnightDistance = {
     Name = "Goal_KnightDistance",
     Description = {
         en = "Goal: Bring the knight close to a given entity. If the distance is left at 0 it will automatically set to 2500.",
@@ -994,11 +994,11 @@ b_Goal_KnightDistance = {
     },
 }
 
-function b_Goal_KnightDistance:GetGoalTable()
+function B_Goal_KnightDistance:GetGoalTable()
     return {Objective.Distance, -65566, self.Target, self.Distance, true}
 end
 
-function b_Goal_KnightDistance:AddParameter(_Index, _Parameter)
+function B_Goal_KnightDistance:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.Target = _Parameter;
     elseif (_Index == 1) then
@@ -1012,7 +1012,7 @@ function b_Goal_KnightDistance:AddParameter(_Index, _Parameter)
     end
 end
 
-Swift:RegisterBehavior(b_Goal_KnightDistance);
+Swift:RegisterBehavior(B_Goal_KnightDistance);
 
 ---
 -- Eine bestimmte Anzahl an Einheiten einer Kategorie muss sich auf dem
@@ -1031,10 +1031,10 @@ Swift:RegisterBehavior(b_Goal_KnightDistance);
 -- @within Goal
 --
 function Goal_UnitsOnTerritory(...)
-    return b_Goal_UnitsOnTerritory:new(...);
+    return B_Goal_UnitsOnTerritory:new(...);
 end
 
-b_Goal_UnitsOnTerritory = {
+B_Goal_UnitsOnTerritory = {
     Name = "Goal_UnitsOnTerritory",
     Description = {
         en = "Goal: Place a certain amount of units on a territory",
@@ -1049,11 +1049,11 @@ b_Goal_UnitsOnTerritory = {
     },
 }
 
-function b_Goal_UnitsOnTerritory:GetGoalTable()
+function B_Goal_UnitsOnTerritory:GetGoalTable()
     return { Objective.Custom2, {self, self.CustomFunction} }
 end
 
-function b_Goal_UnitsOnTerritory:AddParameter(_Index, _Parameter)
+function B_Goal_UnitsOnTerritory:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.TerritoryID = tonumber(_Parameter)
         if self.TerritoryID == nil then
@@ -1070,7 +1070,7 @@ function b_Goal_UnitsOnTerritory:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Goal_UnitsOnTerritory:CustomFunction(_Quest)
+function B_Goal_UnitsOnTerritory:CustomFunction(_Quest)
     local Units = GetEntitiesOfCategoryInTerritory(self.PlayerID, EntityCategories[self.Category], self.TerritoryID);
     if self.bRelSmallerThan == false and #Units >= self.NumberOfUnits then
         return true;
@@ -1079,7 +1079,7 @@ function b_Goal_UnitsOnTerritory:CustomFunction(_Quest)
     end
 end
 
-function b_Goal_UnitsOnTerritory:GetCustomData( _Index )
+function B_Goal_UnitsOnTerritory:GetCustomData( _Index )
     local Data = {}
     if _Index == 1 then
         table.insert( Data, -1 )
@@ -1102,7 +1102,7 @@ function b_Goal_UnitsOnTerritory:GetCustomData( _Index )
     return Data
 end
 
-function b_Goal_UnitsOnTerritory:Debug(_Quest)
+function B_Goal_UnitsOnTerritory:Debug(_Quest)
     local territories = {Logic.GetTerritories()}
     if tonumber(self.TerritoryID) == nil or self.TerritoryID < 0 or not table.contains(territories, self.TerritoryID) then
         error(_Quest.Identifier.. ": " ..self.Name..": got an invalid territoryID!");
@@ -1120,7 +1120,7 @@ function b_Goal_UnitsOnTerritory:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Goal_UnitsOnTerritory);
+Swift:RegisterBehavior(B_Goal_UnitsOnTerritory);
 
 -- -------------------------------------------------------------------------- --
 
@@ -1153,10 +1153,10 @@ Swift:RegisterBehavior(b_Goal_UnitsOnTerritory);
 -- @within Goal
 --
 function Goal_ActivateBuff(...)
-    return b_Goal_ActivateBuff:new(...);
+    return B_Goal_ActivateBuff:new(...);
 end
 
-b_Goal_ActivateBuff = {
+B_Goal_ActivateBuff = {
     Name = "Goal_ActivateBuff",
     Description = {
         en = "Goal: Activate a buff",
@@ -1168,11 +1168,11 @@ b_Goal_ActivateBuff = {
     },
 }
 
-function b_Goal_ActivateBuff:GetGoalTable()
+function B_Goal_ActivateBuff:GetGoalTable()
     return { Objective.Custom2, {self, self.CustomFunction} }
 end
 
-function b_Goal_ActivateBuff:AddParameter(_Index, _Parameter)
+function B_Goal_ActivateBuff:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.PlayerID = _Parameter * 1
     elseif (_Index == 1) then
@@ -1181,7 +1181,7 @@ function b_Goal_ActivateBuff:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Goal_ActivateBuff:CustomFunction(_Quest)
+function B_Goal_ActivateBuff:CustomFunction(_Quest)
    if not _Quest.QuestDescription or _Quest.QuestDescription == "" then
         local tMapping = Swift:CopyTable(BundleClassicBehaviors.Text.ActivateBuff.BuffsVanilla);
         if g_GameExtraNo >= 1 then
@@ -1202,7 +1202,7 @@ function b_Goal_ActivateBuff:CustomFunction(_Quest)
     end
 end
 
-function b_Goal_ActivateBuff:GetCustomData( _Index )
+function B_Goal_ActivateBuff:GetCustomData( _Index )
     local Data = {}
     if _Index == 1 then
         Data = {
@@ -1234,7 +1234,7 @@ function b_Goal_ActivateBuff:GetCustomData( _Index )
     return Data
 end
 
-function b_Goal_ActivateBuff:GetIcon()
+function B_Goal_ActivateBuff:GetIcon()
     local tMapping = {
         [Buffs.Buff_Spice]                  = "Goods.G_Salt",
         [Buffs.Buff_Colour]                 = "Goods.G_Dye",
@@ -1258,7 +1258,7 @@ function b_Goal_ActivateBuff:GetIcon()
     return tMapping[self.Buff]
 end
 
-function b_Goal_ActivateBuff:Debug(_Quest)
+function B_Goal_ActivateBuff:Debug(_Quest)
     if not self.Buff then
         error(_Quest.Identifier.. ": " ..self.Name..": buff '" ..self.BuffName.. "' does not exist!");
         return true;
@@ -1269,7 +1269,7 @@ function b_Goal_ActivateBuff:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Goal_ActivateBuff);
+Swift:RegisterBehavior(B_Goal_ActivateBuff);
 
 -- -------------------------------------------------------------------------- --
 
@@ -1283,10 +1283,10 @@ Swift:RegisterBehavior(b_Goal_ActivateBuff);
 -- @within Goal
 --
 function Goal_BuildRoad(...)
-    return b_Goal_BuildRoad:new(...)
+    return B_Goal_BuildRoad:new(...)
 end
 
-b_Goal_BuildRoad = {
+B_Goal_BuildRoad = {
     Name = "Goal_BuildRoad",
     Description = {
         en = "Goal: Connect two points with a street or a road",
@@ -1299,13 +1299,13 @@ b_Goal_BuildRoad = {
     },
 }
 
-function b_Goal_BuildRoad:GetGoalTable()
+function B_Goal_BuildRoad:GetGoalTable()
     -- {BehaviorType, {EntityID1, EntityID2, BeSmalerThan, Length, RoadsOnly}}
     -- -> Length wird nicht mehr benutzt. Sorgte für Promleme im Spiel
     return { Objective.BuildRoad, { GetID( self.Entity1 ), GetID( self.Entity2 ), false, 0, self.bRoadsOnly } }
 end
 
-function b_Goal_BuildRoad:AddParameter(_Index, _Parameter)
+function B_Goal_BuildRoad:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.Entity1 = _Parameter
     elseif (_Index == 1) then
@@ -1315,7 +1315,7 @@ function b_Goal_BuildRoad:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Goal_BuildRoad:GetCustomData( _Index )
+function B_Goal_BuildRoad:GetCustomData( _Index )
     local Data
     if _Index == 2 then
         Data = {"true","false"}
@@ -1323,7 +1323,7 @@ function b_Goal_BuildRoad:GetCustomData( _Index )
     return Data
 end
 
-function b_Goal_BuildRoad:Debug(_Quest)
+function B_Goal_BuildRoad:Debug(_Quest)
     if not IsExisting(self.Entity1) or not IsExisting(self.Entity2) then
         error(_Quest.Identifier.. ": " ..self.Name..": first or second entity does not exist!");
         return true;
@@ -1331,7 +1331,7 @@ function b_Goal_BuildRoad:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Goal_BuildRoad);
+Swift:RegisterBehavior(B_Goal_BuildRoad);
 
 -- -------------------------------------------------------------------------- --
 
@@ -1357,10 +1357,10 @@ Swift:RegisterBehavior(b_Goal_BuildRoad);
 -- @within Goal
 --
 function Goal_BuildWall(...)
-    return b_Goal_BuildWall:new(...)
+    return B_Goal_BuildWall:new(...)
 end
 
-b_Goal_BuildWall = {
+B_Goal_BuildWall = {
     Name = "Goal_BuildWall",
     Description = {
         en = "Goal: Build a wall between 2 positions bo stop the movement of an (hostile) player.",
@@ -1373,11 +1373,11 @@ b_Goal_BuildWall = {
     },
 }
 
-function b_Goal_BuildWall:GetGoalTable()
+function B_Goal_BuildWall:GetGoalTable()
     return { Objective.Custom2, {self, self.CustomFunction} }
 end
 
-function b_Goal_BuildWall:AddParameter(_Index, _Parameter)
+function B_Goal_BuildWall:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.PlayerID = _Parameter * 1
     elseif (_Index == 1) then
@@ -1387,7 +1387,7 @@ function b_Goal_BuildWall:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Goal_BuildWall:CustomFunction(_Quest)
+function B_Goal_BuildWall:CustomFunction(_Quest)
     local eID1 = GetID(self.EntityName1)
     local eID2 = GetID(self.EntityName2)
 
@@ -1413,15 +1413,15 @@ function b_Goal_BuildWall:CustomFunction(_Quest)
     return nil
 end
 
-function b_Goal_BuildWall:GetMsgKey()
+function B_Goal_BuildWall:GetMsgKey()
     return "Quest_Create_Wall"
 end
 
-function b_Goal_BuildWall:GetIcon()
+function B_Goal_BuildWall:GetIcon()
     return {3,9}
 end
 
-function b_Goal_BuildWall:Debug(_Quest)
+function B_Goal_BuildWall:Debug(_Quest)
     if not IsExisting(self.EntityName1) or not IsExisting(self.EntityName2) then
         error(_Quest.Identifier.. ": " ..self.Name..": first or second entity does not exist!");
         return true;
@@ -1437,7 +1437,7 @@ function b_Goal_BuildWall:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Goal_BuildWall);
+Swift:RegisterBehavior(B_Goal_BuildWall);
 
 -- -------------------------------------------------------------------------- --
 
@@ -1449,10 +1449,10 @@ Swift:RegisterBehavior(b_Goal_BuildWall);
 -- @within Goal
 --
 function Goal_Claim(...)
-    return b_Goal_Claim:new(...)
+    return B_Goal_Claim:new(...)
 end
 
-b_Goal_Claim = {
+B_Goal_Claim = {
     Name = "Goal_Claim",
     Description = {
         en = "Goal: Claim a territory",
@@ -1463,11 +1463,11 @@ b_Goal_Claim = {
     },
 }
 
-function b_Goal_Claim:GetGoalTable()
+function B_Goal_Claim:GetGoalTable()
     return { Objective.Claim, 1, self.TerritoryID }
 end
 
-function b_Goal_Claim:AddParameter(_Index, _Parameter)
+function B_Goal_Claim:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.TerritoryID = tonumber(_Parameter)
         if not self.TerritoryID then
@@ -1476,11 +1476,11 @@ function b_Goal_Claim:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Goal_Claim:GetMsgKey()
+function B_Goal_Claim:GetMsgKey()
     return "Quest_Claim_Territory"
 end
 
-Swift:RegisterBehavior(b_Goal_Claim);
+Swift:RegisterBehavior(B_Goal_Claim);
 
 -- -------------------------------------------------------------------------- --
 
@@ -1493,10 +1493,10 @@ Swift:RegisterBehavior(b_Goal_Claim);
 -- @within Goal
 --
 function Goal_ClaimXTerritories(...)
-    return b_Goal_ClaimXTerritories:new(...)
+    return B_Goal_ClaimXTerritories:new(...)
 end
 
-b_Goal_ClaimXTerritories = {
+B_Goal_ClaimXTerritories = {
     Name = "Goal_ClaimXTerritories",
     Description = {
         en = "Goal: Claim the given number of territories, all player territories are counted",
@@ -1507,21 +1507,21 @@ b_Goal_ClaimXTerritories = {
     },
 }
 
-function b_Goal_ClaimXTerritories:GetGoalTable()
+function B_Goal_ClaimXTerritories:GetGoalTable()
     return { Objective.Claim, 2, self.TerritoriesToClaim }
 end
 
-function b_Goal_ClaimXTerritories:AddParameter(_Index, _Parameter)
+function B_Goal_ClaimXTerritories:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.TerritoriesToClaim = _Parameter * 1
     end
 end
 
-function b_Goal_ClaimXTerritories:GetMsgKey()
+function B_Goal_ClaimXTerritories:GetMsgKey()
     return "Quest_Claim_Territory"
 end
 
-Swift:RegisterBehavior(b_Goal_ClaimXTerritories);
+Swift:RegisterBehavior(B_Goal_ClaimXTerritories);
 
 -- -------------------------------------------------------------------------- --
 
@@ -1538,10 +1538,10 @@ Swift:RegisterBehavior(b_Goal_ClaimXTerritories);
 -- @within Goal
 --
 function Goal_Create(...)
-    return b_Goal_Create:new(...);
+    return B_Goal_Create:new(...);
 end
 
-b_Goal_Create = {
+B_Goal_Create = {
     Name = "Goal_Create",
     Description = {
         en = "Goal: Create Buildings/Units on a specified territory",
@@ -1554,11 +1554,11 @@ b_Goal_Create = {
     },
 }
 
-function b_Goal_Create:GetGoalTable()
+function B_Goal_Create:GetGoalTable()
     return { Objective.Create, assert( Entities[self.EntityName] ), self.Amount, self.TerritoryID }
 end
 
-function b_Goal_Create:AddParameter(_Index, _Parameter)
+function B_Goal_Create:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.EntityName = _Parameter
     elseif (_Index == 1) then
@@ -1571,11 +1571,11 @@ function b_Goal_Create:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Goal_Create:GetMsgKey()
+function B_Goal_Create:GetMsgKey()
     return Logic.IsEntityTypeInCategory( Entities[self.EntityName], EntityCategories.AttackableBuilding ) == 1 and "Quest_Create_Building" or "Quest_Create_Unit"
 end
 
-Swift:RegisterBehavior(b_Goal_Create);
+Swift:RegisterBehavior(B_Goal_Create);
 
 -- -------------------------------------------------------------------------- --
 
@@ -1588,10 +1588,10 @@ Swift:RegisterBehavior(b_Goal_Create);
 -- @within Goal
 --
 function Goal_Produce(...)
-    return b_Goal_Produce:new(...);
+    return B_Goal_Produce:new(...);
 end
 
-b_Goal_Produce = {
+B_Goal_Produce = {
     Name = "Goal_Produce",
     Description = {
         en = "Goal: Produce an amount of goods",
@@ -1603,12 +1603,12 @@ b_Goal_Produce = {
     },
 }
 
-function b_Goal_Produce:GetGoalTable()
+function B_Goal_Produce:GetGoalTable()
     local GoodType = Logic.GetGoodTypeID(self.GoodTypeName)
     return { Objective.Produce, GoodType, self.GoodAmount }
 end
 
-function b_Goal_Produce:AddParameter(_Index, _Parameter)
+function B_Goal_Produce:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.GoodTypeName = _Parameter
     elseif (_Index == 1) then
@@ -1616,11 +1616,11 @@ function b_Goal_Produce:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Goal_Produce:GetMsgKey()
+function B_Goal_Produce:GetMsgKey()
     return "Quest_Produce"
 end
 
-Swift:RegisterBehavior(b_Goal_Produce);
+Swift:RegisterBehavior(B_Goal_Produce);
 
 -- -------------------------------------------------------------------------- --
 
@@ -1634,10 +1634,10 @@ Swift:RegisterBehavior(b_Goal_Produce);
 -- @within Goal
 --
 function Goal_GoodAmount(...)
-    return b_Goal_GoodAmount:new(...);
+    return B_Goal_GoodAmount:new(...);
 end
 
-b_Goal_GoodAmount = {
+B_Goal_GoodAmount = {
     Name = "Goal_GoodAmount",
     Description = {
         en = "Goal: Obtain an amount of goods - either by trading or producing them",
@@ -1650,12 +1650,12 @@ b_Goal_GoodAmount = {
     },
 }
 
-function b_Goal_GoodAmount:GetGoalTable()
+function B_Goal_GoodAmount:GetGoalTable()
     local GoodType = Logic.GetGoodTypeID(self.GoodTypeName)
     return { Objective.Produce, GoodType, self.GoodAmount, self.bRelSmallerThan }
 end
 
-function b_Goal_GoodAmount:AddParameter(_Index, _Parameter)
+function B_Goal_GoodAmount:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.GoodTypeName = _Parameter
     elseif (_Index == 1) then
@@ -1665,7 +1665,7 @@ function b_Goal_GoodAmount:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Goal_GoodAmount:GetCustomData( _Index )
+function B_Goal_GoodAmount:GetCustomData( _Index )
     local Data = {}
     if _Index == 0 then
         for k, v in pairs( Goods ) do
@@ -1683,7 +1683,7 @@ function b_Goal_GoodAmount:GetCustomData( _Index )
     return Data
 end
 
-Swift:RegisterBehavior(b_Goal_GoodAmount);
+Swift:RegisterBehavior(B_Goal_GoodAmount);
 
 -- -------------------------------------------------------------------------- --
 
@@ -1705,10 +1705,10 @@ Swift:RegisterBehavior(b_Goal_GoodAmount);
 -- @within Goal
 --
 function Goal_SatisfyNeed(...)
-    return b_Goal_SatisfyNeed:new(...);
+    return B_Goal_SatisfyNeed:new(...);
 end
 
-b_Goal_SatisfyNeed = {
+B_Goal_SatisfyNeed = {
     Name = "Goal_SatisfyNeed",
     Description = {
         en = "Goal: Satisfy a need",
@@ -1720,12 +1720,12 @@ b_Goal_SatisfyNeed = {
     },
 }
 
-function b_Goal_SatisfyNeed:GetGoalTable()
+function B_Goal_SatisfyNeed:GetGoalTable()
     return { Objective.SatisfyNeed, Needs[self.Need], self.PlayerID }
 
 end
 
-function b_Goal_SatisfyNeed:AddParameter(_Index, _Parameter)
+function B_Goal_SatisfyNeed:AddParameter(_Index, _Parameter)
 
     if (_Index == 0) then
         self.PlayerID = _Parameter * 1
@@ -1735,7 +1735,7 @@ function b_Goal_SatisfyNeed:AddParameter(_Index, _Parameter)
 
 end
 
-function b_Goal_SatisfyNeed:GetMsgKey()
+function B_Goal_SatisfyNeed:GetMsgKey()
     local tMapping = {
         [Needs.Clothes] = "Quest_SatisfyNeed_Clothes",
         [Needs.Entertainment] = "Quest_SatisfyNeed_Entertainment",
@@ -1752,7 +1752,7 @@ function b_Goal_SatisfyNeed:GetMsgKey()
     -- No default message
 end
 
-Swift:RegisterBehavior(b_Goal_SatisfyNeed);
+Swift:RegisterBehavior(B_Goal_SatisfyNeed);
 
 -- -------------------------------------------------------------------------- --
 
@@ -1765,10 +1765,10 @@ Swift:RegisterBehavior(b_Goal_SatisfyNeed);
 -- @within Goal
 --
 function Goal_SettlersNumber(...)
-    return b_Goal_SettlersNumber:new(...);
+    return B_Goal_SettlersNumber:new(...);
 end
 
-b_Goal_SettlersNumber = {
+B_Goal_SettlersNumber = {
     Name = "Goal_SettlersNumber",
     Description = {
         en = "Goal: Get a given amount of settlers",
@@ -1780,11 +1780,11 @@ b_Goal_SettlersNumber = {
     },
 }
 
-function b_Goal_SettlersNumber:GetGoalTable()
+function B_Goal_SettlersNumber:GetGoalTable()
     return {Objective.SettlersNumber, self.PlayerID or 1, self.SettlersAmount };
 end
 
-function b_Goal_SettlersNumber:AddParameter(_Index, _Parameter)
+function B_Goal_SettlersNumber:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.SettlersAmount = _Parameter * 1;
     elseif (_Index == 1) then
@@ -1792,11 +1792,11 @@ function b_Goal_SettlersNumber:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Goal_SettlersNumber:GetMsgKey()
+function B_Goal_SettlersNumber:GetMsgKey()
     return "Quest_NumberSettlers";
 end
 
-Swift:RegisterBehavior(b_Goal_SettlersNumber);
+Swift:RegisterBehavior(B_Goal_SettlersNumber);
 
 -- -------------------------------------------------------------------------- --
 
@@ -1808,10 +1808,10 @@ Swift:RegisterBehavior(b_Goal_SettlersNumber);
 -- @within Goal
 --
 function Goal_Spouses(...)
-    return b_Goal_Spouses:new(...);
+    return B_Goal_Spouses:new(...);
 end
 
-b_Goal_Spouses = {
+B_Goal_Spouses = {
     Name = "Goal_Spouses",
     Description = {
         en = "Goal: Get a given amount of spouses",
@@ -1822,21 +1822,21 @@ b_Goal_Spouses = {
     },
 }
 
-function b_Goal_Spouses:GetGoalTable()
+function B_Goal_Spouses:GetGoalTable()
     return {Objective.Spouses, self.SpousesAmount }
 end
 
-function b_Goal_Spouses:AddParameter(_Index, _Parameter)
+function B_Goal_Spouses:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.SpousesAmount = _Parameter * 1
     end
 end
 
-function b_Goal_Spouses:GetMsgKey()
+function B_Goal_Spouses:GetMsgKey()
     return "Quest_NumberSpouses"
 end
 
-Swift:RegisterBehavior(b_Goal_Spouses);
+Swift:RegisterBehavior(B_Goal_Spouses);
 
 -- -------------------------------------------------------------------------- --
 
@@ -1859,10 +1859,10 @@ Swift:RegisterBehavior(b_Goal_Spouses);
 -- @within Goal
 --
 function Goal_SoldierCount(...)
-    return b_Goal_SoldierCount:new(...);
+    return B_Goal_SoldierCount:new(...);
 end
 
-b_Goal_SoldierCount = {
+B_Goal_SoldierCount = {
     Name = "Goal_SoldierCount",
     Description = {
         en = "Goal: Create a specified number of soldiers",
@@ -1875,11 +1875,11 @@ b_Goal_SoldierCount = {
     },
 }
 
-function b_Goal_SoldierCount:GetGoalTable()
+function B_Goal_SoldierCount:GetGoalTable()
     return { Objective.Custom2, {self, self.CustomFunction} }
 end
 
-function b_Goal_SoldierCount:AddParameter(_Index, _Parameter)
+function B_Goal_SoldierCount:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.PlayerID = _Parameter * 1
     elseif (_Index == 1) then
@@ -1889,7 +1889,7 @@ function b_Goal_SoldierCount:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Goal_SoldierCount:CustomFunction(_Quest)
+function B_Goal_SoldierCount:CustomFunction(_Quest)
     if not _Quest.QuestDescription or _Quest.QuestDescription == "" then
         local Relation = tostring(self.bRelSmallerThan);
         local PlayerName = GetPlayerName(self.PlayerID) or "";
@@ -1913,7 +1913,7 @@ function b_Goal_SoldierCount:CustomFunction(_Quest)
     return nil
 end
 
-function b_Goal_SoldierCount:GetCustomData( _Index )
+function B_Goal_SoldierCount:GetCustomData( _Index )
     local Data = {}
     if _Index == 1 then
 
@@ -1926,15 +1926,15 @@ function b_Goal_SoldierCount:GetCustomData( _Index )
     return Data
 end
 
-function b_Goal_SoldierCount:GetIcon()
+function B_Goal_SoldierCount:GetIcon()
     return {7,11}
 end
 
-function b_Goal_SoldierCount:GetMsgKey()
+function B_Goal_SoldierCount:GetMsgKey()
     return "Quest_Create_Unit"
 end
 
-function b_Goal_SoldierCount:Debug(_Quest)
+function B_Goal_SoldierCount:Debug(_Quest)
     if tonumber(self.NumberOfUnits) == nil or self.NumberOfUnits < 0 then
         error(_Quest.Identifier.. ": " ..self.Name..": amount can not be below 0!");
         return true;
@@ -1945,7 +1945,7 @@ function b_Goal_SoldierCount:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Goal_SoldierCount);
+Swift:RegisterBehavior(B_Goal_SoldierCount);
 
 -- -------------------------------------------------------------------------- --
 
@@ -1994,10 +1994,10 @@ Swift:RegisterBehavior(b_Goal_SoldierCount);
 -- @within Goal
 --
 function Goal_KnightTitle(...)
-    return b_Goal_KnightTitle:new(...);
+    return B_Goal_KnightTitle:new(...);
 end
 
-b_Goal_KnightTitle = {
+B_Goal_KnightTitle = {
     Name = "Goal_KnightTitle",
     Description = {
         en = "Goal: Reach a specified knight title",
@@ -2008,25 +2008,25 @@ b_Goal_KnightTitle = {
     },
 }
 
-function b_Goal_KnightTitle:GetGoalTable()
+function B_Goal_KnightTitle:GetGoalTable()
     return {Objective.KnightTitle, assert( KnightTitles[self.KnightTitle] ) }
 end
 
-function b_Goal_KnightTitle:AddParameter(_Index, _Parameter)
+function B_Goal_KnightTitle:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.KnightTitle = _Parameter
     end
 end
 
-function b_Goal_KnightTitle:GetMsgKey()
+function B_Goal_KnightTitle:GetMsgKey()
     return "Quest_KnightTitle"
 end
 
-function b_Goal_KnightTitle:GetCustomData( _Index )
+function B_Goal_KnightTitle:GetCustomData( _Index )
     return {"Knight", "Mayor", "Baron", "Earl", "Marquees", "Duke", "Archduke"}
 end
 
-Swift:RegisterBehavior(b_Goal_KnightTitle);
+Swift:RegisterBehavior(B_Goal_KnightTitle);
 
 -- -------------------------------------------------------------------------- --
 
@@ -2045,10 +2045,10 @@ Swift:RegisterBehavior(b_Goal_KnightTitle);
 -- @within Goal
 --
 function Goal_Festivals(...)
-    return b_Goal_Festivals:new(...);
+    return B_Goal_Festivals:new(...);
 end
 
-b_Goal_Festivals = {
+B_Goal_Festivals = {
     Name = "Goal_Festivals",
     Description = {
         en = "Goal: The player has to start the given number of festivals.",
@@ -2060,11 +2060,11 @@ b_Goal_Festivals = {
     }
 };
 
-function b_Goal_Festivals:GetGoalTable()
+function B_Goal_Festivals:GetGoalTable()
     return { Objective.Custom2, {self, self.CustomFunction} };
 end
 
-function b_Goal_Festivals:AddParameter(_Index, _Parameter)
+function B_Goal_Festivals:AddParameter(_Index, _Parameter)
     if _Index == 0 then
         self.PlayerID = tonumber(_Parameter);
     else
@@ -2073,7 +2073,7 @@ function b_Goal_Festivals:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Goal_Festivals:CustomFunction(_Quest)
+function B_Goal_Festivals:CustomFunction(_Quest)
     if not _Quest.QuestDescription or _Quest.QuestDescription == "" then
         local PlayerName = GetPlayerName(self.PlayerID) or "";
         Swift:ChangeCustomQuestCaptionText(
@@ -2109,7 +2109,7 @@ function b_Goal_Festivals:CustomFunction(_Quest)
     end
 end
 
-function b_Goal_Festivals:Debug(_Quest)
+function B_Goal_Festivals:Debug(_Quest)
     if Logic.GetStoreHouse( self.PlayerID ) == 0 then
         error(_Quest.Identifier.. ": " ..self.Name .. ": Player " .. self.PlayerID .. " is dead :-(")
         return true
@@ -2123,16 +2123,16 @@ function b_Goal_Festivals:Debug(_Quest)
     return false
 end
 
-function b_Goal_Festivals:Reset()
+function B_Goal_Festivals:Reset()
     self.FestivalCounter = nil
     self.FestivalStarted = nil
 end
 
-function b_Goal_Festivals:GetIcon()
+function B_Goal_Festivals:GetIcon()
     return {4,15}
 end
 
-Swift:RegisterBehavior(b_Goal_Festivals)
+Swift:RegisterBehavior(B_Goal_Festivals)
 
 -- -------------------------------------------------------------------------- --
 
@@ -2144,10 +2144,10 @@ Swift:RegisterBehavior(b_Goal_Festivals)
 -- @within Goal
 --
 function Goal_Capture(...)
-    return b_Goal_Capture:new(...)
+    return B_Goal_Capture:new(...)
 end
 
-b_Goal_Capture = {
+B_Goal_Capture = {
     Name = "Goal_Capture",
     Description = {
         en = "Goal: Capture a cart.",
@@ -2158,17 +2158,17 @@ b_Goal_Capture = {
     },
 }
 
-function b_Goal_Capture:GetGoalTable()
+function B_Goal_Capture:GetGoalTable()
     return { Objective.Capture, 1, { self.ScriptName } }
 end
 
-function b_Goal_Capture:AddParameter(_Index, _Parameter)
+function B_Goal_Capture:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.ScriptName = _Parameter
     end
 end
 
-function b_Goal_Capture:GetMsgKey()
+function B_Goal_Capture:GetMsgKey()
    local ID = GetID(self.ScriptName)
    if Logic.IsEntityAlive(ID) then
         ID = Logic.GetEntityType( ID )
@@ -2190,7 +2190,7 @@ function b_Goal_Capture:GetMsgKey()
     end
 end
 
-Swift:RegisterBehavior(b_Goal_Capture);
+Swift:RegisterBehavior(B_Goal_Capture);
 
 -- -------------------------------------------------------------------------- --
 
@@ -2205,10 +2205,10 @@ Swift:RegisterBehavior(b_Goal_Capture);
 -- @within Goal
 --
 function Goal_CaptureType(...)
-    return b_Goal_CaptureType:new(...)
+    return B_Goal_CaptureType:new(...)
 end
 
-b_Goal_CaptureType = {
+B_Goal_CaptureType = {
     Name = "Goal_CaptureType",
     Description = {
         en = "Goal: Capture specified entity types",
@@ -2221,11 +2221,11 @@ b_Goal_CaptureType = {
     },
 }
 
-function b_Goal_CaptureType:GetGoalTable()
+function B_Goal_CaptureType:GetGoalTable()
     return { Objective.Capture, 2, Entities[self.EntityName], self.Amount, self.PlayerID }
 end
 
-function b_Goal_CaptureType:AddParameter(_Index, _Parameter)
+function B_Goal_CaptureType:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.EntityName = _Parameter
     elseif (_Index == 1) then
@@ -2235,7 +2235,7 @@ function b_Goal_CaptureType:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Goal_CaptureType:GetCustomData( _Index )
+function B_Goal_CaptureType:GetCustomData( _Index )
     local Data = {}
     if _Index == 0 then
         for k, v in pairs( Entities ) do
@@ -2254,7 +2254,7 @@ function b_Goal_CaptureType:GetCustomData( _Index )
     return Data
 end
 
-function b_Goal_CaptureType:GetMsgKey()
+function B_Goal_CaptureType:GetMsgKey()
 
     local ID = self.EntityName
     if Logic.IsEntityTypeInCategory( ID, EntityCategories.AttackableMerchant ) == 1 then
@@ -2271,7 +2271,7 @@ function b_Goal_CaptureType:GetMsgKey()
     end
 end
 
-Swift:RegisterBehavior(b_Goal_CaptureType);
+Swift:RegisterBehavior(B_Goal_CaptureType);
 
 -- -------------------------------------------------------------------------- --
 
@@ -2286,10 +2286,10 @@ Swift:RegisterBehavior(b_Goal_CaptureType);
 -- @within Goal
 --
 function Goal_Protect(...)
-    return b_Goal_Protect:new(...)
+    return B_Goal_Protect:new(...)
 end
 
-b_Goal_Protect = {
+B_Goal_Protect = {
     Name = "Goal_Protect",
     Description = {
         en = "Goal: Protect an entity (entity needs a script name",
@@ -2300,17 +2300,17 @@ b_Goal_Protect = {
     },
 }
 
-function b_Goal_Protect:GetGoalTable()
+function B_Goal_Protect:GetGoalTable()
     return {Objective.Protect, { self.ScriptName }}
 end
 
-function b_Goal_Protect:AddParameter(_Index, _Parameter)
+function B_Goal_Protect:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.ScriptName = _Parameter
     end
 end
 
-function b_Goal_Protect:GetMsgKey()
+function B_Goal_Protect:GetMsgKey()
     if Logic.IsEntityAlive(self.ScriptName) then
         local ID = GetID(self.ScriptName)
         if ID and ID ~= 0 then
@@ -2346,7 +2346,7 @@ function b_Goal_Protect:GetMsgKey()
     return "Quest_Protect"
 end
 
-Swift:RegisterBehavior(b_Goal_Protect);
+Swift:RegisterBehavior(B_Goal_Protect);
 
 -- -------------------------------------------------------------------------- --
 
@@ -2360,10 +2360,10 @@ Swift:RegisterBehavior(b_Goal_Protect);
 -- @within Goal
 --
 function Goal_Refill(...)
-    return b_Goal_Refill:new(...)
+    return B_Goal_Refill:new(...)
 end
 
-b_Goal_Refill = {
+B_Goal_Refill = {
     Name = "Goal_Refill",
     Description = {
         en = "Goal: Refill an object using a geologist",
@@ -2375,22 +2375,22 @@ b_Goal_Refill = {
    RequiresExtraNo = 1,
 }
 
-function b_Goal_Refill:GetGoalTable()
+function B_Goal_Refill:GetGoalTable()
     return { Objective.Refill, { GetID(self.ScriptName) } }
 end
 
-function b_Goal_Refill:GetIcon()
+function B_Goal_Refill:GetIcon()
     return {8,1,1}
 end
 
-function b_Goal_Refill:AddParameter(_Index, _Parameter)
+function B_Goal_Refill:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.ScriptName = _Parameter
     end
 end
 
 if g_GameExtraNo > 0 then
-    Swift:RegisterBehavior(b_Goal_Refill);
+    Swift:RegisterBehavior(B_Goal_Refill);
 end
 
 -- -------------------------------------------------------------------------- --
@@ -2414,10 +2414,10 @@ end
 -- @within Goal
 --
 function Goal_ResourceAmount(...)
-    return b_Goal_ResourceAmount:new(...)
+    return B_Goal_ResourceAmount:new(...)
 end
 
-b_Goal_ResourceAmount = {
+B_Goal_ResourceAmount = {
     Name = "Goal_ResourceAmount",
     Description = {
         en = "Goal: Reach a specified amount of resources in a doodad",
@@ -2430,11 +2430,11 @@ b_Goal_ResourceAmount = {
     },
 }
 
-function b_Goal_ResourceAmount:GetGoalTable()
+function B_Goal_ResourceAmount:GetGoalTable()
     return { Objective.Custom2, {self, self.CustomFunction} }
 end
 
-function b_Goal_ResourceAmount:AddParameter(_Index, _Parameter)
+function B_Goal_ResourceAmount:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.ScriptName = _Parameter
     elseif (_Index == 1) then
@@ -2444,7 +2444,7 @@ function b_Goal_ResourceAmount:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Goal_ResourceAmount:CustomFunction(_Quest)
+function B_Goal_ResourceAmount:CustomFunction(_Quest)
     local ID = GetID(self.ScriptName)
     if ID and ID ~= 0 and Logic.GetResourceDoodadGoodType(ID) ~= 0 then
         local HaveAmount = Logic.GetResourceDoodadGoodAmount(ID)
@@ -2455,7 +2455,7 @@ function b_Goal_ResourceAmount:CustomFunction(_Quest)
     return nil
 end
 
-function b_Goal_ResourceAmount:GetCustomData( _Index )
+function B_Goal_ResourceAmount:GetCustomData( _Index )
     local Data = {}
     if _Index == 1 then
         table.insert( Data, ">=" )
@@ -2466,7 +2466,7 @@ function b_Goal_ResourceAmount:GetCustomData( _Index )
     return Data
 end
 
-function b_Goal_ResourceAmount:Debug(_Quest)
+function B_Goal_ResourceAmount:Debug(_Quest)
     if not IsExisting(self.ScriptName) then
         error(_Quest.Identifier.. ": " ..self.Name..": entity '" ..self.ScriptName.. "' does not exist!");
         return true;
@@ -2477,7 +2477,7 @@ function b_Goal_ResourceAmount:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Goal_ResourceAmount);
+Swift:RegisterBehavior(B_Goal_ResourceAmount);
 
 -- -------------------------------------------------------------------------- --
 
@@ -2487,10 +2487,10 @@ Swift:RegisterBehavior(b_Goal_ResourceAmount);
 -- @within Goal
 --
 function Goal_InstantFailure()
-    return b_Goal_InstantFailure:new()
+    return B_Goal_InstantFailure:new()
 end
 
-b_Goal_InstantFailure = {
+B_Goal_InstantFailure = {
     Name = "Goal_InstantFailure",
     Description = {
         en = "Instant failure, the goal returns false.",
@@ -2498,11 +2498,11 @@ b_Goal_InstantFailure = {
     },
 }
 
-function b_Goal_InstantFailure:GetGoalTable()
+function B_Goal_InstantFailure:GetGoalTable()
     return {Objective.DummyFail};
 end
 
-Swift:RegisterBehavior(b_Goal_InstantFailure);
+Swift:RegisterBehavior(B_Goal_InstantFailure);
 
 -- -------------------------------------------------------------------------- --
 
@@ -2512,10 +2512,10 @@ Swift:RegisterBehavior(b_Goal_InstantFailure);
 -- @within Goal
 --
 function Goal_InstantSuccess()
-    return b_Goal_InstantSuccess:new()
+    return B_Goal_InstantSuccess:new()
 end
 
-b_Goal_InstantSuccess = {
+B_Goal_InstantSuccess = {
     Name = "Goal_InstantSuccess",
     Description = {
         en = "Instant success, the goal returns true.",
@@ -2523,11 +2523,11 @@ b_Goal_InstantSuccess = {
     },
 }
 
-function b_Goal_InstantSuccess:GetGoalTable()
+function B_Goal_InstantSuccess:GetGoalTable()
     return {Objective.Dummy};
 end
 
-Swift:RegisterBehavior(b_Goal_InstantSuccess);
+Swift:RegisterBehavior(B_Goal_InstantSuccess);
 
 -- -------------------------------------------------------------------------- --
 
@@ -2540,10 +2540,10 @@ Swift:RegisterBehavior(b_Goal_InstantSuccess);
 -- @within Goal
 --
 function Goal_NoChange()
-    return b_Goal_NoChange:new()
+    return B_Goal_NoChange:new()
 end
 
-b_Goal_NoChange = {
+B_Goal_NoChange = {
     Name = "Goal_NoChange",
     Description = {
         en = "The quest state doesn't change. Use reward functions of other quests to change the state of this quest.",
@@ -2551,11 +2551,11 @@ b_Goal_NoChange = {
     },
 }
 
-function b_Goal_NoChange:GetGoalTable()
+function B_Goal_NoChange:GetGoalTable()
     return { Objective.NoChange }
 end
 
-Swift:RegisterBehavior(b_Goal_NoChange);
+Swift:RegisterBehavior(B_Goal_NoChange);
 
 -- -------------------------------------------------------------------------- --
 
@@ -2578,10 +2578,10 @@ Swift:RegisterBehavior(b_Goal_NoChange);
 -- @within Goal
 --
 function Goal_MapScriptFunction(...)
-    return b_Goal_MapScriptFunction:new(...);
+    return B_Goal_MapScriptFunction:new(...);
 end
 
-b_Goal_MapScriptFunction = {
+B_Goal_MapScriptFunction = {
     Name = "Goal_MapScriptFunction",
     Description = {
         en = "Goal: Calls a function within the global map script. Return 'true' means success, 'false' means failure and 'nil' doesn't change anything.",
@@ -2592,24 +2592,24 @@ b_Goal_MapScriptFunction = {
     },
 }
 
-function b_Goal_MapScriptFunction:GetGoalTable()
+function B_Goal_MapScriptFunction:GetGoalTable()
     return {Objective.Custom2, {self, self.CustomFunction}};
 end
 
-function b_Goal_MapScriptFunction:AddParameter(_Index, _Parameter)
+function B_Goal_MapScriptFunction:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.FuncName = _Parameter
     end
 end
 
-function b_Goal_MapScriptFunction:CustomFunction(_Quest)
+function B_Goal_MapScriptFunction:CustomFunction(_Quest)
     if type(self.FuncName) == "function" then
         return self.FuncName(unpack(self.i47ya_6aghw_frxil));
     end
     return _G[self.FuncName](self, _Quest);
 end
 
-function b_Goal_MapScriptFunction:Debug(_Quest)
+function B_Goal_MapScriptFunction:Debug(_Quest)
     if not self.FuncName then
         error(_Quest.Identifier.. ": " ..self.Name..": function reference is invalid!");
         return true;
@@ -2621,7 +2621,7 @@ function b_Goal_MapScriptFunction:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Goal_MapScriptFunction);
+Swift:RegisterBehavior(B_Goal_MapScriptFunction);
 
 -- -------------------------------------------------------------------------- --
 
@@ -2650,10 +2650,10 @@ Swift:RegisterBehavior(b_Goal_MapScriptFunction);
 -- @within Goal
 --
 function Goal_CustomVariables(...)
-    return b_Goal_CustomVariables:new(...);
+    return B_Goal_CustomVariables:new(...);
 end
 
-b_Goal_CustomVariables = {
+B_Goal_CustomVariables = {
     Name = "Goal_CustomVariables",
     Description = {
         en = "Goal: A customised variable has to assume a certain value.",
@@ -2666,11 +2666,11 @@ b_Goal_CustomVariables = {
     }
 };
 
-function b_Goal_CustomVariables:GetGoalTable()
+function B_Goal_CustomVariables:GetGoalTable()
     return { Objective.Custom2, {self, self.CustomFunction} };
 end
 
-function b_Goal_CustomVariables:AddParameter(_Index, _Parameter)
+function B_Goal_CustomVariables:AddParameter(_Index, _Parameter)
     if _Index == 0 then
         self.VariableName = _Parameter
     elseif _Index == 1 then
@@ -2682,7 +2682,7 @@ function b_Goal_CustomVariables:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Goal_CustomVariables:CustomFunction()
+function B_Goal_CustomVariables:CustomFunction()
     local Value1 = API.ObtainCustomVariable("BehaviorVariable_" ..self.VariableName, 0);
     local Value2 = self.Value;
     if type(self.Value) == "string" then
@@ -2717,11 +2717,11 @@ function b_Goal_CustomVariables:CustomFunction()
     return nil;
 end
 
-function b_Goal_CustomVariables:GetCustomData( _Index )
+function B_Goal_CustomVariables:GetCustomData( _Index )
     return {"==", "~=", "<=", "<", ">", ">="};
 end
 
-function b_Goal_CustomVariables:Debug(_Quest)
+function B_Goal_CustomVariables:Debug(_Quest)
     local relations = {"==", "~=", "<=", "<", ">", ">="}
     local results    = {true, false, nil}
 
@@ -2735,7 +2735,7 @@ function b_Goal_CustomVariables:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Goal_CustomVariables)
+Swift:RegisterBehavior(B_Goal_CustomVariables)
 
 -- -------------------------------------------------------------------------- --
 
@@ -2760,10 +2760,10 @@ Swift:RegisterBehavior(b_Goal_CustomVariables)
 -- @within Goal
 --
 function Goal_TributeDiplomacy(...)
-    return b_Goal_TributeDiplomacy:new(...);
+    return B_Goal_TributeDiplomacy:new(...);
 end
 
-b_Goal_TributeDiplomacy = {
+B_Goal_TributeDiplomacy = {
     Name = "Goal_TributeDiplomacy",
     Description = {
         en = "Goal: AI requests periodical tribute for better Diplomacy",
@@ -2780,11 +2780,11 @@ b_Goal_TributeDiplomacy = {
     },
 }
 
-function b_Goal_TributeDiplomacy:GetGoalTable()
+function B_Goal_TributeDiplomacy:GetGoalTable()
     return {Objective.Custom2, {self, self.CustomFunction} };
 end
 
-function b_Goal_TributeDiplomacy:AddParameter(_Index, _Parameter)
+function B_Goal_TributeDiplomacy:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.Amount = _Parameter * 1;
     elseif (_Index == 1) then
@@ -2802,7 +2802,7 @@ function b_Goal_TributeDiplomacy:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Goal_TributeDiplomacy:GetTributeQuest(_Quest)
+function B_Goal_TributeDiplomacy:GetTributeQuest(_Quest)
     if not self.InternTributeQuest then
         local Language = QSB.Language;
         local StartMsg = self.StartMsg;
@@ -2835,7 +2835,7 @@ function b_Goal_TributeDiplomacy:GetTributeQuest(_Quest)
     end
 end
 
-function b_Goal_TributeDiplomacy:CheckTributeQuest(_Quest)
+function B_Goal_TributeDiplomacy:CheckTributeQuest(_Quest)
     if self.InternTributeQuest and self.InternTributeQuest.State == QuestState.Over and not self.RestartQuest then
         if self.InternTributeQuest.Result ~= QuestResult.Success then
             SetDiplomacyState( _Quest.ReceivingPlayer, _Quest.SendingPlayer, DiplomacyStates.Enemy);
@@ -2850,7 +2850,7 @@ function b_Goal_TributeDiplomacy:CheckTributeQuest(_Quest)
     end
 end
 
-function b_Goal_TributeDiplomacy:CheckTributePlayer(_Quest)
+function B_Goal_TributeDiplomacy:CheckTributePlayer(_Quest)
     local storeHouse = Logic.GetStoreHouse(_Quest.SendingPlayer);
     if (storeHouse == 0 or Logic.IsEntityDestroyed(storeHouse)) then
         if self.InternTributeQuest and self.InternTributeQuest.State == QuestState.Active then
@@ -2860,7 +2860,7 @@ function b_Goal_TributeDiplomacy:CheckTributePlayer(_Quest)
     end
 end
 
-function b_Goal_TributeDiplomacy:TributQuestRestarter(_Quest)
+function B_Goal_TributeDiplomacy:TributQuestRestarter(_Quest)
     if self.InternTributeQuest and self.Time and self.RestartQuest and ((Logic.GetTime() - self.Time) >= self.PeriodLength) then
         self.InternTributeQuest.Objectives[1].Completed = nil;
         self.InternTributeQuest.Objectives[1].Data[3] = nil;
@@ -2874,7 +2874,7 @@ function b_Goal_TributeDiplomacy:TributQuestRestarter(_Quest)
     end
 end
 
-function b_Goal_TributeDiplomacy:CustomFunction(_Quest)
+function B_Goal_TributeDiplomacy:CustomFunction(_Quest)
     -- Tribut Quest erzeugen
     self:GetTributeQuest(_Quest);
     -- Status des Tributes prüfen.
@@ -2889,7 +2889,7 @@ function b_Goal_TributeDiplomacy:CustomFunction(_Quest)
     self:TributQuestRestarter(_Quest);
 end
 
-function b_Goal_TributeDiplomacy:Debug(_Quest)
+function B_Goal_TributeDiplomacy:Debug(_Quest)
     if self.Amount < 0 then
         error(_Quest.Identifier.. ": " ..self.Name .. ": Amount is negative!");
         return true;
@@ -2900,13 +2900,13 @@ function b_Goal_TributeDiplomacy:Debug(_Quest)
     end
 end
 
-function b_Goal_TributeDiplomacy:Reset(_Quest)
+function B_Goal_TributeDiplomacy:Reset(_Quest)
     self.Time = nil;
     self.InternTributeQuest = nil;
     self.RestartQuest = nil;
 end
 
-function b_Goal_TributeDiplomacy:Interrupt(_Quest)
+function B_Goal_TributeDiplomacy:Interrupt(_Quest)
     if self.InternTributeQuest ~= nil then
         if self.InternTributeQuest.State == QuestState.Active then
             self.InternTributeQuest:Interrupt();
@@ -2914,13 +2914,13 @@ function b_Goal_TributeDiplomacy:Interrupt(_Quest)
     end
 end
 
-function b_Goal_TributeDiplomacy:GetCustomData(_Index)
+function B_Goal_TributeDiplomacy:GetCustomData(_Index)
     if (_Index == 6) then
         return {"true", "false"};
     end
 end
 
-Swift:RegisterBehavior(b_Goal_TributeDiplomacy);
+Swift:RegisterBehavior(B_Goal_TributeDiplomacy);
 
 -- -------------------------------------------------------------------------- --
 
@@ -2952,10 +2952,10 @@ Swift:RegisterBehavior(b_Goal_TributeDiplomacy);
 -- @within Goal
 --
 function Goal_TributeClaim(...)
-    return b_Goal_TributeClaim:new(...);
+    return B_Goal_TributeClaim:new(...);
 end
 
-b_Goal_TributeClaim = {
+B_Goal_TributeClaim = {
     Name = "Goal_TributeClaim",
     Description = {
         en = "Goal: AI requests periodical tribute for a specified territory. The quest sender is the demanding player.",
@@ -2976,11 +2976,11 @@ b_Goal_TributeClaim = {
     },
 }
 
-function b_Goal_TributeClaim:GetGoalTable()
+function B_Goal_TributeClaim:GetGoalTable()
     return {Objective.Custom2, {self, self.CustomFunction} };
 end
 
-function b_Goal_TributeClaim:AddParameter(_Index, _Parameter)
+function B_Goal_TributeClaim:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         if type(_Parameter) == "string" then
             _Parameter = GetTerritoryIDByName(_Parameter);
@@ -3009,7 +3009,7 @@ function b_Goal_TributeClaim:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Goal_TributeClaim:CureOutpost(_Quest)
+function B_Goal_TributeClaim:CureOutpost(_Quest)
     local Outpost = Logic.GetTerritoryAcquiringBuildingID(self.TerritoryID);
     if IsExisting(Outpost) and GetHealth(Outpost) < 25 and Logic.IsBuildingBeingKnockedDown(Outpost) == false then
         while (Logic.GetEntityHealth(Outpost) < Logic.GetEntityMaxHealth(Outpost) * 0.6) do
@@ -3018,7 +3018,7 @@ function b_Goal_TributeClaim:CureOutpost(_Quest)
     end
 end
 
-function b_Goal_TributeClaim:RestartTributeQuest(_Quest)
+function B_Goal_TributeClaim:RestartTributeQuest(_Quest)
     if self.InternTributeQuest then
         self.InternTributeQuest.Objectives[1].Completed = nil;
         self.InternTributeQuest.Objectives[1].Data[3] = nil;
@@ -3031,7 +3031,7 @@ function b_Goal_TributeClaim:RestartTributeQuest(_Quest)
     end
 end
 
-function b_Goal_TributeClaim:CreateTributeQuest(_Quest)
+function B_Goal_TributeClaim:CreateTributeQuest(_Quest)
     if not self.InternTributeQuest then
         local Language = QSB.Language;
         local StartMsg = self.StartMsg;
@@ -3067,7 +3067,7 @@ function b_Goal_TributeClaim:CreateTributeQuest(_Quest)
     end
 end
 
-function b_Goal_TributeClaim:OnTributeFailed(_Quest)
+function B_Goal_TributeClaim:OnTributeFailed(_Quest)
     local Outpost = Logic.GetTerritoryAcquiringBuildingID(self.TerritoryID);
     if IsExisting(Outpost) then
         Logic.ChangeEntityPlayerID(Outpost, self.PlayerID);
@@ -3081,7 +3081,7 @@ function b_Goal_TributeClaim:OnTributeFailed(_Quest)
     end
 end
 
-function b_Goal_TributeClaim:OnTributePaid(_Quest)
+function B_Goal_TributeClaim:OnTributePaid(_Quest)
     local Outpost = Logic.GetTerritoryAcquiringBuildingID(self.TerritoryID);
     if self.InternTributeQuest.Result == QuestResult.Success then
         if Logic.GetTerritoryPlayerID(self.TerritoryID) == self.PlayerID then
@@ -3103,7 +3103,7 @@ function b_Goal_TributeClaim:OnTributePaid(_Quest)
     end
 end
 
-function b_Goal_TributeClaim:CustomFunction(_Quest)
+function B_Goal_TributeClaim:CustomFunction(_Quest)
     self:CreateTributeQuest(_Quest);
     self:CureOutpost(_Quest);
 
@@ -3155,7 +3155,7 @@ function b_Goal_TributeClaim:CustomFunction(_Quest)
     end
 end
 
-function b_Goal_TributeClaim:Debug(_Quest)
+function B_Goal_TributeClaim:Debug(_Quest)
     if self.TerritoryID == 0 then
         error(_Quest.Identifier.. ": " ..self.Name .. ": Unknown Territory");
         return true;
@@ -3178,13 +3178,13 @@ function b_Goal_TributeClaim:Debug(_Quest)
     end
 end
 
-function b_Goal_TributeClaim:Reset(_Quest)
+function B_Goal_TributeClaim:Reset(_Quest)
     self.InternTributeQuest = nil;
     self.Time = nil;
     self.OtherOwner = nil;
 end
 
-function b_Goal_TributeClaim:Interrupt(_Quest)
+function B_Goal_TributeClaim:Interrupt(_Quest)
     if type(self.InternTributeQuest) == "table" then
         if self.InternTributeQuest.State == QuestState.Active then
             self.InternTributeQuest:Interrupt();
@@ -3192,13 +3192,13 @@ function b_Goal_TributeClaim:Interrupt(_Quest)
     end
 end
 
-function b_Goal_TributeClaim:GetCustomData(_Index)
+function B_Goal_TributeClaim:GetCustomData(_Index)
     if (_Index == 9) or (_Index == 10) then
         return {"false", "true"};
     end
 end
 
-Swift:RegisterBehavior(b_Goal_TributeClaim);
+Swift:RegisterBehavior(B_Goal_TributeClaim);
 
 -- REPRISALS ---------------------------------------------------------------- --
 
@@ -3210,10 +3210,10 @@ Swift:RegisterBehavior(b_Goal_TributeClaim);
 -- @within Reprisal
 --
 function Reprisal_ObjectDeactivate(...)
-    return b_Reprisal_InteractiveObjectDeactivate:new(...);
+    return B_Reprisal_InteractiveObjectDeactivate:new(...);
 end
 
-b_Reprisal_InteractiveObjectDeactivate = {
+B_Reprisal_InteractiveObjectDeactivate = {
     Name = "Reprisal_InteractiveObjectDeactivate",
     Description = {
         en = "Reprisal: Deactivates an interactive object",
@@ -3224,11 +3224,11 @@ b_Reprisal_InteractiveObjectDeactivate = {
     },
 }
 
-function b_Reprisal_InteractiveObjectDeactivate:GetReprisalTable()
+function B_Reprisal_InteractiveObjectDeactivate:GetReprisalTable()
     return { Reprisal.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reprisal_InteractiveObjectDeactivate:AddParameter(_Index, _Parameter)
+function B_Reprisal_InteractiveObjectDeactivate:AddParameter(_Index, _Parameter)
 
     if (_Index == 0) then
         self.ScriptName = _Parameter
@@ -3236,11 +3236,11 @@ function b_Reprisal_InteractiveObjectDeactivate:AddParameter(_Index, _Parameter)
 
 end
 
-function b_Reprisal_InteractiveObjectDeactivate:CustomFunction(_Quest)
+function B_Reprisal_InteractiveObjectDeactivate:CustomFunction(_Quest)
     InteractiveObjectDeactivate(self.ScriptName);
 end
 
-function b_Reprisal_InteractiveObjectDeactivate:Debug(_Quest)
+function B_Reprisal_InteractiveObjectDeactivate:Debug(_Quest)
     if not Logic.IsInteractiveObject(GetID(self.ScriptName)) then
         warn(_Quest.Identifier.. ": " ..self.Name..": '" ..self.ScriptName.. "' is not a interactive object!");
         self.WarningPrinted = true;
@@ -3253,7 +3253,7 @@ function b_Reprisal_InteractiveObjectDeactivate:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reprisal_InteractiveObjectDeactivate);
+Swift:RegisterBehavior(B_Reprisal_InteractiveObjectDeactivate);
 
 -- -------------------------------------------------------------------------- --
 
@@ -3273,10 +3273,10 @@ Swift:RegisterBehavior(b_Reprisal_InteractiveObjectDeactivate);
 -- @within Reprisal
 --
 function Reprisal_ObjectActivate(...)
-    return b_Reprisal_InteractiveObjectActivate:new(...);
+    return B_Reprisal_InteractiveObjectActivate:new(...);
 end
 
-b_Reprisal_InteractiveObjectActivate = {
+B_Reprisal_InteractiveObjectActivate = {
     Name = "Reprisal_InteractiveObjectActivate",
     Description = {
         en = "Reprisal: Activates an interactive object",
@@ -3288,11 +3288,11 @@ b_Reprisal_InteractiveObjectActivate = {
     },
 }
 
-function b_Reprisal_InteractiveObjectActivate:GetReprisalTable()
+function B_Reprisal_InteractiveObjectActivate:GetReprisalTable()
     return { Reprisal.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reprisal_InteractiveObjectActivate:AddParameter(_Index, _Parameter)
+function B_Reprisal_InteractiveObjectActivate:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.ScriptName = _Parameter
     elseif (_Index == 1) then
@@ -3304,17 +3304,17 @@ function b_Reprisal_InteractiveObjectActivate:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Reprisal_InteractiveObjectActivate:CustomFunction(_Quest)
+function B_Reprisal_InteractiveObjectActivate:CustomFunction(_Quest)
     InteractiveObjectActivate(self.ScriptName, self.UsingState);
 end
 
-function b_Reprisal_InteractiveObjectActivate:GetCustomData( _Index )
+function B_Reprisal_InteractiveObjectActivate:GetCustomData( _Index )
     if _Index == 1 then
         return {"Knight only", "Always"}
     end
 end
 
-function b_Reprisal_InteractiveObjectActivate:Debug(_Quest)
+function B_Reprisal_InteractiveObjectActivate:Debug(_Quest)
     if not Logic.IsInteractiveObject(GetID(self.ScriptName)) then
         warn(_Quest.Identifier.. ": " ..self.Name..": '" ..self.ScriptName.. "' is not a interactive object!");
         self.WarningPrinted = true;
@@ -3327,7 +3327,7 @@ function b_Reprisal_InteractiveObjectActivate:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reprisal_InteractiveObjectActivate);
+Swift:RegisterBehavior(B_Reprisal_InteractiveObjectActivate);
 
 -- -------------------------------------------------------------------------- --
 
@@ -3338,10 +3338,10 @@ Swift:RegisterBehavior(b_Reprisal_InteractiveObjectActivate);
 -- @within Reprisal
 --
 function Reprisal_DiplomacyDecrease()
-    return b_Reprisal_SlightlyDiplomacyDecrease:new();
+    return B_Reprisal_SlightlyDiplomacyDecrease:new();
 end
 
-b_Reprisal_SlightlyDiplomacyDecrease = {
+B_Reprisal_SlightlyDiplomacyDecrease = {
     Name = "Reprisal_SlightlyDiplomacyDecrease",
     Description = {
         en = "Reprisal: Diplomacy decreases slightly to another player.",
@@ -3349,11 +3349,11 @@ b_Reprisal_SlightlyDiplomacyDecrease = {
     },
 }
 
-function b_Reprisal_SlightlyDiplomacyDecrease:GetReprisalTable()
+function B_Reprisal_SlightlyDiplomacyDecrease:GetReprisalTable()
     return { Reprisal.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reprisal_SlightlyDiplomacyDecrease:CustomFunction(_Quest)
+function B_Reprisal_SlightlyDiplomacyDecrease:CustomFunction(_Quest)
     local Sender = _Quest.SendingPlayer;
     local Receiver = _Quest.ReceivingPlayer;
     local State = GetDiplomacyState(Receiver, Sender);
@@ -3362,13 +3362,13 @@ function b_Reprisal_SlightlyDiplomacyDecrease:CustomFunction(_Quest)
     end
 end
 
-function b_Reprisal_SlightlyDiplomacyDecrease:AddParameter(_Index, _Parameter)
+function B_Reprisal_SlightlyDiplomacyDecrease:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.PlayerID = _Parameter * 1
     end
 end
 
-Swift:RegisterBehavior(b_Reprisal_SlightlyDiplomacyDecrease);
+Swift:RegisterBehavior(B_Reprisal_SlightlyDiplomacyDecrease);
 
 -- -------------------------------------------------------------------------- --
 
@@ -3382,10 +3382,10 @@ Swift:RegisterBehavior(b_Reprisal_SlightlyDiplomacyDecrease);
 -- @within Reprisal
 --
 function Reprisal_Diplomacy(...)
-    return b_Reprisal_Diplomacy:new(...);
+    return B_Reprisal_Diplomacy:new(...);
 end
 
-b_Reprisal_Diplomacy = {
+B_Reprisal_Diplomacy = {
     Name = "Reprisal_Diplomacy",
     Description = {
         en = "Reprisal: Sets Diplomacy state of two Players to a stated value.",
@@ -3398,11 +3398,11 @@ b_Reprisal_Diplomacy = {
     },
 }
 
-function b_Reprisal_Diplomacy:GetReprisalTable()
+function B_Reprisal_Diplomacy:GetReprisalTable()
     return { Reprisal.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reprisal_Diplomacy:AddParameter(_Index, _Parameter)
+function B_Reprisal_Diplomacy:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.PlayerID1 = _Parameter * 1
     elseif (_Index == 1) then
@@ -3412,11 +3412,11 @@ function b_Reprisal_Diplomacy:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Reprisal_Diplomacy:CustomFunction(_Quest)
+function B_Reprisal_Diplomacy:CustomFunction(_Quest)
     SetDiplomacyState(self.PlayerID1, self.PlayerID2, self.Relation);
 end
 
-function b_Reprisal_Diplomacy:Debug(_Quest)
+function B_Reprisal_Diplomacy:Debug(_Quest)
     if not tonumber(self.PlayerID1) or self.PlayerID1 < 1 or self.PlayerID1 > 8 then
         error(_Quest.Identifier.. ": " ..self.Name .. ": PlayerID 1 is invalid!");
         return true;
@@ -3430,7 +3430,7 @@ function b_Reprisal_Diplomacy:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reprisal_Diplomacy);
+Swift:RegisterBehavior(B_Reprisal_Diplomacy);
 
 -- -------------------------------------------------------------------------- --
 
@@ -3445,10 +3445,10 @@ Swift:RegisterBehavior(b_Reprisal_Diplomacy);
 -- @within Reprisal
 --
 function Reprisal_DestroyEntity(...)
-    return b_Reprisal_DestroyEntity:new(...);
+    return B_Reprisal_DestroyEntity:new(...);
 end
 
-b_Reprisal_DestroyEntity = {
+B_Reprisal_DestroyEntity = {
     Name = "Reprisal_DestroyEntity",
     Description = {
         en = "Reprisal: Replaces an entity with an invisible script entity, which retains the entities name.",
@@ -3459,21 +3459,21 @@ b_Reprisal_DestroyEntity = {
     },
 }
 
-function b_Reprisal_DestroyEntity:GetReprisalTable()
+function B_Reprisal_DestroyEntity:GetReprisalTable()
     return { Reprisal.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reprisal_DestroyEntity:AddParameter(_Index, _Parameter)
+function B_Reprisal_DestroyEntity:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.ScriptName = _Parameter
     end
 end
 
-function b_Reprisal_DestroyEntity:CustomFunction(_Quest)
+function B_Reprisal_DestroyEntity:CustomFunction(_Quest)
     ReplaceEntity(self.ScriptName, Entities.XD_ScriptEntity);
 end
 
-function b_Reprisal_DestroyEntity:Debug(_Quest)
+function B_Reprisal_DestroyEntity:Debug(_Quest)
     if not IsExisting(self.ScriptName) then
         warn(_Quest.Identifier .. ": " ..self.Name..": '" ..self.ScriptName.. "' is already destroyed!");
         self.WarningPrinted = true;
@@ -3481,7 +3481,7 @@ function b_Reprisal_DestroyEntity:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reprisal_DestroyEntity);
+Swift:RegisterBehavior(B_Reprisal_DestroyEntity);
 
 -- -------------------------------------------------------------------------- --
 
@@ -3493,10 +3493,10 @@ Swift:RegisterBehavior(b_Reprisal_DestroyEntity);
 -- @within Reprisal
 --
 function Reprisal_DestroyEffect(...)
-    return b_Reprisal_DestroyEffect:new(...);
+    return B_Reprisal_DestroyEffect:new(...);
 end
 
-b_Reprisal_DestroyEffect = {
+B_Reprisal_DestroyEffect = {
     Name = "Reprisal_DestroyEffect",
     Description = {
         en = "Reprisal: Destroys an effect",
@@ -3507,31 +3507,31 @@ b_Reprisal_DestroyEffect = {
     }
 }
 
-function b_Reprisal_DestroyEffect:AddParameter(_Index, _Parameter)
+function B_Reprisal_DestroyEffect:AddParameter(_Index, _Parameter)
     if _Index == 0 then
         self.EffectName = _Parameter;
     end
 end
 
-function b_Reprisal_DestroyEffect:GetReprisalTable()
+function B_Reprisal_DestroyEffect:GetReprisalTable()
     return { Reprisal.Custom, { self, self.CustomFunction } };
 end
 
-function b_Reprisal_DestroyEffect:CustomFunction(_Quest)
+function B_Reprisal_DestroyEffect:CustomFunction(_Quest)
     if not QSB.EffectNameToID[self.EffectName] or not Logic.IsEffectRegistered(QSB.EffectNameToID[self.EffectName]) then
         return;
     end
     Logic.DestroyEffect(QSB.EffectNameToID[self.EffectName]);
 end
 
-function b_Reprisal_DestroyEffect:Debug(_Quest)
+function B_Reprisal_DestroyEffect:Debug(_Quest)
     if not QSB.EffectNameToID[self.EffectName] then
         error(_Quest.Identifier.. ": " ..self.Name .. ": Effect " .. self.EffectName .. " never created")
     end
     return false;
 end
 
-Swift:RegisterBehavior(b_Reprisal_DestroyEffect);
+Swift:RegisterBehavior(B_Reprisal_DestroyEffect);
 
 -- -------------------------------------------------------------------------- --
 
@@ -3541,10 +3541,10 @@ Swift:RegisterBehavior(b_Reprisal_DestroyEffect);
 -- @within Reprisal
 --
 function Reprisal_Defeat()
-    return b_Reprisal_Defeat:new()
+    return B_Reprisal_Defeat:new()
 end
 
-b_Reprisal_Defeat = {
+B_Reprisal_Defeat = {
     Name = "Reprisal_Defeat",
     Description = {
         en = "Reprisal: The player loses the game.",
@@ -3552,11 +3552,11 @@ b_Reprisal_Defeat = {
     },
 }
 
-function b_Reprisal_Defeat:GetReprisalTable()
+function B_Reprisal_Defeat:GetReprisalTable()
     return {Reprisal.Defeat};
 end
 
-Swift:RegisterBehavior(b_Reprisal_Defeat);
+Swift:RegisterBehavior(B_Reprisal_Defeat);
 
 -- -------------------------------------------------------------------------- --
 
@@ -3568,10 +3568,10 @@ Swift:RegisterBehavior(b_Reprisal_Defeat);
 -- @within Reprisal
 --
 function Reprisal_FakeDefeat()
-    return b_Reprisal_FakeDefeat:new();
+    return B_Reprisal_FakeDefeat:new();
 end
 
-b_Reprisal_FakeDefeat = {
+B_Reprisal_FakeDefeat = {
     Name = "Reprisal_FakeDefeat",
     Description = {
         en = "Reprisal: Displays a defeat icon for a quest",
@@ -3579,11 +3579,11 @@ b_Reprisal_FakeDefeat = {
     },
 }
 
-function b_Reprisal_FakeDefeat:GetReprisalTable()
+function B_Reprisal_FakeDefeat:GetReprisalTable()
     return { Reprisal.FakeDefeat }
 end
 
-Swift:RegisterBehavior(b_Reprisal_FakeDefeat);
+Swift:RegisterBehavior(B_Reprisal_FakeDefeat);
 
 -- -------------------------------------------------------------------------- --
 
@@ -3600,10 +3600,10 @@ Swift:RegisterBehavior(b_Reprisal_FakeDefeat);
 -- @within Reprisal
 --
 function Reprisal_ReplaceEntity(...)
-    return b_Reprisal_ReplaceEntity:new(...);
+    return B_Reprisal_ReplaceEntity:new(...);
 end
 
-b_Reprisal_ReplaceEntity = {
+B_Reprisal_ReplaceEntity = {
     Name = "Reprisal_ReplaceEntity",
     Description = {
         en = "Reprisal: Replaces an entity with a new one of a different type. The playerID can be changed too.",
@@ -3616,11 +3616,11 @@ b_Reprisal_ReplaceEntity = {
     },
 }
 
-function b_Reprisal_ReplaceEntity:GetReprisalTable()
+function B_Reprisal_ReplaceEntity:GetReprisalTable()
     return { Reprisal.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reprisal_ReplaceEntity:AddParameter(_Index, _Parameter)
+function B_Reprisal_ReplaceEntity:AddParameter(_Index, _Parameter)
    if (_Index == 0) then
         self.ScriptName = _Parameter
     elseif (_Index == 1) then
@@ -3630,7 +3630,7 @@ function b_Reprisal_ReplaceEntity:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Reprisal_ReplaceEntity:CustomFunction(_Quest)
+function B_Reprisal_ReplaceEntity:CustomFunction(_Quest)
     local eID = GetID(self.ScriptName);
     local pID = self.PlayerID;
     if pID == Logic.EntityGetPlayer(eID) then
@@ -3639,7 +3639,7 @@ function b_Reprisal_ReplaceEntity:CustomFunction(_Quest)
     ReplaceEntity(self.ScriptName, Entities[self.NewType], pID);
 end
 
-function b_Reprisal_ReplaceEntity:GetCustomData(_Index)
+function B_Reprisal_ReplaceEntity:GetCustomData(_Index)
     local Data = {}
     if _Index == 1 then
         for k, v in pairs( Entities ) do
@@ -3662,7 +3662,7 @@ function b_Reprisal_ReplaceEntity:GetCustomData(_Index)
     return Data
 end
 
-function b_Reprisal_ReplaceEntity:Debug(_Quest)
+function B_Reprisal_ReplaceEntity:Debug(_Quest)
     if not Entities[self.NewType] then
         error(_Quest.Identifier.. ": " ..self.Name..": got an invalid entity type!");
         return true;
@@ -3678,7 +3678,7 @@ function b_Reprisal_ReplaceEntity:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reprisal_ReplaceEntity);
+Swift:RegisterBehavior(B_Reprisal_ReplaceEntity);
 
 -- -------------------------------------------------------------------------- --
 
@@ -3690,10 +3690,10 @@ Swift:RegisterBehavior(b_Reprisal_ReplaceEntity);
 -- @within Reprisal
 --
 function Reprisal_QuestRestart(...)
-    return b_Reprisal_QuestRestart:new(...)
+    return B_Reprisal_QuestRestart:new(...)
 end
 
-b_Reprisal_QuestRestart = {
+B_Reprisal_QuestRestart = {
     Name = "Reprisal_QuestRestart",
     Description = {
         en = "Reprisal: Restarts a (completed) quest so it can be triggered and completed again",
@@ -3704,21 +3704,21 @@ b_Reprisal_QuestRestart = {
     },
 }
 
-function b_Reprisal_QuestRestart:GetReprisalTable()
+function B_Reprisal_QuestRestart:GetReprisalTable()
     return { Reprisal.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reprisal_QuestRestart:AddParameter(_Index, _Parameter)
+function B_Reprisal_QuestRestart:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.QuestName = _Parameter
     end
 end
 
-function b_Reprisal_QuestRestart:CustomFunction(_Quest)
+function B_Reprisal_QuestRestart:CustomFunction(_Quest)
     RestartQuestByName(self.QuestName, true);
 end
 
-function b_Reprisal_QuestRestart:Debug(_Quest)
+function B_Reprisal_QuestRestart:Debug(_Quest)
     if not Quests[GetQuestID(self.QuestName)] then
         error(_Quest.Identifier.. ": " ..self.Name .. ": quest "..  self.QuestName .. " does not exist!");
         return true;
@@ -3726,7 +3726,7 @@ function b_Reprisal_QuestRestart:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reprisal_QuestRestart);
+Swift:RegisterBehavior(B_Reprisal_QuestRestart);
 
 -- -------------------------------------------------------------------------- --
 
@@ -3738,10 +3738,10 @@ Swift:RegisterBehavior(b_Reprisal_QuestRestart);
 -- @within Reprisal
 --
 function Reprisal_QuestFailure(...)
-    return b_Reprisal_QuestFailure:new(...)
+    return B_Reprisal_QuestFailure:new(...)
 end
 
-b_Reprisal_QuestFailure = {
+B_Reprisal_QuestFailure = {
     Name = "Reprisal_QuestFailure",
     Description = {
         en = "Reprisal: Lets another active quest fail",
@@ -3752,21 +3752,21 @@ b_Reprisal_QuestFailure = {
     },
 }
 
-function b_Reprisal_QuestFailure:GetReprisalTable()
+function B_Reprisal_QuestFailure:GetReprisalTable()
     return { Reprisal.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reprisal_QuestFailure:AddParameter(_Index, _Parameter)
+function B_Reprisal_QuestFailure:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.QuestName = _Parameter
     end
 end
 
-function b_Reprisal_QuestFailure:CustomFunction(_Quest)
+function B_Reprisal_QuestFailure:CustomFunction(_Quest)
     FailQuestByName(self.QuestName, true);
 end
 
-function b_Reprisal_QuestFailure:Debug(_Quest)
+function B_Reprisal_QuestFailure:Debug(_Quest)
     if not Quests[GetQuestID(self.QuestName)] then
         error(_Quest.Identifier.. ": " ..self.Name..": got an invalid quest!");
         return true;
@@ -3774,7 +3774,7 @@ function b_Reprisal_QuestFailure:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reprisal_QuestFailure);
+Swift:RegisterBehavior(B_Reprisal_QuestFailure);
 
 -- -------------------------------------------------------------------------- --
 
@@ -3786,10 +3786,10 @@ Swift:RegisterBehavior(b_Reprisal_QuestFailure);
 -- @within Reprisal
 --
 function Reprisal_QuestSuccess(...)
-    return b_Reprisal_QuestSuccess:new(...)
+    return B_Reprisal_QuestSuccess:new(...)
 end
 
-b_Reprisal_QuestSuccess = {
+B_Reprisal_QuestSuccess = {
     Name = "Reprisal_QuestSuccess",
     Description = {
         en = "Reprisal: Completes another active quest successfully",
@@ -3800,21 +3800,21 @@ b_Reprisal_QuestSuccess = {
     },
 }
 
-function b_Reprisal_QuestSuccess:GetReprisalTable()
+function B_Reprisal_QuestSuccess:GetReprisalTable()
     return { Reprisal.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reprisal_QuestSuccess:AddParameter(_Index, _Parameter)
+function B_Reprisal_QuestSuccess:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.QuestName = _Parameter
     end
 end
 
-function b_Reprisal_QuestSuccess:CustomFunction(_Quest)
+function B_Reprisal_QuestSuccess:CustomFunction(_Quest)
     WinQuestByName(self.QuestName, true);
 end
 
-function b_Reprisal_QuestSuccess:Debug(_Quest)
+function B_Reprisal_QuestSuccess:Debug(_Quest)
     if not Quests[GetQuestID(self.QuestName)] then
         error(_Quest.Identifier.. ": " ..self.Name .. ": quest "..  self.QuestName .. " does not exist!");
         return true;
@@ -3822,7 +3822,7 @@ function b_Reprisal_QuestSuccess:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reprisal_QuestSuccess);
+Swift:RegisterBehavior(B_Reprisal_QuestSuccess);
 
 -- -------------------------------------------------------------------------- --
 
@@ -3834,10 +3834,10 @@ Swift:RegisterBehavior(b_Reprisal_QuestSuccess);
 -- @within Reprisal
 --
 function Reprisal_QuestActivate(...)
-    return b_Reprisal_QuestActivate:new(...)
+    return B_Reprisal_QuestActivate:new(...)
 end
 
-b_Reprisal_QuestActivate = {
+B_Reprisal_QuestActivate = {
     Name = "Reprisal_QuestActivate",
     Description = {
         en = "Reprisal: Activates another quest that is not triggered yet.",
@@ -3848,11 +3848,11 @@ b_Reprisal_QuestActivate = {
     },
 }
 
-function b_Reprisal_QuestActivate:GetReprisalTable()
+function B_Reprisal_QuestActivate:GetReprisalTable()
     return {Reprisal.Custom, {self, self.CustomFunction} }
 end
 
-function b_Reprisal_QuestActivate:AddParameter(_Index, _Parameter)
+function B_Reprisal_QuestActivate:AddParameter(_Index, _Parameter)
     if (_Index==0) then
         self.QuestName = _Parameter
     else
@@ -3860,11 +3860,11 @@ function b_Reprisal_QuestActivate:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Reprisal_QuestActivate:CustomFunction(_Quest)
+function B_Reprisal_QuestActivate:CustomFunction(_Quest)
     StartQuestByName(self.QuestName, true);
 end
 
-function b_Reprisal_QuestActivate:Debug(_Quest)
+function B_Reprisal_QuestActivate:Debug(_Quest)
     if not IsValidQuest(self.QuestName) then
         error(_Quest.Identifier.. ": " ..self.Name .. ": Quest: "..  self.QuestName .. " does not exist");
         return true;
@@ -3872,7 +3872,7 @@ function b_Reprisal_QuestActivate:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reprisal_QuestActivate)
+Swift:RegisterBehavior(B_Reprisal_QuestActivate)
 
 -- -------------------------------------------------------------------------- --
 
@@ -3884,10 +3884,10 @@ Swift:RegisterBehavior(b_Reprisal_QuestActivate)
 -- @within Reprisal
 --
 function Reprisal_QuestInterrupt(...)
-    return b_Reprisal_QuestInterrupt:new(...)
+    return B_Reprisal_QuestInterrupt:new(...)
 end
 
-b_Reprisal_QuestInterrupt = {
+B_Reprisal_QuestInterrupt = {
     Name = "Reprisal_QuestInterrupt",
     Description = {
         en = "Reprisal: Interrupts another active quest without success or failure",
@@ -3898,17 +3898,17 @@ b_Reprisal_QuestInterrupt = {
     },
 }
 
-function b_Reprisal_QuestInterrupt:GetReprisalTable()
+function B_Reprisal_QuestInterrupt:GetReprisalTable()
     return { Reprisal.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reprisal_QuestInterrupt:AddParameter(_Index, _Parameter)
+function B_Reprisal_QuestInterrupt:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.QuestName = _Parameter
     end
 end
 
-function b_Reprisal_QuestInterrupt:CustomFunction(_Quest)
+function B_Reprisal_QuestInterrupt:CustomFunction(_Quest)
     if (GetQuestID(self.QuestName) ~= nil) then
 
         local QuestID = GetQuestID(self.QuestName)
@@ -3919,7 +3919,7 @@ function b_Reprisal_QuestInterrupt:CustomFunction(_Quest)
     end
 end
 
-function b_Reprisal_QuestInterrupt:Debug(_Quest)
+function B_Reprisal_QuestInterrupt:Debug(_Quest)
     if not Quests[GetQuestID(self.QuestName)] then
         error(_Quest.Identifier.. ": " ..self.Name .. ": quest "..  self.QuestName .. " does not exist!");
         return true;
@@ -3927,7 +3927,7 @@ function b_Reprisal_QuestInterrupt:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reprisal_QuestInterrupt);
+Swift:RegisterBehavior(B_Reprisal_QuestInterrupt);
 
 -- -------------------------------------------------------------------------- --
 
@@ -3940,10 +3940,10 @@ Swift:RegisterBehavior(b_Reprisal_QuestInterrupt);
 -- @within Reprisal
 --
 function Reprisal_QuestForceInterrupt(...)
-    return b_Reprisal_QuestForceInterrupt:new(...)
+    return B_Reprisal_QuestForceInterrupt:new(...)
 end
 
-b_Reprisal_QuestForceInterrupt = {
+B_Reprisal_QuestForceInterrupt = {
     Name = "Reprisal_QuestForceInterrupt",
     Description = {
         en = "Reprisal: Interrupts another quest (even when it isn't active yet) without success or failure",
@@ -3955,13 +3955,13 @@ b_Reprisal_QuestForceInterrupt = {
     },
 }
 
-function b_Reprisal_QuestForceInterrupt:GetReprisalTable()
+function B_Reprisal_QuestForceInterrupt:GetReprisalTable()
 
     return { Reprisal.Custom,{self, self.CustomFunction} }
 
 end
 
-function b_Reprisal_QuestForceInterrupt:AddParameter(_Index, _Parameter)
+function B_Reprisal_QuestForceInterrupt:AddParameter(_Index, _Parameter)
 
     if (_Index == 0) then
         self.QuestName = _Parameter
@@ -3971,7 +3971,7 @@ function b_Reprisal_QuestForceInterrupt:AddParameter(_Index, _Parameter)
 
 end
 
-function b_Reprisal_QuestForceInterrupt:GetCustomData( _Index )
+function B_Reprisal_QuestForceInterrupt:GetCustomData( _Index )
     local Data = {}
     if _Index == 1 then
         table.insert( Data, "false" )
@@ -3981,7 +3981,7 @@ function b_Reprisal_QuestForceInterrupt:GetCustomData( _Index )
     end
     return Data
 end
-function b_Reprisal_QuestForceInterrupt:CustomFunction(_Quest)
+function B_Reprisal_QuestForceInterrupt:CustomFunction(_Quest)
     if (GetQuestID(self.QuestName) ~= nil) then
 
         local QuestID = GetQuestID(self.QuestName)
@@ -3992,7 +3992,7 @@ function b_Reprisal_QuestForceInterrupt:CustomFunction(_Quest)
     end
 end
 
-function b_Reprisal_QuestForceInterrupt:Debug(_Quest)
+function B_Reprisal_QuestForceInterrupt:Debug(_Quest)
     if not Quests[GetQuestID(self.QuestName)] then
         error(_Quest.Identifier.. ": " ..self.Name .. ": quest "..  self.QuestName .. " does not exist!");
         return true;
@@ -4000,7 +4000,7 @@ function b_Reprisal_QuestForceInterrupt:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reprisal_QuestForceInterrupt);
+Swift:RegisterBehavior(B_Reprisal_QuestForceInterrupt);
 
 -- -------------------------------------------------------------------------- --
 
@@ -4028,10 +4028,10 @@ Swift:RegisterBehavior(b_Reprisal_QuestForceInterrupt);
 -- @within Reprisal
 --
 function Reprisal_CustomVariables(...)
-    return b_Reprisal_CustomVariables:new(...);
+    return B_Reprisal_CustomVariables:new(...);
 end
 
-b_Reprisal_CustomVariables = {
+B_Reprisal_CustomVariables = {
     Name = "Reprisal_CustomVariables",
     Description = {
         en = "Reprisal: Executes a mathematical operation with this variable. The other operand can be a number or another custom variable.",
@@ -4044,11 +4044,11 @@ b_Reprisal_CustomVariables = {
     }
 };
 
-function b_Reprisal_CustomVariables:GetReprisalTable()
+function B_Reprisal_CustomVariables:GetReprisalTable()
     return { Reprisal.Custom, {self, self.CustomFunction} };
 end
 
-function b_Reprisal_CustomVariables:AddParameter(_Index, _Parameter)
+function B_Reprisal_CustomVariables:AddParameter(_Index, _Parameter)
     if _Index == 0 then
         self.VariableName = _Parameter
     elseif _Index == 1 then
@@ -4060,7 +4060,7 @@ function b_Reprisal_CustomVariables:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Reprisal_CustomVariables:CustomFunction()
+function B_Reprisal_CustomVariables:CustomFunction()
     local Value1 = API.ObtainCustomVariable("BehaviorVariable_" ..self.VariableName, 0);
     local Value2 = self.Value;
     if type(self.Value) == "string" then
@@ -4083,11 +4083,11 @@ function b_Reprisal_CustomVariables:CustomFunction()
     API.SaveCustomVariable("BehaviorVariable_"..self.VariableName, Value1);
 end
 
-function b_Reprisal_CustomVariables:GetCustomData( _Index )
+function B_Reprisal_CustomVariables:GetCustomData( _Index )
     return {"=", "+", "-", "*", "/", "^"};
 end
 
-function b_Reprisal_CustomVariables:Debug(_Quest)
+function B_Reprisal_CustomVariables:Debug(_Quest)
     local operators = {"=", "+", "-", "*", "/", "^"};
     if not table.contains(operators, self.Operator) then
         error(_Quest.Identifier.. ": " ..self.Name..": got an invalid operator!");
@@ -4099,7 +4099,7 @@ function b_Reprisal_CustomVariables:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reprisal_CustomVariables)
+Swift:RegisterBehavior(B_Reprisal_CustomVariables)
 
 -- -------------------------------------------------------------------------- --
 
@@ -4121,10 +4121,10 @@ Swift:RegisterBehavior(b_Reprisal_CustomVariables)
 -- @within Reprisal
 --
 function Reprisal_MapScriptFunction(...)
-    return b_Reprisal_MapScriptFunction:new(...);
+    return B_Reprisal_MapScriptFunction:new(...);
 end
 
-b_Reprisal_MapScriptFunction = {
+B_Reprisal_MapScriptFunction = {
     Name = "Reprisal_MapScriptFunction",
     Description = {
         en = "Reprisal: Calls a function within the global map script if the quest has failed.",
@@ -4135,17 +4135,17 @@ b_Reprisal_MapScriptFunction = {
     },
 }
 
-function b_Reprisal_MapScriptFunction:GetReprisalTable()
+function B_Reprisal_MapScriptFunction:GetReprisalTable()
     return {Reprisal.Custom, {self, self.CustomFunction}};
 end
 
-function b_Reprisal_MapScriptFunction:AddParameter(_Index, _Parameter)
+function B_Reprisal_MapScriptFunction:AddParameter(_Index, _Parameter)
     if _Index == 0 then
         self.FuncName = _Parameter;
     end
 end
 
-function b_Reprisal_MapScriptFunction:CustomFunction(_Quest)
+function B_Reprisal_MapScriptFunction:CustomFunction(_Quest)
     if type(self.FuncName) == "function" then
         self.FuncName(unpack(self.i47ya_6aghw_frxil));
         return;
@@ -4153,7 +4153,7 @@ function b_Reprisal_MapScriptFunction:CustomFunction(_Quest)
     _G[self.FuncName](self, _Quest);
 end
 
-function b_Reprisal_MapScriptFunction:Debug(_Quest)
+function B_Reprisal_MapScriptFunction:Debug(_Quest)
     if not self.FuncName then
         error(_Quest.Identifier.. ": " ..self.Name..": function reference is invalid!");
         return true;
@@ -4165,7 +4165,7 @@ function b_Reprisal_MapScriptFunction:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reprisal_MapScriptFunction);
+Swift:RegisterBehavior(B_Reprisal_MapScriptFunction);
 
 -- -------------------------------------------------------------------------- --
 
@@ -4179,10 +4179,10 @@ Swift:RegisterBehavior(b_Reprisal_MapScriptFunction);
 -- @within Reprisal
 --
 function Reprisal_Technology(...)
-    return b_Reprisal_Technology:new(...);
+    return B_Reprisal_Technology:new(...);
 end
 
-b_Reprisal_Technology = {
+B_Reprisal_Technology = {
     Name = "Reprisal_Technology",
     Description = {
         en = "Reprisal: Locks or unlocks a technology for the given player",
@@ -4195,11 +4195,11 @@ b_Reprisal_Technology = {
     },
 }
 
-function b_Reprisal_Technology:GetReprisalTable()
+function B_Reprisal_Technology:GetReprisalTable()
     return { Reprisal.Custom, {self, self.CustomFunction} }
 end
 
-function b_Reprisal_Technology:AddParameter(_Index, _Parameter)
+function B_Reprisal_Technology:AddParameter(_Index, _Parameter)
     if (_Index ==0) then
         self.PlayerID = _Parameter*1
     elseif (_Index == 1) then
@@ -4209,7 +4209,7 @@ function b_Reprisal_Technology:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Reprisal_Technology:CustomFunction(_Quest)
+function B_Reprisal_Technology:CustomFunction(_Quest)
     if self.PlayerID
     and Logic.GetStoreHouse(self.PlayerID) ~= 0
     and Technologies[self.Technology]
@@ -4224,7 +4224,7 @@ function b_Reprisal_Technology:CustomFunction(_Quest)
     end
 end
 
-function b_Reprisal_Technology:GetCustomData(_Index)
+function B_Reprisal_Technology:GetCustomData(_Index)
     local Data = {}
     if (_Index == 1) then
         Data[1] = "Lock"
@@ -4237,7 +4237,7 @@ function b_Reprisal_Technology:GetCustomData(_Index)
     return Data
 end
 
-function b_Reprisal_Technology:Debug(_Quest)
+function B_Reprisal_Technology:Debug(_Quest)
     if not Technologies[self.Technology] then
         error(_Quest.Identifier.. ": " ..self.Name..": got an invalid technology type!");
         return true;
@@ -4248,7 +4248,7 @@ function b_Reprisal_Technology:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reprisal_Technology);
+Swift:RegisterBehavior(B_Reprisal_Technology);
 
 -- REWARDS ------------------------------------------------------------------ --
 
@@ -4262,10 +4262,10 @@ Swift:RegisterBehavior(b_Reprisal_Technology);
 -- @within Reprisal
 --
 function Reprisal_Technology(...)
-    return b_Reprisal_Technology:new(...);
+    return B_Reprisal_Technology:new(...);
 end
 
-b_Reprisal_Technology = {
+B_Reprisal_Technology = {
     Name = "Reprisal_Technology",
     Description = {
         en = "Reprisal: Locks or unlocks a technology for the given player",
@@ -4278,11 +4278,11 @@ b_Reprisal_Technology = {
     },
 }
 
-function b_Reprisal_Technology:GetReprisalTable()
+function B_Reprisal_Technology:GetReprisalTable()
     return { Reprisal.Custom, {self, self.CustomFunction} }
 end
 
-function b_Reprisal_Technology:AddParameter(_Index, _Parameter)
+function B_Reprisal_Technology:AddParameter(_Index, _Parameter)
     if (_Index ==0) then
         self.PlayerID = _Parameter*1
     elseif (_Index == 1) then
@@ -4292,7 +4292,7 @@ function b_Reprisal_Technology:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Reprisal_Technology:CustomFunction(_Quest)
+function B_Reprisal_Technology:CustomFunction(_Quest)
     if self.PlayerID
     and Logic.GetStoreHouse(self.PlayerID) ~= 0
     and Technologies[self.Technology]
@@ -4307,7 +4307,7 @@ function b_Reprisal_Technology:CustomFunction(_Quest)
     end
 end
 
-function b_Reprisal_Technology:GetCustomData(_Index)
+function B_Reprisal_Technology:GetCustomData(_Index)
     local Data = {}
     if (_Index == 1) then
         Data[1] = "Lock"
@@ -4320,7 +4320,7 @@ function b_Reprisal_Technology:GetCustomData(_Index)
     return Data
 end
 
-function b_Reprisal_Technology:Debug(_Quest)
+function B_Reprisal_Technology:Debug(_Quest)
     if not Technologies[self.Technology] then
         error(_Quest.Identifier.. ": " ..self.Name..": got an invalid technology type!");
         return true;
@@ -4331,7 +4331,7 @@ function b_Reprisal_Technology:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reprisal_Technology);
+Swift:RegisterBehavior(B_Reprisal_Technology);
 
 -- -------------------------------------------------------------------------- --
 -- Rewards                                                                    --
@@ -4345,20 +4345,20 @@ Swift:RegisterBehavior(b_Reprisal_Technology);
 -- @within Reward
 --
 function Reward_ObjectDeactivate(...)
-    return b_Reward_InteractiveObjectDeactivate:new(...);
+    return B_Reward_InteractiveObjectDeactivate:new(...);
 end
 
-b_Reward_InteractiveObjectDeactivate = Swift:CopyTable(b_Reprisal_InteractiveObjectDeactivate);
-b_Reward_InteractiveObjectDeactivate.Name             = "Reward_InteractiveObjectDeactivate";
-b_Reward_InteractiveObjectDeactivate.Description.de   = "Reward: Deactivates an interactive object";
-b_Reward_InteractiveObjectDeactivate.Description.en   = "Lohn: Deaktiviert ein interaktives Objekt";
-b_Reward_InteractiveObjectDeactivate.GetReprisalTable = nil;
+B_Reward_InteractiveObjectDeactivate = Swift:CopyTable(B_Reprisal_InteractiveObjectDeactivate);
+B_Reward_InteractiveObjectDeactivate.Name             = "Reward_InteractiveObjectDeactivate";
+B_Reward_InteractiveObjectDeactivate.Description.de   = "Reward: Deactivates an interactive object";
+B_Reward_InteractiveObjectDeactivate.Description.en   = "Lohn: Deaktiviert ein interaktives Objekt";
+B_Reward_InteractiveObjectDeactivate.GetReprisalTable = nil;
 
-b_Reward_InteractiveObjectDeactivate.GetRewardTable = function(self, _Quest)
+B_Reward_InteractiveObjectDeactivate.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-Swift:RegisterBehavior(b_Reward_InteractiveObjectDeactivate);
+Swift:RegisterBehavior(B_Reward_InteractiveObjectDeactivate);
 
 -- -------------------------------------------------------------------------- --
 
@@ -4378,20 +4378,20 @@ Swift:RegisterBehavior(b_Reward_InteractiveObjectDeactivate);
 -- @within Reward
 --
 function Reward_ObjectActivate(...)
-    return b_Reward_InteractiveObjectActivate:new(...);
+    return B_Reward_InteractiveObjectActivate:new(...);
 end
 
-b_Reward_InteractiveObjectActivate = Swift:CopyTable(b_Reprisal_InteractiveObjectActivate);
-b_Reward_InteractiveObjectActivate.Name             = "Reward_InteractiveObjectActivate";
-b_Reward_InteractiveObjectActivate.Description.de   = "Reward: Activates an interactive object";
-b_Reward_InteractiveObjectActivate.Description.en   = "Lohn: Aktiviert ein interaktives Objekt";
-b_Reward_InteractiveObjectActivate.GetReprisalTable = nil;
+B_Reward_InteractiveObjectActivate = Swift:CopyTable(B_Reprisal_InteractiveObjectActivate);
+B_Reward_InteractiveObjectActivate.Name             = "Reward_InteractiveObjectActivate";
+B_Reward_InteractiveObjectActivate.Description.de   = "Reward: Activates an interactive object";
+B_Reward_InteractiveObjectActivate.Description.en   = "Lohn: Aktiviert ein interaktives Objekt";
+B_Reward_InteractiveObjectActivate.GetReprisalTable = nil;
 
-b_Reward_InteractiveObjectActivate.GetRewardTable = function(self, _Quest)
+B_Reward_InteractiveObjectActivate.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} };
 end
 
-Swift:RegisterBehavior(b_Reward_InteractiveObjectActivate);
+Swift:RegisterBehavior(B_Reward_InteractiveObjectActivate);
 
 -- -------------------------------------------------------------------------- --
 
@@ -4416,10 +4416,10 @@ Swift:RegisterBehavior(b_Reward_InteractiveObjectActivate);
 -- @within Reward
 --
 function Reward_ObjectInit(...)
-    return b_Reward_ObjectInit:new(...);
+    return B_Reward_ObjectInit:new(...);
 end
 
-b_Reward_ObjectInit = {
+B_Reward_ObjectInit = {
     Name = "Reward_ObjectInit",
     Description = {
         en = "Reward: Setup an interactive object with costs and rewards.",
@@ -4439,11 +4439,11 @@ b_Reward_ObjectInit = {
     },
 }
 
-function b_Reward_ObjectInit:GetRewardTable()
+function B_Reward_ObjectInit:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_ObjectInit:AddParameter(_Index, _Parameter)
+function B_Reward_ObjectInit:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.ScriptName = _Parameter
     elseif (_Index == 1) then
@@ -4475,7 +4475,7 @@ function b_Reward_ObjectInit:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Reward_ObjectInit:CustomFunction(_Quest)
+function B_Reward_ObjectInit:CustomFunction(_Quest)
     local eID = GetID(self.ScriptName);
     if eID == 0 then
         return;
@@ -4513,7 +4513,7 @@ function b_Reward_ObjectInit:CustomFunction(_Quest)
     table.insert(HiddenTreasures,eID);
 end
 
-function b_Reward_ObjectInit:GetCustomData( _Index )
+function B_Reward_ObjectInit:GetCustomData( _Index )
     if _Index == 3 or _Index == 5 or _Index == 7 then
         local Data = {
             "-",
@@ -4554,7 +4554,7 @@ function b_Reward_ObjectInit:GetCustomData( _Index )
     end
 end
 
-function b_Reward_ObjectInit:Debug(_Quest)
+function B_Reward_ObjectInit:Debug(_Quest)
     if Logic.IsInteractiveObject(GetID(self.ScriptName)) == false then
         error(_Quest.Identifier.. ": " ..self.Name..": '"..self.ScriptName.."' is not a interactive object!");
         return true;
@@ -4596,7 +4596,7 @@ function b_Reward_ObjectInit:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reward_ObjectInit);
+Swift:RegisterBehavior(B_Reward_ObjectInit);
 
 -- -------------------------------------------------------------------------- --
 
@@ -4610,20 +4610,20 @@ Swift:RegisterBehavior(b_Reward_ObjectInit);
 -- @within Reward
 --
 function Reward_Diplomacy(...)
-    return b_Reward_Diplomacy:new(...);
+    return B_Reward_Diplomacy:new(...);
 end
 
-b_Reward_Diplomacy = Swift:CopyTable(b_Reprisal_Diplomacy);
-b_Reward_Diplomacy.Name             = "Reward_Diplomacy";
-b_Reward_Diplomacy.Description.de   = "Reward: Sets Diplomacy state of two Players to a stated value.";
-b_Reward_Diplomacy.Description.en   = "Lohn: Setzt den Diplomatiestatus zweier Spieler auf den angegebenen Wert.";
-b_Reward_Diplomacy.GetReprisalTable = nil;
+B_Reward_Diplomacy = Swift:CopyTable(B_Reprisal_Diplomacy);
+B_Reward_Diplomacy.Name             = "Reward_Diplomacy";
+B_Reward_Diplomacy.Description.de   = "Reward: Sets Diplomacy state of two Players to a stated value.";
+B_Reward_Diplomacy.Description.en   = "Lohn: Setzt den Diplomatiestatus zweier Spieler auf den angegebenen Wert.";
+B_Reward_Diplomacy.GetReprisalTable = nil;
 
-b_Reward_Diplomacy.GetRewardTable = function(self, _Quest)
+B_Reward_Diplomacy.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-Swift:RegisterBehavior(b_Reward_Diplomacy);
+Swift:RegisterBehavior(B_Reward_Diplomacy);
 
 -- -------------------------------------------------------------------------- --
 
@@ -4634,10 +4634,10 @@ Swift:RegisterBehavior(b_Reward_Diplomacy);
 -- @within Reward
 --
 function Reward_DiplomacyIncrease()
-    return b_Reward_SlightlyDiplomacyIncrease:new();
+    return B_Reward_SlightlyDiplomacyIncrease:new();
 end
 
-b_Reward_SlightlyDiplomacyIncrease = {
+B_Reward_SlightlyDiplomacyIncrease = {
     Name = "Reward_SlightlyDiplomacyIncrease",
     Description = {
         en = "Reward: Diplomacy increases slightly to another player",
@@ -4645,11 +4645,11 @@ b_Reward_SlightlyDiplomacyIncrease = {
     },
 }
 
-function b_Reward_SlightlyDiplomacyIncrease:GetRewardTable()
+function B_Reward_SlightlyDiplomacyIncrease:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_SlightlyDiplomacyIncrease:CustomFunction(_Quest)
+function B_Reward_SlightlyDiplomacyIncrease:CustomFunction(_Quest)
     local Sender = _Quest.SendingPlayer;
     local Receiver = _Quest.ReceivingPlayer;
     local State = GetDiplomacyState(Receiver, Sender);
@@ -4658,13 +4658,13 @@ function b_Reward_SlightlyDiplomacyIncrease:CustomFunction(_Quest)
     end
 end
 
-function b_Reward_SlightlyDiplomacyIncrease:AddParameter(_Index, _Parameter)
+function B_Reward_SlightlyDiplomacyIncrease:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.PlayerID = _Parameter * 1
     end
 end
 
-Swift:RegisterBehavior(b_Reward_SlightlyDiplomacyIncrease);
+Swift:RegisterBehavior(B_Reward_SlightlyDiplomacyIncrease);
 
 -- -------------------------------------------------------------------------- --
 
@@ -4688,10 +4688,10 @@ Swift:RegisterBehavior(b_Reward_SlightlyDiplomacyIncrease);
 -- @within Reward
 --
 function Reward_TradeOffers(...)
-    return b_Reward_Merchant:new(...);
+    return B_Reward_Merchant:new(...);
 end
 
-b_Reward_Merchant = {
+B_Reward_Merchant = {
     Name = "Reward_Merchant",
     Description = {
         en = "Reward: Deletes all existing offers for a merchant and sets new offers, if given",
@@ -4710,11 +4710,11 @@ b_Reward_Merchant = {
     },
 }
 
-function b_Reward_Merchant:GetRewardTable()
+function B_Reward_Merchant:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_Merchant:AddParameter(_Index, _Parameter)
+function B_Reward_Merchant:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.PlayerID = _Parameter * 1;
     elseif (_Index == 1) then
@@ -4740,7 +4740,7 @@ function b_Reward_Merchant:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Reward_Merchant:CustomFunction()
+function B_Reward_Merchant:CustomFunction()
     if (self.PlayerID > 1) and (self.PlayerID < 9) then
         local Storehouse = Logic.GetStoreHouse(self.PlayerID)
         Logic.RemoveAllOffers(Storehouse)
@@ -4758,14 +4758,14 @@ function b_Reward_Merchant:CustomFunction()
     end
 end
 
-function b_Reward_Merchant:Debug(_Quest)
+function B_Reward_Merchant:Debug(_Quest)
     if Logic.GetStoreHouse(self.PlayerID ) == 0 then
         error(_Quest.Identifier.. ": " ..self.Name .. ": Player " .. self.PlayerID .. " is dead. :-(")
         return true
     end
 end
 
-function b_Reward_Merchant:GetCustomData(_Index)
+function B_Reward_Merchant:GetCustomData(_Index)
     local Players = { 1,2,3,4,5,6,7,8 }
     local Amount = { "1", "2", "3", "4", "5", "6", "7", "8", "9" }
     local Offers = {"-",
@@ -4835,7 +4835,7 @@ function b_Reward_Merchant:GetCustomData(_Index)
     end
 end
 
-Swift:RegisterBehavior(b_Reward_Merchant)
+Swift:RegisterBehavior(B_Reward_Merchant)
 
 -- -------------------------------------------------------------------------- --
 
@@ -4850,20 +4850,20 @@ Swift:RegisterBehavior(b_Reward_Merchant)
 -- @within Reward
 --
 function Reward_DestroyEntity(...)
-    return b_Reward_DestroyEntity:new(...);
+    return B_Reward_DestroyEntity:new(...);
 end
 
-b_Reward_DestroyEntity = Swift:CopyTable(b_Reprisal_DestroyEntity);
-b_Reward_DestroyEntity.Name = "Reward_DestroyEntity";
-b_Reward_DestroyEntity.Description.en = "Reward: Replaces an entity with an invisible script entity, which retains the entities name.";
-b_Reward_DestroyEntity.Description.de = "Lohn: Ersetzt eine Entity mit einer unsichtbaren Script-Entity, die den Namen übernimmt.";
-b_Reward_DestroyEntity.GetReprisalTable = nil;
+B_Reward_DestroyEntity = Swift:CopyTable(B_Reprisal_DestroyEntity);
+B_Reward_DestroyEntity.Name = "Reward_DestroyEntity";
+B_Reward_DestroyEntity.Description.en = "Reward: Replaces an entity with an invisible script entity, which retains the entities name.";
+B_Reward_DestroyEntity.Description.de = "Lohn: Ersetzt eine Entity mit einer unsichtbaren Script-Entity, die den Namen übernimmt.";
+B_Reward_DestroyEntity.GetReprisalTable = nil;
 
-b_Reward_DestroyEntity.GetRewardTable = function(self, _Quest)
+B_Reward_DestroyEntity.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-Swift:RegisterBehavior(b_Reward_DestroyEntity);
+Swift:RegisterBehavior(B_Reward_DestroyEntity);
 
 -- -------------------------------------------------------------------------- --
 
@@ -4875,20 +4875,20 @@ Swift:RegisterBehavior(b_Reward_DestroyEntity);
 -- @within Reward
 --
 function Reward_DestroyEffect(...)
-    return b_Reward_DestroyEffect:new(...);
+    return B_Reward_DestroyEffect:new(...);
 end
 
-b_Reward_DestroyEffect = Swift:CopyTable(b_Reprisal_DestroyEffect);
-b_Reward_DestroyEffect.Name = "Reward_DestroyEffect";
-b_Reward_DestroyEffect.Description.en = "Reward: Destroys an effect.";
-b_Reward_DestroyEffect.Description.de = "Lohn: Zerstört einen Effekt.";
-b_Reward_DestroyEffect.GetReprisalTable = nil;
+B_Reward_DestroyEffect = Swift:CopyTable(B_Reprisal_DestroyEffect);
+B_Reward_DestroyEffect.Name = "Reward_DestroyEffect";
+B_Reward_DestroyEffect.Description.en = "Reward: Destroys an effect.";
+B_Reward_DestroyEffect.Description.de = "Lohn: Zerstört einen Effekt.";
+B_Reward_DestroyEffect.GetReprisalTable = nil;
 
-b_Reward_DestroyEffect.GetRewardTable = function(self, _Quest)
+B_Reward_DestroyEffect.GetRewardTable = function(self, _Quest)
     return { Reward.Custom, { self, self.CustomFunction } };
 end
 
-Swift:RegisterBehavior(b_Reward_DestroyEffect);
+Swift:RegisterBehavior(B_Reward_DestroyEffect);
 
 -- -------------------------------------------------------------------------- --
 
@@ -4910,10 +4910,10 @@ Swift:RegisterBehavior(b_Reward_DestroyEffect);
 -- @within Reward
 --
 function Reward_CreateBattalion(...)
-    return b_Reward_CreateBattalion:new(...);
+    return B_Reward_CreateBattalion:new(...);
 end
 
-b_Reward_CreateBattalion = {
+B_Reward_CreateBattalion = {
     Name = "Reward_CreateBattalion",
     Description = {
         en = "Reward: Replaces a script entity with a battalion, which retains the entities name",
@@ -4929,11 +4929,11 @@ b_Reward_CreateBattalion = {
     },
 }
 
-function b_Reward_CreateBattalion:GetRewardTable()
+function B_Reward_CreateBattalion:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_CreateBattalion:AddParameter(_Index, _Parameter)
+function B_Reward_CreateBattalion:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.ScriptNameEntity = _Parameter
     elseif (_Index == 1) then
@@ -4949,7 +4949,7 @@ function b_Reward_CreateBattalion:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Reward_CreateBattalion:CustomFunction(_Quest)
+function B_Reward_CreateBattalion:CustomFunction(_Quest)
     if not IsExisting( self.ScriptNameEntity ) then
         return false
     end
@@ -4965,7 +4965,7 @@ function b_Reward_CreateBattalion:CustomFunction(_Quest)
     end
 end
 
-function b_Reward_CreateBattalion:GetCustomData( _Index )
+function B_Reward_CreateBattalion:GetCustomData( _Index )
     local Data = {}
     if _Index == 2 then
         for k, v in pairs( Entities ) do
@@ -4983,7 +4983,7 @@ function b_Reward_CreateBattalion:GetCustomData( _Index )
     return Data
 end
 
-function b_Reward_CreateBattalion:Debug(_Quest)
+function B_Reward_CreateBattalion:Debug(_Quest)
     if not Entities[self.UnitKey] then
         error(_Quest.Identifier.. ": " ..self.Name .. ": got an invalid entity type!");
         return true;
@@ -5003,7 +5003,7 @@ function b_Reward_CreateBattalion:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reward_CreateBattalion);
+Swift:RegisterBehavior(B_Reward_CreateBattalion);
 
 -- -------------------------------------------------------------------------- --
 
@@ -5023,10 +5023,10 @@ Swift:RegisterBehavior(b_Reward_CreateBattalion);
 -- @within Reward
 --
 function Reward_CreateSeveralBattalions(...)
-    return b_Reward_CreateSeveralBattalions:new(...);
+    return B_Reward_CreateSeveralBattalions:new(...);
 end
 
-b_Reward_CreateSeveralBattalions = {
+B_Reward_CreateSeveralBattalions = {
     Name = "Reward_CreateSeveralBattalions",
     Description = {
         en = "Reward: Creates a given amount of battalions",
@@ -5043,11 +5043,11 @@ b_Reward_CreateSeveralBattalions = {
     },
 }
 
-function b_Reward_CreateSeveralBattalions:GetRewardTable()
+function B_Reward_CreateSeveralBattalions:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_CreateSeveralBattalions:AddParameter(_Index, _Parameter)
+function B_Reward_CreateSeveralBattalions:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.Amount = _Parameter * 1
     elseif (_Index == 1) then
@@ -5065,7 +5065,7 @@ function b_Reward_CreateSeveralBattalions:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Reward_CreateSeveralBattalions:CustomFunction(_Quest)
+function B_Reward_CreateSeveralBattalions:CustomFunction(_Quest)
     if not IsExisting( self.ScriptNameEntity ) then
         return false
     end
@@ -5084,7 +5084,7 @@ function b_Reward_CreateSeveralBattalions:CustomFunction(_Quest)
     end
 end
 
-function b_Reward_CreateSeveralBattalions:GetCustomData( _Index )
+function B_Reward_CreateSeveralBattalions:GetCustomData( _Index )
     local Data = {}
     if _Index == 3 then
         for k, v in pairs( Entities ) do
@@ -5102,7 +5102,7 @@ function b_Reward_CreateSeveralBattalions:GetCustomData( _Index )
     return Data
 end
 
-function b_Reward_CreateSeveralBattalions:Debug(_Quest)
+function B_Reward_CreateSeveralBattalions:Debug(_Quest)
     if not Entities[self.UnitKey] then
         error(_Quest.Identifier.. ": " ..self.Name .. ": got an invalid entity type!");
         return true;
@@ -5125,7 +5125,7 @@ function b_Reward_CreateSeveralBattalions:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reward_CreateSeveralBattalions);
+Swift:RegisterBehavior(B_Reward_CreateSeveralBattalions);
 
 -- -------------------------------------------------------------------------- --
 
@@ -5147,10 +5147,10 @@ Swift:RegisterBehavior(b_Reward_CreateSeveralBattalions);
 -- @within Reward
 --
 function Reward_CreateEffect(...)
-    return b_Reward_CreateEffect:new(...);
+    return B_Reward_CreateEffect:new(...);
 end
 
-b_Reward_CreateEffect = {
+B_Reward_CreateEffect = {
     Name = "Reward_CreateEffect",
     Description = {
         en = "Reward: Creates an effect at a specified position",
@@ -5165,7 +5165,7 @@ b_Reward_CreateEffect = {
     }
 }
 
-function b_Reward_CreateEffect:AddParameter(_Index, _Parameter)
+function B_Reward_CreateEffect:AddParameter(_Index, _Parameter)
 
     if _Index == 0 then
         self.EffectName = _Parameter;
@@ -5181,11 +5181,11 @@ function b_Reward_CreateEffect:AddParameter(_Index, _Parameter)
 
 end
 
-function b_Reward_CreateEffect:GetRewardTable()
+function B_Reward_CreateEffect:GetRewardTable()
     return { Reward.Custom, { self, self.CustomFunction } };
 end
 
-function b_Reward_CreateEffect:CustomFunction(_Quest)
+function B_Reward_CreateEffect:CustomFunction(_Quest)
     if Logic.IsEntityDestroyed(self.Location) then
         return;
     end
@@ -5202,7 +5202,7 @@ function b_Reward_CreateEffect:CustomFunction(_Quest)
     end
 end
 
-function b_Reward_CreateEffect:Debug(_Quest)
+function B_Reward_CreateEffect:Debug(_Quest)
     if QSB.EffectNameToID[self.EffectName] and Logic.IsEffectRegistered(QSB.EffectNameToID[self.EffectName]) then
         error(_Quest.Identifier.. ": " ..self.Name..": effect already exists!");
         return true;
@@ -5218,7 +5218,7 @@ function b_Reward_CreateEffect:Debug(_Quest)
     end
 end
 
-function b_Reward_CreateEffect:GetCustomData(_Index)
+function B_Reward_CreateEffect:GetCustomData(_Index)
     assert(_Index == 1, "Error in " .. self.Name .. ": GetCustomData: Index is invalid.");
     local types = {};
     for k, v in pairs(EGL_Effects) do
@@ -5228,7 +5228,7 @@ function b_Reward_CreateEffect:GetCustomData(_Index)
     return types;
 end
 
-Swift:RegisterBehavior(b_Reward_CreateEffect);
+Swift:RegisterBehavior(B_Reward_CreateEffect);
 
 -- -------------------------------------------------------------------------- --
 
@@ -5249,10 +5249,10 @@ Swift:RegisterBehavior(b_Reward_CreateEffect);
 -- @within Reward
 --
 function Reward_CreateEntity(...)
-    return b_Reward_CreateEntity:new(...);
+    return B_Reward_CreateEntity:new(...);
 end
 
-b_Reward_CreateEntity = {
+B_Reward_CreateEntity = {
     Name = "Reward_CreateEntity",
     Description = {
         en = "Reward: Replaces an entity by a new one of a given type",
@@ -5267,11 +5267,11 @@ b_Reward_CreateEntity = {
     },
 }
 
-function b_Reward_CreateEntity:GetRewardTable()
+function B_Reward_CreateEntity:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_CreateEntity:AddParameter(_Index, _Parameter)
+function B_Reward_CreateEntity:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.ScriptNameEntity = _Parameter
     elseif (_Index == 1) then
@@ -5285,7 +5285,7 @@ function b_Reward_CreateEntity:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Reward_CreateEntity:CustomFunction(_Quest)
+function B_Reward_CreateEntity:CustomFunction(_Quest)
     if not IsExisting( self.ScriptNameEntity ) then
         return false
     end
@@ -5308,7 +5308,7 @@ function b_Reward_CreateEntity:CustomFunction(_Quest)
     end
 end
 
-function b_Reward_CreateEntity:GetCustomData( _Index )
+function B_Reward_CreateEntity:GetCustomData( _Index )
     local Data = {}
     if _Index == 2 then
         for k, v in pairs( Entities ) do
@@ -5335,7 +5335,7 @@ function b_Reward_CreateEntity:GetCustomData( _Index )
     return Data
 end
 
-function b_Reward_CreateEntity:Debug(_Quest)
+function B_Reward_CreateEntity:Debug(_Quest)
     if not Entities[self.UnitKey] then
         error(_Quest.Identifier.. ": " ..self.Name .. ": got an invalid entity type!");
         return true;
@@ -5352,16 +5352,16 @@ function b_Reward_CreateEntity:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reward_CreateEntity);
+Swift:RegisterBehavior(B_Reward_CreateEntity);
 
 -- -------------------------------------------------------------------------- --
 
 -- Kompatibelität
-b_Reward_CreateSettler = Swift:CopyTable(b_Reward_CreateEntity);
-b_Reward_CreateSettler.Name = "Reward_CreateSettler";
-b_Reward_CreateSettler.Description.en = "Reward: Replaces an entity by a new one of a given type";
-b_Reward_CreateSettler.Description.de = "Lohn: Ersetzt eine Entity durch eine neue gegebenen Typs";
-Swift:RegisterBehavior(b_Reward_CreateSettler);
+B_Reward_CreateSettler = Swift:CopyTable(B_Reward_CreateEntity);
+B_Reward_CreateSettler.Name = "Reward_CreateSettler";
+B_Reward_CreateSettler.Description.en = "Reward: Replaces an entity by a new one of a given type";
+B_Reward_CreateSettler.Description.de = "Lohn: Ersetzt eine Entity durch eine neue gegebenen Typs";
+Swift:RegisterBehavior(B_Reward_CreateSettler);
 
 -- -------------------------------------------------------------------------- --
 
@@ -5380,10 +5380,10 @@ Swift:RegisterBehavior(b_Reward_CreateSettler);
 -- @within Reward
 --
 function Reward_CreateSeveralEntities(...)
-    return b_Reward_CreateSeveralEntities:new(...);
+    return B_Reward_CreateSeveralEntities:new(...);
 end
 
-b_Reward_CreateSeveralEntities = {
+B_Reward_CreateSeveralEntities = {
     Name = "Reward_CreateSeveralEntities",
     Description = {
         en = "Reward: Creating serveral battalions at the position of a entity. They retains the entities name and a _[index] suffix",
@@ -5399,11 +5399,11 @@ b_Reward_CreateSeveralEntities = {
     },
 }
 
-function b_Reward_CreateSeveralEntities:GetRewardTable()
+function B_Reward_CreateSeveralEntities:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_CreateSeveralEntities:AddParameter(_Index, _Parameter)
+function B_Reward_CreateSeveralEntities:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.Amount = _Parameter * 1
     elseif (_Index == 1) then
@@ -5419,7 +5419,7 @@ function b_Reward_CreateSeveralEntities:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Reward_CreateSeveralEntities:CustomFunction(_Quest)
+function B_Reward_CreateSeveralEntities:CustomFunction(_Quest)
     if not IsExisting( self.ScriptNameEntity ) then
         return false
     end
@@ -5440,7 +5440,7 @@ function b_Reward_CreateSeveralEntities:CustomFunction(_Quest)
     end
 end
 
-function b_Reward_CreateSeveralEntities:GetCustomData( _Index )
+function B_Reward_CreateSeveralEntities:GetCustomData( _Index )
     local Data = {}
     if _Index == 3 then
         for k, v in pairs( Entities ) do
@@ -5468,7 +5468,7 @@ function b_Reward_CreateSeveralEntities:GetCustomData( _Index )
 
 end
 
-function b_Reward_CreateSeveralEntities:Debug(_Quest)
+function B_Reward_CreateSeveralEntities:Debug(_Quest)
     if not Entities[self.UnitKey] then
         error(_Quest.Identifier.. ": " ..self.Name .. ": got an invalid entity type!");
         return true;
@@ -5488,7 +5488,7 @@ function b_Reward_CreateSeveralEntities:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reward_CreateSeveralEntities);
+Swift:RegisterBehavior(B_Reward_CreateSeveralEntities);
 
 -- -------------------------------------------------------------------------- --
 
@@ -5502,10 +5502,10 @@ Swift:RegisterBehavior(b_Reward_CreateSeveralEntities);
 -- @within Reward
 --
 function Reward_MoveSettler(...)
-    return b_Reward_MoveSettler:new(...);
+    return B_Reward_MoveSettler:new(...);
 end
 
-b_Reward_MoveSettler = {
+B_Reward_MoveSettler = {
     Name = "Reward_MoveSettler",
     Description = {
         en = "Reward: Moves a (NPC) settler to a destination. Must not be AI controlled, or it won't move",
@@ -5517,11 +5517,11 @@ b_Reward_MoveSettler = {
     },
 }
 
-function b_Reward_MoveSettler:GetRewardTable()
+function B_Reward_MoveSettler:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_MoveSettler:AddParameter(_Index, _Parameter)
+function B_Reward_MoveSettler:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.ScriptNameUnit = _Parameter
     elseif (_Index == 1) then
@@ -5529,7 +5529,7 @@ function b_Reward_MoveSettler:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Reward_MoveSettler:CustomFunction(_Quest)
+function B_Reward_MoveSettler:CustomFunction(_Quest)
     if Logic.IsEntityDestroyed( self.ScriptNameUnit ) or Logic.IsEntityDestroyed( self.ScriptNameDest ) then
         return false
     end
@@ -5541,7 +5541,7 @@ function b_Reward_MoveSettler:CustomFunction(_Quest)
     Logic.MoveSettler( GetID( self.ScriptNameUnit ), DestX, DestY )
 end
 
-function b_Reward_MoveSettler:Debug(_Quest)
+function B_Reward_MoveSettler:Debug(_Quest)
     if not IsExisting(self.ScriptNameUnit) then
         error(_Quest.Identifier.. ": " ..self.Name .. ": mover entity does not exist!");
         return true;
@@ -5552,7 +5552,7 @@ function b_Reward_MoveSettler:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reward_MoveSettler);
+Swift:RegisterBehavior(B_Reward_MoveSettler);
 
 -- -------------------------------------------------------------------------- --
 
@@ -5562,10 +5562,10 @@ Swift:RegisterBehavior(b_Reward_MoveSettler);
 -- @within Reward
 --
 function Reward_Victory()
-    return b_Reward_Victory:new()
+    return B_Reward_Victory:new()
 end
 
-b_Reward_Victory = {
+B_Reward_Victory = {
     Name = "Reward_Victory",
     Description = {
         en = "Reward: The player wins the game.",
@@ -5573,11 +5573,11 @@ b_Reward_Victory = {
     },
 }
 
-function b_Reward_Victory:GetRewardTable()
+function B_Reward_Victory:GetRewardTable()
     return {Reward.Victory};
 end
 
-Swift:RegisterBehavior(b_Reward_Victory);
+Swift:RegisterBehavior(B_Reward_Victory);
 
 -- -------------------------------------------------------------------------- --
 
@@ -5588,10 +5588,10 @@ Swift:RegisterBehavior(b_Reward_Victory);
 -- @within Reward
 --
 function Reward_Defeat()
-    return b_Reward_Defeat:new()
+    return B_Reward_Defeat:new()
 end
 
-b_Reward_Defeat = {
+B_Reward_Defeat = {
     Name = "Reward_Defeat",
     Description = {
         en = "Reward: The player loses the game.",
@@ -5599,17 +5599,17 @@ b_Reward_Defeat = {
     },
 }
 
-function b_Reward_Defeat:GetRewardTable()
+function B_Reward_Defeat:GetRewardTable()
     return { Reward.Custom, {self, self.CustomFunction} }
 end
 
-function b_Reward_Defeat:CustomFunction(_Quest)
+function B_Reward_Defeat:CustomFunction(_Quest)
     _Quest:TerminateEventsAndStuff()
     Logic.ExecuteInLuaLocalState("GUI_Window.MissionEndScreenSetVictoryReasonText(".. g_VictoryAndDefeatType.DefeatMissionFailed ..")")
     Defeated(_Quest.ReceivingPlayer)
 end
 
-Swift:RegisterBehavior(b_Reward_Defeat);
+Swift:RegisterBehavior(B_Reward_Defeat);
 
 -- -------------------------------------------------------------------------- --
 
@@ -5621,10 +5621,10 @@ Swift:RegisterBehavior(b_Reward_Defeat);
 -- @within Reward
 --
 function Reward_FakeVictory()
-    return b_Reward_FakeVictory:new();
+    return B_Reward_FakeVictory:new();
 end
 
-b_Reward_FakeVictory = {
+B_Reward_FakeVictory = {
     Name = "Reward_FakeVictory",
     Description = {
         en = "Reward: Display a victory icon for a quest",
@@ -5632,11 +5632,11 @@ b_Reward_FakeVictory = {
     },
 }
 
-function b_Reward_FakeVictory:GetRewardTable()
+function B_Reward_FakeVictory:GetRewardTable()
     return { Reward.FakeVictory }
 end
 
-Swift:RegisterBehavior(b_Reward_FakeVictory);
+Swift:RegisterBehavior(B_Reward_FakeVictory);
 
 -- -------------------------------------------------------------------------- --
 
@@ -5664,10 +5664,10 @@ Swift:RegisterBehavior(b_Reward_FakeVictory);
 -- @within Reward
 --
 function Reward_AI_SpawnAndAttackTerritory(...)
-    return b_Reward_AI_SpawnAndAttackTerritory:new(...);
+    return B_Reward_AI_SpawnAndAttackTerritory:new(...);
 end
 
-b_Reward_AI_SpawnAndAttackTerritory = {
+B_Reward_AI_SpawnAndAttackTerritory = {
     Name = "Reward_AI_SpawnAndAttackTerritory",
     Description = {
         en = "Reward: Spawns AI troops and attacks a territory (Hint: Use for hidden quests as a surprise)",
@@ -5688,11 +5688,11 @@ b_Reward_AI_SpawnAndAttackTerritory = {
     },
 }
 
-function b_Reward_AI_SpawnAndAttackTerritory:GetRewardTable()
+function B_Reward_AI_SpawnAndAttackTerritory:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_AI_SpawnAndAttackTerritory:AddParameter(_Index, _Parameter)
+function B_Reward_AI_SpawnAndAttackTerritory:AddParameter(_Index, _Parameter)
 
     if (_Index == 0) then
         self.AIPlayerID = _Parameter * 1
@@ -5733,7 +5733,7 @@ function b_Reward_AI_SpawnAndAttackTerritory:AddParameter(_Index, _Parameter)
 
 end
 
-function b_Reward_AI_SpawnAndAttackTerritory:GetCustomData( _Index )
+function B_Reward_AI_SpawnAndAttackTerritory:GetCustomData( _Index )
 
     local Data = {}
     if _Index == 9 then
@@ -5756,7 +5756,7 @@ function b_Reward_AI_SpawnAndAttackTerritory:GetCustomData( _Index )
 
 end
 
-function b_Reward_AI_SpawnAndAttackTerritory:CustomFunction(_Quest)
+function B_Reward_AI_SpawnAndAttackTerritory:CustomFunction(_Quest)
 
     local TargetID = Logic.GetTerritoryAcquiringBuildingID( self.TerritoryID )
     if TargetID ~= 0 then
@@ -5765,7 +5765,7 @@ function b_Reward_AI_SpawnAndAttackTerritory:CustomFunction(_Quest)
 
 end
 
-function b_Reward_AI_SpawnAndAttackTerritory:Debug(_Quest)
+function B_Reward_AI_SpawnAndAttackTerritory:Debug(_Quest)
     if self.AIPlayerID < 2 then
         error(_Quest.Identifier.. ": " ..self.Name .. ": Player " .. self.AIPlayerID .. " is wrong")
         return true
@@ -5800,7 +5800,7 @@ function b_Reward_AI_SpawnAndAttackTerritory:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reward_AI_SpawnAndAttackTerritory);
+Swift:RegisterBehavior(B_Reward_AI_SpawnAndAttackTerritory);
 
 -- -------------------------------------------------------------------------- --
 
@@ -5823,10 +5823,10 @@ Swift:RegisterBehavior(b_Reward_AI_SpawnAndAttackTerritory);
 -- @within Reward
 --
 function Reward_AI_SpawnAndAttackArea(...)
-    return b_Reward_AI_SpawnAndAttackArea:new(...);
+    return B_Reward_AI_SpawnAndAttackArea:new(...);
 end
 
-b_Reward_AI_SpawnAndAttackArea = {
+B_Reward_AI_SpawnAndAttackArea = {
     Name = "Reward_AI_SpawnAndAttackArea",
     Description = {
         en = "Reward: Spawns AI troops and attacks everything within the specified area, except the players main buildings",
@@ -5844,11 +5844,11 @@ b_Reward_AI_SpawnAndAttackArea = {
     },
 }
 
-function b_Reward_AI_SpawnAndAttackArea:GetRewardTable()
+function B_Reward_AI_SpawnAndAttackArea:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_AI_SpawnAndAttackArea:AddParameter(_Index, _Parameter)
+function B_Reward_AI_SpawnAndAttackArea:AddParameter(_Index, _Parameter)
 
     if (_Index == 0) then
         self.AIPlayerID = _Parameter * 1
@@ -5879,7 +5879,7 @@ function b_Reward_AI_SpawnAndAttackArea:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Reward_AI_SpawnAndAttackArea:GetCustomData( _Index )
+function B_Reward_AI_SpawnAndAttackArea:GetCustomData( _Index )
     local Data = {}
     if _Index == 6 then
         table.insert( Data, "Normal" )
@@ -5897,14 +5897,14 @@ function b_Reward_AI_SpawnAndAttackArea:GetCustomData( _Index )
     return Data
 end
 
-function b_Reward_AI_SpawnAndAttackArea:CustomFunction(_Quest)
+function B_Reward_AI_SpawnAndAttackArea:CustomFunction(_Quest)
     if Logic.IsEntityAlive( self.TargetName ) and Logic.IsEntityAlive( self.Spawnpoint ) then
         local TargetID = GetID( self.TargetName )
         AIScript_SpawnAndRaidSettlement( self.AIPlayerID, TargetID, self.Spawnpoint, self.Radius, self.NumSword, self.NumBow, self.TroopType, self.ReuseTroops )
     end
 end
 
-function b_Reward_AI_SpawnAndAttackArea:Debug(_Quest)
+function B_Reward_AI_SpawnAndAttackArea:Debug(_Quest)
     if self.AIPlayerID < 2 then
         error(_Quest.Identifier.. ": " ..self.Name .. ": Player " .. self.AIPlayerID .. " is wrong")
         return true
@@ -5930,7 +5930,7 @@ function b_Reward_AI_SpawnAndAttackArea:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reward_AI_SpawnAndAttackArea);
+Swift:RegisterBehavior(B_Reward_AI_SpawnAndAttackArea);
 
 -- -------------------------------------------------------------------------- --
 
@@ -5951,10 +5951,10 @@ Swift:RegisterBehavior(b_Reward_AI_SpawnAndAttackArea);
 -- @within Reward
 --
 function Reward_AI_SpawnAndProtectArea(...)
-    return b_Reward_AI_SpawnAndProtectArea:new(...);
+    return B_Reward_AI_SpawnAndProtectArea:new(...);
 end
 
-b_Reward_AI_SpawnAndProtectArea = {
+B_Reward_AI_SpawnAndProtectArea = {
     Name = "Reward_AI_SpawnAndProtectArea",
     Description = {
         en = "Reward: Spawns AI troops and defends a specified area",
@@ -5974,11 +5974,11 @@ b_Reward_AI_SpawnAndProtectArea = {
     },
 }
 
-function b_Reward_AI_SpawnAndProtectArea:GetRewardTable()
+function B_Reward_AI_SpawnAndProtectArea:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_AI_SpawnAndProtectArea:AddParameter(_Index, _Parameter)
+function B_Reward_AI_SpawnAndProtectArea:AddParameter(_Index, _Parameter)
 
     if (_Index == 0) then
         self.AIPlayerID = _Parameter * 1
@@ -6014,7 +6014,7 @@ function b_Reward_AI_SpawnAndProtectArea:AddParameter(_Index, _Parameter)
 
 end
 
-function b_Reward_AI_SpawnAndProtectArea:GetCustomData( _Index )
+function B_Reward_AI_SpawnAndProtectArea:GetCustomData( _Index )
 
     local Data = {}
     if _Index == 7 then
@@ -6040,7 +6040,7 @@ function b_Reward_AI_SpawnAndProtectArea:GetCustomData( _Index )
 
 end
 
-function b_Reward_AI_SpawnAndProtectArea:CustomFunction(_Quest)
+function B_Reward_AI_SpawnAndProtectArea:CustomFunction(_Quest)
 
     if Logic.IsEntityAlive( self.TargetName ) and Logic.IsEntityAlive( self.Spawnpoint ) then
         local TargetID = GetID( self.TargetName )
@@ -6049,7 +6049,7 @@ function b_Reward_AI_SpawnAndProtectArea:CustomFunction(_Quest)
 
 end
 
-function b_Reward_AI_SpawnAndProtectArea:Debug(_Quest)
+function B_Reward_AI_SpawnAndProtectArea:Debug(_Quest)
     if self.AIPlayerID < 2 then
         error(_Quest.Identifier.. ": " ..self.Name .. ": Player " .. self.AIPlayerID .. " is wrong")
         return true
@@ -6078,7 +6078,7 @@ function b_Reward_AI_SpawnAndProtectArea:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reward_AI_SpawnAndProtectArea);
+Swift:RegisterBehavior(B_Reward_AI_SpawnAndProtectArea);
 
 -- -------------------------------------------------------------------------- --
 
@@ -6108,10 +6108,10 @@ Swift:RegisterBehavior(b_Reward_AI_SpawnAndProtectArea);
 -- @within Reward
 --
 function Reward_AI_SetNumericalFact(...)
-    return b_Reward_AI_SetNumericalFact:new(...);
+    return B_Reward_AI_SetNumericalFact:new(...);
 end
 
-b_Reward_AI_SetNumericalFact = {
+B_Reward_AI_SetNumericalFact = {
     Name = "Reward_AI_SetNumericalFact",
     Description = {
         en = "Reward: Sets a numerical fact for the AI player",
@@ -6124,11 +6124,11 @@ b_Reward_AI_SetNumericalFact = {
     },
 }
 
-function b_Reward_AI_SetNumericalFact:GetRewardTable()
+function B_Reward_AI_SetNumericalFact:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_AI_SetNumericalFact:AddParameter(_Index, _Parameter)
+function B_Reward_AI_SetNumericalFact:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.AIPlayerID = _Parameter * 1
     elseif (_Index == 1) then
@@ -6165,11 +6165,11 @@ function b_Reward_AI_SetNumericalFact:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Reward_AI_SetNumericalFact:CustomFunction(_Quest)
+function B_Reward_AI_SetNumericalFact:CustomFunction(_Quest)
     AICore.SetNumericalFact( self.AIPlayerID, self.NumericalFact, self.Value )
 end
 
-function b_Reward_AI_SetNumericalFact:GetCustomData(_Index)
+function B_Reward_AI_SetNumericalFact:GetCustomData(_Index)
     if (_Index == 1) then
         return {
             "Courage",
@@ -6188,7 +6188,7 @@ function b_Reward_AI_SetNumericalFact:GetCustomData(_Index)
     end
 end
 
-function b_Reward_AI_SetNumericalFact:Debug(_Quest)
+function B_Reward_AI_SetNumericalFact:Debug(_Quest)
     if Logic.GetStoreHouse(self.AIPlayerID) == 0 then
         error(_Quest.Identifier.. ": " ..self.Name .. ": Player " .. self.AIPlayerID .. " is wrong or dead!");
         return true;
@@ -6216,7 +6216,7 @@ function b_Reward_AI_SetNumericalFact:Debug(_Quest)
     return false
 end
 
-Swift:RegisterBehavior(b_Reward_AI_SetNumericalFact);
+Swift:RegisterBehavior(B_Reward_AI_SetNumericalFact);
 
 -- -------------------------------------------------------------------------- --
 
@@ -6229,10 +6229,10 @@ Swift:RegisterBehavior(b_Reward_AI_SetNumericalFact);
 -- @within Reward
 --
 function Reward_AI_Aggressiveness(...)
-    return b_Reward_AI_Aggressiveness:new(...);
+    return B_Reward_AI_Aggressiveness:new(...);
 end
 
-b_Reward_AI_Aggressiveness = {
+B_Reward_AI_Aggressiveness = {
     Name = "Reward_AI_Aggressiveness",
     Description = {
         en = "Reward: Sets the AI player's aggressiveness.",
@@ -6245,11 +6245,11 @@ b_Reward_AI_Aggressiveness = {
     }
 };
 
-function b_Reward_AI_Aggressiveness:GetRewardTable()
+function B_Reward_AI_Aggressiveness:GetRewardTable()
     return {Reward.Custom, {self, self.CustomFunction} };
 end
 
-function b_Reward_AI_Aggressiveness:AddParameter(_Index, _Parameter)
+function B_Reward_AI_Aggressiveness:AddParameter(_Index, _Parameter)
     if _Index == 0 then
         self.AIPlayer = _Parameter * 1;
     elseif _Index == 1 then
@@ -6257,7 +6257,7 @@ function b_Reward_AI_Aggressiveness:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Reward_AI_Aggressiveness:CustomFunction()
+function B_Reward_AI_Aggressiveness:CustomFunction()
     local player = (PlayerAIs[self.AIPlayer]
         or AIPlayerTable[self.AIPlayer]
         or AIPlayer:new(self.AIPlayer, AIPlayerProfile_City));
@@ -6272,18 +6272,18 @@ function b_Reward_AI_Aggressiveness:CustomFunction()
     end
 end
 
-function b_Reward_AI_Aggressiveness:Debug(_Quest)
+function B_Reward_AI_Aggressiveness:Debug(_Quest)
     if self.AIPlayer < 1 or Logic.GetStoreHouse(self.AIPlayer) == 0 then
         error(_Quest.Identifier.. ": " ..self.Name .. ": Player " .. self.AIPlayer .. " is wrong");
         return true;
     end
 end
 
-function b_Reward_AI_Aggressiveness:GetCustomData(_Index)
+function B_Reward_AI_Aggressiveness:GetCustomData(_Index)
     return { "1", "2", "3" };
 end
 
-Swift:RegisterBehavior(b_Reward_AI_Aggressiveness)
+Swift:RegisterBehavior(B_Reward_AI_Aggressiveness)
 
 -- -------------------------------------------------------------------------- --
 
@@ -6299,10 +6299,10 @@ Swift:RegisterBehavior(b_Reward_AI_Aggressiveness)
 -- @within Reward
 --
 function Reward_AI_SetEnemy(...)
-    return b_Reward_AI_SetEnemy:new(...);
+    return B_Reward_AI_SetEnemy:new(...);
 end
 
-b_Reward_AI_SetEnemy = {
+B_Reward_AI_SetEnemy = {
     Name = "Reward_AI_SetEnemy",
     Description = {
         en = "Reward:Sets the enemy of an AI player (the AI only handles one enemy properly).",
@@ -6315,13 +6315,13 @@ b_Reward_AI_SetEnemy = {
     }
 };
 
-function b_Reward_AI_SetEnemy:GetRewardTable()
+function B_Reward_AI_SetEnemy:GetRewardTable()
 
     return {Reward.Custom, {self, self.CustomFunction} };
 
 end
 
-function b_Reward_AI_SetEnemy:AddParameter(_Index, _Parameter)
+function B_Reward_AI_SetEnemy:AddParameter(_Index, _Parameter)
 
     if _Index == 0 then
         self.AIPlayer = _Parameter * 1;
@@ -6331,7 +6331,7 @@ function b_Reward_AI_SetEnemy:AddParameter(_Index, _Parameter)
 
 end
 
-function b_Reward_AI_SetEnemy:CustomFunction()
+function B_Reward_AI_SetEnemy:CustomFunction()
 
     local player = PlayerAIs[self.AIPlayer];
     if player and player.Skirmish then
@@ -6340,14 +6340,14 @@ function b_Reward_AI_SetEnemy:CustomFunction()
 
 end
 
-function b_Reward_AI_SetEnemy:Debug(_Quest)
+function B_Reward_AI_SetEnemy:Debug(_Quest)
     if self.AIPlayer < 1 or self.AIPlayer > 8 or Logic.PlayerGetIsHumanFlag(self.AIPlayer) then
         error(_Quest.Identifier.. ": " ..self.Name .. ": Player " .. self.AIPlayer .. " is wrong");
         return true;
     end
     return false;
 end
-Swift:RegisterBehavior(b_Reward_AI_SetEnemy)
+Swift:RegisterBehavior(B_Reward_AI_SetEnemy)
 
 -- -------------------------------------------------------------------------- --
 
@@ -6364,20 +6364,20 @@ Swift:RegisterBehavior(b_Reward_AI_SetEnemy)
 -- @within Reward
 --
 function Reward_ReplaceEntity(...)
-    return b_Reward_ReplaceEntity:new(...);
+    return B_Reward_ReplaceEntity:new(...);
 end
 
-b_Reward_ReplaceEntity = Swift:CopyTable(b_Reprisal_ReplaceEntity);
-b_Reward_ReplaceEntity.Name = "Reward_ReplaceEntity";
-b_Reward_ReplaceEntity.Description.en = "Reward: Replaces an entity with a new one of a different type. The playerID can be changed too.";
-b_Reward_ReplaceEntity.Description.de = "Lohn: Ersetzt eine Entity durch eine neue anderen Typs. Es kann auch die Spielerzugehörigkeit geändert werden.";
-b_Reward_ReplaceEntity.GetReprisalTable = nil;
+B_Reward_ReplaceEntity = Swift:CopyTable(B_Reprisal_ReplaceEntity);
+B_Reward_ReplaceEntity.Name = "Reward_ReplaceEntity";
+B_Reward_ReplaceEntity.Description.en = "Reward: Replaces an entity with a new one of a different type. The playerID can be changed too.";
+B_Reward_ReplaceEntity.Description.de = "Lohn: Ersetzt eine Entity durch eine neue anderen Typs. Es kann auch die Spielerzugehörigkeit geändert werden.";
+B_Reward_ReplaceEntity.GetReprisalTable = nil;
 
-b_Reward_ReplaceEntity.GetRewardTable = function(self, _Quest)
+B_Reward_ReplaceEntity.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-Swift:RegisterBehavior(b_Reward_ReplaceEntity);
+Swift:RegisterBehavior(B_Reward_ReplaceEntity);
 
 -- -------------------------------------------------------------------------- --
 
@@ -6393,10 +6393,10 @@ Swift:RegisterBehavior(b_Reward_ReplaceEntity);
 -- @within Reward
 --
 function Reward_SetResourceAmount(...)
-    return b_Reward_SetResourceAmount:new(...);
+    return B_Reward_SetResourceAmount:new(...);
 end
 
-b_Reward_SetResourceAmount = {
+B_Reward_SetResourceAmount = {
     Name = "Reward_SetResourceAmount",
     Description = {
         en = "Reward: Set the current and maximum amount of a resource doodad (the amount can also set to 0)",
@@ -6408,11 +6408,11 @@ b_Reward_SetResourceAmount = {
     },
 }
 
-function b_Reward_SetResourceAmount:GetRewardTable()
+function B_Reward_SetResourceAmount:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_SetResourceAmount:AddParameter(_Index, _Parameter)
+function B_Reward_SetResourceAmount:AddParameter(_Index, _Parameter)
 
     if (_Index == 0) then
         self.ScriptName = _Parameter
@@ -6422,7 +6422,7 @@ function b_Reward_SetResourceAmount:AddParameter(_Index, _Parameter)
 
 end
 
-function b_Reward_SetResourceAmount:CustomFunction(_Quest)
+function B_Reward_SetResourceAmount:CustomFunction(_Quest)
     if Logic.IsEntityDestroyed( self.ScriptName ) then
         return false
     end
@@ -6433,7 +6433,7 @@ function b_Reward_SetResourceAmount:CustomFunction(_Quest)
     Logic.SetResourceDoodadGoodAmount( EntityID, self.Amount )
 end
 
-function b_Reward_SetResourceAmount:Debug(_Quest)
+function B_Reward_SetResourceAmount:Debug(_Quest)
     if not IsExisting(self.ScriptName) then
         error(_Quest.Identifier.. ": " ..self.Name .. ": resource entity does not exist!")
         return true
@@ -6444,7 +6444,7 @@ function b_Reward_SetResourceAmount:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reward_SetResourceAmount);
+Swift:RegisterBehavior(B_Reward_SetResourceAmount);
 
 -- -------------------------------------------------------------------------- --
 
@@ -6458,10 +6458,10 @@ Swift:RegisterBehavior(b_Reward_SetResourceAmount);
 -- @within Reward
 --
 function Reward_Resources(...)
-    return b_Reward_Resources:new(...);
+    return B_Reward_Resources:new(...);
 end
 
-b_Reward_Resources = {
+B_Reward_Resources = {
     Name = "Reward_Resources",
     Description = {
         en = "Reward: The player receives a given amount of Goods in his store.",
@@ -6473,7 +6473,7 @@ b_Reward_Resources = {
     },
 }
 
-function b_Reward_Resources:AddParameter(_Index, _Parameter)
+function B_Reward_Resources:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.GoodTypeName = _Parameter
     elseif (_Index == 1) then
@@ -6481,12 +6481,12 @@ function b_Reward_Resources:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Reward_Resources:GetRewardTable()
+function B_Reward_Resources:GetRewardTable()
     local GoodType = Logic.GetGoodTypeID(self.GoodTypeName)
     return { Reward.Resources, GoodType, self.GoodAmount }
 end
 
-Swift:RegisterBehavior(b_Reward_Resources);
+Swift:RegisterBehavior(B_Reward_Resources);
 
 -- -------------------------------------------------------------------------- --
 
@@ -6509,10 +6509,10 @@ Swift:RegisterBehavior(b_Reward_Resources);
 -- @within Reward
 --
 function Reward_SendCart(...)
-    return b_Reward_SendCart:new(...);
+    return B_Reward_SendCart:new(...);
 end
 
-b_Reward_SendCart = {
+B_Reward_SendCart = {
     Name = "Reward_SendCart",
     Description = {
         en = "Reward: Sends a cart to a player. It spawns at a building or by replacing an entity. The cart can replace the entity if it's not a building.",
@@ -6530,11 +6530,11 @@ b_Reward_SendCart = {
     },
 }
 
-function b_Reward_SendCart:GetRewardTable()
+function B_Reward_SendCart:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_SendCart:AddParameter(_Index, _Parameter)
+function B_Reward_SendCart:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.ScriptNameEntity = _Parameter
     elseif (_Index == 1) then
@@ -6554,7 +6554,7 @@ function b_Reward_SendCart:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Reward_SendCart:CustomFunction(_Quest)
+function B_Reward_SendCart:CustomFunction(_Quest)
 
     if not IsExisting( self.ScriptNameEntity ) then
         return false;
@@ -6571,7 +6571,7 @@ function b_Reward_SendCart:CustomFunction(_Quest)
     end
 end
 
-function b_Reward_SendCart:GetCustomData( _Index )
+function B_Reward_SendCart:GetCustomData( _Index )
     local Data = {};
     if _Index == 2 then
         Data = { "U_ResourceMerchant", "U_Medicus", "U_Marketer", "U_ThiefCart", "U_GoldCart", "U_Noblemen_Cart", "U_RegaliaCart" };
@@ -6597,7 +6597,7 @@ function b_Reward_SendCart:GetCustomData( _Index )
     return Data;
 end
 
-function b_Reward_SendCart:Debug(_Quest)
+function B_Reward_SendCart:Debug(_Quest)
     if not IsExisting(self.ScriptNameEntity) then
         error(_Quest.Identifier.. ": " ..self.Name .. ": spawnpoint does not exist!");
         return true;
@@ -6620,7 +6620,7 @@ function b_Reward_SendCart:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reward_SendCart);
+Swift:RegisterBehavior(B_Reward_SendCart);
 
 -- -------------------------------------------------------------------------- --
 
@@ -6636,10 +6636,10 @@ Swift:RegisterBehavior(b_Reward_SendCart);
 -- @within Reward
 --
 function Reward_Units(...)
-    return b_Reward_Units:new(...)
+    return B_Reward_Units:new(...)
 end
 
-b_Reward_Units = {
+B_Reward_Units = {
     Name = "Reward_Units",
     Description = {
         en = "Reward: Units",
@@ -6651,7 +6651,7 @@ b_Reward_Units = {
     },
 }
 
-function b_Reward_Units:AddParameter(_Index, _Parameter)
+function B_Reward_Units:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.EntityName = _Parameter
     elseif (_Index == 1) then
@@ -6659,11 +6659,11 @@ function b_Reward_Units:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Reward_Units:GetRewardTable()
+function B_Reward_Units:GetRewardTable()
     return { Reward.Units, assert( Entities[self.EntityName] ), self.Amount }
 end
 
-Swift:RegisterBehavior(b_Reward_Units);
+Swift:RegisterBehavior(B_Reward_Units);
 
 -- -------------------------------------------------------------------------- --
 
@@ -6675,20 +6675,20 @@ Swift:RegisterBehavior(b_Reward_Units);
 -- @within Reward
 --
 function Reward_QuestRestart(...)
-    return b_Reward_QuestRestart:new(...)
+    return B_Reward_QuestRestart:new(...)
 end
 
-b_Reward_QuestRestart = Swift:CopyTable(b_Reprisal_QuestRestart);
-b_Reward_QuestRestart.Name = "Reward_QuestRestart";
-b_Reward_QuestRestart.Description.en = "Reward: Restarts a (completed) quest so it can be triggered and completed again.";
-b_Reward_QuestRestart.Description.de = "Lohn: Startet eine (beendete) Quest neu, damit diese neu ausgelöst und beendet werden kann.";
-b_Reward_QuestRestart.GetReprisalTable = nil;
+B_Reward_QuestRestart = Swift:CopyTable(B_Reprisal_QuestRestart);
+B_Reward_QuestRestart.Name = "Reward_QuestRestart";
+B_Reward_QuestRestart.Description.en = "Reward: Restarts a (completed) quest so it can be triggered and completed again.";
+B_Reward_QuestRestart.Description.de = "Lohn: Startet eine (beendete) Quest neu, damit diese neu ausgelöst und beendet werden kann.";
+B_Reward_QuestRestart.GetReprisalTable = nil;
 
-b_Reward_QuestRestart.GetRewardTable = function(self, _Quest)
+B_Reward_QuestRestart.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-Swift:RegisterBehavior(b_Reward_QuestRestart);
+Swift:RegisterBehavior(B_Reward_QuestRestart);
 
 -- -------------------------------------------------------------------------- --
 
@@ -6700,20 +6700,20 @@ Swift:RegisterBehavior(b_Reward_QuestRestart);
 -- @within Reward
 --
 function Reward_QuestFailure(...)
-    return b_Reward_QuestFailure:new(...)
+    return B_Reward_QuestFailure:new(...)
 end
 
-b_Reward_QuestFailure = Swift:CopyTable(b_Reprisal_QuestFailure);
-b_Reward_QuestFailure.Name = "Reward_QuestFailure";
-b_Reward_QuestFailure.Description.en = "Reward: Lets another active quest fail.";
-b_Reward_QuestFailure.Description.de = "Lohn: Lässt eine andere aktive Quest fehlschlagen.";
-b_Reward_QuestFailure.GetReprisalTable = nil;
+B_Reward_QuestFailure = Swift:CopyTable(B_Reprisal_QuestFailure);
+B_Reward_QuestFailure.Name = "Reward_QuestFailure";
+B_Reward_QuestFailure.Description.en = "Reward: Lets another active quest fail.";
+B_Reward_QuestFailure.Description.de = "Lohn: Lässt eine andere aktive Quest fehlschlagen.";
+B_Reward_QuestFailure.GetReprisalTable = nil;
 
-b_Reward_QuestFailure.GetRewardTable = function(self, _Quest)
+B_Reward_QuestFailure.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-Swift:RegisterBehavior(b_Reward_QuestFailure);
+Swift:RegisterBehavior(B_Reward_QuestFailure);
 
 -- -------------------------------------------------------------------------- --
 
@@ -6725,20 +6725,20 @@ Swift:RegisterBehavior(b_Reward_QuestFailure);
 -- @within Reward
 --
 function Reward_QuestSuccess(...)
-    return b_Reward_QuestSuccess:new(...)
+    return B_Reward_QuestSuccess:new(...)
 end
 
-b_Reward_QuestSuccess = Swift:CopyTable(b_Reprisal_QuestSuccess);
-b_Reward_QuestSuccess.Name = "Reward_QuestSuccess";
-b_Reward_QuestSuccess.Description.en = "Reward: Completes another active quest successfully.";
-b_Reward_QuestSuccess.Description.de = "Lohn: Beendet eine andere aktive Quest erfolgreich.";
-b_Reward_QuestSuccess.GetReprisalTable = nil;
+B_Reward_QuestSuccess = Swift:CopyTable(B_Reprisal_QuestSuccess);
+B_Reward_QuestSuccess.Name = "Reward_QuestSuccess";
+B_Reward_QuestSuccess.Description.en = "Reward: Completes another active quest successfully.";
+B_Reward_QuestSuccess.Description.de = "Lohn: Beendet eine andere aktive Quest erfolgreich.";
+B_Reward_QuestSuccess.GetReprisalTable = nil;
 
-b_Reward_QuestSuccess.GetRewardTable = function(self, _Quest)
+B_Reward_QuestSuccess.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-Swift:RegisterBehavior(b_Reward_QuestSuccess);
+Swift:RegisterBehavior(B_Reward_QuestSuccess);
 
 -- -------------------------------------------------------------------------- --
 
@@ -6750,20 +6750,20 @@ Swift:RegisterBehavior(b_Reward_QuestSuccess);
 -- @within Reward
 --
 function Reward_QuestActivate(...)
-    return b_Reward_QuestActivate:new(...)
+    return B_Reward_QuestActivate:new(...)
 end
 
-b_Reward_QuestActivate = Swift:CopyTable(b_Reprisal_QuestActivate);
-b_Reward_QuestActivate.Name = "Reward_QuestActivate";
-b_Reward_QuestActivate.Description.en = "Reward: Activates another quest that is not triggered yet.";
-b_Reward_QuestActivate.Description.de = "Lohn: Aktiviert eine andere Quest die noch nicht ausgelöst wurde.";
-b_Reward_QuestActivate.GetReprisalTable = nil;
+B_Reward_QuestActivate = Swift:CopyTable(B_Reprisal_QuestActivate);
+B_Reward_QuestActivate.Name = "Reward_QuestActivate";
+B_Reward_QuestActivate.Description.en = "Reward: Activates another quest that is not triggered yet.";
+B_Reward_QuestActivate.Description.de = "Lohn: Aktiviert eine andere Quest die noch nicht ausgelöst wurde.";
+B_Reward_QuestActivate.GetReprisalTable = nil;
 
-b_Reward_QuestActivate.GetRewardTable = function(self, _Quest)
+B_Reward_QuestActivate.GetRewardTable = function(self, _Quest)
     return {Reward.Custom, {self, self.CustomFunction} }
 end
 
-Swift:RegisterBehavior(b_Reward_QuestActivate)
+Swift:RegisterBehavior(B_Reward_QuestActivate)
 
 -- -------------------------------------------------------------------------- --
 
@@ -6775,20 +6775,20 @@ Swift:RegisterBehavior(b_Reward_QuestActivate)
 -- @within Reward
 --
 function Reward_QuestInterrupt(...)
-    return b_Reward_QuestInterrupt:new(...)
+    return B_Reward_QuestInterrupt:new(...)
 end
 
-b_Reward_QuestInterrupt = Swift:CopyTable(b_Reprisal_QuestInterrupt);
-b_Reward_QuestInterrupt.Name = "Reward_QuestInterrupt";
-b_Reward_QuestInterrupt.Description.en = "Reward: Interrupts another active quest without success or failure.";
-b_Reward_QuestInterrupt.Description.de = "Lohn: Beendet eine andere aktive Quest ohne Erfolg oder Misserfolg.";
-b_Reward_QuestInterrupt.GetReprisalTable = nil;
+B_Reward_QuestInterrupt = Swift:CopyTable(B_Reprisal_QuestInterrupt);
+B_Reward_QuestInterrupt.Name = "Reward_QuestInterrupt";
+B_Reward_QuestInterrupt.Description.en = "Reward: Interrupts another active quest without success or failure.";
+B_Reward_QuestInterrupt.Description.de = "Lohn: Beendet eine andere aktive Quest ohne Erfolg oder Misserfolg.";
+B_Reward_QuestInterrupt.GetReprisalTable = nil;
 
-b_Reward_QuestInterrupt.GetRewardTable = function(self, _Quest)
+B_Reward_QuestInterrupt.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-Swift:RegisterBehavior(b_Reward_QuestInterrupt);
+Swift:RegisterBehavior(B_Reward_QuestInterrupt);
 
 -- -------------------------------------------------------------------------- --
 
@@ -6801,20 +6801,20 @@ Swift:RegisterBehavior(b_Reward_QuestInterrupt);
 -- @within Reward
 --
 function Reward_QuestForceInterrupt(...)
-    return b_Reward_QuestForceInterrupt:new(...)
+    return B_Reward_QuestForceInterrupt:new(...)
 end
 
-b_Reward_QuestForceInterrupt = Swift:CopyTable(b_Reprisal_QuestForceInterrupt);
-b_Reward_QuestForceInterrupt.Name = "Reward_QuestForceInterrupt";
-b_Reward_QuestForceInterrupt.Description.en = "Reward: Interrupts another quest (even when it isn't active yet) without success or failure.";
-b_Reward_QuestForceInterrupt.Description.de = "Lohn: Beendet eine andere Quest, auch wenn diese noch nicht aktiv ist ohne Erfolg oder Misserfolg.";
-b_Reward_QuestForceInterrupt.GetReprisalTable = nil;
+B_Reward_QuestForceInterrupt = Swift:CopyTable(B_Reprisal_QuestForceInterrupt);
+B_Reward_QuestForceInterrupt.Name = "Reward_QuestForceInterrupt";
+B_Reward_QuestForceInterrupt.Description.en = "Reward: Interrupts another quest (even when it isn't active yet) without success or failure.";
+B_Reward_QuestForceInterrupt.Description.de = "Lohn: Beendet eine andere Quest, auch wenn diese noch nicht aktiv ist ohne Erfolg oder Misserfolg.";
+B_Reward_QuestForceInterrupt.GetReprisalTable = nil;
 
-b_Reward_QuestForceInterrupt.GetRewardTable = function(self, _Quest)
+B_Reward_QuestForceInterrupt.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-Swift:RegisterBehavior(b_Reward_QuestForceInterrupt);
+Swift:RegisterBehavior(B_Reward_QuestForceInterrupt);
 
 -- -------------------------------------------------------------------------- --
 
@@ -6842,20 +6842,20 @@ Swift:RegisterBehavior(b_Reward_QuestForceInterrupt);
 -- @within Reward
 --
 function Reward_CustomVariables(...)
-    return b_Reward_CustomVariables:new(...);
+    return B_Reward_CustomVariables:new(...);
 end
 
-b_Reward_CustomVariables = Swift:CopyTable(b_Reprisal_CustomVariables);
-b_Reward_CustomVariables.Name = "Reward_CustomVariables";
-b_Reward_CustomVariables.Description.en = "Reward: Executes a mathematical operation with this variable. The other operand can be a number or another custom variable.";
-b_Reward_CustomVariables.Description.de = "Lohn: Fuehrt eine mathematische Operation mit der Variable aus. Der andere Operand kann eine Zahl oder eine Custom-Varible sein.";
-b_Reward_CustomVariables.GetReprisalTable = nil;
+B_Reward_CustomVariables = Swift:CopyTable(B_Reprisal_CustomVariables);
+B_Reward_CustomVariables.Name = "Reward_CustomVariables";
+B_Reward_CustomVariables.Description.en = "Reward: Executes a mathematical operation with this variable. The other operand can be a number or another custom variable.";
+B_Reward_CustomVariables.Description.de = "Lohn: Fuehrt eine mathematische Operation mit der Variable aus. Der andere Operand kann eine Zahl oder eine Custom-Varible sein.";
+B_Reward_CustomVariables.GetReprisalTable = nil;
 
-b_Reward_CustomVariables.GetRewardTable = function(self, _Quest)
+B_Reward_CustomVariables.GetRewardTable = function(self, _Quest)
     return { Reward.Custom, {self, self.CustomFunction} };
 end
 
-Swift:RegisterBehavior(b_Reward_CustomVariables)
+Swift:RegisterBehavior(B_Reward_CustomVariables)
 
 -- -------------------------------------------------------------------------- --
 
@@ -6877,20 +6877,20 @@ Swift:RegisterBehavior(b_Reward_CustomVariables)
 -- @within Reward
 --
 function Reward_MapScriptFunction(...)
-    return b_Reward_MapScriptFunction:new(...);
+    return B_Reward_MapScriptFunction:new(...);
 end
 
-b_Reward_MapScriptFunction = Swift:CopyTable(b_Reprisal_MapScriptFunction);
-b_Reward_MapScriptFunction.Name = "Reward_MapScriptFunction";
-b_Reward_MapScriptFunction.Description.en = "Reward: Calls a function within the global map script if the quest has failed.";
-b_Reward_MapScriptFunction.Description.de = "Lohn: Ruft eine Funktion im globalen Kartenskript auf, wenn die Quest fehlschlägt.";
-b_Reward_MapScriptFunction.GetReprisalTable = nil;
+B_Reward_MapScriptFunction = Swift:CopyTable(B_Reprisal_MapScriptFunction);
+B_Reward_MapScriptFunction.Name = "Reward_MapScriptFunction";
+B_Reward_MapScriptFunction.Description.en = "Reward: Calls a function within the global map script if the quest has failed.";
+B_Reward_MapScriptFunction.Description.de = "Lohn: Ruft eine Funktion im globalen Kartenskript auf, wenn die Quest fehlschlägt.";
+B_Reward_MapScriptFunction.GetReprisalTable = nil;
 
-b_Reward_MapScriptFunction.GetRewardTable = function(self, _Quest)
+B_Reward_MapScriptFunction.GetRewardTable = function(self, _Quest)
     return {Reward.Custom, {self, self.CustomFunction}};
 end
 
-Swift:RegisterBehavior(b_Reward_MapScriptFunction);
+Swift:RegisterBehavior(B_Reward_MapScriptFunction);
 
 -- -------------------------------------------------------------------------- --
 
@@ -6904,20 +6904,20 @@ Swift:RegisterBehavior(b_Reward_MapScriptFunction);
 -- @within Reward
 --
 function Reward_Technology(...)
-    return b_Reward_Technology:new(...);
+    return B_Reward_Technology:new(...);
 end
 
-b_Reward_Technology = Swift:CopyTable(b_Reprisal_Technology);
-b_Reward_Technology.Name = "Reward_Technology";
-b_Reward_Technology.Description.en = "Reward: Locks or unlocks a technology for the given player.";
-b_Reward_Technology.Description.de = "Lohn: Sperrt oder erlaubt eine Technolgie fuer den angegebenen Player.";
-b_Reward_Technology.GetReprisalTable = nil;
+B_Reward_Technology = Swift:CopyTable(B_Reprisal_Technology);
+B_Reward_Technology.Name = "Reward_Technology";
+B_Reward_Technology.Description.en = "Reward: Locks or unlocks a technology for the given player.";
+B_Reward_Technology.Description.de = "Lohn: Sperrt oder erlaubt eine Technolgie fuer den angegebenen Player.";
+B_Reward_Technology.GetReprisalTable = nil;
 
-b_Reward_Technology.GetRewardTable = function(self, _Quest)
+B_Reward_Technology.GetRewardTable = function(self, _Quest)
     return { Reward.Custom, {self, self.CustomFunction} }
 end
 
-Swift:RegisterBehavior(b_Reward_Technology);
+Swift:RegisterBehavior(B_Reward_Technology);
 
 ---
 -- Gibt dem Auftragnehmer eine Anzahl an Prestigepunkten.
@@ -6930,10 +6930,10 @@ Swift:RegisterBehavior(b_Reward_Technology);
 -- @within Reward
 --
 function Reward_PrestigePoints(...)
-    return b_Reward_PrestigePoints:mew(...);
+    return B_Reward_PrestigePoints:mew(...);
 end
 
-b_Reward_PrestigePoints  = {
+B_Reward_PrestigePoints  = {
     Name = "Reward_PrestigePoints",
     Description = {
         en = "Reward: Prestige",
@@ -6944,17 +6944,17 @@ b_Reward_PrestigePoints  = {
     },
 }
 
-function b_Reward_PrestigePoints :AddParameter(_Index, _Parameter)
+function B_Reward_PrestigePoints :AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.Points = _Parameter
     end
 end
 
-function b_Reward_PrestigePoints :GetRewardTable()
+function B_Reward_PrestigePoints :GetRewardTable()
     return { Reward.PrestigePoints, self.Points }
 end
 
-Swift:RegisterBehavior(b_Reward_PrestigePoints);
+Swift:RegisterBehavior(B_Reward_PrestigePoints);
 
 -- -------------------------------------------------------------------------- --
 
@@ -6967,10 +6967,10 @@ Swift:RegisterBehavior(b_Reward_PrestigePoints);
 -- @within Reward
 --
 function Reward_AI_MountOutpost(...)
-    return b_Reward_AI_MountOutpost:new(...);
+    return B_Reward_AI_MountOutpost:new(...);
 end
 
-b_Reward_AI_MountOutpost = {
+B_Reward_AI_MountOutpost = {
     Name = "Reward_AI_MountOutpost",
     Description = {
         en = "Reward: Places a troop of soldiers on a named outpost.",
@@ -6982,11 +6982,11 @@ b_Reward_AI_MountOutpost = {
     },
 }
 
-function b_Reward_AI_MountOutpost:GetRewardTable()
+function B_Reward_AI_MountOutpost:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_AI_MountOutpost:AddParameter(_Index, _Parameter)
+function B_Reward_AI_MountOutpost:AddParameter(_Index, _Parameter)
     if _Index == 0 then
         self.Scriptname = _Parameter
     else
@@ -6994,7 +6994,7 @@ function b_Reward_AI_MountOutpost:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Reward_AI_MountOutpost:CustomFunction(_Quest)
+function B_Reward_AI_MountOutpost:CustomFunction(_Quest)
     local outpostID = assert(
         not Logic.IsEntityDestroyed(self.Scriptname) and GetID(self.Scriptname),
        _Quest.Identifier .. ": Error in " .. self.Name .. ": CustomFunction: Outpost is invalid"
@@ -7006,7 +7006,7 @@ function b_Reward_AI_MountOutpost:CustomFunction(_Quest)
     Logic.CommandEntityToMountBuilding(TroopID, outpostID)
 end
 
-function b_Reward_AI_MountOutpost:GetCustomData(_Index)
+function B_Reward_AI_MountOutpost:GetCustomData(_Index)
     if _Index == 1 then
         local Data = {}
         for k,v in pairs(Entities) do
@@ -7018,14 +7018,14 @@ function b_Reward_AI_MountOutpost:GetCustomData(_Index)
     end
 end
 
-function b_Reward_AI_MountOutpost:Debug(_Quest)
+function B_Reward_AI_MountOutpost:Debug(_Quest)
     if Logic.IsEntityDestroyed(self.Scriptname) then
         error(_Quest.Identifier.. ": " ..self.Name .. ": Outpost " .. self.Scriptname .. " is missing")
         return true
     end
 end
 
-Swift:RegisterBehavior(b_Reward_AI_MountOutpost)
+Swift:RegisterBehavior(B_Reward_AI_MountOutpost)
 
 -- -------------------------------------------------------------------------- --
 
@@ -7037,10 +7037,10 @@ Swift:RegisterBehavior(b_Reward_AI_MountOutpost)
 -- @within Reward
 --
 function Reward_QuestRestartForceActive(...)
-    return b_Reward_QuestRestartForceActive:new(...);
+    return B_Reward_QuestRestartForceActive:new(...);
 end
 
-b_Reward_QuestRestartForceActive = {
+B_Reward_QuestRestartForceActive = {
     Name = "Reward_QuestRestartForceActive",
     Description = {
         en = "Reward: Restarts a (completed) quest and triggers it immediately.",
@@ -7051,15 +7051,15 @@ b_Reward_QuestRestartForceActive = {
     },
 }
 
-function b_Reward_QuestRestartForceActive:GetRewardTable()
+function B_Reward_QuestRestartForceActive:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_QuestRestartForceActive:AddParameter(_Index, _Parameter)
+function B_Reward_QuestRestartForceActive:AddParameter(_Index, _Parameter)
     self.QuestName = _Parameter
 end
 
-function b_Reward_QuestRestartForceActive:CustomFunction(_Quest)
+function B_Reward_QuestRestartForceActive:CustomFunction(_Quest)
     local QuestID, Quest = self:ResetQuest(_Quest);
     if QuestID then
         Quest:SetMsgKeyOverride();
@@ -7068,8 +7068,8 @@ function b_Reward_QuestRestartForceActive:CustomFunction(_Quest)
     end
 end
 
-b_Reward_QuestRestartForceActive.ResetQuest = b_Reward_QuestRestart.CustomFunction;
-function b_Reward_QuestRestartForceActive:Debug(_Quest)
+B_Reward_QuestRestartForceActive.ResetQuest = B_Reward_QuestRestart.CustomFunction;
+function B_Reward_QuestRestartForceActive:Debug(_Quest)
     if not Quests[GetQuestID(self.QuestName)] then
         error(_Quest.Identifier.. ": " ..self.Name .. ": Quest: "..  self.QuestName .. " does not exist");
         return true;
@@ -7077,7 +7077,7 @@ function b_Reward_QuestRestartForceActive:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reward_QuestRestartForceActive)
+Swift:RegisterBehavior(B_Reward_QuestRestartForceActive)
 
 -- -------------------------------------------------------------------------- --
 
@@ -7094,10 +7094,10 @@ Swift:RegisterBehavior(b_Reward_QuestRestartForceActive)
 -- @within Reward
 --
 function Reward_UpgradeBuilding(...)
-    return b_Reward_UpgradeBuilding:new(...);
+    return B_Reward_UpgradeBuilding:new(...);
 end
 
-b_Reward_UpgradeBuilding = {
+B_Reward_UpgradeBuilding = {
     Name = "Reward_UpgradeBuilding",
     Description = {
         en = "Reward: Upgrades a building",
@@ -7108,17 +7108,17 @@ b_Reward_UpgradeBuilding = {
     }
 };
 
-function b_Reward_UpgradeBuilding:GetRewardTable()
+function B_Reward_UpgradeBuilding:GetRewardTable()
     return {Reward.Custom, {self, self.CustomFunction}};
 end
 
-function b_Reward_UpgradeBuilding:AddParameter(_Index, _Parameter)
+function B_Reward_UpgradeBuilding:AddParameter(_Index, _Parameter)
     if _Index == 0 then
         self.Building = _Parameter;
     end
 end
 
-function b_Reward_UpgradeBuilding:CustomFunction(_Quest)
+function B_Reward_UpgradeBuilding:CustomFunction(_Quest)
     local building = GetID(self.Building);
     if building ~= 0
     and Logic.IsBuilding(building) == 1
@@ -7129,7 +7129,7 @@ function b_Reward_UpgradeBuilding:CustomFunction(_Quest)
     end
 end
 
-function b_Reward_UpgradeBuilding:Debug(_Quest)
+function B_Reward_UpgradeBuilding:Debug(_Quest)
     local building = GetID(self.Building);
     if not (building ~= 0
             and Logic.IsBuilding(building) == 1
@@ -7141,7 +7141,7 @@ function b_Reward_UpgradeBuilding:Debug(_Quest)
     end
 end
 
-Swift:RegisterBehavior(b_Reward_UpgradeBuilding)
+Swift:RegisterBehavior(B_Reward_UpgradeBuilding)
 
 ---
 -- Setzt das Upgrade Level des angegebenen Gebäudes.
@@ -7155,10 +7155,10 @@ Swift:RegisterBehavior(b_Reward_UpgradeBuilding)
 -- @within Reward
 --
 function Reward_SetBuildingUpgradeLevel(...)
-    return b_Reward_SetBuildingUpgradeLevel:new(...);
+    return B_Reward_SetBuildingUpgradeLevel:new(...);
 end
 
-b_Reward_SetBuildingUpgradeLevel = {
+B_Reward_SetBuildingUpgradeLevel = {
 	Name = "Reward_SetBuildingUpgradeLevel",
 	Description = {
 		en = "Sets the upgrade level of the specified building.",
@@ -7170,11 +7170,11 @@ b_Reward_SetBuildingUpgradeLevel = {
 	}
 };
  
-function b_Reward_SetBuildingUpgradeLevel:GetRewardTable()
+function B_Reward_SetBuildingUpgradeLevel:GetRewardTable()
 	return {Reward.Custom, self, self.CustomFunction};
 end
  
-function b_Reward_SetBuildingUpgradeLevel:AddParameter(_Index, _Parameter)
+function B_Reward_SetBuildingUpgradeLevel:AddParameter(_Index, _Parameter)
 	if _Index == 0 then
 		self.Building = _Parameter;
 	elseif _Index == 1 then
@@ -7182,7 +7182,7 @@ function b_Reward_SetBuildingUpgradeLevel:AddParameter(_Index, _Parameter)
 	end
 end
  
-function b_Reward_SetBuildingUpgradeLevel:CustomFunction()
+function B_Reward_SetBuildingUpgradeLevel:CustomFunction()
 	local building = Logic.GetEntityIDByName(self.Building);
 	local upgradeLevel = Logic.GetUpgradeLevel(building);
 	local maxUpgradeLevel = Logic.GetMaxUpgradeLevel(building);
@@ -7196,7 +7196,7 @@ function b_Reward_SetBuildingUpgradeLevel:CustomFunction()
 	end
 end
 
-function b_Reward_SetBuildingUpgradeLevel:Debug(_Quest)
+function B_Reward_SetBuildingUpgradeLevel:Debug(_Quest)
 	local building = Logic.GetEntityIDByName( self.Building )
 	local maxUpgradeLevel = Logic.GetMaxUpgradeLevel(building);
 	if not building or Logic.IsBuilding(building) == 0  then
@@ -7208,13 +7208,13 @@ function b_Reward_SetBuildingUpgradeLevel:Debug(_Quest)
 	end
 end
 
-function b_Reward_SetBuildingUpgradeLevel:GetCustomData(_Index)
+function B_Reward_SetBuildingUpgradeLevel:GetCustomData(_Index)
     if _Index == 1 then
         return { "0", "1", "2", "3" };
     end
 end
 
-Swift:RegisterBehavior(b_Reward_SetBuildingUpgradeLevel);
+Swift:RegisterBehavior(B_Reward_SetBuildingUpgradeLevel);
 
 -- TRIGGERS ----------------------------------------------------------------- --
 
@@ -7228,10 +7228,10 @@ Swift:RegisterBehavior(b_Reward_SetBuildingUpgradeLevel);
 -- @within Trigger
 --
 function Trigger_PlayerDiscovered(...)
-    return b_Trigger_PlayerDiscovered:new(...);
+    return B_Trigger_PlayerDiscovered:new(...);
 end
 
-b_Trigger_PlayerDiscovered = {
+B_Trigger_PlayerDiscovered = {
     Name = "Trigger_PlayerDiscovered",
     Description = {
         en = "Trigger: if a given player has been discovered",
@@ -7242,17 +7242,17 @@ b_Trigger_PlayerDiscovered = {
     },
 }
 
-function b_Trigger_PlayerDiscovered:GetTriggerTable()
+function B_Trigger_PlayerDiscovered:GetTriggerTable()
     return {Triggers.PlayerDiscovered, self.PlayerID}
 end
 
-function b_Trigger_PlayerDiscovered:AddParameter(_Index, _Parameter)
+function B_Trigger_PlayerDiscovered:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.PlayerID = _Parameter * 1;
     end
 end
 
-Swift:RegisterBehavior(b_Trigger_PlayerDiscovered);
+Swift:RegisterBehavior(B_Trigger_PlayerDiscovered);
 
 -- -------------------------------------------------------------------------- --
 
@@ -7266,10 +7266,10 @@ Swift:RegisterBehavior(b_Trigger_PlayerDiscovered);
 -- @within Trigger
 --
 function Trigger_OnDiplomacy(...)
-    return b_Trigger_OnDiplomacy:new(...);
+    return B_Trigger_OnDiplomacy:new(...);
 end
 
-b_Trigger_OnDiplomacy = {
+B_Trigger_OnDiplomacy = {
     Name = "Trigger_OnDiplomacy",
     Description = {
         en = "Trigger: if diplomatic relations have been established with a player",
@@ -7281,11 +7281,11 @@ b_Trigger_OnDiplomacy = {
     },
 }
 
-function b_Trigger_OnDiplomacy:GetTriggerTable()
+function B_Trigger_OnDiplomacy:GetTriggerTable()
     return {Triggers.Diplomacy, self.PlayerID, assert( DiplomacyStates[self.DiplState] ) }
 end
 
-function b_Trigger_OnDiplomacy:AddParameter(_Index, _Parameter)
+function B_Trigger_OnDiplomacy:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.PlayerID = _Parameter * 1
     elseif (_Index == 1) then
@@ -7293,7 +7293,7 @@ function b_Trigger_OnDiplomacy:AddParameter(_Index, _Parameter)
     end
 end
 
-Swift:RegisterBehavior(b_Trigger_OnDiplomacy);
+Swift:RegisterBehavior(B_Trigger_OnDiplomacy);
 
 -- -------------------------------------------------------------------------- --
 
@@ -7307,10 +7307,10 @@ Swift:RegisterBehavior(b_Trigger_OnDiplomacy);
 -- @within Trigger
 --
 function Trigger_OnNeedUnsatisfied(...)
-    return b_Trigger_OnNeedUnsatisfied:new(...);
+    return B_Trigger_OnNeedUnsatisfied:new(...);
 end
 
-b_Trigger_OnNeedUnsatisfied = {
+B_Trigger_OnNeedUnsatisfied = {
     Name = "Trigger_OnNeedUnsatisfied",
     Description = {
         en = "Trigger: if a specified need is unsatisfied",
@@ -7323,11 +7323,11 @@ b_Trigger_OnNeedUnsatisfied = {
     },
 }
 
-function b_Trigger_OnNeedUnsatisfied:GetTriggerTable()
+function B_Trigger_OnNeedUnsatisfied:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_OnNeedUnsatisfied:AddParameter(_Index, _Parameter)
+function B_Trigger_OnNeedUnsatisfied:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.PlayerID = _Parameter * 1
     elseif (_Index == 1) then
@@ -7337,11 +7337,11 @@ function b_Trigger_OnNeedUnsatisfied:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Trigger_OnNeedUnsatisfied:CustomFunction(_Quest)
+function B_Trigger_OnNeedUnsatisfied:CustomFunction(_Quest)
     return Logic.GetNumberOfStrikingWorkersPerNeed( self.PlayerID, Needs[self.Need] ) >= self.WorkersOnStrike
 end
 
-function b_Trigger_OnNeedUnsatisfied:Debug(_Quest)
+function B_Trigger_OnNeedUnsatisfied:Debug(_Quest)
     if Logic.GetStoreHouse(self.PlayerID) == 0 then
         error(_Quest.Identifier.. ": " ..self.Name .. ": " .. self.PlayerID .. " does not exist.")
         return true
@@ -7355,7 +7355,7 @@ function b_Trigger_OnNeedUnsatisfied:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Trigger_OnNeedUnsatisfied);
+Swift:RegisterBehavior(B_Trigger_OnNeedUnsatisfied);
 
 -- -------------------------------------------------------------------------- --
 
@@ -7367,10 +7367,10 @@ Swift:RegisterBehavior(b_Trigger_OnNeedUnsatisfied);
 -- @within Trigger
 --
 function Trigger_OnResourceDepleted(...)
-    return b_Trigger_OnResourceDepleted:new(...);
+    return B_Trigger_OnResourceDepleted:new(...);
 end
 
-b_Trigger_OnResourceDepleted = {
+B_Trigger_OnResourceDepleted = {
     Name = "Trigger_OnResourceDepleted",
     Description = {
         en = "Trigger: if a resource is (temporarily) depleted",
@@ -7381,22 +7381,22 @@ b_Trigger_OnResourceDepleted = {
     },
 }
 
-function b_Trigger_OnResourceDepleted:GetTriggerTable()
+function B_Trigger_OnResourceDepleted:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_OnResourceDepleted:AddParameter(_Index, _Parameter)
+function B_Trigger_OnResourceDepleted:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.ScriptName = _Parameter
     end
 end
 
-function b_Trigger_OnResourceDepleted:CustomFunction(_Quest)
+function B_Trigger_OnResourceDepleted:CustomFunction(_Quest)
     local ID = GetID(self.ScriptName)
     return not ID or ID == 0 or Logic.GetResourceDoodadGoodType(ID) == 0 or Logic.GetResourceDoodadGoodAmount(ID) == 0
 end
 
-Swift:RegisterBehavior(b_Trigger_OnResourceDepleted);
+Swift:RegisterBehavior(B_Trigger_OnResourceDepleted);
 
 -- -------------------------------------------------------------------------- --
 
@@ -7411,10 +7411,10 @@ Swift:RegisterBehavior(b_Trigger_OnResourceDepleted);
 -- @within Trigger
 --
 function Trigger_OnAmountOfGoods(...)
-    return b_Trigger_OnAmountOfGoods:new(...);
+    return B_Trigger_OnAmountOfGoods:new(...);
 end
 
-b_Trigger_OnAmountOfGoods = {
+B_Trigger_OnAmountOfGoods = {
     Name = "Trigger_OnAmountOfGoods",
     Description = {
         en = "Trigger: if the player has gathered a given amount of resources in his storehouse",
@@ -7427,11 +7427,11 @@ b_Trigger_OnAmountOfGoods = {
     },
 }
 
-function b_Trigger_OnAmountOfGoods:GetTriggerTable()
+function B_Trigger_OnAmountOfGoods:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_OnAmountOfGoods:AddParameter(_Index, _Parameter)
+function B_Trigger_OnAmountOfGoods:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.PlayerID = _Parameter * 1
     elseif (_Index == 1) then
@@ -7441,7 +7441,7 @@ function b_Trigger_OnAmountOfGoods:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Trigger_OnAmountOfGoods:CustomFunction(_Quest)
+function B_Trigger_OnAmountOfGoods:CustomFunction(_Quest)
     local StoreHouseID = Logic.GetStoreHouse(self.PlayerID)
     if (StoreHouseID == 0) then
         return false
@@ -7454,7 +7454,7 @@ function b_Trigger_OnAmountOfGoods:CustomFunction(_Quest)
     return false
 end
 
-function b_Trigger_OnAmountOfGoods:Debug(_Quest)
+function B_Trigger_OnAmountOfGoods:Debug(_Quest)
     if Logic.GetStoreHouse(self.PlayerID) == 0 then
         error(_Quest.Identifier.. ": " ..self.Name .. ": " .. self.PlayerID .. " does not exist.")
         return true
@@ -7468,7 +7468,7 @@ function b_Trigger_OnAmountOfGoods:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Trigger_OnAmountOfGoods);
+Swift:RegisterBehavior(B_Trigger_OnAmountOfGoods);
 
 -- -------------------------------------------------------------------------- --
 
@@ -7481,11 +7481,11 @@ Swift:RegisterBehavior(b_Trigger_OnAmountOfGoods);
 -- @within Trigger
 --
 function Trigger_OnQuestActive(...)
-    return b_Trigger_OnQuestActiveWait:new(...);
+    return B_Trigger_OnQuestActiveWait:new(...);
 end
 Trigger_OnQuestActiveWait = Trigger_OnQuestActive;
 
-b_Trigger_OnQuestActiveWait = {
+B_Trigger_OnQuestActiveWait = {
     Name = "Trigger_OnQuestActiveWait",
     Description = {
         en = "Trigger: if a given quest has been activated. Waiting time optional",
@@ -7497,11 +7497,11 @@ b_Trigger_OnQuestActiveWait = {
     },
 }
 
-function b_Trigger_OnQuestActiveWait:GetTriggerTable()
+function B_Trigger_OnQuestActiveWait:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_OnQuestActiveWait:AddParameter(_Index, _Parameter)
+function B_Trigger_OnQuestActiveWait:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.QuestName = _Parameter
     elseif (_Index == 1) then
@@ -7509,7 +7509,7 @@ function b_Trigger_OnQuestActiveWait:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Trigger_OnQuestActiveWait:CustomFunction(_Quest)
+function B_Trigger_OnQuestActiveWait:CustomFunction(_Quest)
     local QuestID = GetQuestID(self.QuestName)
     if QuestID ~= nil then
         assert(type(QuestID) == "number");
@@ -7531,7 +7531,7 @@ function b_Trigger_OnQuestActiveWait:CustomFunction(_Quest)
     return false;
 end
 
-function b_Trigger_OnQuestActiveWait:Debug(_Quest)
+function B_Trigger_OnQuestActiveWait:Debug(_Quest)
     if type(self.QuestName) ~= "string" then
         error(_Quest.Identifier.. ": " ..self.Name..": invalid quest name!");
         return true;
@@ -7542,38 +7542,38 @@ function b_Trigger_OnQuestActiveWait:Debug(_Quest)
     return false;
 end
 
-function b_Trigger_OnQuestActiveWait:Interrupt(_Quest)
+function B_Trigger_OnQuestActiveWait:Interrupt(_Quest)
     -- does this realy matter after interrupt?
     -- self.WaitTimeTimer = nil;
     -- self.WasActivated = nil;
 end
 
-function b_Trigger_OnQuestActiveWait:Reset(_Quest)
+function B_Trigger_OnQuestActiveWait:Reset(_Quest)
     self.WaitTimeTimer = nil;
     self.WasActivated = nil;
 end
 
-Swift:RegisterBehavior(b_Trigger_OnQuestActiveWait);
+Swift:RegisterBehavior(B_Trigger_OnQuestActiveWait);
 
 -- -------------------------------------------------------------------------- --
 
 -- Kompatibelitätsmodus
-b_Trigger_OnQuestActive = Swift:CopyTable(b_Trigger_OnQuestActiveWait);
-b_Trigger_OnQuestActive.Name = "Trigger_OnQuestActive";
-b_Trigger_OnQuestActive.Description.en = "Reward: Starts the quest after another has been activated.";
-b_Trigger_OnQuestActive.Description.de = "Lohn: Startet den Quest, wenn ein anderer aktiviert wird.";
-b_Trigger_OnQuestActive.Parameter = {
+B_Trigger_OnQuestActive = Swift:CopyTable(B_Trigger_OnQuestActiveWait);
+B_Trigger_OnQuestActive.Name = "Trigger_OnQuestActive";
+B_Trigger_OnQuestActive.Description.en = "Reward: Starts the quest after another has been activated.";
+B_Trigger_OnQuestActive.Description.de = "Lohn: Startet den Quest, wenn ein anderer aktiviert wird.";
+B_Trigger_OnQuestActive.Parameter = {
     { ParameterType.QuestName,     en = "Quest name", de = "Questname" },
 }
 
-function b_Trigger_OnQuestActive:AddParameter(_Index, _Parameter)
+function B_Trigger_OnQuestActive:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.QuestName = _Parameter;
         self.WaitTime = 0;
     end
 end
 
-Swift:RegisterBehavior(b_Trigger_OnQuestActive);
+Swift:RegisterBehavior(B_Trigger_OnQuestActive);
 
 -- -------------------------------------------------------------------------- --
 
@@ -7586,11 +7586,11 @@ Swift:RegisterBehavior(b_Trigger_OnQuestActive);
 -- @within Trigger
 --
 function Trigger_OnQuestFailure(...)
-    return b_Trigger_OnQuestFailureWait:new(...);
+    return B_Trigger_OnQuestFailureWait:new(...);
 end
 Trigger_OnQuestFailureWait = Trigger_OnQuestFailure;
 
-b_Trigger_OnQuestFailureWait = {
+B_Trigger_OnQuestFailureWait = {
     Name = "Trigger_OnQuestFailureWait",
     Description = {
         en = "Trigger: if a given quest has failed. Waiting time optional",
@@ -7602,11 +7602,11 @@ b_Trigger_OnQuestFailureWait = {
     },
 }
 
-function b_Trigger_OnQuestFailureWait:GetTriggerTable()
+function B_Trigger_OnQuestFailureWait:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_OnQuestFailureWait:AddParameter(_Index, _Parameter)
+function B_Trigger_OnQuestFailureWait:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.QuestName = _Parameter
     elseif (_Index == 1) then
@@ -7614,7 +7614,7 @@ function b_Trigger_OnQuestFailureWait:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Trigger_OnQuestFailureWait:CustomFunction(_Quest)
+function B_Trigger_OnQuestFailureWait:CustomFunction(_Quest)
     if (GetQuestID(self.QuestName) ~= nil) then
         local QuestID = GetQuestID(self.QuestName)
         if (Quests[QuestID].Result == QuestResult.Failure) then
@@ -7631,7 +7631,7 @@ function b_Trigger_OnQuestFailureWait:CustomFunction(_Quest)
     return false;
 end
 
-function b_Trigger_OnQuestFailureWait:Debug(_Quest)
+function B_Trigger_OnQuestFailureWait:Debug(_Quest)
     if type(self.QuestName) ~= "string" then
         error(_Quest.Identifier.. ": " ..self.Name..": invalid quest name!");
         return true;
@@ -7642,35 +7642,35 @@ function b_Trigger_OnQuestFailureWait:Debug(_Quest)
     return false;
 end
 
-function b_Trigger_OnQuestFailureWait:Interrupt(_Quest)
+function B_Trigger_OnQuestFailureWait:Interrupt(_Quest)
     self.WaitTimeTimer = nil;
 end
 
-function b_Trigger_OnQuestFailureWait:Reset(_Quest)
+function B_Trigger_OnQuestFailureWait:Reset(_Quest)
     self.WaitTimeTimer = nil;
 end
 
-Swift:RegisterBehavior(b_Trigger_OnQuestFailureWait);
+Swift:RegisterBehavior(B_Trigger_OnQuestFailureWait);
 
 -- -------------------------------------------------------------------------- --
 
 -- Kompatibelitätsmodus
-b_Trigger_OnQuestFailure = Swift:CopyTable(b_Trigger_OnQuestFailureWait);
-b_Trigger_OnQuestFailure.Name = "Trigger_OnQuestFailure";
-b_Trigger_OnQuestFailure.Description.en = "Reward: Starts the quest after another has failed.";
-b_Trigger_OnQuestFailure.Description.de = "Lohn: Startet den Quest, wenn ein anderer fehlschlägt.";
-b_Trigger_OnQuestFailure.Parameter = {
+B_Trigger_OnQuestFailure = Swift:CopyTable(B_Trigger_OnQuestFailureWait);
+B_Trigger_OnQuestFailure.Name = "Trigger_OnQuestFailure";
+B_Trigger_OnQuestFailure.Description.en = "Reward: Starts the quest after another has failed.";
+B_Trigger_OnQuestFailure.Description.de = "Lohn: Startet den Quest, wenn ein anderer fehlschlägt.";
+B_Trigger_OnQuestFailure.Parameter = {
     { ParameterType.QuestName,     en = "Quest name", de = "Questname" },
 }
 
-function b_Trigger_OnQuestFailure:AddParameter(_Index, _Parameter)
+function B_Trigger_OnQuestFailure:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.QuestName = _Parameter;
         self.WaitTime = 0;
     end
 end
 
-Swift:RegisterBehavior(b_Trigger_OnQuestFailure);
+Swift:RegisterBehavior(B_Trigger_OnQuestFailure);
 
 -- -------------------------------------------------------------------------- --
 
@@ -7682,10 +7682,10 @@ Swift:RegisterBehavior(b_Trigger_OnQuestFailure);
 -- @within Trigger
 --
 function Trigger_OnQuestNotTriggered(...)
-    return b_Trigger_OnQuestNotTriggered:new(...);
+    return B_Trigger_OnQuestNotTriggered:new(...);
 end
 
-b_Trigger_OnQuestNotTriggered = {
+B_Trigger_OnQuestNotTriggered = {
     Name = "Trigger_OnQuestNotTriggered",
     Description = {
         en = "Trigger: if a given quest is not yet active. Should be used in combination with other triggers.",
@@ -7696,17 +7696,17 @@ b_Trigger_OnQuestNotTriggered = {
     },
 }
 
-function b_Trigger_OnQuestNotTriggered:GetTriggerTable()
+function B_Trigger_OnQuestNotTriggered:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_OnQuestNotTriggered:AddParameter(_Index, _Parameter)
+function B_Trigger_OnQuestNotTriggered:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.QuestName = _Parameter
     end
 end
 
-function b_Trigger_OnQuestNotTriggered:CustomFunction(_Quest)
+function B_Trigger_OnQuestNotTriggered:CustomFunction(_Quest)
     if (GetQuestID(self.QuestName) ~= nil) then
         local QuestID = GetQuestID(self.QuestName)
         if (Quests[QuestID].State == QuestState.NotTriggered) then
@@ -7716,7 +7716,7 @@ function b_Trigger_OnQuestNotTriggered:CustomFunction(_Quest)
     return false;
 end
 
-function b_Trigger_OnQuestNotTriggered:Debug(_Quest)
+function B_Trigger_OnQuestNotTriggered:Debug(_Quest)
     if type(self.QuestName) ~= "string" then
         error(_Quest.Identifier.. ": " ..self.Name..": invalid quest name!");
         return true;
@@ -7724,7 +7724,7 @@ function b_Trigger_OnQuestNotTriggered:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Trigger_OnQuestNotTriggered);
+Swift:RegisterBehavior(B_Trigger_OnQuestNotTriggered);
 
 -- -------------------------------------------------------------------------- --
 
@@ -7737,11 +7737,11 @@ Swift:RegisterBehavior(b_Trigger_OnQuestNotTriggered);
 -- @within Trigger
 --
 function Trigger_OnQuestInterrupted(...)
-    return b_Trigger_OnQuestInterruptedWait:new(...);
+    return B_Trigger_OnQuestInterruptedWait:new(...);
 end
 Trigger_OnQuestInterruptedWait = Trigger_OnQuestInterrupted;
 
-b_Trigger_OnQuestInterruptedWait = {
+B_Trigger_OnQuestInterruptedWait = {
     Name = "Trigger_OnQuestInterruptedWait",
     Description = {
         en = "Trigger: if a given quest has been interrupted. Should be used in combination with other triggers.",
@@ -7753,11 +7753,11 @@ b_Trigger_OnQuestInterruptedWait = {
     },
 }
 
-function b_Trigger_OnQuestInterruptedWait:GetTriggerTable()
+function B_Trigger_OnQuestInterruptedWait:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_OnQuestInterruptedWait:AddParameter(_Index, _Parameter)
+function B_Trigger_OnQuestInterruptedWait:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.QuestName = _Parameter
     elseif (_Index == 1) then
@@ -7765,7 +7765,7 @@ function b_Trigger_OnQuestInterruptedWait:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Trigger_OnQuestInterruptedWait:CustomFunction(_Quest)
+function B_Trigger_OnQuestInterruptedWait:CustomFunction(_Quest)
     if (GetQuestID(self.QuestName) ~= nil) then
         local QuestID = GetQuestID(self.QuestName)
         if (Quests[QuestID].State == QuestState.Over and Quests[QuestID].Result == QuestResult.Interrupted) then
@@ -7782,7 +7782,7 @@ function b_Trigger_OnQuestInterruptedWait:CustomFunction(_Quest)
     return false;
 end
 
-function b_Trigger_OnQuestInterruptedWait:Debug(_Quest)
+function B_Trigger_OnQuestInterruptedWait:Debug(_Quest)
     if type(self.QuestName) ~= "string" then
         error(_Quest.Identifier.. ": " ..self.Name..": invalid quest name!");
         return true;
@@ -7793,35 +7793,35 @@ function b_Trigger_OnQuestInterruptedWait:Debug(_Quest)
     return false;
 end
 
-function b_Trigger_OnQuestInterruptedWait:Interrupt(_Quest)
+function B_Trigger_OnQuestInterruptedWait:Interrupt(_Quest)
     self.WaitTimeTimer = nil;
 end
 
-function b_Trigger_OnQuestInterruptedWait:Reset(_Quest)
+function B_Trigger_OnQuestInterruptedWait:Reset(_Quest)
     self.WaitTimeTimer = nil;
 end
 
-Swift:RegisterBehavior(b_Trigger_OnQuestInterruptedWait);
+Swift:RegisterBehavior(B_Trigger_OnQuestInterruptedWait);
 
 -- -------------------------------------------------------------------------- --
 
 -- Kompatibelitätsmodus
-b_Trigger_OnQuestInterrupted = Swift:CopyTable(b_Trigger_OnQuestInterruptedWait);
-b_Trigger_OnQuestInterrupted.Name = "Trigger_OnQuestInterrupted";
-b_Trigger_OnQuestInterrupted.Description.en = "Reward: Starts the quest after another is interrupted.";
-b_Trigger_OnQuestInterrupted.Description.de = "Lohn: Startet den Quest, wenn ein anderer abgebrochen wurde.";
-b_Trigger_OnQuestInterrupted.Parameter = {
+B_Trigger_OnQuestInterrupted = Swift:CopyTable(B_Trigger_OnQuestInterruptedWait);
+B_Trigger_OnQuestInterrupted.Name = "Trigger_OnQuestInterrupted";
+B_Trigger_OnQuestInterrupted.Description.en = "Reward: Starts the quest after another is interrupted.";
+B_Trigger_OnQuestInterrupted.Description.de = "Lohn: Startet den Quest, wenn ein anderer abgebrochen wurde.";
+B_Trigger_OnQuestInterrupted.Parameter = {
     { ParameterType.QuestName,     en = "Quest name", de = "Questname" },
 }
 
-function b_Trigger_OnQuestInterrupted:AddParameter(_Index, _Parameter)
+function B_Trigger_OnQuestInterrupted:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.QuestName = _Parameter;
         self.WaitTime = 0;
     end
 end
 
-Swift:RegisterBehavior(b_Trigger_OnQuestInterrupted);
+Swift:RegisterBehavior(B_Trigger_OnQuestInterrupted);
 
 -- -------------------------------------------------------------------------- --
 
@@ -7837,11 +7837,11 @@ Swift:RegisterBehavior(b_Trigger_OnQuestInterrupted);
 -- @within Trigger
 --
 function Trigger_OnQuestOver(...)
-    return b_Trigger_OnQuestOverWait:new(...);
+    return B_Trigger_OnQuestOverWait:new(...);
 end
 Trigger_OnQuestOverWait = Trigger_OnQuestOver;
 
-b_Trigger_OnQuestOverWait = {
+B_Trigger_OnQuestOverWait = {
     Name = "Trigger_OnQuestOverWait",
     Description = {
         en = "Trigger: if a given quest has been finished, regardless of its result. Waiting time optional",
@@ -7853,11 +7853,11 @@ b_Trigger_OnQuestOverWait = {
     },
 }
 
-function b_Trigger_OnQuestOverWait:GetTriggerTable()
+function B_Trigger_OnQuestOverWait:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_OnQuestOverWait:AddParameter(_Index, _Parameter)
+function B_Trigger_OnQuestOverWait:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.QuestName = _Parameter
     elseif (_Index == 1) then
@@ -7865,7 +7865,7 @@ function b_Trigger_OnQuestOverWait:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Trigger_OnQuestOverWait:CustomFunction(_Quest)
+function B_Trigger_OnQuestOverWait:CustomFunction(_Quest)
     if (GetQuestID(self.QuestName) ~= nil) then
         local QuestID = GetQuestID(self.QuestName)
         if (Quests[QuestID].State == QuestState.Over and Quests[QuestID].Result ~= QuestResult.Interrupted) then
@@ -7882,7 +7882,7 @@ function b_Trigger_OnQuestOverWait:CustomFunction(_Quest)
     return false;
 end
 
-function b_Trigger_OnQuestOverWait:Debug(_Quest)
+function B_Trigger_OnQuestOverWait:Debug(_Quest)
     if type(self.QuestName) ~= "string" then
         error(_Quest.Identifier.. ": " ..self.Name..": invalid quest name!");
         return true;
@@ -7893,35 +7893,35 @@ function b_Trigger_OnQuestOverWait:Debug(_Quest)
     return false;
 end
 
-function b_Trigger_OnQuestOverWait:Interrupt(_Quest)
+function B_Trigger_OnQuestOverWait:Interrupt(_Quest)
     self.WaitTimeTimer = nil;
 end
 
-function b_Trigger_OnQuestOverWait:Reset(_Quest)
+function B_Trigger_OnQuestOverWait:Reset(_Quest)
     self.WaitTimeTimer = nil;
 end
 
-Swift:RegisterBehavior(b_Trigger_OnQuestOverWait);
+Swift:RegisterBehavior(B_Trigger_OnQuestOverWait);
 
 -- -------------------------------------------------------------------------- --
 
 -- Kompatibelitätsmodus
-b_Trigger_OnQuestOver = Swift:CopyTable(b_Trigger_OnQuestOverWait);
-b_Trigger_OnQuestOver.Name = "Trigger_OnQuestOver";
-b_Trigger_OnQuestOver.Description.en = "Reward: Starts the quest after another finished.";
-b_Trigger_OnQuestOver.Description.de = "Lohn: Startet den Quest, wenn ein anderer abgeschlossen wurde.";
-b_Trigger_OnQuestOver.Parameter = {
+B_Trigger_OnQuestOver = Swift:CopyTable(B_Trigger_OnQuestOverWait);
+B_Trigger_OnQuestOver.Name = "Trigger_OnQuestOver";
+B_Trigger_OnQuestOver.Description.en = "Reward: Starts the quest after another finished.";
+B_Trigger_OnQuestOver.Description.de = "Lohn: Startet den Quest, wenn ein anderer abgeschlossen wurde.";
+B_Trigger_OnQuestOver.Parameter = {
     { ParameterType.QuestName,     en = "Quest name", de = "Questname" },
 }
 
-function b_Trigger_OnQuestOver:AddParameter(_Index, _Parameter)
+function B_Trigger_OnQuestOver:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.QuestName = _Parameter;
         self.WaitTime = 0;
     end
 end
 
-Swift:RegisterBehavior(b_Trigger_OnQuestOver);
+Swift:RegisterBehavior(B_Trigger_OnQuestOver);
 
 -- -------------------------------------------------------------------------- --
 
@@ -7934,11 +7934,11 @@ Swift:RegisterBehavior(b_Trigger_OnQuestOver);
 -- @within Trigger
 --
 function Trigger_OnQuestSuccess(...)
-    return b_Trigger_OnQuestSuccessWait:new(...);
+    return B_Trigger_OnQuestSuccessWait:new(...);
 end
 Trigger_OnQuestSuccessWait = Trigger_OnQuestSuccess;
 
-b_Trigger_OnQuestSuccessWait = {
+B_Trigger_OnQuestSuccessWait = {
     Name = "Trigger_OnQuestSuccessWait",
     Description = {
         en = "Trigger: if a given quest has been finished successfully. Waiting time optional",
@@ -7950,11 +7950,11 @@ b_Trigger_OnQuestSuccessWait = {
     },
 }
 
-function b_Trigger_OnQuestSuccessWait:GetTriggerTable()
+function B_Trigger_OnQuestSuccessWait:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_OnQuestSuccessWait:AddParameter(_Index, _Parameter)
+function B_Trigger_OnQuestSuccessWait:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.QuestName = _Parameter
     elseif (_Index == 1) then
@@ -7962,7 +7962,7 @@ function b_Trigger_OnQuestSuccessWait:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Trigger_OnQuestSuccessWait:CustomFunction()
+function B_Trigger_OnQuestSuccessWait:CustomFunction()
     if (GetQuestID(self.QuestName) ~= nil) then
         local QuestID = GetQuestID(self.QuestName)
         if (Quests[QuestID].Result == QuestResult.Success) then
@@ -7979,7 +7979,7 @@ function b_Trigger_OnQuestSuccessWait:CustomFunction()
     return false;
 end
 
-function b_Trigger_OnQuestSuccessWait:Debug(_Quest)
+function B_Trigger_OnQuestSuccessWait:Debug(_Quest)
     if type(self.QuestName) ~= "string" then
         error(_Quest.Identifier.. ": " ..self.Name..": invalid quest name!");
         return true;
@@ -7990,35 +7990,35 @@ function b_Trigger_OnQuestSuccessWait:Debug(_Quest)
     return false;
 end
 
-function b_Trigger_OnQuestSuccessWait:Interrupt(_Quest)
+function B_Trigger_OnQuestSuccessWait:Interrupt(_Quest)
     self.WaitTimeTimer = nil;
 end
 
-function b_Trigger_OnQuestSuccessWait:Reset(_Quest)
+function B_Trigger_OnQuestSuccessWait:Reset(_Quest)
     self.WaitTimeTimer = nil;
 end
 
-Swift:RegisterBehavior(b_Trigger_OnQuestSuccessWait);
+Swift:RegisterBehavior(B_Trigger_OnQuestSuccessWait);
 
 -- -------------------------------------------------------------------------- --
 
 -- Kompatibelitätsmodus
-b_Trigger_OnQuestSuccess = Swift:CopyTable(b_Trigger_OnQuestSuccessWait);
-b_Trigger_OnQuestSuccess.Name = "Trigger_OnQuestSuccess";
-b_Trigger_OnQuestSuccess.Description.en = "Reward: Starts the quest after another finished successfully.";
-b_Trigger_OnQuestSuccess.Description.de = "Lohn: Startet den Quest, wenn ein anderer erfolgreich abgeschlossen wurde.";
-b_Trigger_OnQuestSuccess.Parameter = {
+B_Trigger_OnQuestSuccess = Swift:CopyTable(B_Trigger_OnQuestSuccessWait);
+B_Trigger_OnQuestSuccess.Name = "Trigger_OnQuestSuccess";
+B_Trigger_OnQuestSuccess.Description.en = "Reward: Starts the quest after another finished successfully.";
+B_Trigger_OnQuestSuccess.Description.de = "Lohn: Startet den Quest, wenn ein anderer erfolgreich abgeschlossen wurde.";
+B_Trigger_OnQuestSuccess.Parameter = {
     { ParameterType.QuestName,     en = "Quest name", de = "Questname" },
 }
 
-function b_Trigger_OnQuestSuccess:AddParameter(_Index, _Parameter)
+function B_Trigger_OnQuestSuccess:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.QuestName = _Parameter;
         self.WaitTime = 0;
     end
 end
 
-Swift:RegisterBehavior(b_Trigger_OnQuestSuccess);
+Swift:RegisterBehavior(B_Trigger_OnQuestSuccess);
 
 -- -------------------------------------------------------------------------- --
 
@@ -8038,10 +8038,10 @@ Swift:RegisterBehavior(b_Trigger_OnQuestSuccess);
 -- @within Trigger
 --
 function Trigger_CustomVariables(...)
-    return b_Trigger_CustomVariables:new(...);
+    return B_Trigger_CustomVariables:new(...);
 end
 
-b_Trigger_CustomVariables = {
+B_Trigger_CustomVariables = {
     Name = "Trigger_CustomVariables",
     Description = {
         en = "Trigger: if the variable has a certain value.",
@@ -8054,11 +8054,11 @@ b_Trigger_CustomVariables = {
     }
 };
 
-function b_Trigger_CustomVariables:GetTriggerTable()
+function B_Trigger_CustomVariables:GetTriggerTable()
     return { Triggers.Custom2, {self, self.CustomFunction} };
 end
 
-function b_Trigger_CustomVariables:AddParameter(_Index, _Parameter)
+function B_Trigger_CustomVariables:AddParameter(_Index, _Parameter)
     if _Index == 0 then
         self.VariableName = _Parameter
     elseif _Index == 1 then
@@ -8070,7 +8070,7 @@ function b_Trigger_CustomVariables:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Trigger_CustomVariables:CustomFunction()
+function B_Trigger_CustomVariables:CustomFunction()
     local Value1 = API.ObtainCustomVariable("BehaviorVariable_" ..self.VariableName, 0);
     local Value2 = self.Value;
     if type(self.Value) == "string" then
@@ -8093,13 +8093,13 @@ function b_Trigger_CustomVariables:CustomFunction()
     return false;
 end
 
-function b_Trigger_CustomVariables:GetCustomData( _Index )
+function B_Trigger_CustomVariables:GetCustomData( _Index )
     if _Index == 1 then
         return {"==", "~=", "<=", "<", ">", ">="};
     end
 end
 
-function b_Trigger_CustomVariables:Debug(_Quest)
+function B_Trigger_CustomVariables:Debug(_Quest)
     local relations = {"==", "~=", "<=", "<", ">", ">="}
     local results    = {true, false, nil}
 
@@ -8113,7 +8113,7 @@ function b_Trigger_CustomVariables:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Trigger_CustomVariables)
+Swift:RegisterBehavior(B_Trigger_CustomVariables)
 
 -- -------------------------------------------------------------------------- --
 
@@ -8123,10 +8123,10 @@ Swift:RegisterBehavior(b_Trigger_CustomVariables)
 -- @within Trigger
 --
 function Trigger_AlwaysActive()
-    return b_Trigger_AlwaysActive:new()
+    return B_Trigger_AlwaysActive:new()
 end
 
-b_Trigger_AlwaysActive = {
+B_Trigger_AlwaysActive = {
     Name = "Trigger_AlwaysActive",
     Description = {
         en = "Trigger: the map has been started.",
@@ -8134,11 +8134,11 @@ b_Trigger_AlwaysActive = {
     },
 }
 
-function b_Trigger_AlwaysActive:GetTriggerTable()
+function B_Trigger_AlwaysActive:GetTriggerTable()
     return {Triggers.Time, 0 }
 end
 
-Swift:RegisterBehavior(b_Trigger_AlwaysActive);
+Swift:RegisterBehavior(B_Trigger_AlwaysActive);
 
 -- -------------------------------------------------------------------------- --
 
@@ -8150,10 +8150,10 @@ Swift:RegisterBehavior(b_Trigger_AlwaysActive);
 -- @within Trigger
 --
 function Trigger_OnMonth(...)
-    return b_Trigger_OnMonth:new(...);
+    return B_Trigger_OnMonth:new(...);
 end
 
-b_Trigger_OnMonth = {
+B_Trigger_OnMonth = {
     Name = "Trigger_OnMonth",
     Description = {
         en = "Trigger: a specified month",
@@ -8164,21 +8164,21 @@ b_Trigger_OnMonth = {
     },
 }
 
-function b_Trigger_OnMonth:GetTriggerTable()
+function B_Trigger_OnMonth:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_OnMonth:AddParameter(_Index, _Parameter)
+function B_Trigger_OnMonth:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.Month = _Parameter * 1
     end
 end
 
-function b_Trigger_OnMonth:CustomFunction(_Quest)
+function B_Trigger_OnMonth:CustomFunction(_Quest)
     return self.Month == Logic.GetCurrentMonth()
 end
 
-function b_Trigger_OnMonth:GetCustomData( _Index )
+function B_Trigger_OnMonth:GetCustomData( _Index )
     local Data = {}
     if _Index == 0 then
         for i = 1, 12 do
@@ -8190,7 +8190,7 @@ function b_Trigger_OnMonth:GetCustomData( _Index )
     return Data
 end
 
-function b_Trigger_OnMonth:Debug(_Quest)
+function B_Trigger_OnMonth:Debug(_Quest)
     if self.Month < 1 or self.Month > 12 then
         error(_Quest.Identifier.. ": " ..self.Name .. ": Month has the wrong value")
         return true
@@ -8198,7 +8198,7 @@ function b_Trigger_OnMonth:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Trigger_OnMonth);
+Swift:RegisterBehavior(B_Trigger_OnMonth);
 
 -- -------------------------------------------------------------------------- --
 
@@ -8210,10 +8210,10 @@ Swift:RegisterBehavior(b_Trigger_OnMonth);
 -- @within Trigger
 --
 function Trigger_OnMonsoon()
-    return b_Trigger_OnMonsoon:new();
+    return B_Trigger_OnMonsoon:new();
 end
 
-b_Trigger_OnMonsoon = {
+B_Trigger_OnMonsoon = {
     Name = "Trigger_OnMonsoon",
     Description = {
         en = "Trigger: on monsoon.",
@@ -8222,17 +8222,17 @@ b_Trigger_OnMonsoon = {
     RequiresExtraNo = 1,
 }
 
-function b_Trigger_OnMonsoon:GetTriggerTable()
+function B_Trigger_OnMonsoon:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_OnMonsoon:CustomFunction(_Quest)
+function B_Trigger_OnMonsoon:CustomFunction(_Quest)
     if Logic.GetWeatherDoesShallowWaterFlood(0) then
         return true
     end
 end
 
-Swift:RegisterBehavior(b_Trigger_OnMonsoon);
+Swift:RegisterBehavior(B_Trigger_OnMonsoon);
 
 -- -------------------------------------------------------------------------- --
 
@@ -8246,10 +8246,10 @@ Swift:RegisterBehavior(b_Trigger_OnMonsoon);
 -- @within Trigger
 --
 function Trigger_Time(...)
-    return b_Trigger_Time:new(...);
+    return B_Trigger_Time:new(...);
 end
 
-b_Trigger_Time = {
+B_Trigger_Time = {
     Name = "Trigger_Time",
     Description = {
         en = "Trigger: a given amount of time since map start",
@@ -8260,17 +8260,17 @@ b_Trigger_Time = {
     },
 }
 
-function b_Trigger_Time:GetTriggerTable()
+function B_Trigger_Time:GetTriggerTable()
     return {Triggers.Time, self.Time }
 end
 
-function b_Trigger_Time:AddParameter(_Index, _Parameter)
+function B_Trigger_Time:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.Time = _Parameter * 1
     end
 end
 
-Swift:RegisterBehavior(b_Trigger_Time);
+Swift:RegisterBehavior(B_Trigger_Time);
 
 -- -------------------------------------------------------------------------- --
 
@@ -8280,10 +8280,10 @@ Swift:RegisterBehavior(b_Trigger_Time);
 -- @within Trigger
 --
 function Trigger_OnWaterFreezes()
-    return b_Trigger_OnWaterFreezes:new();
+    return B_Trigger_OnWaterFreezes:new();
 end
 
-b_Trigger_OnWaterFreezes = {
+B_Trigger_OnWaterFreezes = {
     Name = "Trigger_OnWaterFreezes",
     Description = {
         en = "Trigger: if the water starts freezing",
@@ -8291,17 +8291,17 @@ b_Trigger_OnWaterFreezes = {
     },
 }
 
-function b_Trigger_OnWaterFreezes:GetTriggerTable()
+function B_Trigger_OnWaterFreezes:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_OnWaterFreezes:CustomFunction(_Quest)
+function B_Trigger_OnWaterFreezes:CustomFunction(_Quest)
     if Logic.GetWeatherDoesWaterFreeze(0) then
         return true
     end
 end
 
-Swift:RegisterBehavior(b_Trigger_OnWaterFreezes);
+Swift:RegisterBehavior(B_Trigger_OnWaterFreezes);
 
 -- -------------------------------------------------------------------------- --
 
@@ -8314,10 +8314,10 @@ Swift:RegisterBehavior(b_Trigger_OnWaterFreezes);
 -- @within Trigger
 --
 function Trigger_NeverTriggered()
-    return b_Trigger_NeverTriggered:new();
+    return B_Trigger_NeverTriggered:new();
 end
 
-b_Trigger_NeverTriggered = {
+B_Trigger_NeverTriggered = {
     Name = "Trigger_NeverTriggered",
     Description = {
         en = "Never triggers a Quest. The quest may be set active by Reward_QuestActivate or Reward_QuestRestartForceActive",
@@ -8325,13 +8325,13 @@ b_Trigger_NeverTriggered = {
     },
 }
 
-function b_Trigger_NeverTriggered:GetTriggerTable()
+function B_Trigger_NeverTriggered:GetTriggerTable()
 
     return {Triggers.Custom2, {self, function() end} }
 
 end
 
-Swift:RegisterBehavior(b_Trigger_NeverTriggered)
+Swift:RegisterBehavior(B_Trigger_NeverTriggered)
 
 -- -------------------------------------------------------------------------- --
 
@@ -8344,10 +8344,10 @@ Swift:RegisterBehavior(b_Trigger_NeverTriggered)
 -- @within Trigger
 --
 function Trigger_OnAtLeastOneQuestFailure(...)
-    return b_Trigger_OnAtLeastOneQuestFailure:new(...);
+    return B_Trigger_OnAtLeastOneQuestFailure:new(...);
 end
 
-b_Trigger_OnAtLeastOneQuestFailure = {
+B_Trigger_OnAtLeastOneQuestFailure = {
     Name = "Trigger_OnAtLeastOneQuestFailure",
     Description = {
         en = "Trigger: if one or both of the given quests have failed.",
@@ -8359,11 +8359,11 @@ b_Trigger_OnAtLeastOneQuestFailure = {
     },
 }
 
-function b_Trigger_OnAtLeastOneQuestFailure:GetTriggerTable()
+function B_Trigger_OnAtLeastOneQuestFailure:GetTriggerTable()
     return {Triggers.Custom2, {self, self.CustomFunction}};
 end
 
-function b_Trigger_OnAtLeastOneQuestFailure:AddParameter(_Index, _Parameter)
+function B_Trigger_OnAtLeastOneQuestFailure:AddParameter(_Index, _Parameter)
     self.QuestTable = {};
 
     if (_Index == 0) then
@@ -8373,7 +8373,7 @@ function b_Trigger_OnAtLeastOneQuestFailure:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Trigger_OnAtLeastOneQuestFailure:CustomFunction(_Quest)
+function B_Trigger_OnAtLeastOneQuestFailure:CustomFunction(_Quest)
     local Quest1 = Quests[GetQuestID(self.Quest1)];
     local Quest2 = Quests[GetQuestID(self.Quest2)];
     if (Quest1.State == QuestState.Over and Quest1.Result == QuestResult.Failure)
@@ -8383,7 +8383,7 @@ function b_Trigger_OnAtLeastOneQuestFailure:CustomFunction(_Quest)
     return false;
 end
 
-function b_Trigger_OnAtLeastOneQuestFailure:Debug(_Quest)
+function B_Trigger_OnAtLeastOneQuestFailure:Debug(_Quest)
     if self.Quest1 == self.Quest2 then
         error(_Quest.Identifier.. ": " ..self.Name..": Both quests are identical!");
         return true;
@@ -8397,7 +8397,7 @@ function b_Trigger_OnAtLeastOneQuestFailure:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Trigger_OnAtLeastOneQuestFailure);
+Swift:RegisterBehavior(B_Trigger_OnAtLeastOneQuestFailure);
 
 -- -------------------------------------------------------------------------- --
 
@@ -8410,10 +8410,10 @@ Swift:RegisterBehavior(b_Trigger_OnAtLeastOneQuestFailure);
 -- @within Trigger
 --
 function Trigger_OnAtLeastOneQuestSuccess(...)
-    return b_Trigger_OnAtLeastOneQuestSuccess:new(...);
+    return B_Trigger_OnAtLeastOneQuestSuccess:new(...);
 end
 
-b_Trigger_OnAtLeastOneQuestSuccess = {
+B_Trigger_OnAtLeastOneQuestSuccess = {
     Name = "Trigger_OnAtLeastOneQuestSuccess",
     Description = {
         en = "Trigger: if one or both of the given quests are won.",
@@ -8425,11 +8425,11 @@ b_Trigger_OnAtLeastOneQuestSuccess = {
     },
 }
 
-function b_Trigger_OnAtLeastOneQuestSuccess:GetTriggerTable()
+function B_Trigger_OnAtLeastOneQuestSuccess:GetTriggerTable()
     return {Triggers.Custom2, {self, self.CustomFunction}};
 end
 
-function b_Trigger_OnAtLeastOneQuestSuccess:AddParameter(_Index, _Parameter)
+function B_Trigger_OnAtLeastOneQuestSuccess:AddParameter(_Index, _Parameter)
     self.QuestTable = {};
 
     if (_Index == 0) then
@@ -8439,7 +8439,7 @@ function b_Trigger_OnAtLeastOneQuestSuccess:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Trigger_OnAtLeastOneQuestSuccess:CustomFunction(_Quest)
+function B_Trigger_OnAtLeastOneQuestSuccess:CustomFunction(_Quest)
     local Quest1 = Quests[GetQuestID(self.Quest1)];
     local Quest2 = Quests[GetQuestID(self.Quest2)];
     if (Quest1.State == QuestState.Over and Quest1.Result == QuestResult.Success)
@@ -8449,7 +8449,7 @@ function b_Trigger_OnAtLeastOneQuestSuccess:CustomFunction(_Quest)
     return false;
 end
 
-function b_Trigger_OnAtLeastOneQuestSuccess:Debug(_Quest)
+function B_Trigger_OnAtLeastOneQuestSuccess:Debug(_Quest)
     if self.Quest1 == self.Quest2 then
         error(_Quest.Identifier.. ": " ..self.Name..": Both quests are identical!");
         return true;
@@ -8463,7 +8463,7 @@ function b_Trigger_OnAtLeastOneQuestSuccess:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Trigger_OnAtLeastOneQuestSuccess);
+Swift:RegisterBehavior(B_Trigger_OnAtLeastOneQuestSuccess);
 
 -- -------------------------------------------------------------------------- --
 
@@ -8481,10 +8481,10 @@ Swift:RegisterBehavior(b_Trigger_OnAtLeastOneQuestSuccess);
 -- @within Trigger
 --
 function Trigger_OnAtLeastXOfYQuestsSuccess(...)
-    return b_Trigger_OnAtLeastXOfYQuestsSuccess:new(...);
+    return B_Trigger_OnAtLeastXOfYQuestsSuccess:new(...);
 end
 
-b_Trigger_OnAtLeastXOfYQuestsSuccess = {
+B_Trigger_OnAtLeastXOfYQuestsSuccess = {
     Name = "Trigger_OnAtLeastXOfYQuestsSuccess",
     Description = {
         en = "Trigger: if at least X of Y given quests has been finished successfully.",
@@ -8501,11 +8501,11 @@ b_Trigger_OnAtLeastXOfYQuestsSuccess = {
     },
 }
 
-function b_Trigger_OnAtLeastXOfYQuestsSuccess:GetTriggerTable()
+function B_Trigger_OnAtLeastXOfYQuestsSuccess:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_OnAtLeastXOfYQuestsSuccess:AddParameter(_Index, _Parameter)
+function B_Trigger_OnAtLeastXOfYQuestsSuccess:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.LeastAmount = tonumber(_Parameter)
     elseif (_Index == 1) then
@@ -8523,7 +8523,7 @@ function b_Trigger_OnAtLeastXOfYQuestsSuccess:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Trigger_OnAtLeastXOfYQuestsSuccess:CustomFunction()
+function B_Trigger_OnAtLeastXOfYQuestsSuccess:CustomFunction()
     local least = 0
     for i = 1, self.QuestAmount do
         local QuestID = GetQuestID(self["QuestName"..i]);
@@ -8539,7 +8539,7 @@ function b_Trigger_OnAtLeastXOfYQuestsSuccess:CustomFunction()
     return false
 end
 
-function b_Trigger_OnAtLeastXOfYQuestsSuccess:Debug(_Quest)
+function B_Trigger_OnAtLeastXOfYQuestsSuccess:Debug(_Quest)
     local leastAmount = self.LeastAmount
     local questAmount = self.QuestAmount
     if leastAmount <= 0 or leastAmount >5 then
@@ -8561,13 +8561,13 @@ function b_Trigger_OnAtLeastXOfYQuestsSuccess:Debug(_Quest)
     return false
 end
 
-function b_Trigger_OnAtLeastXOfYQuestsSuccess:GetCustomData(_Index)
+function B_Trigger_OnAtLeastXOfYQuestsSuccess:GetCustomData(_Index)
     if (_Index == 0) or (_Index == 1) then
         return {"1", "2", "3", "4", "5"}
     end
 end
 
-Swift:RegisterBehavior(b_Trigger_OnAtLeastXOfYQuestsSuccess)
+Swift:RegisterBehavior(B_Trigger_OnAtLeastXOfYQuestsSuccess)
 
 -- -------------------------------------------------------------------------- --
 
@@ -8584,10 +8584,10 @@ Swift:RegisterBehavior(b_Trigger_OnAtLeastXOfYQuestsSuccess)
 -- @within Trigger
 --
 function Trigger_MapScriptFunction(...)
-    return b_Trigger_MapScriptFunction:new(...);
+    return B_Trigger_MapScriptFunction:new(...);
 end
 
-b_Trigger_MapScriptFunction = {
+B_Trigger_MapScriptFunction = {
     Name = "Trigger_MapScriptFunction",
     Description = {
         en = "Calls a function within the global map script. If the function returns true the quest will be started",
@@ -8598,24 +8598,24 @@ b_Trigger_MapScriptFunction = {
     },
 }
 
-function b_Trigger_MapScriptFunction:GetTriggerTable(_Quest)
+function B_Trigger_MapScriptFunction:GetTriggerTable(_Quest)
     return {Triggers.Custom2, {self, self.CustomFunction}};
 end
 
-function b_Trigger_MapScriptFunction:AddParameter(_Index, _Parameter)
+function B_Trigger_MapScriptFunction:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.FuncName = _Parameter
     end
 end
 
-function b_Trigger_MapScriptFunction:CustomFunction(_Quest)
+function B_Trigger_MapScriptFunction:CustomFunction(_Quest)
     if type(self.FuncName) == "function" then
         return self.FuncName(unpack(self.i47ya_6aghw_frxil));
     end
     return _G[self.FuncName](self, _Quest);
 end
 
-function b_Trigger_MapScriptFunction:Debug(_Quest)
+function B_Trigger_MapScriptFunction:Debug(_Quest)
     if not self.FuncName then
         error(_Quest.Identifier.. ": " ..self.Name..": function reference is invalid!");
         return true;
@@ -8627,7 +8627,7 @@ function b_Trigger_MapScriptFunction:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Trigger_MapScriptFunction);
+Swift:RegisterBehavior(B_Trigger_MapScriptFunction);
 
 ---
 -- Startet den Quest, sobald ein Effekt zerstört wird oder verschwindet.
@@ -8640,10 +8640,10 @@ Swift:RegisterBehavior(b_Trigger_MapScriptFunction);
 -- @within Trigger
 --
 function Trigger_OnEffectDestroyed(...)
-    return b_Trigger_OnEffectDestroyed:new(...);
+    return B_Trigger_OnEffectDestroyed:new(...);
 end
 
-b_Trigger_OnEffectDestroyed = {
+B_Trigger_OnEffectDestroyed = {
 	Name = "Trigger_OnEffectDestroyed",
 	Description = {
 		en = "Trigger: Starts a quest after an effect was destroyed",
@@ -8654,25 +8654,25 @@ b_Trigger_OnEffectDestroyed = {
 	},
 }
 
-function b_Trigger_OnEffectDestroyed:GetTriggerTable()
+function B_Trigger_OnEffectDestroyed:GetTriggerTable()
 	return { Triggers.Custom2, {self, self.CustomFunction} }
 end
 
-function b_Trigger_OnEffectDestroyed:AddParameter(_Index, _Parameter)
+function B_Trigger_OnEffectDestroyed:AddParameter(_Index, _Parameter)
 	if _Index == 0 then	
 		self.EffectName = _Parameter
 	end
 end
 
-function b_Trigger_OnEffectDestroyed:CustomFunction()
+function B_Trigger_OnEffectDestroyed:CustomFunction()
 	return not QSB.EffectNameToID[self.EffectName] or not Logic.IsEffectRegistered(QSB.EffectNameToID[self.EffectName]);
 end
 
-function b_Trigger_OnEffectDestroyed:Debug(_Quest)
+function B_Trigger_OnEffectDestroyed:Debug(_Quest)
 	if not QSB.EffectNameToID[self.EffectName] then
 		error(_Quest.Identifier.. ": " ..self.Name .. ": Effect has never existed")
 		return true
 	end
 end
-Swift:RegisterBehavior(b_Trigger_OnEffectDestroyed)
+Swift:RegisterBehavior(B_Trigger_OnEffectDestroyed)
 

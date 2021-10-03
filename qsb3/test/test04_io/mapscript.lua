@@ -127,7 +127,6 @@ function CreateTestNPCDialogBriefing(_Name, _PlayerID)
         Text   = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr.",
         Sender = -1,
         Target = Logic.GetKnightID(_PlayerID),
-        Anchor = "npc1",
         Zoom   = 0.1,
     }
     AP {
@@ -141,7 +140,6 @@ function CreateTestNPCDialogBriefing(_Name, _PlayerID)
         Text   = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
         Sender = -1,
         Target = Logic.GetKnightID(_PlayerID),
-        Anchor = "npc1",
         Zoom   = 0.1,
     }
     AP("StartPage");

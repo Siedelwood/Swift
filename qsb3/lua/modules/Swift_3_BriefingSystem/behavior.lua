@@ -25,10 +25,10 @@ You may use and modify this file unter the terms of the MIT licence.
 -- @within Reprisal
 --
 function Reprisal_Briefing(...)
-    return b_Reprisal_Briefing:new(...);
+    return B_Reprisal_Briefing:new(...);
 end
 
-b_Reprisal_Briefing = {
+B_Reprisal_Briefing = {
     Name = "Reprisal_Briefing",
     Description = {
         en = "Reprisal: Calls a function to start an new briefing.",
@@ -39,11 +39,11 @@ b_Reprisal_Briefing = {
     },
 }
 
-function b_Reprisal_Briefing:GetReprisalTable()
+function B_Reprisal_Briefing:GetReprisalTable()
     return { Reprisal.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reprisal_Briefing:AddParameter(_Index, _Parameter)
+function B_Reprisal_Briefing:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.BriefingName = _Parameter;
     elseif (_Index == 1) then
@@ -51,11 +51,11 @@ function b_Reprisal_Briefing:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Reprisal_Briefing:CustomFunction(_Quest)
+function B_Reprisal_Briefing:CustomFunction(_Quest)
     _G[self.Function](self, self.BriefingName, _Quest.ReceivingPlayer);
 end
 
-function b_Reprisal_Briefing:Debug(_Quest)
+function B_Reprisal_Briefing:Debug(_Quest)
     if self.BriefingName == nil or self.BriefingName == "" then
         error(string.format("%s: %s: Dialog name is invalid!", _Quest.Identifier, self.Name));
         return true;
@@ -67,7 +67,7 @@ function b_Reprisal_Briefing:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reprisal_Briefing);
+Swift:RegisterBehavior(B_Reprisal_Briefing);
 
 -- -------------------------------------------------------------------------- --
 
@@ -81,24 +81,24 @@ Swift:RegisterBehavior(b_Reprisal_Briefing);
 -- @within Reward
 --
 function Reward_Briefing(...)
-    return b_Reward_Briefing:new(...);
+    return B_Reward_Briefing:new(...);
 end
 
-b_Reward_Briefing = Swift:CopyTable(b_Reprisal_Briefing);
-b_Reward_Briefing.Name = "Reward_Briefing";
-b_Reward_Briefing.Description.en = "Reward: Calls a function to start an new briefing.";
-b_Reward_Briefing.Description.de = "Lohn: Ruft die Funktion auf und startet das enthaltene Briefing.";
-b_Reward_Briefing.GetReprisalTable = nil;
+B_Reward_Briefing = Swift:CopyTable(B_Reprisal_Briefing);
+B_Reward_Briefing.Name = "Reward_Briefing";
+B_Reward_Briefing.Description.en = "Reward: Calls a function to start an new briefing.";
+B_Reward_Briefing.Description.de = "Lohn: Ruft die Funktion auf und startet das enthaltene Briefing.";
+B_Reward_Briefing.GetReprisalTable = nil;
 
-b_Reward_Briefing.GetRewardTable = function(self, _Quest)
+B_Reward_Briefing.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-b_Reward_Briefing.CustomFunction = function(self, _Quest)
+B_Reward_Briefing.CustomFunction = function(self, _Quest)
     _G[self.Function](self, self.BriefingName, _Quest.ReceivingPlayer);
 end
 
-Swift:RegisterBehavior(b_Reward_Briefing);
+Swift:RegisterBehavior(B_Reward_Briefing);
 
 -- -------------------------------------------------------------------------- --
 
@@ -110,10 +110,10 @@ Swift:RegisterBehavior(b_Reward_Briefing);
 -- @within Trigger
 --
 function Trigger_Briefing(...)
-    return b_Trigger_Briefing:new(...);
+    return B_Trigger_Briefing:new(...);
 end
 
-b_Trigger_Briefing = {
+B_Trigger_Briefing = {
     Name = "Trigger_Briefing",
     Description = {
         en = "Trigger: Checks if an briefing has concluded and starts the quest if so.",
@@ -125,11 +125,11 @@ b_Trigger_Briefing = {
     },
 }
 
-function b_Trigger_Briefing:GetTriggerTable()
+function B_Trigger_Briefing:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_Briefing:AddParameter(_Index, _Parameter)
+function B_Trigger_Briefing:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.BriefingName = _Parameter;
     elseif (_Index == 2) then
@@ -138,7 +138,7 @@ function b_Trigger_Briefing:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Trigger_Briefing:CustomFunction(_Quest)
+function B_Trigger_Briefing:CustomFunction(_Quest)
     if API.GetCinematicEventStatus(self.BriefingName) == CinematicEventStatus.Concluded then
         if self.WaitTime and self.WaitTime > 0 then
             self.WaitTimeTimer = self.WaitTimeTimer or Logic.GetTime();
@@ -152,7 +152,7 @@ function b_Trigger_Briefing:CustomFunction(_Quest)
     return false;
 end
 
-function b_Trigger_Briefing:Debug(_Quest)
+function B_Trigger_Briefing:Debug(_Quest)
     if self.WaitTime < 0 then
         error(string.format("%s: %s: Wait time must be 0 or greater!", _Quest.Identifier, self.Name));
         return true;
@@ -176,5 +176,5 @@ function b_Trigger_Briefing:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Trigger_Briefing);
+Swift:RegisterBehavior(B_Trigger_Briefing);
 

@@ -27,10 +27,10 @@ You may use and modify this file unter the terms of the MIT licence.
 -- @within Goal
 --
 function Goal_ActivateSeveralObjects(...)
-    return b_Goal_ActivateSeveralObjects:new(...);
+    return B_Goal_ActivateSeveralObjects:new(...);
 end
 
-b_Goal_ActivateSeveralObjects = {
+B_Goal_ActivateSeveralObjects = {
     Name = "Goal_ActivateSeveralObjects",
     Description = {
         en = "Goal: Activate an interactive object",
@@ -45,11 +45,11 @@ b_Goal_ActivateSeveralObjects = {
     ScriptNames = {};
 }
 
-function b_Goal_ActivateSeveralObjects:GetGoalTable()
+function B_Goal_ActivateSeveralObjects:GetGoalTable()
     return {Objective.Object, { unpack(self.ScriptNames) } }
 end
 
-function b_Goal_ActivateSeveralObjects:AddParameter(_Index, _Parameter)
+function B_Goal_ActivateSeveralObjects:AddParameter(_Index, _Parameter)
     if _Index == 0 then
         assert(_Parameter ~= nil and _Parameter ~= "", "Goal_ActivateSeveralObjects: At least one IO needed!");
     end
@@ -58,11 +58,11 @@ function b_Goal_ActivateSeveralObjects:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Goal_ActivateSeveralObjects:GetMsgKey()
+function B_Goal_ActivateSeveralObjects:GetMsgKey()
     return "Quest_Object_Activate"
 end
 
-Swift:RegisterBehavior(b_Goal_ActivateSeveralObjects);
+Swift:RegisterBehavior(B_Goal_ActivateSeveralObjects);
 
 -- -------------------------------------------------------------------------- --
 
@@ -82,10 +82,10 @@ Swift:RegisterBehavior(b_Goal_ActivateSeveralObjects);
 -- @within Goal
 --
 function Goal_NPC(...)
-    return b_Goal_NPC:new(...);
+    return B_Goal_NPC:new(...);
 end
 
-b_Goal_NPC = {
+B_Goal_NPC = {
     Name             = "Goal_NPC",
     Description     = {
         en = "Goal: The hero has to talk to a non-player character.",
@@ -97,11 +97,11 @@ b_Goal_NPC = {
     },
 }
 
-function b_Goal_NPC:GetGoalTable()
+function B_Goal_NPC:GetGoalTable()
     return {Objective.Distance, -65565, self.Hero, self.NPC, self}
 end
 
-function b_Goal_NPC:AddParameter(_Index, _Parameter)
+function B_Goal_NPC:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.NPC = _Parameter
     elseif (_Index == 1) then
@@ -112,11 +112,11 @@ function b_Goal_NPC:AddParameter(_Index, _Parameter)
    end
 end
 
-function b_Goal_NPC:GetIcon()
+function B_Goal_NPC:GetIcon()
     return {14,10}
 end
 
-Swift:RegisterBehavior(b_Goal_NPC);
+Swift:RegisterBehavior(B_Goal_NPC);
 
 -- -------------------------------------------------------------------------- --
 
@@ -129,10 +129,10 @@ Swift:RegisterBehavior(b_Goal_NPC);
 -- @within Reprisal
 --
 function Reprisal_InteractiveObjectSetHeadline(...)
-    return b_Reprisal_InteractiveObjectSetHeadline:new(...);
+    return B_Reprisal_InteractiveObjectSetHeadline:new(...);
 end
 
-b_Reprisal_InteractiveObjectSetHeadline = {
+B_Reprisal_InteractiveObjectSetHeadline = {
     Name = "Reprisal_InteractiveObjectSetHeadline",
     Description = {
         en = "Reward: Changes the name of the interactive object in the tooltip.",
@@ -144,11 +144,11 @@ b_Reprisal_InteractiveObjectSetHeadline = {
     },
 }
 
-function b_Reprisal_InteractiveObjectSetHeadline:GetReprisalTable()
+function B_Reprisal_InteractiveObjectSetHeadline:GetReprisalTable()
     return { Reprisal.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reprisal_InteractiveObjectSetHeadline:AddParameter(_Index, _Parameter)
+function B_Reprisal_InteractiveObjectSetHeadline:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.ScriptName = _Parameter
     elseif (_Index == 1) then
@@ -156,11 +156,11 @@ function b_Reprisal_InteractiveObjectSetHeadline:AddParameter(_Index, _Parameter
     end
 end
 
-function b_Reprisal_InteractiveObjectSetHeadline:CustomFunction(_Quest)
+function B_Reprisal_InteractiveObjectSetHeadline:CustomFunction(_Quest)
     API.SetObjectHeadline(self.ScriptName, _G[self.Lambda] or self.Lambda);
 end
 
-function b_Reprisal_InteractiveObjectSetHeadline:Debug(_Quest)
+function B_Reprisal_InteractiveObjectSetHeadline:Debug(_Quest)
     if not IsExisting(self.ScriptName) == false then
         error(_Quest.Identifier.. ": " ..self.Name..": '"..self.ScriptName.."' does not exist!");
         return true;
@@ -172,7 +172,7 @@ function b_Reprisal_InteractiveObjectSetHeadline:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reprisal_InteractiveObjectSetHeadline);
+Swift:RegisterBehavior(B_Reprisal_InteractiveObjectSetHeadline);
 
 -- -------------------------------------------------------------------------- --
 
@@ -185,10 +185,10 @@ Swift:RegisterBehavior(b_Reprisal_InteractiveObjectSetHeadline);
 -- @within Reprisal
 --
 function Reprisal_InteractiveObjectSetDescription(...)
-    return b_Reprisal_InteractiveObjectSetDescription:new(...);
+    return B_Reprisal_InteractiveObjectSetDescription:new(...);
 end
 
-b_Reprisal_InteractiveObjectSetDescription = {
+B_Reprisal_InteractiveObjectSetDescription = {
     Name = "Reprisal_InteractiveObjectSetDescription",
     Description = {
         en = "Reward: Changes the description text of the interactive object.",
@@ -200,11 +200,11 @@ b_Reprisal_InteractiveObjectSetDescription = {
     },
 }
 
-function b_Reprisal_InteractiveObjectSetDescription:GetReprisalTable()
+function B_Reprisal_InteractiveObjectSetDescription:GetReprisalTable()
     return { Reprisal.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reprisal_InteractiveObjectSetDescription:AddParameter(_Index, _Parameter)
+function B_Reprisal_InteractiveObjectSetDescription:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.ScriptName = _Parameter
     elseif (_Index == 1) then
@@ -212,11 +212,11 @@ function b_Reprisal_InteractiveObjectSetDescription:AddParameter(_Index, _Parame
     end
 end
 
-function b_Reprisal_InteractiveObjectSetDescription:CustomFunction(_Quest)
+function B_Reprisal_InteractiveObjectSetDescription:CustomFunction(_Quest)
     API.SetObjectDescription(self.ScriptName, _G[self.Lambda] or self.Lambda);
 end
 
-function b_Reprisal_InteractiveObjectSetDescription:Debug(_Quest)
+function B_Reprisal_InteractiveObjectSetDescription:Debug(_Quest)
     if not IsExisting(self.ScriptName) == false then
         error(_Quest.Identifier.. ": " ..self.Name..": '"..self.ScriptName.."' does not exist!");
         return true;
@@ -228,7 +228,7 @@ function b_Reprisal_InteractiveObjectSetDescription:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reprisal_InteractiveObjectSetDescription);
+Swift:RegisterBehavior(B_Reprisal_InteractiveObjectSetDescription);
 
 -- -------------------------------------------------------------------------- --
 
@@ -241,10 +241,10 @@ Swift:RegisterBehavior(b_Reprisal_InteractiveObjectSetDescription);
 -- @within Reprisal
 --
 function Reprisal_InteractiveObjectSetDisabledText(...)
-    return b_Reprisal_InteractiveObjectSetDisabledText:new(...);
+    return B_Reprisal_InteractiveObjectSetDisabledText:new(...);
 end
 
-b_Reprisal_InteractiveObjectSetDisabledText = {
+B_Reprisal_InteractiveObjectSetDisabledText = {
     Name = "Reprisal_InteractiveObjectSetDisabledText",
     DisabledText = {
         en = "Reward: Changes the disabled text of an interactive object.",
@@ -256,11 +256,11 @@ b_Reprisal_InteractiveObjectSetDisabledText = {
     },
 }
 
-function b_Reprisal_InteractiveObjectSetDisabledText:GetReprisalTable()
+function B_Reprisal_InteractiveObjectSetDisabledText:GetReprisalTable()
     return { Reprisal.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reprisal_InteractiveObjectSetDisabledText:AddParameter(_Index, _Parameter)
+function B_Reprisal_InteractiveObjectSetDisabledText:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.ScriptName = _Parameter
     elseif (_Index == 1) then
@@ -268,11 +268,11 @@ function b_Reprisal_InteractiveObjectSetDisabledText:AddParameter(_Index, _Param
     end
 end
 
-function b_Reprisal_InteractiveObjectSetDisabledText:CustomFunction(_Quest)
+function B_Reprisal_InteractiveObjectSetDisabledText:CustomFunction(_Quest)
     API.SetObjectDisabledText(self.ScriptName, _G[self.Lambda] or self.Lambda);
 end
 
-function b_Reprisal_InteractiveObjectSetDisabledText:Debug(_Quest)
+function B_Reprisal_InteractiveObjectSetDisabledText:Debug(_Quest)
     if not IsExisting(self.ScriptName) == false then
         error(_Quest.Identifier.. ": " ..self.Name..": '"..self.ScriptName.."' does not exist!");
         return true;
@@ -284,7 +284,7 @@ function b_Reprisal_InteractiveObjectSetDisabledText:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reprisal_InteractiveObjectSetDisabledText);
+Swift:RegisterBehavior(B_Reprisal_InteractiveObjectSetDisabledText);
 
 -- -------------------------------------------------------------------------- --
 
@@ -299,10 +299,10 @@ Swift:RegisterBehavior(b_Reprisal_InteractiveObjectSetDisabledText);
 -- @within Reprisal
 --
 function Reprisal_InteractiveObjectSetIconTexture(...)
-    return b_Reprisal_InteractiveObjectSetIconTexture:new(...);
+    return B_Reprisal_InteractiveObjectSetIconTexture:new(...);
 end
 
-b_Reprisal_InteractiveObjectSetIconTexture = {
+B_Reprisal_InteractiveObjectSetIconTexture = {
     Name = "Reprisal_InteractiveObjectSetIconTexture",
     DisabledText = {
         en = "Reward: Changes the disabled text of an interactive object.",
@@ -316,11 +316,11 @@ b_Reprisal_InteractiveObjectSetIconTexture = {
     },
 }
 
-function b_Reprisal_InteractiveObjectSetIconTexture:GetReprisalTable()
+function B_Reprisal_InteractiveObjectSetIconTexture:GetReprisalTable()
     return { Reprisal.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reprisal_InteractiveObjectSetIconTexture:AddParameter(_Index, _Parameter)
+function B_Reprisal_InteractiveObjectSetIconTexture:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.ScriptName = _Parameter
     elseif (_Index == 1) then
@@ -332,11 +332,11 @@ function b_Reprisal_InteractiveObjectSetIconTexture:AddParameter(_Index, _Parame
     end
 end
 
-function b_Reprisal_InteractiveObjectSetIconTexture:CustomFunction(_Quest)
+function B_Reprisal_InteractiveObjectSetIconTexture:CustomFunction(_Quest)
     API.SetObjectIcon(self.ScriptName, {self.X, self.Y, self.Z});
 end
 
-function b_Reprisal_InteractiveObjectSetIconTexture:Debug(_Quest)
+function B_Reprisal_InteractiveObjectSetIconTexture:Debug(_Quest)
     if not IsExisting(self.ScriptName) == false then
         error(_Quest.Identifier.. ": " ..self.Name..": '"..self.ScriptName.."' does not exist!");
         return true;
@@ -356,7 +356,7 @@ function b_Reprisal_InteractiveObjectSetIconTexture:Debug(_Quest)
     return false;
 end
 
-Swift:RegisterBehavior(b_Reprisal_InteractiveObjectSetIconTexture);
+Swift:RegisterBehavior(B_Reprisal_InteractiveObjectSetIconTexture);
 
 -- -------------------------------------------------------------------------- --
 
@@ -369,18 +369,18 @@ Swift:RegisterBehavior(b_Reprisal_InteractiveObjectSetIconTexture);
 -- @within Reward
 --
 function Reward_InteractiveObjectSetHeadline(...)
-    return b_Reward_InteractiveObjectSetHeadline:new(...);
+    return B_Reward_InteractiveObjectSetHeadline:new(...);
 end
 
-b_Reward_InteractiveObjectSetHeadline = Swift:CopyTable(b_Reprisal_InteractiveObjectSetHeadline);
-b_Reward_InteractiveObjectSetHeadline.Name             = "Reward_InteractiveObjectSetHeadline";
-b_Reward_InteractiveObjectSetHeadline.GetReprisalTable = nil;
+B_Reward_InteractiveObjectSetHeadline = Swift:CopyTable(B_Reprisal_InteractiveObjectSetHeadline);
+B_Reward_InteractiveObjectSetHeadline.Name             = "Reward_InteractiveObjectSetHeadline";
+B_Reward_InteractiveObjectSetHeadline.GetReprisalTable = nil;
 
-b_Reward_InteractiveObjectSetHeadline.GetRewardTable = function(self, _Quest)
+B_Reward_InteractiveObjectSetHeadline.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-Swift:RegisterBehavior(b_Reward_InteractiveObjectSetHeadline);
+Swift:RegisterBehavior(B_Reward_InteractiveObjectSetHeadline);
 
 -- -------------------------------------------------------------------------- --
 
@@ -393,18 +393,18 @@ Swift:RegisterBehavior(b_Reward_InteractiveObjectSetHeadline);
 -- @within Reward
 --
 function Reward_InteractiveObjectSetDescription(...)
-    return b_Reward_InteractiveObjectSetDescription:new(...);
+    return B_Reward_InteractiveObjectSetDescription:new(...);
 end
 
-b_Reward_InteractiveObjectSetDescription = Swift:CopyTable(b_Reprisal_InteractiveObjectSetDescription);
-b_Reward_InteractiveObjectSetDescription.Name             = "Reward_InteractiveObjectSetDescription";
-b_Reward_InteractiveObjectSetDescription.GetReprisalTable = nil;
+B_Reward_InteractiveObjectSetDescription = Swift:CopyTable(B_Reprisal_InteractiveObjectSetDescription);
+B_Reward_InteractiveObjectSetDescription.Name             = "Reward_InteractiveObjectSetDescription";
+B_Reward_InteractiveObjectSetDescription.GetReprisalTable = nil;
 
-b_Reward_InteractiveObjectSetDescription.GetRewardTable = function(self, _Quest)
+B_Reward_InteractiveObjectSetDescription.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-Swift:RegisterBehavior(b_Reward_InteractiveObjectSetDescription);
+Swift:RegisterBehavior(B_Reward_InteractiveObjectSetDescription);
 
 -- -------------------------------------------------------------------------- --
 
@@ -417,18 +417,18 @@ Swift:RegisterBehavior(b_Reward_InteractiveObjectSetDescription);
 -- @within Reward
 --
 function Reward_InteractiveObjectSetDisabledText(...)
-    return b_Reward_InteractiveObjectSetDisabledText:new(...);
+    return B_Reward_InteractiveObjectSetDisabledText:new(...);
 end
 
-b_Reward_InteractiveObjectSetDisabledText = Swift:CopyTable(b_Reprisal_InteractiveObjectSetDisabledText);
-b_Reward_InteractiveObjectSetDisabledText.Name             = "Reward_InteractiveObjectSetDisabledText";
-b_Reward_InteractiveObjectSetDisabledText.GetReprisalTable = nil;
+B_Reward_InteractiveObjectSetDisabledText = Swift:CopyTable(B_Reprisal_InteractiveObjectSetDisabledText);
+B_Reward_InteractiveObjectSetDisabledText.Name             = "Reward_InteractiveObjectSetDisabledText";
+B_Reward_InteractiveObjectSetDisabledText.GetReprisalTable = nil;
 
-b_Reward_InteractiveObjectSetDisabledText.GetRewardTable = function(self, _Quest)
+B_Reward_InteractiveObjectSetDisabledText.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-Swift:RegisterBehavior(b_Reward_InteractiveObjectSetDisabledText);
+Swift:RegisterBehavior(B_Reward_InteractiveObjectSetDisabledText);
 
 -- -------------------------------------------------------------------------- --
 
@@ -443,23 +443,23 @@ Swift:RegisterBehavior(b_Reward_InteractiveObjectSetDisabledText);
 -- @within Reward
 --
 function Reward_InteractiveObjectSetIconTexture(...)
-    return b_Reward_InteractiveObjectSetIconTexture:new(...);
+    return B_Reward_InteractiveObjectSetIconTexture:new(...);
 end
 
-b_Reward_InteractiveObjectSetIconTexture = Swift:CopyTable(b_Reprisal_InteractiveObjectSetIconTexture);
-b_Reward_InteractiveObjectSetIconTexture.Name             = "Reward_InteractiveObjectSetIconTexture";
-b_Reward_InteractiveObjectSetIconTexture.GetReprisalTable = nil;
+B_Reward_InteractiveObjectSetIconTexture = Swift:CopyTable(B_Reprisal_InteractiveObjectSetIconTexture);
+B_Reward_InteractiveObjectSetIconTexture.Name             = "Reward_InteractiveObjectSetIconTexture";
+B_Reward_InteractiveObjectSetIconTexture.GetReprisalTable = nil;
 
-b_Reward_InteractiveObjectSetIconTexture.GetRewardTable = function(self, _Quest)
+B_Reward_InteractiveObjectSetIconTexture.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-Swift:RegisterBehavior(b_Reward_InteractiveObjectSetIconTexture);
+Swift:RegisterBehavior(B_Reward_InteractiveObjectSetIconTexture);
 
 -- -------------------------------------------------------------------------- --
 
 -- API.CreateObject muss zur Initialisierung verwendet werden
-b_Reward_ObjectInit.CustomFunction = function(_Behavior, _Quest)
+B_Reward_ObjectInit.CustomFunction = function(_Behavior, _Quest)
     local eID = GetID(_Behavior.ScriptName);
     if eID == 0 then
         return;

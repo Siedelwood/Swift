@@ -633,11 +633,22 @@ function API.IsGoodOrUnitOffered(_PlayerID, _GoodOrEntityType)
     return OfferID ~= 1 and TraderID ~= 1;
 end
 
+---
+-- Gibt die aktuelle Anzahl an Angeboten des Typs zurück.
+--
+-- @param[type=number] _PlayerID Player ID
+-- @param[type=number] _GoodOrEntityType Warentyp oder Entitytyp
+-- @return[type=number] Menge an Angeboten
+-- @within Anwenderfunktionen
+--
+-- @usage -- Wird die Ware angeboten?
+-- local CurrentAmount = API.IsGoodOrUnitOffered(4, Goods.G_Bread);
+--
 function API.GetTradeOfferWaggonAmount(_PlayerID, _GoodOrEntityType)
     local Amount = -1;
-    local OfferInfo = self:GetStorehouseInformation(_P2);
+    local OfferInfo = ModuleTradingCore.Global:GetStorehouseInformation(_PlayerID);
     for i= 1, #OfferInfo[4] do
-        if OfferInfo[4][i][3] == _Good and OfferInfo[4][i][5] > 0 then
+        if OfferInfo[4][i][3] == _GoodOrEntityType and OfferInfo[4][i][5] > 0 then
             Amount = OfferInfo[4][i][5];
         end
     end

@@ -175,8 +175,8 @@ function Swift:LoadBehaviors()
     for i= 1, #self.m_BehaviorRegister, 1 do
         local Behavior = self.m_BehaviorRegister[i];
 
-        if not _G["b_" .. Behavior.Name].new then
-            _G["b_" .. Behavior.Name].new = function(self, ...)
+        if not _G["B_" .. Behavior.Name].new then
+            _G["B_" .. Behavior.Name].new = function(self, ...)
                 local arg = {...};
                 local behavior = table.copy(self);
                 -- Raw parameters
@@ -208,7 +208,7 @@ function Swift:RegisterBehavior(_Behavior)
     if _Behavior.RequiresExtraNo and _Behavior.RequiresExtraNo > g_GameExtraNo then
         return;
     end
-    if not _G["b_" .. _Behavior.Name] then
+    if not _G["B_" .. _Behavior.Name] then
         error(string.format("Behavior %s does not exist!", _Behavior.Name));
         return;
     end
