@@ -30,7 +30,7 @@ QSB = QSB or {};
 -- @within Anwenderfunktionen
 --
 -- @usage
--- API.SetPostion("hakim", "hakimPos1");
+-- API.SetPosition("hakim", "hakimPos1");
 --
 function API.SetPosition(_Entity, _Position)
     if GUI then

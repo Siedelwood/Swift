@@ -9,6 +9,7 @@ You may use and modify this file unter the terms of the MIT licence.
 ]]
 
 ---
+-- Fügt Behavior zur Steuerung von Briefings hinzu.
 --
 -- @set sort=true
 --

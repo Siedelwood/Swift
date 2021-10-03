@@ -37,7 +37,8 @@ B_Reprisal_Dialog = {
         de = "Lohn: Ruft die Funktion auf und startet den enthaltenen Dialog.",
     },
     Parameter = {
-        { ParameterType.Default, en = "Briefing function", de = "Funktion mit Briefing" },
+        { ParameterType.Default, en = "Dialog name",     de = "Name des Dialog" },
+        { ParameterType.Default, en = "Dialog function", de = "Funktion mit Dialog" },
     },
 }
 
@@ -54,7 +55,7 @@ function B_Reprisal_Dialog:AddParameter(_Index, _Parameter)
 end
 
 function B_Reprisal_Dialog:CustomFunction(_Quest)
-    _G[self.Function](self, self.DialogName, _Quest.ReceivingPlayer);
+    _G[self.Function](self.DialogName, _Quest.ReceivingPlayer);
 end
 
 function B_Reprisal_Dialog:Debug(_Quest)
@@ -94,10 +95,6 @@ B_Reward_Dialog.GetReprisalTable = nil;
 
 B_Reward_Dialog.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} }
-end
-
-B_Reward_Dialog.CustomFunction = function(self, _Quest)
-    _G[self.Function](self, self.DialogName, _Quest.ReceivingPlayer);
 end
 
 Swift:RegisterBehavior(B_Reward_Dialog);

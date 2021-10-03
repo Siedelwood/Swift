@@ -36,7 +36,7 @@ ModuleDialogSystem = {
 
 function ModuleDialogSystem.Global:OnGameStart()
     for i= 1, 8 do
-        ModuleDialogSystem.Global.DialogQueue[i] = {};
+        self.DialogQueue[i] = {};
     end
     
     -- Quests can not be decided while a dialog is active. This must be done to
@@ -60,7 +60,7 @@ function ModuleDialogSystem.Global:OnEvent(_ID, _Event, _PlayerID)
         if self.Dialog[_PlayerID] ~= nil then
             if Logic.GetTime() - self.Dialog[_PlayerID].PageStartedTime >= 2 then
                 local PageID = self.Dialog[_PlayerID].CurrentPage;
-                local Page = self.Dialog[_PlayerID][2][PageID];
+                local Page = self.Dialog[_PlayerID][PageID];
                 if not self.Dialog[_PlayerID].DisableSkipping and not Page.DisableSkipping and not Page.MC then
                     self:NextPage(_PlayerID);
                 end
@@ -93,11 +93,12 @@ function ModuleDialogSystem.Global:CanStartDialog(_PlayerID)
 end
 
 function ModuleDialogSystem.Global:NextDialog(_PlayerID)
-    if self:CanStartDialog() then
-        local Dialog = table.remove(self.DialogQueue[_PlayerID], 1);
-        API.StartCinematicEvent(Dialog[1], _PlayerID);
+    if self:CanStartDialog(_PlayerID) then
+        local DialogData = table.remove(self.DialogQueue[_PlayerID], 1);
+        API.StartCinematicEvent(DialogData[1], _PlayerID);
 
-        Dialog.Name = Dialog[1];
+        local Dialog = DialogData[2];
+        Dialog.Name = DialogData[1];
         Dialog.PlayerID = _PlayerID;
         Dialog.CurrentPage = 0;
         self.Dialog[_PlayerID] = Dialog;
@@ -133,26 +134,26 @@ function ModuleDialogSystem.Global:NextPage(_PlayerID)
         self:EndDialog(_PlayerID);
         return;
     end
-    local Page = self.Dialog[_PlayerID][2][PageID];
+    local Page = self.Dialog[_PlayerID][PageID];
     if type(Page) == "table" then
         if Page.MC then
             for i= 1, #Page.MC, 1 do
-                if type(Page.MC[i][3]) == "function" then
-                    self.Dialog[_PlayerID][2][PageID].MC[i].Disabled = Page.MC[i][3](_PlayerID, PageID)
+                if type(Page.MC[i].Disable) == "function" then
+                    self.Dialog[_PlayerID][PageID].MC[i].Disabled = Page.MC[i].Disable(_PlayerID, PageID)
                 end
             end
         end
         
-        if PageID <= #self.Dialog[_PlayerID][2] then
-            if self.Dialog[_PlayerID][2][PageID].Action then
-                self.Dialog[_PlayerID][2][PageID]:Action();
+        if PageID <= #self.Dialog[_PlayerID] then
+            if self.Dialog[_PlayerID][PageID].Action then
+                self.Dialog[_PlayerID][PageID]:Action();
             end
             self.Dialog[_PlayerID].PageQuest = self:DisplayPage(_PlayerID, PageID);
         else
             self:EndDialog(_PlayerID);
         end
     elseif type(Page) == "number" or type(Page) == "string" then
-        local Target = self:GetPageIDByName(_PlayerID, self.Dialog[_PlayerID][2][PageID]);
+        local Target = self:GetPageIDByName(_PlayerID, self.Dialog[_PlayerID][PageID]);
         self.Dialog[_PlayerID].CurrentPage = Target -1;
         self:NextPage(_PlayerID);
     else
@@ -165,16 +166,16 @@ function ModuleDialogSystem.Global:OnOptionSelected(_PlayerID, _OptionID)
         return;
     end
     local PageID = self.Dialog[_PlayerID].CurrentPage;
-    if type(self.Dialog[_PlayerID][2][PageID]) ~= "table" then
+    if type(self.Dialog[_PlayerID][PageID]) ~= "table" then
         return;
     end
-    local Page = self.Dialog[_PlayerID][2][PageID];
+    local Page = self.Dialog[_PlayerID][PageID];
     if Page.MC then
         local Option;
         for i= 1, #Page.MC, 1 do
             if Page.MC[i].ID == _OptionID then
                 if Page.Remove then
-                    self.Dialog[_PlayerID][2][PageID].MC[i].Visible = false;
+                    self.Dialog[_PlayerID][PageID].MC[i].Visible = false;
                 end
                 Option = Page.MC[i];
             end
@@ -184,7 +185,7 @@ function ModuleDialogSystem.Global:OnOptionSelected(_PlayerID, _OptionID)
             if type(Option[2]) == "function" then
                 Target = Option[2](_PlayerID, PageID);
             end
-            self.Dialog[_PlayerID][2][PageID].MC.Selected = Option.ID;
+            self.Dialog[_PlayerID][PageID].MC.Selected = Option.ID;
             self.Dialog[_PlayerID].CurrentPage = self:GetPageIDByName(_PlayerID, Target) -1;
             self:NextPage(_PlayerID);
         end
@@ -197,7 +198,7 @@ function ModuleDialogSystem.Global:DisplayPage(_PlayerID, _PageID)
     end
 
     self.DialogPageCounter = self.DialogPageCounter +1;
-    local Page = self.Dialog[_PlayerID][2][_PageID];
+    local Page = self.Dialog[_PlayerID][_PageID];
     local QuestName = "DialogSystemQuest_" .._PlayerID.. "_" ..self.DialogPageCounter;
     local QuestText = API.ConvertPlaceholders(API.Localize(Page.Text));
     local Extension = "";
@@ -237,8 +238,8 @@ end
 function ModuleDialogSystem.Global:GetPageIDByName(_PlayerID, _Name)
     if type(_Name) == "string" then
         if self.Dialog[_PlayerID] ~= nil then
-            for i= 1, #self.Dialog[_PlayerID][2], 1 do
-                if self.Dialog[_PlayerID][2][i].Name == _Name then
+            for i= 1, #self.Dialog[_PlayerID], 1 do
+                if self.Dialog[_PlayerID][i].Name == _Name then
                     return i;
                 end
             end
@@ -291,10 +292,10 @@ function ModuleDialogSystem.Local:StartDialog(_PlayerID, _Data)
             Speed    = Game.GameTimeGetFactor(_PlayerID),
         };
 
-        if _Data.HideFog then
+        if _Data.DisableFoW then
             Display.SetRenderFogOfWar(0);
         end
-        if _Data.HideBorderPins then
+        if _Data.DisableBorderPins then
             Display.SetRenderBorderPins(0);
         end
         if not Framework.IsNetworkGame() then

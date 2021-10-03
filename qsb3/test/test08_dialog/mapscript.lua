@@ -79,81 +79,134 @@ function Mission_FirstMapAction()
     API.ActivateDebugMode(true, false, true, true);
 end
 
-function CreateTestChests()
-    API.CreateRandomGoldChest("chest1");
-    API.CreateRandomResourceChest("chest2");
-    API.CreateRandomLuxuryChest("chest3");
-    API.CreateRandomTreasure("IO1", Goods.G_Gold, 200, 400);
+-- > BriefingAnimationTest([[foo]], 1)
+
+function BriefingAnimationTest(_Name, _PlayerID)
+    local Briefing = {
+        HideBorderPins = true,
+        ShowSky = true,
+        RestoreGameSpeed = true,
+        RestoreCamera = true,
+        SkippingAllowed = true,
+        DisableReturn = false,
+    }
+    local AP = API.AddBriefingPages(Briefing);
+
+    Briefing.PageAnimations = {
+        ["Page1"] = {
+            {"pos4", -60, 2000, 35, "pos4", -30, 2000, 25, 30}
+        },
+        ["Page3"] = {
+            PurgeOld = true,
+            {"pos2", -45, 6000, 35, "pos2", -45, 3000, 35, 30},
+        }
+    }
+
+    AP{
+        Name     = "Page1",
+        Title    = "Page 1",
+        Text     = "This is page 1!",
+        Position = "pos4",
+    }
+    AP{
+        Title    = "Page 2",
+        Text     = "This is page 2!",
+        Duration = 5,
+    }
+    AP{
+        Name     = "Page3",
+        Title    = "Page 3",
+        Text     = "This is page 3!",
+    }
+    AP{
+        Title    = "Page 4",
+        Text     = "This is page 4!",
+    }
+    AP{
+        Title    = "Page 5",
+        Text     = "This is page 5!",
+    }
+
+    Briefing.Starting = function(_Data)
+    end
+    Briefing.Finished = function(_Data)
+    end
+    API.StartBriefing(Briefing, _Name, _PlayerID)
 end
 
-function CreateTestNPCQuest()
+function CreateTestNPCDialogQuest()
+    ReplaceEntity("npc1", Entities.U_KnightSabatta);
+    
     AddQuest {
-        Name        = "TestNpcQuest1",
+        Name        = "TestNpcQuest3",
         Suggestion  = "Speak to this npc.",
-        Success     = "You done well!",
         Receiver    = 1,
 
         Goal_NPC("npc1", "-"),
-        Trigger_Time(0),
-    }
-
-    AddQuest {
-        Name        = "TestNpcQuest2",
-        Suggestion  = "Speak to this npc.",
-        Success     = "You done well!",
-        Receiver    = 2,
-
-        Goal_NPC("npc2", "-"),
+        Reward_Dialog("TestDialog", "CreateTestNPCDialogBriefing"),
         Trigger_Time(0),
     }
 end
 
-function CreateTestNPCs()
-    -- Player 1 can speak to this npc.
-    API.NpcCompose {
-        Name     = "npc1",
-        PlayerID = 1,
-        Callback = function(_Npc, _Hero)
-            API.Note("It work's!");
-        end,
+function CreateTestNPCDialogBriefing(_Name, _PlayerID)
+    local Dialog = {
+        DisableFow = true,
+        DisableBoderPins = true,
+    };
+    local AP, ASP = API.AddDialogPages(Dialog);
+
+    AP {
+        Name   = "StartPage",
+        Text   = "Das ist ein Test!",
+        Sender = -1,
+        Target = "npc1",
+        Zoom   = 0.1,
+        MC     = {
+            {"Machen wir weiter...", "ContinuePage"},
+            {"Schluss jetzt!", "EndPage"}
+        }
     }
 
-    -- Player 1 isn't allowed to speak to this npc.
-    API.NpcCompose {
-        Name     = "npc2",
-        PlayerID = 2,
-        Callback = function(_Npc, _Hero)
-            API.Note("It does not work!");
-        end,
+    AP {
+        Name   = "ContinuePage",
+        Text   = "Wunderbar! Es scheint zu funktionieren.",
+        Sender = 1,
+        Target = Logic.GetKnightID(_PlayerID),
+        Zoom   = 0.1,
     }
-end
+    AP {
+        Text   = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr.",
+        Sender = -1,
+        Target = "npc1",
+        Zoom   = 0.1,
+    }
+    AP {
+        Text   = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor.",
+        Sender = -1,
+        Target = "npc1",
+        Zoom   = 0.1,
+    }
+    AP {
+        Text   = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
+        Sender = -1,
+        Target = "npc1",
+        Zoom   = 0.1,
+    }
+    AP("StartPage");
 
-function CreateTestObject()
-    CreateObject {
-        Name     = "IO1",
-        Distance = 1000,
-        Text     = "Bockwurst",
-        Texture  = {1, 1},
-        Condition = function(_Data)
-            return true;
-        end,
-        Callback = function(_Data)
-            API.Note("it work's!");
-        end,
+    AP {
+        Name   = "EndPage",
+        Text   = "Gut, dann eben nicht!",
+        Sender = -1,
+        Target = "npc1",
+        Zoom   = 0.1,
     }
-end
 
-function CreateTestObject2()
-    CreateObject {
-        Name     = "IO1",
-        Distance = 1000,
-        Text     = "Bockwurst",
-        Texture  = {1, 4},
-        Condition = function(_Data)
-            return false;
-        end,
-        Callback = function(_Data)
-            API.Note("it work's!");
-        end,
-    }
+    Dialog.Starting = function(_Data)
+        -- Mach was tolles hier.
+    end
+    Dialog.Finished = function(_Data)
+        -- Mach was tolles hier.
+    end
+    API.StartDialog(Dialog, _Name, _PlayerID);
 end

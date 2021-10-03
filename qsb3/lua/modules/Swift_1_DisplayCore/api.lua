@@ -174,7 +174,7 @@ function API.GetCinematicEventPlayerID(_Name)
     if GUI then
         return ModuleDisplayCore.Local:GetCinematicEventPlayerID(QSB.CinematicEvents[_Name]);
     end
-    ModuleDisplayCore.Global:GetCinematicEventPlayerID(QSB.CinematicEvents[_Name]);
+    return ModuleDisplayCore.Global:GetCinematicEventPlayerID(QSB.CinematicEvents[_Name]);
 end
 
 ---
