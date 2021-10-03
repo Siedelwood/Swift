@@ -72,7 +72,7 @@ SetCameraToPlayerKnight = API.FocusCameraOnKnight;
 --
 function API.FocusCameraOnEntity(_Entity, _Rotation, _ZoomFactor)
     if not GUI then
-        local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
+        local Subject = (type(_Entity) ~= "string" and _Entity) or ("'" .._Entity.. "'");
         Logic.ExecuteInLuaLocalState("API.FocusCameraOnEntity(" ..Subject.. ", " ..tostring(_Rotation).. ", " ..tostring(_ZoomFactor).. ")");
         return;
     end

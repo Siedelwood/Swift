@@ -233,8 +233,8 @@ function API.DialogInfoBox(_Title, _Text, _Action)
             return;
         end
 
-        local Title = (type(_Title) == "table" and table.tostring(_Title)) or "\"" .._Title.. "\"";
-        local Text  = (type(_Text) == "table" and table.tostring(_Text)) or "\"" .._Text.. "\"";
+        local Title = (type(_Title) == "table" and table.tostring(_Title)) or ("\"" .._Title.. "\"");
+        local Text  = (type(_Text) == "table" and table.tostring(_Text)) or ("\"" .._Text.. "\"");
 
         Logic.ExecuteInLuaLocalState(string.format(
             [[ModuleInputOutputCore.Local:OpenDialog(%s, %s, %s)]],
@@ -280,8 +280,8 @@ function API.DialogRequestBox(_Title, _Text, _Action, _OkCancel)
             return;
         end
 
-        local Title = (type(_Title) == "table" and table.tostring(_Title)) or "\"" .._Title.. "\"";
-        local Text  = (type(_Text) == "table" and table.tostring(_Text)) or "\"" .._Text.. "\"";
+        local Title = (type(_Title) == "table" and table.tostring(_Title)) or ("\"" .._Title.. "\"");
+        local Text  = (type(_Text) == "table" and table.tostring(_Text)) or ("\"" .._Text.. "\"");
 
         Logic.ExecuteInLuaLocalState(string.format(
             [[ModuleInputOutputCore.Local:OpenRequesterDialog(%s, %s, %s, %s)]],
@@ -327,8 +327,8 @@ function API.DialogSelectBox(_Title, _Text, _Action, _List)
             return;
         end
 
-        local Title = (type(_Title) == "table" and table.tostring(_Title)) or "\"" .._Title.. "\"";
-        local Text  = (type(_Text) == "table" and table.tostring(_Text)) or "\"" .._Text.. "\"";
+        local Title = (type(_Title) == "table" and table.tostring(_Title)) or ("\"" .._Title.. "\"");
+        local Text  = (type(_Text) == "table" and table.tostring(_Text)) or ("\"" .._Text.. "\"");
 
         Logic.ExecuteInLuaLocalState(string.format(
             [[ModuleInputOutputCore.Local:OpenSelectionDialog(%s, %s, %s, %s)]],

@@ -17,6 +17,58 @@ You may use and modify this file unter the terms of the MIT licence.
 
 Swift = Swift or {};
 
+Swift.Behavior = {
+    QuestCounter = 0,
+    Text = {
+        DestroySoldiers = {
+            de = "{center}SOLDATEN ZERSTÖREN {cr}{cr}von der Partei: %s{cr}{cr}Anzahl: %d",
+            en = "{center}DESTROY SOLDIERS {cr}{cr}from faction: %s{cr}{cr}Amount: %d",
+        },
+        ActivateBuff = {
+            Pattern = {
+                de = "BONUS AKTIVIEREN{cr}{cr}%s",
+                en = "ACTIVATE BUFF{cr}{cr}%s",
+            },
+            BuffsVanilla = {
+                ["Buff_Spice"]                  = {de = "Salz", en = "Salt"},
+                ["Buff_Colour"]                 = {de = "Farben", en = "Color"},
+                ["Buff_Entertainers"]           = {de = "Entertainer", en = "Entertainer"},
+                ["Buff_FoodDiversity"]          = {de = "Vielfältige Nahrung", en = "Food diversity"},
+                ["Buff_ClothesDiversity"]       = {de = "Vielfältige Kleidung", en = "Clothes diversity"},
+                ["Buff_HygieneDiversity"]       = {de = "Vielfältige Reinigung", en = "Hygiene diversity"},
+                ["Buff_EntertainmentDiversity"] = {de = "Vielfältige Unterhaltung", en = "Entertainment diversity"},
+                ["Buff_Sermon"]                 = {de = "Predigt", en = "Sermon"},
+                ["Buff_Festival"]               = {de = "Fest", en = "Festival"},
+                ["Buff_ExtraPayment"]           = {de = "Sonderzahlung", en = "Extra payment"},
+                ["Buff_HighTaxes"]              = {de = "Hohe Steuern", en = "High taxes"},
+                ["Buff_NoPayment"]              = {de = "Kein Sold", en = "No payment"},
+                ["Buff_NoTaxes"]                = {de = "Keine Steuern", en = "No taxes"},
+            },
+            BuffsEx1 = {
+                ["Buff_Gems"]              = {de = "Edelsteine", en = "Gems"},
+                ["Buff_MusicalInstrument"] = {de = "Musikinstrumente", en = "Musical instruments"},
+                ["Buff_Olibanum"]          = {de = "Weihrauch", en = "Olibanum"},
+            }
+        },
+        SoldierCount = {
+            Pattern = {
+                de = "SOLDATENANZAHL {cr}Partei: %s{cr}{cr}%s %d",
+                en = "SOLDIER COUNT {cr}Faction: %s{cr}{cr}%s %d",
+            },
+            Relation = {
+                ["true"]  = {de = "Weniger als ", en = "Less than "},
+                ["false"] = {de = "Mindestens ", en = "At least "},
+            }
+        },
+        Festivals = {
+            Pattern = {
+                de = "FESTE FEIERN {cr}{cr}Partei: %s{cr}{cr}Anzahl: %d",
+                en = "HOLD PARTIES {cr}{cr}Faction: %s{cr}{cr}Amount: %d",
+            },
+        }
+    }
+};
+
 QSB.DestroyedSoldiers = {};
 QSB.EffectNameToID = {};
 QSB.InitalizedObjekts = {};
@@ -1183,13 +1235,13 @@ end
 
 function B_Goal_ActivateBuff:CustomFunction(_Quest)
    if not _Quest.QuestDescription or _Quest.QuestDescription == "" then
-        local tMapping = Swift:CopyTable(BundleClassicBehaviors.Text.ActivateBuff.BuffsVanilla);
+        local tMapping = Swift:CopyTable(Swift.Behavior.Text.ActivateBuff.BuffsVanilla);
         if g_GameExtraNo >= 1 then
-            tMapping = Swift:CopyTable(BundleClassicBehaviors.Text.ActivateBuff.BuffsEx1, tMapping);
+            tMapping = Swift:CopyTable(Swift.Behavior.Text.ActivateBuff.BuffsEx1, tMapping);
         end
         Swift:ChangeCustomQuestCaptionText(
             string.format(
-                Swift:GetTextOfDesiredLanguage(BundleClassicBehaviors.Text.ActivateBuff.Pattern),
+                Swift:GetTextOfDesiredLanguage(Swift.Behavior.Text.ActivateBuff.Pattern),
                 Swift:GetTextOfDesiredLanguage(tMapping[self.BuffName])
             ),
             _Quest
@@ -1895,9 +1947,9 @@ function B_Goal_SoldierCount:CustomFunction(_Quest)
         local PlayerName = GetPlayerName(self.PlayerID) or "";
         Swift:ChangeCustomQuestCaptionText(
             string.format(
-                Swift:GetTextOfDesiredLanguage(BundleClassicBehaviors.Text.SoldierCount.Pattern),
+                Swift:GetTextOfDesiredLanguage(Swift.Behavior.Text.SoldierCount.Pattern),
                 PlayerName,
-                Swift:GetTextOfDesiredLanguage(BundleClassicBehaviors.Text.SoldierCount.Relation[Relation]),
+                Swift:GetTextOfDesiredLanguage(Swift.Behavior.Text.SoldierCount.Relation[Relation]),
                 self.NumberOfUnits
             ),
             _Quest
@@ -2078,7 +2130,7 @@ function B_Goal_Festivals:CustomFunction(_Quest)
         local PlayerName = GetPlayerName(self.PlayerID) or "";
         Swift:ChangeCustomQuestCaptionText(
             string.format(
-                Swift:GetTextOfDesiredLanguage(BundleClassicBehaviors.Text.Festivals.Pattern),
+                Swift:GetTextOfDesiredLanguage(Swift.Behavior.Text.Festivals.Pattern),
                 PlayerName, self.NeededFestivals
             ), 
             _Quest
@@ -2818,10 +2870,10 @@ function B_Goal_TributeDiplomacy:GetTributeQuest(_Quest)
             FailureMsg = FailureMsg[Language];
         end
 
-        BundleClassicBehaviors.Global.Data.BehaviorQuestCounter = BundleClassicBehaviors.Global.Data.BehaviorQuestCounter+1;
+        Swift.Behavior.QuestCounter = Swift.Behavior.QuestCounter+1;
 
         local QuestID, Quest = QuestTemplate:New (
-            _Quest.Identifier.."_TributeDiplomacyQuest_" ..BundleClassicBehaviors.Global.Data.BehaviorQuestCounter,
+            _Quest.Identifier.."_TributeDiplomacyQuest_" ..Swift.Behavior.QuestCounter,
             _Quest.SendingPlayer,
             _Quest.ReceivingPlayer,
             {{ Objective.Deliver, {Goods.G_Gold, self.Amount}}},
@@ -3047,13 +3099,13 @@ function B_Goal_TributeClaim:CreateTributeQuest(_Quest)
             FailureMsg = FailureMsg[Language];
         end
 
-        BundleClassicBehaviors.Global.Data.BehaviorQuestCounter = BundleClassicBehaviors.Global.Data.BehaviorQuestCounter+1;
+        Swift.Behavior.QuestCounter = Swift.Behavior.QuestCounter+1;
 
         local OnFinished = function()
             self.Time = Logic.GetTime();
         end
         local QuestID, Quest = QuestTemplate:New(
-            _Quest.Identifier.."_TributeClaimQuest" ..BundleClassicBehaviors.Global.Data.BehaviorQuestCounter,
+            _Quest.Identifier.."_TributeClaimQuest" ..Swift.Behavior.QuestCounter,
             self.PlayerID,
             _Quest.ReceivingPlayer,
             {{ Objective.Deliver, {Goods.G_Gold, self.Amount}}},
@@ -5292,8 +5344,8 @@ function B_Reward_CreateEntity:CustomFunction(_Quest)
     local pos = GetPosition(self.ScriptNameEntity)
     local NewID;
     if Logic.IsEntityTypeInCategory( self.UnitKey, EntityCategories.Soldier ) == 1 then
-        NewID       = Logic.CreateBattalionOnUnblockedLand( Entities[self.UnitKey], pos.X, pos.Y, self.Orientation, self.PlayerID, 1 )
-        local l,s = {Logic.GetSoldiersAttachedToLeader(NewID)}
+        NewID     = Logic.CreateBattalionOnUnblockedLand( Entities[self.UnitKey], pos.X, pos.Y, self.Orientation, self.PlayerID, 1 )
+        local l,s = Logic.GetSoldiersAttachedToLeader(NewID)
         Logic.SetOrientation(s, API.Round(self.Orientation))
     else
         NewID = Logic.CreateEntityOnUnblockedLand( Entities[self.UnitKey], pos.X, pos.Y, self.Orientation, self.PlayerID )
@@ -5427,8 +5479,8 @@ function B_Reward_CreateSeveralEntities:CustomFunction(_Quest)
     local NewID;
     for i=1, self.Amount do
         if Logic.IsEntityTypeInCategory( self.UnitKey, EntityCategories.Soldier ) == 1 then
-            NewID       = Logic.CreateBattalionOnUnblockedLand( Entities[self.UnitKey], pos.X, pos.Y, self.Orientation, self.PlayerID, 1 )
-            local l,s = {Logic.GetSoldiersAttachedToLeader(NewID)}
+            NewID     = Logic.CreateBattalionOnUnblockedLand( Entities[self.UnitKey], pos.X, pos.Y, self.Orientation, self.PlayerID, 1 )
+            local l,s = Logic.GetSoldiersAttachedToLeader(NewID)
             Logic.SetOrientation(s, API.Round(self.Orientation))
         else
             NewID = Logic.CreateEntityOnUnblockedLand( Entities[self.UnitKey], pos.X, pos.Y, self.Orientation, self.PlayerID )
@@ -5693,7 +5745,6 @@ function B_Reward_AI_SpawnAndAttackTerritory:GetRewardTable()
 end
 
 function B_Reward_AI_SpawnAndAttackTerritory:AddParameter(_Index, _Parameter)
-
     if (_Index == 0) then
         self.AIPlayerID = _Parameter * 1
     elseif (_Index == 1) then
@@ -5730,11 +5781,9 @@ function B_Reward_AI_SpawnAndAttackTerritory:AddParameter(_Index, _Parameter)
     elseif (_Index == 10) then
         self.ReuseTroops = AcceptAlternativeBoolean(_Parameter)
     end
-
 end
 
 function B_Reward_AI_SpawnAndAttackTerritory:GetCustomData( _Index )
-
     local Data = {}
     if _Index == 9 then
         table.insert( Data, "Normal" )
@@ -5743,26 +5792,32 @@ function B_Reward_AI_SpawnAndAttackTerritory:GetCustomData( _Index )
         if g_GameExtraNo >= 1 then
             table.insert( Data, "Cultist" )
         end
-
     elseif _Index == 10 then
         table.insert( Data, "false" )
         table.insert( Data, "true" )
-
     else
         assert( false )
     end
-
     return Data
-
 end
 
 function B_Reward_AI_SpawnAndAttackTerritory:CustomFunction(_Quest)
-
     local TargetID = Logic.GetTerritoryAcquiringBuildingID( self.TerritoryID )
     if TargetID ~= 0 then
-        AIScript_SpawnAndAttackCity( self.AIPlayerID, TargetID, self.Spawnpoint, self.NumSword, self.NumBow, self.NumCatapults, self.NumSiegeTowers, self.NumRams, self.NumAmmoCarts, self.TroopType, self.ReuseTroops)
+        AIScript_SpawnAndAttackCity(
+            self.AIPlayerID,
+            TargetID,
+            self.Spawnpoint,
+            self.NumSword,
+            self.NumBow,
+            self.NumCatapults,
+            self.NumSiegeTowers,
+            self.NumRams,
+            self.NumAmmoCarts,
+            self.TroopType,
+            self.ReuseTroops
+        )
     end
-
 end
 
 function B_Reward_AI_SpawnAndAttackTerritory:Debug(_Quest)
@@ -5849,7 +5904,6 @@ function B_Reward_AI_SpawnAndAttackArea:GetRewardTable()
 end
 
 function B_Reward_AI_SpawnAndAttackArea:AddParameter(_Index, _Parameter)
-
     if (_Index == 0) then
         self.AIPlayerID = _Parameter * 1
     elseif (_Index == 1) then
@@ -5900,7 +5954,16 @@ end
 function B_Reward_AI_SpawnAndAttackArea:CustomFunction(_Quest)
     if Logic.IsEntityAlive( self.TargetName ) and Logic.IsEntityAlive( self.Spawnpoint ) then
         local TargetID = GetID( self.TargetName )
-        AIScript_SpawnAndRaidSettlement( self.AIPlayerID, TargetID, self.Spawnpoint, self.Radius, self.NumSword, self.NumBow, self.TroopType, self.ReuseTroops )
+        AIScript_SpawnAndRaidSettlement(
+            self.AIPlayerID,
+            TargetID,
+            self.Spawnpoint,
+            self.Radius,
+            self.NumSword,
+            self.NumBow,
+            self.TroopType,
+            self.ReuseTroops
+        )
     end
 end
 
@@ -6041,12 +6104,21 @@ function B_Reward_AI_SpawnAndProtectArea:GetCustomData( _Index )
 end
 
 function B_Reward_AI_SpawnAndProtectArea:CustomFunction(_Quest)
-
     if Logic.IsEntityAlive( self.TargetName ) and Logic.IsEntityAlive( self.Spawnpoint ) then
         local TargetID = GetID( self.TargetName )
-        AIScript_SpawnAndProtectArea( self.AIPlayerID, TargetID, self.Spawnpoint, self.Radius, self.NumSword, self.NumBow, self.Time, self.TroopType, self.ReuseTroops, self.CaptureTradeCarts )
+        AIScript_SpawnAndProtectArea(
+            self.AIPlayerID,
+            TargetID,
+            self.Spawnpoint,
+            self.Radius,
+            self.NumSword,
+            self.NumBow,
+            self.Time,
+            self.TroopType,
+            self.ReuseTroops,
+            self.CaptureTradeCarts
+        )
     end
-
 end
 
 function B_Reward_AI_SpawnAndProtectArea:Debug(_Quest)
@@ -6166,7 +6238,7 @@ function B_Reward_AI_SetNumericalFact:AddParameter(_Index, _Parameter)
 end
 
 function B_Reward_AI_SetNumericalFact:CustomFunction(_Quest)
-    AICore.SetNumericalFact( self.AIPlayerID, self.NumericalFact, self.Value )
+    AICore.SetNumericalFact(self.AIPlayerID, self.NumericalFact, self.Value)
 end
 
 function B_Reward_AI_SetNumericalFact:GetCustomData(_Index)
@@ -6316,28 +6388,22 @@ B_Reward_AI_SetEnemy = {
 };
 
 function B_Reward_AI_SetEnemy:GetRewardTable()
-
     return {Reward.Custom, {self, self.CustomFunction} };
-
 end
 
 function B_Reward_AI_SetEnemy:AddParameter(_Index, _Parameter)
-
     if _Index == 0 then
         self.AIPlayer = _Parameter * 1;
     elseif _Index == 1 then
         self.Enemy = _Parameter * 1;
     end
-
 end
 
 function B_Reward_AI_SetEnemy:CustomFunction()
-
     local player = PlayerAIs[self.AIPlayer];
     if player and player.Skirmish then
         player.Skirmish.Enemy = self.Enemy;
     end
-
 end
 
 function B_Reward_AI_SetEnemy:Debug(_Quest)
