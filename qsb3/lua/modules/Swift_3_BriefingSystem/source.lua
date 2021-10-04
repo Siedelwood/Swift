@@ -863,6 +863,14 @@ function ModuleBriefingSystem.Local:OverrideThroneRoomFunctions()
             );
         end
     end
+
+    GameCallback_Escape_Orig_BriefingSystem = GameCallback_Escape;
+    GameCallback_Escape = function()
+        if ModuleBriefingSystem.Local.Briefing[GUI.GetPlayerID()] then
+            return;
+        end
+        GameCallback_Escape_Orig_BriefingSystem();
+    end
 end
 
 function ModuleBriefingSystem.Local:ActivateCinematicMode(_PlayerID)

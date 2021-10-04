@@ -272,6 +272,7 @@ function ModuleDialogSystem.Local:StartDialog(_PlayerID, _Data)
         API.DeactivateNormalInterface();
         API.DeactivateBorderScroll();
         XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 1);
+        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/Update", 0);
         XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles", 1);
         XGUIEng.ShowWidget("/InGame/Root/3dWorldView", 0);
         Input.CutsceneMode();
@@ -346,12 +347,19 @@ function ModuleDialogSystem.Local:DisplayPage(_PlayerID, _PageData)
 
         self.Dialog[_PlayerID].PageData = _PageData;
         if _PageData.Sender ~= -1 then
+            -- XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 1);
             XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 1);
+            XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomLeft/Message", 1);
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/QuestLog", 0);
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/Update", 0);
             XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles/Update", 1);
             self:ResetSubtitlesPosition(_PlayerID);
+            self:SetSubtitlesText(_PlayerID);
+            self:SetSubtitlesPosition(_PlayerID);
         else
             XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 0);
-            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles/Update", 0);
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles", 1);
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles/Update", 1);
             self:ResetSubtitlesPosition(_PlayerID);
             self:SetSubtitlesText(_PlayerID);
             self:SetSubtitlesPosition(_PlayerID);
@@ -403,8 +411,8 @@ function ModuleDialogSystem.Local:SetSubtitlesPosition(_PlayerID)
         XGUIEng.SetWidgetLocalPosition(MotherWidget, X, Y);
     else
         XGUIEng.SetWidgetSize(MotherWidget.. "/BG", W + 10, Height + 35);
-        Y = 675 - (Height - 90);
-        XGUIEng.SetWidgetLocalPosition(MotherWidget, X, Y);
+        Y = 1115 - Height;
+        XGUIEng.SetWidgetLocalPosition(MotherWidget, 46, Y);
     end
 end
 
@@ -435,23 +443,31 @@ end
 
 function ModuleDialogSystem.Local:SetOptionsDialogPosition(_PlayerID)
     local Screen = {GUI.GetScreenSize()};
-    local Widget = "/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer";
+    local PortraitWidget = "/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer";
     local PageData = self.Dialog[_PlayerID].PageData;
 
     self.Dialog[_PlayerID].MCSelectionBoxPosition = {
-        XGUIEng.GetWidgetScreenPosition(Widget)
+        XGUIEng.GetWidgetScreenPosition(PortraitWidget)
     };
 
-    local wSize = {XGUIEng.GetWidgetScreenSize(Widget)};
-    local xFix = math.ceil((Screen[1] * 0.06) + (wSize[1] /2));
-    local yFix = math.ceil(Screen[2] - (wSize[2] + 60 * (Screen[2]/540)));
+    -- Choice
+    local ChoiceSize = {XGUIEng.GetWidgetScreenSize(PortraitWidget)};
+    local CX = math.ceil((Screen[1] * 0.06) + (ChoiceSize[1] /2));
+    local CY = math.ceil(Screen[2] - (ChoiceSize[2] + 60 * (Screen[2]/540)));
     if PageData.Sender == -1 then
-        xFix = 30 * (Screen[1]/960);
-        yFix = math.ceil(Screen[2] - (wSize[2] + 65 * (Screen[2]/540)));
+        CX = 15 * (Screen[1]/960);
+        CY = math.ceil(Screen[2] - (ChoiceSize[2] + 0 * (Screen[2]/540)));
     end
-    XGUIEng.SetWidgetScreenPosition(Widget, xFix, yFix);
-    XGUIEng.PushPage(Widget, false);
-    XGUIEng.ShowWidget(Widget, 1);
+    XGUIEng.SetWidgetScreenPosition(PortraitWidget, CX, CY);
+    XGUIEng.PushPage(PortraitWidget, false);
+    XGUIEng.ShowWidget(PortraitWidget, 1);
+
+    -- Text
+    if PageData.Sender == -1 then
+        local TextWidget = "/InGame/Root/Normal/AlignBottomLeft/SubTitles";
+        local DX,DY = XGUIEng.GetWidgetLocalPosition(TextWidget);
+        XGUIEng.SetWidgetLocalPosition(TextWidget, DX, DY-220);
+    end
 end
 
 function ModuleDialogSystem.Local:OnOptionSelected(_PlayerID)

@@ -158,7 +158,7 @@ function CreateTestNPCDialogBriefing(_Name, _PlayerID)
     AP {
         Name   = "StartPage",
         Text   = "Das ist ein Test!",
-        Sender = -1,
+        Sender = 1,
         Target = "npc1",
         Zoom   = 0.1,
         MC     = {
