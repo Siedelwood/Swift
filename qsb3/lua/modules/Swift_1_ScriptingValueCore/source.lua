@@ -1,6 +1,12 @@
--- -------------------------------------------------------------------------- --
--- Module Scripting Value                                                     --
--- -------------------------------------------------------------------------- --
+--[[
+Swift_1_ScriptingValueCore/Source
+
+Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+
+This file is part of Swift. Swift is created by totalwarANGEL.
+You may use and modify this file unter the terms of the MIT licence.
+(See https://en.wikipedia.org/wiki/MIT_License)
+]]
 
 ModuleScriptingValue = {
     Properties = {

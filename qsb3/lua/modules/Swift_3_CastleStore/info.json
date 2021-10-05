@@ -1,0 +1,16 @@
+{
+    "name": "Swift_3_CastleStore",
+    "version": "1.0.0",
+    "caption": "(3) Castle Store",
+    "shortdesc": "",
+    "description": "",
+    "files": [
+        "source.lua",
+        "api.lua"
+    ],
+    "dependencies": [
+        "Swift_1_JobsCore",
+        "Swift_1_Display",
+        "Swift_1_InterfaceCore"
+    ]
+}
