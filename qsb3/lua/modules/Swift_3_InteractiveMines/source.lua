@@ -186,11 +186,11 @@ function ModuleInteractiveMines.Global:ControlIOMines()
                     Logic.SetModel(EntityID, Model);
                 end
                 
-                local CrumbleAction = self.Lambda.IO.MineCrumble[_ScriptName];
+                local CrumbleAction = self.Lambda.IO.MineCrumble[k];
                 if CrumbleAction == nil then
                     CrumbleAction = self.Lambda.IO.MineCrumble.Default;
                 end
-                CrumbleAction(IO[_ScriptName]);
+                CrumbleAction(IO[k]);
             end
         end
     end

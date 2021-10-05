@@ -30,7 +30,6 @@ You may use and modify this file unter the terms of the MIT licence.
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
 -- <li><a href="Swift_1_JobsCore.api.html">(1) Jobs Core</a></li>
--- <li><a href="Swift_1_DisplayCore.api.html">(1) Interface Core</a></li>
 -- <li><a href="Swift_1_InterfaceCore.api.html">(1) Interface Core</a></li>
 -- </ul>
 --

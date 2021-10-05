@@ -15,7 +15,6 @@ ModuleCastleStore = {
 
     Global = {
         UpdateCastleStoreInitalized = false,
-        CastleStoreObjects = {},
         BackupGoods = {},
 
         CastleStore = {
@@ -36,7 +35,10 @@ ModuleCastleStore = {
             }
         },
     },
-    Local = {},
+    Local = {
+        CastleStore = {},
+        Player = {},
+    },
     -- This is a shared structure but the values are asynchronous!
     Shared = {
         Text = {
@@ -97,6 +99,9 @@ ModuleCastleStore = {
     },
 }
 
+QSB.CastleStoreObjects = {};
+QSB.CastleStorePlayerData = {};
+
 -- Global ------------------------------------------------------------------- --
 
 function ModuleCastleStore.Global:OnGameStart()
@@ -110,9 +115,9 @@ end
 
 function ModuleCastleStore.Global.CastleStore:New(_PlayerID)
     assert(self == ModuleCastleStore.Global.CastleStore, "Can not be used from instance!");
-    local Store = API.InstanceTable(self);
+    local Store = table.copy(self);
     Store.PlayerID = _PlayerID;
-    ModuleCastleStore.Global.CastleStoreObjects[_PlayerID] = Store;
+    QSB.CastleStoreObjects[_PlayerID] = Store;
 
     if not self.UpdateCastleStoreInitalized then
         self.UpdateCastleStoreInitalized = true;
@@ -129,13 +134,13 @@ end
 
 function ModuleCastleStore.Global.CastleStore:GetInstance(_PlayerID)
     assert(self == ModuleCastleStore.Global.CastleStore, "Can not be used from instance!");
-    return ModuleCastleStore.Global.CastleStoreObjects[_PlayerID];
+    return QSB.CastleStoreObjects[_PlayerID];
 end
 
-function ModuleCastleStore.Global.CastleStore:GetGoodAmountWithCastleStore(_Good, _PlayerID)
+function ModuleCastleStore.Global.CastleStore:GetGoodAmountWithCastleStore(_Good, _PlayerID, _InSettlement)
     assert(self == ModuleCastleStore.Global.CastleStore, "Can not be used from instance!");
     local CastleStore = self:GetInstance(_PlayerID);
-    local Amount = GetPlayerGoodsInSettlement(_Good, _PlayerID, true);
+    local Amount = GetPlayerGoodsInSettlement(_Good, _PlayerID, _InSettlement);
 
     if CastleStore ~= nil and _Good ~= Goods.G_Gold and Logic.GetGoodCategoryForGoodType(_Good) == GoodCategories.GC_Resource then
         Amount = Amount + CastleStore:GetAmount(_Good);
@@ -148,14 +153,14 @@ function ModuleCastleStore.Global.CastleStore:Dispose()
     Logic.ExecuteInLuaLocalState([[
         QSB.CastleStore:DeleteStore(]] ..self.PlayerID.. [[);
     ]])
-    ModuleCastleStore.Global.CastleStoreObjects[self.PlayerID] = nil;
+    QSB.CastleStoreObjects[self.PlayerID] = nil;
 end
 
 function ModuleCastleStore.Global.CastleStore:SetUperLimitInStorehouseForGoodType(_Good, _Limit)
     assert(self ~= ModuleCastleStore.Global.CastleStore, "Can not be used in static context!");
     self.Goods[_Good][4] = _Limit;
     Logic.ExecuteInLuaLocalState([[
-        ModuleCastleStore.Local.CastleStore.Data[]] ..self.PlayerID.. [[].Goods[]] .._Good.. [[][4] = ]] .._Limit.. [[
+        QSB.CastleStorePlayerData[]] ..self.PlayerID.. [[].Goods[]] .._Good.. [[][4] = ]] .._Limit.. [[
     ]])
     return self;
 end
@@ -164,7 +169,7 @@ function ModuleCastleStore.Global.CastleStore:SetStorageLimit(_Limit)
     assert(self ~= ModuleCastleStore.Global.CastleStore, "Can not be used in static context!");
     self.CapacityBase = math.floor(_Limit/2);
     Logic.ExecuteInLuaLocalState([[
-        ModuleCastleStore.Local.CastleStore.Data[]] ..self.PlayerID.. [[].CapacityBase = ]] ..math.floor(_Limit/2).. [[
+        QSB.CastleStorePlayerData[]] ..self.PlayerID.. [[].CapacityBase = ]] ..math.floor(_Limit/2).. [[
     ]])
     return self;
 end
@@ -332,7 +337,7 @@ function ModuleCastleStore.Global.CastleStore:EnableStore(_Flag)
 end
 
 function ModuleCastleStore.Global.CastleStore:UpdateStores()
-    for k, v in pairs(self.CastleStoreObjects) do
+    for k, v in pairs(QSB.CastleStoreObjects) do
         if v ~= nil and v.UpdateCastleStore and Logic.GetStoreHouse(k) ~= 0 then
             local Level = Logic.GetUpgradeLevel(Logic.GetHeadquarters(v.PlayerID));
             for kk, vv in pairs(v.Goods) do
@@ -429,6 +434,14 @@ function ModuleCastleStore.Global:OverwriteGameFunctions()
 
                         else
                             if Logic.GetGoodCategoryForGoodType(goodType) == GoodCategories.GC_Resource then
+                                local CartType = Entities.U_ResourceMerchant;
+                                if goodType == Goods.G_MusicalInstrument
+                                or goodType == Goods.G_Olibanum
+                                or goodType == Goods.G_Gems
+                                or goodType == Goods.G_Dye
+                                or goodType == Goods.G_Salt then
+                                    CartType = Entities.U_Marketer;
+                                end
                                 local StorehouseID = Logic.GetStoreHouse(Target)
                                 local NumberOfGoodTypes = Logic.GetNumberOfGoodTypesOnOutStock(StorehouseID)
                                 if NumberOfGoodTypes ~= nil then
@@ -456,10 +469,10 @@ function ModuleCastleStore.Global:OverwriteGameFunctions()
                                     -- Entferne aus Lager
                                     AddGood(goodType, goodQuantity * (-1), Sender);
                                 end
-                                self.Objectives[i].Data[3] = Logic.CreateEntityAtBuilding(Entities.U_ResourceMerchant, SenderStorehouse, 0, Target);
+                                self.Objectives[i].Data[3] = Logic.CreateEntityAtBuilding(CartType, SenderStorehouse, 0, Target);
                                 Logic.HireMerchant(self.Objectives[i].Data[3], Target, goodType, goodQuantity, self.ReceivingPlayer);
                             else
-                                Logic.StartTradeGoodGathering(Sender, Target, goodType, goodQuantity, 0)
+                                Logic.StartTradeGoodGathering(Sender, Target, goodType, goodQuantity, 0);
                             end
                         end
                     end
@@ -540,7 +553,7 @@ function ModuleCastleStore.Local:OnGameStart()
     self:OverwriteInteractiveObject();
 end
 
-function ModuleInputOutputCore.Local:OnEvent(_ID, _Event, _Text)
+function ModuleCastleStore.Local:OnEvent(_ID, _Event, _Text)
     if _ID == QSB.ScriptEvents.SaveGameLoaded then
         self:OverwriteGetStringTableText();
         self.CastleStore:ActivateHotkeys();
@@ -565,7 +578,7 @@ function ModuleCastleStore.Local.CastleStore:CreateStore(_PlayerID)
             [Goods.G_Honeycomb] = {0, true, false, 15},
         }
     }
-    self.Data[_PlayerID] = Store;
+    QSB.CastleStorePlayerData[_PlayerID] = Store;
     
     self:ActivateHotkeys();
     self:DescribeHotkeys();
@@ -573,20 +586,20 @@ end
 
 function ModuleCastleStore.Local.CastleStore:DeleteStore(_PlayerID)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
-    self.Data[_PlayerID] = nil;
+    QSB.CastleStorePlayerData[_PlayerID] = nil;
 end
 
 function ModuleCastleStore.Local.CastleStore:GetAmount(_PlayerID, _Good)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
-    if not self:HasCastleStore(_PlayerID) or not self.Data[_PlayerID].Goods[_Good] then
+    if not self:HasCastleStore(_PlayerID) or not QSB.CastleStorePlayerData[_PlayerID].Goods[_Good] then
         return 0;
     end
-    return self.Data[_PlayerID].Goods[_Good][1];
+    return QSB.CastleStorePlayerData[_PlayerID].Goods[_Good][1];
 end
 
-function ModuleCastleStore.Local.CastleStore:GetGoodAmountWithCastleStore(_Good, _PlayerID)
+function ModuleCastleStore.Local.CastleStore:GetGoodAmountWithCastleStore(_Good, _PlayerID, _InSettlement)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
-    local Amount = GetPlayerGoodsInSettlement(_Good, _PlayerID, true);
+    local Amount = GetPlayerGoodsInSettlement(_Good, _PlayerID, _InSettlement);
     if self:HasCastleStore(_PlayerID) then
         if _Good ~= Goods.G_Gold and Logic.GetGoodCategoryForGoodType(_Good) == GoodCategories.GC_Resource then
             Amount = Amount + self:GetAmount(_PlayerID, _Good);
@@ -601,7 +614,7 @@ function ModuleCastleStore.Local.CastleStore:GetTotalAmount(_PlayerID)
         return 0;
     end
     local TotalAmount = 0;
-    for k, v in pairs(self.Data[_PlayerID].Goods) do
+    for k, v in pairs(QSB.CastleStorePlayerData[_PlayerID].Goods) do
         TotalAmount = TotalAmount + v[1];
     end
     return TotalAmount;
@@ -609,53 +622,53 @@ end
 
 function ModuleCastleStore.Local.CastleStore:SetAmount(_PlayerID, _Good, _Amount)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
-    if not self:HasCastleStore(_PlayerID) or not self.Data[_PlayerID].Goods[_Good] then
+    if not self:HasCastleStore(_PlayerID) or not QSB.CastleStorePlayerData[_PlayerID].Goods[_Good] then
         return;
     end
-    self.Data[_PlayerID].Goods[_Good][1] = _Amount;
+    QSB.CastleStorePlayerData[_PlayerID].Goods[_Good][1] = _Amount;
     return self;
 end
 
 function ModuleCastleStore.Local.CastleStore:IsAccepted(_PlayerID, _Good)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
-    if not self:HasCastleStore(_PlayerID) or not self.Data[_PlayerID].Goods[_Good] then
+    if not self:HasCastleStore(_PlayerID) or not QSB.CastleStorePlayerData[_PlayerID].Goods[_Good] then
         return false;
     end
-    return self.Data[_PlayerID].Goods[_Good][2] == true;
+    return QSB.CastleStorePlayerData[_PlayerID].Goods[_Good][2] == true;
 end
 
 function ModuleCastleStore.Local.CastleStore:SetAccepted(_PlayerID, _Good, _Flag)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
-    if self:HasCastleStore(_PlayerID) and self.Data[_PlayerID].Goods[_Good] then
-        self.Data[_PlayerID].Goods[_Good][2] = _Flag == true;
+    if self:HasCastleStore(_PlayerID) and QSB.CastleStorePlayerData[_PlayerID].Goods[_Good] then
+        QSB.CastleStorePlayerData[_PlayerID].Goods[_Good][2] = _Flag == true;
     end
     return self;
 end
 
 function ModuleCastleStore.Local.CastleStore:IsLocked(_PlayerID, _Good)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
-    if not self:HasCastleStore(_PlayerID) or not self.Data[_PlayerID].Goods[_Good] then
+    if not self:HasCastleStore(_PlayerID) or not QSB.CastleStorePlayerData[_PlayerID].Goods[_Good] then
         return false;
     end
-    return self.Data[_PlayerID].Goods[_Good][3] == true;
+    return QSB.CastleStorePlayerData[_PlayerID].Goods[_Good][3] == true;
 end
 
 function ModuleCastleStore.Local.CastleStore:SetLocked(_PlayerID, _Good, _Flag)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
-    if self:HasCastleStore(_PlayerID) and self.Data[_PlayerID].Goods[_Good] then
-        self.Data[_PlayerID].Goods[_Good][3] = _Flag == true;
+    if self:HasCastleStore(_PlayerID) and QSB.CastleStorePlayerData[_PlayerID].Goods[_Good] then
+        QSB.CastleStorePlayerData[_PlayerID].Goods[_Good][3] = _Flag == true;
     end
     return self;
 end
 
 function ModuleCastleStore.Local.CastleStore:HasCastleStore(_PlayerID)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
-    return self.Data[_PlayerID] ~= nil;
+    return QSB.CastleStorePlayerData[_PlayerID] ~= nil;
 end
 
 function ModuleCastleStore.Local.CastleStore:GetStore(_PlayerID)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
-    return self.Data[_PlayerID];
+    return QSB.CastleStorePlayerData[_PlayerID];
 end
 
 function ModuleCastleStore.Local.CastleStore:GetLimit(_PlayerID)
@@ -666,7 +679,7 @@ function ModuleCastleStore.Local.CastleStore:GetLimit(_PlayerID)
         Level = Logic.GetUpgradeLevel(Headquarters);
     end
 
-    local Capacity = self.Data[_PlayerID].CapacityBase;
+    local Capacity = QSB.CastleStorePlayerData[_PlayerID].CapacityBase;
     for i= 1, (Level+1), 1 do
         Capacity = Capacity * 2;
     end
@@ -675,7 +688,7 @@ end
 
 function ModuleCastleStore.Local.CastleStore:OnStorehouseTabClicked(_PlayerID)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
-    self.Data[_PlayerID].StoreMode = 1;
+    QSB.CastleStorePlayerData[_PlayerID].StoreMode = 1;
     self:UpdateBehaviorTabs(_PlayerID);
     GUI.SendScriptCommand([[
         local Store = QSB.CastleStore:GetInstance(]] .._PlayerID.. [[);
@@ -688,7 +701,7 @@ end
 
 function ModuleCastleStore.Local.CastleStore:OnCityTabClicked(_PlayerID)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
-    self.Data[_PlayerID].StoreMode = 2;
+    QSB.CastleStorePlayerData[_PlayerID].StoreMode = 2;
     self:UpdateBehaviorTabs(_PlayerID);
     GUI.SendScriptCommand([[
         local Store = QSB.CastleStore:GetInstance(]] .._PlayerID.. [[);
@@ -701,7 +714,7 @@ end
 
 function ModuleCastleStore.Local.CastleStore:OnMultiTabClicked(_PlayerID)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
-    self.Data[_PlayerID].StoreMode = 3;
+    QSB.CastleStorePlayerData[_PlayerID].StoreMode = 3;
     self:UpdateBehaviorTabs(_PlayerID);
     GUI.SendScriptCommand([[
         local Store = QSB.CastleStore:GetInstance(]] .._PlayerID.. [[);
@@ -762,11 +775,11 @@ function ModuleCastleStore.Local.CastleStore:UpdateBehaviorTabs(_PlayerID)
         return;
     end
     XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomRight/Selection/Storehouse/TabButtons", 0);
-    if self.Data[_PlayerID].StoreMode == 1 then
+    if QSB.CastleStorePlayerData[_PlayerID].StoreMode == 1 then
         XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/Selection/Storehouse/TabButtons/StorehouseTabButtonUp", 1);
         XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/Selection/Storehouse/TabButtons/CityTabButtonDown", 1);
         XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/Selection/Storehouse/TabButtons/Tab03Down", 1);
-    elseif self.Data[_PlayerID].StoreMode == 2 then
+    elseif QSB.CastleStorePlayerData[_PlayerID].StoreMode == 2 then
         XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/Selection/Storehouse/TabButtons/StorehouseTabButtonDown", 1);
         XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/Selection/Storehouse/TabButtons/CityTabButtonUp", 1);
         XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/Selection/Storehouse/TabButtons/Tab03Down", 1);
@@ -788,7 +801,7 @@ function ModuleCastleStore.Local.CastleStore:UpdateGoodsDisplay(_PlayerID)
     if self:GetLimit(_PlayerID) == self:GetTotalAmount(_PlayerID) then
         WarningColor = "{@color:255,32,32,255}";
     end
-    for k, v in pairs(self.Data[_PlayerID].Goods) do
+    for k, v in pairs(QSB.CastleStorePlayerData[_PlayerID].Goods) do
         local GoodTypeName = Logic.GetGoodTypeName(k);
         local AmountWidget = MotherContainer.. "/" ..GoodTypeName.. "/Amount";
         local ButtonWidget = MotherContainer.. "/" ..GoodTypeName.. "/Button";
@@ -1004,14 +1017,14 @@ function ModuleCastleStore.Local:OnObjectClicked_CanPlayerPayCosts(_IO)
     if _IO.m_Costs[1] then
         local Amount = GetPlayerResources(_IO.m_Costs[1], GUI.GetPlayerID());
         if not QSB.CastleStore:IsLocked(PlayerID, _IO.m_Costs[1]) then
-            Amount = QSB.CastleStore:GetGoodAmountWithCastleStore(_IO.m_Costs[1], GUI.GetPlayerID());
+            Amount = QSB.CastleStore:GetGoodAmountWithCastleStore(_IO.m_Costs[1], GUI.GetPlayerID(), true);
         end
         CanBuyBoolean = CanBuyBoolean and (Amount >= _IO.m_Costs[2]);
     end
     if _IO.m_Costs[3] then
         local Amount = GetPlayerResources(_IO.m_Costs[3], GUI.GetPlayerID());
         if not QSB.CastleStore:IsLocked(PlayerID, _IO.m_Costs[3]) then
-            Amount = QSB.CastleStore:GetGoodAmountWithCastleStore(_IO.m_Costs[3], GUI.GetPlayerID());
+            Amount = QSB.CastleStore:GetGoodAmountWithCastleStore(_IO.m_Costs[3], GUI.GetPlayerID(), true);
         end
         CanBuyBoolean = CanBuyBoolean and (Amount >= _IO.m_Costs[4]);
     end

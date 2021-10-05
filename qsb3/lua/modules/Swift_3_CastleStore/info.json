@@ -10,7 +10,6 @@
     ],
     "dependencies": [
         "Swift_1_JobsCore",
-        "Swift_1_Display",
         "Swift_1_InterfaceCore"
     ]
 }
