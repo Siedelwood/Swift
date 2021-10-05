@@ -74,14 +74,15 @@ function ModuleInteraction.Global:OnGameStart()
     end);
 end
 
-function ModuleInteraction.Global:OnEvent(_ID, _Event, _PlayerID, _ScriptName, _EntityID)
+function ModuleInteraction.Global:OnEvent(_ID, _Event, _PlayerID, _ScriptName, _EntityID, _KnightID)
     if _ID == QSB.ScriptEvents.InteractiveObjectActivated then
         local Lambda = ModuleInteraction.Global.Lambda.IO.ObjectClickAction.Default;
         if ModuleInteraction.Global.Lambda.IO.ObjectClickAction[_ScriptName] then
             Lambda = ModuleInteraction.Global.Lambda.IO.ObjectClickAction[_ScriptName];
         end
         IO[_ScriptName]:SetUsed(true);
-        Lambda(_ScriptName, _EntityID, _PlayerID);
+        local KnightID = (IO[_ScriptName]:GetState() == 0 and 0) or _KnightID;
+        Lambda(IO[_ScriptName], KnightID, _PlayerID);
     elseif _ID == QSB.ScriptEvents.ChatClosed then
         self:ProcessChatInput(_PlayerID);
     end
@@ -145,13 +146,15 @@ function ModuleInteraction.Global:OverrideQuestFunctions()
         if IO_SlaveToMaster[ScriptName] then
             ScriptName = IO_SlaveToMaster[ScriptName];
         end
+        local KnightID = self:GetClosestKnight(_EntityID, _PlayerID);
 
-        API.SendScriptEvent(QSB.ScriptEvents.InteractiveObjectActivated, _PlayerID, ScriptName, _EntityID);
+        API.SendScriptEvent(QSB.ScriptEvents.InteractiveObjectActivated, _PlayerID, ScriptName, _EntityID, KnightID);
         Logic.ExecuteInLuaLocalState(string.format(
-            [[API.SendScriptEvent(QSB.ScriptEvents.InteractiveObjectActivated, %d, "%s", %d)]],
+            [[API.SendScriptEvent(QSB.ScriptEvents.InteractiveObjectActivated, %d, "%s", %d, %d)]],
             _EntityID,
             ScriptName,
-            _PlayerID
+            _PlayerID,
+            KnightID
         ));
     end
 
@@ -386,10 +389,10 @@ function ModuleInteraction.Global:CreateObject(_Description)
     -- DEPRECATED: Legacy Code Fallback
     self:SetObjectLambda(_Description.Name, "ObjectCondition", _Description.Condition);
     self:SetObjectLambda(_Description.Name, "ObjectClickAction", _Description.Callback);
-    self:SetObjectLambda(_Description.Name, "ObjectIconTexture", _Description.Texture);
-    self:SetObjectLambda(_Description.Name, "ObjectHeadline", _Description.Title);
-    self:SetObjectLambda(_Description.Name, "ObjectDescription", _Description.Text);
-    self:SetObjectLambda(_Description.Name, "ObjectDisabledText", _Description.DisabledText);
+    self:SetObjectLambda(_Description.Name, "ObjectIconTexture", function() return _Description.Texture; end);
+    self:SetObjectLambda(_Description.Name, "ObjectHeadline", function() return _Description.Title; end);
+    self:SetObjectLambda(_Description.Name, "ObjectDescription", function() return _Description.Text; end);
+    self:SetObjectLambda(_Description.Name, "ObjectDisabledText", function() return _Description.DisabledText; end);
     
     -- Belohnung setzen
     if _Description.Reward then
@@ -1234,7 +1237,7 @@ function QSB.NonPlayerCharacter:RotateActors()
     Logic.GetKnights(PlayerID, PlayerKnights);
     for k, v in pairs(PlayerKnights) do
         local Target = API.GetEntityMovementTarget(v);
-        local x, y = Logic.EntityGetPos(GetID(self.m_ScriptName));
+        local x, y = Logic.EntityGetPos(GetID(self.m_Name));
         if math.floor(Target.X) == math.floor(x) and math.floor(Target.Y) == math.floor(y) then
             local x, y, z = Logic.EntityGetPos(v);
             Logic.MoveEntity(v, x, y);

@@ -36,6 +36,8 @@ OptLoader_ModuleFiles = {
     "Swift_3_DialogSystem/source.lua",
     "Swift_3_DialogSystem/api.lua",
     "Swift_3_DialogSystem/behavior.lua",
+    "Swift_3_InteractiveMines/source.lua",
+    "Swift_3_InteractiveMines/api.lua",
     "Swift_3_JobsRealtime/source.lua",
     "Swift_3_JobsRealtime/api.lua",
     "Swift_3_LifestockBreeding/api.lua",
