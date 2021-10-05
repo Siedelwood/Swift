@@ -471,7 +471,7 @@ end
 -- @usage -- Festes Icon
 -- API.SetObjectIcon("MyObject", {1, 1});
 -- -- Eigene Funktion
--- API.SetObjectIcon("MyObject", function(_Name, _ObjectID, _PlayerID)
+-- API.SetObjectIcon("MyObject", function(_Name, _KnightID, _PlayerID)
 --     if SomeCondition then
 --         return {1, 4};
 --     end
@@ -499,7 +499,7 @@ end
 -- @param[type=function] _Lambda     Funktion
 -- @within Anwenderfunktionen
 -- @see API.SetupObject
--- @usage API.SetObjectCondition("MyObject", function(_Name, _ObjectID, _PlayerID)
+-- @usage API.SetObjectCondition("MyObject", function(_Name, _KnightID, _PlayerID)
 --     if _PlayerID == 1 then
 --         return true;
 --     end
@@ -524,7 +524,7 @@ end
 -- @param[type=function] _Lambda     Funktion
 -- @within Anwenderfunktionen
 -- @see API.SetupObject
--- @usage API.SetObjectCallback("MyObject", function(_Name, _ObjectID, _PlayerID)
+-- @usage API.SetObjectCallback("MyObject", function(_Name, _KnightID, _PlayerID)
 --     -- Mach was hier
 -- end);
 --
