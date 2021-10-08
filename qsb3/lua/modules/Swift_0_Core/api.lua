@@ -1045,7 +1045,7 @@ function API.SendCart(_position, _player, _good, _amount, _cartOverlay, _ignoreR
     local ID;
     local x,y,z = Logic.EntityGetPos(eID);
     local resCat = Logic.GetGoodCategoryForGoodType(_good);
-    local orientation = 0;
+    local orientation = Logic.GetEntityOrientation(eID);
     if Logic.IsBuilding(eID) == 1 then
         x,y = Logic.GetBuildingApproachPosition(eID);
         orientation = Logic.GetEntityOrientation(eID)-90;

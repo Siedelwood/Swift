@@ -5,6 +5,8 @@ lua writer.lua
 cd ../../luaminifyer
 ./LuaMinify.sh ../lua/var/qsb.lua
 cd ../lua/var
+luac qsb_min.lua
+mv luac.out qsb_compiled.lua
 #rm qsb.lua
 #mv qsb_min.lua qsb.lua
 
