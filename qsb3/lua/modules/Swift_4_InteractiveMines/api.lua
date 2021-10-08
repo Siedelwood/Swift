@@ -24,74 +24,6 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 
 ---
--- Erstelle eine verschüttete Mine eines bestimmten Typs. Es können zudem eine
--- Bedingung und zwei verschiedene Callbacks vereinbart werden.
---
--- Minen können als "nicht auffüllbar" markiert werden. In diesem Fall werden
--- sie zusammenstützen, sobald die Rohstoffe verbraucht sind.
---
--- Verschüttete Minen können durch einen Helden in normale Minen umgewandelt
--- werden. FÜr diese Umwandlung können Kosten anfallen, müssen aber nicht. Es
--- dürfen immer maximal 2 Waren als Kosten verwendet werden.
---
--- Es können weitere Funktionen hinzugefügt werden, um die Mine anzupassen:
--- <ul>
--- <li><u>Bedingung:</u> Eine Funktion, die true oder false zurückgeben muss.
--- Mit dieser Funktion wird bestimmt, ob die Mine gebaut werden darf.</li>
--- <li><u>Callback Aktivierung:</u> Eine Funktion, die ausgeführt wird, wenn
--- die Mine erfolgreich aktiviert wurde (evtl. Kosten bezahlt und/oder
--- Bedingung erfüllt).</li>
--- <li><u>Callback Erschöpft:</u> Eine Funktion, die ausgeführt wird, sobald
--- die Rohstoffe der Mine erschöpft sind.</li>
--- </ul>
---
--- @param[type=string]   _Position         Script Entity, die mit Mine ersetzt wird
--- @param[type=number]   _Type             Typ der Mine
--- @param[type=table]    _Costs            (optional) Kostentabelle
--- @param[type=boolean]  _NotRefillable    (optional) Die Mine wird weiterhin überwacht
--- @param[type=function] _Condition        (optional) Bedingungsfunktion
--- @param[type=function] _CreationCallback (optional) Funktion nach Kauf ausführen
--- @param[type=function] _CallbackDepleted (optional) Funktion nach Ausbeutung ausführen
--- @within Anwenderfunktionen
---
--- @usage
--- -- Beispiel für eine Mine
--- API.CreateIOMine("mine", Entities.B_IronMine, {Goods.G_Wood, 20}, true)
--- -- Die Mine kann für 20 Holz erschlossen werden. Sobald die Rohstoffe
--- -- erschöpft sind, stürzt die Mine zusammen.
---
-function API.CreateIOMine(_Position, _Type, _Costs, _NotRefillable, _Condition, _CreationCallback, _CallbackDepleted)
-    if GUI then
-        return;
-    end
-    if not IsExisting(_Position) then
-        error("API.CreateIOMine: _Position (" ..tostring(_Position).. ") does not exist!");
-        return;
-    end
-    if GetNameOfKeyInTable(Entities, _Type) == nil then
-        error("API.CreateIOMine: _Type (" ..tostring(_Type).. ") is wrong!");
-        return;
-    end
-    if _Costs and (type(_Costs) ~= "table" or #_Costs %2 ~= 0) then
-        error("API.CreateIOMine: _Costs has the wrong format!");
-        return;
-    end
-    if _Condition and type(_Condition) ~= "function" then
-        error("API.CreateIOMine: _Condition must be a function!");
-        return;
-    end
-    if _CreationCallback and type(_CreationCallback) ~= "function" then
-        error("API.CreateIOMine: _CreationCallback must be a function!");
-        return;
-    end
-    if _CallbackDepleted and type(_CallbackDepleted) ~= "function" then
-        error("API.CreateIOMine: _CallbackDepleted must be a function!");
-        return;
-    end
-    ModuleInteractiveMines.Global:CreateIOMine(_Position, _Type, _Costs, _NotRefillable, _Condition, _CreationCallback, _CallbackDepleted);
-end
-
----
 -- Erstelle eine verschüttete Eisenmine.
 --
 -- @param[type=string]  _Position      Script Entity, die mit Mine ersetzt wird
@@ -185,6 +117,18 @@ function API.CreateIOStoneMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, 
     ModuleInteractiveMines.Global:CreateIOStoneMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable);
 end
 
+---
+-- Fügt eine Bedingung für die Aktivierung der Mine hinzu.
+--
+-- @param[type=string]   _ScriptName Scriptname der Mine
+-- @param[type=function] _Condition  Zu prüfende Bedingung
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- API.SetMineCondition("mine", function(_ScriptName)
+--     return MeineBedingungIstErfüllt == true;
+-- end);
+--
 function API.SetMineCondition(_ScriptName, _Condition)
     if GUI then
         return;
@@ -196,6 +140,18 @@ function API.SetMineCondition(_ScriptName, _Condition)
     ModuleInteractiveMines.Global:SetObjectLambda(_ScriptName, "MineCondition", _Condition);
 end
 
+---
+-- Fügt eine Funktion hinzu, die bei Aktivierung ausgeführt wird.
+--
+-- @param[type=string]   _ScriptName Scriptname der Mine
+-- @param[type=function] _Action     Funktion zum Ausführen
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- API.SetMineAction("mine", function(_ScriptName, _KnightID, _PlayerID)
+--     MachWas();
+-- end);
+--
 function API.SetMineAction(_ScriptName, _Action)
     if GUI then
         return;
@@ -207,7 +163,19 @@ function API.SetMineAction(_ScriptName, _Action)
     ModuleInteractiveMines.Global:SetObjectLambda(_ScriptName, "MineAction", _Action);
 end
 
-function API.SetMineCrumbleAction(_ScriptName, _CrumbleAction)
+---
+-- Fügt eine Funktion hinzu, die ausgeführt wird, wenn die Mine erschöpft ist.
+--
+-- @param[type=string]   _ScriptName    Scriptname der Mine
+-- @param[type=function] _CrumbleAction Funktion zum Ausführen
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- API.SetMineDepletedAction("mine", function(_ScriptName)
+--     MachWas();
+-- end);
+--
+function API.SetMineDepletedAction(_ScriptName, _CrumbleAction)
     if GUI then
         return;
     end
@@ -215,6 +183,6 @@ function API.SetMineCrumbleAction(_ScriptName, _CrumbleAction)
         error("API.SetObjectIcon: Object " ..tostring(_ScriptName).. " does not exist!");
         return;
     end
-    ModuleInteractiveMines.Global:SetObjectLambda(_ScriptName, "MineCrumble", _CrumbleAction);
+    ModuleInteractiveMines.Global:SetObjectLambda(_ScriptName, "MineDepleted", _CrumbleAction);
 end
 

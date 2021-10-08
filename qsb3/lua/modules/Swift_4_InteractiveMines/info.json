@@ -1,7 +1,7 @@
 {
-    "name": "Swift_3_JobsRealtime",
+    "name": "Swift_4_InteractiveMines",
     "version": "1.0.0",
-    "caption": "(3) Jobs Realtime",
+    "caption": "(4) Interactive Mines",
     "shortdesc": "",
     "description": "",
     "files": [
@@ -10,7 +10,6 @@
     ],
     "dependencies": [
         "Swift_0_Core",
-        "Swift_1_JobsCore",
-        "Swift_2_Quests"
+        "Swift_2_Interaction"
     ]
 }

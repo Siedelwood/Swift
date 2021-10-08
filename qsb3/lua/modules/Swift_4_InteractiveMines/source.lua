@@ -19,7 +19,7 @@ ModuleInteractiveMines = {
             IO = {
                 MineCondition = {},
                 MineAction = {},
-                MineCrumble = {},
+                MineDepleted = {},
             },
         },
     },
@@ -28,11 +28,11 @@ ModuleInteractiveMines = {
     Shared = {
         Text = {
             Title = {
-                de = "Mine errichten",
-                en = "Build pit",
+                de = "Rohstoffquelle erschließen",
+                en = "Construct mine",
             },
             Text = {
-                de = "An diesem Ort könnt Ihr eine Mine errichten!",
+                de = "An diesem Ort könnt Ihr eine Rohstoffquelle erschließen!",
                 en = "You're able to create a pit at this location!",
             },
         },
@@ -51,9 +51,9 @@ function ModuleInteractiveMines.Global:OnGameStart()
     end
     self.Lambda.IO.MineAction.Default = MineAction;
     
-    local MineCrumble = function(_ScriptName, _EntityID, _PlayerID)
+    local MineDepleted = function(_ScriptName, _EntityID, _PlayerID)
     end
-    self.Lambda.IO.MineCrumble.Default = MineCrumble;
+    self.Lambda.IO.MineDepleted.Default = MineDepleted;
     
     API.StartHiResJob(function()
         ModuleInteractiveMines.Global:ControlIOMines();
@@ -113,7 +113,7 @@ function ModuleInteractiveMines.Global:CreateIOMine(_Position, _Type, _Costs, _N
     end);
     self:SetMineConditionLambda(_Position, _Condition);
     self:SetMineActionLambda(_Position, _CreationCallback);
-    self:SetMineCrumbleLambda(_Position, _CallbackDepleted);
+    self:SetMineDepletedLambda(_Position, _CallbackDepleted);
 end
 
 function ModuleInteractiveMines.Global:CreateIOIronMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)
@@ -186,11 +186,11 @@ function ModuleInteractiveMines.Global:ControlIOMines()
                     Logic.SetModel(EntityID, Model);
                 end
                 
-                local CrumbleAction = self.Lambda.IO.MineCrumble[k];
-                if CrumbleAction == nil then
-                    CrumbleAction = self.Lambda.IO.MineCrumble.Default;
+                local DepletedAction = self.Lambda.IO.MineDepleted[k];
+                if DepletedAction == nil then
+                    DepletedAction = self.Lambda.IO.MineDepleted.Default;
                 end
-                CrumbleAction(IO[k]);
+                DepletedAction(IO[k]);
             end
         end
     end

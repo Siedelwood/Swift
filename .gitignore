@@ -1,13 +1,4 @@
 .metadata
-doctest/
-app/
-tmp/
-*/ldoc/*
-qsb3/doc/html
-qsb3/Swift/*
-qsb/lua/core.lua
-var/
-qsb/doc/html/
 target/
 */target/
 *.tmp
@@ -59,3 +50,14 @@ local.properties
 /con/
 *.synw-proj
 *.vscode
+
+# Symfonia
+doctest/
+app/
+tmp/
+*/ldoc/*
+qsb3/doc/html
+qsb3/Swift
+qsb/lua/core.lua
+var/
+qsb/doc/html/
