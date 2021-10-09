@@ -134,21 +134,49 @@ function Swift:OverrideQuestSystemGlobal()
                 break;
             end
         end
+        Swift:SendQuestStateEvent(_quest.Identifier, "QuestTrigger");
     end
 
     QuestTemplate.Interrupt_Orig_QSB_Core = QuestTemplate.Interrupt;
-    QuestTemplate.Interrupt = function(_quest)
-        QuestTemplate.Interrupt_Orig_QSB_Core(_quest);
-        for i=1, _quest.Objectives[0] do
-            if _quest.Objectives[i].Type == Objective.Custom2 and _quest.Objectives[i].Data[1].Interrupt then
-                _quest.Objectives[i].Data[1]:Interrupt(_quest, i);
+    QuestTemplate.Interrupt = function(_Quest)
+        _Quest:Interrupt_Orig_QSB_Core();
+
+        for i=1, _Quest.Objectives[0] do
+            if _Quest.Objectives[i].Type == Objective.Custom2 and _Quest.Objectives[i].Data[1].Interrupt then
+                _Quest.Objectives[i].Data[1]:Interrupt(_Quest, i);
             end
         end
-        for i=1, _quest.Triggers[0] do
-            if _quest.Triggers[i].Type == Triggers.Custom2 and _quest.Triggers[i].Data[1].Interrupt then
-                _quest.Triggers[i].Data[1]:Interrupt(_quest, i);
+        for i=1, _Quest.Triggers[0] do
+            if _Quest.Triggers[i].Type == Triggers.Custom2 and _Quest.Triggers[i].Data[1].Interrupt then
+                _Quest.Triggers[i].Data[1]:Interrupt(_Quest, i);
             end
         end
+
+        Swift:SendQuestStateEvent(_Quest.Identifier, "QuestInterrupt");
+    end
+
+    QuestTemplate.Fail_Orig_QSB_Core = QuestTemplate.Fail;
+    QuestTemplate.Fail = function(_Quest)
+        _Quest:Fail_Orig_QSB_Core();
+        Swift:SendQuestStateEvent(_Quest.Identifier, "QuestFailure");
+    end
+
+    QuestTemplate.Success_Orig_QSB_Core = QuestTemplate.Success;
+    QuestTemplate.Success = function(_Quest)
+        _Quest:Success_Orig_QSB_Core();
+        Swift:SendQuestStateEvent(_Quest.Identifier, "QuestSuccess");
+    end
+end
+
+function Swift:SendQuestStateEvent(_QuestName, _StateName)
+    local QuestID = API.GetQuestID(_QuestName);
+    if Quests[QuestID] then
+        Swift:DispatchScriptEvent(QSB.ScriptEvents[_StateName], QuestID);
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[Swift:DispatchScriptEvent(QSB.ScriptEvents["%s"], %d)]],
+            _StateName,
+            QuestID
+        ));
     end
 end
 

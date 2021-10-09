@@ -218,7 +218,7 @@ function ModuleBriefingSystem.Global:NextPage(_PlayerID)
             if self.Briefing[_PlayerID][PageID].Action then
                 self.Briefing[_PlayerID][PageID]:Action();
             end
-            self.Briefing[_PlayerID].PageQuest = self:DisplayPage(_PlayerID, PageID);
+            self:DisplayPage(_PlayerID, PageID);
         else
             self:EndBriefing(_PlayerID);
         end

@@ -93,7 +93,7 @@ function CreateTestNPCQuest()
         Success     = "You done well!",
         Receiver    = 1,
 
-        Goal_NPC("npc1", "-"),
+        Goal_NPC("npc1", "hero"),
         Trigger_Time(0),
     }
 
@@ -112,7 +112,7 @@ function CreateTestNPCs()
     -- Player 1 can speak to this npc.
     API.NpcCompose {
         Name     = "npc1",
-        PlayerID = 1,
+        Player   = 1,
         Callback = function(_Npc, _Hero)
             API.Note("It work's!");
         end,
@@ -120,9 +120,12 @@ function CreateTestNPCs()
 
     -- Player 1 isn't allowed to speak to this npc.
     API.NpcCompose {
-        Name     = "npc2",
-        PlayerID = 2,
-        Callback = function(_Npc, _Hero)
+        Name              = "npc2",
+        Player            = 2,
+        WrongPlayerAction = function()
+            API.Note("I won't talk to you!");
+        end,
+        Callback          = function(_Npc, _Hero)
             API.Note("It does not work!");
         end,
     }

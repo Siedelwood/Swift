@@ -21,7 +21,7 @@ QSB.Metatable = {Init = false, Weak = {}, Metas = {}, Key = 0};
 ---
 -- Installiert Swift.
 --
--- @within Anwenderfunktionen
+-- @within Sonstige
 -- @local
 --
 function API.Install()
@@ -34,7 +34,7 @@ end
 -- Prüft, ob das laufende Spiel in der History Edition gespielt wird.
 --
 -- @return[type=boolean] Spiel ist History Edition
--- @within Anwenderfunktionen
+-- @within Sonstige
 --
 function API.IsHistoryEdition()
     return Swift:IsHistoryEdition();
@@ -49,7 +49,7 @@ end
 -- Option zum LAN-Spiel in der HE nicht verfügbar ist.
 --
 -- @return[type=boolean] Spiel ist History Edition
--- @within Anwenderfunktionen
+-- @within Sonstige
 --
 function API.IsHistoryEditionNetworkGame()
     return API.IsHistoryEdition() and Framework.IsNetworkGame();
@@ -108,7 +108,9 @@ function API.OverrideTable()
     table.contains = function (t, e)
         assert(type(t) == "table");
         for k, v in ipairs(t) do
-            if v == e then return true; end
+            if v == e then
+                return true;
+            end
         end
         return false;
     end
@@ -415,7 +417,7 @@ end
 --
 -- @param _Text Anzeigetext (String oder Table)
 -- @return Übersetzten Text oder Table mit Texten
--- @within Anwenderfunktionen
+-- @within Sonstige
 --
 -- @usage -- Einstufige Table
 -- local Text = API.Localize({de = "Deutsch", en = "English"});
@@ -435,7 +437,7 @@ end
 -- Alle von der QSB erzeugten Texte werden der übergebenen Sprache angepasst.
 --
 -- @param _Language Genutzte Sprache
--- @within Anwenderfunktionen
+-- @within Sonstige
 --
 function API.ChangeDesiredLanguage(_Language)
     if GUI or type(_Language) ~= "string" or _Language:len() ~= 2 then
@@ -528,7 +530,7 @@ Round = API.Round;
 -- <b>Hinweis:</b> Nur im lokalen Skript möglich!
 --
 -- @param[type=function] _Function Bedingungsprüfung
--- @within Anwenderfunktionen
+-- @within Sonstige
 --
 function API.AddBlockQuicksaveCondition(_Function)
     if not GUI or type(_Function) ~= "function" then
@@ -610,11 +612,7 @@ function API.FailQuest(_QuestName, _NoMessage)
         end
         Quest:RemoveQuestMarkers();
         Quest:Fail();
-        Swift:DispatchScriptEvent(QSB.ScriptEvents.QuestFailure, QuestID);
-        Logic.ExecuteInLuaLocalState(string.format(
-            "Swift:DispatchScriptEvent(QSB.ScriptEvents.QuestFailure, %d)",
-            QuestID
-        ));
+        -- Note: Event is send in QuestTemplate:Fail()!
     end
 end
 FailQuestByName = API.FailQuest;
@@ -731,6 +729,7 @@ function API.RestartQuest(_QuestName, _NoMessage)
         if OldQuestState == QuestState.Over then
             StartSimpleJobEx(_G[QuestTemplate.Loop], Quest.QueueID);
         end
+        -- Note: This is a special operation outside of the quest system!
         Swift:DispatchScriptEvent(QSB.ScriptEvents.QuestReset, QuestID);
         Logic.ExecuteInLuaLocalState(string.format(
             "Swift:DispatchScriptEvent(QSB.ScriptEvents.QuestReset, %d)",
@@ -762,11 +761,7 @@ function API.StartQuest(_QuestName, _NoMessage)
         Quest:SetMsgKeyOverride();
         Quest:SetIconOverride();
         Quest:Trigger();
-        Swift:DispatchScriptEvent(QSB.ScriptEvents.QuestTrigger, QuestID);
-        Logic.ExecuteInLuaLocalState(string.format(
-            "Swift:DispatchScriptEvent(QSB.ScriptEvents.QuestTrigger, %d)",
-            QuestID
-        ));
+        -- Note: Event is send in QuestTemplate:Trigger()!
     end
 end
 StartQuestByName = API.StartQuest;
@@ -792,11 +787,7 @@ function API.StopQuest(_QuestName, _NoMessage)
         end
         Quest:RemoveQuestMarkers();
         Quest:Interrupt(-1);
-        Swift:DispatchScriptEvent(QSB.ScriptEvents.QuestInterrupt, QuestID);
-        Logic.ExecuteInLuaLocalState(string.format(
-            "Swift:DispatchScriptEvent(QSB.ScriptEvents.QuestInterrupt, %d)",
-            QuestID
-        ));
+        -- Note: Event is send in QuestTemplate:Interrupt()!
     end
 end
 StopQuestByName = API.StopQuest;
@@ -821,11 +812,7 @@ function API.WinQuest(_QuestName, _NoMessage)
         end
         Quest:RemoveQuestMarkers();
         Quest:Success();
-        Swift:DispatchScriptEvent(QSB.ScriptEvents.QuestSuccess, QuestID);
-        Logic.ExecuteInLuaLocalState(string.format(
-            "Swift:DispatchScriptEvent(QSB.ScriptEvents.QuestSuccess, %d)",
-            QuestID
-        ));
+        -- Note: Event is send in QuestTemplate:Success()!
     end
 end
 WinQuestByName = API.WinQuest;
@@ -878,7 +865,7 @@ ReplaceEntity = API.ReplaceEntity;
 --
 -- @param _Entity Entity (Scriptname oder ID)
 -- @return[type=number] Typ des Entity
--- @within Anwenderfunktionen
+-- @within Entity
 --
 function API.GetEntityType(_Entity)
     local EntityID = GetID(_Entity);
@@ -897,7 +884,7 @@ GetType = API.GetEntityType
 --
 -- @param _Entity Entity (Scriptname oder ID)
 -- @return[type=string] Typname des Entity
--- @within Anwenderfunktionen
+-- @within Entity
 --
 function API.GetEntityTypeName(_Entity)
     if not IsExisting(_Entity) then
@@ -912,10 +899,10 @@ GetTypeName = API.GetEntityTypeName;
 -- Setzt das Entity oder das Battalion verwundbar oder unverwundbar.
 --
 -- <b>Alias</b>: SetVulnerable
--- 
+--
 -- @param               _Entity Entity (Scriptname oder ID)
 -- @param[type=boolean] _Flag Verwundbar
--- @within Anwenderfunktionen
+-- @within Entity
 --
 function API.SetEntityVulnerableFlag(_Entity, _Flag)
     if GUI then
@@ -961,13 +948,13 @@ function API.LookAt(_entity, _entityToLookAt, _offsetEntity)
     end
     local eX, eY = Logic.GetEntityPosition(entity);
     local eTLAX, eTLAY = Logic.GetEntityPosition(entityTLA);
-    local orientation = math.deg(math.atan2((eTLAY - eY) , (eTLAX - eX)));
+    local orientation = math.deg(math.atan2((eTLAY - eY), (eTLAX - eX)));
     if Logic.IsBuilding(entity) == 1 then
         orientation = orientation - 90;
     end
     _offsetEntity = _offsetEntity or 0;
     info("API.LookAt: Entity " ..entity.. " is looking at " ..entityTLA);
-    Logic.SetOrientation(entity, API.Round(orientation + _offsetEntity));
+    Logic.SetOrientation(entity, orientation + _offsetEntity);
 end
 LookAt = API.LookAt;
 
@@ -1031,7 +1018,7 @@ GetDistance = API.GetDistance;
 -- @param[type=number] _cartOverlay        (optional) Overlay für Goldkarren
 -- @param[type=boolean] _ignoreReservation (optional) Marktplatzreservation ignorieren
 -- @return[type=number] Entity-ID des erzeugten Wagens
--- @within Anwenderfunktionen
+-- @within Entity
 -- @usage -- API-Call
 -- API.SendCart(Logic.GetStoreHouse(1), 2, Goods.G_Grain, 45)
 -- -- Legacy-Call mit ID-Speicherung
@@ -1107,7 +1094,7 @@ SendCart = API.SendCart;
 -- @param               _Entity   Entity (Scriptname oder ID)
 -- @param[type=number]  _Health   Neue aktuelle Gesundheit
 -- @param[type=boolean] _Relative (Optional) Relativ zur maximalen Gesundheit
--- @within Anwenderfunktionen
+-- @within Entity
 --
 function API.ChangeEntityHealth(_Entity, _Health, _Relative)
     if GUI then
@@ -1152,8 +1139,7 @@ SetHealth = API.ChangeEntityHealth;
 --
 -- @param              _Entity Entity (Skriptname oder ID)
 -- @return[type=table] Kategorien des Entity
--- @within Internal
--- @local
+-- @within Entity
 --
 function API.GetEntityCategoyList(_Entity)
     local EntityID = GetID(_Entity);
@@ -1179,8 +1165,7 @@ GetCategories = API.GetEntityCategoyList;
 -- @param              _Entity Entity (Skriptname oder ID)
 -- @param[type=number] ...     Liste mit Kategorien
 -- @return[type=boolean] Entity hat Kategorie
--- @within Internal
--- @local
+-- @within Entity
 --
 function API.IsEntityInAtLeastOneCategory(_Entity, ...)
     local EntityID = GetID(_Entity);
@@ -1204,7 +1189,7 @@ IsInCategory = API.IsEntityInAtLeastOneCategory;
 --
 -- @param _Entity Entity (Scriptname oder ID)
 -- @return[type=number] Tasklist
--- @within Anwenderfunktionen
+-- @within Entity
 --
 function API.GetEntityTaskList(_Entity)
     local EntityID = GetID(_Entity);
@@ -1225,7 +1210,7 @@ GetTask = API.GetEntityTaskList;
 -- @param              _Entity  Entity (Scriptname oder ID)
 -- @param[type=number] _NewModel Neues Model
 -- @param[type=number] _AnimSet  (optional) Animation Set
--- @within Anwenderfunktionen
+-- @within Entity
 --
 function API.SetEntityModel(_Entity, _NewModel, _AnimSet)
     if GUI then
@@ -1259,7 +1244,7 @@ SetModel = API.SetEntityModel;
 --
 -- @param              _Entity  Entity (Scriptname oder ID)
 -- @param[type=number] _NewTask Neuer Task
--- @within Anwenderfunktionen
+-- @within Entity
 --
 function API.SetEntityTaskList(_Entity, _NewTask)
     if GUI then
@@ -1285,7 +1270,7 @@ SetTask = API.SetEntityTaskList;
 --
 -- @param               _Entity  Entity (Scriptname oder ID)
 -- @return[type=number] Ausrichtung in Grad
--- @within Anwenderfunktionen
+-- @within Entity
 --
 function API.GetEntityOrientation(_Entity)
     local EntityID = GetID(_Entity);
@@ -1304,7 +1289,7 @@ GetOrientation = API.GetEntityOrientation;
 --
 -- @param               _Entity  Entity (Scriptname oder ID)
 -- @param[type=number] _Orientation Neue Ausrichtung
--- @within Anwenderfunktionen
+-- @within Entity
 --
 function API.SetEntityOrientation(_Entity, _Orientation)
     if GUI then
@@ -1331,7 +1316,7 @@ SetOrientation = API.SetEntityOrientation;
 --
 -- @param _Entity  Entity (Scriptname oder ID)
 -- @return[type=number] Menge an Rohstoffen
--- @within Anwenderfunktionen
+-- @within Entity
 --
 function API.GetResourceAmount(_Entity)
     local EntityID = GetID(_Entity);
@@ -1350,7 +1335,7 @@ GetResource = API.GetResourceAmount
 --
 -- @param              _Entity  Entity (Scriptname oder ID)
 -- @param[type=number] _Amount Menge an Rohstoffen
--- @within Anwenderfunktionen
+-- @within Entity
 --
 function API.SetResourceAmount(_Entity, _Amount)
     if GUI then
@@ -1585,7 +1570,7 @@ IsValidPosition = API.ValidatePosition;
 --
 -- @param _Entity Entity (Skriptname oder ID)
 -- @return[type=number] Menge an Soldaten
--- @within Anwenderfunktionen
+-- @within Gruppe
 --
 function API.CountSoldiersOfGroup(_Entity)
     local EntityID = GetID(_Entity);
@@ -1608,7 +1593,7 @@ CoundSoldiers = API.CountSoldiersOfGroup;
 --
 -- @param _Entity Entity (Skriptname oder ID)
 -- @return[type=table] Liste aller Soldaten
--- @within Anwenderfunktionen
+-- @within Gruppe
 --
 function API.GetGroupSoldiers(_Entity)
     local EntityID = GetID(_Entity);
@@ -1632,7 +1617,7 @@ GetSoldiers = API.GetGroupSoldiers;
 --
 -- @param _Entity Entity (Skriptname oder ID)
 -- @return[type=number] Menge an Soldaten
--- @within Anwenderfunktionen
+-- @within Gruppe
 --
 function API.GetGroupLeader(_Entity)
     local EntityID = GetID(_Entity);
@@ -1654,7 +1639,7 @@ GetLeader = API.GetGroupLeader;
 --
 -- @param               _Entity   Entity (Scriptname oder ID)
 -- @param[type=number]  _Amount   Geheilte Gesundheit
--- @within Anwenderfunktionen
+-- @within Gruppe
 --
 function API.GroupHeal(_Entity, _Amount)
     if GUI then
@@ -1683,7 +1668,7 @@ HealEntity = API.GroupHeal;
 -- @param               _Entity   Entity (Scriptname oder ID)
 -- @param[type=number] _Damage   Schaden
 -- @param[type=string] _Attacker Angreifer
--- @within Anwenderfunktionen
+-- @within Gruppe
 --
 function API.GroupHurt(_Entity, _Damage, _Attacker)
     if GUI then

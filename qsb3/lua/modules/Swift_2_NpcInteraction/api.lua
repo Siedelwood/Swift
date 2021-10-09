@@ -11,6 +11,11 @@ You may use and modify this file unter the terms of the MIT licence.
 ---
 -- Dieses Modul erweitert die Interaktionsmöglichkeiten mit Siedlern.
 --
+-- Ein NPC ist ein Charakter, der durch den Helden eines Spielers angesprochen
+-- werden kann. Auf das Ansprechen kann eine beliebige Aktion folgen. Mittels
+-- einer Bedingung kann festgelegt werden, wer mit dem NPC sprechen kann und
+-- unter welchen Umständen es nicht möglich ist.
+--
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
 -- <li><a href="Swift_1_JobsCore.api.html">(1) Jobs Core</a></li>
@@ -23,13 +28,57 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 
 ---
+-- Erstellt einen neuen NPC für den angegebenen Siedler.
 --
+-- Mögliche Einstellungen für den NPC:
+-- <table border="1">
+-- <tr>
+-- <th><b>Eigenschaft</b></th>
+-- <th><b>Beschreibung</b></th>
+-- </tr>
+-- <tr>
+-- <td>Name</td>
+-- <td>(string) Skriptname des NPC. Dieses Attribut wird immer benötigt!</td>
+-- </tr>
+-- <tr>
+-- <td>Type</td>
+-- <td>(number) Typ des NPC. Zahl zwischen 1 und 4 möglich. Bestimmt, falls
+-- vorhanden, den Anzeigemodus des NPC Icon.</td>
+-- </tr>
+-- <tr>
+-- <td>Condition</td>
+-- <td>(function) Bedingung, um die Konversation auszuführen. Muss boolean zurückgeben.</td>
+-- </tr>
+-- <tr>
+-- <td>Callback</td>
+-- <td>(function) Funktion, die bei erfolgreicher Aktivierung ausgeführt wird.</td>
+-- </tr>
+-- <tr>
+-- <td>Player</td>
+-- <td>(number) Spieler, die mit dem NPC sprechen können.</td>
+-- </tr>
+-- <tr>
+-- <td>WrongPlayerAction</td>
+-- <td>(function) Funktion, die für einen falschen Spieler ausgeführt wird.</td>
+-- </tr>
+-- <tr>
+-- <td>Hero</td>
+-- <td>(string) Skriptnamen von Helden, die mit dem NPC sprechen können.</td>
+-- </tr>
+-- <tr>
+-- <td>WrongHeroAction</td>
+-- <td>(function) Funktion, die für einen falschen Helden ausgeführt wird.</td>
+-- </tr>
+-- </table>
 --
+-- @param[type=table]  _Data Definition des NPC
+-- @return[type=table] NPC Table
+-- @within Anwenderfunktionen
 -- @usage
 -- -- Einen NPC mit Aktion erstellen
 -- MyNpc = API.NpcCompose {
---     Name    = "HansWurst",
---     Action  = function(_Data)
+--     Name     = "HansWurst",
+--     Callback = function(_Data)
 --         local HeroID = QSB.LastHeroEntityID;
 --         local NpcID = GetID(_Data.Name);
 --         -- mach was tolles
@@ -43,7 +92,7 @@ You may use and modify this file unter the terms of the MIT licence.
 --         -- prüfe irgend was
 --         return MyConditon
 --     end
---     Action    = function(_Data)
+--     Callback  = function(_Data)
 --         local HeroID = QSB.LastHeroEntityID;
 --         local NpcID = GetID(_Data.Name);
 --         -- mach was tolles
@@ -58,7 +107,7 @@ function API.NpcCompose(_Data)
         error("API.NpcCompose: '" .._Data.Name.. "' NPC does not exist!");
         return;
     end
-    if ModuleInteraction.Global:GetNpc(_Data.Name) ~= nil then
+    if ModuleNpcInteraction.Global:GetNpc(_Data.Name) ~= nil then
         error("API.NpcCompose: '" .._Data.Name.. "' is already composed as NPC!");
         return;
     end
@@ -66,12 +115,14 @@ function API.NpcCompose(_Data)
         error("API.NpcCompose: Type must be a value between 1 and 4!");
         return;
     end
-    return ModuleInteraction.Global:CreateNpc(_Data);
+    return ModuleNpcInteraction.Global:CreateNpc(_Data);
 end
 
 ---
+-- Entfernt den NPC komplett vom Entity. Das Entity bleibt dabei erhalten.
 --
---
+-- @param[type=table] _Data NPC Table
+-- @within Anwenderfunktionen
 -- @usage
 -- API.NpcDispose(MyNpc);
 --
@@ -83,23 +134,70 @@ function API.NpcDispose(_Data)
         error("API.NpcDispose: '" .._Data.Name.. "' NPC does not exist!");
         return;
     end
-    if ModuleInteraction.Global:GetNpc(_Data.Name) ~= nil then
+    if ModuleNpcInteraction.Global:GetNpc(_Data.Name) ~= nil then
         error("API.NpcDispose: '" .._Data.Name.. "' NPC must first be composed!");
         return;
     end
 
-    ModuleInteraction.Global:DestroyNpc(_Data);
+    ModuleNpcInteraction.Global:DestroyNpc(_Data);
 end
 
 ---
+-- Aktualisiert die Daten des NPC.
 --
+-- Mögliche Einstellungen für den NPC:
+-- <table border="1">
+-- <tr>
+-- <th><b>Eigenschaft</b></th>
+-- <th><b>Beschreibung</b></th>
+-- </tr>
+-- <tr>
+-- <td>Name</td>
+-- <td>(string) Skriptname des NPC. Dieses Attribut wird immer benötigt!</td>
+-- </tr>
+-- <tr>
+-- <td>Type</td>
+-- <td>(number) Typ des NPC. Zahl zwischen 1 und 4 möglich. Bestimmt, falls
+-- vorhanden, den Anzeigemodus des NPC Icon.</td>
+-- </tr>
+-- <tr>
+-- <td>Condition</td>
+-- <td>(function) Bedingung, um die Konversation auszuführen. Muss boolean zurückgeben.</td>
+-- </tr>
+-- <tr>
+-- <td>Callback</td>
+-- <td>(function) Funktion, die bei erfolgreicher Aktivierung ausgeführt wird.</td>
+-- </tr>
+-- <tr>
+-- <td>Player</td>
+-- <td>(number) Spieler, die mit dem NPC sprechen können.</td>
+-- </tr>
+-- <tr>
+-- <td>WrongPlayerAction</td>
+-- <td>(function) Funktion, die für einen falschen Spieler ausgeführt wird.</td>
+-- </tr>
+-- <tr>
+-- <td>Hero</td>
+-- <td>(string) Skriptnamen von Helden, die mit dem NPC sprechen können.</td>
+-- </tr>
+-- <tr>
+-- <td>WrongHeroAction</td>
+-- <td>(function) Funktion, die für einen falschen Helden ausgeführt wird.</td>
+-- </tr>
+-- <tr>
+-- <td>Active</td>
+-- <td>(boolean) Steuert, ob der NPC aktiv ist.</td>
+-- </tr>
+-- </table>
 --
+-- @param[type=table] _Data NPC Table
+-- @within Anwenderfunktionen
 -- @usage
 -- -- Einen NPC wieder aktivieren
 -- MyNpc.Active = true;
 -- MyNpc.TalkedTo = 0;
 -- -- Die Aktion ändern
--- MyNpc.Action = function(_Data)
+-- MyNpc.Callback = function(_Data)
 --     -- mach was hier
 -- end;
 -- API.NpcUpdate(MyNpc);
@@ -112,17 +210,20 @@ function API.NpcUpdate(_Data)
         error("API.NpcUpdate: '" .._Data.Name.. "' NPC does not exist!");
         return;
     end
-    if ModuleInteraction.Global:GetNpc(_Data.Name) == nil then
+    if ModuleNpcInteraction.Global:GetNpc(_Data.Name) == nil then
         error("API.NpcUpdate: '" .._Data.Name.. "' NPC must first be composed!");
         return;
     end
 
-    ModuleInteraction.Global:UpdateNpc(_Data);
+    ModuleNpcInteraction.Global:UpdateNpc(_Data);
 end
 
 ---
+-- Prüft, ob der NPC gerade aktiv ist.
 --
---
+-- @param[type=table] _Data NPC Table
+-- @return[type=boolean] NPC ist aktiv
+-- @within Anwenderfunktionen
 -- @usage
 -- if API.NpcIsActive(MyNpc) then
 --
@@ -134,7 +235,7 @@ function API.NpcIsActive(_Data)
         error("API.NpcIsActive: '" .._Data.Name.. "' NPC does not exist!");
         return;
     end
-    local NPC = ModuleInteraction.Global:GetNpc(_Data.Name);
+    local NPC = ModuleNpcInteraction.Global:GetNpc(_Data.Name);
     if NPC == nil then
         error("API.NpcIsActive: '" .._Data.Name.. "' NPC must first be composed!");
         return;
@@ -144,8 +245,12 @@ function API.NpcIsActive(_Data)
 end
 
 ---
+-- Prüft, ob ein NPC schon gesprochen hat und optional auch mit wem.
 --
---
+-- @param[type=table]  _Data     NPC Table
+-- @param[type=string] _Hero     (Optional) Skriptname des Helden
+-- @param[type=number] _PlayerID (Optional) Spieler ID
+-- @within Anwenderfunktionen
 -- @usage
 -- -- prüfe ob mit irgend wem gesprochen wurde
 -- if API.NpcTalkedTo(MyNpc) then
@@ -159,15 +264,15 @@ function API.NpcTalkedTo(_Data, _Hero, _PlayerID)
         return;
     end
     if not IsExisting(_Data.Name) then
-        error("API.NpcIsActive: '" .._Data.Name.. "' NPC does not exist!");
+        error("API.NpcTalkedTo: '" .._Data.Name.. "' NPC does not exist!");
         return;
     end
-    if ModuleInteraction.Global:GetNpc(_Data.Name) ~= nil then
-        error("API.NpcIsActive: '" .._Data.Name.. "' NPC must first be composed!");
+    if ModuleNpcInteraction.Global:GetNpc(_Data.Name) == nil then
+        error("API.NpcTalkedTo: '" .._Data.Name.. "' NPC must first be composed!");
         return;
     end
 
-    local NPC = ModuleInteraction.Global:GetNpc(_Data.Data);
+    local NPC = ModuleNpcInteraction.Global:GetNpc(_Data.Name);
     local TalkedTo = NPC.TalkedTo ~= nil and NPC.TalkedTo ~= 0;
     if _Hero and TalkedTo then
         TalkedTo = NPC.TalkedTo == GetID(_Hero);

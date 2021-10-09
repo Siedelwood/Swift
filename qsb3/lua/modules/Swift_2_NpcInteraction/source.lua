@@ -18,7 +18,15 @@ ModuleNpcInteraction = {
     };
     Local  = {};
     -- This is a shared structure but the values are asynchronous!
-    Shared = {};
+    Shared = {
+        Text = {
+            StartConversation = {
+                de = "Gespräch beginnen",
+                en = "Start conversation",
+                fr = "Parlez à caractère",
+            }
+        }
+    };
 };
 
 QSB.LastNpcEntityID = 0;
@@ -38,39 +46,42 @@ function ModuleNpcInteraction.Global:OnGameStart()
     end);
 end
 
-function ModuleNpcInteraction.Global:OnEvent(_ID, _Event, _EntityID, _KnightID, _PlayerID)
+function ModuleNpcInteraction.Global:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.NpcInteraction then
-        QSB.LastNpcEntityID = _EntityID;
-        QSB.LastHeroEntityID = _KnightID;
-        self:PerformNpcInteraction(_PlayerID);
+        QSB.LastNpcEntityID = arg[1];
+        QSB.LastHeroEntityID = arg[2];
+        self:PerformNpcInteraction(arg[3]);
     end
 end
 
-function ModuleInteraction.Global:CreateNpc(_Data)
+function ModuleNpcInteraction.Global:CreateNpc(_Data)
     self.NPC[_Data.Name] = {
-        Name      = _Data.Name,
-        Active    = true,
-        Type      = _Data.Type or 1,
-        PlayerID  = _Data.PlayerID or 1,
-        Hero      = _Data.Hero,
-        Distance  = _Data.Distance or 350,
-        Condition = _Data.Condition,
-        Action    = _Data.Action
+        Name              = _Data.Name,
+        Active            = true,
+        Type              = _Data.Type or 1,
+        Player            = _Data.Player or 1,
+        WrongPlayerAction = _Data.WrongPlayerAction,
+        Hero              = _Data.Hero,
+        WrongHeroAction   = _Data.WrongHeroAction,
+        Distance          = _Data.Distance or 350,
+        Condition         = _Data.Condition,
+        Callback          = _Data.Callback
     }
-    self:UpdateNpc(_Data.Name);
+    self:UpdateNpc(_Data);
     return self.NPC[_Data.Name];
 end
 
-function ModuleInteraction.Global:DestroyNpc(_ScriptName)
-    self:UpdateNpc(_ScriptName, {Active = false});
-    self.NPC[_ScriptName] = nil;
+function ModuleNpcInteraction.Global:DestroyNpc(_Data)
+    _Data.Active = false;
+    self:UpdateNpc(_Data);
+    self.NPC[_Data.Name] = nil;
 end
 
-function ModuleInteraction.Global:GetNpc(_ScriptName)
+function ModuleNpcInteraction.Global:GetNpc(_ScriptName)
     return self.NPC[_ScriptName];
 end
 
-function ModuleInteraction.Global:UpdateNpc(_ScriptName, _Data)
+function ModuleNpcInteraction.Global:UpdateNpc(_Data)
     if not IsExisting(_Data.Name) then
         return;
     end
@@ -91,30 +102,80 @@ function ModuleInteraction.Global:UpdateNpc(_ScriptName, _Data)
     end
 end
 
-function ModuleInteraction.Global:PerformNpcInteraction(_PlayerID)
+function ModuleNpcInteraction.Global:PerformNpcInteraction(_PlayerID)
     local ScriptName = Logic.GetEntityName(QSB.LastNpcEntityID);
     if self.NPC[ScriptName] then
+        local Data = self.NPC[ScriptName];
         self:RotateActorsToEachother(_PlayerID);
-        self:AdjustHeroTalkingDistance(_PlayerID, self.NPC[ScriptName].Distance);
-        
-        if self.NPC[ScriptName].PlayerID == nil 
-        or self.NPC[ScriptName].PlayerID == _PlayerID then
-            self.NPC[ScriptName].TalkedTo = QSB.LastHeroEntityID;
+        self:AdjustHeroTalkingDistance(Data.Distance);
+
+        if not self:InteractionIsAppropriatePlayer(ScriptName, _PlayerID) then
+            return;
+        end
+        Data.TalkedTo = QSB.LastHeroEntityID;
+
+        if not self:InteractionIsAppropriateHero(ScriptName) then
+            return;
         end
 
-        if self.NPC[ScriptName].TalkedTo ~= nil and self.NPC[ScriptName].TalkedTo ~= 0 then
-            if self.NPC[ScriptName].Condition == nil
-            or self.NPC[ScriptName]:Condition() then
-                self.NPC[ScriptName].Active = true;
-                if self.NPC[ScriptName].Action then
-                    self.NPC[ScriptName]:Action();
+        if Data.Condition == nil
+        or Data:Condition() then
+            Data.Active = false;
+            if Data.Callback then
+                Data:Callback();
+            end
+        else
+            Data.TalkedTo = 0;
+        end
+
+        self:UpdateNpc(Data);
+    end
+end
+
+function ModuleNpcInteraction.Global:InteractionIsAppropriatePlayer(_ScriptName, _PlayerID)
+    local Appropriate = true;
+    if self.NPC[_ScriptName] then
+        local Data = self.NPC[_ScriptName];
+        if Data.Player ~= nil then
+            if type(Data.Player) == "table" then
+                Appropriate = table.contains(Data.Player, _PlayerID);
+            end
+            Appropriate = Data.Player == _PlayerID;
+
+            if not Appropriate then
+                local LastTime = (Data.WrongHeroTick or 0) +1;
+                local CurrentTime = Logic.GetTime();
+                if Data.WrongPlayerAction and LastTime < CurrentTime then
+                    self.NPC[_ScriptName].LastWongPlayerTick = CurrentTime;
+                    Data:WrongPlayerAction();
                 end
-            else
-                self.NPC[ScriptName].TalkedTo = 0;
             end
         end
-        self:UpdateNpc(self.NPC[ScriptName]);
     end
+    return Appropriate;
+end
+
+function ModuleNpcInteraction.Global:InteractionIsAppropriateHero(_ScriptName)
+    local Appropriate = true;
+    if self.NPC[_ScriptName] then
+        local Data = self.NPC[_ScriptName];
+        if Data.Hero ~= nil then
+            if type(Data.Hero) == "table" then
+                Appropriate = table.contains(Data.Hero, Logic.GetEntityName(QSB.LastHeroEntityID));
+            end
+            Appropriate = Data.Hero == Logic.GetEntityName(QSB.LastHeroEntityID);
+
+            if not Appropriate then
+                local LastTime = (Data.WrongHeroTick or 0) +1;
+                local CurrentTime = Logic.GetTime();
+                if Data.WrongHeroAction and LastTime < CurrentTime then
+                    self.NPC[_ScriptName].WrongHeroTick = CurrentTime;
+                    Data:WrongHeroAction();
+                end
+            end
+        end
+    end
+    return Appropriate;
 end
 
 function ModuleNpcInteraction.Global:RotateActorsToEachother(_PlayerID)
@@ -122,32 +183,33 @@ function ModuleNpcInteraction.Global:RotateActorsToEachother(_PlayerID)
     Logic.GetKnights(_PlayerID, PlayerKnights);
     for k, v in pairs(PlayerKnights) do
         local Target = API.GetEntityMovementTarget(v);
-        local x, y = Logic.EntityGetPos(QSB.LastNpcEntityID);
+        local x, y, z = Logic.EntityGetPos(QSB.LastNpcEntityID);
         if math.floor(Target.X) == math.floor(x) and math.floor(Target.Y) == math.floor(y) then
-            local x, y, z = Logic.EntityGetPos(v);
+            x, y, z = Logic.EntityGetPos(v);
             Logic.MoveEntity(v, x, y);
-            LookAt(v, QSB.LastNpcEntityID);
+            API.LookAt(v, QSB.LastNpcEntityID);
         end
     end
-    API.Confront(QSB.LastHeroEntityID, QSB.LastNpcEntityID);
+    API.LookAt(QSB.LastHeroEntityID, QSB.LastNpcEntityID);
+    API.LookAt(QSB.LastNpcEntityID, QSB.LastHeroEntityID);
 end
 
-function ModuleNpcInteraction.Global:AdjustHeroTalkingDistance(_PlayerID, _Distance)
-    if IsNear(QSB.LastHeroEntityID, QSB.LastNpcEntityID, _Distance) then
-        local Orientation = Logic.GetEntityOrientation(QSB.LastHeroEntityID);
+function ModuleNpcInteraction.Global:AdjustHeroTalkingDistance(_Distance)
+    local Distance = _Distance * API.GetEntityScale(QSB.LastNpcEntityID);
+    if API.GetDistance(QSB.LastHeroEntityID, QSB.LastNpcEntityID) <= Distance * 0.7 then
+        local Orientation = Logic.GetEntityOrientation(QSB.LastNpcEntityID);
         local x1, y1, z1 = Logic.EntityGetPos(QSB.LastHeroEntityID);
-        local x2 = x1 + (_Distance * math.cos(math.rad(Orientation)));
-        local y2 = y1 + (_Distance * math.sin(math.rad(Orientation)));
+        local x2 = x1 + ((Distance * 0.5) * math.cos(math.rad(Orientation)));
+        local y2 = y1 + ((Distance * 0.5) * math.sin(math.rad(Orientation)));
         local ID = Logic.CreateEntityOnUnblockedLand(Entities.XD_ScriptEntity, x2, y2, 0, 0);
         local x3, y3, z3 = Logic.EntityGetPos(ID);
         Logic.MoveSettler(QSB.LastHeroEntityID, x3, y3);
-
-        API.StartHiResJob( function(_HeroID, _NPCID)
-            if Logic.IsEntityMoving(_HeroID) == false then
+        API.StartHiResJob( function(_HeroID, _NPCID, _Time)
+            if Logic.GetTime() > _Time +0.5 and Logic.IsEntityMoving(_HeroID) == false then
                 API.Confront(_HeroID, _NPCID);
                 return true;
             end
-        end, QSB.LastHeroEntityID, QSB.LastHeroEntityID);
+        end, QSB.LastHeroEntityID, QSB.LastNpcEntityID, Logic.GetTime());
     end
 end
 
@@ -164,6 +226,69 @@ function ModuleNpcInteraction.Global:OverrideQuestFunctions()
             ClosestKnightID,
             _PlayerID
         ));
+    end
+
+    QuestTemplate.RemoveQuestMarkers_Orig_ModuleNpcInteraction = QuestTemplate.RemoveQuestMarkers
+    QuestTemplate.RemoveQuestMarkers = function(self)
+        for i=1, self.Objectives[0] do
+            if self.Objectives[i].Type == Objective.Distance then
+                if self.Objectives[i].Data[1] ~= -65565 then
+                    QuestTemplate.RemoveQuestMarkers_Orig_ModuleNpcInteraction(self);
+                else
+                    if self.Objectives[i].Data[4] then
+                        API.NpcDispose(self.Objectives[i].Data[4].NpcInstance);
+                        self.Objectives[i].Data[4].NpcInstance = nil;
+                    end
+                end
+            else
+                QuestTemplate.RemoveQuestMarkers_Orig_ModuleNpcInteraction(self);
+            end
+        end
+    end
+
+    QuestTemplate.ShowQuestMarkers_Orig_ModuleNpcInteraction = QuestTemplate.ShowQuestMarkers
+    QuestTemplate.ShowQuestMarkers = function(self)
+        for i=1, self.Objectives[0] do
+            if self.Objectives[i].Type == Objective.Distance then
+                if self.Objectives[i].Data[1] ~= -65565 then
+                    QuestTemplate.ShowQuestMarkers_Orig_ModuleNpcInteraction(self);
+                else
+                    if not self.Objectives[i].Data[4].NpcInstance then
+                        self.Objectives[i].Data[4].NpcInstance = API.NpcCompose {
+                            Name   = self.Objectives[i].Data[3],
+                            Hero   = self.Objectives[i].Data[2],
+                            Player = self.ReceivingPlayer,
+                        }
+                    end
+                end
+            end
+        end
+    end
+
+    QuestTemplate.IsObjectiveCompleted_Orig_ModuleNpcInteraction = QuestTemplate.IsObjectiveCompleted;
+    QuestTemplate.IsObjectiveCompleted = function(self, objective)
+        local objectiveType = objective.Type;
+        local data = objective.Data;
+        if objective.Completed ~= nil then
+            return objective.Completed;
+        end
+
+        if objectiveType ~= Objective.Distance then
+            return self:IsObjectiveCompleted_Orig_ModuleNpcInteraction(objective);
+        else
+            if data[1] == -65565 then
+                if not IsExisting(data[3]) then
+                    error(data[3].. " is dead! :(");
+                    objective.Completed = false;
+                else
+                    if API.NpcTalkedTo(data[4].NpcInstance, data[2], self.ReceivingPlayer) then
+                        objective.Completed = true;
+                    end
+                end
+            else
+                return self:IsObjectiveCompleted_Orig_ModuleNpcInteraction(objective);
+            end
+        end
     end
 end
 
@@ -189,11 +314,12 @@ function ModuleNpcInteraction.Global:DialogTriggerController()
         Logic.GetKnights(PlayerID, PlayersKnights);
         for i= 1, #PlayersKnights, 1 do
             if Logic.GetCurrentTaskList(PlayersKnights[i]) == "TL_NPC_INTERACTION" then
+                local x1, y1 = Logic.EntityGetPos(PlayersKnights[i]);
                 for k, v in pairs(self.NPC) do
                     if v.Distance >= 350 then
                         local Target = API.GetEntityMovementTarget(PlayersKnights[i]);
-                        local x, y = Logic.EntityGetPos(GetID(k));
-                        if math.floor(Target.X) == math.floor(x) and math.floor(Target.Y) == math.floor(y) then
+                        local x2, y2 = Logic.EntityGetPos(GetID(k));
+                        if math.floor(Target.X) == math.floor(x2) and math.floor(Target.Y) == math.floor(y2) then
                             if IsExisting(k) and IsNear(PlayersKnights[i], k, v.Distance) then
                                 GameCallback_OnNPCInteraction(GetID(k), PlayerID, PlayersKnights[i]);
                                 return;
@@ -210,12 +336,95 @@ end
 
 function ModuleNpcInteraction.Local:OnGameStart()
     QSB.ScriptEvents.NpcInteraction = API.RegisterScriptEvent("Event_NpcInteraction");
+
+    self:OverrideQuestFunctions();
 end
 
-function ModuleNpcInteraction.Local:OnEvent(_ID, _Event, _EntityID, _KnightID, _PlayerID)
+function ModuleNpcInteraction.Local:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.NpcInteraction then
-        QSB.LastNpcEntityID = _EntityID;
-        QSB.LastHeroEntityID = _KnightID;
+        QSB.LastNpcEntityID = arg[1];
+        QSB.LastHeroEntityID = arg[2];
+    end
+end
+
+function ModuleNpcInteraction.Local:OverrideQuestFunctions()
+    GUI_Interaction.DisplayQuestObjective_Orig_ModuleNpcInteraction = GUI_Interaction.DisplayQuestObjective
+    GUI_Interaction.DisplayQuestObjective = function(_QuestIndex, _MessageKey)
+        local QuestIndexTemp = tonumber(_QuestIndex);
+        if QuestIndexTemp then
+            _QuestIndex = QuestIndexTemp;
+        end
+
+        local Quest, QuestType = GUI_Interaction.GetPotentialSubQuestAndType(_QuestIndex);
+        local QuestObjectivesPath = "/InGame/Root/Normal/AlignBottomLeft/Message/QuestObjectives";
+        XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomLeft/Message/QuestObjectives", 0);
+        local QuestObjectiveContainer;
+        local QuestTypeCaption;
+
+        g_CurrentDisplayedQuestID = _QuestIndex;
+
+        if QuestType == Objective.Distance then
+            QuestObjectiveContainer = QuestObjectivesPath .. "/List";
+            QuestTypeCaption = Wrapped_GetStringTableText(_QuestIndex, "UI_Texts/QuestInteraction");
+            local ObjectList = {};
+
+            if Quest.Objectives[1].Data[1] == -65565 then
+                QuestObjectiveContainer = QuestObjectivesPath .. "/Distance";
+                QuestTypeCaption = Wrapped_GetStringTableText(_QuestIndex, "UI_Texts/QuestMoveHere");
+                SetIcon(QuestObjectiveContainer .. "/QuestTypeIcon",{7,10});
+
+                local MoverEntityID = GetID(Quest.Objectives[1].Data[2]);
+                local MoverEntityType = Logic.GetEntityType(MoverEntityID);
+                local MoverIcon = g_TexturePositions.Entities[MoverEntityType];
+                if not MoverIcon then
+                    MoverIcon = {7, 9};
+                end
+                SetIcon(QuestObjectiveContainer .. "/IconMover", MoverIcon);
+
+                local TargetEntityID = GetID(Quest.Objectives[1].Data[3]);
+                local TargetEntityType = Logic.GetEntityType(TargetEntityID);
+                local TargetIcon = g_TexturePositions.Entities[TargetEntityType];
+                if not TargetIcon then
+                    TargetIcon = {14, 10};
+                end
+
+                local IconWidget = QuestObjectiveContainer .. "/IconTarget";
+                local ColorWidget = QuestObjectiveContainer .. "/TargetPlayerColor";
+
+                SetIcon(IconWidget, TargetIcon);
+                XGUIEng.SetMaterialColor(ColorWidget, 0, 255, 255, 255, 0);
+
+                SetIcon(QuestObjectiveContainer .. "/QuestTypeIcon",{16,12});
+                local caption = ModuleNpcInteraction.Shared.Text.StartConversation;
+                QuestTypeCaption = API.Localize(caption);
+
+                XGUIEng.SetText(QuestObjectiveContainer.."/Caption","{center}"..QuestTypeCaption);
+                XGUIEng.ShowWidget(QuestObjectiveContainer, 1);
+            else
+                GUI_Interaction.DisplayQuestObjective_Orig_ModuleNpcInteraction(_QuestIndex, _MessageKey);
+            end
+        else
+            GUI_Interaction.DisplayQuestObjective_Orig_ModuleNpcInteraction(_QuestIndex, _MessageKey);
+        end
+    end
+
+    GUI_Interaction.GetEntitiesOrTerritoryListForQuest_Orig_ModuleNpcInteraction = GUI_Interaction.GetEntitiesOrTerritoryListForQuest
+    GUI_Interaction.GetEntitiesOrTerritoryListForQuest = function( _Quest, _QuestType )
+        local EntityOrTerritoryList = {}
+        local IsEntity = true
+
+        if _QuestType == Objective.Distance then
+            if _Quest.Objectives[1].Data[1] == -65565 then
+                local Entity = GetID(_Quest.Objectives[1].Data[3]);
+                table.insert(EntityOrTerritoryList, Entity);
+            else
+                return GUI_Interaction.GetEntitiesOrTerritoryListForQuest_Orig_ModuleNpcInteraction(_Quest, _QuestType);
+            end
+
+        else
+            return GUI_Interaction.GetEntitiesOrTerritoryListForQuest_Orig_ModuleNpcInteraction(_Quest, _QuestType);
+        end
+        return EntityOrTerritoryList, IsEntity
     end
 end
 
