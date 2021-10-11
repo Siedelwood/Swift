@@ -119,6 +119,7 @@ function ModuleDisplayCore.Local:OnGameStart()
         self.CinematicEventStatus[i] = {};
     end
     self:OverrideInterfaceUpdateForCinematicMode();
+    self:OverrideInterfaceThroneroomForCinematicMode();
 end
 
 function ModuleDisplayCore.Local:OnEvent(_ID, _Event, _InfoID, _PlayerID)
@@ -204,6 +205,38 @@ function ModuleDisplayCore.Local:OverrideInterfaceUpdateForCinematicMode()
                 XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Tradepost", 0);
             end
         end
+    end
+end
+
+function ModuleDisplayCore.Local:OverrideInterfaceThroneroomForCinematicMode()
+    GameCallback_Camera_StartButtonPressed = function(_PlayerID)
+    end
+    OnStartButtonPressed = function()
+        GameCallback_Camera_StartButtonPressed(GUI.GetPlayerID());
+    end
+
+    GameCallback_Camera_BackButtonPressed = function(_PlayerID)
+    end
+    OnBackButtonPressed = function()
+        GameCallback_Camera_BackButtonPressed(GUI.GetPlayerID());
+    end
+
+    GameCallback_Camera_SkipButtonPressed = function(_PlayerID)
+    end
+    OnSkipButtonPressed = function()
+        GameCallback_Camera_SkipButtonPressed(GUI.GetPlayerID());
+    end
+
+    GameCallback_Camera_ThroneRoomLeftClick = function(_PlayerID)
+    end
+    ThroneRoomLeftClick = function()
+        GameCallback_Camera_ThroneRoomLeftClick(GUI.GetPlayerID());
+    end
+
+    GameCallback_Camera_ThroneroomCameraControl = function(_PlayerID)
+    end
+    ThroneRoomCameraControl = function()
+        GameCallback_Camera_ThroneroomCameraControl(GUI.GetPlayerID());
     end
 end
 

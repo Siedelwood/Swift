@@ -39,8 +39,6 @@ function ModuleBriefingSystem.Global:OnGameStart()
     QSB.ScriptEvents.BriefingOptionSelected = API.RegisterScriptEvent("Event_BriefingOptionSelected");
     QSB.ScriptEvents.BriefingLeftClick = API.RegisterScriptEvent("Event_BriefingLeftClick");
     QSB.ScriptEvents.BriefingSkipButtonPressed = API.RegisterScriptEvent("Event_BriefingSkipButtonPressed");
-    QSB.ScriptEvents.BriefingPrevButtonPressed = API.RegisterScriptEvent("Event_BriefingPrevButtonPressed");
-    QSB.ScriptEvents.BriefingBackButtonPressed = API.RegisterScriptEvent("Event_BriefingBackButtonPressed");
     
     for i= 1, 8 do
         self.BriefingQueue[i] = {};
@@ -335,8 +333,6 @@ function ModuleBriefingSystem.Local:OnGameStart()
     QSB.ScriptEvents.BriefingOptionSelected = API.RegisterScriptEvent("Event_BriefingOptionSelected");
     QSB.ScriptEvents.BriefingLeftClick = API.RegisterScriptEvent("Event_BriefingLeftClick");
     QSB.ScriptEvents.BriefingSkipButtonPressed = API.RegisterScriptEvent("Event_BriefingSkipButtonPressed");
-    QSB.ScriptEvents.BriefingPrevButtonPressed = API.RegisterScriptEvent("Event_BriefingPrevButtonPressed");
-    QSB.ScriptEvents.BriefingBackButtonPressed = API.RegisterScriptEvent("Event_BriefingBackButtonPressed");
 
     self:OverrideThroneRoomFunctions();
 end
@@ -413,7 +409,7 @@ function ModuleBriefingSystem.Local:DisplayPageBars(_PlayerID, _PageID)
     local Page = self.Briefing[_PlayerID][_PageID];
     local OpacityBig = (255 * self.Briefing[_PlayerID].BarOpacity);
     local OpacitySmall = (255 * self.Briefing[_PlayerID].BarOpacity);
-    
+
     local BigVisibility = (Page.BigBars and 1 or 0);
     local SmallVisibility = (Page.BigBars and 0 or 1);
     if self.Briefing[_PlayerID].BarOpacity == 0 then
@@ -833,22 +829,10 @@ function ModuleBriefingSystem.Local:GetPageIDByName(_PlayerID, _Name)
 end
 
 function ModuleBriefingSystem.Local:OverrideThroneRoomFunctions()
-    ThroneRoomCameraControl = function()
-        if ModuleBriefingSystem then
-            for i= 1,8 do
-                local Briefing = ModuleBriefingSystem.Local:GetCurrentBriefing(i);
-                if Briefing ~= nil then
-                    ModuleBriefingSystem.Local:ThroneRoomCameraControl(
-                        i,
-                        ModuleBriefingSystem.Local:GetCurrentBriefingPage(i)
-                    );
-                end
-            end
-        end
-    end
-
-    ThroneRoomLeftClick = function()
-        if ModuleBriefingSystem then
+    GameCallback_Camera_ThroneRoomLeftClick_Orig_ModuleBriefingSystem = GameCallback_Camera_ThroneRoomLeftClick;
+    GameCallback_Camera_ThroneRoomLeftClick = function(_PlayerID)
+        GameCallback_Camera_ThroneRoomLeftClick_Orig_ModuleBriefingSystem(_PlayerID);
+        if _PlayerID == GUI.GetPlayerID() then
             GUI.SendScriptCommand(string.format(
                 [[API.SendScriptEvent(QSB.ScriptEvents.BriefingLeftClick, %d)]],
                 GUI.GetPlayerID()
@@ -860,8 +844,10 @@ function ModuleBriefingSystem.Local:OverrideThroneRoomFunctions()
         end
     end
 
-    OnSkipButtonPressed = function()
-        if ModuleBriefingSystem then
+    GameCallback_Camera_SkipButtonPressed_Orig_ModuleBriefingSystem = GameCallback_Camera_SkipButtonPressed;
+    GameCallback_Camera_SkipButtonPressed = function(_PlayerID)
+        GameCallback_Camera_SkipButtonPressed_Orig_ModuleBriefingSystem(_PlayerID);
+        if _PlayerID == GUI.GetPlayerID() then
             GUI.SendScriptCommand(string.format(
                 [[API.SendScriptEvent(QSB.ScriptEvents.BriefingSkipButtonPressed, %d)]],
                 GUI.GetPlayerID()
@@ -873,29 +859,17 @@ function ModuleBriefingSystem.Local:OverrideThroneRoomFunctions()
         end
     end
 
-    OnStartButtonPressed = function()
-        if ModuleBriefingSystem then
-            GUI.SendScriptCommand(string.format(
-                [[API.SendScriptEvent(QSB.ScriptEvents.BriefingPrevButtonPressed, %d)]],
-                GUI.GetPlayerID()
-            ));
-            API.SendScriptEvent(
-                QSB.ScriptEvents.BriefingPrevButtonPressed,
-                GUI.GetPlayerID()
-            );
-        end
-    end
-
-    OnBackButtonPressed = function()
-        if ModuleBriefingSystem then
-            GUI.SendScriptCommand(string.format(
-                [[API.SendScriptEvent(QSB.ScriptEvents.BriefingBackButtonPressed, %d)]],
-                GUI.GetPlayerID()
-            ));
-            API.SendScriptEvent(
-                QSB.ScriptEvents.BriefingBackButtonPressed,
-                GUI.GetPlayerID()
-            );
+    GameCallback_Camera_ThroneroomCameraControl_Orig_ModuleBriefingSystem = GameCallback_Camera_ThroneroomCameraControl;
+    GameCallback_Camera_ThroneroomCameraControl = function(_PlayerID)
+        GameCallback_Camera_ThroneroomCameraControl_Orig_ModuleBriefingSystem(_PlayerID);
+        if _PlayerID == GUI.GetPlayerID() then
+            local Briefing = ModuleBriefingSystem.Local:GetCurrentBriefing(_PlayerID);
+            if Briefing ~= nil then
+                ModuleBriefingSystem.Local:ThroneRoomCameraControl(
+                    _PlayerID,
+                    ModuleBriefingSystem.Local:GetCurrentBriefingPage(_PlayerID)
+                );
+            end
         end
     end
 
