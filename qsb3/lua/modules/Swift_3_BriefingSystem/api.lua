@@ -81,7 +81,7 @@ function API.AddBriefingPages(_Briefing)
             end
             -- Bars
             if _Page.BigBars == nil then
-                Page.BigBars = true;
+                _Page.BigBars = true;
             end
             -- Multiple Choice
             if _Page.MC then

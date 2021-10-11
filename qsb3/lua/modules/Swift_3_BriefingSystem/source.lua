@@ -548,7 +548,7 @@ function ModuleBriefingSystem.Local:AnimatePortrait(_PlayerID)
         if type(Page.Portrait.Animation) == "function" then
             U0, V0, U1, V1, A, I = Page.Portrait.Animation(Page);
         end
-        self:SetPagePortraits(_PlayerID, _PageID, U0, V0, U1, V1, A, I);
+        self:SetPagePortraits(_PlayerID, PageID, U0, V0, U1, V1, A, I);
     end
 end
 
