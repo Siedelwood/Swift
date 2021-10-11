@@ -79,12 +79,17 @@ function API.AddBriefingPages(_Briefing)
                     _Page.Duration = -1;
                 end
             end
+            -- Bars
+            if _Page.BigBars == nil then
+                Page.BigBars = true;
+            end
             -- Multiple Choice
             if _Page.MC then
                 for i= 1, #_Page.MC do
                     _Page.MC[i][1] = API.Localize(_Page.MC[i][1]);
                     _Page.MC[i].ID = _Page.MC[i].ID or i;
                 end
+                _Page.BigBars = true;
                 _Page.NoSkipping = true;
                 _Page.Duration = -1;
             end

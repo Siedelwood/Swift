@@ -55,6 +55,23 @@ function API.IsHistoryEditionNetworkGame()
     return API.IsHistoryEdition() and Framework.IsNetworkGame();
 end
 
+---
+-- Berechnet den Faktor der linearen Interpolation.
+--
+-- @param[type=number] _Start   Startwert
+-- @param[type=number] _Current Aktueller Wert
+-- @param[type=number] _End     Endwert
+-- @return[type=number] Interpolationsfaktor
+-- @within Mathematik
+--
+function API.LERP(_Start, _Current, _End)
+    local Factor = (_Current - _Start) / _End;
+    if Factor > 1 then
+        Factor = 1;
+    end
+    return Factor;
+end
+
 -- Lua base functions
 
 function API.OverrideTable()

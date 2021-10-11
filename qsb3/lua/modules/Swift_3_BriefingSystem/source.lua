@@ -402,7 +402,7 @@ function ModuleBriefingSystem.Local:DisplayPage(_PlayerID, _PageID)
         self:DisplayPageAnimations(_PlayerID, _PageID);
         self:DisplayPageFader(_PlayerID, _PageID);
         self:DisplayPagePortraits(_PlayerID, _PageID);
-        self:DisplayPageSplashscreen(_PlayerID, _PageID);
+        self:DisplayPageSplashScreen(_PlayerID, _PageID);
         if self.Briefing[_PlayerID].MC then
             self:DisplayPageOptionsDialog(_PlayerID, _PageID);
         end
@@ -413,9 +413,6 @@ function ModuleBriefingSystem.Local:DisplayPageBars(_PlayerID, _PageID)
     local Page = self.Briefing[_PlayerID][_PageID];
     local OpacityBig = (255 * self.Briefing[_PlayerID].BarOpacity);
     local OpacitySmall = (255 * self.Briefing[_PlayerID].BarOpacity);
-    if Page.BigBars then
-        OpacitySmall = 0;
-    end
     
     local BigVisibility = (Page.BigBars and 1 or 0);
     local SmallVisibility = (Page.BigBars and 0 or 1);
@@ -519,45 +516,89 @@ function ModuleBriefingSystem.Local:DisplayPageFader(_PlayerID, _PageID)
     end
 end
 
-function ModuleBriefingSystem.Local:DisplayPagePortraits(_PlayerID, _PageID)
+function ModuleBriefingSystem.Local:DisplayPagePortraits(_PlayerID, _PageID)    
     local Page = self.Briefing[_PlayerID][_PageID];
+    if Page.Portrait then
+        self:SetPagePortraits(_PlayerID, _PageID);
+    else
+        XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 1, 0);
+    end
 end
 
-function ModuleBriefingSystem.Local:DisplayPageSplashscreen(_PlayerID, _PageID)
+function ModuleBriefingSystem.Local:SetPagePortraits(_PlayerID, _PageID, _U0, _V0, _U1, _V1, _A, _I)
     local Page = self.Briefing[_PlayerID][_PageID];
+    if type(Page.Portrait) == "table" then
+        XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 1, 255);
+        XGUIEng.SetMaterialTexture("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 1, _I or Page.Portrait.Image);
+        XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 0, 0, 400, 600);
+        XGUIEng.SetMaterialUV("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 1, _U0 or 0, _V0 or 0, _U1 or 1, _V1 or 1);
+        XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 1, _A or 1);
+    else
+        XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 1, 255);
+        XGUIEng.SetMaterialTexture("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 1, _I or Page.Portrait);
+        XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 0, 0, 400, 600);
+        XGUIEng.SetMaterialUV("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 1, _U0 or 0, _V0 or 0, _U1 or 1, _V1 or 1);
+        XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 1, _A or 1);
+    end
 end
 
-function ModuleBriefingSystem.Local:ScrollSplashscreen(_Page)
-    local SSW = "/InGame/ThroneRoom/KnightInfo/BG";
-    if type(_Page.Splashscreen) == "table" then
-        local SSData = _Page.Splashscreen;
-        if (not SSData.Animation[1] or #SSData.Animation[1] ~= 4) or (not SSData.Animation[2] or #SSData.Animation[2] ~= 4) then
-            return;
+function ModuleBriefingSystem.Local:AnimatePortrait(_PlayerID)
+    local PageID = self.Briefing[_PlayerID].CurrentPage;
+    local Page = self.Briefing[_PlayerID][PageID];
+
+    local PTW = "/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG";
+    if type(Page.Portrait) == "table" then
+        local U0, V0, U1, V1, A, I = 0, 0, 1, 1, 255, nil;
+        if type(Page.Portrait.Animation) == "function" then
+            U0, V0, U1, V1, A, I = Page.Portrait.Animation(Page);
         end
-        local size   = {GUI.GetScreenSize()};
-        local factor = self:GetSplashscreenLERP();
-        local u0 = SSData.Animation[1][1] + (SSData.Animation[2][1] - SSData.Animation[1][1]) * factor;
-        local u1 = SSData.Animation[1][3] + (SSData.Animation[2][3] - SSData.Animation[1][3]) * factor;
-        local v0 = SSData.Animation[1][2] + (SSData.Animation[2][2] - SSData.Animation[1][2]) * factor;
-        local v1 = SSData.Animation[1][4] + (SSData.Animation[2][4] - SSData.Animation[1][4]) * factor;
+        self:SetPagePortraits(_PlayerID, _PageID, U0, V0, U1, V1, A, I);
+    end
+end
+
+function ModuleBriefingSystem.Local:DisplayPageSplashScreen(_PlayerID, _PageID)
+    local Page = self.Briefing[_PlayerID][_PageID];
+    if Page.Splashscreen then
+        self:SetPageSplashScreen(_PlayerID, _PageID);
+    else
+        XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/BG", 1, 0);
+    end
+end
+
+function ModuleBriefingSystem.Local:SetPageSplashScreen(_PlayerID, _PageID, _U0, _V0, _U1, _V1, _A, _I)
+    local Page = self.Briefing[_PlayerID][_PageID];
+    local SSW = "/InGame/ThroneRoom/KnightInfo/BG";
+
+    if type(Page.Splashscreen) == "table" then
+        local size = {GUI.GetScreenSize()};
+        local u0, v0, u1, v1 = _U0 or 0, _V0 or 0, _U1 or 1, _V1 or 1;
         if size[1]/size[2] < 1.6 then
-            u0 = u0 + 0.125;
+            u0 = u0 + (u0 / 0.125);
             u1 = u1 - (u1 * 0.125);
         end
-        XGUIEng.SetMaterialUV(SSW, 0, u0, v0, u1, v1);
+        local Image = _I or Page.Splashscreen.Image;
+        XGUIEng.SetMaterialAlpha(SSW, 0, _A or 255);
+        XGUIEng.SetMaterialTexture(SSW, 0, Image);
+        XGUIEng.SetMaterialUV(SSW, 0, _U0, _V0, _U1, _V1);
+    else
+        XGUIEng.SetMaterialAlpha(SSW, 0, _A or 255);
+        XGUIEng.SetMaterialTexture(SSW, 0, _I or Page.Splashscreen);
+        XGUIEng.SetMaterialUV(SSW, 0, _U0, _V0, _U1, _V1);
     end
 end
 
-function ModuleBriefingSystem.Local:GetSplashscreenLERP(_Page)
-    local Factor = 1.0;
-    if type(_Page.Splashscreen) == "table" then
-        local Current = Logic.GetTime();
-        local Started = _Page.Started;
-        local FlyTime = _Page.Splashscreen.Animation[3];
-        Factor = (Current - Started) / FlyTime;
-        Factor = (Factor > 1 and 1) or Factor;
+function ModuleBriefingSystem.Local:AnimateSplashScreen(_PlayerID)
+    local PageID = self.Briefing[_PlayerID].CurrentPage;
+    local Page = self.Briefing[_PlayerID][PageID];
+
+    local SSW = "/InGame/ThroneRoom/KnightInfo/BG";
+    if type(Page.Splashscreen) == "table" then
+        local U0, V0, U1, V1, A, I = 0, 0, 1, 1, 255, nil;
+        if type(Page.Splashscreen.Animation) == "function" then
+            U0, V0, U1, V1, A, I = Page.Splashscreen.Animation(Page);
+        end
+        self:SetPageSplashScreen(_PlayerID, PageID, U0, V0, U1, V1, A, I);
     end
-    return Factor;
 end
 
 function ModuleBriefingSystem.Local:DisplayPageOptionsDialog(_PlayerID, _PageID)
@@ -638,8 +679,11 @@ function ModuleBriefingSystem.Local:ThroneRoomCameraControl(_PlayerID, _Page)
         Camera.ThroneRoom_SetLookAt(LX, LY, LZ);
         Camera.ThroneRoom_SetFOV(42.0);
 
+        -- Portrait
+        self:AnimatePortrait(_PlayerID);
+
         -- Splashscreen
-        self:ScrollSplashscreen(_Page);
+        self:AnimateSplashScreen(_PlayerID);
 
         -- Multiple Choice
         if self.Briefing[_PlayerID].MCSelectionIsShown then
@@ -747,23 +791,14 @@ function ModuleBriefingSystem.Local:ConvertPosition(_Table)
 end
 
 function ModuleBriefingSystem.Local:GetLERP(_PlayerID)
-    local Current = Logic.GetTime();
-    local Started, FlyTime;
     if self.Briefing[_PlayerID].CurrentAnimation then
-        Started = self.Briefing[_PlayerID].CurrentAnimation.Started;
-        FlyTime = self.Briefing[_PlayerID].CurrentAnimation.Duration;
+        return API.LERP(
+            self.Briefing[_PlayerID].CurrentAnimation.Started,
+            Logic.GetTime(),
+            self.Briefing[_PlayerID].CurrentAnimation.Duration
+        );
     end
-
-    local Factor = 1.0;
-    if FlyTime and FlyTime > 0 then
-        if Started + FlyTime > Current then
-            Factor = (Current - Started) / FlyTime;
-            if Factor > 1 then
-                Factor = 1.0;
-            end
-        end
-    end
-    return Factor;
+    return 1;
 end
 
 function ModuleBriefingSystem.Local:SkipButtonPressed(_PlayerID, _Page)
