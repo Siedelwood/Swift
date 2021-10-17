@@ -79,9 +79,9 @@ function Mission_FirstMapAction()
     API.ActivateDebugMode(true, false, true, true);
 end
 
--- > BriefingAnimationTest([[foo]], 1)
+-- > BriefingAnimationTest1([[foo]], 1)
 
-function BriefingAnimationTest(_Name, _PlayerID)
+function BriefingAnimationTest1(_Name, _PlayerID)
     local Briefing = {
         HideBorderPins = true,
         ShowSky = true,
@@ -90,38 +90,30 @@ function BriefingAnimationTest(_Name, _PlayerID)
         SkippingAllowed = true,
         DisableReturn = false,
     }
-    local AP = API.AddBriefingPages(Briefing);
+    local AP, ASP, AA = API.AddBriefingPages(Briefing);
 
-    Briefing.PageAnimations = {
-        ["Page1"] = {
-            {"pos4", -60, 2000, 35, "pos4", -30, 2000, 25, 30}
-        },
-        ["Page3"] = {
-            PurgeOld = true,
-            {"pos2", -45, 6000, 35, "pos2", -45, 3000, 35, 30},
-        }
-    }
+    ASP("Page1", "Page 1", "This is page 1!")
+    AA("Page1", "pos4", -60, 2000, 35, "pos4", -30, 2000, 25, 30);
 
-    AP{
-        Name     = "Page1",
-        Title    = "Page 1",
-        Text     = "This is page 1!",
-        Position = "pos4",
-    }
     AP{
         Title    = "Page 2",
         Text     = "This is page 2!",
         Duration = 5,
     }
+
     AP{
         Name     = "Page3",
         Title    = "Page 3",
         Text     = "This is page 3!",
     }
+    AA("Page3", true);
+    AA("Page3", "pos2", -45, 6000, 35, "pos2", -45, 3000, 35, 30);
+
     AP{
         Title    = "Page 4",
         Text     = "This is page 4!",
     }
+
     AP{
         Title    = "Page 5",
         Text     = "This is page 5!",
@@ -133,6 +125,33 @@ function BriefingAnimationTest(_Name, _PlayerID)
     end
     API.StartBriefing(Briefing, _Name, _PlayerID)
 end
+
+-- > BriefingAnimationTest2([[foo]], 1)
+
+function BriefingAnimationTest2(_Name, _PlayerID)
+    local Briefing = {
+        HideBorderPins = true,
+        ShowSky = true,
+        RestoreGameSpeed = true,
+        RestoreCamera = true,
+        SkippingAllowed = true,
+        DisableReturn = false,
+    }
+    local AP, ASP, AA = API.AddBriefingPages(Briefing);
+
+    ASP(-1, "Page 1", "This is page 1!", "pos2", true);
+    ASP(nil, "Page 2", "This is page 2!", "pos2");
+    ASP(-1, "Page 3", "This is page 3!", "pos4", true);
+    ASP("", "Page 4", "This is page 4!", "pos4");
+
+    Briefing.Starting = function(_Data)
+    end
+    Briefing.Finished = function(_Data)
+    end
+    API.StartBriefing(Briefing, _Name, _PlayerID)
+end
+
+-- > CreateTestNPCDialogQuest()
 
 function CreateTestNPCDialogQuest()
     ReplaceEntity("npc1", Entities.U_KnightSabatta);

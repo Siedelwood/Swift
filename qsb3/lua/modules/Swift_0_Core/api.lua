@@ -18,6 +18,11 @@ Swift = Swift or {};
 
 QSB.Metatable = {Init = false, Weak = {}, Metas = {}, Key = 0};
 
+QSB.DefaultNumber = -1;
+QSB.DefaultString = "";
+QSB.DefaultList = {};
+QSB.DefaultFunction = function() end;
+
 ---
 -- Installiert Swift.
 --

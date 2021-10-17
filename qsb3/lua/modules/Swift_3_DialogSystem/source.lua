@@ -32,6 +32,14 @@ ModuleDialogSystem = {
     },
 };
 
+QSB.Dialog = {
+    TIMER_PER_CHAR = 0.175,
+    CAMERA_ROTATIONDEFAULT = -45,
+    CAMERA_ZOOMDEFAULT = 0.5,
+    DLGCAMERA_ROTATIONDEFAULT = -45,
+    DLGCAMERA_ZOOMDEFAULT = 0.15,
+}
+
 -- Global ------------------------------------------------------------------- --
 
 function ModuleDialogSystem.Global:OnGameStart()
@@ -102,7 +110,7 @@ function ModuleDialogSystem.Global:NextDialog(_PlayerID)
         Dialog.PlayerID = _PlayerID;
         Dialog.CurrentPage = 0;
         self.Dialog[_PlayerID] = Dialog;
-        if Dialog.EnableGlobalInvulnerability then
+        if Dialog.EnableGlobalImmortality then
             Logic.SetGlobalInvulnerability(1);
         end
         if self.Dialog[_PlayerID].Starting then

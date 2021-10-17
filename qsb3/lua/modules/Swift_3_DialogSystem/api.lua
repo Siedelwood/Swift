@@ -30,32 +30,37 @@ You may use and modify this file unter the terms of the MIT licence.
 -- Startet einen Dialog.
 --
 -- Für einen Dialog können verschiedene spezielle Einstellungen vorgenommen
--- werden. Jede dieser Einstellungen wird mit true aktiviert.
--- Mögliche Welfer:
+-- werden.<br>Mögliche Werte:
 -- <table border="1">
 -- <tr>
 -- <td><b>Einstellung</b></td>
+-- <td><b>Typ</b></td>
 -- <td><b>Beschreibung</b></td>
 -- </tr>
 -- <tr>
 -- <td>Starting</td>
--- <td>(function) Eine optionale Funktion, die beim Start des Dialog ausgeführt wird.</td>
+-- <td>function</td>
+-- <td>(Optional) Eine Funktion, die beim Start des Dialog ausgeführt wird.</td>
 -- </tr>
 -- <tr>
 -- <td>Finished</td>
--- <td>(function) Eine optionale Funktion, die nach Beendigung des Dialog ausgeführt wird.</td>
+-- <td>function</td>
+-- <td>(Optional) Eine Funktion, die nach Beendigung des Dialog ausgeführt wird.</td>
 -- </tr>
 -- <tr>
--- <td>EnableGlobalInvulnerability</td>
--- <td>(boolean) Alle Einheiten und Gebäude werden unverwundbar solange der Dialog aktiv ist.</td>
+-- <td>EnableGlobalImmortality</td>
+-- <td>boolean</td>
+-- <td>(Optional) Alle Einheiten und Gebäude werden unverwundbar solange der Dialog aktiv ist.</td>
 -- </tr>
 -- <tr>
--- <td>DisableFog</td>
--- <td>(boolean) Der Nebel des Krieges wird für die Dauer des Dialog ausgeblendet.</td>
+-- <td>DisableFoW</td>
+-- <td>boolean</td>
+-- <td>(Optional) Der Nebel des Krieges wird für die Dauer des Dialog ausgeblendet.</td>
 -- </tr>
 -- <tr>
 -- <td>DisableBorderPins</td>
--- <td>(boolean) Die Grenzsteine werden für die Dauer des Dialog ausgeblendet.</td>
+-- <td>boolean</td>
+-- <td>(Optional) Die Grenzsteine werden für die Dauer des Dialog ausgeblendet.</td>
 -- </tr>
 -- </table>
 --
@@ -96,11 +101,9 @@ end
 -- werden um Seiten hinzuzufügen.
 --
 -- @param[type=table] _Dialog Dialog Definition
--- @return[type=function] AP
--- @return[type=function] ASP
+-- @return[type=function] <a href="#AP">AP</a>
+-- @return[type=function] <a href="#ASP">ASP</a>
 -- @within Anwenderfunktionen
--- @see AP
--- @see ASP
 --
 -- @usage local AP, ASP = API.AddPages(Briefing);
 --
@@ -127,13 +130,17 @@ function API.AddDialogPages(_Dialog)
                 return 0;
             end
             
-            if _Page.Rotation == nil and _Page.Target ~= nil then
-                local ID = GetID(_Page.Target);
-                local Orientation = Logic.GetEntityOrientation(ID) +90;
-                _Page.Rotation = Orientation;
+            if _Page.Rotation == nil then
+                if _Page.Target ~= nil then
+                    local ID = GetID(_Page.Target);
+                    local Orientation = Logic.GetEntityOrientation(ID) +90;
+                    _Page.Rotation = Orientation;
+                else
+                    _Page.Rotation = QSB.Dialog.DLGCAMERA_ROTATIONDEFAULT;
+                end
             end
             if _Page.Zoom == nil then
-                _Page.Zoom = 0.15;
+                _Page.Zoom = QSB.Dialog.DLGCAMERA_ZOOMDEFAULT;
             end
             if _Page.MC ~= nil then
                 for j= 1, #_Page.MC, 1 do
@@ -167,7 +174,7 @@ function API.AddDialogPages(_Dialog)
             Text   = Text,
             Sender = Sender,
             Target = Position,
-            Zoom   = (Dialog and 0.15) or 0.5,
+            Zoom   = (Dialog and QSB.Dialog.DLGCAMERA_ZOOMDEFAULT) or QSB.Dialog.CAMERA_ZOOMDEFAULT,
             Action = Action,
         };
     end
@@ -183,6 +190,7 @@ end
 --
 -- <h5>Dialog Page</h5>
 -- Eine Dialog Page stellt den gesprochenen Text mit und ohne Akteur dar.
+--
 -- Mögliche Felder:
 -- <table border="1">
 -- <tr>
@@ -254,7 +262,7 @@ end
 -- dem angegebenen Namen geleitet.
 --
 -- Um den Dialog zu beenden, nachdem ein Pfad beendet ist, wird eine leere
--- AP-Seite genutzt. Auf diese Weise weiß der Dialog, das es an dieser
+-- AP-Seite genutzt. Auf diese Weise weiß der Dialog, das er an dieser
 -- Stelle zuende ist.
 -- <pre>AP()</pre>
 --
@@ -275,6 +283,18 @@ end
 -- @within Dialog
 --
 -- @usage
+-- -- Eine einfache Seite
+-- AP {
+--     Name   = "StartPage",
+--     Text   = "Das ist ein Test!",
+--     Sender = -1,
+--     Target = "npc1",
+--     Zoom   = 0.1,
+-- }
+--
+-- -- Eine Seite mit Optionen
+-- -- Hier können Namen von Seiten angegeben werden oder Aktionen, welche etwas
+-- -- Ausführen und danach einen Namen zurückgeben.
 -- AP {
 --     Name   = "StartPage",
 --     Text   = "Das ist ein Test!",

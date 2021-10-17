@@ -30,6 +30,18 @@ ModuleBriefingSystem = {
     },
 };
 
+QSB.Briefing = {
+    TIMER_PER_CHAR = 0.175,
+    CAMERA_ANGLEDEFAULT = 43,
+    CAMERA_ROTATIONDEFAULT = -45,
+    CAMERA_ZOOMDEFAULT = 6500,
+    CAMERA_FOVDEFAULT = 42,
+    DLGCAMERA_ANGLEDEFAULT = 27,
+    DLGCAMERA_ROTATIONDEFAULT = -45,
+    DLGCAMERA_ZOOMDEFAULT = 1750,
+    DLGCAMERA_FOVDEFAULT = 25,
+}
+
 -- Global ------------------------------------------------------------------- --
 
 function ModuleBriefingSystem.Global:OnGameStart()
@@ -130,7 +142,7 @@ function ModuleBriefingSystem.Global:NextBriefing(_PlayerID)
         self.Briefing[_PlayerID] = Briefing;
         self:TransformAnimations(_PlayerID);
 
-        if Briefing.EnableGlobalInvulnerability then
+        if Briefing.EnableGlobalImmortality then
             Logic.SetGlobalInvulnerability(1);
         end
         if self.Briefing[_PlayerID].Starting then
@@ -154,7 +166,7 @@ function ModuleBriefingSystem.Global:TransformAnimations(_PlayerID)
     if self.Briefing[_PlayerID].PageAnimations then
         for k, v in pairs(self.Briefing[_PlayerID].PageAnimations) do
             local PageID = self:GetPageIDByName(_PlayerID, k);
-            self.Briefing[_PlayerID][PageID].Animations = self.Briefing[_PlayerID][PageID].Animations or {};
+            self.Briefing[_PlayerID][PageID].Animations = {};
             self.Briefing[_PlayerID][PageID].Animations.PurgeOld = v.PurgeOld == true;
             for i= 1, #v, 1 do               
                 -- Relaive position
@@ -466,14 +478,13 @@ end
 function ModuleBriefingSystem.Local:DisplayPageControls(_PlayerID, _PageID)
     local Page = self.Briefing[_PlayerID][_PageID];
     local SkipFlag = 1;
-    if (Page.Duration and Page.Duration > 0)
-    or Page.DisableSkipping == true
-    or Page.DisableSkipping == true then
-        SkipFlag = 0;
+
+    SkipFlag = ((Page.Duration == nil or Page.Duration == -1) and 1) or 0;
+    if Page.DisableSkipping ~= nil then
+        SkipFlag = (Page.DisableSkipping and 0) or 1;
     end
-    if  (Page.Duration == nil or Page.Duration == -1)
-    and not Page.MC then
-        SkipFlag = 1;
+    if Page.MC ~= nil then
+        SkipFlag = 0;
     end
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", SkipFlag);
 end
