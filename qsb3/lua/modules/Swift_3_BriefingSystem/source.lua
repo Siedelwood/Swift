@@ -16,6 +16,7 @@ ModuleBriefingSystem = {
     Global = {
         Briefing = {},
         BriefingQueue = {},
+        BriefingCounter = 0,
     },
     Local = {
         Briefing = {},
@@ -112,6 +113,8 @@ end
 
 function ModuleBriefingSystem.Global:StartBriefing(_Name, _PlayerID, _Data)
     self.BriefingQueue[_PlayerID] = self.BriefingQueue[_PlayerID] or {};
+    self.BriefingCounter = (self.BriefingCounter or 0) +1;
+    _Data.BriefingName = "Briefing #" .. self.BriefingCounter;
     table.insert(self.BriefingQueue[_PlayerID], {_Name, _Data});
 end
 

@@ -239,6 +239,10 @@ function ModuleLifestockBreeding.Global:AnimalGrouthController()
                     local Scale = self:GetScale(v[1]);
                     if Scale < 1 then
                         self:SetScale(v[1], Scale + 0.1);
+                        local GoodType = Logic.GetResourceDoodadGoodAmount(GetID(v[1]));
+                        if GoodType ~= 0 then
+                            Logic.SetResourceDoodadGoodAmount(GetID(v[1]), 0);
+                        end
                     else
                         self.AnimalChildren[k] = nil;
                     end

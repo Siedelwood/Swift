@@ -15,6 +15,7 @@ ModuleDialogSystem = {
 
     Global = {
         DialogPageCounter = 0,
+        DialogCounter = 0,
         Dialog = {},
         DialogQueue = {},
     },
@@ -79,6 +80,8 @@ end
 
 function ModuleDialogSystem.Global:StartDialog(_Name, _PlayerID, _Data)
     self.DialogQueue[_PlayerID] = self.DialogQueue[_PlayerID] or {};
+    self.DialogCounter = (self.DialogCounter or 0) +1;
+    _Data.DialogName = "Dialog #" .. self.DialogCounter;
     table.insert(self.DialogQueue[_PlayerID], {_Name, _Data});
 end
 

@@ -88,9 +88,29 @@ You may use and modify this file unter the terms of the MIT licence.
 -- end
 --
 function API.StartDialog(_Dialog, _Name, _PlayerID)
+    if GUI then
+        return;
+    end
     local PlayerID = _PlayerID;
     if not PlayerID and not Framework.IsNetworkGame() then
         PlayerID = QSB.HumanPlayerID;
+    end
+    if type(_Dialog) ~= "table" then
+        local Name = "Dialog #" ..(ModuleDialogSystem.Global.DialogCounter +1);
+        error("API.StartDialog (" ..Name.. "): _Dialog must be a table!");
+        return;
+    end
+    if #_Dialog == 0 then
+        local Name = "Dialog #" ..(ModuleDialogSystem.Global.DialogCounter +1);
+        error("API.StartDialog (" ..Name.. "): _Dialog does not contain pages!");
+        return;
+    end
+    for i=1, #_Dialog do
+        if not _Dialog[i].__Legit then
+            local Name = "Dialog #" ..(ModuleDialogSystem.Global.DialogCounter +1);
+            error("API.StartDialog (" ..Name.. ", Page #" ..i.. "): Page is not initialized!");
+            return;
+        end
     end
     ModuleDialogSystem.Global:StartDialog(_Name, PlayerID, _Dialog);
 end
@@ -116,13 +136,12 @@ function API.AddDialogPages(_Dialog)
     local AP = function(_Page)
         if type(_Page) == "table" then
             if _Page.Position and _Page.Target then
-                error(string.format(
-                    "AP (Dialog System): (Page %d) Position and Target can not be used both at the same time!",
-                    (#_Dialog +1)
-                ));
+                local Name = "Dialog #" ..(ModuleDialogSystem.Global.DialogCounter +1);
+                error("AF (" ..Name.. ", Page #" ..(#_Dialog+1).. "): Position and Target can not be used both at the same time!");
                 return;
             end
             
+            _Page.__Legit = true;
             _Page.GetSelected = function(self)
                 if self.MC then
                     return self.MC.Selected;

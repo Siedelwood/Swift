@@ -122,23 +122,28 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 function API.StartBriefing(_Briefing, _Name, _PlayerID)
     if GUI then
-        return -1;
+        return;
     end
     local PlayerID = _PlayerID;
     if not PlayerID and not Framework.IsNetworkGame() then
         PlayerID = QSB.HumanPlayerID;
     end
     if type(_Briefing) ~= "table" then
-        error("_Briefing must be a table!");
-        return -1;
+        local Name = "Briefing #" ..(ModuleBriefingSystem.Global.BriefingCounter +1);
+        error("API.StartBriefing (" ..Name.. "): _Briefing must be a table!");
+        return;
     end
     if #_Briefing == 0 then
-        error("API.StartBriefing: _Briefing does not contain pages!");
-        return -1;
+        local Name = "Briefing #" ..(ModuleBriefingSystem.Global.BriefingCounter +1);
+        error("API.StartBriefing (" ..Name.. "): _Briefing does not contain pages!");
+        return;
     end
-    -- Returning is deactivated by default.
-    if _Briefing.DisableReturn == nil then
-        _Briefing.DisableReturn = true;
+    for i=1, #_Briefing do
+        if not _Briefing[i].__Legit then
+            local Name = "Briefing #" ..(ModuleBriefingSystem.Global.BriefingCounter +1);
+            error("API.StartBriefing (" ..Name.. ", Page #" ..i.. "): Page is not initialized!");
+            return;
+        end
     end
     ModuleBriefingSystem.Global:StartBriefing(_Name, PlayerID, _Briefing);
 end
@@ -279,7 +284,7 @@ function API.AddBriefingPages(_Briefing)
             end
         end
         if not PageID then
-            error("AA (Briefing System): Can not find name or ID!");
+            error("AA (Briefing System): Can not find name or ID '".. tostring(_Identifier).. "'!");
             return;
         end
         if not _Briefing.PageAnimations[_Identifier] then

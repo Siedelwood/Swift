@@ -81,3 +81,17 @@ function Mission_FirstMapAction()
     AddGood(Goods.G_Carcass, 100, 1);
     AddGood(Goods.G_Grain, 100, 1);
 end
+
+function PrintAnimalValues()
+    local Animals = {Logic.GetEntitiesInCategory(1, EntityCategories.SheepPasture)};
+    if Animals[1] then
+        Framework.WriteToLog("\n\n----- SV Print -----\n\n");
+        Framework.WriteToLog("Entity: " ..Animals[1]);
+        for i= -100, 100, 1 do
+            local IntValue = API.GetInteger(Animals[1], i);
+            local FloatValue = API.GetFloat(Animals[1], i);
+            Framework.WriteToLog(string.format("%4d: %d, %d", i, IntValue, FloatValue));
+        end
+        Framework.WriteToLog("\n\n----- SV Print -----\n\n");
+    end
+end
