@@ -133,7 +133,14 @@ function ModuleInputOutputCore.Local:OverrideQuicksave()
         or XGUIEng.IsWidgetShownEx("/InGame/Dialog") == 1 then
             return;
         end
-        OpenDialog("{cr}{cr}" .. XGUIEng.GetStringTableText("UI_Texts/Saving_center") .. "{cr}{cr}" .. "QuickSave", XGUIEng.GetStringTableText("UI_Texts/MainMenuSaveGame_center"))
+        -- OpenDialog(
+        --     XGUIEng.GetStringTableText("UI_Texts/Saving_center") .. "{cr}{cr}" .. "QuickSave",
+        --     XGUIEng.GetStringTableText("UI_Texts/MainMenuSaveGame_center")
+        -- );
+        ModuleInputOutputCore.Local:OpenDialog(
+            XGUIEng.GetStringTableText("UI_Texts/MainMenuSaveGame_center"),
+            XGUIEng.GetStringTableText("UI_Texts/Saving_center") .. "{cr}{cr}" .. "QuickSave"
+        );
         XGUIEng.ShowWidget("/InGame/Dialog/Ok", 0);
         Dialog_SetUpdateCallback(KeyBindings_SaveGame_Delayed);
     end
@@ -395,8 +402,6 @@ function ModuleInputOutputCore.Local:PrepareInputVariable()
     GUI_Chat.Confirm_Orig_ModuleInputOutputCore = GUI_Chat.Confirm_Orig_ModuleInputOutputCore or GUI_Chat.Confirm;
 
     GUI_Chat.Confirm = function()
-        Input.GameMode();
-        Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
         XGUIEng.ShowWidget("/InGame/Root/Normal/ChatInput", 0);
         if not ModuleDisplayCore or not ModuleDisplayCore.Local.PauseScreenShown then
             XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 0);
@@ -404,6 +409,8 @@ function ModuleInputOutputCore.Local:PrepareInputVariable()
         local ChatMessage = XGUIEng.GetText("/InGame/Root/Normal/ChatInput/ChatInput");
         g_Chat.JustClosed = 1;
         ModuleInputOutputCore.Local:LocalToGlobal(ChatMessage);
+        Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
+        Input.GameMode();
     end
 
     GUI_Chat.Abort = function()

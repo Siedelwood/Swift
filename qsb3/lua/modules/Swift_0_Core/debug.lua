@@ -124,11 +124,11 @@ function Swift:InitalizeQsbDebugShell()
 
     GUI_Chat.Confirm = function()
         local MotherWidget = "/InGame/Root/Normal/ChatInput";
-        Input.GameMode();
         XGUIEng.ShowWidget(MotherWidget, 0);
         Swift.m_ChatBoxInput = XGUIEng.GetText(MotherWidget.. "/ChatInput");
         g_Chat.JustClosed = 1;
         Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
+        Input.GameMode();
     end
 
     QSB_DEBUG_InputBoxJob = function()

@@ -162,11 +162,11 @@ end
 --
 -- @usage
 -- -- Wenn nur AP benötigt wird.
--- local AP = API.AddPages(Briefing);
+-- local AP = API.AddBriefingPages(Briefing);
 -- -- Wenn zusätzlich ASP benötigt wird.
--- local AP, ASP = API.AddPages(Briefing);
+-- local AP, ASP = API.AddBriefingPages(Briefing);
 -- -- Wenn auch die Kurzschreibweise für Animationen gebraucht wird.
--- local AP, ASP, AA = API.AddPages(Briefing);
+-- local AP, ASP, AA = API.AddBriefingPages(Briefing);
 --
 function API.AddBriefingPages(_Briefing)
     _Briefing.GetPage = function(self, _PlayerID, _NameOrID)
