@@ -295,17 +295,7 @@ end
 function ModuleNpcInteraction.Global:GetClosestKnight(_EntityID, _PlayerID)
     local KnightIDs = {};
     Logic.GetKnights(_PlayerID, KnightIDs);
-
-    local ClosestKnightID = 0;
-    local ClosestKnightDistance = Logic.WorldGetSize();
-    for i= 1, #KnightIDs, 1 do
-        local DistanceBetween = Logic.GetDistanceBetweenEntities(KnightIDs[i], _EntityID);
-        if DistanceBetween < ClosestKnightDistance then
-            ClosestKnightDistance = DistanceBetween;
-            ClosestKnightID = KnightIDs[i];
-        end
-    end
-    return ClosestKnightID;
+    return API.GetClosestToTarget(_EntityID, KnightIDs);
 end
 
 function ModuleNpcInteraction.Global:DialogTriggerController()
