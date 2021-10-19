@@ -476,8 +476,6 @@ end
 --
 -- Ist die Eingabe bereits ein Boolean wird es direkt zurückgegeben.
 --
--- <p><b>Alias:</b> AcceptAlternativeBoolean</p>
---
 -- @param _Value Wahrheitswert
 -- @return[type=boolean] Wahrheitswert
 -- @within Sonstige
@@ -496,8 +494,6 @@ AcceptAlternativeBoolean = API.ToBoolean;
 --
 -- <b>Hinweis</b>: Es wird manuell gerundet um den Rundungsfehler in der
 -- History Edition zu umgehen.
---
--- <p><b>Alias:</b> Round</p>
 --
 -- @param[type=string] _Value         Zu rundender Wert
 -- @param[type=string] _DecimalDigits Maximale Dezimalstellen
@@ -565,8 +561,6 @@ end
 -- Gibt die ID des Quests mit dem angegebenen Namen zurück. Existiert der
 -- Quest nicht, wird nil zurückgegeben.
 --
--- <p><b>Alias:</b> GetQuestID</p>
---
 -- @param[type=string] _Name Name des Quest
 -- @return[type=number] ID des Quest
 -- @within Quest
@@ -589,8 +583,6 @@ GetQuestID = API.GetQuestID;
 -- Prüft, ob zu der angegebenen ID ein Quest existiert. Wird ein Questname
 -- angegeben wird dessen Quest-ID ermittelt und geprüft.
 --
--- <p><b>Alias:</b> IsValidQuest</p>
---
 -- @param[type=number] _QuestID ID oder Name des Quest
 -- @return[type=boolean] Quest existiert
 -- @within Quest
@@ -602,8 +594,6 @@ IsValidQuest = API.IsValidQuest;
 
 ---
 -- Prüft den angegebenen Questnamen auf verbotene Zeichen.
---
--- <p><b>Alias:</b> IsValidQuestName</p>
 --
 -- @param[type=number] _Name Name des Quest
 -- @return[type=boolean] Name ist gültig
@@ -618,8 +608,6 @@ IsValidQuestName = API.IsValidQuestName;
 -- Lässt den Quest fehlschlagen.
 --
 -- Der Status wird auf Over und das Resultat auf Failure gesetzt.
---
--- <p><b>Alias:</b> FailQuestByName</p>
 --
 -- @param[type=string]  _QuestName Name des Quest
 -- @param[type=boolean] _NoMessage Meldung nicht anzeigen
@@ -649,8 +637,6 @@ FailQuestByName = API.FailQuest;
 -- Alle Änderungen an Standardbehavior müssen hier berücksichtigt werden. Wird
 -- ein Standardbehavior in einem Bundle verändert, muss auch diese Funktion
 -- angepasst oder überschrieben werden.
---
--- <p><b>Alias:</b> RestartQuestByName</p>
 --
 -- @param[type=string]  _QuestName Name des Quest
 -- @param[type=boolean] _NoMessage Meldung nicht anzeigen
@@ -767,8 +753,6 @@ RestartQuestByName = API.RestartQuest;
 --
 -- Dabei ist es unerheblich, ob die Bedingungen zum Start erfüllt sind.
 --
--- <p><b>Alias:</b> StartQuestByName</p>
---
 -- @param[type=string]  _QuestName Name des Quest
 -- @param[type=boolean] _NoMessage Meldung nicht anzeigen
 -- @within Quest
@@ -794,8 +778,6 @@ StartQuestByName = API.StartQuest;
 -- Der Status wird auf Over und das Resultat auf Interrupt gesetzt. Sind Marker
 -- gesetzt, werden diese entfernt.
 --
--- <p><b>Alias:</b> StopQuestByName</p>
---
 -- @param[type=string]  _QuestName Name des Quest
 -- @param[type=boolean] _NoMessage Meldung nicht anzeigen
 -- @within Quest
@@ -818,8 +800,6 @@ StopQuestByName = API.StopQuest;
 -- Gewinnt den Quest.
 --
 -- Der Status wird auf Over und das Resultat auf Success gesetzt.
---
--- <p><b>Alias:</b> WinQuestByName</p>
 --
 -- @param[type=string]  _QuestName Name des Quest
 -- @param[type=boolean] _NoMessage Meldung nicht anzeigen
@@ -852,8 +832,6 @@ end
 -- <b>Hinweis</b>: Die Entity-ID ändert sich und beim Ersetzen von
 -- Spezialgebäuden kann eine Niederlage erfolgen.
 --
--- <p><b>Alias:</b> ReplaceEntity</p>
---
 -- @param _Entity      Entity (Skriptname oder ID)
 -- @param[type=number] _Type     Neuer Typ
 -- @param[type=number] _NewOwner (optional) Neuer Besitzer
@@ -883,8 +861,6 @@ ReplaceEntity = API.ReplaceEntity;
 ---
 -- Gibt den Typen des Entity zurück.
 --
--- <b>Alias</b>: GetType
---
 -- @param _Entity Entity (Scriptname oder ID)
 -- @return[type=number] Typ des Entity
 -- @within Entity
@@ -902,8 +878,6 @@ GetType = API.GetEntityType
 ---
 -- Gibt den Typnamen des Entity zurück.
 --
--- <b>Alias</b>: GetTypeName
---
 -- @param _Entity Entity (Scriptname oder ID)
 -- @return[type=string] Typname des Entity
 -- @within Entity
@@ -919,8 +893,6 @@ GetTypeName = API.GetEntityTypeName;
 
 ---
 -- Setzt das Entity oder das Battalion verwundbar oder unverwundbar.
---
--- <b>Alias</b>: SetVulnerable
 --
 -- @param               _Entity Entity (Scriptname oder ID)
 -- @param[type=boolean] _Flag Verwundbar
@@ -953,8 +925,6 @@ end
 ---
 -- Rotiert ein Entity, sodass es zum Ziel schaut.
 --
--- <p><b>Alias:</b> LookAt</p>
---
 -- @param _entity         Entity (Skriptname oder ID)
 -- @param _entityToLookAt Ziel (Skriptname oder ID)
 -- @param[type=number]    _offsetEntity Winkel Offset
@@ -983,8 +953,6 @@ LookAt = API.LookAt;
 ---
 -- Lässt zwei Entities sich gegenseitig anschauen.
 --
--- <p><b>Alias:</b> ConfrontEntities</p>
---
 -- @param _entity         Entity (Skriptname oder ID)
 -- @param _entityToLookAt Ziel (Skriptname oder ID)
 -- @within Entity
@@ -1001,8 +969,6 @@ ConfrontEntities = API.LookAt;
 -- Skriptnamen oder Positionstables angegeben werden.
 --
 -- Wenn die Distanz nicht bestimmt werden kann, wird -1 zurückgegeben.
---
--- <p><b>Alias:</b> GetDistance</p>
 --
 -- @param _pos1 Erste Vergleichsposition (Skriptname, ID oder Positions-Table)
 -- @param _pos2 Zweite Vergleichsposition (Skriptname, ID oder Positions-Table)
@@ -1030,8 +996,6 @@ GetDistance = API.GetDistance;
 ---
 -- Sendet einen Handelskarren zu dem Spieler. Startet der Karren von einem
 -- Gebäude, wird immer die Position des Eingangs genommen.
---
--- <p><b>Alias:</b> SendCart</p>
 --
 -- @param _position                        Position (Skriptname oder Positionstable)
 -- @param[type=number] _player             Zielspieler
@@ -1111,8 +1075,6 @@ SendCart = API.SendCart;
 -- Setzt die Gesundheit des Entity. Optional kann die Gesundheit relativ zur
 -- maximalen Gesundheit geändert werden.
 --
--- <b>Alias</b>: SetHealth
---
 -- @param               _Entity   Entity (Scriptname oder ID)
 -- @param[type=number]  _Health   Neue aktuelle Gesundheit
 -- @param[type=boolean] _Relative (Optional) Relativ zur maximalen Gesundheit
@@ -1157,8 +1119,6 @@ SetHealth = API.ChangeEntityHealth;
 ---
 -- Gibt alle Kategorien zurück, zu denen das Entity gehört.
 --
--- <b>Alias</b>: GetCategories
---
 -- @param              _Entity Entity (Skriptname oder ID)
 -- @return[type=table] Kategorien des Entity
 -- @within Entity
@@ -1181,8 +1141,6 @@ GetCategories = API.GetEntityCategoyList;
 
 ---
 -- Prüft, ob das Entity mindestens eine der Kategorien hat.
---
--- <b>Alias</b>: IsInCategory
 --
 -- @param              _Entity Entity (Skriptname oder ID)
 -- @param[type=number] ...     Liste mit Kategorien
@@ -1207,8 +1165,6 @@ IsInCategory = API.IsEntityInAtLeastOneCategory;
 ---
 -- Gibt die aktuelle Tasklist des Entity zurück.
 --
--- <b>Alias</b>: GetTask
---
 -- @param _Entity Entity (Scriptname oder ID)
 -- @return[type=number] Tasklist
 -- @within Entity
@@ -1226,8 +1182,6 @@ GetTask = API.GetEntityTaskList;
 
 ---
 -- Weist dem Entity ein Neues Model zu.
---
--- <b>Alias</b>: SetModel
 --
 -- @param              _Entity  Entity (Scriptname oder ID)
 -- @param[type=number] _NewModel Neues Model
@@ -1262,8 +1216,6 @@ SetModel = API.SetEntityModel;
 ---
 -- Setzt die aktuelle Tasklist des Entity.
 --
--- <b>Alias</b>: SetTask
---
 -- @param              _Entity  Entity (Scriptname oder ID)
 -- @param[type=number] _NewTask Neuer Task
 -- @within Entity
@@ -1288,8 +1240,6 @@ SetTask = API.SetEntityTaskList;
 ---
 -- Gibt die Ausrichtung des Entity zurück.
 --
--- <b>Alias</b>: GetOrientation
---
 -- @param               _Entity  Entity (Scriptname oder ID)
 -- @return[type=number] Ausrichtung in Grad
 -- @within Entity
@@ -1306,8 +1256,6 @@ GetOrientation = API.GetEntityOrientation;
 
 ---
 -- Setzt die Ausrichtung des Entity.
---
--- <b>Alias</b>: SetOrientation
 --
 -- @param               _Entity  Entity (Scriptname oder ID)
 -- @param[type=number] _Orientation Neue Ausrichtung
@@ -1334,8 +1282,6 @@ SetOrientation = API.SetEntityOrientation;
 -- Gibt die Menge an Rohstoffen des Entity zurück. Optional kann
 -- eine neue Menge gesetzt werden.
 --
--- <b>Alias</b>: GetResource
---
 -- @param _Entity  Entity (Scriptname oder ID)
 -- @return[type=number] Menge an Rohstoffen
 -- @within Entity
@@ -1352,8 +1298,6 @@ GetResource = API.GetResourceAmount
 
 ---
 -- Setzt die Menge an Rohstoffen des Entity.
---
--- <b>Alias</b>: SetResource
 --
 -- @param              _Entity  Entity (Scriptname oder ID)
 -- @param[type=number] _Amount Menge an Rohstoffen
@@ -1386,8 +1330,6 @@ SetResource = API.SetResourceAmount;
 -- IDs verwendet werden. Wenn das Entity nicht gefunden wird, wird eine
 -- Tabelle mit XYZ = 0 zurückgegeben.
 --
--- <p><b>Alias:</b> GetPosition</p>
---
 -- @param _Entity Entity (Skriptname oder ID)
 -- @return[type=table] Positionstabelle {X= x, Y= y, Z= z}
 -- @within Position
@@ -1411,8 +1353,6 @@ GetPosition = API.LocateEntity;
 
 ---
 -- Bestimmt die Durchschnittsposition mehrerer Entities.
---
--- <p><b>Alias:</b> GetAveragePosition</p>
 --
 -- @param ... Positionen mit Komma getrennt
 -- @return[type=table] Durchschnittsposition aller Positionen
@@ -1561,8 +1501,6 @@ end
 -- Das ist der Fall bei negativen Werten oder Werten, welche die Größe
 -- der Welt übersteigen.
 --
--- <p><b>Alias:</b> IsValidPosition</p>
---
 -- @param[type=table] _pos Positionstable {X= x, Y= y}
 -- @return[type=boolean] Position ist valide
 -- @within Position
@@ -1588,8 +1526,6 @@ IsValidPosition = API.ValidatePosition;
 ---
 -- Gibt die Mänge an Soldaten zurück, die dem Entity unterstehen
 --
--- <b>Alias</b>: CoundSoldiers
---
 -- @param _Entity Entity (Skriptname oder ID)
 -- @return[type=number] Menge an Soldaten
 -- @within Gruppe
@@ -1610,8 +1546,6 @@ CoundSoldiers = API.CountSoldiersOfGroup;
 
 ---
 -- Gibt die IDs aller Soldaten zurück, die zum Battalion gehören.
---
--- <b>Alias</b>: GetSoldiers
 --
 -- @param _Entity Entity (Skriptname oder ID)
 -- @return[type=table] Liste aller Soldaten
@@ -1635,8 +1569,6 @@ GetSoldiers = API.GetGroupSoldiers;
 ---
 -- Gibt den Leader des Soldaten zurück.
 --
--- <b>Alias</b>: GetLeader
---
 -- @param _Entity Entity (Skriptname oder ID)
 -- @return[type=number] Menge an Soldaten
 -- @within Gruppe
@@ -1656,8 +1588,6 @@ GetLeader = API.GetGroupLeader;
 
 ---
 -- Heilt das Entity um die angegebene Menge an Gesundheit.
---
--- <b>Alias</b>: HealEntity
 --
 -- @param               _Entity   Entity (Scriptname oder ID)
 -- @param[type=number]  _Amount   Geheilte Gesundheit
@@ -1684,8 +1614,6 @@ HealEntity = API.GroupHeal;
 -- Verwundet ein Entity oder ein Battallion um die angegebene
 -- Menge an Schaden. Bei einem Battalion wird der Schaden solange
 -- auf Soldaten aufgeteilt, bis er komplett verrechnet wurde.
---
--- <b>Alias</b>: HurtEntity
 --
 -- @param               _Entity   Entity (Scriptname oder ID)
 -- @param[type=number] _Damage   Schaden
