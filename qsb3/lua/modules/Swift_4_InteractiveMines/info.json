@@ -10,6 +10,6 @@
     ],
     "dependencies": [
         "Swift_0_Core",
-        "Swift_2_Interaction"
+        "Swift_2_ObjectInteraction"
     ]
 }

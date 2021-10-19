@@ -1,5 +1,5 @@
 --[[
-Swift_3_InteractiveMines/Source
+Swift_4_InteractiveMines/Source
 
 Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
 
@@ -15,13 +15,6 @@ ModuleInteractiveMines = {
 
     Global = {
         Mines = {},
-        Lambda = {
-            IO = {
-                MineCondition = {},
-                MineAction = {},
-                MineDepleted = {},
-            },
-        },
     },
     Local = {},
     -- This is a shared structure but the values are asynchronous!
@@ -42,35 +35,73 @@ ModuleInteractiveMines = {
 -- Global ------------------------------------------------------------------- --
 
 function ModuleInteractiveMines.Global:OnGameStart()
-    local MineCondition = function(_ScriptName, _EntityID, _PlayerID)
-        return true;
-    end
-    self.Lambda.IO.MineCondition.Default = MineCondition;
-    
-    local MineAction = function(_ScriptName, _EntityID, _PlayerID)
-    end
-    self.Lambda.IO.MineAction.Default = MineAction;
-    
-    local MineDepleted = function(_ScriptName, _EntityID, _PlayerID)
-    end
-    self.Lambda.IO.MineDepleted.Default = MineDepleted;
-    
     API.StartHiResJob(function()
         ModuleInteractiveMines.Global:ControlIOMines();
     end);
 end
 
-function ModuleInteractiveMines.Global:SetObjectLambda(_ScriptName, _FieldName, _Lambda)
-    local Lambda = _Lambda;
-    if Lambda ~= nil and type(Lambda) ~= "function" then
-        Lambda = function()
-            return _Lambda;
-        end;
+function ModuleInteractiveMines.Global:OnEvent(_ID, _Event, _ScriptName)
+    if _ID == QSB.ScriptEvents.ObjectReset then
+        if IO[_ScriptName] and IO[_ScriptName].IsInteractiveMine then
+            self:ResetIOMine(_ScriptName, IO[_ScriptName].Type);
+        end
     end
-    self.Lambda.IO[_FieldName][_ScriptName] = Lambda;
 end
 
-function ModuleInteractiveMines.Global:CreateIOMine(_Position, _Type, _Costs, _NotRefillable, _Condition, _CreationCallback, _CallbackDepleted)
+function ModuleInteractiveMines.Global:CreateIOMine(
+    _Position,
+    _Type,
+    _Costs,
+    _NotRefillable,
+    _Condition,
+    _CreationCallback,
+    _CallbackDepleted
+)
+    local BlockerID = self:ResetIOMine(_Position, _Type);
+    local Icon = {14, 10};
+    if g_GameExtraNo >= 1 then
+        if IO[_ScriptName].Type == Entities.R_IronMine then
+            Icon = {14, 10};
+        end
+        if IO[_ScriptName].Type == Entities.R_StoneMine then
+            Icon = {14, 10};
+        end
+    end
+
+    CreateObject {
+        Name                 = _Position,
+        IsInteractiveMine    = true,
+        Title                = ModuleInteractiveMines.Shared.Text.Title,
+        Text                 = ModuleInteractiveMines.Shared.Text.Text,
+        Texture              = Icon,
+        Type                 = _Type,
+        Crumbles             = _NotRefillable,
+        Costs                = _Costs,
+        InvisibleBlocker     = BlockerID,
+        Distance             = 1500,
+        BuildCondition       = _Condition,
+        ActionDepleted       = _CallbackDepleted,
+        ActionCreated        = _CreationCallback,
+        Condition            = function(_Data)
+            if _Data.BuildCondition == nil then
+                return _Data:BuildCondition();
+            end
+            return true;
+        end,
+        Action               = function(_Data, _KnightID, _PlayerID)
+            ReplaceEntity(_Data.Name, _Data.Type);
+            DestroyEntity(_Data.InvisibleBlocker)
+            if _Data.ActionCreated == nil then
+                _Data:ActionCreated(_KnightID, _PlayerID);
+            end
+        end
+    };
+end
+
+function ModuleInteractiveMines.Global:ResetIOMine(_ScriptName, _Type)
+    if IO[_ScriptName] then
+        DestroyEntity(IO[_ScriptName].InvisibleBlocker);
+    end
     local EntityID = ReplaceEntity(_Position, Entities.XD_ScriptEntity);
     local Model = Models.Doodads_D_SE_ResourceIron_Wrecked;
     if _Type == Entities.R_StoneMine then
@@ -81,116 +112,29 @@ function ModuleInteractiveMines.Global:CreateIOMine(_Position, _Type, _Costs, _N
     local x, y, z = Logic.EntityGetPos(EntityID);
     local BlockerID = Logic.CreateEntity(Entities.D_ME_Rock_Set01_B_07, x, y, 0, 0);
     Logic.SetVisible(BlockerID, false);
-
-    CreateObject {
-        Name                 = _Position,
-        Type                 = _Type,
-        Crumbles             = _NotRefillable,
-        Costs                = _Costs,
-        InvisibleBlocker     = BlockerID,
-        Distance             = 1500,
-    };
-
-    API.SetObjectHeadline(_Position, ModuleInteractiveMines.Shared.Text.Title);
-    API.SetObjectDescription(_Position, ModuleInteractiveMines.Shared.Text.Text);
-    API.SetIcon(_Position, function(_ScriptName)
-        local Icon = {14, 10}
-        if g_GameExtraNo >= 1 then
-            if IO[_ScriptName].m_Data.Type == Entities.R_IronMine then
-                Icon = {14, 10};
-            end
-            if IO[_ScriptName].m_Data.Type == Entities.R_StoneMine then
-                Icon = {14, 10};
-            end
-        end
-        return Icon;
-    end);
-    API.SetObjectCondition(_Position, function(_Data)
-        return ModuleInteractiveMines.Global:ConditionBuildIOMine(_Data.m_Name);
-    end);
-    API.SetObjectCallback(_Position, function(_Data, _KnightID, _PlayerID)
-        ModuleInteractiveMines.Global:ActionBuildIOMine(_Data.m_Name, _KnightID, _PlayerID);
-    end);
-    self:SetMineConditionLambda(_Position, _Condition);
-    self:SetMineActionLambda(_Position, _CreationCallback);
-    self:SetMineDepletedLambda(_Position, _CallbackDepleted);
-end
-
-function ModuleInteractiveMines.Global:CreateIOIronMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)
-    assert(IsExisting(_Position));
-    if _Cost1Type then
-        assert(API.TraverseTable(_Cost1Type, Goods));
-        assert(type(_Cost1Amount) == "number");
+    if IO[_ScriptName] then
+        IO[_ScriptName].InvisibleBlocker = BlockerID;
     end
-    if _Cost2Type then
-        assert(API.TraverseTable(_Cost2Type, Goods));
-        assert(type(_Cost2Amount) == "number");
-    end
-
-    self:CreateIOMine(
-        _Position, Entities.R_IronMine,
-        {_Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount},
-        _NotRefillable
-    );
-end
-
-function ModuleInteractiveMines.Global:CreateIOStoneMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)
-    assert(IsExisting(_Position));
-    if _Cost1Type then
-        assert(API.TraverseTable(_Cost1Type, Goods));
-        assert(type(_Cost1Amount) == "number");
-    end
-    if _Cost2Type then
-        assert(API.TraverseTable(_Cost2Type, Goods));
-        assert(type(_Cost2Amount) == "number");
-    end
-
-    self:CreateIOMine(
-        _Position, Entities.R_StoneMine,
-        {_Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount},
-        _NotRefillable
-    );
-end
-
-function ModuleInteractiveMines.Global:ConditionBuildIOMine(_ScriptName)
-    local Condition = self.Lambda.IO.MineCondition[_ScriptName];
-    if Condition == nil then
-        Condition = self.Lambda.IO.MineCondition.Default;
-    end
-    return Condition(IO[_ScriptName]);
-end
-
-function ModuleInteractiveMines.Global:ActionBuildIOMine(_ScriptName, _KnightID, _PlayerID)
-    ReplaceEntity(_ScriptName, IO[_ScriptName].m_Data.Type);
-    DestroyEntity(IO[_ScriptName].m_Data.InvisibleBlocker);
-    
-    local Action = self.Lambda.IO.MineAction[_ScriptName];
-    if Action == nil then
-        Action = self.Lambda.IO.MineAction.Default;
-    end
-    Action(IO[_ScriptName], _KnightID, _PlayerID);
+    return BlockerID;
 end
 
 function ModuleInteractiveMines.Global:ControlIOMines()
     for k, v in pairs(IO) do
         local EntityID = GetID(k);
-        if Logic.GetResourceDoodadGoodType(EntityID) ~= 0 then
+        if v.IsInteractiveMine and Logic.GetResourceDoodadGoodType(EntityID) ~= 0 then
             if Logic.GetResourceDoodadGoodAmount(EntityID) == 0 then
-                if v.m_Data.Crumbles == true then
+                if v.Crumbles == true then
                     local Model = Models.Doodads_D_SE_ResourceIron_Wrecked;
-                    if v.m_Data.Type == Entities.R_StoneMine then
+                    if v.Type == Entities.R_StoneMine then
                         Model = Models.R_ResorceStone_Scaffold_Destroyed;
                     end
                     EntityID = ReplaceEntity(EntityID, Entities.XD_ScriptEntity);
                     Logic.SetVisible(EntityID, true);
                     Logic.SetModel(EntityID, Model);
                 end
-                
-                local DepletedAction = self.Lambda.IO.MineDepleted[k];
-                if DepletedAction == nil then
-                    DepletedAction = self.Lambda.IO.MineDepleted.Default;
+                if v.ActionDepleted then
+                    v:ActionDepleted();
                 end
-                DepletedAction(IO[k]);
             end
         end
     end

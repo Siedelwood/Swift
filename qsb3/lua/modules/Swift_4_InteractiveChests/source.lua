@@ -1,5 +1,5 @@
 --[[
-Swift_2_InteractionCore/Source
+Swift_4_InteractionChests/Source
 
 Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
 
@@ -8,9 +8,9 @@ You may use and modify this file unter the terms of the MIT licence.
 (See https://en.wikipedia.org/wiki/MIT_License)
 ]]
 
-ModuleteractiveChests = {
+ModuleInteractiveChests = {
     Properties = {
-        Name = "ModuleteractiveChests",
+        Name = "ModuleInteractiveChests",
     },
 
     Global = {
@@ -27,7 +27,7 @@ ModuleteractiveChests = {
                 en = "Treasure Chest",
             },
             Text = {
-                de = "Diese Truhe enthält einen geheimen Schatz. Öffnet sie um den Schatz zu bergen.",
+                de = "Diese Truhe enthält einen geheimen Schatz. Öffnet sie, um den Schatz zu bergen.",
                 en = "This chest contains a secred treasure. Open it to salvage the treasure.",
             },
         },
@@ -38,7 +38,7 @@ ModuleteractiveChests = {
             },
             Text = {
                 de = "Ihr habt einen geheimen Schatz entdeckt. Beeilt Euch und beansprucht ihn für Euch!",
-                en = "You have discovered a secred treasure. Be quick to claim it, before it is to late!",
+                en = "You have discovered a secred treasure. Be quick to claim it before it is to late!",
             },
         }
     }
@@ -48,18 +48,29 @@ QSB.NonPlayerCharacterObjects = {};
 
 -- Global Script ------------------------------------------------------------ --
 
-function ModuleteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _Callback, _DirectPay, _NoModelChange)
+function ModuleInteractiveChests.Global:OnGameStart()
+end
+
+function ModuleInteractiveChests.Global:OnEvent(_ID, _Event, _ScriptName)
+    if _ID == QSB.ScriptEvents.ObjectReset then
+        if IO[_ScriptName] and IO[_ScriptName].IsInteractiveChest then
+            self:ResetIOChest(_ScriptName, IO[_ScriptName].Type);
+        end
+    end
+end
+
+function ModuleInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _Callback, _DirectPay, _NoModelChange)
     _Min = math.floor((_Min ~= nil and _Min > 0 and _Min) or 1);
     _Max = math.floor((_Max ~= nil and _Max > 1 and _Max) or 2);
     if not _Callback then
-        _Callback = function(t) end
+        _Callback = function() end
     end
     assert(_Good ~= nil, "CreateRandomChest: Good does not exist!");
     assert(_Min <= _Max, "CreateRandomChest: min amount must be smaller or equal than max amount!");
 
     -- Debug Informationen schreiben
     debug(string.format(
-        "ModuleteractiveChests: Creating chest (%s, %s, %d, %d, %s, %s)",
+        "ModuleInteractiveChests: Creating chest (%s, %s, %d, %d, %s, %s)",
         _Name,
         Logic.GetGoodTypeName(_Good),
         _Min,
@@ -69,11 +80,11 @@ function ModuleteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Max
     ))
 
     -- Texte und Model setzen
-    local Title = ModuleteractiveChests.Text.Treasure.Title;
-    local Text  = ModuleteractiveChests.Text.Treasure.Text;
+    local Title = ModuleInteractiveChests.Text.Treasure.Title;
+    local Text  = ModuleInteractiveChests.Text.Treasure.Text;
     if not _NoModelChange then
-        Title = ModuleteractiveChests.Text.Chest.Title;
-        Text  = ModuleteractiveChests.Text.Chest.Text;
+        Title = ModuleInteractiveChests.Text.Chest.Title;
+        Text  = ModuleInteractiveChests.Text.Chest.Text;
 
         local eID = ReplaceEntity(_Name, Entities.XD_ScriptEntity, 0);
         Logic.SetModel(eID, Models.Doodads_D_X_ChestClose);
@@ -87,44 +98,52 @@ function ModuleteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Max
     end
 
     -- Rewards
-    local ScriptReward;
+    local DirectReward;
     local IOReward;
     if not _DirectPay then
         IOReward = {_Good, GoodAmount};
     else
-        ScriptReward = {_Good, GoodAmount};
+        DirectReward = {_Good, GoodAmount};
     end
 
-    CreateObject {
+    API.SetupObject {
         Name                    = _Name,
+        IsInteractiveChest      = true,
         Title                   = Title,
         Text                    = Text,
         Reward                  = IOReward,
-        ScriptReward            = ScriptReward,
+        DirectReward            = DirectReward,
         Texture                 = {1, 6},
         Distance                = (_NoModelChange and 1200) or 650,
         Waittime                = 0,
         State                   = 0,
         DoNotChangeModel        = _NoModelChange == true,
         CallbackOpened          = _Callback,
-        Callback                = function(_ScriptName, _EntityID, _PlayerID)
-            local IO = IO[_ScriptName];
-            if not IO.m_Data.DoNotChangeModel then
-                Logic.SetModel(GetID(IO.m_Data.Name), Models.Doodads_D_X_ChestOpenEmpty);
+        Callback                = function(_Data, _KnightID, _PlayerID)
+            if not _Data.DoNotChangeModel then
+                Logic.SetModel(GetID(_Data.Name), Models.Doodads_D_X_ChestOpenEmpty);
             end
-            if IO.m_Data.ScriptReward then
-                AddGood(IO.m_Data.ScriptReward[1], IO.m_Data.ScriptReward[2], _PlayerID);
+            if _Data.DirectReward then
+                AddGood(_Data.DirectReward[1], _Data.DirectReward[2], _PlayerID);
             end
-            IO.m_Data.CallbackOpened(IO.m_Data);
+            IO[_Data.Name]:CallbackOpened();
         end,
     };
 end
 
-function ModuleteractiveChests.Global:CreateRandomGoldChest(_Name)
+function ModuleInteractiveChests.Global:ResetIOChest(_ScriptName)
+    if not IO[_ScriptName].DoNotChangeModel then
+        local EntityID = ReplaceEntity(_ScriptName, Entities.XD_ScriptEntity, 0);
+        Logic.SetModel(EntityID, Models.Doodads_D_X_ChestClose);
+        Logic.SetVisible(EntityID, true);
+    end
+end
+
+function ModuleInteractiveChests.Global:CreateRandomGoldChest(_Name)
     self:CreateRandomChest(_Name, Goods.G_Gold, 300, 600, false);
 end
 
-function ModuleteractiveChests.Global:CreateRandomResourceChest(_Name)
+function ModuleInteractiveChests.Global:CreateRandomResourceChest(_Name)
     local PossibleGoods = {
         Goods.G_Iron, Goods.G_Stone, Goods.G_Wood, Goods.G_Wool,
         Goods.G_Carcass, Goods.G_Herb, Goods.G_Honeycomb,
@@ -134,7 +153,7 @@ function ModuleteractiveChests.Global:CreateRandomResourceChest(_Name)
     self:CreateRandomChest(_Name, Good, 30, 60, false);
 end
 
-function ModuleteractiveChests.Global:CreateRandomLuxuryChest(_Name)
+function ModuleInteractiveChests.Global:CreateRandomLuxuryChest(_Name)
     local Luxury = {Goods.G_Salt, Goods.G_Dye};
     if g_GameExtraNo >= 1 then
         table.insert(Luxury, Goods.G_Gems);
@@ -147,5 +166,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleteractiveChests);
+Swift:RegisterModules(ModuleInteractiveChests);
 

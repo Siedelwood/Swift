@@ -1,5 +1,5 @@
 --[[
-Swift_3_InteractiveMines/API
+Swift_4_InteractiveMines/API
 
 Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
 
@@ -26,20 +26,41 @@ You may use and modify this file unter the terms of the MIT licence.
 ---
 -- Erstelle eine verschüttete Eisenmine.
 --
--- @param[type=string]  _Position      Script Entity, die mit Mine ersetzt wird
--- @param[type=number]  _Cost1Type     (optional) Kostenware 1
--- @param[type=number]  _Cost1Amount   (optional) Kostenmenge 1
--- @param[type=number]  _Cost2Type     (optional) Kostenware 2
--- @param[type=number]  _Cost2Amount   (optional) Kostenmenge 2
--- @param[type=boolean] _NotRefillable (optional) Mine wird nach Ausbeutung zerstört
+-- Werden keine Materialkosten bestimmt, benötigt der Bau der Mine 500 Gold und
+-- 20 Holz.
+--
+-- @param[type=string]   _Position       Script Entity, die mit Mine ersetzt wird
+-- @param[type=number]   _Cost1Type      (optional) Kostenware 1
+-- @param[type=number]   _Cost1Amount    (optional) Kostenmenge 1
+-- @param[type=number]   _Cost2Type      (optional) Kostenware 2
+-- @param[type=number]   _Cost2Amount    (optional) Kostenmenge 2
+-- @param[type=boolean]  _NotRefillable  (optional) Mine wird nach Ausbeutung zerstört
+-- @param[type=function] _Condition      (optional) Bedingung um Mine zu bauen
+-- @param[type=function] _Action         (optional) Aktion wenn Mine gebaut wird
+-- @param[type=function] _DepletedAction (optional) Aktion wenn Mine leer ist
 -- @within Anwenderfunktionen
--- @see API.CreateIOMine
+-- @see API.CreateIOStoneMine
 --
 -- @usage
 -- -- Beispiel für eine Mine
--- API.CreateIOMine("mine", Goods.G_Wood, 20)
+-- API.CreateIOIronMine("mine", Goods.G_Wood, 20)
+-- -- Beispiel mit Bedingung
+-- local CheckCondition = function(_Data)
+--     retur gvMission.KnowsAboutArchitecture == true;
+-- end
+-- API.CreateIOIronMine("mine", Goods.G_Wood, 20, nil, nil, false, CheckCondition);
 --
-function API.CreateIOIronMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)
+function API.CreateIOIronMine(
+    _Position,
+    _Cost1Type,
+    _Cost1Amount,
+    _Cost2Type,
+    _Cost2Amount, 
+    NotRefillable,
+    _Condition,
+    _Action,
+    _DepletedAction
+)
     if GUI then
         return;
     end
@@ -67,26 +88,65 @@ function API.CreateIOIronMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _
             return;
         end
     end
-    ModuleInteractiveMines.Global:CreateIOIronMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable);
+
+    local Costs = {Goods.G_Gold, 500, Goods.G_Wood, 20};
+    if _Cost1Type then
+        Costs = {_Cost1Type, _Cost1Amount};
+    end
+    if _Cost1Type and _Cost2Type then
+        table.insert(Costs, _Cost2Type);
+        table.insert(Costs, _Cost2Amount);
+    end
+
+    ModuleInteractiveMines.Global:CreateIOMine(
+        _Position,
+        Entities.R_IronMine,
+        Costs,
+        _NotRefillable,
+        _Condition,
+        _Action,
+        _DepletedAction
+    );
 end
 
 ---
 -- Erstelle eine verschüttete Steinmine.
 --
--- @param[type=string]  _Position      Script Entity, die mit Mine ersetzt wird
--- @param[type=number]  _Cost1Type     (optional) Kostenware 1
--- @param[type=number]  _Cost1Amount   (optional) Kostenmenge 1
--- @param[type=number]  _Cost2Type     (optional) Kostenware 2
--- @param[type=number]  _Cost2Amount   (optional) Kostenmenge 2
--- @param[type=boolean] _NotRefillable (optional) Mine wird nach Ausbeutung zerstört
+-- Werden keine Materialkosten bestimmt, benötigt der Bau der Mine 500 Gold und
+-- 20 Holz.
+--
+-- @param[type=string]   _Position       Script Entity, die mit Mine ersetzt wird
+-- @param[type=number]   _Cost1Type      (optional) Kostenware 1
+-- @param[type=number]   _Cost1Amount    (optional) Kostenmenge 1
+-- @param[type=number]   _Cost2Type      (optional) Kostenware 2
+-- @param[type=number]   _Cost2Amount    (optional) Kostenmenge 2
+-- @param[type=boolean]  _NotRefillable  (optional) Mine wird nach Ausbeutung zerstört
+-- @param[type=function] _Condition      (optional) Bedingung um Mine zu bauen
+-- @param[type=function] _Action         (optional) Aktion wenn Mine gebaut wird
+-- @param[type=function] _DepletedAction (optional) Aktion wenn Mine leer ist
 -- @within Anwenderfunktionen
--- @see API.CreateIOMine
+-- @see API.CreateIOIronMine
 --
 -- @usage
 -- -- Beispiel für eine Mine
--- API.CreateIOMine("mine", Goods.G_Wood, 20)
+-- API.CreateIOStoneMine("mine", Goods.G_Wood, 20)
+-- -- Beispiel mit Bedingung
+-- local CheckCondition = function(_Data)
+--     retur gvMission.KnowsAboutArchitecture == true;
+-- end
+-- API.CreateIOStoneMine("mine", Goods.G_Wood, 20, nil, nil, false, CheckCondition);
 --
-function API.CreateIOStoneMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)
+function API.CreateIOStoneMine(
+    _Position,
+    _Cost1Type,
+    _Cost1Amount,
+    _Cost2Type, 
+    _Cost2Amount,
+    _NotRefillable,
+    _Condition,
+    _Action,
+    _DepletedAction
+)
     if GUI then
         return;
     end
@@ -114,75 +174,24 @@ function API.CreateIOStoneMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, 
             return;
         end
     end
-    ModuleInteractiveMines.Global:CreateIOStoneMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable);
-end
 
----
--- Fügt eine Bedingung für die Aktivierung der Mine hinzu.
---
--- @param[type=string]   _ScriptName Scriptname der Mine
--- @param[type=function] _Condition  Zu prüfende Bedingung
--- @within Anwenderfunktionen
---
--- @usage
--- API.SetMineCondition("mine", function(_ScriptName)
---     return MeineBedingungIstErfüllt == true;
--- end);
---
-function API.SetMineCondition(_ScriptName, _Condition)
-    if GUI then
-        return;
+    local Costs = {Goods.G_Gold, 500, Goods.G_Wood, 20};
+    if _Cost1Type then
+        Costs = {_Cost1Type, _Cost1Amount};
     end
-    if not IsExisting(_ScriptName) then
-        error("API.SetObjectIcon: Object " ..tostring(_ScriptName).. " does not exist!");
-        return;
+    if _Cost1Type and _Cost2Type then
+        table.insert(Costs, _Cost2Type);
+        table.insert(Costs, _Cost2Amount);
     end
-    ModuleInteractiveMines.Global:SetObjectLambda(_ScriptName, "MineCondition", _Condition);
-end
 
----
--- Fügt eine Funktion hinzu, die bei Aktivierung ausgeführt wird.
---
--- @param[type=string]   _ScriptName Scriptname der Mine
--- @param[type=function] _Action     Funktion zum Ausführen
--- @within Anwenderfunktionen
---
--- @usage
--- API.SetMineAction("mine", function(_ScriptName, _KnightID, _PlayerID)
---     MachWas();
--- end);
---
-function API.SetMineAction(_ScriptName, _Action)
-    if GUI then
-        return;
-    end
-    if not IsExisting(_ScriptName) then
-        error("API.SetObjectIcon: Object " ..tostring(_ScriptName).. " does not exist!");
-        return;
-    end
-    ModuleInteractiveMines.Global:SetObjectLambda(_ScriptName, "MineAction", _Action);
-end
-
----
--- Fügt eine Funktion hinzu, die ausgeführt wird, wenn die Mine erschöpft ist.
---
--- @param[type=string]   _ScriptName    Scriptname der Mine
--- @param[type=function] _CrumbleAction Funktion zum Ausführen
--- @within Anwenderfunktionen
---
--- @usage
--- API.SetMineDepletedAction("mine", function(_ScriptName)
---     MachWas();
--- end);
---
-function API.SetMineDepletedAction(_ScriptName, _CrumbleAction)
-    if GUI then
-        return;
-    end
-    if not IsExisting(_ScriptName) then
-        error("API.SetObjectIcon: Object " ..tostring(_ScriptName).. " does not exist!");
-        return;
-    end
-    ModuleInteractiveMines.Global:SetObjectLambda(_ScriptName, "MineDepleted", _CrumbleAction);
+    ModuleInteractiveMines.Global:CreateIOMine(
+        _Position,
+        Entities.R_StoneMine,
+        Costs,
+        _NotRefillable,
+        _Condition,
+        _Action,
+        _DepletedAction
+    );
 end
 

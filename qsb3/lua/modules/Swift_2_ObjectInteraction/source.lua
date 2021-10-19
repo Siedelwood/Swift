@@ -32,6 +32,7 @@ QSB.IO = {
 
 function ModuleObjectInteraction.Global:OnGameStart()
     QSB.ScriptEvents.ObjectInteraction = API.RegisterScriptEvent("Event_ObjectInteraction");
+    QSB.ScriptEvents.ObjectReset = API.RegisterScriptEvent("Event_ObjectReset");
 
     IO = {};
     IO_UserDefindedNames = {};
@@ -63,7 +64,7 @@ function ModuleObjectInteraction.Global:OnObjectInteraction(_EntityID, _KnightID
     if IO[EntityName] then
         IO[EntityName].IsUsed = true;
         if IO[EntityName].Action then
-            IO[EntityName]:Action();
+            IO[EntityName]:Action(_KnightID, _PlayerID);
         end
     end
     -- Avoid reference bug
@@ -141,7 +142,13 @@ function ModuleObjectInteraction.Global:ResetObject(_SkriptName)
     Logic.InteractiveObjectSetAvailability(ID, true);
     self:SetObjectAvailability(ID, IO[_SkriptName].State or 0);
     IO[_SkriptName].IsUsed = false;
-    IO[_SkriptName].SetActive = true;
+    IO[_SkriptName].IsActive = true;
+
+    API.SendScriptEvent(QSB.ScriptEvents.ObjectReset, _SkriptName);
+    Logic.ExecuteInLuaLocalState(string.format(
+        [[API.SendScriptEvent(QSB.ScriptEvents.ObjectReset, "%s")]],
+        _SkriptName
+    ));
 end
 
 function ModuleObjectInteraction.Global:SetObjectAvailability(_ScriptName, _State, ...)
@@ -283,6 +290,7 @@ end
 
 function ModuleObjectInteraction.Local:OnGameStart()
     QSB.ScriptEvents.ObjectInteraction = API.RegisterScriptEvent("Event_ObjectInteraction");
+    QSB.ScriptEvents.ObjectReset = API.RegisterScriptEvent("Event_ObjectReset");
 
     self:OverrideReferenceTables();
     self:OverrideGameFunctions();
