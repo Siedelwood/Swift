@@ -994,6 +994,28 @@ end
 GetDistance = API.GetDistance;
 
 ---
+-- Gibt das Entity aus der Liste zurück, welches dem Ziel am nähsten ist.
+--
+-- @param             _Target Entity oder Position
+-- @param[type=table] _List   Liste von Entities oder Positionen
+-- @return Nähste Entity oder Position
+-- @within Position
+-- @usage local Clostest = API.GetClosestToTarget("HQ1", {"Marcus", "Alandra", "Hakim"});
+--
+function API.GetClosestToTarget(_Target, _List)
+    local ClosestToTarget = 0;
+    local ClosestToTargetDistance = Logic.WorldGetSize();
+    for i= 1, #_List, 1 do
+        local DistanceBetween = API.GetDistance(_List[i], _Target);
+        if DistanceBetween < ClosestToTargetDistance then
+            ClosestToTargetDistance = DistanceBetween;
+            ClosestToTarget = _List[i];
+        end
+    end
+    return ClosestToTarget;
+end
+
+---
 -- Sendet einen Handelskarren zu dem Spieler. Startet der Karren von einem
 -- Gebäude, wird immer die Position des Eingangs genommen.
 --
