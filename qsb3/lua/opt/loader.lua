@@ -46,6 +46,8 @@ OptLoader_ModuleFiles = {
     "Swift_3_JobsRealtime/api.lua",
     "Swift_3_LifestockBreeding/api.lua",
     "Swift_3_LifestockBreeding/requirements.lua",
+    "Swift_3_TextWindow/source.lua",
+    "Swift_3_TextWindow/api.lua",
     "Swift_4_ExtendedCamera/source.lua",
     "Swift_4_ExtendedCamera/api.lua",
     "Swift_4_GraphVizExport/source.lua",
@@ -58,8 +60,6 @@ OptLoader_ModuleFiles = {
     "Swift_4_SoundTools/api.lua",
     "Swift_4_SpeedLimit/source.lua",
     "Swift_4_SpeedLimit/api.lua",
-    "Swift_4_TextWindow/source.lua",
-    "Swift_4_TextWindow/api.lua",
     "Swift_4_Typewriter/source.lua",
     "Swift_4_Typewriter/api.lua",
 }

@@ -421,8 +421,9 @@ function ModuleInputOutputCore.Local:LocalToGlobal(_Text)
     _Text = (_Text == nil and "") or _Text;
     API.SendScriptEvent(QSB.ScriptEvents.ChatClosed, _Text);
     GUI.SendScriptCommand(string.format(
-        [[API.SendScriptEvent(QSB.ScriptEvents.ChatClosed, "%s")]],
-        _Text
+        [[API.SendScriptEvent(QSB.ScriptEvents.ChatClosed, "%s", %d)]],
+        _Text,
+        GUI.GetPlayerID()
     ));
 end
 
