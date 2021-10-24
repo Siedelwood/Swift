@@ -33,6 +33,7 @@ QSB.IO = {
 function ModuleObjectInteraction.Global:OnGameStart()
     QSB.ScriptEvents.ObjectInteraction = API.RegisterScriptEvent("Event_ObjectInteraction");
     QSB.ScriptEvents.ObjectReset = API.RegisterScriptEvent("Event_ObjectReset");
+    QSB.ScriptEvents.ObjectDelete = API.RegisterScriptEvent("Event_ObjectDelete");
 
     IO = {};
     IO_UserDefindedNames = {};
@@ -76,26 +77,52 @@ function ModuleObjectInteraction.Global:CreateObject(_Description)
     if ID == 0 then
         return;
     end
+    self:DestroyObject(_Description.Name);
 
     local TypeName = Logic.GetEntityTypeName(Logic.GetEntityType(ID));
-    if not TypeName:find("I_X_") then
-        self:CreateSlaveObject(Object);
+    if not TypeName:find("^I_X_") then
+        self:CreateSlaveObject(_Description);
     end
 
+    _Description.IsActive = true;
+    _Description.IsUsed = false;
     IO[_Description.Name] = _Description;
     self:SetupObject(_Description);
     -- Avoid reference bug
     Logic.ExecuteInLuaLocalState("ModuleObjectInteraction.Local:OverrideReferenceTables()");
-    return Object;
+    return _Description;
+end
+
+function ModuleObjectInteraction.Global:DestroyObject(_ScriptName)
+    if not IO[_ScriptName] then
+        return;
+    end
+    if IO[_ScriptName].Slave then
+        IO_SlaveToMaster[IO[_ScriptName].Slave] = nil;
+        IO_SlaveState[IO[_ScriptName].Slave] = nil;
+        DestroyEntity(IO[_ScriptName].Slave);
+    end
+    self:SetObjectAvailability(_ScriptName, 2);
+    API.SendScriptEvent(QSB.ScriptEvents.ObjectDelete, _ScriptName);
+    Logic.ExecuteInLuaLocalState(string.format(
+        [[API.SendScriptEvent(QSB.ScriptEvents.ObjectDelete, "%s")]],
+        _ScriptName
+    ));
+    IO[_ScriptName] = nil;
+    -- Avoid reference bug
+    Logic.ExecuteInLuaLocalState("ModuleObjectInteraction.Local:OverrideReferenceTables()");
 end
 
 function ModuleObjectInteraction.Global:CreateSlaveObject(_Object)
-    self.SlaveSequence = self.SlaveSequence +1;
-    local Name = "QSB_SlaveObject_" ..self.SlaveSequence;
+    local Name;
     for k, v in pairs(IO_SlaveToMaster) do
         if v == _Object.Name and IsExisting(k) then
             Name = k;
         end
+    end
+    if Name == nil then
+        self.SlaveSequence = self.SlaveSequence +1;
+        Name = "QSB_SlaveObject_" ..self.SlaveSequence;
     end
 
     local SlaveID = GetID(Name);
@@ -105,9 +132,8 @@ function ModuleObjectInteraction.Global:CreateSlaveObject(_Object)
         Logic.SetModel(SlaveID, Models.Effects_E_Mosquitos);
         Logic.SetEntityName(SlaveID, Name);
         IO_SlaveToMaster[Name] = _Object.Name;
+        _Object.Slave = Name;
     end
-    _Object:SetWaittime(0);
-    _Object:SetSlave(Name);
     IO_SlaveState[Name] = 1;
     return SlaveID;
 end
@@ -183,7 +209,7 @@ function ModuleObjectInteraction.Global:OverrideObjectInteraction()
     QuestTemplate.AreObjectsActivated = function(self, _ObjectList)
         for i=1, _ObjectList[0] do
             if not _ObjectList[-i] then
-                _ObjectList[-i] = GetEntityId(_ObjectList[i]);
+                _ObjectList[-i] = GetID(_ObjectList[i]);
             end
             local EntityName = Logic.GetEntityName(_ObjectList[-i]);
             if IO_SlaveToMaster[EntityName] then
@@ -240,7 +266,7 @@ function ModuleObjectInteraction.Global:ProcessChatInput(_Text)
 end
 
 function ModuleObjectInteraction.Global:StartObjectDestructionController()
-    API.StartEventJob(Events.LOGIC_EVENT_ENTITY_DESTROYED, function()
+    API.StartJobByEventType(Events.LOGIC_EVENT_ENTITY_DESTROYED, function()
         local DestryoedEntityID = Event.GetEntityID();
         local SlaveName  = Logic.GetEntityName(DestryoedEntityID);
         local MasterName = IO_SlaveToMaster[SlaveName];
@@ -267,7 +293,7 @@ function ModuleObjectInteraction.Global:StartObjectDestructionController()
 end
 
 function ModuleObjectInteraction.Global:StartObjectConditionController()
-    API.StartEventJob(Events.LOGIC_EVENT_EVERY_TURN, function()
+    API.StartJobByEventType(Events.LOGIC_EVENT_EVERY_TURN, function()
         for k, v in pairs(IO) do
             if v and not v.IsUsed and v.IsActive then
                 IO[k].IsFullfilled = true;
@@ -291,6 +317,7 @@ end
 function ModuleObjectInteraction.Local:OnGameStart()
     QSB.ScriptEvents.ObjectInteraction = API.RegisterScriptEvent("Event_ObjectInteraction");
     QSB.ScriptEvents.ObjectReset = API.RegisterScriptEvent("Event_ObjectReset");
+    QSB.ScriptEvents.ObjectDelete = API.RegisterScriptEvent("Event_ObjectDelete");
 
     self:OverrideReferenceTables();
     self:OverrideGameFunctions();
@@ -355,10 +382,10 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
                 local X, Y = GUI.GetEntityInfoScreenPosition(MasterObjectID);
                 local WidgetSize = {XGUIEng.GetWidgetScreenSize(Widget)};
                 XGUIEng.SetWidgetScreenPosition(Widget, X - (WidgetSize[1]/2), Y - (WidgetSize[2]/2));
-                if IO_IconTextures[ScriptName] then
-                    local a = (IO_IconTextures[ScriptName][1]) or 14;
-                    local b = (IO_IconTextures[ScriptName][2]) or 10;
-                    local c = (IO_IconTextures[ScriptName][3]) or 0;
+                if IO[ScriptName] and IO[ScriptName].Texture then
+                    local a = (IO[ScriptName].Texture[1]) or 14;
+                    local b = (IO[ScriptName].Texture[2]) or 10;
+                    local c = (IO[ScriptName].Texture[3]) or 0;
                     API.InterfaceSetIcon(Widget, {a, b, c}, nil, c);
                 end
             end
@@ -384,11 +411,7 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
             GUI_Interaction.InteractiveObjectMouseOver_Orig_ModuleObjectInteraction();
             return;
         end
-
-        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
         local Costs = {Logic.InteractiveObjectGetEffectiveCosts(ObjectID, PlayerID)};
-        local IsAvailable = Logic.InteractiveObjectGetAvailability(ObjectID);
-
         local ScriptName = Logic.GetEntityName(ObjectID);
         if IO_SlaveToMaster[ScriptName] then
             ScriptName = IO_SlaveToMaster[ScriptName];
@@ -405,14 +428,17 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
                 DisabledKey = "InteractiveObjectAvailableReward";
             end
             local Title = IO[ScriptName].Title or ("UI_ObjectNames/" ..Key);
+            Title = API.ConvertPlaceholders(API.Localize(Title));
             if Title and Title:find("^[A-Za-z0-9_]+/[A-Za-z0-9_]+$") then
                 Title = XGUIEng.GetStringTableText(Title);
             end
             local Text = IO[ScriptName].Text or ("UI_ObjectDescription/" ..Key);
+            Text = API.ConvertPlaceholders(API.Localize(Text));
             if Text and Text:find("^[A-Za-z0-9_]+/[A-Za-z0-9_]+$") then
                 Text = XGUIEng.GetStringTableText(Text);
             end
             local Disabled = IO[ScriptName].DisabledText or DisabledKey;
+            Disabled = API.ConvertPlaceholders(API.Localize(Disabled));
             if Disabled and Disabled:find("^[A-Za-z0-9_]+/[A-Za-z0-9_]+$") then
                 Disabled = XGUIEng.GetStringTableText(Disabled);
             end
@@ -420,9 +446,10 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
             if Costs and Costs[1] and Costs[1] ~= Goods.G_Gold and Logic.GetGoodCategoryForGoodType(Costs[1]) ~= GoodCategories.GC_Resource then
                 CheckSettlement = true;
             end
-            API.InterfaceSetTooltipCosts(Title, Text, Disabled, {Costs[1], Costs[2], Costs[3], Costs[4]}, CheckSettlement);
+            API.InterfaceSetTooltipCosts(Title, Text, Disabled, Costs, CheckSettlement);
             return;
         end
+        GUI_Interaction.InteractiveObjectMouseOver_Orig_ModuleObjectInteraction();
     end
 
     GUI_Interaction.DisplayQuestObjective_Orig_ModuleObjectInteraction = GUI_Interaction.DisplayQuestObjective
@@ -437,14 +464,6 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
         XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomLeft/Message/QuestObjectives", 0);
         local QuestObjectiveContainer;
         local QuestTypeCaption;
-
-        local ParentQuest = Quests[_QuestIndex];
-        local ParentQuestIdentifier;
-        if ParentQuest ~= nil
-        and type(ParentQuest) == "table" then
-            ParentQuestIdentifier = ParentQuest.Identifier;
-        end
-        local HookTable = {};
 
         g_CurrentDisplayedQuestID = _QuestIndex;
 

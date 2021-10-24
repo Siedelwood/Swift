@@ -79,9 +79,21 @@ function Mission_FirstMapAction()
     API.ActivateDebugMode(true, false, true, true);
 end
 
+function CreateTestMines1()
+    API.CreateIOIronMine("ironmine");
+    API.CreateIOStoneMine("stonemine");
+end
+
+function CreateTestMines2()
+    API.CreateIOIronMine("ironmine", Goods.G_Wood, 50, Goods.G_Gold, 1500);
+    API.CreateIOStoneMine("stonemine", Goods.G_Wood, 50, Goods.G_Gold, 1500);
+end
+
 function CreateTestChests()
     API.CreateRandomGoldChest("chest1");
-    API.CreateRandomResourceChest("chest2");
+    API.CreateRandomChest("chest2", Goods.G_Wood, 10, 30, function()
+        API.Note("It work's!");
+    end);
     API.CreateRandomLuxuryChest("chest3");
     API.CreateRandomTreasure("IO1", Goods.G_Gold, 200, 400);
 end

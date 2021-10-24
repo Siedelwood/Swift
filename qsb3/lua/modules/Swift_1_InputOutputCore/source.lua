@@ -504,6 +504,9 @@ end
 
 function ModuleInputOutputCore.Shared:CommandTokenizer(_Input)
     local Commands = {};
+    if _Input == nil then
+        return Commands;
+    end
     local DAmberCommands = {_Input};
     local AmberCommands = {};
 

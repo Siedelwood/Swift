@@ -56,7 +56,7 @@ function API.CreateIOIronMine(
     _Cost1Amount,
     _Cost2Type,
     _Cost2Amount, 
-    NotRefillable,
+    _NotRefillable,
     _Condition,
     _Action,
     _DepletedAction

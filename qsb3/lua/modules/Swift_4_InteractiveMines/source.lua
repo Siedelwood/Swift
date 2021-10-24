@@ -40,11 +40,13 @@ function ModuleInteractiveMines.Global:OnGameStart()
     end);
 end
 
-function ModuleInteractiveMines.Global:OnEvent(_ID, _Event, _ScriptName)
+function ModuleInteractiveMines.Global:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.ObjectReset then
-        if IO[_ScriptName] and IO[_ScriptName].IsInteractiveMine then
-            self:ResetIOMine(_ScriptName, IO[_ScriptName].Type);
+        if IO[arg[1]] and IO[arg[1]].IsInteractiveMine then
+            self:ResetIOMine(arg[1], IO[arg[1]].Type);
         end
+    elseif _ID == QSB.ScriptEvents.ObjectDelete then
+        ReplaceEntity(arg[1], IO[arg[1]].Type);
     end
 end
 
@@ -60,10 +62,10 @@ function ModuleInteractiveMines.Global:CreateIOMine(
     local BlockerID = self:ResetIOMine(_Position, _Type);
     local Icon = {14, 10};
     if g_GameExtraNo >= 1 then
-        if IO[_ScriptName].Type == Entities.R_IronMine then
+        if _Type == Entities.R_IronMine then
             Icon = {14, 10};
         end
-        if IO[_ScriptName].Type == Entities.R_StoneMine then
+        if _Type == Entities.R_StoneMine then
             Icon = {14, 10};
         end
     end
@@ -78,12 +80,12 @@ function ModuleInteractiveMines.Global:CreateIOMine(
         Crumbles             = _NotRefillable,
         Costs                = _Costs,
         InvisibleBlocker     = BlockerID,
-        Distance             = 1500,
+        Distance             = 1200,
         BuildCondition       = _Condition,
         ActionDepleted       = _CallbackDepleted,
         ActionCreated        = _CreationCallback,
         Condition            = function(_Data)
-            if _Data.BuildCondition == nil then
+            if _Data.BuildCondition ~= nil then
                 return _Data:BuildCondition();
             end
             return true;
@@ -91,7 +93,7 @@ function ModuleInteractiveMines.Global:CreateIOMine(
         Action               = function(_Data, _KnightID, _PlayerID)
             ReplaceEntity(_Data.Name, _Data.Type);
             DestroyEntity(_Data.InvisibleBlocker)
-            if _Data.ActionCreated == nil then
+            if _Data.ActionCreated ~= nil then
                 _Data:ActionCreated(_KnightID, _PlayerID);
             end
         end
@@ -102,7 +104,7 @@ function ModuleInteractiveMines.Global:ResetIOMine(_ScriptName, _Type)
     if IO[_ScriptName] then
         DestroyEntity(IO[_ScriptName].InvisibleBlocker);
     end
-    local EntityID = ReplaceEntity(_Position, Entities.XD_ScriptEntity);
+    local EntityID = ReplaceEntity(_ScriptName, Entities.XD_ScriptEntity);
     local Model = Models.Doodads_D_SE_ResourceIron_Wrecked;
     if _Type == Entities.R_StoneMine then
         Model = Models.R_SE_ResorceStone_10;

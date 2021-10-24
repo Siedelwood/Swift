@@ -95,10 +95,31 @@ API.CreateObject = API.SetupObject;
 CreateObject = API.SetupObject;
 
 ---
--- Setzt den Benutzt-Status eines interaktiven Objektes zurück. Das Objekt muss
--- dann wieder per Skript aktiviert werden, damit es im Spiel ausgelöst werden.
+-- Zerstört die Interation mit dem Objekt.
 --
--- @param[type=string] _ScriptName Skriptname des Objekt 
+-- <b>Hinweis</b>: Das Entity selbst wird nicht zerstört.
+--
+-- @param[type=string] _ScriptName Skriptname des Objektes
+-- @see API.SetupObject
+-- @see API.ResetObject
+-- @usage API.ResetObject("MyObject");
+--
+function API.DisposeObject(_ScriptName)
+    if GUI or not IO[_ScriptName] then
+        return;
+    end
+    ModuleObjectInteraction.Global:DestroyObject(_ScriptName);
+end
+ResetObject = API.ResetObject;
+
+---
+-- Setzt das interaktive Objekt zurück. Dadurch verhält es sich, wie vor der
+-- Aktivierung durch den Spieler.
+--
+-- <b>Hinweis</b>: Das Objekt muss wieder per Skript aktiviert werden, damit es
+-- im Spiel ausgelöst werden.
+--
+-- @param[type=string] _ScriptName Skriptname des Objektes
 -- @within Anwenderfunktionen
 -- @see API.SetupObject
 -- @see API.InteractiveObjectActivate

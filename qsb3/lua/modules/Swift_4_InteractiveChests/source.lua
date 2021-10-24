@@ -51,11 +51,13 @@ QSB.NonPlayerCharacterObjects = {};
 function ModuleInteractiveChests.Global:OnGameStart()
 end
 
-function ModuleInteractiveChests.Global:OnEvent(_ID, _Event, _ScriptName)
+function ModuleInteractiveChests.Global:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.ObjectReset then
-        if IO[_ScriptName] and IO[_ScriptName].IsInteractiveChest then
-            self:ResetIOChest(_ScriptName, IO[_ScriptName].Type);
+        if IO[arg[1]] and IO[arg[1]].IsInteractiveChest then
+            self:ResetIOChest(arg[1]);
         end
+    elseif _ID == QSB.ScriptEvents.ObjectDelete then
+        -- Nothing to do?
     end
 end
 
@@ -119,7 +121,7 @@ function ModuleInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _M
         State                   = 0,
         DoNotChangeModel        = _NoModelChange == true,
         CallbackOpened          = _Callback,
-        Callback                = function(_Data, _KnightID, _PlayerID)
+        Action                  = function(_Data, _KnightID, _PlayerID)
             if not _Data.DoNotChangeModel then
                 Logic.SetModel(GetID(_Data.Name), Models.Doodads_D_X_ChestOpenEmpty);
             end
