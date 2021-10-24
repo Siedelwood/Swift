@@ -40,7 +40,6 @@ Swift = {
     m_ModuleRegister            = {};
     m_BehaviorRegister          = {};
     m_ScriptEventRegister       = {};
-    m_ScriptEventActions        = {};
     m_LoadActionRegister        = {};
     m_Language                  = "de";
     m_Environment               = "global";
@@ -62,6 +61,7 @@ function Swift:LoadCore()
         self:InstallBehaviorGlobal();
         self:OverrideSaveLoadedCallback();
         self:OverrideQuestSystemGlobal();
+        self:InitalizeCallbackGlobal();
     end
 
     if self:IsLocalEnvironment() then
@@ -70,6 +70,7 @@ function Swift:LoadCore()
         self:InstallBehaviorLocal();
         self:OverrideEscapeCallback();
         self:OverrideDoQuicksave();
+        self:InitalizeCallbackLocal();
 
         -- Human player ID makes only sense in singleplayer context
         if not Framework.IsNetworkGame() then
@@ -443,7 +444,7 @@ function Swift:InitalizeEventsGlobal()
     QSB.ScriptEvents.QuestSuccess = Swift:CreateScriptEvent("Event_QuestSuccess", nil);
     QSB.ScriptEvents.QuestTrigger = Swift:CreateScriptEvent("Event_QuestTrigger", nil);
     QSB.ScriptEvents.CustomValueChanged = Swift:CreateScriptEvent("Event_CustomValueChanged", nil);
-    QSB.ScriptEvents.LanguageSelected = Swift:CreateScriptEvent("Event_LanguageSelected", nil);
+    QSB.ScriptEvents.LanguageSet = Swift:CreateScriptEvent("Event_LanguageSet", nil);
 end
 function Swift:InitalizeEventsLocal()
     QSB.ScriptEvents.SaveGameLoaded = Swift:CreateScriptEvent("Event_SaveGameLoaded", nil);
@@ -454,7 +455,7 @@ function Swift:InitalizeEventsLocal()
     QSB.ScriptEvents.QuestSuccess = Swift:CreateScriptEvent("Event_QuestSuccess", nil);
     QSB.ScriptEvents.QuestTrigger = Swift:CreateScriptEvent("Event_QuestTrigger", nil);
     QSB.ScriptEvents.CustomValueChanged = Swift:CreateScriptEvent("Event_CustomValueChanged", nil);
-    QSB.ScriptEvents.LanguageSelected = Swift:CreateScriptEvent("Event_LanguageSelected", nil);
+    QSB.ScriptEvents.LanguageSet = Swift:CreateScriptEvent("Event_LanguageSet", nil);
 end
 
 function Swift:CreateScriptEvent(_Name, _Function)
@@ -467,25 +468,6 @@ function Swift:CreateScriptEvent(_Name, _Function)
     debug(string.format("Create script event %s", _Name), true);
     self.m_ScriptEventRegister[ID] = {_Name, _Function};
     return ID;
-end
-
-function Swift:CreateScriptEventAction(_ID, _Function)
-    if self.m_ScriptEventRegister[_ID] then
-        local Index;
-        local EventName = self.m_ScriptEventRegister[_ID][1];
-        self.m_ScriptEventActions[_ID] = self.m_ScriptEventActions[_ID] or {};
-        table.insert(self.m_ScriptEventActions[_ID], {EventName, _Function, true});
-        Index = #self.m_ScriptEventActions[_ID];
-        debug(string.format("Bind script event action %s for event %d", EventName, _ID), true);
-        return Index;
-    end
-    return 0;
-end
-
-function Swift:SetScriptEventActionActive(_EventID, _ActionID, _Flag)
-    if self.m_ScriptEventActions[_EventID] and self.m_ScriptEventActions[_EventID][_ActionID] then
-        self.m_ScriptEventActions[_EventID][_ActionID][3] = _Flag == true;
-    end
 end
 
 function Swift:DispatchScriptEvent(_ID, ...)
@@ -508,13 +490,9 @@ function Swift:DispatchScriptEvent(_ID, ...)
             self.m_ModuleRegister[i][Env]:OnEvent(_ID, self.m_ScriptEventRegister[_ID], unpack(arg));
         end
     end
-    -- Dispatch user events
-    if self.m_ScriptEventActions[_ID] then
-        for k, v in pairs(self.m_ScriptEventActions[_ID]) do
-            if v and v[2] and v[3] then
-                v[2](unpack(arg));
-            end
-        end
+    -- Call event listener
+    if GameCallback_QSB_OnEventReceived then
+        GameCallback_QSB_OnEventReceived(_ID, unpack(arg));
     end
 end
 
@@ -614,9 +592,9 @@ function Swift:ChangeSystemLanguage(_Language)
     self.m_Language = _Language;
     QSB.Language = self.m_Language;
 
-    Swift:DispatchScriptEvent(QSB.ScriptEvents.LanguageSelected, OldLanguage, NewLanguage);
+    Swift:DispatchScriptEvent(QSB.ScriptEvents.LanguageSet, OldLanguage, NewLanguage);
     Logic.ExecuteInLuaLocalState(string.format(
-        [[Swift:DispatchScriptEvent(QSB.ScriptEvents.LanguageSelected, "%s", "%s")]],
+        [[Swift:DispatchScriptEvent(QSB.ScriptEvents.LanguageSet, "%s", "%s")]],
         OldLanguage,
         NewLanguage
     ));

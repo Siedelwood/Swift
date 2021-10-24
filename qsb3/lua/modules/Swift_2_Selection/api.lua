@@ -23,6 +23,15 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 
 ---
+-- Events, auf die reagiert werden kann.
+--
+-- @field SelectionChanged Die Selektion hat sich geändert (Parameter: PlayerID, OldIdList, NewIdList)
+--
+-- @within Event
+--
+QSB.ScriptEvents = QSB.ScriptEvents or {};
+
+---
 -- Deaktiviert oder aktiviert das Entlassen von Dieben.
 -- @param[type=boolean] _Flag Deaktiviert (false) / Aktiviert (true)
 -- @within Anwenderfunktionen
@@ -74,20 +83,21 @@ end
 -- Prüpft ob das Entity selektiert ist.
 --
 -- @param _Entity Entity das selektiert sein soll (Skriptname oder ID)
+-- @param[type=number] _PlayerID ID des Spielers
 -- @return[type=boolean] Entity ist selektiert
 -- @within Anwenderfunktionen
 --
 -- @usage
--- if API.IsEntityInSelection("hakim") then
+-- if API.IsEntityInSelection("hakim", 1) then
 --     -- Do something
 -- end
 --
-function API.IsEntityInSelection(_Entity)
+function API.IsEntityInSelection(_Entity, _PlayerID)
     if IsExisting(_Entity) then
         local EntityID = GetID(_Entity);
         local SelectedEntities;
         if not GUI then
-            SelectedEntities = ModuleSelection.Global.SelectedEntities;
+            SelectedEntities = ModuleSelection.Global.SelectedEntities[_PlayerID];
         else
             SelectedEntities = {GUI.GetSelectedEntities()};
         end
@@ -107,16 +117,17 @@ IsEntitySelected = API.IsEntityInSelection;
 -- Wenn mehr als ein Entity selektiert sind, wird das erste Entity
 -- zurückgegeben. Sind keine Entities selektiert, wird 0 zurückgegeben.
 --
+-- @param[type=number] _PlayerID ID des Spielers
 -- @return[type=number] ID des selektierten Entities
 -- @within Anwenderfunktionen
 --
 -- @usage
--- local SelectedEntity = API.GetSelectedEntity();
+-- local SelectedEntity = API.GetSelectedEntity(1);
 --
-function API.GetSelectedEntity()
+function API.GetSelectedEntity(_PlayerID)
     local SelectedEntity;
     if not GUI then
-        SelectedEntity = ModuleSelection.Global.SelectedEntities[1];
+        SelectedEntity = ModuleSelection.Global.SelectedEntities[_PlayerID];
     else
         SelectedEntity = GUI.GetSelectedEntity();
     end
@@ -127,16 +138,17 @@ GetSelectedEntity = API.GetSelectedEntity;
 ---
 -- Gibt alle selektierten Entities zurück.
 --
+-- @param[type=number] _PlayerID ID des Spielers
 -- @return[type=table] ID des selektierten Entities
 -- @within Anwenderfunktionen
 --
 -- @usage
--- local Selection = API.GetSelectedEntities();
+-- local Selection = API.GetSelectedEntities(1);
 --
-function API.GetSelectedEntities()
+function API.GetSelectedEntities(_PlayerID)
     local SelectedEntities;
     if not GUI then
-        SelectedEntities = ModuleSelection.Global.SelectedEntities;
+        SelectedEntities = ModuleSelection.Global.SelectedEntities[_PlayerID];
     else
         SelectedEntities = {GUI.GetSelectedEntities()};
     end

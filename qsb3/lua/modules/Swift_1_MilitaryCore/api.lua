@@ -26,6 +26,17 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 
 ---
+-- Events, auf die reagiert werden kann.
+--
+-- @field ProducedThief     Ein Dieb wird rekrutiert (Parameter: EntityID, CastleID, CostsTable)
+-- @field ProducedBattalion Ein Battalion wird rekrutiert (Parameter: EntityID, BarrackID, CostsTable)
+-- @field RefilledBattalion Ein Battalion wird aufgefüllt (Parameter: EntityID, BarrackID, CostsTable)
+--
+-- @within Event
+--
+QSB.ScriptEvents = QSB.ScriptEvents or {};
+
+---
 -- Gibt das aktuelle Soldatenlimit des Spielers zurück.
 --
 -- @param[type=number] _PlayerID ID des Spielers

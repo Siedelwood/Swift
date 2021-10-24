@@ -32,6 +32,16 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 
 ---
+-- Events, auf die reagiert werden kann.
+--
+-- @field ChatOpened Das Chatfenster wird angezeigt (Parameter: PlayerID)
+-- @field ChatClosed Die Chateingabe wird bestätigt (Parameter: Text, PlayerID)
+--
+-- @within Event
+--
+QSB.ScriptEvents = QSB.ScriptEvents or {};
+
+---
 -- Schreibt eine Nachricht in das Debug Window. Der Text erscheint links am
 -- Bildschirm und ist nicht statisch.
 --
@@ -351,6 +361,7 @@ end
 -- <b>Hinweis</b>: Der Spieler kann den Input nicht mit Esc verlassen. Der Input
 -- kann nur durch Enter geschlossen werden. Das dedeutet, dass evtl. ein leerer
 -- String übergeben wird. In diesem Fall wurde nichts eingegeben.
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.ShowTextInput();

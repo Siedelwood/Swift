@@ -282,7 +282,7 @@ function QSB.TextWindow:Prepare()
         QSB.TextWindow.Shown = false;
         self.Shown = false;
         if self.Callback then
-            self.Callback(self);
+            self:Callback();
         end
         XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions",0);
         XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog",0);

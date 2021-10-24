@@ -22,6 +22,16 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 
 ---
+-- Events, auf die reagiert werden kann.
+--
+-- @field GoodsPurchased Güter werden bei einem Händler gekauft (Parameter: TraderType, OfferIndex, GoodType, PlayerID, TraderPlayerID, OfferGoodAmount, Price)
+-- @field GoodsSold      Güter werden im eigenen Lagerhaus verkauft (Parameter: GoodType, PlayerID, TargetPlayerID, GoodAmount, Price)
+--
+-- @within Event
+--
+QSB.ScriptEvents = QSB.ScriptEvents or {};
+
+---
 -- Setzt die Funktion zur Kalkulation des Preisfaktors des Helden. Die Änderung
 -- betrifft nur den angegebenen Spieler.
 -- Die Funktion muss den angepassten Preis zurückgeben.

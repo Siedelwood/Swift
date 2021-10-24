@@ -346,6 +346,22 @@ end
 -- Script Events
 
 ---
+-- Liste der grundlegenden Script Events.
+--
+-- @field SaveGameLoaded Ein Spielstand wird geladen.
+-- @field EscapePressed Escape wurde gedrückt. (Parameter: PlayerID)
+-- @field QuestFailure Ein Quest schlug fehl (Parameter: QuestID)
+-- @field QuestInterrupt Ein Quest wurde unterbrochen (Parameter: QuestID)
+-- @field QuestReset Ein Quest wurde zurückgesetzt (Parameter: QuestID)
+-- @field QuestSuccess Ein Quest wurde erfolgreich abgeschlossen (Parameter: QuestID)
+-- @field QuestTrigger Ein Quest wurde aktiviert (Parameter: QuestID)
+-- @field CustomValueChanged Eine Custom Variable hat sich geändert (Parameter: Name, OldValue, NewValue)
+-- @field LanguageSet Die Sprache wurde geändert (Parameter: OldLanguage, NewLanguage)
+-- @within Event
+--
+QSB.ScriptEvents = QSB.ScriptEvents or {};
+
+---
 -- Legt ein neues Script Event an.
 --
 -- @param[type=string]   _Name     Identifier des Event
@@ -354,30 +370,6 @@ end
 --
 function API.RegisterScriptEvent(_Name)
     return Swift:CreateScriptEvent(_Name, nil);
-end
-
----
--- Legt eine neue Reaktion zu einem Skriptevent an.
---
--- @param[type=number]   ID        ID des Event
--- @param[type=function] _Function Funktionsreferenz
--- @return[type=number] ID der neuen Reaktion
--- @within Event
---
-function API.RegisterScriptEventAction(_ID, _Function)
-    return Swift:CreateScriptEventAction(_ID, _Function);
-end
-
----
--- Deaktiviert oder aktiviert eine Reaktion auf ein Event.
---
--- @param[type=number]  _EventID  ID des Event
--- @param[type=number]  _ActionID ID der Reaktion
--- @param[type=boolean] _Flag     Inaktiv Flag
--- @within Event
---
-function API.DisableScriptEventAction(_EventID, _ActionID, _Flag)
-    return Swift:SetScriptEventActionActive(_EventID, _ActionID, not _Flag);
 end
 
 ---

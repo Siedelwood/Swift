@@ -73,6 +73,7 @@ function OptLoader_LoadFiles()
     Script.Load(OptLoader_BasePath.. "lua/modules/Swift_0_Core/api.lua");
     Script.Load(OptLoader_BasePath.. "lua/modules/Swift_0_Core/debug.lua");
     Script.Load(OptLoader_BasePath.. "lua/modules/Swift_0_Core/behavior.lua");
+    Script.Load(OptLoader_BasePath.. "lua/modules/Swift_0_Core/callback.lua");
 
     for i= 1, #OptLoader_ModuleFiles, 1 do
         Script.Load(OptLoader_BasePath.. "lua/modules/" ..OptLoader_ModuleFiles[i]);

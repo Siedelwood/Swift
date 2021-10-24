@@ -314,7 +314,7 @@ end
 
 function ModuleTradingCore.Local:OverrideMerchantPurchaseOfferClicked()
     -- Set special conditions
-    local PurchaseAllowedLambda = function(_P1, _P2, _Type, _Good, _Amount)
+    local PurchaseAllowedLambda = function(_P1, _P2, _Type, _Good, _Amount, _Price)
         return true;
     end
     self.Lambda.PurchaseAllowed.Default = PurchaseAllowedLambda;
@@ -435,7 +435,7 @@ function ModuleTradingCore.Local:OverrideMerchantPurchaseOfferClicked()
                     StartKnightVoiceForPermanentSpecialAbility(Entities.U_KnightTrading);
                 end
 
-                API.SendScriptEvent(QSB.ScriptEvents.GoodsBought, TraderType, OfferIndex, GoodType, PlayerID, TraderPlayerID, OfferGoodAmount, Price);
+                API.SendScriptEvent(QSB.ScriptEvents.GoodsPurchased, TraderType, OfferIndex, GoodType, PlayerID, TraderPlayerID, OfferGoodAmount, Price);
                 GUI.SendScriptCommand(string.format(
                     "ModuleTradingCore.Global:SendEventGoodsPurchased(%d, %d, %d, %d, %d, %d, %d)",
                     TraderType,

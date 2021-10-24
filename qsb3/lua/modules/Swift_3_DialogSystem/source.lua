@@ -86,7 +86,7 @@ function ModuleDialogSystem.Global:StartDialog(_Name, _PlayerID, _Data)
 end
 
 function ModuleDialogSystem.Global:EndDialog(_PlayerID)
-    API.FinishCinematicEvent(self.Dialog[_PlayerID].Name);
+    API.FinishCinematicEvent(self.Dialog[_PlayerID].Name, _PlayerID);
     Logic.SetGlobalInvulnerability(0);
     if self.Dialog[_PlayerID].Finished then
         self.Dialog[_PlayerID]:Finished();

@@ -30,6 +30,22 @@ CinematicEventStatus = {
 }
 
 ---
+-- Events, auf die reagiert werden kann.
+--
+-- @field CinematicActivated Der Kinomodus wurde aktiviert (Parameter: KinoEventID, PlayerID)
+-- @field CinematicConcluded Der Kinomodus wurde deaktiviert (Parameter: KinoEventID, PlayerID)
+-- @field BorderScrollLocked Scrollen am Bildschirmrand wurde gesperrt (Parameter: PlayerID)
+-- @field BorderScrollReset Scrollen am Bildschirmrand wurde freigegeben (Parameter: PlayerID)
+-- @field GameInterfaceShown Die Spieloberfläche wird angezeigt (Parameter: PlayerID)
+-- @field GameInterfaceHidden Die Spieloberfläche wird ausgeblendet (Parameter: PlayerID)
+-- @field BlackScreenShown Der schwarze Hintergrund wird angezeigt (Parameter: PlayerID)
+-- @field BlackScreenHidden Der schwarze Hintergrund wird ausgeblendet (Parameter: PlayerID)
+--
+-- @within Event
+--
+QSB.ScriptEvents = QSB.ScriptEvents or {};
+
+---
 -- Blendet einen schwarzen Hintergrund über der Spielwelt aber hinter dem
 -- Interface ein.
 --
@@ -137,12 +153,12 @@ end
 -- @param[type=string] Bezeichner
 -- @within Anwenderfunktionen
 --
-function API.FinishCinematicEvent(_Name)
+function API.FinishCinematicEvent(_Name, _PlayerID)
     if GUI then
         return;
     end
     if QSB.CinematicEvents[_Name] then
-        ModuleDisplayCore.Global:ConcludeCinematicEvent(QSB.CinematicEvents[_Name]);
+        ModuleDisplayCore.Global:ConcludeCinematicEvent(QSB.CinematicEvents[_Name], _PlayerID);
     end
 end
 

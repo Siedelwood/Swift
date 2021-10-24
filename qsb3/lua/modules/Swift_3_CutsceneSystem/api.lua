@@ -22,6 +22,19 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 
 ---
+-- Events, auf die reagiert werden kann.
+--
+-- @field CutsceneStarted           Eine Cutscene beginnt (Parameter: PlayerID, CutsceneTable)
+-- @field CutsceneEnded             Eine Cutscene endet (Parameter: PlayerID, CutsceneTable)
+-- @field CutsceneSkipButtonPressed Der Spieler beschleunigt die Wiedergabegeschwindigkeit (Parameter: PlayerID)
+-- @field CutsceneFlightStarted     Ein Flight wird gestartet (Parameter: PlayerID, PageIndex, Duration)
+-- @field CutsceneFlightEnded       Ein Flight ist beendet (Parameter: PlayerID, PageIndex)
+--
+-- @within Event
+--
+QSB.ScriptEvents = QSB.ScriptEvents or {};
+
+---
 --
 --
 function API.StartCutscene(_Cutscene, _Name, _PlayerID)
@@ -101,7 +114,8 @@ end
 
 ---
 --
---BriefingBriefing
+-- @within Cutscene
+--
 function AF(_Data)
     error("AF (Cutscene System): not bound to a cutscene!");
 end

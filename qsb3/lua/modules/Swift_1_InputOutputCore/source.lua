@@ -395,8 +395,11 @@ function ModuleInputOutputCore.Local:ShowInputBox()
 end
 
 function ModuleInputOutputCore.Local:PrepareInputVariable()
-    GUI.SendScriptCommand("API.SendScriptEvent(QSB.ScriptEvents.ChatOpened)");
-    API.SendScriptEvent(QSB.ScriptEvents.ChatOpened);
+    GUI.SendScriptCommand(string.format(
+        "API.SendScriptEvent(QSB.ScriptEvents.ChatOpened, %d)",
+        GUI.GetPlayerID()
+    ));
+    API.SendScriptEvent(QSB.ScriptEvents.ChatOpened, GUI.GetPlayerID());
 
     GUI_Chat.Abort_Orig_ModuleInputOutputCore = GUI_Chat.Abort_Orig_ModuleInputOutputCore or GUI_Chat.Abort;
     GUI_Chat.Confirm_Orig_ModuleInputOutputCore = GUI_Chat.Confirm_Orig_ModuleInputOutputCore or GUI_Chat.Confirm;

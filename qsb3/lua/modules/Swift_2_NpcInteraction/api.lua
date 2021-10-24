@@ -28,6 +28,15 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 
 ---
+-- Events, auf die reagiert werden kann.
+--
+-- @field NpcInteraction  (Parameter: NpcEntityID, HeroEntityID)
+--
+-- @within Event
+--
+QSB.ScriptEvents = QSB.ScriptEvents or {};
+
+---
 -- Erstellt einen neuen NPC für den angegebenen Siedler.
 --
 -- Mögliche Einstellungen für den NPC:

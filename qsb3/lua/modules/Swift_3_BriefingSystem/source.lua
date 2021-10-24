@@ -47,7 +47,7 @@ QSB.Briefing = {
 
 function ModuleBriefingSystem.Global:OnGameStart()
     QSB.ScriptEvents.BriefingStarted = API.RegisterScriptEvent("Event_BriefingStarted");
-    QSB.ScriptEvents.BriefingConcluded = API.RegisterScriptEvent("Event_BriefingConcluded");
+    QSB.ScriptEvents.BriefingEnded = API.RegisterScriptEvent("Event_BriefingEnded");
     QSB.ScriptEvents.BriefingPageShown = API.RegisterScriptEvent("Event_BriefingPageShown");
     QSB.ScriptEvents.BriefingOptionSelected = API.RegisterScriptEvent("Event_BriefingOptionSelected");
     QSB.ScriptEvents.BriefingLeftClick = API.RegisterScriptEvent("Event_BriefingLeftClick");
@@ -68,9 +68,9 @@ function ModuleBriefingSystem.Global:OnEvent(_ID, _Event, ...)
         -- TODO fix problem with throneroom
     elseif _ID == QSB.ScriptEvents.BriefingStarted then
         self:NextPage(arg[1]);
-    elseif _ID == QSB.ScriptEvents.BriefingConcluded then
+    elseif _ID == QSB.ScriptEvents.BriefingEnded then
         Logic.ExecuteInLuaLocalState(string.format(
-            [[API.SendScriptEvent(QSB.ScriptEvents.BriefingConcluded, %d, %s)]],
+            [[API.SendScriptEvent(QSB.ScriptEvents.BriefingEnded, %d, %s)]],
             arg[1],
             table.tostring(arg[2])
         ));
@@ -119,13 +119,13 @@ function ModuleBriefingSystem.Global:StartBriefing(_Name, _PlayerID, _Data)
 end
 
 function ModuleBriefingSystem.Global:EndBriefing(_PlayerID)
-    API.FinishCinematicEvent(self.Briefing[_PlayerID].Name);
+    API.FinishCinematicEvent(self.Briefing[_PlayerID].Name, _PlayerID);
     Logic.SetGlobalInvulnerability(0);
     if self.Briefing[_PlayerID].Finished then
         self.Briefing[_PlayerID]:Finished();
     end
     API.SendScriptEvent(
-        QSB.ScriptEvents.BriefingConcluded,
+        QSB.ScriptEvents.BriefingEnded,
         _PlayerID,
         self.Briefing[_PlayerID]
     );
@@ -343,27 +343,13 @@ end
 
 function ModuleBriefingSystem.Local:OnGameStart()
     QSB.ScriptEvents.BriefingStarted = API.RegisterScriptEvent("Event_BriefingStarted");
-    QSB.ScriptEvents.BriefingConcluded = API.RegisterScriptEvent("Event_BriefingConcluded");
+    QSB.ScriptEvents.BriefingEnded = API.RegisterScriptEvent("Event_BriefingEnded");
     QSB.ScriptEvents.BriefingPageShown = API.RegisterScriptEvent("Event_BriefingPageShown");
     QSB.ScriptEvents.BriefingOptionSelected = API.RegisterScriptEvent("Event_BriefingOptionSelected");
     QSB.ScriptEvents.BriefingLeftClick = API.RegisterScriptEvent("Event_BriefingLeftClick");
     QSB.ScriptEvents.BriefingSkipButtonPressed = API.RegisterScriptEvent("Event_BriefingSkipButtonPressed");
 
     self:OverrideThroneRoomFunctions();
-end
-
-function ModuleBriefingSystem.Local:OnEvent(_ID, _Event, ...)
-    if _ID == QSB.ScriptEvents.EscapePressed then
-        -- TODO fix problem with throneroom
-    elseif _ID == QSB.ScriptEvents.BriefingStarted then
-        self:StartBriefing(arg[1], arg[2]);
-    elseif _ID == QSB.ScriptEvents.BriefingConcluded then
-        self:EndBriefing(arg[1], arg[2]);
-    elseif _ID == QSB.ScriptEvents.BriefingPageShown then
-        self:DisplayPage(arg[1], arg[2]);
-    elseif _ID == QSB.ScriptEvents.BriefingSkipButtonPressed then
-        self:SkipButtonPressed(arg[1]);
-    end
 end
 
 function ModuleBriefingSystem.Local:StartBriefing(_PlayerID, _Briefing)

@@ -34,7 +34,7 @@ function ModuleJobsCore.Local:OnGameStart()
     ModuleJobsCore.Shared:InstallEventJobs();
 end
 
-function ModuleJobsCore.Shared:TriggerEventJobs(_Type)
+function ModuleJobsCore.Shared:TriggerEventJobs(_Type, ...)
     for k, v in pairs(self.EventJobs[_Type]) do
         if type(v) == "table" then
             if v.Active == false then
@@ -45,7 +45,7 @@ function ModuleJobsCore.Shared:TriggerEventJobs(_Type)
                         local Arguments = Swift:CopyTable(v.Arguments or {});
                         Arguments = Array_Append(Arguments, v.Arguments or {});
                         if v.Function(unpack(Arguments)) == true then
-                            self.EventJobs[_Type][k] = nil;
+                            self.EventJobs[_Type][k].Active = false;
                         end
                     end
                 end

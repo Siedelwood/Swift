@@ -28,6 +28,20 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 
 ---
+-- Events, auf die reagiert werden kann.
+--
+-- @field BriefingStarted           Ein Briefing beginnt (Parameter: PlayerID, BriefingTable)
+-- @field BriefingEnded             Ein Briefing endet (Parameter: PlayerID, BriefingTable)
+-- @field BriefingPageShown         Ein Briefing endet (Parameter: PlayerID, PageIndex)
+-- @field BriefingSkipButtonPressed Der Spieler überspringt eine Seite (Parameter: PlayerID)
+-- @field BriefingOptionSelected    Eine Multiple Choice Option wurde ausgewählt (Parameter: PlayerID, OptionID)
+-- @field BriefingLeftClick         Left Mouse wurde während des Briefings gedrückt (Parameter: PlayerID)
+--
+-- @within Event
+--
+QSB.ScriptEvents = QSB.ScriptEvents or {};
+
+---
 -- Startet ein Briefing.
 --
 -- <h5>Einstellungen</h5>

@@ -29,8 +29,10 @@ ModuleNpcInteraction = {
     };
 };
 
-QSB.LastNpcEntityID = 0;
-QSB.LastHeroEntityID = 0;
+QSB.Npc = {
+    LastNpcEntityID = 0,
+    LastHeroEntityID = 0,
+}
 
 -- Global Script ------------------------------------------------------------ --
 
@@ -48,8 +50,8 @@ end
 
 function ModuleNpcInteraction.Global:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.NpcInteraction then
-        QSB.LastNpcEntityID = arg[1];
-        QSB.LastHeroEntityID = arg[2];
+        QSB.Npc.LastNpcEntityID = arg[1];
+        QSB.Npc.LastHeroEntityID = arg[2];
         self:PerformNpcInteraction(arg[3]);
     end
 end
@@ -103,7 +105,7 @@ function ModuleNpcInteraction.Global:UpdateNpc(_Data)
 end
 
 function ModuleNpcInteraction.Global:PerformNpcInteraction(_PlayerID)
-    local ScriptName = Logic.GetEntityName(QSB.LastNpcEntityID);
+    local ScriptName = Logic.GetEntityName(QSB.Npc.LastNpcEntityID);
     if self.NPC[ScriptName] then
         local Data = self.NPC[ScriptName];
         self:RotateActorsToEachother(_PlayerID);
@@ -112,7 +114,7 @@ function ModuleNpcInteraction.Global:PerformNpcInteraction(_PlayerID)
         if not self:InteractionIsAppropriatePlayer(ScriptName, _PlayerID) then
             return;
         end
-        Data.TalkedTo = QSB.LastHeroEntityID;
+        Data.TalkedTo = QSB.Npc.LastHeroEntityID;
 
         if not self:InteractionIsAppropriateHero(ScriptName) then
             return;
@@ -161,9 +163,9 @@ function ModuleNpcInteraction.Global:InteractionIsAppropriateHero(_ScriptName)
         local Data = self.NPC[_ScriptName];
         if Data.Hero ~= nil then
             if type(Data.Hero) == "table" then
-                Appropriate = table.contains(Data.Hero, Logic.GetEntityName(QSB.LastHeroEntityID));
+                Appropriate = table.contains(Data.Hero, Logic.GetEntityName(QSB.Npc.LastHeroEntityID));
             end
-            Appropriate = Data.Hero == Logic.GetEntityName(QSB.LastHeroEntityID);
+            Appropriate = Data.Hero == Logic.GetEntityName(QSB.Npc.LastHeroEntityID);
 
             if not Appropriate then
                 local LastTime = (Data.WrongHeroTick or 0) +1;
@@ -183,33 +185,33 @@ function ModuleNpcInteraction.Global:RotateActorsToEachother(_PlayerID)
     Logic.GetKnights(_PlayerID, PlayerKnights);
     for k, v in pairs(PlayerKnights) do
         local Target = API.GetEntityMovementTarget(v);
-        local x, y, z = Logic.EntityGetPos(QSB.LastNpcEntityID);
+        local x, y, z = Logic.EntityGetPos(QSB.Npc.LastNpcEntityID);
         if math.floor(Target.X) == math.floor(x) and math.floor(Target.Y) == math.floor(y) then
             x, y, z = Logic.EntityGetPos(v);
             Logic.MoveEntity(v, x, y);
-            API.LookAt(v, QSB.LastNpcEntityID);
+            API.LookAt(v, QSB.Npc.LastNpcEntityID);
         end
     end
-    API.LookAt(QSB.LastHeroEntityID, QSB.LastNpcEntityID);
-    API.LookAt(QSB.LastNpcEntityID, QSB.LastHeroEntityID);
+    API.LookAt(QSB.Npc.LastHeroEntityID, QSB.Npc.LastNpcEntityID);
+    API.LookAt(QSB.Npc.LastNpcEntityID, QSB.Npc.LastHeroEntityID);
 end
 
 function ModuleNpcInteraction.Global:AdjustHeroTalkingDistance(_Distance)
-    local Distance = _Distance * API.GetEntityScale(QSB.LastNpcEntityID);
-    if API.GetDistance(QSB.LastHeroEntityID, QSB.LastNpcEntityID) <= Distance * 0.7 then
-        local Orientation = Logic.GetEntityOrientation(QSB.LastNpcEntityID);
-        local x1, y1, z1 = Logic.EntityGetPos(QSB.LastHeroEntityID);
+    local Distance = _Distance * API.GetEntityScale(QSB.Npc.LastNpcEntityID);
+    if API.GetDistance(QSB.Npc.LastHeroEntityID, QSB.Npc.LastNpcEntityID) <= Distance * 0.7 then
+        local Orientation = Logic.GetEntityOrientation(QSB.Npc.LastNpcEntityID);
+        local x1, y1, z1 = Logic.EntityGetPos(QSB.Npc.LastHeroEntityID);
         local x2 = x1 + ((Distance * 0.5) * math.cos(math.rad(Orientation)));
         local y2 = y1 + ((Distance * 0.5) * math.sin(math.rad(Orientation)));
         local ID = Logic.CreateEntityOnUnblockedLand(Entities.XD_ScriptEntity, x2, y2, 0, 0);
         local x3, y3, z3 = Logic.EntityGetPos(ID);
-        Logic.MoveSettler(QSB.LastHeroEntityID, x3, y3);
+        Logic.MoveSettler(QSB.Npc.LastHeroEntityID, x3, y3);
         API.StartHiResJob( function(_HeroID, _NPCID, _Time)
             if Logic.GetTime() > _Time +0.5 and Logic.IsEntityMoving(_HeroID) == false then
                 API.Confront(_HeroID, _NPCID);
                 return true;
             end
-        end, QSB.LastHeroEntityID, QSB.LastNpcEntityID, Logic.GetTime());
+        end, QSB.Npc.LastHeroEntityID, QSB.Npc.LastNpcEntityID, Logic.GetTime());
     end
 end
 
@@ -332,8 +334,8 @@ end
 
 function ModuleNpcInteraction.Local:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.NpcInteraction then
-        QSB.LastNpcEntityID = arg[1];
-        QSB.LastHeroEntityID = arg[2];
+        QSB.Npc.LastNpcEntityID = arg[1];
+        QSB.Npc.LastHeroEntityID = arg[2];
     end
 end
 

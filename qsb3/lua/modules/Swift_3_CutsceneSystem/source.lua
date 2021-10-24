@@ -82,15 +82,15 @@ function ModuleCutsceneSystem.Global:StartCutscene(_Name, _PlayerID, _Data)
     table.insert(self.CutsceneQueue[_PlayerID], {_Name, _Data});
 end
 
-function ModuleCutsceneSystem.Global:EndCutscene(_PlayerID)
-    API.FinishCinematicEvent(self.Cutscene[_PlayerID].Name);
+function ModuleCutsceneSystem.Global:EndCutscene(_PlayerID, _Cutscene)
+    API.FinishCinematicEvent(self.Cutscene[_PlayerID].Name, _PlayerID);
     Logic.SetGlobalInvulnerability(0);
     if self.Cutscene[_PlayerID].Finished then
         self.Cutscene[_PlayerID]:Finished();
     end
     Logic.ExecuteInLuaLocalState(string.format(
         [[API.SendScriptEvent(QSB.ScriptEvents.QSB.ScriptEvents.CutsceneEnded, %d, %s)]],
-        PlayerID,
+        _PlayerID,
         table.tostring(self.Cutscene[_PlayerID])
     ));
     self.Cutscene[_PlayerID] = nil;
@@ -136,7 +136,7 @@ function ModuleCutsceneSystem.Global:StartCutsceneFlight(_PlayerID, _PageID, _Du
         self.Cutscene[_PlayerID][_PageID]:Action();
     end
 
-    Logic.ExecuteInLuaLocalState(sting.format(
+    Logic.ExecuteInLuaLocalState(string.format(
         [[API.SendScriptEvent(QSB.ScriptEvents.QSB.ScriptEvents.CutsceneFlightStarted, %d, %d, %d)]],
         _PlayerID,
         _PageID,
@@ -148,7 +148,7 @@ function ModuleCutsceneSystem.Global:EndCutsceneFlight(_PlayerID, _PageID)
     if self.Cutscene[_PlayerID] == nil then
         return;
     end
-    Logic.ExecuteInLuaLocalState(sting.format(
+    Logic.ExecuteInLuaLocalState(string.format(
         [[API.SendScriptEvent(QSB.ScriptEvents.QSB.ScriptEvents.CutsceneFlightEnded, %d, %d, %d)]],
         _PlayerID,
         _PageID
@@ -159,7 +159,7 @@ function ModuleCutsceneSystem.Global:DisplayPage(_PlayerID, _PageID)
     if self.Cutscene[_PlayerID] == nil then
         return;
     end
-    Logic.ExecuteInLuaLocalState(sting.format(
+    Logic.ExecuteInLuaLocalState(string.format(
         [[API.SendScriptEvent(QSB.ScriptEvents.QSB.ScriptEvents.CutscenePageShown, %d, %d, %d)]],
         _PlayerID,
         _PageID
@@ -194,6 +194,10 @@ function ModuleCutsceneSystem.Global:GetPageIDByName(_PlayerID, _Name)
     return _Name;
 end
 
+function ModuleCutsceneSystem.Global:CanStartCutscene(_PlayerID)
+    return self.Cutscene[_PlayerID] == nil and not API.IsCinematicEventActive(_PlayerID);
+end
+
 -- Local -------------------------------------------------------------------- --
 
 function ModuleCutsceneSystem.Local:OnGameStart()
@@ -218,7 +222,7 @@ function ModuleCutsceneSystem.Local:OnEvent(_ID, _Event, ...)
     elseif _ID == QSB.ScriptEvents.CutsceneFlightEnded then
         self:EndCutsceneFlight(arg[1], arg[2]);
     elseif _ID == QSB.ScriptEvents.CutsceneSkipButtonPressed then
-        self:SkipButtonPressed(arg[1], arg[2]);
+        self:SkipButtonPressed(arg[1]);
     end
 end
 
@@ -275,12 +279,12 @@ function ModuleCutsceneSystem.Local:NextFlight(_PlayerID)
 end
 
 function ModuleCutsceneSystem.Local:PropagateCutsceneEnded(_PlayerID)
-    if not self.Cutscene[PlayerID] then
+    if not self.Cutscene[_PlayerID] then
         return;
     end
     GUI.SendScriptCommand(string.format(
         [[API.SendScriptEvent(QSB.ScriptEvents.QSB.ScriptEvents.CutsceneEnded, %d, %s)]],
-        PlayerID,
+        _PlayerID,
         table.tostring(self.Cutscene[_PlayerID])
     ));
 end
@@ -459,12 +463,12 @@ function ModuleCutsceneSystem.Local:ThroneRoomCameraControl(_PlayerID, _Page)
             local Indent = string.rep("  ", (self.Cutscene[_PlayerID].FastForwardIndent or 0));
             XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", Text..Indent.. ". . .");
         else
-            XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", Text..Indent.. " ");
+            XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", " ");
         end
     end
 end
 
-function ModuleCutsceneSystem.Local:SkipButtonPressed(_PlayerID, _PageID)
+function ModuleCutsceneSystem.Local:SkipButtonPressed(_PlayerID)
     if (self.Cutscene[_PlayerID].LastSkipButtonPressed + 500) < Logic.GetTimeMs() then
         self.Cutscene[_PlayerID].LastSkipButtonPressed = Logic.GetTimeMs();
 

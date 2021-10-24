@@ -92,11 +92,15 @@ ModuleSelection = {
 
 function ModuleSelection.Global:OnGameStart()
     QSB.ScriptEvents.SelectionChanged = API.RegisterScriptEvent("Event_SelectionChanged");
+
+    for i= 1, 8 do
+        self.SelectedEntities[i] = {};
+    end
 end
 
 function ModuleSelection.Global:OnEvent(_ID, _Event, _PlayerID, _OldSelection, _NewSelection)
     if _ID == QSB.ScriptEvents.SelectionChanged then
-        self.SelectedEntities = _NewSelection or {};
+        self.SelectedEntities[_PlayerID] = _NewSelection or {};
     end
 end
 
@@ -139,10 +143,10 @@ function ModuleSelection.Global:MilitaryErectTrebuchet(_EntityID)
 
     -- Externes Callback für das Kartenskript
     -- Bricht die Ausführung dieser Funktion ab!
-    if GameCallback_QSB_OnErectTrebuchet then
-        GameCallback_QSB_OnErectTrebuchet(_EntityID, PlayerID, x, y, z);
-        return;
-    end
+    -- if GameCallback_QSB_OnErectTrebuchet then
+    --     GameCallback_QSB_OnErectTrebuchet(_EntityID, PlayerID, x, y, z);
+    --     return;
+    -- end
 
     Logic.CreateEffect(EGL_Effects.E_Shockwave01, x, y, 0);
     Logic.SetEntityInvulnerabilityFlag(_EntityID, 1);
@@ -321,9 +325,9 @@ function ModuleSelection.Local:OnSelectionCanged(_Source)
     local EntityID = GUI.GetSelectedEntity();
     local EntityType = Logic.GetEntityType(EntityID);
 
-    local OldSelectionString = Swift:ConvertTableToString(self.SelectedEntities or {});
-    self.SelectedEntities = SelectedEntities;
-    local NewSelectionString = Swift:ConvertTableToString(self.SelectedEntities or {});
+    local OldSelectionString = Swift:ConvertTableToString(self.SelectedEntities[PlayerID] or {});
+    self.SelectedEntities[PlayerID] = SelectedEntities;
+    local NewSelectionString = Swift:ConvertTableToString(self.SelectedEntities[PlayerID] or {});
 
     API.SendScriptEvent(QSB.ScriptEvents.SelectionChanged, PlayerID, OldSelection, SelectedEntities);
     GUI.SendScriptCommand(string.format(

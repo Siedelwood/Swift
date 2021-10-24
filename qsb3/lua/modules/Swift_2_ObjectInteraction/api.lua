@@ -23,6 +23,17 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 
 ---
+-- Events, auf die reagiert werden kann.
+--
+-- @field ObjectInteraction Es wird mit einem interaktiven Objekt interagiert (Parameter: EntityID, KnightID, PlayerID)
+-- @field ObjectDelete      Eine Interaktion wird von einem Objekt entfernt (Parameter: ScriptName)
+-- @field ObjectReset       Der Zustand eines interaktiven Objekt wird zurückgesetzt (Parameter: ScriptName)
+--
+-- @within Event
+--
+QSB.ScriptEvents = QSB.ScriptEvents or {};
+
+---
 -- Erzeugt ein einfaches interaktives Objekt.
 --
 -- Dabei können alle Entities als interaktive Objekte behandelt werden, nicht

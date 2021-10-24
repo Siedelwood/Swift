@@ -116,7 +116,7 @@ function QSB.SimpleTypewriter:Play()
     QSB.SimpleTypewriterCounter = QSB.SimpleTypewriterCounter +1;
     local Name = "CinmaticEventTypewriter" ..QSB.SimpleTypewriterCounter;
     self.m_CinematicEventName = Name;
-    API.StartCinematicEvent(Name);
+    API.StartCinematicEvent(Name, GUI.GetPlayerID);
     if self.m_PaintBlack then
         API.ActivateBlackScreen();
     end
@@ -133,7 +133,7 @@ end
 -- @local
 --
 function QSB.SimpleTypewriter:Stop()
-    API.FinishCinematicEvent(self.m_CinematicEventName);
+    API.FinishCinematicEvent(self.m_CinematicEventName, GUI.GetPlayerID);
     API.DeactivateBlackScreen();
     API.ActivateNormalInterface();
     Logic.ExecuteInLuaLocalState("Input.GameMode()");
