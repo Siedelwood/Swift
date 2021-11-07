@@ -71,6 +71,7 @@ function Swift:LoadCore()
         self:OverrideEscapeCallback();
         self:OverrideDoQuicksave();
         self:InitalizeCallbackLocal();
+        self:ValidateTerritories();
 
         -- Human player ID makes only sense in singleplayer context
         if not Framework.IsNetworkGame() then
@@ -278,6 +279,21 @@ end
 
 function Swift:IsLocalEnvironment()
     return "local" == self.m_Environment;
+end
+
+function Swift:ValidateTerritories()
+    local InvalidTerritories = false;
+    local Territories = {Logic.GetTerritories()};
+    for i= 1, #Territories, 1 do
+        local x, y = GUI.ComputeTerritoryPosition(Territories[i]);
+        if not x or not y then
+            error("Territory " ..Territories[i].. " is invalid!");
+            InvalidTerritories = true;
+        end
+    end
+    if InvalidTerritories then
+        error ("A territory must have a size greater 0 and no separated areas!");
+    end
 end
 
 -- History Edition
