@@ -601,7 +601,6 @@ function ModuleBriefingSystem.Local:AnimateSplashScreen(_PlayerID)
     local PageID = self.Briefing[_PlayerID].CurrentPage;
     local Page = self.Briefing[_PlayerID][PageID];
 
-    local SSW = "/InGame/ThroneRoom/KnightInfo/BG";
     if type(Page.Splashscreen) == "table" then
         local U0, V0, U1, V1, A, I = 0, 0, 1, 1, 255, nil;
         if type(Page.Splashscreen.Animation) == "function" then
@@ -812,6 +811,9 @@ function ModuleBriefingSystem.Local:GetLERP(_PlayerID)
 end
 
 function ModuleBriefingSystem.Local:SkipButtonPressed(_PlayerID, _Page)
+    if not self.Briefing[_PlayerID] then
+        return;
+    end
     if (self.Briefing[_PlayerID].LastSkipButtonPressed + 500) < Logic.GetTimeMs() then
         self.Briefing[_PlayerID].LastSkipButtonPressed = Logic.GetTimeMs();
     end
