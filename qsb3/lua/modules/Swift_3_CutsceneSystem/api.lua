@@ -75,7 +75,7 @@ end
 -- @within Anwenderfunktionen
 --
 -- @usage
--- local AF = API.AddCutscenePages(Briefing);
+-- local AF = API.AddCutscenePages(Cutscene);
 --
 function API.AddCutscenePages(_Cutscene)
     _Cutscene.GetPage = function(self, _PlayerID, _NameOrID)

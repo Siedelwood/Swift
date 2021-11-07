@@ -89,7 +89,7 @@ function ModuleCutsceneSystem.Global:EndCutscene(_PlayerID, _Cutscene)
         self.Cutscene[_PlayerID]:Finished();
     end
     Logic.ExecuteInLuaLocalState(string.format(
-        [[API.SendScriptEvent(QSB.ScriptEvents.QSB.ScriptEvents.CutsceneEnded, %d, %s)]],
+        [[API.SendScriptEvent(QSB.ScriptEvents.CutsceneEnded, %d, %s)]],
         _PlayerID,
         table.tostring(self.Cutscene[_PlayerID])
     ));
@@ -132,12 +132,13 @@ function ModuleCutsceneSystem.Global:StartCutsceneFlight(_PlayerID, _PageID, _Du
     if self.Cutscene[_PlayerID] == nil then
         return;
     end
+    self.Cutscene[_PlayerID][_PageID].Duration = _Duration;
     if self.Cutscene[_PlayerID][_PageID].Action then
         self.Cutscene[_PlayerID][_PageID]:Action();
     end
 
     Logic.ExecuteInLuaLocalState(string.format(
-        [[API.SendScriptEvent(QSB.ScriptEvents.QSB.ScriptEvents.CutsceneFlightStarted, %d, %d, %d)]],
+        [[API.SendScriptEvent(QSB.ScriptEvents.CutsceneFlightStarted, %d, %d, %d)]],
         _PlayerID,
         _PageID,
         _Duration
@@ -149,7 +150,7 @@ function ModuleCutsceneSystem.Global:EndCutsceneFlight(_PlayerID, _PageID)
         return;
     end
     Logic.ExecuteInLuaLocalState(string.format(
-        [[API.SendScriptEvent(QSB.ScriptEvents.QSB.ScriptEvents.CutsceneFlightEnded, %d, %d, %d)]],
+        [[API.SendScriptEvent(QSB.ScriptEvents.CutsceneFlightEnded, %d, %d)]],
         _PlayerID,
         _PageID
     ));
@@ -160,7 +161,7 @@ function ModuleCutsceneSystem.Global:DisplayPage(_PlayerID, _PageID)
         return;
     end
     Logic.ExecuteInLuaLocalState(string.format(
-        [[API.SendScriptEvent(QSB.ScriptEvents.QSB.ScriptEvents.CutscenePageShown, %d, %d, %d)]],
+        [[API.SendScriptEvent(QSB.ScriptEvents.CutscenePageShown, %d, %d)]],
         _PlayerID,
         _PageID
     ));
@@ -249,6 +250,9 @@ function ModuleCutsceneSystem.Local:EndCutscene(_PlayerID, _Cutscene)
         return;
     end
 
+    if not Framework.IsNetworkGame() then
+        Game.GameTimeSetFactor(_PlayerID, 1);
+    end
     self:DeactivateCinematicMode(_PlayerID);
     API.ActivateNormalInterface();
     API.ActivateBorderScroll();
@@ -283,7 +287,7 @@ function ModuleCutsceneSystem.Local:PropagateCutsceneEnded(_PlayerID)
         return;
     end
     GUI.SendScriptCommand(string.format(
-        [[API.SendScriptEvent(QSB.ScriptEvents.QSB.ScriptEvents.CutsceneEnded, %d, %s)]],
+        [[API.SendScriptEvent(QSB.ScriptEvents.CutsceneEnded, %d, %s)]],
         _PlayerID,
         table.tostring(self.Cutscene[_PlayerID])
     ));
@@ -294,7 +298,7 @@ function ModuleCutsceneSystem.Local:FlightStarted(_Duration)
     if self.Cutscene[PlayerID] then
         local PageID = self.Cutscene[PlayerID].CurrentPage;
         GUI.SendScriptCommand(string.format(
-            [[API.SendScriptEvent(QSB.ScriptEvents.QSB.ScriptEvents.CutsceneFlightStarted, %d, %d, %d)]],
+            [[API.SendScriptEvent(QSB.ScriptEvents.CutsceneFlightStarted, %d, %d, %d)]],
             PlayerID,
             PageID,
             _Duration
@@ -317,7 +321,7 @@ function ModuleCutsceneSystem.Local:FlightFinished()
     if self.Cutscene[PlayerID] then
         local PageID = self.Cutscene[PlayerID].CurrentPage;
         GUI.SendScriptCommand(string.format(
-            [[API.SendScriptEvent(QSB.ScriptEvents.QSB.ScriptEvents.CutsceneFlightEnded, %d, %d)]],
+            [[API.SendScriptEvent(QSB.ScriptEvents.CutsceneFlightEnded, %d, %d)]],
             PlayerID,
             PageID
         ))
@@ -342,6 +346,7 @@ function ModuleCutsceneSystem.Local:DisplayPage(_PlayerID, _PageID, _Duration)
     self.Cutscene[_PlayerID].CurrentPage = _PageID;
     if type(self.Cutscene[_PlayerID][_PageID]) == "table" then
         self.Cutscene[_PlayerID][_PageID].Started = Logic.GetTime();
+        self.Cutscene[_PlayerID][_PageID].Duration = _Duration;
         self:DisplayPageBars(_PlayerID, _PageID);
         self:DisplayPageTitle(_PlayerID, _PageID);
         self:DisplayPageText(_PlayerID, _PageID);
@@ -391,8 +396,8 @@ end
 
 function ModuleCutsceneSystem.Local:DisplayPageText(_PlayerID, _PageID)
     local Page = self.Cutscene[_PlayerID][_PageID];
-    local TextWidget = "/InGame/ThroneRoom/Main/MissionCutscene/Text";
-    XGUIEng.SetText(TextWidget, "");
+    local TextWidget = "/InGame/ThroneRoom/Main/MissionBriefing/Text";
+    XGUIEng.SetText(TextWidget, "Bockwurst");
     if Page.Text then
         local Text = Page.Text;
         if Text:find("^[A-Za-Z0-9_]+/[A-Za-Z0-9_]+$") then
@@ -433,12 +438,13 @@ function ModuleCutsceneSystem.Local:DisplayPageFader(_PlayerID, _PageID)
                 FadeOut(_FadeOut);
                 return true;
             end
-        end, Logic.GetTimeMs() + ((Page.Duration or 0) * 1000), PageFadeOut);
+        end, (Page.Started * 1000) + (Page.Duration * 100), PageFadeOut);
     end
 end
 
 function ModuleCutsceneSystem.Local:ThroneRoomCameraControl(_PlayerID, _Page)
     if _Page then
+
         -- Button text
         local SkipText = API.Localize(ModuleCutsceneSystem.Shared.Text.FastForwardActivate);
         if self.Cutscene[_PlayerID].FastForward then
@@ -469,6 +475,9 @@ function ModuleCutsceneSystem.Local:ThroneRoomCameraControl(_PlayerID, _Page)
 end
 
 function ModuleCutsceneSystem.Local:SkipButtonPressed(_PlayerID)
+    if self.Cutscene[_PlayerID] == nil then
+        return;
+    end
     if (self.Cutscene[_PlayerID].LastSkipButtonPressed + 500) < Logic.GetTimeMs() then
         self.Cutscene[_PlayerID].LastSkipButtonPressed = Logic.GetTimeMs();
 
@@ -565,13 +574,11 @@ function ModuleCutsceneSystem.Local:ActivateCinematicMode(_PlayerID)
     local ScreenX, ScreenY = GUI.GetScreenSize();
 
     XGUIEng.ShowWidget("/InGame/ThroneRoom", 1);
-    XGUIEng.PushPage("/InGame/ThroneRoom/KnightInfo", false);
     XGUIEng.PushPage("/InGame/ThroneRoomBars", false);
     XGUIEng.PushPage("/InGame/ThroneRoomBars_2", false);
     XGUIEng.PushPage("/InGame/ThroneRoom/Main", false);
     XGUIEng.PushPage("/InGame/ThroneRoomBars_Dodge", false);
     XGUIEng.PushPage("/InGame/ThroneRoomBars_2_Dodge", false);
-    XGUIEng.PushPage("/InGame/ThroneRoom/KnightInfo/LeftFrame", false);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", 1);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/StartButton", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/DialogTopChooseKnight", 1);
@@ -580,24 +587,24 @@ function ModuleCutsceneSystem.Local:ActivateCinematicMode(_PlayerID)
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/DialogTopChooseKnight/FrameEdges", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/DialogBottomRight3pcs", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/KnightInfoButton", 0);
+    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Briefing", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/BackButton", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Cutscene", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/TitleContainer", 0);
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionCutscene/Text", 1);
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionCutscene/Title", 1);
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionCutscene/Objectives", 1);
+    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Text", 1);
+    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Title", 1);
+    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", 1);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/BG", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/LeftFrame", 0);
 
     -- Text
-    XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionCutscene/Text", " ");
-    XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionCutscene/Title", " ");
-    XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionCutscene/Objectives", " ");
+    XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Text", " ");
+    XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Title", " ");
+    XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", " ");
 
     -- Title and back button position
     local x,y = XGUIEng.GetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight");
     XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight", x, 65 * (ScreenY/1080));
-    XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/Objectives", 2, 0, 2000, 20);
 
     GUI.ClearSelection();
     GUI.ClearNotes();
@@ -619,8 +626,8 @@ function ModuleCutsceneSystem.Local:ActivateCinematicMode(_PlayerID)
     Camera.SwitchCameraBehaviour(5);
 
     InitializeFader();
-    g_Fade.To = 0;
-    SetFaderAlpha(0);
+    g_Fade.To = 1;
+    SetFaderAlpha(1);
 
     if LoadScreenVisible then
         XGUIEng.PushPage("/LoadScreen/LoadScreen", false);
@@ -655,14 +662,12 @@ function ModuleCutsceneSystem.Local:DeactivateCinematicMode(_PlayerID)
     XGUIEng.PopPage();
     XGUIEng.PopPage();
     XGUIEng.PopPage();
-    XGUIEng.PopPage();
-    XGUIEng.PopPage();
     XGUIEng.ShowWidget("/InGame/ThroneRoom", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoomBars", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoomBars_Dodge", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", 0);
-    XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionCutscene/Objectives", " ");
+    XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", " ");
 end
 
 -- -------------------------------------------------------------------------- --

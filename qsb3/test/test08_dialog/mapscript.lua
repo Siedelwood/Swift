@@ -79,6 +79,36 @@ function Mission_FirstMapAction()
     API.ActivateDebugMode(true, false, true, true);
 end
 
+-- > BriefingCutsceneTest([[foo]], 1)
+
+function BriefingCutsceneTest(_Name, _PlayerID)
+    local Cutscene = {};
+    local AF = API.AddCutscenePages(Cutscene);
+
+    AF {
+        Flight  = "c01",
+        Title   = "Flight 1",
+        Text    = "Bla Bla Bla",
+        FadeIn  = 3,
+    };
+    AF {
+        Flight  = "c02",
+        Title   = "Flight 2",
+        Text    = "Bla Bla Bla",
+        Action  = function()
+            API.Note("It just work's!");
+        end
+    };
+    AF {
+        Flight  = "c03",
+        Title   = "Flight 3",
+        Text    = "Bla Bla Bla",
+        FadeOut = 3,
+    };
+
+    API.StartCutscene(Cutscene, _Name, _PlayerID)
+end
+
 -- > BriefingAnimationTest1([[foo]], 1)
 
 function BriefingAnimationTest1(_Name, _PlayerID)
