@@ -106,7 +106,7 @@ function API.StartDialog(_Dialog, _Name, _PlayerID)
         return;
     end
     for i=1, #_Dialog do
-        if not _Dialog[i].__Legit then
+        if type(_Dialog[i]) == "table" and not _Dialog[i].__Legit then
             local Name = "Dialog #" ..(ModuleDialogSystem.Global.DialogCounter +1);
             error("API.StartDialog (" ..Name.. ", Page #" ..i.. "): Page is not initialized!");
             return;

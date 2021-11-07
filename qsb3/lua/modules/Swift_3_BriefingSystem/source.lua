@@ -352,6 +352,20 @@ function ModuleBriefingSystem.Local:OnGameStart()
     self:OverrideThroneRoomFunctions();
 end
 
+function ModuleBriefingSystem.Local:OnEvent(_ID, _Event, ...)
+    if _ID == QSB.ScriptEvents.EscapePressed then
+        -- TODO fix problem with throneroom
+    elseif _ID == QSB.ScriptEvents.BriefingStarted then
+        self:StartBriefing(arg[1], arg[2]);
+    elseif _ID == QSB.ScriptEvents.BriefingEnded then
+        self:EndBriefing(arg[1], arg[2]);
+    elseif _ID == QSB.ScriptEvents.BriefingPageShown then
+        self:DisplayPage(arg[1], arg[2]);
+    elseif _ID == QSB.ScriptEvents.BriefingSkipButtonPressed then
+        self:SkipButtonPressed(arg[1]);
+    end
+end
+
 function ModuleBriefingSystem.Local:StartBriefing(_PlayerID, _Briefing)
     if GUI.GetPlayerID() ~= _PlayerID then
         return;

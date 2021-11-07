@@ -153,7 +153,7 @@ function API.StartBriefing(_Briefing, _Name, _PlayerID)
         return;
     end
     for i=1, #_Briefing do
-        if not _Briefing[i].__Legit then
+        if type(_Briefing[i]) == "table" and not _Briefing[i].__Legit then
             local Name = "Briefing #" ..(ModuleBriefingSystem.Global.BriefingCounter +1);
             error("API.StartBriefing (" ..Name.. ", Page #" ..i.. "): Page is not initialized!");
             return;
@@ -193,7 +193,7 @@ function API.AddBriefingPages(_Briefing)
 
         _Briefing.Length = (_Briefing.Length or 0) +1;
         if type(_Page) == "table" then
-            local Identifier = _Page.Name or #_Briefing +1;
+            local Identifier;
 
             _Page.__Legit = true;
             _Page.GetSelected = function(self)
@@ -205,7 +205,7 @@ function API.AddBriefingPages(_Briefing)
 
             -- Simple camera position
             if _Page.Position then
-                local Identifier = #_Briefing +1;
+                Identifier = #_Briefing +1;
                 if _Page.Name then
                     Identifier = _Page.Name;
                 end

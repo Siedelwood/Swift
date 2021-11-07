@@ -96,7 +96,8 @@ end
 function ModuleDisplayCore.Global:ConcludeCinematicEvent(_ID, _PlayerID)
     Logic.ExecuteInLuaLocalState(string.format(
         "API.SendScriptEvent(QSB.ScriptEvents.CinematicConcluded, %d, %d);",
-        _ID
+        _ID,
+        _PlayerID
     ))
     API.SendScriptEvent(QSB.ScriptEvents.CinematicConcluded, _ID, _PlayerID);
 end
@@ -283,7 +284,7 @@ function ModuleDisplayCore.Local:InterfaceDeactivateBorderScroll(_PositionID)
     GUI.SendScriptCommand(string.format(
         "API.SendScriptEvent(QSB.ScriptEvents.BorderScrollLocked, %d, %d)",
         GUI.GetPlayerID(),
-        _PositionID
+        (_PositionID or 0)
     ));
     API.SendScriptEvent(QSB.ScriptEvents.BorderScrollLocked, GUI.GetPlayerID(), _PositionID);
 end

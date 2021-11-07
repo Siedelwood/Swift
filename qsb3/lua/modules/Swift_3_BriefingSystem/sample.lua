@@ -77,6 +77,8 @@ function NormalDialogBriefing(_Name, _PlayerID)
     API.StartBriefing(Briefing, _Name, _PlayerID);
 end
 
+function AlandraVerhautMarcus()
+end
 
 -- -------------------------------------------------------------------------- --
 -- Briefing mit Eintscheidung
