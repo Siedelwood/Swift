@@ -107,7 +107,7 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 --        {"pos2", -45, 6000, 35, "pos2", -45, 3000, 35, 30},
 --    }
 --};</pre>
--- Es wird aber empfohlen die Funktion <a href="#AA">AA</a> zu verwenden.
+-- Es wird aber empfohlen, die Funktion <a href="#AAN">AAN</a> zu verwenden.
 --
 -- @param[type=table]  _Briefing Definition des Briefing
 -- @param[type=string] _Name     Name des Briefing
@@ -117,7 +117,7 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- @usage
 -- function Briefing1(_Name, _PlayerID)
 --     local Briefing = {
---         DisableFow = true,
+--         DisableFoW = true,
 --         EnableSky = true,
 --         DisableBoderPins = true,
 --     };
@@ -183,9 +183,9 @@ end
 -- local AP, ASP, AA = API.AddBriefingPages(Briefing);
 --
 function API.AddBriefingPages(_Briefing)
-    _Briefing.GetPage = function(self, _PlayerID, _NameOrID)
-        local ID = ModuleBriefingSystem.Global:GetPageIDByName(_PlayerID, _NameOrID);
-        return ModuleBriefingSystem.Global.Briefing[_PlayerID][ID];
+    _Briefing.GetPage = function(self, _NameOrID)
+        local ID = ModuleBriefingSystem.Global:GetPageIDByName(_Briefing.PlayerID, _NameOrID);
+        return ModuleBriefingSystem.Global.Briefing[_Briefing.PlayerID][ID];
     end
 
     local AP = function(_Page)
@@ -285,7 +285,7 @@ function API.AddBriefingPages(_Briefing)
         return _Page;
     end
 
-    local AA = function(_Identifier, ...)
+    local AAN = function(_Identifier, ...)
         _Briefing.PageAnimations = _Briefing.PageAnimations or {};
 
         local PageID = _Identifier;
@@ -341,27 +341,31 @@ function API.AddBriefingPages(_Briefing)
 
     local ASP = function(...)
         _Briefing.PageAnimations = _Briefing.PageAnimations or {};
-        
+
+        local Name;
+        local Title;
+        local Text;
+        local Position;
+        local DialogCam = false;
+        local Action = function() end;
+        local NoSkipping = false;
+
         -- Set page parameters
-        local Name = table.remove(arg, 1);
+        Name = table.remove(arg, 1);
         if Name == -1 or Name == "" then
             Name = nil;
         end
-        local Title = table.remove(arg, 1);
-        local Text = table.remove(arg, 1);
-        local Position;
+        Title = table.remove(arg, 1);
+        Text = table.remove(arg, 1);
         if #arg > 0 then
             Position = table.remove(arg, 1);
         end
-        local DialogCam = false;
         if #arg > 0 then
             DialogCam = table.remove(arg, 1) == true;
         end
-        local Action = function() end;
         if #arg > 0 then
             Action = table.remove(arg, 1);
         end
-        local NoSkipping = false;
         if #arg > 0 then
             NoSkipping = not table.remove(arg, 1);
         end
@@ -386,7 +390,7 @@ function API.AddBriefingPages(_Briefing)
             Rotation        = Rotation,
         };
     end
-    return AP, ASP, AA;
+    return AP, ASP, AAN;
 end
 
 ---
@@ -617,15 +621,15 @@ end
 -- -- man die Leerstellen mit nil auffüllen.
 --
 -- -- Fernsicht
--- ASP("Title", "Some important text.", "HQ", false);
+-- ASP("", "Title", "Some important text.", "HQ", false);
 -- -- Nahsicht
--- ASP("Title", "Some important text.", "Marcus", true);
+-- ASP("", "Title", "Some important text.", "Marcus", true);
 -- -- Aktion ausführen
--- ASP("Title", "Some important text.", "Marcus", true, MyFunction);
+-- ASP("", "Title", "Some important text.", "Marcus", true, MyFunction);
 -- -- Seite benennen
 -- ASP("MyPage", "Title", "Some important text.", "HQ");
--- -- Überspringen erlauben
--- ASP("Title", "Some important text.", "HQ", nil, QSB.EmptyFunction, true);
+-- -- Überspringen erlauben/verbieten
+-- ASP("", "Title", "Some important text.", "HQ", nil, QSB.EmptyFunction, true);
 --
 function ASP(...)
     error("ASP (Briefing System): not bound to a dialog!");
@@ -672,27 +676,27 @@ end
 --
 -- @usage
 -- -- statische Position (relativ)
--- -- AA(_Identifier, _Position, _Rotation, _Zoom, _Angle)
--- AA("Page1", "HQ1", -20, 7500, 38);
+-- -- AAN(_Identifier, _Position, _Rotation, _Zoom, _Angle)
+-- AAN("Page1", "HQ1", -20, 7500, 38);
 -- -- animierte Bewegung (relativ)
--- -- AA(_Identifier, _Position1, _Rotation1, _Zoom1, _Angle1, _Position2, _Rotation2, _Zoom2, _Angle2, _Duration)
--- AA("Page1", "HQ1", -20, 7500, 38, "Macrus", -40, 3500, 28, 30);
+-- -- AAN(_Identifier, _Position1, _Rotation1, _Zoom1, _Angle1, _Position2, _Rotation2, _Zoom2, _Angle2, _Duration)
+-- AAN("Page1", "HQ1", -20, 7500, 38, "Macrus", -40, 3500, 28, 30);
 -- -- statische Position (Vektor)
--- -- AA(_Identifier, _X1, _Y1, _Z1, _X2, _Y2, _Z2)
+-- -- AAN(_Identifier, _X1, _Y1, _Z1, _X2, _Y2, _Z2)
 -- local x1, y1, z1 = Logic.EntityGetPos("CamPos1");
 -- local x2, y2, z2 = Logic.EntityGetPos("HQ1");
--- AA("Page1", x1, y1, z1, x2, y2, z2 + 3000);
+-- AAN("Page1", x1, y1, z1, x2, y2, z2 + 3000);
 -- -- animierte Bewegung (Vektor)
--- -- AA(_Identifier, _X1, _Y1, _Z1, _X2, _Y2, _Z2, _X3, _Y3, _Z3, _X4, _Y4, _Z4, _Duration)
+-- -- AAN(_Identifier, _X1, _Y1, _Z1, _X2, _Y2, _Z2, _X3, _Y3, _Z3, _X4, _Y4, _Z4, _Duration)
 -- local x1, y1, z1 = Logic.EntityGetPos(GetID("CamPos1"));
 -- local x2, y2, z2 = Logic.EntityGetPos(GetID("HQ1"));
 -- local x3, y3, z3 = Logic.EntityGetPos(GetID("CamPos2"));
 -- local x4, y4, z4 = Logic.EntityGetPos(GetID("Marcus"));
--- AA("Page1", x1, y1, z1, x2, y2, z2 + 3000, x3, y3, z3, x4, y4, z4 + 2000, 30);
+-- AAN("Page1", x1, y1, z1, x2, y2, z2 + 3000, x3, y3, z3, x4, y4, z4 + 2000, 30);
 -- -- laufende Animationen abbrechen
--- AA("Page1", true);
+-- AAN("Page1", true);
 --
-function AA(_Data)
+function AAN(_Data)
     error("AA (Briefing System): not bound to a dialog!");
 end
 
