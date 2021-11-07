@@ -56,6 +56,8 @@ OptLoader_ModuleFiles = {
     "Swift_4_InteractiveChests/api.lua",
     "Swift_4_InteractiveMines/source.lua",
     "Swift_4_InteractiveMines/api.lua",
+    "Swift_4_QuestJournal/source.lua",
+    "Swift_4_QuestJournal/api.lua",
     "Swift_4_SoundTools/source.lua",
     "Swift_4_SoundTools/api.lua",
     "Swift_4_SpeedLimit/source.lua",

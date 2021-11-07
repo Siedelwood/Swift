@@ -35,47 +35,89 @@ function ModuleQuestJournal.Global:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.ChatClosed then
         self:ProcessChatInput(arg[1], arg[2]);
     elseif _ID == QSB.ScriptEvents.QuestJournalDisplayed then
-        local Info = self:DisplayQuestNote(arg[1], arg[2]);
+        local Info = self:DisplayJournalEntry(arg[1], arg[2]);
         Logic.ExecuteInLuaLocalState(string.format(
-            [[API.SendScriptEvent(%d, %d, "%s")]],
+            [[API.SendScriptEvent(%d, %s, %d, "%s")]],
             _ID,
+            arg[1],
             arg[2],
             Info
         ));
     end
 end
 
-function ModuleQuestJournal.Global:AddQuestNote(_Quest, _Rank, _Text)
-    ModuleQuestJournal.Global.Journal.ID = ModuleQuestJournal.Global.Journal.ID +1;
-    table.insert(ModuleQuestJournal.Global.Journal, {
-        ID = ModuleQuestJournal.Global.Journal.ID,
-        Quest = _Quest,
-        Rank = _Rank,
+function ModuleQuestJournal.Global:CreateJournalEntry(_Text, _Rank, _AlwaysVisible)
+    self.Journal.ID = self.Journal.ID +1;
+    table.insert(self.Journal, {
+        ID            = self.Journal.ID,
+        AlwaysVisible = _AlwaysVisible == true,
+        Quests        = {},
+        Rank          = _Rank,
         _Text
     });
-    return ModuleQuestJournal.Global.Journal.ID;
+    return self.Journal.ID;
 end
 
-function ModuleQuestJournal.Global:DisplayQuestNote(_QuestName, _PlayerID)
+function ModuleQuestJournal.Global:GetJournalEntry(_ID)
+    for i= 1, #self.Journal do
+        if self.Journal[i].ID == _ID then
+            return self.Journal[i];
+        end
+    end
+end
+
+function ModuleQuestJournal.Global:UpdateJournalEntry(_ID, _Text, _Rank, _AlwaysVisible, _Deleted)
+    for i= 1, #self.Journal do
+        if self.Journal[i].ID == _ID then
+            self.Journal[i].AlwaysVisible = _AlwaysVisible == true;
+            self.Journal[i].Deleted       = _Deleted == true;
+            self.Journal[i].Rank          = _Rank;
+
+            self.Journal[i][1] = self.Journal[i][1] or _Text;
+        end
+    end
+end
+
+function ModuleQuestJournal.Global:AssociateJournalEntryToQuest(_ID, _Quest, _Flag)
+    for i= 1, #self.Journal do
+        if self.Journal[i].ID == _ID then
+            self.Journal[i].Quests[_Quest] = _Flag == true;
+        end
+    end
+end
+
+function ModuleQuestJournal.Global:DisplayJournalEntry(_QuestName, _PlayerID)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest and Quest.QuestNotes and Quest.ReceivingPlayer == _PlayerID then
-        local Journal = self:GetQuestNotesSorted();
-        local NotesInitalized = false;
+        local Journal = self:GetJournalEntriesSorted();
+        local SeperateImportant = false;
+        local SeperateNormal = false;
         local Info = "";
         for i= 1, #Journal, 1 do
-            if not Journal[i].Quest or Journal[i].Quest == _QuestName then
+            if Journal[i].AlwaysVisible or Journal[i].Quests[_QuestName] then
                 if not Journal[i].Deleted then
                     local Text = API.ConvertPlaceholders(API.Localize(Journal[i][1]));
+                    
                     if Journal[i].Rank == 1 then
                         Text = "{scarlet}" .. Text .. self.TextColor;
+                        SeperateImportant = true;
                     end
+                    if Journal[i].Rank == 0 then
+                        if SeperateImportant then
+                            SeperateImportant = false;
+                            Text = "{cr}----------{cr}{cr}" .. Text;
+                        end
+                        SeperateNormal = true;
+                    end
+                    -- Unused. Reserved for future notes by the player.
                     if Journal[i].Rank == -1 then
-                        if not NotesInitalized then
-                            NotesInitalized = true;
-                            Text = Text .. "{cr}{cr}----------{cr}{cr}";
+                        if SeperateNormal then
+                            SeperateNormal = false;
+                            Text = "{cr}----------{cr}{cr}" .. Text;
                         end
                         Text = "{amber}" .. Text .. self.TextColor;
                     end
+
                     Info = Info .. ((Info ~= "" and "{cr}") or "") .. Text;
                 end
             end
@@ -84,7 +126,7 @@ function ModuleQuestJournal.Global:DisplayQuestNote(_QuestName, _PlayerID)
     end
 end
 
-function ModuleQuestJournal.Global:GetQuestNotesSorted()
+function ModuleQuestJournal.Global:GetJournalEntriesSorted()
     local Journal = {};
     for i= 1, #self.Journal, 1 do
         table.insert(Journal, self.Journal[i]);
@@ -95,20 +137,8 @@ function ModuleQuestJournal.Global:GetQuestNotesSorted()
     return Journal;
 end
 
+-- Deprecated
 function ModuleQuestJournal.Global:ProcessChatInput(_Text, _PlayerID)
-    if string.find(_Text or "", "^note ") then
-        local Text = _Text:sub(7);
-        local QuestName = "foo";
-        -- TODO Identify the quest this note is supposed to be attached.
-        self:AddQuestNote(QuestName, -1, Text);
-        local Info = self:DisplayQuestNote(QuestName, _PlayerID);
-        Logic.ExecuteInLuaLocalState(string.format(
-            [[API.SendScriptEvent(%d, %d, "%s")]],
-            QSB.ScriptEvents.QuestJournalDisplayed,
-            _PlayerID,
-            Info
-        ));
-    end
 end
 
 -- Local Script ----------------------------------------------------------------
@@ -129,7 +159,8 @@ end
 
 function ModuleQuestJournal.Local:DisplayQuestJournal(_QuestName, _PlayerID, _Info)
     if _Info and GUI.GetPlayerID() == _PlayerID then
-        QSB.TextWindow:New("Journal", _Info)
+        local Title = API.Localize(ModuleQuestJournal.Shared.Text.Title);
+        QSB.TextWindow:New(Title, API.ConvertPlaceholders(_Info))
             :SetPause(false)
             :Show();
     end
@@ -140,7 +171,7 @@ function ModuleQuestJournal.Local:OverrideUpdateVoiceMessage()
     GUI_Interaction.UpdateVoiceMessage = function()
         GUI_Interaction.UpdateVoiceMessage_Orig_ModuleQuestJournal();
         if not QuestLog.IsQuestLogShown() then
-            if ModuleQuestJournal.Local:IsShowingQuestNoteButton(g_Interaction.CurrentMessageQuestIndex) then
+            if ModuleQuestJournal.Local:IsShowingJournalButton(g_Interaction.CurrentMessageQuestIndex) then
                 XGUIEng.ShowWidget(ModuleQuestJournal.Local.NextButton, 1);
                 SetIcon(
                     ModuleQuestJournal.Local.NextButton,
@@ -153,21 +184,14 @@ function ModuleQuestJournal.Local:OverrideUpdateVoiceMessage()
     end
 end
 
-function ModuleQuestJournal.Local:IsShowingQuestNoteButton(_ID)
+function ModuleQuestJournal.Local:IsShowingJournalButton(_ID)
     if not g_Interaction.CurrentMessageQuestIndex then
         return false;
     end
     local Quest = Quests[_ID];
     if  type(Quest) == "table"
-    and Quest.QuestNotes 
-    and #self.Journal > 0 then
-        for i= #self.Journal, 1, -1 do
-            if  self.Journal[i].Deleted ~= true
-            and (self.Journal[i].Quest == nil or 
-            self.Journal[i].Quest == Quest.Identifier) then
-                return true;
-            end
-        end
+    and Quest.QuestNotes then
+        return true;
     end
     return false;
 end
@@ -179,9 +203,9 @@ function ModuleQuestJournal.Local:OverrideTutorialNext()
             local QuestID = g_Interaction.CurrentMessageQuestIndex;
             local Quest = Quests[QuestID];
             GUI.SendScriptCommand(string.format(
-                [[API.SendScriptEvent(QSB.ScriptEvents.QuestJournalDisplayed, "%s", %d)]],
+                [[API.SendScriptEvent(QSB.ScriptEvents.QuestJournalDisplayed, "%s", %d, nil)]],
                 Quest.Identifier,
-                Quest.ReceivingPlayer
+                GUI.GetPlayerID()
             ));
         end
     end

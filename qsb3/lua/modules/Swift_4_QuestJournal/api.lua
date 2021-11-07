@@ -20,17 +20,20 @@
 -- <b>Hinweis</b>: Die Sichtbarkeit der Zusatzinformationen für einzelne Quests
 -- ist generell deaktiviert und muss explizit aktiviert werden.
 --
+-- <b>Hinweis</b>: Der Button wird auch dann angezeigt, wenn es noch keine
+-- Zusatzinformationen für den Quest gibt.
+--
 -- @param[type=string]  _Quest Name des Quest
 -- @param[type=boolean] _Flag  Zusatzinfos aktivieren
 -- @within Anwenderfunktionen
 --
 -- @usage
 -- -- Deaktivieren
--- API.SetQuestNoteEnabled("MyQuest", false);
+-- API.ShowJournalForQuest("MyQuest", false);
 -- -- Aktivieren
--- API.SetQuestNoteEnabled("MyQuest", true);
+-- API.ShowJournalForQuest("MyQuest", true);
 --
-function API.SetQuestNoteEnabled(_Quest, _Flag)
+function API.ShowJournalForQuest(_Quest, _Flag)
     if GUI then
         return;
     end
@@ -52,17 +55,16 @@ end
 --
 -- <b>Hinweis</b>: Formatierungsbefehle sind deaktiviert.
 --
--- @param[type=string] _Quest Questname
--- @param              _Text  Text der Zusatzinfo
+-- @param[type=string] _Text  Text der Zusatzinfo
 -- @return[type=number] ID des neuen Eintrags
 -- @within Anwenderfunktionen
 --
 -- @usage
--- local NewEntryID = API.AddQuestNote("MyQuest", "Wichtige Information zum Anzeigen");
+-- local NewEntryID = API.CreateJournalEntry("Wichtige Information zum Anzeigen");
 --
-function API.AddQuestNote(_Quest, _Text)
+function API.CreateJournalEntry(_Text)
     _Text = _Text:gsub("\\{.*\\}", "");
-    return ModuleQuestJournal.Global:AddQuestNote(_Quest, 0, _Text);
+    return ModuleQuestJournal.Global:CreateJournalEntry(_Text, 0, false);
 end
 
 ---
@@ -79,15 +81,19 @@ end
 -- @within Anwenderfunktionen
 --
 -- @usage
--- API.AlterQuestNoteEntry(SomeEntryID, "Das ist der neue Text.");
+-- API.AlterJournalEntry(SomeEntryID, "Das ist der neue Text.");
 --
-function API.AlterQuestNoteEntry(_ID, _Text)
+function API.AlterJournalEntry(_ID, _Text)
     _Text = _Text:gsub("\\{.*\\}", "");
-    for i= #ModuleQuestJournal.Global.Journal, 1, -1 do
-        if ModuleQuestJournal.Global.Journal[i].ID == _ID then
-            ModuleQuestJournal.Global.Journal[i][1] = _Text;
-            return;
-        end
+    local Entry = ModuleQuestJournal.Global:GetJournalEntry(_ID);
+    if Entry then
+        ModuleQuestJournal.Global:UpdateJournalEntry(
+            _ID,
+            _Text,
+            Entry.Rank,
+            Entry.AlwaysVisible,
+            Entry.Deleted
+        );
     end
 end
 
@@ -104,46 +110,19 @@ end
 -- @within Anwenderfunktionen
 --
 -- @usage
--- API.HighlightQuestNoteEntry(SomeEntryID, true);
+-- API.HighlightJournalEntry(SomeEntryID, true);
 --
-function API.HighlightQuestNoteEntry(_ID, _Important)
-    for i= #ModuleQuestJournal.Global.Journal, 1, -1 do
-        if ModuleQuestJournal.Global.Journal[i].ID == _ID then
-            ModuleQuestJournal.Global.Journal[i].Rank = (_Important == true and 1) or 0;
-            return;
-        end
+function API.HighlightJournalEntry(_ID, _Important)
+    local Entry = ModuleQuestJournal.Global:GetJournalEntry(_ID);
+    if Entry then
+        ModuleQuestJournal.Global:UpdateJournalEntry(
+            _ID,
+            Entry[1],
+            (_Important == true and 1) or 0,
+            Entry.AlwaysVisible,
+            Entry.Deleted
+        );
     end
-end
-
----
--- Kopiert einen Eintrag als neuen Eintrag in einen anderen Quest.
---
--- <b>Hinweis</b>: Wenn Ursprungs-Quest und Ziel-Quest identisch sind, wird der
--- Befehl ignoriert und die zurückgegebene ID ist -1.
---
--- @param[type=number] _ID    ID des Eintrag
--- @param[type=string] _Quest Name des neuen Quest
--- @within Anwenderfunktionen
---
--- @usage
--- local NewEntryID = API.CopyQuestNoteEntry(SomeEntryID, "MyOtherQuest");
---
-function API.CopyQuestNoteEntry(_ID, _Quest)
-    for i= #ModuleQuestJournal.Global.Journal, 1, -1 do
-        if ModuleQuestJournal.Global.Journal[i].ID == _ID and ModuleQuestJournal.Global.Journal[i].Quest ~= nil then
-            if ModuleQuestJournal.Global.Journal[i].Quest ~= _Quest then
-                ModuleQuestJournal.Global.Journal.ID = ModuleQuestJournal.Global.Journal.ID +1;
-                table.insert(ModuleQuestJournal.Global.Journal, {
-                    ID = ModuleQuestJournal.Global.Journal.ID,
-                    Quest = _Quest,
-                    Rank = ModuleQuestJournal.Global.Journal[i].Rank,
-                    ModuleQuestJournal.Global.Journal[i][1]
-                });
-                return ModuleQuestJournal.Global.Journal.ID;
-            end
-        end
-    end
-    return -1
 end
 
 ---
@@ -156,14 +135,18 @@ end
 -- @within Anwenderfunktionen
 --
 -- @usage
--- API.DeleteQuestNoteEntry(SomeEntryID);
+-- API.DeleteJournalEntry(SomeEntryID);
 --
-function API.DeleteQuestNoteEntry(_ID)
-    for i= #ModuleQuestJournal.Global.Journal, 1, -1 do
-        if ModuleQuestJournal.Global.Journal[i].ID == _ID then
-            ModuleQuestJournal.Global.Journal[i].Deleted = true;
-            return;
-        end
+function API.DeleteJournalEntry(_ID)
+    local Entry = ModuleQuestJournal.Global:GetJournalEntry(_ID);
+    if Entry then
+        ModuleQuestJournal.Global:UpdateJournalEntry(
+            _ID,
+            Entry[1],
+            Entry.Rank,
+            Entry.AlwaysVisible,
+            true
+        );
     end
 end
 
@@ -174,14 +157,52 @@ end
 -- @within Anwenderfunktionen
 --
 -- @usage
--- API.RestoreQuestNoteEntry(SomeEntryID);
+-- API.RestoreJournalEntry(SomeEntryID);
 --
-function API.RestoreQuestNoteEntry(_ID)
-    for i= #ModuleQuestJournal.Global.Journal, 1, -1 do
-        if ModuleQuestJournal.Global.Journal[i].ID == _ID then
-            ModuleQuestJournal.Global.Journal[i].Deleted = false;
-            return;
-        end
+function API.RestoreJournalEntry(_ID)
+    local Entry = ModuleQuestJournal.Global:GetJournalEntry(_ID);
+    if Entry then
+        ModuleQuestJournal.Global:UpdateJournalEntry(
+            _ID,
+            Entry[1],
+            Entry.Rank,
+            Entry.AlwaysVisible,
+            false
+        );
+    end
+end
+
+---
+-- Fügt einen Tagebucheintrag zu einem Quest hinzu.
+--
+-- @param[type=number]  _ID    ID des Eintrag
+-- @param[type=boolean] _Quest Name des Quest
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- API.AddJournalEntryToQuest(_ID, _Quest);
+--
+function API.AddJournalEntryToQuest(_ID, _Quest)
+    local Entry = ModuleQuestJournal.Global:GetJournalEntry(_ID);
+    if Entry then
+        ModuleQuestJournal.Global:AssociateJournalEntryToQuest(_ID, _Quest, true);
+    end
+end
+
+---
+-- Entfernt einen Tagebucheintrag von einem Quest.
+--
+-- @param[type=number]  _ID    ID des Eintrag
+-- @param[type=boolean] _Quest Name des Quest
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- API.RemoveJournalEntryFromQuest(_ID, _Quest);
+--
+function API.RemoveJournalEntryFromQuest(_ID, _Quest)
+    local Entry = ModuleQuestJournal.Global:GetJournalEntry(_ID);
+    if Entry then
+        ModuleQuestJournal.Global:AssociateJournalEntryToQuest(_ID, _Quest, false);
     end
 end
 
