@@ -438,9 +438,11 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
                 Text = XGUIEng.GetStringTableText(Text);
             end
             local Disabled = IO[ScriptName].DisabledText or DisabledKey;
-            Disabled = API.ConvertPlaceholders(API.Localize(Disabled));
-            if Disabled and Disabled:find("^[A-Za-z0-9_]+/[A-Za-z0-9_]+$") then
-                Disabled = XGUIEng.GetStringTableText(Disabled);
+            if Disabled then
+                Disabled = API.ConvertPlaceholders(API.Localize(Disabled));
+                if Disabled and Disabled:find("^[A-Za-z0-9_]+/[A-Za-z0-9_]+$") then
+                    Disabled = XGUIEng.GetStringTableText(Disabled);
+                end
             end
             Costs = IO[ScriptName].Costs;
             if Costs and Costs[1] and Costs[1] ~= Goods.G_Gold and Logic.GetGoodCategoryForGoodType(Costs[1]) ~= GoodCategories.GC_Resource then

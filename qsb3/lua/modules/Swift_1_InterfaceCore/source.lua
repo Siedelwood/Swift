@@ -161,6 +161,7 @@ function ModuleInterfaceCore.Local:TextNormal(_title, _text, _disabledText)
     if _text and _text:find("[A-Za-z0-9]+/[A-Za-z0-9]+$") then
         _text = XGUIEng.GetStringTableText(_text);
     end
+    _disabledText = _disabledText or "";
     if _disabledText and _disabledText:find("[A-Za-z0-9]+/[A-Za-z0-9]+$") then
         _disabledText = XGUIEng.GetStringTableText(_disabledText);
     end
@@ -193,6 +194,12 @@ end
 
 function ModuleInterfaceCore.Local:TextCosts(_title,_text,_disabledText,_costs,_inSettlement)
     _costs = _costs or {};
+    local Costs = {};
+    -- This transforms the content of the metatable to a new table so that the
+    -- internal script does correctly render the costs.
+    for i= 1, 4, 1 do
+        Costs[i] = _costs[i];
+    end
     if _title and _title:find("[A-Za-z0-9]+/[A-Za-z0-9]+$") then
         _title = XGUIEng.GetStringTableText(_title);
     end
@@ -212,7 +219,7 @@ function ModuleInterfaceCore.Local:TextCosts(_title,_text,_disabledText,_costs,_
     local TooltipCostsContainer = XGUIEng.GetWidgetID(TooltipContainerPath .. "/Costs");
     local PositionWidget = XGUIEng.GetCurrentWidgetID();
     GUI_Tooltip.ResizeBG(TooltipBGWidget, TooltipDescriptionWidget);
-    GUI_Tooltip.SetCosts(TooltipCostsContainer, _costs, _inSettlement);
+    GUI_Tooltip.SetCosts(TooltipCostsContainer, Costs, _inSettlement);
     local TooltipContainerSizeWidgets = {TooltipContainer, TooltipCostsContainer, TooltipBGWidget};
     GUI_Tooltip.SetPosition(TooltipContainer, TooltipContainerSizeWidgets, PositionWidget, nil, true);
     GUI_Tooltip.OrderTooltip(TooltipContainerSizeWidgets, TooltipFadeInContainer, TooltipCostsContainer, PositionWidget, TooltipBGWidget);
