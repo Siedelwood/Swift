@@ -31,6 +31,7 @@ QSB.IO = {
 -- Global Script ------------------------------------------------------------ --
 
 function ModuleObjectInteraction.Global:OnGameStart()
+    QSB.ScriptEvents.ObjectClicked = API.RegisterScriptEvent("Event_ObjectClicked");
     QSB.ScriptEvents.ObjectInteraction = API.RegisterScriptEvent("Event_ObjectInteraction");
     QSB.ScriptEvents.ObjectReset = API.RegisterScriptEvent("Event_ObjectReset");
     QSB.ScriptEvents.ObjectDelete = API.RegisterScriptEvent("Event_ObjectDelete");
@@ -359,8 +360,19 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
                 end
             end
         end
-        
         GUI_Interaction.InteractiveObjectClicked_Orig_ModuleObjectInteraction();
+
+        -- Send additional click event
+        local KnightIDs = {};
+        Logic.GetKnights(PlayerID, KnightIDs);
+        local KnightID = API.GetClosestToTarget(EntityID, KnightIDs);
+        GUI.SendScriptCommand(string.format(
+            [[API.SendScriptEvent(QSB.ScriptEvents.ObjectClicked, %d, %d, %d)]],
+            EntityID,
+            KnightID,
+            PlayerID
+        ));
+        API.SendScriptEvent(QSB.ScriptEvents.ObjectClicked, EntityID, KnightID, PlayerID);
     end
     
     GUI_Interaction.InteractiveObjectUpdate_Orig_ModuleObjectInteraction = GUI_Interaction.InteractiveObjectUpdate;

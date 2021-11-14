@@ -1001,10 +1001,22 @@ function ModuleCastleStore.Local:OverwriteInteractiveObject()
             end
             if CanBuyBoolean then
                 GUI_Interaction.InteractiveObjectClicked_Orig_CastleStore();
-            else
-                GUI.SendScriptCommand(string.format("ModuleCastleStore.Global:InteractiveObjectPayStep1(%d, '%s')", PlayerID, ScriptName));
+                return;
             end
+            GUI.SendScriptCommand(string.format("ModuleCastleStore.Global:InteractiveObjectPayStep1(%d, '%s')", PlayerID, ScriptName));
         end
+
+        -- Send additional click event
+        local KnightIDs = {};
+        Logic.GetKnights(PlayerID, KnightIDs);
+        local KnightID = API.GetClosestToTarget(EntityID, KnightIDs);
+        GUI.SendScriptCommand(string.format(
+            [[API.SendScriptEvent(QSB.ScriptEvents.ObjectClicked, %d, %d, %d)]],
+            EntityID,
+            KnightID,
+            PlayerID
+        ));
+        API.SendScriptEvent(QSB.ScriptEvents.ObjectClicked, EntityID, KnightID, PlayerID);
     end
 end
 
