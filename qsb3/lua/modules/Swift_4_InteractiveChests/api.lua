@@ -14,7 +14,7 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
--- <li><a href="Swift_2_Interaction.api.html">(1) Interaction</a></li>
+-- <li><a href="Swift_2_ObjectInteraction.api.html">(1) Interaction</a></li>
 -- </ul>
 --
 -- @within Beschreibung

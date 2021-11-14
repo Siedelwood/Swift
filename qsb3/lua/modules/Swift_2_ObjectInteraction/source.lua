@@ -348,7 +348,11 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
         end
         if IO[ScriptName] then
             if not IO[ScriptName].IsFullfilled then
-                Message(XGUIEng.GetStringTableText("UI_ButtonDisabled/PromoteKnight"));
+                local Text = XGUIEng.GetStringTableText("UI_ButtonDisabled/PromoteKnight");
+                if IO[ScriptName].ConditionInfo then
+                    Text = API.ConvertPlaceholders(API.Localize(IO[ScriptName].ConditionInfo));
+                end
+                Message(Text);
                 return;
             end
             if type(IO[ScriptName].Costs) == "table" and #IO[ScriptName].Costs ~= 0 then

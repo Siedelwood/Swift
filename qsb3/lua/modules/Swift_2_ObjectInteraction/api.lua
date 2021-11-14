@@ -82,6 +82,21 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- <td>Bestimmt, wie sich der Button des interaktiven Objektes verhält.</td>
 -- <td>ja</td>
 -- </tr>
+-- <tr>
+-- <td>Condition</td>
+-- <td>Eine zusätzliche Aktivierungsbedinung als Funktion.</td>
+-- <td>ja</td>
+-- </tr>
+-- <tr>
+-- <td>ConditionInfo</td>
+-- <td>Nachricht, die angezeigt wird, wenn die Bedinung nicht erfüllt ist.</td>
+-- <td>ja</td>
+-- </tr>
+-- <tr>
+-- <td>Action</td>
+-- <td>Eine Funktion, die nach der Aktivierung aufgerufen wird.</td>
+-- <td>ja</td>
+-- </tr>
 -- </table>
 --
 -- @param[type=table] _Description Beschreibung
