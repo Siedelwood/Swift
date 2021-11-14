@@ -15,6 +15,11 @@ ModuleInteractiveMines = {
 
     Global = {
         Mines = {},
+        Lambda = {
+            MineCondition = {},
+            MineConstructed = {},
+            MineDepleted = {},
+        }
     },
     Local = {},
     -- This is a shared structure but the values are asynchronous!
@@ -35,6 +40,8 @@ ModuleInteractiveMines = {
 -- Global ------------------------------------------------------------------- --
 
 function ModuleInteractiveMines.Global:OnGameStart()
+    self:CreateDefaultLambdas();
+
     API.StartHiResJob(function()
         ModuleInteractiveMines.Global:ControlIOMines();
     end);
@@ -54,10 +61,7 @@ function ModuleInteractiveMines.Global:CreateIOMine(
     _Position,
     _Type,
     _Costs,
-    _NotRefillable,
-    _Condition,
-    _CreationCallback,
-    _CallbackDepleted
+    _NotRefillable
 )
     local BlockerID = self:ResetIOMine(_Position, _Type);
     local Icon = {14, 10};
@@ -81,21 +85,11 @@ function ModuleInteractiveMines.Global:CreateIOMine(
         Costs                = _Costs,
         InvisibleBlocker     = BlockerID,
         Distance             = 1200,
-        BuildCondition       = _Condition,
-        ActionDepleted       = _CallbackDepleted,
-        ActionCreated        = _CreationCallback,
         Condition            = function(_Data)
-            if _Data.BuildCondition ~= nil then
-                return _Data:BuildCondition();
-            end
-            return true;
+            return ModuleInteractiveMines.Global:CallConditionLambda(_Data);
         end,
         Action               = function(_Data, _KnightID, _PlayerID)
-            ReplaceEntity(_Data.Name, _Data.Type);
-            DestroyEntity(_Data.InvisibleBlocker)
-            if _Data.ActionCreated ~= nil then
-                _Data:ActionCreated(_KnightID, _PlayerID);
-            end
+            ModuleInteractiveMines.Global:CallConstructionLambda(_Data, _KnightID, _PlayerID);
         end
     };
 end
@@ -134,12 +128,51 @@ function ModuleInteractiveMines.Global:ControlIOMines()
                     Logic.SetVisible(EntityID, true);
                     Logic.SetModel(EntityID, Model);
                 end
-                if v.ActionDepleted then
-                    v:ActionDepleted();
-                end
+                self:CallDepletionLambda(v);
             end
         end
     end
+end
+
+function ModuleInteractiveMines.Global:CreateDefaultLambdas()
+    -- Default condition
+    self.Lambda.MineCondition.Default = function(_Data)
+        return true;
+    end
+
+    -- Default action
+    self.Lambda.MineConstructed.Default = function(_Data, _KnightID, _PlayerID)
+        ReplaceEntity(_Data.Name, _Data.Type);
+        DestroyEntity(_Data.InvisibleBlocker);
+    end
+
+    -- Default crumble action
+    self.Lambda.MineDepleted.Default = function(_Data)
+    end
+end
+
+function ModuleInteractiveMines.Global:CallConditionLambda(_Data)
+    local Lambda = self.Lambda.MineCondition.Default;
+    if self.Lambda.MineCondition[_Data.Name] then
+        Lambda = self.Lambda.MineCondition[_Data.Name];
+    end
+    return Lambda(_Data);
+end
+
+function ModuleInteractiveMines.Global:CallConstructionLambda(_Data, _KnightID, _PlayerID)
+    local Lambda = self.Lambda.MineConstructed.Default;
+    if self.Lambda.MineConstructed[_Data.Name] then
+        Lambda = self.Lambda.MineConstructed[_Data.Name];
+    end
+    return Lambda(_Data, _KnightID, _PlayerID);
+end
+
+function ModuleInteractiveMines.Global:CallDepletionLambda(_Data)
+    local Lambda = self.Lambda.MineDepleted.Default;
+    if self.Lambda.MineDepleted[_Data.Name] then
+        Lambda = self.Lambda.MineDepleted[_Data.Name];
+    end
+    return Lambda(_Data);
 end
 
 -- Local -------------------------------------------------------------------- --

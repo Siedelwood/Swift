@@ -85,8 +85,8 @@ function CreateTestMines1()
 end
 
 function CreateTestMines2()
-    API.CreateIOIronMine("ironmine", Goods.G_Wood, 50, Goods.G_Gold, 1500);
-    API.CreateIOStoneMine("stonemine", Goods.G_Wood, 50, Goods.G_Gold, 1500);
+    API.CreateIOIronMine("ironmine", {Goods.G_Wood, 50, Goods.G_Gold, 1500});
+    API.CreateIOStoneMine("stonemine", {Goods.G_Wood, 50, Goods.G_Gold, 1500});
 end
 
 function CreateTestChests()

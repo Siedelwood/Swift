@@ -46,6 +46,9 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 --
 -- <b>Hinweis:</b> Die Funktion kann nur im lokalen Skript verwendet werden!
 --
+-- <b>Hinweis</b>: Um den Standard wiederherzustellen, muss nil als Funktion
+-- übergeben werden.
+--
 -- @param[type=number] _PlayerID ID des Spielers
 -- @param[type=number] _Function Kalkulationsfunktion
 -- @within Anwenderfunktionen
@@ -100,6 +103,9 @@ end
 -- </table>
 --
 -- <b>Hinweis:</b> Die Funktion kann nur im lokalen Skript verwendet werden!
+--
+-- <b>Hinweis</b>: Um den Standard wiederherzustellen, muss nil als Funktion
+-- übergeben werden.
 --
 -- @param[type=number] _PlayerID ID des Spielers
 -- @param[type=number] _Function Kalkulationsfunktion
@@ -157,6 +163,9 @@ end
 -- </table>
 --
 -- <b>Hinweis:</b> Die Funktion kann nur im lokalen Skript verwendet werden!
+--
+-- <b>Hinweis</b>: Um den Standard wiederherzustellen, muss nil als Funktion
+-- übergeben werden.
 --
 -- @param[type=number] _PlayerID ID des Spielers
 -- @param[type=number] _Function Kalkulationsfunktion
@@ -217,6 +226,9 @@ end
 --
 -- <b>Hinweis:</b> Die Funktion kann nur im lokalen Skript verwendet werden!
 --
+-- <b>Hinweis</b>: Um den Standard wiederherzustellen, muss nil als Funktion
+-- übergeben werden.
+--
 -- @param[type=number] _PlayerID ID des Spielers
 -- @param[type=number] _Function Evaluationsfunktion
 -- @within Anwenderfunktionen
@@ -274,6 +286,9 @@ end
 --
 -- <b>Hinweis:</b> Die Funktion kann nur im lokalen Skript verwendet werden!
 --
+-- <b>Hinweis</b>: Um den Standard wiederherzustellen, muss nil als Funktion
+-- übergeben werden.
+--
 -- @param[type=number] _PlayerID ID des Spielers
 -- @param[type=number] _Function Kalkulationsfunktion
 -- @within Anwenderfunktionen
@@ -328,6 +343,9 @@ end
 -- </table>
 --
 -- <b>Hinweis:</b> Die Funktion kann nur im lokalen Skript verwendet werden!
+--
+-- <b>Hinweis</b>: Um den Standard wiederherzustellen, muss nil als Funktion
+-- übergeben werden.
 --
 -- @param[type=number] _PlayerID ID des Spielers
 -- @param[type=number] _Function Kalkulationsfunktion
@@ -384,6 +402,9 @@ end
 -- </table>
 --
 -- <b>Hinweis:</b> Die Funktion kann nur im lokalen Skript verwendet werden!
+--
+-- <b>Hinweis</b>: Um den Standard wiederherzustellen, muss nil als Funktion
+-- übergeben werden.
 --
 -- @param[type=number] _PlayerID ID des Spielers
 -- @param[type=number] _Function Evaluationsfunktion
