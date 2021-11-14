@@ -106,7 +106,7 @@ return [==[
 #   end -- if see
 #   if module.usage then
 #     local li,il = use_li(module.usage)
-    <h3>Usage:</h3>
+    <h3>Beispiel:</h3>
     <ul>
 #     for usage in iter(module.usage) do
         $(li)<pre class="example">$(ldoc.escape(usage))</pre>$(il)
@@ -158,7 +158,7 @@ return [==[
           </div>
 #       end
 #       if kitem.usage then
-            <h3>Usage:</h3>
+            <h3>Beispiel:</h3>
             <pre class="example">$(ldoc.prettify(kitem.usage[1]))</pre>
 #        end
 #   end
@@ -269,7 +269,7 @@ return [==[
 
 #   if item.usage then
 #     local li,il = use_li(item.usage)
-    <h3>Usage:</h3>
+    <h3>Beispiel:</h3>
     <ul>
 #     for usage in iter(item.usage) do
         $(li)<pre class="example">$(ldoc.prettify(usage))</pre>$(il)

@@ -149,7 +149,7 @@
 
 #   if item.usage then
 #     local li,il = use_li(item.usage)
-    <h3>Usage:</h3>
+    <h3>Beispiel:</h3>
     <ul>
 #     for usage in iter(item.usage) do
         $(li)<pre class="example">$(usage)</pre>$(il)
