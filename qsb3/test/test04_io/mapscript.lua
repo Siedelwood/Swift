@@ -80,13 +80,23 @@ function Mission_FirstMapAction()
 end
 
 function CreateTestMines1()
-    API.CreateIOIronMine("ironmine");
-    API.CreateIOStoneMine("stonemine");
+    API.CreateIOIronMine{
+        Position = "ironmine"
+    };
+    API.CreateIOStoneMine{
+        Position = "stonemine"
+    };
 end
 
 function CreateTestMines2()
-    API.CreateIOIronMine("ironmine", {Goods.G_Wood, 50, Goods.G_Gold, 1500});
-    API.CreateIOStoneMine("stonemine", {Goods.G_Wood, 50, Goods.G_Gold, 1500});
+    API.CreateIOIronMine{
+        Position = "ironmine",
+        Costs    = {Goods.G_Wood, 50, Goods.G_Gold, 1500}
+    };
+    API.CreateIOStoneMine{
+        Position = "stonemine",
+        Costs    = {Goods.G_Wood, 50, Goods.G_Gold, 1500}
+    };
 end
 
 function CreateTestChests()
