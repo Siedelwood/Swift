@@ -556,28 +556,82 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
 
         GUI_Interaction.InteractiveObjectClicked_Orig_BundleInteractiveObjects();
     end
-    
-    GUI_Interaction.InteractiveObjectUpdate_Orig_BundleInteractiveObjects = GUI_Interaction.InteractiveObjectUpdate;
+
     GUI_Interaction.InteractiveObjectUpdate = function()
-        GUI_Interaction.InteractiveObjectUpdate_Orig_BundleInteractiveObjects();
         if g_Interaction.ActiveObjects == nil then
             return;
         end
+        local PlayerID = GUI.GetPlayerID();
+        for i = 1, #g_Interaction.ActiveObjects do
+            local ObjectID = g_Interaction.ActiveObjects[i];
+            local X, Y = GUI.GetEntityInfoScreenPosition(ObjectID);
+            local ScreenSizeX, ScreenSizeY = GUI.GetScreenSize();
+
+            if X ~= 0 and Y ~= 0 and X > -50 and Y > -50 and X < (ScreenSizeX + 50) and Y < (ScreenSizeY + 50) then
+                local IsInTable = false;
+                for i = 1, #g_Interaction.ActiveObjectsOnScreen do
+                    if g_Interaction.ActiveObjectsOnScreen[i] == ObjectID then
+                        IsInTable = true;
+                    end
+                end
+                if IsInTable == false then
+                    table.insert(g_Interaction.ActiveObjectsOnScreen, ObjectID);
+                end
+            else
+                for i = 1, #g_Interaction.ActiveObjectsOnScreen do
+                    if g_Interaction.ActiveObjectsOnScreen[i] == ObjectID then
+                        table.remove(g_Interaction.ActiveObjectsOnScreen, i);
+                    end
+                end
+            end
+        end
         for i = 1, #g_Interaction.ActiveObjectsOnScreen do
-            local Widget = "/InGame/Root/Normal/InteractiveObjects/" ..i;
+            local Widget = "/InGame/Root/Normal/InteractiveObjects/" .. i
             if XGUIEng.IsWidgetExisting(Widget) == 1 then
-                local ObjectID       = g_Interaction.ActiveObjectsOnScreen[i];
+                local ObjectID = g_Interaction.ActiveObjectsOnScreen[i];
                 local MasterObjectID = ObjectID;
                 local ScriptName     = Logic.GetEntityName(ObjectID);
                 if IO_SlaveToMaster[ScriptName] then
                     ScriptName = IO_SlaveToMaster[ScriptName];
                     MasterObjectID = GetID(ScriptName);
                 end
-                -- Position
+                local EntityType = Logic.GetEntityType(MasterObjectID);
                 local X, Y = GUI.GetEntityInfoScreenPosition(MasterObjectID);
                 local WidgetSize = {XGUIEng.GetWidgetScreenSize(Widget)};
                 XGUIEng.SetWidgetScreenPosition(Widget, X - (WidgetSize[1]/2), Y - (WidgetSize[2]/2));
-                -- Tooltip
+                local BaseCosts = {Logic.InteractiveObjectGetCosts(MasterObjectID)};
+                local EffectiveCosts = {Logic.InteractiveObjectGetEffectiveCosts(MasterObjectID, PlayerID)};
+                local IsAvailable = Logic.InteractiveObjectGetAvailability(MasterObjectID);
+                local Disable = false;
+                if BaseCosts[1] ~= nil and EffectiveCosts[1] == nil and IsAvailable == true then
+                    Disable = true;
+                end
+                local HasSpace = Logic.InteractiveObjectHasPlayerEnoughSpaceForRewards(MasterObjectID, PlayerID);
+                if HasSpace == false then
+                    Disable = true;
+                end
+                if Disable == true then
+                    XGUIEng.DisableButton(Widget, 1);
+                else
+                    XGUIEng.DisableButton(Widget, 0);
+                end
+                if GUI_Interaction.InteractiveObjectUpdateEx1 ~= nil then
+                    GUI_Interaction.InteractiveObjectUpdateEx1(Widget, EntityType);
+                end
+                XGUIEng.ShowWidget(Widget, 1);
+            end
+        end
+        for i = 1, #g_Interaction.ActiveObjectsOnScreen do
+            local Widget = "/InGame/Root/Normal/InteractiveObjects/" ..i;
+            if XGUIEng.IsWidgetExisting(Widget) == 1 then
+                local ObjectID       = g_Interaction.ActiveObjectsOnScreen[i];
+                local ScriptName     = Logic.GetEntityName(ObjectID);
+                if IO_SlaveToMaster[ScriptName] then
+                    ScriptName = IO_SlaveToMaster[ScriptName];
+                end
+                local X, Y = GUI.GetEntityInfoScreenPosition(ObjectID);
+                local WidgetSize = {XGUIEng.GetWidgetScreenSize(Widget)};
+                XGUIEng.SetWidgetScreenPosition(Widget, X - (WidgetSize[1]/2), Y - (WidgetSize[2]/2));
                 if IO[ScriptName] then
                     BundleInteractiveObjects.Local:SetIcon(Widget, IO[ScriptName].m_Icon);
                 end
