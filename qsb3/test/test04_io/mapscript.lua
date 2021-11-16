@@ -105,7 +105,7 @@ function CreateTestChests()
         API.Note("It work's!");
     end);
     API.CreateRandomLuxuryChest("chest3");
-    API.CreateRandomTreasure("IO1", Goods.G_Gold, 200, 400);
+    -- API.CreateRandomTreasure("IO1", Goods.G_Gold, 200, 400);
 end
 
 function CreateTestNPCQuest()
