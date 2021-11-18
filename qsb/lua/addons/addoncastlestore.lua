@@ -1778,7 +1778,7 @@ function AddOnCastleStore.Local:OverwriteInteractiveObject()
         if IO_SlaveToMaster[ScriptName] then
             ScriptName = IO_SlaveToMaster[ScriptName];
         end
-        local ObjectID = Logic.GetEntityName(GetID(ScriptName));
+        local ObjectID = GetID(ScriptName);
         -- Kosten
         local Costs = {Logic.InteractiveObjectGetEffectiveCosts(ObjectID, PlayerID)}
         local CanBuyBoolean, CanNotBuyString = AreCostsAffordable(Costs, false);
