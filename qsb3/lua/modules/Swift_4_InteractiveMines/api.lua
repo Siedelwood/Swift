@@ -24,6 +24,16 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 
 ---
+-- Events, auf die reagiert werden kann.
+--
+-- @field InteractiveMineActivated Der Spieler aktiviert eine interaktive Mine (Parameter: ScriptName, KnightID, PlayerID)
+-- @field InteractiveMineDepleted  Eine ehemals interaktive Mine wurde ausgebeutet (Parameter: ScriptName)
+--
+-- @within Event
+--
+QSB.ScriptEvents = QSB.ScriptEvents or {};
+
+---
 -- Erstelle eine verschüttete Eisenmine.
 --
 -- Werden keine Materialkosten bestimmt, benötigt der Bau der Mine 500 Gold und

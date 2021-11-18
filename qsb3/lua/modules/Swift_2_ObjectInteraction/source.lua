@@ -47,26 +47,25 @@ function ModuleObjectInteraction.Global:OnGameStart()
     self:CreateDefaultObjectNames();
 end
 
-function ModuleObjectInteraction.Global:OnEvent(_ID, _Event, _EntityID, _KnightID, _PlayerID)
+function ModuleObjectInteraction.Global:OnEvent(_ID, _Event, _ScriptName, _KnightID, _PlayerID)
     if _ID == QSB.ScriptEvents.ObjectInteraction then
-        self:OnObjectInteraction(_EntityID, _KnightID, _PlayerID);
+        self:OnObjectInteraction(_ScriptName, _KnightID, _PlayerID);
     elseif _ID == QSB.ScriptEvents.ChatClosed then
         self:ProcessChatInput(_PlayerID);
     end
 end
 
-function ModuleObjectInteraction.Global:OnObjectInteraction(_EntityID, _KnightID, _PlayerID)
-    QSB.IO.LastNpcEntityID = _EntityID;
+function ModuleObjectInteraction.Global:OnObjectInteraction(_ScriptName, _KnightID, _PlayerID)
+    QSB.IO.LastNpcEntityID = GetID(_ScriptName);
     QSB.IO.LastHeroEntityID = _KnightID;
 
-    local EntityName = Logic.GetEntityName(_EntityID);
-    if IO_SlaveToMaster[EntityName] then
-        EntityName = IO_SlaveToMaster[EntityName];
+    if IO_SlaveToMaster[_ScriptName] then
+        _ScriptName = IO_SlaveToMaster[_ScriptName];
     end
-    if IO[EntityName] then
-        IO[EntityName].IsUsed = true;
-        if IO[EntityName].Action then
-            IO[EntityName]:Action(_KnightID, _PlayerID);
+    if IO[_ScriptName] then
+        IO[_ScriptName].IsUsed = true;
+        if IO[_ScriptName].Action then
+            IO[_ScriptName]:Action(_KnightID, _PlayerID);
         end
     end
     -- Avoid reference bug
@@ -195,13 +194,17 @@ function ModuleObjectInteraction.Global:OverrideObjectInteraction()
         OnInteractiveObjectOpened(_EntityID, _PlayerID);
         OnTreasureFound(_EntityID, _PlayerID);
 
+        local ScriptName = Logic.GetEntityName(_EntityID);
+        if IO_SlaveToMaster[ScriptName] then
+            ScriptName = IO_SlaveToMaster[ScriptName];
+        end
         local KnightIDs = {};
         Logic.GetKnights(_PlayerID, KnightIDs);
         local KnightID = API.GetClosestToTarget(_EntityID, KnightIDs);
-        API.SendScriptEvent(QSB.ScriptEvents.ObjectInteraction, _EntityID, KnightID, _PlayerID);
+        API.SendScriptEvent(QSB.ScriptEvents.ObjectInteraction, ScriptName, KnightID, _PlayerID);
         Logic.ExecuteInLuaLocalState(string.format(
-            [[API.SendScriptEvent(QSB.ScriptEvents.ObjectInteraction, %d, %d, %d)]],
-            _EntityID,
+            [[API.SendScriptEvent(QSB.ScriptEvents.ObjectInteraction, "%s", %d, %d)]],
+            ScriptName,
             KnightID,
             _PlayerID
         ));
@@ -316,6 +319,7 @@ end
 -- Local Script ------------------------------------------------------------- --
 
 function ModuleObjectInteraction.Local:OnGameStart()
+    QSB.ScriptEvents.ObjectClicked = API.RegisterScriptEvent("Event_ObjectClicked");
     QSB.ScriptEvents.ObjectInteraction = API.RegisterScriptEvent("Event_ObjectInteraction");
     QSB.ScriptEvents.ObjectReset = API.RegisterScriptEvent("Event_ObjectReset");
     QSB.ScriptEvents.ObjectDelete = API.RegisterScriptEvent("Event_ObjectDelete");
@@ -324,9 +328,9 @@ function ModuleObjectInteraction.Local:OnGameStart()
     self:OverrideGameFunctions();
 end
 
-function ModuleObjectInteraction.Local:OnEvent(_ID, _Event, _EntityID, _KnightID, _PlayerID)
+function ModuleObjectInteraction.Local:OnEvent(_ID, _Event, _ScriptName, _KnightID, _PlayerID)
     if _ID == QSB.ScriptEvents.ObjectInteraction then
-        QSB.IO.LastNpcEntityID = _EntityID;
+        QSB.IO.LastNpcEntityID = GetID(_ScriptName);
         QSB.IO.LastHeroEntityID = _KnightID;
     end
 end
@@ -371,12 +375,12 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
         Logic.GetKnights(PlayerID, KnightIDs);
         local KnightID = API.GetClosestToTarget(EntityID, KnightIDs);
         GUI.SendScriptCommand(string.format(
-            [[API.SendScriptEvent(QSB.ScriptEvents.ObjectClicked, %d, %d, %d)]],
-            EntityID,
+            [[API.SendScriptEvent(QSB.ScriptEvents.ObjectClicked, "%s", %d, %d)]],
+            ScriptName,
             KnightID,
             PlayerID
         ));
-        API.SendScriptEvent(QSB.ScriptEvents.ObjectClicked, EntityID, KnightID, PlayerID);
+        API.SendScriptEvent(QSB.ScriptEvents.ObjectClicked, ScriptName, KnightID, PlayerID);
     end
 
     GUI_Interaction.InteractiveObjectUpdate = function()

@@ -49,6 +49,7 @@ QSB.NonPlayerCharacterObjects = {};
 -- Global Script ------------------------------------------------------------ --
 
 function ModuleInteractiveChests.Global:OnGameStart()
+    QSB.ScriptEvents.InteractiveTreasureActivated = API.RegisterScriptEvent("Event_InteractiveTreasureActivated");
 end
 
 function ModuleInteractiveChests.Global:OnEvent(_ID, _Event, ...)
@@ -129,6 +130,15 @@ function ModuleInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _M
                 AddGood(_Data.DirectReward[1], _Data.DirectReward[2], _PlayerID);
             end
             IO[_Data.Name]:CallbackOpened();
+
+            API.SendScriptEvent(QSB.ScriptEvents.InteractiveTreasureActivated, _Data.Name, _KnightID, _PlayerID);
+            Logic.ExecuteInLuaLocalState(string.format(
+                [[API.SendScriptEvent(%d, "%s", %d, %d)]],
+                QSB.ScriptEvents.InteractiveTreasureActivated,
+                _Data.Name,
+                _KnightID,
+                _PlayerID
+            ));
         end,
     };
 end
@@ -164,6 +174,12 @@ function ModuleInteractiveChests.Global:CreateRandomLuxuryChest(_Name)
     end
     local Good = Luxury[math.random(1, #Luxury)];
     self:CreateRandomChest(_Name, Good, 50, 100, false);
+end
+
+-- Local Script ------------------------------------------------------------- --
+
+function ModuleInteractiveChests.Local:OnGameStart()
+    QSB.ScriptEvents.InteractiveTreasureActivated = API.RegisterScriptEvent("Event_InteractiveTreasureActivated");
 end
 
 -- -------------------------------------------------------------------------- --

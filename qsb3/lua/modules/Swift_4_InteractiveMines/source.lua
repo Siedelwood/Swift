@@ -40,6 +40,9 @@ ModuleInteractiveMines = {
 -- Global ------------------------------------------------------------------- --
 
 function ModuleInteractiveMines.Global:OnGameStart()
+    QSB.ScriptEvents.InteractiveMineActivated = API.RegisterScriptEvent("Event_InteractiveMineActivated");
+    QSB.ScriptEvents.InteractiveMineDepleted = API.RegisterScriptEvent("Event_InteractiveMineDepleted");
+
     API.StartHiResJob(function()
         ModuleInteractiveMines.Global:ControlIOMines();
     end);
@@ -103,6 +106,15 @@ function ModuleInteractiveMines.Global:CreateIOMine(
             if _Data.AdditionalAction then
                 _Data:AdditionalAction(_KnightID, _PlayerID);
             end
+
+            API.SendScriptEvent(QSB.ScriptEvents.InteractiveMineActivated, _Data.Name, _KnightID, _PlayerID);
+            Logic.ExecuteInLuaLocalState(string.format(
+                [[API.SendScriptEvent(%d, "%s", %d, %d)]],
+                QSB.ScriptEvents.InteractiveMineActivated,
+                _Data.Name,
+                _KnightID,
+                _PlayerID
+            ));
         end
     };
 end
@@ -144,6 +156,13 @@ function ModuleInteractiveMines.Global:ControlIOMines()
                 if v.DepletionAction then
                     v:DepletionAction();
                 end
+
+                API.SendScriptEvent(QSB.ScriptEvents.InteractiveMineDepleted, k);
+                Logic.ExecuteInLuaLocalState(string.format(
+                    [[API.SendScriptEvent(%d, "%s")]],
+                    QSB.ScriptEvents.InteractiveMineDepleted,
+                    k
+                ));
             end
         end
     end
@@ -152,6 +171,8 @@ end
 -- Local -------------------------------------------------------------------- --
 
 function ModuleInteractiveMines.Local:OnGameStart()
+    QSB.ScriptEvents.InteractiveMineActivated = API.RegisterScriptEvent("Event_InteractiveMineActivated");
+    QSB.ScriptEvents.InteractiveMineDepleted = API.RegisterScriptEvent("Event_InteractiveMineDepleted");
 end
 
 -- -------------------------------------------------------------------------- --

@@ -22,6 +22,15 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 
 ---
+-- Events, auf die reagiert werden kann.
+--
+-- @field InteractiveTreasureActivated Der Spieler aktiviert einen interaktiven Schatz (Parameter: ScriptName, KnightID, PlayerID)
+--
+-- @within Event
+--
+QSB.ScriptEvents = QSB.ScriptEvents or {};
+
+---
 -- Erstellt eine Schatztruhe mit einer zufälligen Menge an Waren
 -- des angegebenen Typs.
 --
