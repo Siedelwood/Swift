@@ -564,7 +564,12 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
         local PlayerID = GUI.GetPlayerID();
         for i = 1, #g_Interaction.ActiveObjects do
             local ObjectID = g_Interaction.ActiveObjects[i];
-            local X, Y = GUI.GetEntityInfoScreenPosition(ObjectID);
+            local MasterObjectID = ObjectID;
+            local ScriptName     = Logic.GetEntityName(ObjectID);
+            if IO_SlaveToMaster[ScriptName] then
+                MasterObjectID = GetID(IO_SlaveToMaster[ScriptName]);
+            end
+            local X, Y = GUI.GetEntityInfoScreenPosition(MasterObjectID);
             local ScreenSizeX, ScreenSizeY = GUI.GetScreenSize();
 
             if X ~= 0 and Y ~= 0 and X > -50 and Y > -50 and X < (ScreenSizeX + 50) and Y < (ScreenSizeY + 50) then
@@ -592,21 +597,20 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
                 local MasterObjectID = ObjectID;
                 local ScriptName     = Logic.GetEntityName(ObjectID);
                 if IO_SlaveToMaster[ScriptName] then
-                    ScriptName = IO_SlaveToMaster[ScriptName];
-                    MasterObjectID = GetID(ScriptName);
+                    MasterObjectID = GetID(IO_SlaveToMaster[ScriptName]);
                 end
-                local EntityType = Logic.GetEntityType(MasterObjectID);
+                local EntityType = Logic.GetEntityType(ObjectID);
                 local X, Y = GUI.GetEntityInfoScreenPosition(MasterObjectID);
                 local WidgetSize = {XGUIEng.GetWidgetScreenSize(Widget)};
                 XGUIEng.SetWidgetScreenPosition(Widget, X - (WidgetSize[1]/2), Y - (WidgetSize[2]/2));
-                local BaseCosts = {Logic.InteractiveObjectGetCosts(MasterObjectID)};
-                local EffectiveCosts = {Logic.InteractiveObjectGetEffectiveCosts(MasterObjectID, PlayerID)};
-                local IsAvailable = Logic.InteractiveObjectGetAvailability(MasterObjectID);
+                local BaseCosts = {Logic.InteractiveObjectGetCosts(ObjectID)};
+                local EffectiveCosts = {Logic.InteractiveObjectGetEffectiveCosts(ObjectID, PlayerID)};
+                local IsAvailable = Logic.InteractiveObjectGetAvailability(ObjectID);
                 local Disable = false;
                 if BaseCosts[1] ~= nil and EffectiveCosts[1] == nil and IsAvailable == true then
                     Disable = true;
                 end
-                local HasSpace = Logic.InteractiveObjectHasPlayerEnoughSpaceForRewards(MasterObjectID, PlayerID);
+                local HasSpace = Logic.InteractiveObjectHasPlayerEnoughSpaceForRewards(ObjectID, PlayerID);
                 if HasSpace == false then
                     Disable = true;
                 end
@@ -620,6 +624,10 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
                 end
                 XGUIEng.ShowWidget(Widget, 1);
             end
+        end
+        for i = #g_Interaction.ActiveObjectsOnScreen + 1, 2 do
+            local Widget = "/InGame/Root/Normal/InteractiveObjects/" .. i;
+            XGUIEng.ShowWidget(Widget, 0);
         end
         for i = 1, #g_Interaction.ActiveObjectsOnScreen do
             local Widget = "/InGame/Root/Normal/InteractiveObjects/" ..i;
@@ -644,6 +652,9 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
         local PlayerID = GUI.GetPlayerID();
         local ButtonNumber = tonumber(XGUIEng.GetWidgetNameByID(XGUIEng.GetCurrentWidgetID()));
         local ObjectID = g_Interaction.ActiveObjectsOnScreen[ButtonNumber];
+        if ObjectID == nil then
+            return;
+        end
         local EntityType = Logic.GetEntityType(ObjectID);
 
         if g_GameExtraNo > 0 then

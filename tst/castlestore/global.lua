@@ -91,3 +91,29 @@ end
 function SomeFunction(_Question, _Answer)
     API.Note(_Question.." ".._Answer);
 end
+
+function HH_prepareCows()
+    local cow = GetPlayerEntities(1, Entities.A_X_Cow01)
+    for i = 1, #cow do
+        Logic.SetEntityName(cow[i], "IOCow"..i)
+        API.CreateObject {
+            Name        = "IOCow"..i,
+            Title       = "Kuh",
+            Text        = "Kuh verkaufen",
+            Distance    = 1000,
+            State       = 0,
+            Texture     = {3, 16},
+            Action      = function(_Data)
+                API.Note("It works!");
+            end
+        }
+
+        -- API.NpcCompose {
+        --     Name     = "IOCow"..i,
+        --     Callback = function(_Npc, _Hero)
+        --         API.SetEntityPlayer("IOCow"..i, 2);
+        --         API.Note("It works!");
+        --     end,
+        -- }
+    end
+end

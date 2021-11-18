@@ -387,7 +387,12 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
         local PlayerID = GUI.GetPlayerID();
         for i = 1, #g_Interaction.ActiveObjects do
             local ObjectID = g_Interaction.ActiveObjects[i];
-            local X, Y = GUI.GetEntityInfoScreenPosition(ObjectID);
+            local MasterObjectID = ObjectID;
+            local ScriptName = Logic.GetEntityName(ObjectID);
+            if IO_SlaveToMaster[ScriptName] then
+                MasterObjectID = GetID(IO_SlaveToMaster[ScriptName]);
+            end
+            local X, Y = GUI.GetEntityInfoScreenPosition(MasterObjectID);
             local ScreenSizeX, ScreenSizeY = GUI.GetScreenSize();
             if X ~= 0 and Y ~= 0 and X > -50 and Y > -50 and X < (ScreenSizeX + 50) and Y < (ScreenSizeY + 50) then
                 if not table.contains(g_Interaction.ActiveObjectsOnScreen, ObjectID) then
@@ -411,14 +416,14 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
                 if IO_SlaveToMaster[ScriptName] then
                     MasterObjectID = GetID(IO_SlaveToMaster[ScriptName]);
                 end
-                local EntityType = Logic.GetEntityType(MasterObjectID);
+                local EntityType = Logic.GetEntityType(ObjectID);
                 local X, Y = GUI.GetEntityInfoScreenPosition(MasterObjectID);
                 local WidgetSize = {XGUIEng.GetWidgetScreenSize(Widget)};
                 XGUIEng.SetWidgetScreenPosition(Widget, X - (WidgetSize[1]/2), Y - (WidgetSize[2]/2));
-                local BaseCosts = {Logic.InteractiveObjectGetCosts(MasterObjectID)};
-                local EffectiveCosts = {Logic.InteractiveObjectGetEffectiveCosts(MasterObjectID, PlayerID)};
-                local IsAvailable = Logic.InteractiveObjectGetAvailability(MasterObjectID);
-                local HasSpace = Logic.InteractiveObjectHasPlayerEnoughSpaceForRewards(MasterObjectID, PlayerID);
+                local BaseCosts = {Logic.InteractiveObjectGetCosts(ObjectID)};
+                local EffectiveCosts = {Logic.InteractiveObjectGetEffectiveCosts(ObjectID, PlayerID)};
+                local IsAvailable = Logic.InteractiveObjectGetAvailability(ObjectID);
+                local HasSpace = Logic.InteractiveObjectHasPlayerEnoughSpaceForRewards(ObjectID, PlayerID);
                 local Disable = false;
                 if BaseCosts[1] ~= nil and EffectiveCosts[1] == nil and IsAvailable == true then
                     Disable = true;
