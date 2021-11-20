@@ -1,5 +1,5 @@
 --[[
-Swift_4_InteractionChests/Source
+Swift_4_InteractiveChests/Source
 
 Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
 

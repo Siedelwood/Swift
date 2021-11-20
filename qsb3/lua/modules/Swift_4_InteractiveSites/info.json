@@ -1,0 +1,15 @@
+{
+    "name": "Swift_4_InteractiveSites",
+    "version": "1.0.0",
+    "caption": "(4) Interactive Sites",
+    "shortdesc": "",
+    "description": "",
+    "files": [
+        "source.lua",
+        "api.lua"
+    ],
+    "dependencies": [
+        "Swift_0_Core",
+        "Swift_2_ObjectInteraction"
+    ]
+}

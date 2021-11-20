@@ -1,5 +1,5 @@
 --[[
-Swift_2_InteractionCore/API
+Swift_4_InteractiveChests/API
 
 Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
 
