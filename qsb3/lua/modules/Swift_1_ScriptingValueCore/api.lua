@@ -335,7 +335,7 @@ API.ChangeEntityHealth = function(_Entity, _Health, _Relative)
         local MaxHealth = Logic.GetEntityMaxHealth(EntityID);
         if type(_Health) ~= "number" or _Health < 0 then
             error("API.ChangeEntityHealth: _Health " ..tostring(_Health).. "must be 0 or greater!");
-            return
+            return;
         end
         _Health = (_Health > MaxHealth and MaxHealth) or _Health;
         if Logic.IsLeader(EntityID) == 1 then
@@ -350,7 +350,7 @@ API.ChangeEntityHealth = function(_Entity, _Health, _Relative)
                 _Health = (_Health > 100 and 100) or _Health;
                 NewHealth = math.ceil((MaxHealth) * (_Health/100));
             end
-            if NewHealth == 0 then
+            if NewHealth <= 0 then
                 Logic.HurtEntity(EntityID, OldHealth);
             else
                 API.SetInteger(EntityID, QSB.ScriptingValue.Health, NewHealth);

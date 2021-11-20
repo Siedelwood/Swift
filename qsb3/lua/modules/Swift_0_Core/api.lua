@@ -1311,31 +1311,129 @@ end
 GetResource = API.GetResourceAmount
 
 ---
--- Setzt die Menge an Rohstoffen des Entity.
+-- Setzt die Menge an Rohstoffen und die durchschnittliche Auffüllmenge
+-- in einer Mine.
 --
--- @param              _Entity  Entity (Scriptname oder ID)
--- @param[type=number] _Amount Menge an Rohstoffen
+-- @param              _Entity       Rohstoffvorkommen (Skriptname oder ID)
+-- @param[type=number] _StartAmount  Menge an Rohstoffen
+-- @param[type=number] _RefillAmount Minimale Nachfüllmenge (> 0)
 -- @within Entity
 --
-function API.SetResourceAmount(_Entity, _Amount)
-    if GUI then
+-- @usage
+-- API.SetResourceAmount("mine1", 250, 150);
+--
+function API.SetResourceAmount(_Entity, _StartAmount, _RefillAmount)
+    if GUI or not IsExisting(_Entity) then
         return;
     end
+    assert(type(_StartAmount) == "number");
+    assert(type(_RefillAmount) == "number");
+
     local EntityID = GetID(_Entity);
-    if EntityID > 0 or Logic.GetResourceDoodadGoodType(EntityID) > 0 then
-        if type(_Amount) ~= "number" or _Amount < 0 then
-            error("API.SetResourceAmount: _Amount must be 0 or greater!");
-            return
-        end
-        if Logic.GetResourceDoodadGoodAmount(EntityID) == 0 then
-            EntityID = API.ReplaceEntity(EntityID, Logic.GetEntityType(EntityID));
-        end
-        Logic.SetResourceDoodadGoodAmount(EntityID, _Amount);
-    else
-        error("API.SetResourceAmount: _Entity (" ..tostring(_Entity).. ") does not exist or is not a resource entity!");
+    if not IsExisting(EntityID) or Logic.GetResourceDoodadGoodType(EntityID) == 0 then
+        return;
+    end
+    if Logic.GetResourceDoodadGoodAmount(EntityID) == 0 then
+        EntityID = ReplaceEntity(EntityID, Logic.GetEntityType(EntityID));
+    end
+    Logic.SetResourceDoodadGoodAmount(EntityID, _StartAmount);
+    if _RefillAmount then
+        QSB.RefillAmounts[EntityID] = _RefillAmount;
     end
 end
-SetResource = API.SetResourceAmount;
+SetResourceAmount = API.SetResourceAmount;
+
+---
+-- Ermittelt alle Entities in der Kategorie auf dem Territorium und gibt
+-- sie als Liste zurück.
+--
+-- @param[type=number] _PlayerID  PlayerID [0-8] oder -1 für alle
+-- @param[type=number] _Category  Kategorie, der die Entities angehören
+-- @param[type=number] _Territory Zielterritorium
+-- @within Entity
+-- @usage local Found = API.GetEntitiesOfCategoryInTerritory(1, EntityCategories.Hero, 5)
+--
+function API.GetEntitiesOfCategoryInTerritory(_PlayerID, _Category, _Territory)
+    local PlayerEntities = {};
+    local Units = {};
+    if (_PlayerID == -1) then
+        for i=0,8 do
+            local NumLast = 0;
+            repeat
+                Units = { Logic.GetEntitiesOfCategoryInTerritory(_Territory, i, _Category, NumLast) };
+                PlayerEntities = Array_Append(PlayerEntities, Units);
+                NumLast = NumLast + #Units;
+            until #Units == 0;
+        end
+    else
+        local NumLast = 0;
+        repeat
+            Units = { Logic.GetEntitiesOfCategoryInTerritory(_Territory, _PlayerID, _Category, NumLast) };
+            PlayerEntities = Array_Append(PlayerEntities, Units);
+            NumLast = NumLast + #Units;
+        until #Units == 0;
+    end
+    return PlayerEntities;
+end
+GetEntitiesOfCategoryInTerritory = API.GetEntitiesOfCategoryInTerritory;
+
+---
+-- Sucht auf den angegebenen Territorium nach Entities mit bestimmten
+-- Kategorien. Dabei kann für eine Partei oder für mehrere Parteien gesucht
+-- werden.
+--
+-- @param _PlayerID    PlayerID [0-8] oder Table mit PlayerIDs (Einzelne Spielernummer oder Table)
+-- @param _Category    Kategorien oder Table mit Kategorien (Einzelne Kategorie oder Table)
+-- @param _Territory   Zielterritorium oder Table mit Territorien (Einzelnes Territorium oder Table)
+-- @return[type=table] Liste mit Resultaten
+-- @within Entity
+--
+-- @usage
+-- local Result = API.GetEntitiesOfCategoriesInTerritories({1, 2, 3}, EntityCategories.Hero, {5, 12, 23, 24});
+--
+function API.GetEntitiesOfCategoriesInTerritories(_PlayerID, _Category, _Territory)
+    -- Tables erzwingen
+    local p = (type(_PlayerID) == "table" and _PlayerID) or {_PlayerID};
+    local c = (type(_Category) == "table" and _Category) or {_Category};
+    local t = (type(_Territory) == "table" and _Territory) or {_Territory};
+
+    local PlayerEntities = {};
+    for i=1, #p, 1 do
+        for j=1, #c, 1 do
+            for k=1, #t, 1 do  
+                local Units = API.GetEntitiesOfCategoryInTerritory(p[i], c[j], t[k]);
+                PlayerEntities = Array_Append(PlayerEntities, Units);
+            end
+        end
+    end
+    return PlayerEntities;
+end
+GetEntitiesOfCategoriesInTerritories = API.GetEntitiesOfCategoriesInTerritories;
+EntitiesInCategories = API.GetEntitiesOfCategoriesInTerritories;
+
+---
+-- Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.
+-- Hat das Entity einen Namen, bleibt dieser unverändert und wird
+-- zurückgegeben.
+-- @param[type=number] _EntityID Entity ID
+-- @return[type=string] Skriptname
+-- @within Entity
+--
+function API.CreateEntityName(_EntityID)
+    if type(_EntityID) == "string" then
+        return _EntityID;
+    else
+        assert(type(_EntityID) == "number");
+        local name = Logic.GetEntityName(_EntityID);
+        if (type(name) ~= "string" or name == "" ) then
+            QSB.GiveEntityNameCounter = (QSB.GiveEntityNameCounter or 0)+ 1;
+            name = "AutomaticScriptName_"..QSB.GiveEntityNameCounter;
+            Logic.SetEntityName(_EntityID, name);
+        end
+        return name;
+    end
+end
+GiveEntityName = API.CreateEntityName;
 
 -- Position
 
@@ -1658,8 +1756,8 @@ function API.GroupHurt(_Entity, _Damage, _Attacker)
         return;
     end
 
-    local Health = Logic.GetEntityHealth(EntityToHurt);
     if EntityToHurt then
+        local Health = Logic.GetEntityHealth(EntityToHurt);
         if Health <= _Damage then
             _Damage = _Damage - Health;
             Logic.HurtEntity(EntityToHurt, Health);

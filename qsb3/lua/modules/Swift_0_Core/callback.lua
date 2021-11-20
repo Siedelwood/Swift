@@ -9,7 +9,7 @@ You may use and modify this file unter the terms of the MIT licence.
 ]]
 
 ---
--- Erzeugt Game Callbacks zur Handhabung von Script Events.
+-- Erzeugt das Game Callback zur Handhabung von Script Events.
 --
 -- Script Events werden von den Modulen der QSB geworfen, um anderen Modulen
 -- mitzuteilen, dass gerade etwas passiert wurde. Sie können aber ebenfalls
@@ -31,6 +31,29 @@ end
 
 function Swift:InitalizeCallbackLocal()
     self:CreateUserCallbacks();
+end
+
+QSB.RefillAmounts = {};
+
+function Swift:OverwriteGeologistRefill()
+    if Framework.GetGameExtraNo() >= 1 then
+        GameCallback_OnGeologistRefill_Orig_QSB_SwiftCore = GameCallback_OnGeologistRefill;
+        GameCallback_OnGeologistRefill = function(_PlayerID, _TargetID, _GeologistID)
+            GameCallback_OnGeologistRefill_Orig_QSB_SwiftCore(_PlayerID, _TargetID, _GeologistID);
+            if QSB.RefillAmounts[_TargetID] then
+                local RefillAmount = QSB.RefillAmounts[_TargetID];
+                local RefillRandom = RefillAmount + math.random(1, math.floor((RefillAmount * 0.2) + 0.5));
+                Logic.SetResourceDoodadGoodAmount(_TargetID, RefillRandom);
+                if RefillRandom > 0 then
+                    if Logic.GetResourceDoodadGoodType(_TargetID) == Goods.G_Iron then
+                        Logic.SetModel(_TargetID, Models.Doodads_D_SE_ResourceIron);
+                    else
+                        Logic.SetModel(_TargetID, Models.R_ResorceStone_Scaffold);
+                    end
+                end
+            end
+        end
+    end
 end
 
 function Swift:CreateUserCallbacks()

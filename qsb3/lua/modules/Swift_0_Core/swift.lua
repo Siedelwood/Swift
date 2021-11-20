@@ -62,6 +62,7 @@ function Swift:LoadCore()
         self:OverrideSaveLoadedCallback();
         self:OverrideQuestSystemGlobal();
         self:InitalizeCallbackGlobal();
+        self:OverwriteGeologistRefill();
     end
 
     if self:IsLocalEnvironment() then
