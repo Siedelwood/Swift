@@ -15,7 +15,7 @@ ModuleSpeedLimitation = {
 
     Global = {},
     Local = {
-        SpeedLimit = 32,
+        SpeedLimit = 1,
     },
     -- This is a shared structure but the values are asynchronous!
     Shared = {};
