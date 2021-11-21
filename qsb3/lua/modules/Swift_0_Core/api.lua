@@ -1351,6 +1351,7 @@ SetResourceAmount = API.SetResourceAmount;
 -- @param[type=number] _Category  Kategorie, der die Entities angehören
 -- @param[type=number] _Territory Zielterritorium
 -- @within Entity
+-- @local
 -- @usage local Found = API.GetEntitiesOfCategoryInTerritory(1, EntityCategories.Hero, 5)
 --
 function API.GetEntitiesOfCategoryInTerritory(_PlayerID, _Category, _Territory)
