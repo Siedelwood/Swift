@@ -1,5 +1,12 @@
-OptLoader_BasePath = "maps/externalmap/" ..Framework.GetCurrentMapName().. "/";
-OptLoader_ModuleFiles = {
+BinLoader_BasePath = nil;
+BinLoader_CoreFiles = {
+    "Swift_0_Core/swift.lua",
+    "Swift_0_Core/api.lua",
+    "Swift_0_Core/debug.lua",
+    "Swift_0_Core/behavior.lua",
+    "Swift_0_Core/callback.lua",
+}
+BinLoader_ModuleFiles = {
     "Swift_1_DisplayCore/source.lua",
     "Swift_1_DisplayCore/api.lua",
     "Swift_1_InputOutputCore/source.lua",
@@ -45,7 +52,6 @@ OptLoader_ModuleFiles = {
     "Swift_3_JobsRealtime/source.lua",
     "Swift_3_JobsRealtime/api.lua",
     "Swift_3_LifestockBreeding/api.lua",
-    "Swift_3_LifestockBreeding/requirements.lua",
     "Swift_3_TextWindow/source.lua",
     "Swift_3_TextWindow/api.lua",
     "Swift_4_ExtendedCamera/source.lua",
@@ -68,21 +74,21 @@ OptLoader_ModuleFiles = {
     "Swift_4_Typewriter/api.lua",
 }
 
-function OptLoader_SetBasePath(_Path)
-    OptLoader_BasePath = _Path;
+function BinLoader_SetBasePath(_Path)
+    BinLoader_BasePath = _Path;
 end
 
-function OptLoader_LoadFiles()
-    Script.Load(OptLoader_BasePath.. "lua/modules/Swift_0_Core/swift.lua");
-    Script.Load(OptLoader_BasePath.. "lua/modules/Swift_0_Core/api.lua");
-    Script.Load(OptLoader_BasePath.. "lua/modules/Swift_0_Core/debug.lua");
-    Script.Load(OptLoader_BasePath.. "lua/modules/Swift_0_Core/behavior.lua");
-    Script.Load(OptLoader_BasePath.. "lua/modules/Swift_0_Core/callback.lua");
-
-    for i= 1, #OptLoader_ModuleFiles, 1 do
-        Script.Load(OptLoader_BasePath.. "lua/modules/" ..OptLoader_ModuleFiles[i]);
+function BinLoader_LoadFiles()
+    if BinLoader_BasePath == nil then
+        BinLoader_BasePath = "maps/externalmap/" ..Framework.GetCurrentMapName().. "/";
+    end
+    for i= 1, #BinLoader_CoreFiles do
+        Script.Load(BinLoader_BasePath.. "lua/modules/" ..BinLoader_CoreFiles[i]);
+    end
+    for i= 1, #BinLoader_ModuleFiles, 1 do
+        Script.Load(BinLoader_BasePath.. "lua/modules/" ..BinLoader_ModuleFiles[i]);
     end
 
-    Script.Load(OptLoader_BasePath.. "lua/modules/Swift_0_Core/selfload.lua");
+    Script.Load(BinLoader_BasePath.. "lua/modules/Swift_0_Core/selfload.lua");
 end
 

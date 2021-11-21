@@ -9,7 +9,7 @@ You may use and modify this file unter the terms of the MIT licence.
 ]]
 
 ---
--- Ermöglicht die Aufzucht von Nutzrieren wie Schafe und Kühe durch den Spieler.
+-- Ermöglicht die Aufzucht von Nutztieren wie Schafe und Kühe durch den Spieler.
 -- 
 -- Kosten für die Aufzucht oder die benötigte Menge an Tieren um mit der
 -- Zucht zu beginnen, sind frei konfigurierbar.

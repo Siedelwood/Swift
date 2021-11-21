@@ -1,4 +1,4 @@
-OptWriter_ModuleFiles = {
+BinWriter_ModuleFiles = {
     "Swift_0_Core/swift.lua",
     "Swift_0_Core/api.lua",
     "Swift_0_Core/debug.lua",
@@ -75,7 +75,7 @@ OptWriter_ModuleFiles = {
     "Swift_0_Core/selfload.lua",
 };
 
-function OptWriter_LoadSource(_File)
+function BinWriter_LoadSource(_File)
     local fh = io.open("../modules/" .._File, "rt");
     if not fh then
         print("file not found: ../modules/" .._File);
@@ -88,16 +88,16 @@ function OptWriter_LoadSource(_File)
     return Contents;
 end
 
-function OptWriter_ConcatSources()
+function BinWriter_ConcatSources()
     local Content = "";
-    for i= 1, #OptWriter_ModuleFiles, 1 do
-        Content = Content .. OptWriter_LoadSource(OptWriter_ModuleFiles[i]);
+    for i= 1, #BinWriter_ModuleFiles, 1 do
+        Content = Content .. BinWriter_LoadSource(BinWriter_ModuleFiles[i]);
     end
     return Content;
 end
 
-function OptWriter_Write()
-    local QsbContent = OptWriter_ConcatSources();
+function BinWriter_Write()
+    local QsbContent = BinWriter_ConcatSources();
     local fh = io.open("../var/qsb.lua", "rt");
     if fh ~= nil then
         os.remove("../var/qsb.lua");
@@ -110,5 +110,5 @@ function OptWriter_Write()
     fh:close();
 end
 
-OptWriter_Write();
+BinWriter_Write();
 

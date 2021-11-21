@@ -40,7 +40,7 @@ function SymfoniaDocumenter:CreateBundleHtmlDocumentation()
 
     local ParsedBundles = {};
     
-    os.execute(docCommand.. " / core");
+    os.execute(docCommand.. " /core");
     if (self:ReadBundleInfo("core")) then
         table.insert(ParsedBundles, "core");
     end

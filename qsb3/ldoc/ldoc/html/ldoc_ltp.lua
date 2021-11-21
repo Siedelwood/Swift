@@ -12,7 +12,7 @@ return [==[
 </head>
 <body>
 
-<button onclick="topFunction()" id="back2top" title="Nach oben scrollen">&#11014</button>
+<!--<button onclick="topFunction()" id="back2top" title="Nach oben scrollen">&#11014</button>-->
 
 <div id="container">
 
@@ -316,6 +316,7 @@ return [==[
 <script>
     window.onscroll = function() {scrollFunction()};
 
+    <!--
     function scrollFunction() {
         if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
             document.getElementById("back2top").style.display = "block";
@@ -323,6 +324,7 @@ return [==[
             document.getElementById("back2top").style.display = "none";
         }
     }
+    -->
 
     function topFunction() {
         document.body.scrollTop = 0; // For Safari
