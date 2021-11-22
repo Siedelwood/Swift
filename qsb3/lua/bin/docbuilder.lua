@@ -169,6 +169,7 @@ function BinDocBuilder_GetOsName()
         raw_os_name = io.popen('uname -s','r'):read('*l')
     else
         local env_OS = os.getenv('OS')
+        ---@diagnostic disable-next-line: undefined-global
         if env_OS and env_ARCH then
             raw_os_name = env_OS
         end

@@ -3,7 +3,7 @@ BinWriter_ModuleFiles = {
     "Swift_0_Core/api.lua",
     "Swift_0_Core/debug.lua",
     "Swift_0_Core/behavior.lua",
-    "Swift_0_Core/callback.lua",
+    "Swift_0_Core/user.lua",
 
     "Swift_1_DisplayCore/source.lua",
     "Swift_1_DisplayCore/api.lua",

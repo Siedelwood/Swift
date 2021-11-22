@@ -159,7 +159,7 @@ function API.DisposeObject(_ScriptName)
     end
     ModuleObjectInteraction.Global:DestroyObject(_ScriptName);
 end
-ResetObject = API.ResetObject;
+DisposeObject = API.DisposeObject;
 
 ---
 -- Setzt das interaktive Objekt zurück. Dadurch verhält es sich, wie vor der

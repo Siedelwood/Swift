@@ -59,17 +59,14 @@ function Swift:LoadCore()
         self:InitalizeDebugModeGlobal();
         self:InitalizeEventsGlobal();
         self:InstallBehaviorGlobal();
-        self:OverrideSaveLoadedCallback();
         self:OverrideQuestSystemGlobal();
         self:InitalizeCallbackGlobal();
-        self:OverwriteGeologistRefill();
     end
 
     if self:IsLocalEnvironment() then
         self:InitalizeDebugModeLocal();
         self:InitalizeEventsLocal();
         self:InstallBehaviorLocal();
-        self:OverrideEscapeCallback();
         self:OverrideDoQuicksave();
         self:InitalizeCallbackLocal();
         self:ValidateTerritories();
@@ -429,27 +426,6 @@ function Swift:ConvertTableToString(_Table)
     return String;
 end
 
--- Game Callbacks
-
-function Swift:TriggerEntityKilledCallbacks(_Entity, _Attacker)
-    local DefenderID = GetID(_Entity);
-    local AttackerID = GetID(_Attacker or 0);
-    if AttackerID == 0 or DefenderID == 0 or Logic.GetEntityHealth(DefenderID) > 0 then
-        return;
-    end
-    local x, y, z     = Logic.EntityGetPos(DefenderID);
-    local DefPlayerID = Logic.EntityGetPlayer(DefenderID);
-    local DefType     = Logic.GetEntityType(DefenderID);
-    local AttPlayerID = Logic.EntityGetPlayer(AttackerID);
-    local AttType     = Logic.GetEntityType(AttackerID);
-
-    GameCallback_EntityKilled(DefenderID, DefPlayerID, AttackerID, AttPlayerID, DefType, AttType);
-    Logic.ExecuteInLuaLocalState(string.format(
-        "GameCallback_Feedback_EntityKilled(%d, %d, %d, %d,%d, %d, %f, %f)",
-        DefenderID, DefPlayerID, AttackerID, AttPlayerID, DefType, AttType, x, y
-    ));
-end
-
 -- Script Events
 
 function Swift:InitalizeEventsGlobal()
@@ -510,48 +486,6 @@ function Swift:DispatchScriptEvent(_ID, ...)
     -- Call event listener
     if GameCallback_QSB_OnEventReceived then
         GameCallback_QSB_OnEventReceived(_ID, unpack(arg));
-    end
-end
-
--- Save Game Callback
-
-function Swift:OverrideSaveLoadedCallback()
-    if Mission_OnSaveGameLoaded then
-        Mission_OnSaveGameLoaded_Orig_Swift = Mission_OnSaveGameLoaded;
-        Mission_OnSaveGameLoaded = function()
-            Mission_OnSaveGameLoaded_Orig_Swift();
-            Swift:RestoreAfterLoad();
-            Logic.ExecuteInLuaLocalState("Swift:RestoreAfterLoad()");
-            Swift:DispatchScriptEvent(QSB.ScriptEvents.SaveGameLoaded);
-            Logic.ExecuteInLuaLocalState("Swift:DispatchScriptEvent(QSB.ScriptEvents.SaveGameLoaded)");
-        end
-    end
-end
-
-function Swift:RestoreAfterLoad()
-    debug("Loading save game", true);
-    self:OverrideString();
-    self:OverrideTable();
-    if self:IsGlobalEnvironment() then
-        self:GlobalRestoreDebugAfterLoad();
-    end
-    if self:IsLocalEnvironment() then
-        self:LocalRestoreDebugAfterLoad();
-    end
-end
-
--- Escape Callback
-
-function Swift:OverrideEscapeCallback()
-    GameCallback_Escape_Orig_Swift = GameCallback_Escape;
-    GameCallback_Escape = function()
-        GameCallback_Escape_Orig_Swift();
-
-        Swift:DispatchScriptEvent(QSB.ScriptEvents.EscapePressed, GUI.GetPlayerID());
-        GUI.SendScriptCommand(string.format(
-            [[Swift:DispatchScriptEvent(QSB.ScriptEvents.EscapePressed, %d)]],
-            GUI.GetPlayerID()
-        ));
     end
 end
 

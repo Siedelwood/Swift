@@ -11,9 +11,10 @@ You may use and modify this file unter the terms of the MIT licence.
 ---
 -- Stellt wichtige Kernfunktionen bereit.
 --
--- @within Beschreibung
 -- @set sort=true
+-- @within Beschreibung
 --
+
 Swift = Swift or {};
 
 QSB.Metatable = {Init = false, Weak = {}, Metas = {}, Key = 0};
@@ -22,60 +23,6 @@ QSB.DefaultNumber = -1;
 QSB.DefaultString = "";
 QSB.DefaultList = {};
 QSB.DefaultFunction = function() end;
-
----
--- Installiert Swift.
---
--- @within Sonstige
--- @local
---
-function API.Install()
-    Swift:LoadCore();
-    Swift:LoadModules();
-    collectgarbage("collect");
-end
-
----
--- Prüft, ob das laufende Spiel in der History Edition gespielt wird.
---
--- @return[type=boolean] Spiel ist History Edition
--- @within Sonstige
---
-function API.IsHistoryEdition()
-    return Swift:IsHistoryEdition();
-end
-
----
--- Prüft, ob das laufende Spiel eine Multiplayerpartie in der History Edition
--- ist.
---
--- <b>Hinweis</b>: Es ist unmöglich, dass Original und History Edition in einer
--- Partie aufeinander treffen, da die alten Server längst abgeschaltet und die
--- Option zum LAN-Spiel in der HE nicht verfügbar ist.
---
--- @return[type=boolean] Spiel ist History Edition
--- @within Sonstige
---
-function API.IsHistoryEditionNetworkGame()
-    return API.IsHistoryEdition() and Framework.IsNetworkGame();
-end
-
----
--- Berechnet den Faktor der linearen Interpolation.
---
--- @param[type=number] _Start   Startwert
--- @param[type=number] _Current Aktueller Wert
--- @param[type=number] _End     Endwert
--- @return[type=number] Interpolationsfaktor
--- @within Mathematik
---
-function API.LERP(_Start, _Current, _End)
-    local Factor = (_Current - _Start) / _End;
-    if Factor > 1 then
-        Factor = 1;
-    end
-    return Factor;
-end
 
 -- Lua base functions
 
@@ -274,6 +221,91 @@ function API.OverrideString()
     end
 end
 
+-- Script Events
+
+---
+-- Liste der grundlegenden Script Events.
+--
+-- @field SaveGameLoaded Ein Spielstand wird geladen.
+-- @field EscapePressed Escape wurde gedrückt. (Parameter: PlayerID)
+-- @field QuestFailure Ein Quest schlug fehl (Parameter: QuestID)
+-- @field QuestInterrupt Ein Quest wurde unterbrochen (Parameter: QuestID)
+-- @field QuestReset Ein Quest wurde zurückgesetzt (Parameter: QuestID)
+-- @field QuestSuccess Ein Quest wurde erfolgreich abgeschlossen (Parameter: QuestID)
+-- @field QuestTrigger Ein Quest wurde aktiviert (Parameter: QuestID)
+-- @field CustomValueChanged Eine Custom Variable hat sich geändert (Parameter: Name, OldValue, NewValue)
+-- @field LanguageSet Die Sprache wurde geändert (Parameter: OldLanguage, NewLanguage)
+-- @within Event
+--
+QSB.ScriptEvents = QSB.ScriptEvents or {};
+
+-- Script Event Callback --
+
+---
+-- Wird aufgerufen, wenn ein beliebiges Event empfangen wird.
+--
+-- Wenn ein Event empfangen wird, kann es sein, dass Parameter mit übergeben
+-- werden. Um für alle Events gewappnet zu sein, muss der Listener als
+-- Varargs-Funktion, also mit ... in der Parameterliste geschrieben werden.
+--
+-- Zugegriffen wird auf die Parameter, indem die Parameterliste entsprechend
+-- indexiert wird. Für Parameter 1 wird dann arg[1] geschrieben usw.
+--
+-- @param[type=number] _EventID ID des Event
+-- @param              ...      Parameterliste des Event
+-- @within Event
+--
+-- @usage
+-- GameCallback_QSB_OnEventReceived = function(_EventID, ...)
+--     if _EventID == QSB.ScriptEvents.EscapePressed then
+--         API.AddNote("Player " ..arg[1].. " has pressed Escape!");
+--     elseif _EventID == QSB.ScriptEvents.SaveGameLoaded then
+--         API.AddNote("A save has been loaded!");
+--     end
+-- end
+--
+GameCallback_QSB_OnEventReceived = function(_EventID, ...)
+end
+
+-- Base --
+
+---
+-- Installiert Swift.
+--
+-- @within Base
+-- @local
+--
+function API.Install()
+    Swift:LoadCore();
+    Swift:LoadModules();
+    collectgarbage("collect");
+end
+
+---
+-- Prüft, ob das laufende Spiel in der History Edition gespielt wird.
+--
+-- @return[type=boolean] Spiel ist History Edition
+-- @within Base
+--
+function API.IsHistoryEdition()
+    return Swift:IsHistoryEdition();
+end
+
+---
+-- Prüft, ob das laufende Spiel eine Multiplayerpartie in der History Edition
+-- ist.
+--
+-- <b>Hinweis</b>: Es ist unmöglich, dass Original und History Edition in einer
+-- Partie aufeinander treffen, da die alten Server längst abgeschaltet und die
+-- Option zum LAN-Spiel in der HE nicht verfügbar ist.
+--
+-- @return[type=boolean] Spiel ist History Edition
+-- @within Base
+--
+function API.IsHistoryEditionNetworkGame()
+    return API.IsHistoryEdition() and Framework.IsNetworkGame();
+end
+
 -- Debug
 
 ---
@@ -343,24 +375,6 @@ function API.IsDebugShellActive()
     return Swift.m_DevelopingShell == true;
 end
 
--- Script Events
-
----
--- Liste der grundlegenden Script Events.
---
--- @field SaveGameLoaded Ein Spielstand wird geladen.
--- @field EscapePressed Escape wurde gedrückt. (Parameter: PlayerID)
--- @field QuestFailure Ein Quest schlug fehl (Parameter: QuestID)
--- @field QuestInterrupt Ein Quest wurde unterbrochen (Parameter: QuestID)
--- @field QuestReset Ein Quest wurde zurückgesetzt (Parameter: QuestID)
--- @field QuestSuccess Ein Quest wurde erfolgreich abgeschlossen (Parameter: QuestID)
--- @field QuestTrigger Ein Quest wurde aktiviert (Parameter: QuestID)
--- @field CustomValueChanged Eine Custom Variable hat sich geändert (Parameter: Name, OldValue, NewValue)
--- @field LanguageSet Die Sprache wurde geändert (Parameter: OldLanguage, NewLanguage)
--- @within Event
---
-QSB.ScriptEvents = QSB.ScriptEvents or {};
-
 ---
 -- Legt ein neues Script Event an.
 --
@@ -395,7 +409,7 @@ end
 --
 -- @param[type=boolean] _Name  Name der Custom Variable
 -- @param               _Value Neuer Wert
--- @within Sonstige
+-- @within Base
 --
 -- @usage local Value = API.ObtainCustomVariable("MyVariable", 0);
 --
@@ -408,7 +422,7 @@ end
 -- @param[type=boolean] _Name    Name der Custom Variable
 -- @param               _Default (Optional) Defaultwert falls leer
 -- @return Wert
--- @within Sonstige
+-- @within Base
 --
 -- @usage local Value = API.ObtainCustomVariable("MyVariable", 0);
 --
@@ -431,7 +445,7 @@ end
 --
 -- @param _Text Anzeigetext (String oder Table)
 -- @return Übersetzten Text oder Table mit Texten
--- @within Sonstige
+-- @within Base
 --
 -- @usage -- Einstufige Table
 -- local Text = API.Localize({de = "Deutsch", en = "English"});
@@ -451,7 +465,7 @@ end
 -- Alle von der QSB erzeugten Texte werden der übergebenen Sprache angepasst.
 --
 -- @param _Language Genutzte Sprache
--- @within Sonstige
+-- @within Base
 --
 function API.ChangeDesiredLanguage(_Language)
     if GUI or type(_Language) ~= "string" or _Language:len() ~= 2 then
@@ -470,7 +484,7 @@ end
 --
 -- @param _Value Wahrheitswert
 -- @return[type=boolean] Wahrheitswert
--- @within Sonstige
+-- @within Base
 -- @local
 --
 -- @usage local Bool = API.ToBoolean("+")  --> Bool = true
@@ -490,7 +504,7 @@ AcceptAlternativeBoolean = API.ToBoolean;
 -- @param[type=string] _Value         Zu rundender Wert
 -- @param[type=string] _DecimalDigits Maximale Dezimalstellen
 -- @return[type=number] Abgerundete Zahl
--- @within Sonstige
+-- @within Base
 --
 function API.Round(_Value, _DecimalDigits)
     _DecimalDigits = _DecimalDigits or 2;
@@ -540,7 +554,7 @@ Round = API.Round;
 -- <b>Hinweis:</b> Nur im lokalen Skript möglich!
 --
 -- @param[type=function] _Function Bedingungsprüfung
--- @within Sonstige
+-- @within Base
 --
 function API.AddBlockQuicksaveCondition(_Function)
     if not GUI or type(_Function) ~= "function" then
@@ -548,268 +562,6 @@ function API.AddBlockQuicksaveCondition(_Function)
     end
     Swift:AddBlockQuicksaveCondition(_Function);
 end
-
----
--- Gibt die ID des Quests mit dem angegebenen Namen zurück. Existiert der
--- Quest nicht, wird nil zurückgegeben.
---
--- @param[type=string] _Name Name des Quest
--- @return[type=number] ID des Quest
--- @within Quest
---
-function API.GetQuestID(_Name)
-    if type(_Name) == "number" then
-        return _Name;
-    end
-    for k, v in pairs(Quests) do
-        if v and k > 0 then
-            if v.Identifier == _Name then
-                return k;
-            end
-        end
-    end
-end
-GetQuestID = API.GetQuestID;
-
----
--- Prüft, ob zu der angegebenen ID ein Quest existiert. Wird ein Questname
--- angegeben wird dessen Quest-ID ermittelt und geprüft.
---
--- @param[type=number] _QuestID ID oder Name des Quest
--- @return[type=boolean] Quest existiert
--- @within Quest
---
-function API.IsValidQuest(_QuestID)
-    return Quests[_QuestID] ~= nil or Quests[API.GetQuestID(_QuestID)] ~= nil;
-end
-IsValidQuest = API.IsValidQuest;
-
----
--- Prüft den angegebenen Questnamen auf verbotene Zeichen.
---
--- @param[type=number] _Name Name des Quest
--- @return[type=boolean] Name ist gültig
--- @within Quest
---
-function API.IsValidQuestName(_Name)
-    return string.find(_Name, "^[A-Za-z0-9_ @ÄÖÜäöüß]+$") ~= nil;
-end
-IsValidQuestName = API.IsValidQuestName;
-
----
--- Lässt den Quest fehlschlagen.
---
--- Der Status wird auf Over und das Resultat auf Failure gesetzt.
---
--- @param[type=string]  _QuestName Name des Quest
--- @param[type=boolean] _NoMessage Meldung nicht anzeigen
--- @within Quest
---
-function API.FailQuest(_QuestName, _NoMessage)
-    local QuestID = GetQuestID(_QuestName);
-    local Quest = Quests[QuestID];
-    if Quest then
-        if not _NoMessage then
-            Logic.DEBUG_AddNote("fail quest " .._QuestName);
-        end
-        Quest:RemoveQuestMarkers();
-        Quest:Fail();
-        -- Note: Event is send in QuestTemplate:Fail()!
-    end
-end
-FailQuestByName = API.FailQuest;
-
----
--- Startet den Quest neu.
---
--- Der Quest muss beendet sein um ihn wieder neu zu starten. Wird ein Quest
--- neu gestartet, müssen auch alle Trigger wieder neu ausgelöst werden, außer
--- der Quest wird manuell getriggert.
---
--- Alle Änderungen an Standardbehavior müssen hier berücksichtigt werden. Wird
--- ein Standardbehavior in einem Bundle verändert, muss auch diese Funktion
--- angepasst oder überschrieben werden.
---
--- @param[type=string]  _QuestName Name des Quest
--- @param[type=boolean] _NoMessage Meldung nicht anzeigen
--- @within Quest
---
-function API.RestartQuest(_QuestName, _NoMessage)
-    local QuestID = GetQuestID(_QuestName);
-    local Quest = Quests[QuestID];
-    if Quest then
-        if not _NoMessage then
-            Logic.DEBUG_AddNote("restart quest " .._QuestName);
-        end
-
-        if Quest.Objectives then
-            local questObjectives = Quest.Objectives;
-            for i = 1, questObjectives[0] do
-                local objective = questObjectives[i];
-                objective.Completed = nil
-                local objectiveType = objective.Type;
-
-                if objectiveType == Objective.Deliver then
-                    local data = objective.Data;
-                    data[3] = nil;
-                    data[4] = nil;
-                    data[5] = nil;
-
-                elseif g_GameExtraNo and g_GameExtraNo >= 1 and objectiveType == Objective.Refill then
-                    objective.Data[2] = nil;
-
-                elseif objectiveType == Objective.Protect or objectiveType == Objective.Object then
-                    local data = objective.Data;
-                    for j=1, data[0], 1 do
-                        data[-j] = nil;
-                    end
-
-                elseif objectiveType == Objective.DestroyEntities and objective.Data[1] == 2 and objective.DestroyTypeAmount then
-                    objective.Data[3] = objective.DestroyTypeAmount;
-                elseif objectiveType == Objective.DestroyEntities and objective.Data[1] == 3 then
-                    objective.Data[4] = nil;
-
-                elseif objectiveType == Objective.Distance then
-                    if objective.Data[1] == -65565 then
-                        objective.Data[4].NpcInstance = nil;
-                    end
-
-                elseif objectiveType == Objective.Custom2 and objective.Data[1].Reset then
-                    objective.Data[1]:Reset(Quest, i);
-                end
-            end
-        end
-
-        local function resetCustom(_type, _customType)
-            local Quest = Quest;
-            local behaviors = Quest[_type];
-            if behaviors then
-                for i = 1, behaviors[0] do
-                    local behavior = behaviors[i];
-                    if behavior.Type == _customType then
-                        local behaviorDef = behavior.Data[1];
-                        if behaviorDef and behaviorDef.Reset then
-                            behaviorDef:Reset(Quest, i);
-                        end
-                    end
-                end
-            end
-        end
-
-        resetCustom("Triggers", Triggers.Custom2);
-        resetCustom("Rewards", Reward.Custom);
-        resetCustom("Reprisals", Reprisal.Custom);
-
-        -- Quest Output zurücksetzen
-        if Quest.Visible_OrigDebug then
-            Quest.Visible = Quest.Visible_OrigDebug;
-            Quest.Visible_OrigDebug = nil;
-        end
-        if Quest.ShowEndMessage then
-            Quest.ShowEndMessage = Quest.ShowEndMessage_OrigDebug;
-            Quest.ShowEndMessage_OrigDebug = nil;
-        end
-        if Quest.QuestStartMsg_OrigDebug then
-            Quest.QuestStartMsg = Quest.QuestStartMsg_OrigDebug;
-            Quest.QuestStartMsg_OrigDebug = nil;
-        end
-        if Quest.QuestSuccessMsg_OrigDebug then
-            Quest.QuestSuccessMsg = Quest.QuestSuccessMsg_OrigDebug;
-            Quest.QuestSuccessMsg_OrigDebug = nil;
-        end
-        if Quest.QuestFailureMsg_OrigDebug then
-            Quest.QuestFailureMsg = Quest.QuestFailureMsg_OrigDebug;
-            Quest.QuestFailureMsg_OrigDebug = nil;
-        end
-
-        Quest.Result = nil;
-        local OldQuestState = Quest.State;
-        Quest.State = QuestState.NotTriggered;
-        Logic.ExecuteInLuaLocalState("LocalScriptCallback_OnQuestStatusChanged("..Quest.Index..")");
-        if OldQuestState == QuestState.Over then
-            StartSimpleJobEx(_G[QuestTemplate.Loop], Quest.QueueID);
-        end
-        -- Note: This is a special operation outside of the quest system!
-        Swift:DispatchScriptEvent(QSB.ScriptEvents.QuestReset, QuestID);
-        Logic.ExecuteInLuaLocalState(string.format(
-            "Swift:DispatchScriptEvent(QSB.ScriptEvents.QuestReset, %d)",
-            QuestID
-        ));
-        return QuestID, Quest;
-    end
-end
-RestartQuestByName = API.RestartQuest;
-
----
--- Startet den Quest sofort, sofern er existiert.
---
--- Dabei ist es unerheblich, ob die Bedingungen zum Start erfüllt sind.
---
--- @param[type=string]  _QuestName Name des Quest
--- @param[type=boolean] _NoMessage Meldung nicht anzeigen
--- @within Quest
---
-function API.StartQuest(_QuestName, _NoMessage)
-    local QuestID = GetQuestID(_QuestName);
-    local Quest = Quests[QuestID];
-    if Quest then
-        if not _NoMessage then
-            Logic.DEBUG_AddNote("start quest " .._QuestName);
-        end
-        Quest:SetMsgKeyOverride();
-        Quest:SetIconOverride();
-        Quest:Trigger();
-        -- Note: Event is send in QuestTemplate:Trigger()!
-    end
-end
-StartQuestByName = API.StartQuest;
-
----
--- Unterbricht den Quest.
---
--- Der Status wird auf Over und das Resultat auf Interrupt gesetzt. Sind Marker
--- gesetzt, werden diese entfernt.
---
--- @param[type=string]  _QuestName Name des Quest
--- @param[type=boolean] _NoMessage Meldung nicht anzeigen
--- @within Quest
---
-function API.StopQuest(_QuestName, _NoMessage)
-    local QuestID = GetQuestID(_QuestName);
-    local Quest = Quests[QuestID];
-    if Quest then
-        if not _NoMessage then
-            Logic.DEBUG_AddNote("interrupt quest " .._QuestName);
-        end
-        Quest:RemoveQuestMarkers();
-        Quest:Interrupt(-1);
-        -- Note: Event is send in QuestTemplate:Interrupt()!
-    end
-end
-StopQuestByName = API.StopQuest;
-
----
--- Gewinnt den Quest.
---
--- Der Status wird auf Over und das Resultat auf Success gesetzt.
---
--- @param[type=string]  _QuestName Name des Quest
--- @param[type=boolean] _NoMessage Meldung nicht anzeigen
--- @within Quest
---
-function API.WinQuest(_QuestName, _NoMessage)
-    local QuestID = GetQuestID(_QuestName);
-    local Quest = Quests[QuestID];
-    if Quest then
-        if not _NoMessage then
-            Logic.DEBUG_AddNote("win quest " .._QuestName);
-        end
-        Quest:RemoveQuestMarkers();
-        Quest:Success();
-        -- Note: Event is send in QuestTemplate:Success()!
-    end
-end
-WinQuestByName = API.WinQuest;
 
 function API.IsLoadscreenVisible()
     return Swift.m_LoadScreenHidden ~= true;
@@ -955,57 +707,6 @@ function API.Confront(_entity, _entityToLookAt)
     API.LookAt(_entityToLookAt, _entity);
 end
 ConfrontEntities = API.LookAt;
-
----
--- Bestimmt die Distanz zwischen zwei Punkten. Es können Entity-IDs,
--- Skriptnamen oder Positionstables angegeben werden.
---
--- Wenn die Distanz nicht bestimmt werden kann, wird -1 zurückgegeben.
---
--- @param _pos1 Erste Vergleichsposition (Skriptname, ID oder Positions-Table)
--- @param _pos2 Zweite Vergleichsposition (Skriptname, ID oder Positions-Table)
--- @return[type=number] Entfernung zwischen den Punkten
--- @within Position
--- @usage local Distance = API.GetDistance("HQ1", Logic.GetKnightID(1))
---
-function API.GetDistance( _pos1, _pos2 )
-    if (type(_pos1) == "string") or (type(_pos1) == "number") then
-        _pos1 = GetPosition(_pos1);
-    end
-    if (type(_pos2) == "string") or (type(_pos2) == "number") then
-        _pos2 = GetPosition(_pos2);
-    end
-    if type(_pos1) ~= "table" or type(_pos2) ~= "table" then
-        warn("API.GetDistance: Distance could not be calculated!");
-        return -1;
-    end
-    local xDistance = (_pos1.X - _pos2.X);
-    local yDistance = (_pos1.Y - _pos2.Y);
-    return math.sqrt((xDistance^2) + (yDistance^2));
-end
-GetDistance = API.GetDistance;
-
----
--- Gibt das Entity aus der Liste zurück, welches dem Ziel am nähsten ist.
---
--- @param             _Target Entity oder Position
--- @param[type=table] _List   Liste von Entities oder Positionen
--- @return Nähste Entity oder Position
--- @within Position
--- @usage local Clostest = API.GetClosestToTarget("HQ1", {"Marcus", "Alandra", "Hakim"});
---
-function API.GetClosestToTarget(_Target, _List)
-    local ClosestToTarget = 0;
-    local ClosestToTargetDistance = Logic.WorldGetSize();
-    for i= 1, #_List, 1 do
-        local DistanceBetween = API.GetDistance(_List[i], _Target);
-        if DistanceBetween < ClosestToTargetDistance then
-            ClosestToTargetDistance = DistanceBetween;
-            ClosestToTarget = _List[i];
-        end
-    end
-    return ClosestToTarget;
-end
 
 ---
 -- Sendet einen Handelskarren zu dem Spieler. Startet der Karren von einem
@@ -1436,7 +1137,238 @@ function API.CreateEntityName(_EntityID)
 end
 GiveEntityName = API.CreateEntityName;
 
+-- Group
+
+---
+-- Gibt die Mänge an Soldaten zurück, die dem Entity unterstehen
+--
+-- @param _Entity Entity (Skriptname oder ID)
+-- @return[type=number] Menge an Soldaten
+-- @within Gruppe
+--
+function API.CountSoldiersOfGroup(_Entity)
+    local EntityID = GetID(_Entity);
+    if EntityID == 0 then
+        error("API.CountSoldiersOfGroup: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return 0;
+    end
+    if Logic.IsLeader(EntityID) == 0 then
+        return 0;
+    end
+    local SoldierTable = {Logic.GetSoldiersAttachedToLeader(EntityID)};
+    return SoldierTable[1];
+end
+CoundSoldiers = API.CountSoldiersOfGroup;
+
+---
+-- Gibt die IDs aller Soldaten zurück, die zum Battalion gehören.
+--
+-- @param _Entity Entity (Skriptname oder ID)
+-- @return[type=table] Liste aller Soldaten
+-- @within Gruppe
+--
+function API.GetGroupSoldiers(_Entity)
+    local EntityID = GetID(_Entity);
+    if EntityID == 0 then
+        error("API.GetGroupSoldiers: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return {};
+    end
+    if Logic.IsLeader(EntityID) == 0 then
+        return {};
+    end
+    local SoldierTable = {Logic.GetSoldiersAttachedToLeader(EntityID)};
+    table.remove(SoldierTable, 1);
+    return SoldierTable;
+end
+GetSoldiers = API.GetGroupSoldiers;
+
+---
+-- Gibt den Leader des Soldaten zurück.
+--
+-- @param _Entity Entity (Skriptname oder ID)
+-- @return[type=number] Menge an Soldaten
+-- @within Gruppe
+--
+function API.GetGroupLeader(_Entity)
+    local EntityID = GetID(_Entity);
+    if EntityID == 0 then
+        error("API.GetGroupLeader: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return 0;
+    end
+    if Logic.IsEntityInCategory(EntityID, EntityCategories.Soldier) == 0 then 
+        return 0;
+    end
+    return Logic.SoldierGetLeaderEntityID(EntityID);
+end
+GetLeader = API.GetGroupLeader;
+
+---
+-- Heilt das Entity um die angegebene Menge an Gesundheit.
+--
+-- @param               _Entity   Entity (Scriptname oder ID)
+-- @param[type=number]  _Amount   Geheilte Gesundheit
+-- @within Gruppe
+--
+function API.GroupHeal(_Entity, _Amount)
+    if GUI then
+        return;
+    end
+    local EntityID = GetID(_Entity);
+    if EntityID == 0 or Logic.IsLeader(EntityID) == 1 then
+        error("API.GroupHeal: _Entity (" ..tostring(_Entity).. ") must be an existing leader!");
+        return;
+    end
+    if type(_Amount) ~= "number" or _Amount < 0 then
+        error("API.GroupHeal: _Amount (" ..tostring(_Amount).. ") must greatier than 0!");
+        return;
+    end
+    API.ChangeEntityHealth(EntityID, Logic.GetEntityHealth(EntityID) + _Amount);
+end
+HealEntity = API.GroupHeal;
+
+---
+-- Verwundet ein Entity oder ein Battallion um die angegebene
+-- Menge an Schaden. Bei einem Battalion wird der Schaden solange
+-- auf Soldaten aufgeteilt, bis er komplett verrechnet wurde.
+--
+-- @param               _Entity   Entity (Scriptname oder ID)
+-- @param[type=number] _Damage   Schaden
+-- @param[type=string] _Attacker Angreifer
+-- @within Gruppe
+--
+function API.GroupHurt(_Entity, _Damage, _Attacker)
+    if GUI then
+        return;
+    end
+    local EntityID = GetID(_Entity);
+    if EntityID == 0 then
+        error("API.GroupHurt: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return;
+    end
+    if API.IsEntityInAtLeastOneCategory(EntityID, EntityCategories.Soldier) then
+        API.GroupHurt(API.GetGroupLeader(EntityID), _Damage);
+        return;
+    end
+
+    local EntityToHurt = EntityID;
+    local IsLeader = Logic.IsLeader(EntityToHurt) == 1;
+    if IsLeader then
+        EntityToHurt = API.GetGroupSoldiers(EntityToHurt)[1];
+    end
+    if type(_Damage) ~= "number" or _Damage < 0 then
+        error("API.GroupHurt: _Damage (" ..tostring(_Damage).. ") must be greater than 0!");
+        return;
+    end
+
+    if EntityToHurt then
+        local Health = Logic.GetEntityHealth(EntityToHurt);
+        if Health <= _Damage then
+            _Damage = _Damage - Health;
+            Logic.HurtEntity(EntityToHurt, Health);
+            Swift:TriggerEntityKilledCallbacks(EntityToHurt, _Attacker);
+            if IsLeader and _Damage > 0 then
+                API.GroupHurt(EntityToHurt, _Damage);
+            end
+        else
+            Logic.HurtEntity(EntityToHurt, _Damage);
+            Swift:TriggerEntityKilledCallbacks(EntityToHurt, _Attacker);
+        end
+    end
+end
+HurtEntity = API.GroupHurt;
+
+---
+-- Aktiviert ein Interaktives Objekt.
+--
+-- <b>Hinweis</b>: Diese Funktion wird von einem anderen Modul überschrieben!<br>
+-- <a href="Swift_2_ObjectInteraction.api.html#API.InteractiveObjectActivate">(2) Object Interaction</a>
+--
+-- @param[type=string] _EntityName Skriptname des Objektes
+-- @param[type=number] _State      State des Objektes
+-- @within Entity
+--
+function API.InteractiveObjectActivate(_ScriptName, _State)
+    _State = _State or 0;
+    if GUI or not IsExisting(_ScriptName) then
+        return;
+    end
+    for i= 1, 8 do
+        Logic.InteractiveObjectSetPlayerState(GetID(_ScriptName), i, _State);
+    end
+end
+InteractiveObjectActivate = API.InteractiveObjectActivate;
+
+---
+-- Deaktiviert ein interaktives Objekt.
+--
+-- <b>Hinweis</b>: Diese Funktion wird von einem anderen Modul überschrieben!<br>
+-- <a href="Swift_2_ObjectInteraction.api.html#API.InteractiveObjectDeactivate">(2) Object Interaction</a>
+--
+-- @param[type=string] _EntityName Scriptname des Objektes
+-- @within Entity
+--
+function API.InteractiveObjectDeactivate(_ScriptName)
+    if GUI or not IsExisting(_ScriptName) then
+        return;
+    end
+    for i= 1, 8 do
+        Logic.InteractiveObjectSetPlayerState(GetID(_ScriptName), i, 2);
+    end
+end
+InteractiveObjectDeactivate = API.InteractiveObjectDeactivate;
+
 -- Position
+
+---
+-- Bestimmt die Distanz zwischen zwei Punkten. Es können Entity-IDs,
+-- Skriptnamen oder Positionstables angegeben werden.
+--
+-- Wenn die Distanz nicht bestimmt werden kann, wird -1 zurückgegeben.
+--
+-- @param _pos1 Erste Vergleichsposition (Skriptname, ID oder Positions-Table)
+-- @param _pos2 Zweite Vergleichsposition (Skriptname, ID oder Positions-Table)
+-- @return[type=number] Entfernung zwischen den Punkten
+-- @within Position
+-- @usage local Distance = API.GetDistance("HQ1", Logic.GetKnightID(1))
+--
+function API.GetDistance( _pos1, _pos2 )
+    if (type(_pos1) == "string") or (type(_pos1) == "number") then
+        _pos1 = GetPosition(_pos1);
+    end
+    if (type(_pos2) == "string") or (type(_pos2) == "number") then
+        _pos2 = GetPosition(_pos2);
+    end
+    if type(_pos1) ~= "table" or type(_pos2) ~= "table" then
+        warn("API.GetDistance: Distance could not be calculated!");
+        return -1;
+    end
+    local xDistance = (_pos1.X - _pos2.X);
+    local yDistance = (_pos1.Y - _pos2.Y);
+    return math.sqrt((xDistance^2) + (yDistance^2));
+end
+GetDistance = API.GetDistance;
+
+---
+-- Gibt das Entity aus der Liste zurück, welches dem Ziel am nähsten ist.
+--
+-- @param             _Target Entity oder Position
+-- @param[type=table] _List   Liste von Entities oder Positionen
+-- @return Nähste Entity oder Position
+-- @within Position
+-- @usage local Clostest = API.GetClosestToTarget("HQ1", {"Marcus", "Alandra", "Hakim"});
+--
+function API.GetClosestToTarget(_Target, _List)
+    local ClosestToTarget = 0;
+    local ClosestToTargetDistance = Logic.WorldGetSize();
+    for i= 1, #_List, 1 do
+        local DistanceBetween = API.GetDistance(_List[i], _Target);
+        if DistanceBetween < ClosestToTargetDistance then
+            ClosestToTargetDistance = DistanceBetween;
+            ClosestToTarget = _List[i];
+        end
+    end
+    return ClosestToTarget;
+end
 
 ---
 -- Lokalisiert ein Entity auf der Map. Es können sowohl Skriptnamen als auch
@@ -1634,143 +1566,282 @@ function API.ValidatePosition(_pos)
 end
 IsValidPosition = API.ValidatePosition;
 
--- Group
-
 ---
--- Gibt die Mänge an Soldaten zurück, die dem Entity unterstehen
+-- Berechnet den Faktor der linearen Interpolation.
 --
--- @param _Entity Entity (Skriptname oder ID)
--- @return[type=number] Menge an Soldaten
--- @within Gruppe
+-- @param[type=number] _Start   Startwert
+-- @param[type=number] _Current Aktueller Wert
+-- @param[type=number] _End     Endwert
+-- @return[type=number] Interpolationsfaktor
+-- @within Mathematik
 --
-function API.CountSoldiersOfGroup(_Entity)
-    local EntityID = GetID(_Entity);
-    if EntityID == 0 then
-        error("API.CountSoldiersOfGroup: _Entity (" ..tostring(_Entity).. ") does not exist!");
-        return 0;
+function API.LERP(_Start, _Current, _End)
+    local Factor = (_Current - _Start) / _End;
+    if Factor > 1 then
+        Factor = 1;
     end
-    if Logic.IsLeader(EntityID) == 0 then
-        return 0;
-    end
-    local SoldierTable = {Logic.GetSoldiersAttachedToLeader(EntityID)};
-    return SoldierTable[1];
+    return Factor;
 end
-CoundSoldiers = API.CountSoldiersOfGroup;
 
 ---
--- Gibt die IDs aller Soldaten zurück, die zum Battalion gehören.
+-- Gibt die ID des Quests mit dem angegebenen Namen zurück. Existiert der
+-- Quest nicht, wird nil zurückgegeben.
 --
--- @param _Entity Entity (Skriptname oder ID)
--- @return[type=table] Liste aller Soldaten
--- @within Gruppe
+-- @param[type=string] _Name Name des Quest
+-- @return[type=number] ID des Quest
+-- @within Quest
 --
-function API.GetGroupSoldiers(_Entity)
-    local EntityID = GetID(_Entity);
-    if EntityID == 0 then
-        error("API.GetGroupSoldiers: _Entity (" ..tostring(_Entity).. ") does not exist!");
-        return {};
+function API.GetQuestID(_Name)
+    if type(_Name) == "number" then
+        return _Name;
     end
-    if Logic.IsLeader(EntityID) == 0 then
-        return {};
-    end
-    local SoldierTable = {Logic.GetSoldiersAttachedToLeader(EntityID)};
-    table.remove(SoldierTable, 1);
-    return SoldierTable;
-end
-GetSoldiers = API.GetGroupSoldiers;
-
----
--- Gibt den Leader des Soldaten zurück.
---
--- @param _Entity Entity (Skriptname oder ID)
--- @return[type=number] Menge an Soldaten
--- @within Gruppe
---
-function API.GetGroupLeader(_Entity)
-    local EntityID = GetID(_Entity);
-    if EntityID == 0 then
-        error("API.GetGroupLeader: _Entity (" ..tostring(_Entity).. ") does not exist!");
-        return 0;
-    end
-    if Logic.IsEntityInCategory(EntityID, EntityCategories.Soldier) == 0 then 
-        return 0;
-    end
-    return Logic.SoldierGetLeaderEntityID(EntityID);
-end
-GetLeader = API.GetGroupLeader;
-
----
--- Heilt das Entity um die angegebene Menge an Gesundheit.
---
--- @param               _Entity   Entity (Scriptname oder ID)
--- @param[type=number]  _Amount   Geheilte Gesundheit
--- @within Gruppe
---
-function API.GroupHeal(_Entity, _Amount)
-    if GUI then
-        return;
-    end
-    local EntityID = GetID(_Entity);
-    if EntityID == 0 or Logic.IsLeader(EntityID) == 1 then
-        error("API.GroupHeal: _Entity (" ..tostring(_Entity).. ") must be an existing leader!");
-        return;
-    end
-    if type(_Amount) ~= "number" or _Amount < 0 then
-        error("API.GroupHeal: _Amount (" ..tostring(_Amount).. ") must greatier than 0!");
-        return;
-    end
-    API.ChangeEntityHealth(EntityID, Logic.GetEntityHealth(EntityID) + _Amount);
-end
-HealEntity = API.GroupHeal;
-
----
--- Verwundet ein Entity oder ein Battallion um die angegebene
--- Menge an Schaden. Bei einem Battalion wird der Schaden solange
--- auf Soldaten aufgeteilt, bis er komplett verrechnet wurde.
---
--- @param               _Entity   Entity (Scriptname oder ID)
--- @param[type=number] _Damage   Schaden
--- @param[type=string] _Attacker Angreifer
--- @within Gruppe
---
-function API.GroupHurt(_Entity, _Damage, _Attacker)
-    if GUI then
-        return;
-    end
-    local EntityID = GetID(_Entity);
-    if EntityID == 0 then
-        error("API.GroupHurt: _Entity (" ..tostring(_Entity).. ") does not exist!");
-        return;
-    end
-    if API.IsEntityInAtLeastOneCategory(EntityID, EntityCategories.Soldier) then
-        API.GroupHurt(API.GetGroupLeader(EntityID), _Damage);
-        return;
-    end
-
-    local EntityToHurt = EntityID;
-    local IsLeader = Logic.IsLeader(EntityToHurt) == 1;
-    if IsLeader then
-        EntityToHurt = API.GetGroupSoldiers(EntityToHurt)[1];
-    end
-    if type(_Damage) ~= "number" or _Damage < 0 then
-        error("API.GroupHurt: _Damage (" ..tostring(_Damage).. ") must be greater than 0!");
-        return;
-    end
-
-    if EntityToHurt then
-        local Health = Logic.GetEntityHealth(EntityToHurt);
-        if Health <= _Damage then
-            _Damage = _Damage - Health;
-            Logic.HurtEntity(EntityToHurt, Health);
-            Swift:TriggerEntityKilledCallbacks(EntityToHurt, _Attacker);
-            if IsLeader and _Damage > 0 then
-                API.GroupHurt(EntityToHurt, _Damage);
+    for k, v in pairs(Quests) do
+        if v and k > 0 then
+            if v.Identifier == _Name then
+                return k;
             end
-        else
-            Logic.HurtEntity(EntityToHurt, _Damage);
-            Swift:TriggerEntityKilledCallbacks(EntityToHurt, _Attacker);
         end
     end
 end
-HurtEntity = API.GroupHurt;
+GetQuestID = API.GetQuestID;
+
+---
+-- Prüft, ob zu der angegebenen ID ein Quest existiert. Wird ein Questname
+-- angegeben wird dessen Quest-ID ermittelt und geprüft.
+--
+-- @param[type=number] _QuestID ID oder Name des Quest
+-- @return[type=boolean] Quest existiert
+-- @within Quest
+--
+function API.IsValidQuest(_QuestID)
+    return Quests[_QuestID] ~= nil or Quests[API.GetQuestID(_QuestID)] ~= nil;
+end
+IsValidQuest = API.IsValidQuest;
+
+---
+-- Prüft den angegebenen Questnamen auf verbotene Zeichen.
+--
+-- @param[type=number] _Name Name des Quest
+-- @return[type=boolean] Name ist gültig
+-- @within Quest
+--
+function API.IsValidQuestName(_Name)
+    return string.find(_Name, "^[A-Za-z0-9_ @ÄÖÜäöüß]+$") ~= nil;
+end
+IsValidQuestName = API.IsValidQuestName;
+
+---
+-- Lässt den Quest fehlschlagen.
+--
+-- Der Status wird auf Over und das Resultat auf Failure gesetzt.
+--
+-- @param[type=string]  _QuestName Name des Quest
+-- @param[type=boolean] _NoMessage Meldung nicht anzeigen
+-- @within Quest
+--
+function API.FailQuest(_QuestName, _NoMessage)
+    local QuestID = GetQuestID(_QuestName);
+    local Quest = Quests[QuestID];
+    if Quest then
+        if not _NoMessage then
+            Logic.DEBUG_AddNote("fail quest " .._QuestName);
+        end
+        Quest:RemoveQuestMarkers();
+        Quest:Fail();
+        -- Note: Event is send in QuestTemplate:Fail()!
+    end
+end
+FailQuestByName = API.FailQuest;
+
+---
+-- Startet den Quest neu.
+--
+-- Der Quest muss beendet sein um ihn wieder neu zu starten. Wird ein Quest
+-- neu gestartet, müssen auch alle Trigger wieder neu ausgelöst werden, außer
+-- der Quest wird manuell getriggert.
+--
+-- Alle Änderungen an Standardbehavior müssen hier berücksichtigt werden. Wird
+-- ein Standardbehavior in einem Bundle verändert, muss auch diese Funktion
+-- angepasst oder überschrieben werden.
+--
+-- @param[type=string]  _QuestName Name des Quest
+-- @param[type=boolean] _NoMessage Meldung nicht anzeigen
+-- @within Quest
+--
+function API.RestartQuest(_QuestName, _NoMessage)
+    local QuestID = GetQuestID(_QuestName);
+    local Quest = Quests[QuestID];
+    if Quest then
+        if not _NoMessage then
+            Logic.DEBUG_AddNote("restart quest " .._QuestName);
+        end
+
+        if Quest.Objectives then
+            local questObjectives = Quest.Objectives;
+            for i = 1, questObjectives[0] do
+                local objective = questObjectives[i];
+                objective.Completed = nil
+                local objectiveType = objective.Type;
+
+                if objectiveType == Objective.Deliver then
+                    local data = objective.Data;
+                    data[3] = nil;
+                    data[4] = nil;
+                    data[5] = nil;
+
+                elseif g_GameExtraNo and g_GameExtraNo >= 1 and objectiveType == Objective.Refill then
+                    objective.Data[2] = nil;
+
+                elseif objectiveType == Objective.Protect or objectiveType == Objective.Object then
+                    local data = objective.Data;
+                    for j=1, data[0], 1 do
+                        data[-j] = nil;
+                    end
+
+                elseif objectiveType == Objective.DestroyEntities and objective.Data[1] == 2 and objective.DestroyTypeAmount then
+                    objective.Data[3] = objective.DestroyTypeAmount;
+                elseif objectiveType == Objective.DestroyEntities and objective.Data[1] == 3 then
+                    objective.Data[4] = nil;
+
+                elseif objectiveType == Objective.Distance then
+                    if objective.Data[1] == -65565 then
+                        objective.Data[4].NpcInstance = nil;
+                    end
+
+                elseif objectiveType == Objective.Custom2 and objective.Data[1].Reset then
+                    objective.Data[1]:Reset(Quest, i);
+                end
+            end
+        end
+
+        local function resetCustom(_type, _customType)
+            local Quest = Quest;
+            local behaviors = Quest[_type];
+            if behaviors then
+                for i = 1, behaviors[0] do
+                    local behavior = behaviors[i];
+                    if behavior.Type == _customType then
+                        local behaviorDef = behavior.Data[1];
+                        if behaviorDef and behaviorDef.Reset then
+                            behaviorDef:Reset(Quest, i);
+                        end
+                    end
+                end
+            end
+        end
+
+        resetCustom("Triggers", Triggers.Custom2);
+        resetCustom("Rewards", Reward.Custom);
+        resetCustom("Reprisals", Reprisal.Custom);
+
+        -- Quest Output zurücksetzen
+        if Quest.Visible_OrigDebug then
+            Quest.Visible = Quest.Visible_OrigDebug;
+            Quest.Visible_OrigDebug = nil;
+        end
+        if Quest.ShowEndMessage then
+            Quest.ShowEndMessage = Quest.ShowEndMessage_OrigDebug;
+            Quest.ShowEndMessage_OrigDebug = nil;
+        end
+        if Quest.QuestStartMsg_OrigDebug then
+            Quest.QuestStartMsg = Quest.QuestStartMsg_OrigDebug;
+            Quest.QuestStartMsg_OrigDebug = nil;
+        end
+        if Quest.QuestSuccessMsg_OrigDebug then
+            Quest.QuestSuccessMsg = Quest.QuestSuccessMsg_OrigDebug;
+            Quest.QuestSuccessMsg_OrigDebug = nil;
+        end
+        if Quest.QuestFailureMsg_OrigDebug then
+            Quest.QuestFailureMsg = Quest.QuestFailureMsg_OrigDebug;
+            Quest.QuestFailureMsg_OrigDebug = nil;
+        end
+
+        Quest.Result = nil;
+        local OldQuestState = Quest.State;
+        Quest.State = QuestState.NotTriggered;
+        Logic.ExecuteInLuaLocalState("LocalScriptCallback_OnQuestStatusChanged("..Quest.Index..")");
+        if OldQuestState == QuestState.Over then
+            StartSimpleJobEx(_G[QuestTemplate.Loop], Quest.QueueID);
+        end
+        -- Note: This is a special operation outside of the quest system!
+        Swift:DispatchScriptEvent(QSB.ScriptEvents.QuestReset, QuestID);
+        Logic.ExecuteInLuaLocalState(string.format(
+            "Swift:DispatchScriptEvent(QSB.ScriptEvents.QuestReset, %d)",
+            QuestID
+        ));
+        return QuestID, Quest;
+    end
+end
+RestartQuestByName = API.RestartQuest;
+
+---
+-- Startet den Quest sofort, sofern er existiert.
+--
+-- Dabei ist es unerheblich, ob die Bedingungen zum Start erfüllt sind.
+--
+-- @param[type=string]  _QuestName Name des Quest
+-- @param[type=boolean] _NoMessage Meldung nicht anzeigen
+-- @within Quest
+--
+function API.StartQuest(_QuestName, _NoMessage)
+    local QuestID = GetQuestID(_QuestName);
+    local Quest = Quests[QuestID];
+    if Quest then
+        if not _NoMessage then
+            Logic.DEBUG_AddNote("start quest " .._QuestName);
+        end
+        Quest:SetMsgKeyOverride();
+        Quest:SetIconOverride();
+        Quest:Trigger();
+        -- Note: Event is send in QuestTemplate:Trigger()!
+    end
+end
+StartQuestByName = API.StartQuest;
+
+---
+-- Unterbricht den Quest.
+--
+-- Der Status wird auf Over und das Resultat auf Interrupt gesetzt. Sind Marker
+-- gesetzt, werden diese entfernt.
+--
+-- @param[type=string]  _QuestName Name des Quest
+-- @param[type=boolean] _NoMessage Meldung nicht anzeigen
+-- @within Quest
+--
+function API.StopQuest(_QuestName, _NoMessage)
+    local QuestID = GetQuestID(_QuestName);
+    local Quest = Quests[QuestID];
+    if Quest then
+        if not _NoMessage then
+            Logic.DEBUG_AddNote("interrupt quest " .._QuestName);
+        end
+        Quest:RemoveQuestMarkers();
+        Quest:Interrupt(-1);
+        -- Note: Event is send in QuestTemplate:Interrupt()!
+    end
+end
+StopQuestByName = API.StopQuest;
+
+---
+-- Gewinnt den Quest.
+--
+-- Der Status wird auf Over und das Resultat auf Success gesetzt.
+--
+-- @param[type=string]  _QuestName Name des Quest
+-- @param[type=boolean] _NoMessage Meldung nicht anzeigen
+-- @within Quest
+--
+function API.WinQuest(_QuestName, _NoMessage)
+    local QuestID = GetQuestID(_QuestName);
+    local Quest = Quests[QuestID];
+    if Quest then
+        if not _NoMessage then
+            Logic.DEBUG_AddNote("win quest " .._QuestName);
+        end
+        Quest:RemoveQuestMarkers();
+        Quest:Success();
+        -- Note: Event is send in QuestTemplate:Success()!
+    end
+end
+WinQuestByName = API.WinQuest;
 
