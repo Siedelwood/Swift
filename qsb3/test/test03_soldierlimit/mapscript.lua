@@ -86,6 +86,14 @@ function Mission_FirstMapAction()
     Logic.SetKnightTitle(1, 2);
     API.SetPlayerSoldierLimits(1, 100, 200, 300, 400);
     MakeHeroAlandra();
+
+    function GameCallback_QSB_OnEventReceived(_ID, ...)
+        if _ID == QSB.ScriptEvents.EntityCreated then
+            API.Note("Entity " ..arg[1].. " was created!");
+        elseif _ID == QSB.ScriptEvents.EntityDestroyed then
+            API.Note("Entity " ..arg[1].. " was destroyed!");
+        end
+    end
 end
 
 function MakeHeroMacrus()
