@@ -152,7 +152,7 @@ function ModuleDisplayCore.Local:GetCinematicEventStatus(_InfoID)
 end
 
 function ModuleDisplayCore.Local:OverrideInterfaceUpdateForCinematicMode()
-    Swift:AddBlockQuicksaveCondition(function()
+    API.AddBlockQuicksaveCondition(function()
         if ModuleDisplayCore.Local.NormalModeHidden
         or ModuleDisplayCore.Local.BorderScrollDeactivated
         or ModuleDisplayCore.Local.PauseScreenShown

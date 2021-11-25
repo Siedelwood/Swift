@@ -10,6 +10,7 @@ ModuleInterfaceCore = {
     Global = {},
     Local = {
         HotkeyDescriptions = {},
+        DisableHEAutoSave = false;
     },
     -- This is a shared structure but the values are asynchronous!
     Shared = {};
@@ -27,6 +28,10 @@ end
 function ModuleInterfaceCore.Local:OnGameStart()
     self:OverrideMissionGoodCounter();
     self:SetupHackRegisterHotkey();
+
+    API.AddBlockQuicksaveCondition(function()
+        return ModuleInterfaceCore.Local.DisableHEAutoSave == true;
+    end);
 end
 
 function ModuleInterfaceCore.Local:OverrideMissionGoodCounter()

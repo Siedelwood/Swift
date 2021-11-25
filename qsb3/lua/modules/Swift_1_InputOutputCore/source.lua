@@ -117,7 +117,7 @@ function ModuleInputOutputCore.Local:OnEvent(_ID, _Event, _Text)
 end
 
 function ModuleInputOutputCore.Local:OverrideQuicksave()
-    Swift:AddBlockQuicksaveCondition(function()
+    API.AddBlockQuicksaveCondition(function()
         return ModuleInputOutputCore.Local.DialogWindowShown;
     end);
     
@@ -133,16 +133,49 @@ function ModuleInputOutputCore.Local:OverrideQuicksave()
         or XGUIEng.IsWidgetShownEx("/InGame/Dialog") == 1 then
             return;
         end
-        -- OpenDialog(
-        --     XGUIEng.GetStringTableText("UI_Texts/Saving_center") .. "{cr}{cr}" .. "QuickSave",
-        --     XGUIEng.GetStringTableText("UI_Texts/MainMenuSaveGame_center")
-        -- );
-        ModuleInputOutputCore.Local:OpenDialog(
-            XGUIEng.GetStringTableText("UI_Texts/MainMenuSaveGame_center"),
-            XGUIEng.GetStringTableText("UI_Texts/Saving_center") .. "{cr}{cr}" .. "QuickSave"
+        OpenDialog(
+            XGUIEng.GetStringTableText("UI_Texts/MainMenuSaveGame_center") .. "{cr}{cr}{cr}{cr}{cr}" .. "QuickSave",
+            XGUIEng.GetStringTableText("UI_Texts/Saving_center") .. "{cr}{cr}{cr}"
         );
         XGUIEng.ShowWidget("/InGame/Dialog/Ok", 0);
         Dialog_SetUpdateCallback(KeyBindings_SaveGame_Delayed);
+    end
+
+    SaveDialog_HoldGameState = function(name)
+        SaveDialog.Name = name;
+        if SaveDialog_SearchFilename(name) == true then
+            OpenRequesterDialog(
+                "{cr}" .. name .. " : " .. XGUIEng.GetStringTableText("UI_Texts/ConfirmOverwriteFile"),
+                XGUIEng.GetStringTableText("UI_Texts/MainMenuSaveGame_center"),
+                "SaveDialog_SaveFile()"
+            );
+        else
+            SaveDialog_SaveFile();
+        end
+    end
+
+    SaveDialog_SaveFile = function()
+        CloseSaveDialog();
+        GUI_Window.Toggle("MainMenu");
+        local SaveMsgText;
+        if string.len(SaveDialog.Name) > 15 then
+            SaveMsgText = XGUIEng.GetStringTableText("UI_Texts/MainMenuSaveGame_center") .. "{cr}{cr}{cr}{cr}{cr}" .. SaveDialog.Name;
+        else
+            SaveMsgText = XGUIEng.GetStringTableText("UI_Texts/MainMenuSaveGame_center") .. "{cr}{cr}{cr}{cr}{cr}" .. SaveDialog.Name;
+        end
+        OpenDialog(SaveMsgText, XGUIEng.GetStringTableText("UI_Texts/Saving_center") .. "{cr}{cr}{cr}");
+        XGUIEng.ShowWidget("/InGame/Dialog/Ok", 0);
+        Framework.SaveGame(SaveDialog.Name,"--");
+    end
+
+    GUI_Window.MainMenuSaveClicked = function()
+        GUI_Window.CloseInGameMenu();
+        OpenDialog(
+            XGUIEng.GetStringTableText("UI_Texts/MainMenuSaveGame_center") .. "{cr}{cr}{cr}{cr}{cr}" .. "QuickSave",
+            XGUIEng.GetStringTableText("UI_Texts/Saving_center") .. "{cr}{cr}{cr}"
+        );
+        XGUIEng.ShowWidget("/InGame/Dialog/Ok", 0);
+        Framework.SaveGame("QuickSave", "Quicksave");
     end
 end
 

@@ -308,3 +308,22 @@ function API.RemoveHotKey(_Index)
     ModuleInterfaceCore.Local.HotkeyDescriptions[_Index] = nil;
 end
 
+---
+-- Deaktiviert das automatische Speichern in der History Edition.
+--
+-- Das Spiel wird zu keinem Zeitpunkt einen automatischen Spielstand anlegen.
+--
+-- @param[type=number] _Flag Autosave deaktivieren
+-- @within Anwenderfunktionen
+--
+function API.DisableHistoryEditionAutoSave(_Flag)
+    if not GUI then
+        Logic.ExecuteInLuaLocalState(string.format(
+            "API.DisableHistoryEditionAutoSave(%s)",
+            tostring(_Flag == true)
+        ));
+        return;
+    end
+    ModuleInterfaceCore.Local.DisableHEAutoSave = _Flag == true;
+end
+
