@@ -186,7 +186,7 @@ function ModuleInputOutputCore.Local:OverrideDebugInput()
         if not self.m_DevelopingShell then
             return;
         end
-        Input.KeyBindDown(Keys.ModifierControl + Keys.X, "API.ShowTextInput()", 2, false);
+        Input.KeyBindDown(Keys.ModifierShift + Keys.OemPipe, "API.ShowTextInput()", 2, false);
     end
     Swift:InitalizeQsbDebugShell();
 end
@@ -419,12 +419,17 @@ function ModuleInputOutputCore.Local:DialogOverwriteOriginal()
 end
 
 function ModuleInputOutputCore.Local:ShowInputBox()
+    StartSimpleHiResJob("ModuleInputOutputCore_Local_InputBoxJob");
+end
+
+function ModuleInputOutputCore_Local_InputBoxJob()
     Input.ChatMode();
     Game.GameTimeSetFactor(GUI.GetPlayerID(), 0.0000001);
     XGUIEng.SetText("/InGame/Root/Normal/ChatInput/ChatInput", "");
     XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 1);
     XGUIEng.ShowWidget("/InGame/Root/Normal/ChatInput", 1);
     XGUIEng.SetFocus("/InGame/Root/Normal/ChatInput/ChatInput");
+    return true;
 end
 
 function ModuleInputOutputCore.Local:PrepareInputVariable()

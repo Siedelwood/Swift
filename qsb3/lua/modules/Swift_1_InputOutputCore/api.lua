@@ -345,7 +345,7 @@ function API.DialogSelectBox(_Title, _Text, _Action, _List)
             Title,
             Text,
             _Action,
-            table.toString(_List)
+            table.tostring(_List)
         ));
         return;
     end

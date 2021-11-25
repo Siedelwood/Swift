@@ -143,7 +143,7 @@ function Swift:InitalizeQsbDebugShell()
         Swift:DisplayQsbDebugShell();
     end
 
-    Input.KeyBindDown(Keys.ModifierControl + Keys.X, "Swift:OpenQsbDebugShell()", 30, false);
+    Input.KeyBindDown(Keys.ModifierShift + Keys.OemPipe, "Swift:OpenQsbDebugShell()", 30, false);
 end
 
 function Swift:OpenQsbDebugShell()

@@ -44,6 +44,8 @@ function ModuleJobsCore.Shared:TriggerEventJobs(_Type, ...)
                     if v.Function then
                         local Arguments = Swift:CopyTable(v.Arguments or {});
                         Arguments = Array_Append(Arguments, v.Arguments or {});
+                        local JobType = GetNameOfKeyInTable(Events, _Type);
+                        debug("Trigger job type " ..JobType.. " : Job of index " ..tostring(k).. " : Function " ..tostring(v.Function));
                         if v.Function(unpack(Arguments)) == true then
                             self.EventJobs[_Type][k].Active = false;
                         end
