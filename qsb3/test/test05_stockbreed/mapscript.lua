@@ -83,7 +83,7 @@ function Mission_FirstMapAction()
 end
 
 function PrintAnimalValues()
-    local Animals = {Logic.GetEntitiesInCategory(1, EntityCategories.SheepPasture)};
+    local Animals = {Logic.GetPlayerEntitiesInCategory(1, EntityCategories.SheepPasture)};
     if Animals[1] then
         Framework.WriteToLog("\n\n----- SV Print -----\n\n");
         Framework.WriteToLog("Entity: " ..Animals[1]);

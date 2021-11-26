@@ -31,7 +31,6 @@ ModuleLifestockBreeding = {
         SheepBaby = true,
         SheepFeedingTimer = 45,
         SheepMoneyCost = 300,
-        SheepType = -1,
     },
     Local = {
         AllowBreedCattle = true,
@@ -105,10 +104,11 @@ end
 function ModuleLifestockBreeding.Global:CreateAnimal(_PastureID, _Type, _Shrink)
     local PlayerID = Logic.EntityGetPlayer(_PastureID);
     local x, y = Logic.GetBuildingApproachPosition(_PastureID);
-    local Type = Entities.A_X_Sheep01;
+    local SheepType = Entities.A_X_Sheep01;
     if not Framework.IsNetworkGame() then
-        Type = (_Type > 0 and _Type) or (_Type == 0 and Entities["A_X_Sheep0" ..math.random(1, 2)]) or Entities["A_X_Sheep0" ..(_Type * (-1))];
+        SheepType = (_Type == 0 and Entities["A_X_Sheep0" ..math.random(1, 2)]) or SheepType;
     end
+    local Type = (_Type > 0 and _Type) or SheepType;
     local ID = Logic.CreateEntity(Type, x, y, 0, PlayerID);
     if _Shrink == true then
         self:SetScale(ID, self.ShrinkedSize);
@@ -184,7 +184,6 @@ function ModuleLifestockBreeding.Global:AnimalBreedController()
                 -- Kuh spawnen
                 local TimeTillNext = self:BreedingTimeTillNext(AmountNearby);
                 if TimeTillNext > -1 and self.CattlePastures[v] > TimeTillNext then
-                    local x, y, z = Logic.EntityGetPos(v);
                     if self:IsCattleNeeded(PlayerID) then
                         self:CreateAnimal(v, Entities.A_X_Cow01, self.CattleBaby);
                         self.CattlePastures[v] = 0;
@@ -216,9 +215,8 @@ function ModuleLifestockBreeding.Global:AnimalBreedController()
                 -- Schaf spawnen
                 local TimeTillNext = self:BreedingTimeTillNext(AmountNearby);
                 if TimeTillNext > -1 and self.SheepPastures[v] > TimeTillNext then
-                    local x, y, z = Logic.EntityGetPos(v);
                     if self:IsSheepNeeded(PlayerID) then
-                        self:CreateAnimal(v, self.SheepType, self.SheepBaby);
+                        self:CreateAnimal(v, 0, self.SheepBaby);
                         self.SheepPastures[v] = 0;
                     end
                 end
