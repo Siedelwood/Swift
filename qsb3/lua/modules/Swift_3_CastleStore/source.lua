@@ -771,7 +771,7 @@ end
 
 function ModuleCastleStore.Local.CastleStore:UpdateBehaviorTabs(_PlayerID)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
-    if not QSB.CastleStore:HasCastleStore(GUI.GetPlayerID()) then
+    if not QSB.CastleStore:HasCastleStore(_PlayerID) then
         return;
     end
     XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomRight/Selection/Storehouse/TabButtons", 0);
@@ -910,7 +910,7 @@ function ModuleCastleStore.Local.CastleStore:ShowCastleStoreMenu()
     XGUIEng.ShowWidget(MotherPath.. "Selection/Storehouse", 1);
     XGUIEng.ShowWidget(MotherPath.. "Selection/Storehouse/AmountContainer", 0);
     XGUIEng.ShowAllSubWidgets(MotherPath.. "Selection/Storehouse/TabButtons", 1);
-    XGUIEng.ShowWidget(MotherPath.. "Selection/Storehouse/TabButtons", 0);
+    XGUIEng.ShowWidget(MotherPath.. "Selection/Storehouse/TabButtons", 1);
 
     GUI_Trade.StorehouseSelected()
     local AnchorInfoForBigX, AnchorInfoForBigY = XGUIEng.GetWidgetLocalPosition(MotherPath.. "Selection/AnchorInfoForBig")
