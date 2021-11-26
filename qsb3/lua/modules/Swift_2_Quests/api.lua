@@ -10,6 +10,47 @@
 -- können im Skript kopiert und angepasst werden. Es ist ebenfalls machbar,
 -- die Aufträge in Sequenzen zu erzeugen.
 --
+-- <b>Befehle:</b><br>
+-- <i>Diese Befehle können über die Konsole (SHIFT + ^) eingegeben werden, wenn
+-- der Debug Mode aktiviert ist.</i><br>
+-- <table border="1">
+-- <tr>
+-- <td><b>Befehl</b></td>
+-- <td><b>Parameter</b></td>
+-- <td><b>Beschreibung</b></td>
+-- </tr>
+-- <tr>
+-- <td>stop</td>
+-- <td>QuestName</td>
+-- <td>Unterbricht den angegebenen Quest.</td>
+-- </tr>
+-- <tr>
+-- <td>start</td>
+-- <td>QuestName</td>
+-- <td>Startet den angegebenen Quest.</td>
+-- </tr>
+-- <tr>
+-- <td>win</td>
+-- <td>QuestName</td>
+-- <td>Schließt den angegebenen Quest erfolgreich ab.</td>
+-- </tr>
+-- <tr>
+-- <td>fail</td>
+-- <td>QuestName</td>
+-- <td>Lässt den angegebenen Quest fehlschlagen</td>
+-- </tr>
+-- <tr>
+-- <td>restart</td>
+-- <td>QuestName</td>
+-- <td>Startet den angegebenen Quest neu.</td>
+-- </tr>
+-- <tr>
+-- <td>stopped</td>
+-- <td>QuestName</td>
+-- <td>Gibt die Namen abgebrochener Quests zurück.</td>
+-- </tr>
+-- </table>
+--
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
 -- <li><a href="Swift_1_DisplayCore.api.html">(1) Display Core</a></li>

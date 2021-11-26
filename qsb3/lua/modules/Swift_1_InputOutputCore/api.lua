@@ -20,7 +20,39 @@ You may use and modify this file unter the terms of the MIT licence.
 -- Du kannst ferner verschiedene Input Dialoge nutzen, um Ausgaben anzuzeigen.
 -- Außerdem kannst du vom Spieler Eingaben fordern.
 --
--- TODO: Implement hot keys
+-- <b>Befehle:</b><br>
+-- <i>Diese Befehle können über die Konsole (SHIFT + ^) eingegeben werden, wenn
+-- der Debug Mode aktiviert ist.</i><br>
+-- <table border="1">
+-- <tr>
+-- <td><b>Befehl</b></td>
+-- <td><b>Beschreibung</b></td>
+-- </tr>
+-- <tr>
+-- <td>clear</td>
+-- <td>Entfernt alle Texte aus dem Debug Window. (Nachrichten oben links)</td>
+-- </tr>
+-- <tr>
+-- <td>version</td>
+-- <td>Zeigt die Versionsnummer der QSB an.</td>
+-- </tr>
+-- <tr>
+-- <td>&gt;</td>
+-- <td>Lua-Befehl in der globalen Umgebung ausführen.</td>
+-- </tr>
+-- <tr>
+-- <td>&gt;&gt;</td>
+-- <td>Lua-Befehl in der lokalen Umgebung ausführen.</td>
+-- </tr>
+-- <tr>
+-- <td>&lt;</td>
+-- <td>Lua-Datei in die globale Umgebung laden.</td>
+-- </tr>
+-- <tr>
+-- <td>&lt;&lt;</td>
+-- <td>Lua-Datei in die lokale Umgebung laden.</td>
+-- </tr>
+-- </table>
 --
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>

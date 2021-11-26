@@ -58,8 +58,8 @@ end
 
 function ModuleExtendedCamera.Local:RegisterExtendedZoomHotkey()
     API.AddHotKey(
-        {de = "Strg + Umschalt + K",
-         en = "Ctrl + Shift + K"},
+        {de = "STRG + SHIFT + K",
+         en = "CTRL + SHIFT + K"},
         {de = "Alternativen Zoom ein/aus",
          en = "Alternative zoom on/off"}
     )

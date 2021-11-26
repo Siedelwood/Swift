@@ -108,10 +108,21 @@ function ModuleInputOutputCore.Local:OnEvent(_ID, _Event, _Text)
         self:OverrideDebugInput();
         self:DialogAltF4Hotkey();
     elseif _ID == QSB.ScriptEvents.ChatClosed then
-        if _Text:find("^>.*$") then
+        if _Text:find("^>") then
             GUI.SendScriptCommand(_Text:sub(3), true);
-        elseif _Text:find("^>>.*$") then
+        elseif _Text:find("^>>") then
             GUI.SendScriptCommand(_Text:sub(4), false);
+        elseif _Text:find("^<") then
+            GUI.SendScriptCommand(string.format(
+                [[Script.Load("%s")]],
+                _Text:sub(3)
+            ));
+        elseif _Text:find("^<<") then
+            Script.Load(_Text:sub(4));
+        elseif _Text:find("^clear$") then
+            GUI.ClearNotes();
+        elseif _Text:find("^version$") then
+            GUI.AddStaticNote(QSB.Version);
         end
     end
 end

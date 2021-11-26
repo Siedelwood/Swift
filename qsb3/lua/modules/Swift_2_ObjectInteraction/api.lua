@@ -11,6 +11,32 @@ You may use and modify this file unter the terms of the MIT licence.
 ---
 -- Dieses Modul erweitert die Interaktionsmöglichkeiten mit Objekten.
 --
+-- <b>Befehle:</b><br>
+-- <i>Diese Befehle können über die Konsole (SHIFT + ^) eingegeben werden, wenn
+-- der Debug Mode aktiviert ist.</i><br>
+-- <table border="1">
+-- <tr>
+-- <td><b>Befehl</b></td>
+-- <td><b>Parameter</b></td>
+-- <td><b>Beschreibung</b></td>
+-- </tr>
+-- <tr>
+-- <td>enableobject</td>
+-- <td>ScriptName</td>
+-- <td>Aktiviert das interaktive Objekt.</td>
+-- </tr>
+-- <tr>
+-- <td>disableobject</td>
+-- <td>ScriptName</td>
+-- <td>Deaktiviert das interactive Objekt</td>
+-- </tr>
+-- <tr>
+-- <td>initobject</td>
+-- <td>ScriptName</td>
+-- <td>Initialisiert ein interaktives Objekt grundlegend, sodass es benutzt werden kann.</td>
+-- </tr>
+-- </table>
+--
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
 -- <li><a href="Swift_1_JobsCore.api.html">(1) Jobs Core</a></li>

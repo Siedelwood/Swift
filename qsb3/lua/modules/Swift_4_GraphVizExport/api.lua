@@ -39,7 +39,7 @@ You may use and modify this file unter the terms of the MIT licence.
 -- Du solltes u.a. eine Version angezeigt bekommen.
 -- <pre>dot - graphviz version 2.44.1 (20200629.0800)
 --...</pre>
--- Drücke STRG + C um das Programm zu beenden.
+-- Drücke CTRL + C um das Programm zu beenden.
 -- </li>
 -- </ol>
 --

@@ -108,7 +108,7 @@ function ModuleScriptingValue.Shared:ScriptingValueFloatToInteger(fval)
     local exp = 0
     if fval >= 1 then
         local intPart = math.floor(fval); local fracPart = fval - intPart;
-        bits = self:ScriptingValueBitsInteger(intPart); exp = table.getn(bits); self:ScriptingValueBitsFraction(fracPart, bits)
+        bits = self:ScriptingValueBitsInteger(intPart); exp = #bits; self:ScriptingValueBitsFraction(fracPart, bits)
     else
         bits = {}; self:ScriptingValueBitsFraction(fval, bits)
         while(bits[1] == 0) do exp = exp - 1; table.remove(bits, 1) end
