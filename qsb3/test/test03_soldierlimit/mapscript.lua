@@ -92,6 +92,10 @@ function Mission_FirstMapAction()
             API.Note("Entity " ..arg[1].. " was created!");
         elseif _ID == QSB.ScriptEvents.EntityDestroyed then
             API.Note("Entity " ..arg[1].. " was destroyed!");
+        elseif _ID == QSB.ScriptEvents.EntityHurt then
+            API.Note("Entity " ..arg[1].. " was hurt by " ..arg[3].. "!");
+        elseif _ID == QSB.ScriptEvents.EntityKilled then
+            API.Note("Entity " ..arg[1].. " was killed by " ..arg[3].. "!");
         end
     end
 end

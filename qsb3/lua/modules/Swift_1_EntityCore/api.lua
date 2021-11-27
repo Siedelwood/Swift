@@ -23,10 +23,10 @@ You may use and modify this file unter the terms of the MIT licence.
 ---
 -- Events, auf die reagiert werden kann.
 --
--- @field EntityCreated Ein Entity wurde erzeugt (Parameter: EntityID, PlayerID)
--- @field EntityDestroyed Ein Entity wurde zerstört (Parameter: EntityID, PlayerID)
--- @field EntityHurt Ein Entity wurde angegriffen (Parameter: HurtEntityID, HurtPlayerID, HurtingPlayerID, HurtingEntityID, DamageOriginal, DamageReceived)
--- @field EntityKilled Ein Entity wurde getötet (Parameter: KilledEntityID, KilledPlayerID, KillerPlayerID, KillerEntityID)
+-- @field EntityCreated Ein Entity wurde erzeugt (Parameter: EntityID)
+-- @field EntityDestroyed Ein Entity wurde zerstört (Parameter: EntityID)
+-- @field EntityHurt Ein Entity wurde angegriffen (Parameter: HurtEntityID, HurtingEntityID, DamageOriginal, DamageReceived)
+-- @field EntityKilled Ein Entity wurde getötet (Parameter: KilledEntityID, KillerEntityID)
 --
 -- @within Event
 --

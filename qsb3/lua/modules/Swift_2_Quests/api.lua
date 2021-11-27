@@ -205,7 +205,8 @@ function API.AddDisableDecisionCondition(_Function)
 end
 
 ---
--- <b>Deprecated</b>
+-- <b>Deprecated!</b><br>
+-- Diese Funktion ist veraltet und wird nicht zur Benutzung empfohlen!
 --
 -- Erzeugt aus einer Table mit Daten eine Reihe von Nachrichten, die nach
 -- einander angezeigt werden.
@@ -278,7 +279,8 @@ end
 QuestDialog = API.CreateQuestDialog;
 
 ---
--- <b>Deprecated</b>
+-- <b>Deprecated!</b><br>
+-- Diese Funktion ist veraltet und wird nicht zur Benutzung empfohlen!
 --
 -- Unterbricht einen laufenden oder noch nicht gestarteten Quest-Dialog.
 --
@@ -311,7 +313,8 @@ end
 QuestDialogInterrupt = API.InterruptQuestDialog;
 
 ---
--- <b>Deprecated</b>
+-- <b>Deprecated!</b><br>
+-- Diese Funktion ist veraltet und wird nicht zur Benutzung empfohlen!
 --
 -- Setzt einen Quest-Dialog zurück sodass er erneut gestartet werden kann.
 --
