@@ -27,7 +27,8 @@ You may use and modify this file unter the terms of the MIT licence.
 -- @field EntityDestroyed Ein Entity wurde zerstört. Wird auch durch Spieler ändern ausgelöst! (Parameter: EntityID)
 -- @field EntityHurt Ein Entity wurde angegriffen. (Parameter: HurtEntityID, HurtPlayerID, HurtingEntityID, HurtingPlayerID, DamageOriginal, DamageReceived)
 -- @field EntityKilled Ein Entity wurde getötet. (Parameter: KilledEntityID, KilledPlayerID, KillerEntityID, KillerPlayerID)
--- @field EntityOwnerChanged Ein Entity wechselt. den Besitzer (Parameter: OldID, OldPlayer, NewID, OldPlayer)
+-- @field EntityOwnerChanged Ein Entity wechselt den Besitzer. (Parameter: OldID, OldPlayer, NewID, OldPlayer)
+-- @field EntityResourceChanged Resourcen im Entity verändern sich. (Parameter: EntityID, GoodType, Amount)
 --
 -- @within Event
 --

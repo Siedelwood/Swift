@@ -69,6 +69,7 @@ function ModuleEntityEventCore.Global:OnGameStart()
     QSB.ScriptEvents.EntityHurt = API.RegisterScriptEvent("Event_EntityHurt");
     QSB.ScriptEvents.EntityKilled = API.RegisterScriptEvent("Event_EntityKilled");
     QSB.ScriptEvents.EntityOwnerChanged = API.RegisterScriptEvent("Event_EntityOwnerChanged");
+    QSB.ScriptEvents.EntityResourceChanged = API.RegisterScriptEvent("Event_EntityResourceChanged");
 
     self:StartTriggers();
     self:OverrideCallback();
@@ -311,6 +312,7 @@ function ModuleEntityEventCore.Local:OnGameStart()
     QSB.ScriptEvents.EntityHurt = API.RegisterScriptEvent("Event_EntityHurt");
     QSB.ScriptEvents.EntityKilled = API.RegisterScriptEvent("Event_EntityKilled");
     QSB.ScriptEvents.EntityOwnerChanged = API.RegisterScriptEvent("Event_EntityOwnerChanged");
+    QSB.ScriptEvents.EntityResourceChanged = API.RegisterScriptEvent("Event_EntityResourceChanged");
 
     self:StartTriggers();
 end
@@ -333,6 +335,19 @@ function ModuleEntityEventCore.Local:StartTriggers()
             _DamageReceived
         ));
         API.SendScriptEvent(QSB.ScriptEvents.EntityHurt, _HurtEntityID, _HurtPlayerID, _HurtingEntityID, _HurtingPlayerID, _DamageDealt, _DamageReceived);
+    end
+
+    GameCallback_Feedback_MineAmountChanged_Orig_Swift_EntityCore = GameCallback_Feedback_MineAmountChanged;
+    GameCallback_Feedback_MineAmountChanged = function(_MineID, _GoodType, _TerritoryID, _PlayerID, _Amount)
+        GameCallback_Feedback_MineAmountChanged_Orig_Swift_EntityCore(_MineID, _GoodType, _TerritoryID, _PlayerID, _Amount);
+
+        GUI.SendScriptCommand(string.format(
+            "API.SendScriptEvent(QSB.ScriptEvents.EntityResourceChanged, %d, %d, %d);",
+            _MineID,
+            _GoodType,
+            _Amount
+        ));
+        API.SendScriptEvent(QSB.ScriptEvents.EntityResourceChanged, _MineID, _GoodType, _Amount);
     end
 end
 
