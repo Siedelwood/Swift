@@ -44,12 +44,56 @@ You may use and modify this file unter the terms of the MIT licence.
 -- <td>Zeitanzeige an/aus</td>
 -- </tr>
 -- <tr>
--- <td>CTRL + SHIFT + F</td>
--- <td>Nebel des Krieges abschalten</td>
+-- <td>CTRL + SHIFT + A</td>
+-- <td>Clutter (Gräser) anzeigen (an/aus)</td>
 -- </tr>
 -- <tr>
--- <td>CTRL + G</td>
--- <td>GUI ausschalten</td>
+-- <td>CTRL + SHIFT + C</td>
+-- <td>Grasobjekte anzeigen (an/aus)</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + SHIFT + E</td>
+-- <td>Laubbäume anzeigen (an/aus)</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + SHIFT + F</td>
+-- <td>FoW anzeigen (an/aus) <i>Gebiete werden dauerhaft erkundet!</i></td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + SHIFT + G</td>
+-- <td>GUI anzeigen (an/aus)</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + SHIFT + H</td>
+-- <td>Steine und Tannen anzeigen (an/aus)</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + SHIFT + R</td>
+-- <td>Straßen anzeigen (an/aus)</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + SHIFT + S</td>
+-- <td>Schatten anzeigen (an/aus)</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + SHIFT + T</td>
+-- <td>Boden anzeigen (an/aus)</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + SHIFT + U</td>
+-- <td>FoW anzeigen (an/aus)</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + SHIFT + W</td>
+-- <td>Wasser anzeigen (an/aus)</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + SHIFT + X</td>
+-- <td>Render Mode des Wassers umschalten (Einfach und komplex)</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + SHIFT + Y</td>
+-- <td>Himmel anzeigen (an/aus)</td>
 -- </tr>
 -- <tr>
 -- <td>ALT + F10</td>
@@ -150,6 +194,22 @@ You may use and modify this file unter the terms of the MIT licence.
 -- <tr>
 -- <td>SHIFT + F4</td>
 -- <td>+ 10 Wild</td>
+-- </tr>
+-- <tr>
+-- <td>ALT + F5</td>
+-- <td>Bedürfnis nach Nahrung in Gebäude aktivieren</td>
+-- </tr>
+-- <tr>
+-- <td>ALT + F6</td>
+-- <td>Bedürfnis nach Kleidung in Gebäude aktivieren</td>
+-- </tr>
+-- <tr>
+-- <td>ALT + F7</td>
+-- <td>Bedürfnis nach Hygiene in Gebäude aktivieren</td>
+-- </tr>
+-- <tr>
+-- <td>ALT + F8</td>
+-- <td>Bedürfnis nach Unterhaltung in Gebäude aktivieren</td>
 -- </tr>
 -- <tr>
 -- <td>CTRL + F9</td>
