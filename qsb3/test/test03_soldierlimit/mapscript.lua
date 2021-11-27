@@ -96,6 +96,8 @@ function Mission_FirstMapAction()
             API.Note("Entity " ..arg[1].. " was hurt by " ..arg[3].. "!");
         elseif _ID == QSB.ScriptEvents.EntityKilled then
             API.Note("Entity " ..arg[1].. " was killed by " ..arg[3].. "!");
+        elseif _ID == QSB.ScriptEvents.EntityOwnerChanged then
+            API.Note("Entity " ..arg[1].. " of player " ..arg[2].. " changed to " ..arg[3].. " of player " ..arg[4].. "!");
         end
     end
 end

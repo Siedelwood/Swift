@@ -209,6 +209,7 @@ GetPlayer = API.GetEntityPlayer;
 --
 -- @param               _Entity  Entity (Scriptname oder ID)
 -- @param[type=number] _PlayerID ID des Besitzers
+-- @return[type=number] Neue Entity ID
 -- @within Anwenderfunktionen
 --
 function API.SetEntityPlayer(_Entity, _PlayerID)
@@ -231,11 +232,12 @@ function API.SetEntityPlayer(_Entity, _PlayerID)
             EntityCategories.CattlePasture,
             EntityCategories.SheepPasture
         ) then
-            Logic.ChangeSettlerPlayerID(EntityID, _PlayerID);
+            EntityID = Logic.ChangeSettlerPlayerID(EntityID, _PlayerID);
         else
             API.SetInteger(EntityID, QSB.ScriptingValue.Player, _PlayerID);
         end
     end
+    return EntityID;
 end
 SetPlayer = API.SetEntityPlayer;
 

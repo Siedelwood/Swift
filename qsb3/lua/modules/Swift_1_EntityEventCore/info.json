@@ -1,7 +1,7 @@
 {
-    "name": "Swift_1_EntityCore",
+    "name": "Swift_1_EntityEventCore",
     "version": "1.0.0",
-    "caption": "(1) Entity Core",
+    "caption": "(1) Entity Event Core",
     "shortdesc": "",
     "description": "",
     "files": [

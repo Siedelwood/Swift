@@ -7,8 +7,8 @@ BinWriter_ModuleFiles = {
 
     "Swift_1_DisplayCore/source.lua",
     "Swift_1_DisplayCore/api.lua",
-    "Swift_1_EntityCore/source.lua",
-    "Swift_1_EntityCore/api.lua",
+    "Swift_1_EntityEventCore/source.lua",
+    "Swift_1_EntityEventCore/api.lua",
     "Swift_1_InputOutputCore/source.lua",
     "Swift_1_InputOutputCore/api.lua",
     "Swift_1_InputOutputCore/behavior.lua",
