@@ -56,6 +56,8 @@ BinWriter_ModuleFiles = {
     "Swift_3_JobsRealtime/api.lua",
     "Swift_3_LifestockBreeding/source.lua",
     "Swift_3_LifestockBreeding/api.lua",
+    "Swift_3_ShipSalesman/source.lua",
+    "Swift_3_ShipSalesman/api.lua",
     "Swift_3_TextWindow/source.lua",
     "Swift_3_TextWindow/api.lua",
     "Swift_4_ExtendedCamera/source.lua",
