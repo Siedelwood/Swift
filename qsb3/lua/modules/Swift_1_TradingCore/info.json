@@ -2,7 +2,7 @@
     "name": "Swift_1_TradingCore",
     "version": "1.0.0",
     "caption": "(1) Trading Core",
-    "shortdesc": "",
+    "shortdesc": "Dieses Modul erweitert die Steuerung von Händlern.",
     "description": "",
     "files": [
         "source.lua",

@@ -2,7 +2,7 @@
     "name": "Swift_1_JobsCore",
     "version": "1.0.0",
     "caption": "(1) Jobs Core",
-    "shortdesc": "",
+    "shortdesc": "Dieses Modul erweitert die standardmäßig vorhandenen Jobs.",
     "description": "",
     "files": [
         "source.lua",

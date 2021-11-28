@@ -2,7 +2,7 @@
     "name": "Swift_1_InputOutputCore",
     "version": "1.0.0",
     "caption": "(1) Input/Output Core",
-    "shortdesc": "",
+    "shortdesc": "Ermöglicht die Steuerung von grundlegender Eingabe und Ausgabe von Daten.",
     "description": "",
     "files": [
         "source.lua",

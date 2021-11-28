@@ -2,7 +2,7 @@
     "name": "Swift_1_DisplayCore",
     "version": "1.0.0",
     "caption": "(1) Display Core",
-    "shortdesc": "",
+    "shortdesc": "Stellt verschiedene grundlegende Anzeigefunktionen bereit.",
     "description": "",
     "files": [
         "source.lua",

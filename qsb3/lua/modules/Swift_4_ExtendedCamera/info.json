@@ -2,7 +2,7 @@
     "name": "Swift_4_ExtendedCamera",
     "version": "1.0.0",
     "caption": "(4) ExtendedCamera",
-    "shortdesc": "",
+    "shortdesc": "Ermöglicht die Verwendung des absoluten Zoom Limit.",
     "description": "",
     "files": [
         "source.lua",

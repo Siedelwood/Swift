@@ -2,7 +2,7 @@
     "name": "Swift_3_LifestockBreeding",
     "version": "1.0.0",
     "caption": "(3) Lifestock Breeding",
-    "shortdesc": "",
+    "shortdesc": "Nutztiere (Kühe und Schafe) werden herangezogen, wenn Platz und Nahrung da ist.",
     "description": "",
     "files": [
         "source.lua",

@@ -2,7 +2,7 @@
     "name": "Swift_2_Selection",
     "version": "1.0.0",
     "caption": "(2) Selection",
-    "shortdesc": "",
+    "shortdesc": "Erweitert die Selektion von Einheiten und bietet weitere Optionen an.",
     "description": "",
     "files": [
         "source.lua",

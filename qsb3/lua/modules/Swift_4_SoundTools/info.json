@@ -2,7 +2,7 @@
     "name": "Swift_4_SoundTools",
     "version": "1.0.0",
     "caption": "(4) Sound Tools",
-    "shortdesc": "",
+    "shortdesc": "Ermöglicht Lautstärke zu regeln und Musik abzuspielen.",
     "description": "",
     "files": [
         "source.lua",

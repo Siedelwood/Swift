@@ -2,7 +2,7 @@
     "name": "Swift_4_InteractiveMines",
     "version": "1.0.0",
     "caption": "(4) Interactive Mines",
-    "shortdesc": "",
+    "shortdesc": "Ermöglicht es eingestürzte Minen mit dem Helden zu restaurieren.",
     "description": "",
     "files": [
         "source.lua",

@@ -2,7 +2,7 @@
     "name": "Swift_3_CutsceneSystem",
     "version": "1.0.0",
     "caption": "(3) Cutscene System",
-    "shortdesc": "",
+    "shortdesc": "Ermöglicht es Cutscene zu verwenden.",
     "description": "",
     "files": [
         "source.lua",

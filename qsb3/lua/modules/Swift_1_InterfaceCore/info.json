@@ -2,7 +2,7 @@
     "name": "Swift_1_InterfaceCore",
     "version": "1.0.0",
     "caption": "(1) Interface Core",
-    "shortdesc": "",
+    "shortdesc": "Fügt Basisfunktionen zur Gestaltung des Interface hinzu.",
     "description": "",
     "files": [
         "source.lua",

@@ -2,7 +2,7 @@
     "name": "Swift_4_SpeedLimit",
     "version": "1.0.0",
     "caption": "(4) Game Speed Limit",
-    "shortdesc": "",
+    "shortdesc": "Dieses Modul erlaubt die maximale Beschleunigung des Spiels zu steuern.",
     "description": "",
     "files": [
         "source.lua",

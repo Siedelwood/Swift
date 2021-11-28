@@ -2,7 +2,7 @@
     "name": "Swift_4_TextWindow",
     "version": "1.0.0",
     "caption": "(4) TextWindow",
-    "shortdesc": "",
+    "shortdesc": "Erlaubt es große Texte in einem Textfenster darzustellen.",
     "description": "",
     "files": [
         "source.lua",

@@ -2,7 +2,7 @@
     "name": "Swift_3_JobsRealtime",
     "version": "1.0.0",
     "caption": "(3) Jobs Realtime",
-    "shortdesc": "",
+    "shortdesc": "Ermöglicht es die tatsächlich verstrichene Spielzeit zu ermitteln.",
     "description": "",
     "files": [
         "source.lua",

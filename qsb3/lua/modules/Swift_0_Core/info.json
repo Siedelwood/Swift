@@ -2,7 +2,7 @@
     "name": "Swift_0_Core",
     "version": "1.0.0",
     "caption": "(0) Core",
-    "shortdesc": "",
+    "shortdesc": "Stellt wichtige Kernfunktionen bereit.",
     "description": "",
     "files": [
         "swift.lua",

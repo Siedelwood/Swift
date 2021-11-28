@@ -2,7 +2,7 @@
     "name": "Swift_1_ScriptingValueCore",
     "version": "1.0.0",
     "caption": "(1) Scripting Value Core",
-    "shortdesc": "",
+    "shortdesc": "Ermöglicht die Manipulation von Scripting Values.",
     "description": "",
     "files": [
         "source.lua",

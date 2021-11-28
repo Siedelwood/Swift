@@ -2,7 +2,7 @@
     "name": "Swift_4_QuestJournal",
     "version": "1.0.0",
     "caption": "(4) Quest Journal",
-    "shortdesc": "",
+    "shortdesc": "Erlaubt es Notizen zu einem Quest hinzuzufügen.",
     "description": "",
     "files": [
         "source.lua",

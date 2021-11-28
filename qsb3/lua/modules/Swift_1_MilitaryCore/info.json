@@ -2,7 +2,7 @@
     "name": "Swift_1_MilitaryCore",
     "version": "1.0.0",
     "caption": "(1) Soldier Limit Core",
-    "shortdesc": "",
+    "shortdesc": "Ermöglicht es, benutzerdefiniertes Soldatenlimit festzulegen.",
     "description": "",
     "files": [
         "source.lua",

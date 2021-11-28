@@ -2,7 +2,7 @@
     "name": "Swift_2_Quests",
     "version": "1.0.0",
     "caption": "(2) Quests",
-    "shortdesc": "",
+    "shortdesc": "Ermöglicht die Erstellung von Quests im Skript.",
     "description": "",
     "files": [
         "source.lua",

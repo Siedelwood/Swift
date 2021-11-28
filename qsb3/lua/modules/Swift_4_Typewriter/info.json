@@ -2,7 +2,7 @@
     "name": "Swift_4_Typewriter",
     "version": "1.0.0",
     "caption": "(4) Typewriter",
-    "shortdesc": "",
+    "shortdesc": "Ermöglicht die Anzeige von Text mit einem Schreibmaschineneffekt.",
     "description": "",
     "files": [
         "source.lua",
