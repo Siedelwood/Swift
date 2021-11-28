@@ -10,6 +10,7 @@ ModuleInterfaceCore = {
     Global = {},
     Local = {
         HotkeyDescriptions = {},
+        ForbidRegularSave = false;
         DisableHEAutoSave = false;
     },
     -- This is a shared structure but the values are asynchronous!
@@ -29,9 +30,30 @@ function ModuleInterfaceCore.Local:OnGameStart()
     self:OverrideMissionGoodCounter();
     self:SetupHackRegisterHotkey();
 
+    -- Schnellspeichern generell verbieten
+    API.AddBlockQuicksaveCondition(function()
+        return ModuleInterfaceCore.Local.ForbidRegularSave == true;
+    end);
+    -- HE Quicksave verbieten
     API.AddBlockQuicksaveCondition(function()
         return ModuleInterfaceCore.Local.DisableHEAutoSave == true;
     end);
+end
+
+function ModuleInputOutputCore.Local:OnEvent(_ID, _Event, _Text)
+    if _ID == QSB.ScriptEvents.SaveGameLoaded then
+        self:DisplaySaveButtons();
+    end
+end
+
+function ModuleInterfaceCore.Local:DisplaySaveButtons()
+    if self.ForbidRegularSave then
+        XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/QuickSave", 0);
+        XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/SaveGame", 0);
+    else
+        XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/QuickSave", 1);
+        XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/SaveGame", 1);
+    end
 end
 
 function ModuleInterfaceCore.Local:OverrideMissionGoodCounter()

@@ -398,7 +398,7 @@ function ModuleInputOutputCore.Local:OpenSelectionDialog(_Title, _Text, _Action,
 end
 
 function ModuleInputOutputCore.Local:RestoreSaveGame()
-    if BundleGameHelperFunctions and not BundleGameHelperFunctions.Local.ForbidSave then
+    if not ModuleInterfaceCore or not ModuleInterfaceCore.Local.ForbidRegularSave then
         XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/QuickSave", 1);
         XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/SaveGame", 1);
     end

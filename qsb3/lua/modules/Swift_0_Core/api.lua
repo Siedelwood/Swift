@@ -1966,15 +1966,15 @@ FailQuestByName = API.FailQuest;
 -- neu gestartet, müssen auch alle Trigger wieder neu ausgelöst werden, außer
 -- der Quest wird manuell getriggert.
 --
--- Alle Änderungen an Standardbehavior müssen hier berücksichtigt werden. Wird
--- ein Standardbehavior in einem Bundle verändert, muss auch diese Funktion
--- angepasst oder überschrieben werden.
---
 -- @param[type=string]  _QuestName Name des Quest
 -- @param[type=boolean] _NoMessage Meldung nicht anzeigen
 -- @within Quest
 --
 function API.RestartQuest(_QuestName, _NoMessage)
+    -- Alle Änderungen an Standardbehavior müssen hier berücksichtigt werden.
+    -- Wird ein Standardbehavior in einem Modul verändert, muss auch diese
+    -- Funktion angepasst oder überschrieben werden.
+    
     local QuestID = GetQuestID(_QuestName);
     local Quest = Quests[QuestID];
     if Quest then

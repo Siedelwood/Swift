@@ -282,7 +282,7 @@ function API.DialogInfoBox(_Title, _Text, _Action)
             [[ModuleInputOutputCore.Local:OpenDialog(%s, %s, %s)]],
             Title,
             Text,
-            _Action
+            tostring(_Action)
         ));
         return;
     end
@@ -329,7 +329,7 @@ function API.DialogRequestBox(_Title, _Text, _Action, _OkCancel)
             [[ModuleInputOutputCore.Local:OpenRequesterDialog(%s, %s, %s, %s)]],
             Title,
             Text,
-            _Action,
+            tostring(_Action),
             tostring(_OkCancel == true)
         ));
         return;
@@ -376,7 +376,7 @@ function API.DialogSelectBox(_Title, _Text, _Action, _List)
             [[ModuleInputOutputCore.Local:OpenSelectionDialog(%s, %s, %s, %s)]],
             Title,
             Text,
-            _Action,
+            tostring(_Action),
             table.tostring(_List)
         ));
         return;

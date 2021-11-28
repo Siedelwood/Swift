@@ -309,6 +309,24 @@ function API.RemoveHotKey(_Index)
 end
 
 ---
+-- Deaktiviert reguläres Speichern.
+--
+-- @param[type=number] _Flag Speichern deaktivieren
+-- @within Anwenderfunktionen
+--
+function API.DisableRegularSaveGame(_Flag)
+    if not GUI then
+        Logic.ExecuteInLuaLocalState(string.format(
+            "API.DisableRegularSaveGame(%s)",
+            tostring(_Flag == true)
+        ));
+        return;
+    end
+    ModuleInterfaceCore.Local.ForbidRegularSave = _Flag == true;
+    ModuleInterfaceCore.Local:DisplaySaveButtons();
+end
+
+---
 -- Deaktiviert das automatische Speichern in der History Edition.
 --
 -- Das Spiel wird zu keinem Zeitpunkt einen automatischen Spielstand anlegen.
