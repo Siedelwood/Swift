@@ -1172,7 +1172,7 @@ function API.IsEntityInAtLeastOneCategory(_Entity, ...)
     local EntityID = GetID(_Entity);
     if EntityID > 0 then
         for k, v in pairs(arg) do
-            if Inside(v, API.GetEntityCategoyList(_Entity)) then
+            if table.contains(API.GetEntityCategoyList(_Entity), v) then
                 return true;
             end
         end

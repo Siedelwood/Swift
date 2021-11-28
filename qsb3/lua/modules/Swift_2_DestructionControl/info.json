@@ -1,0 +1,15 @@
+{
+    "name": "Swift_2_DestructionControl",
+    "version": "1.0.0",
+    "caption": "(2) Destruction Control",
+    "shortdesc": "Ermöglicht den Abriss von Gebäuden anhand von Kriterien zu verhindern.",
+    "description": "",
+    "files": [
+        "source.lua",
+        "api.lua"
+    ],
+    "dependencies": [
+        "Swift_0_Core",
+        "Swift_1_JobsCore"
+    ]
+}
