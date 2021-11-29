@@ -16,6 +16,7 @@ ModuleInputOutputCore = {
     Global = {};
     Local  = {
         InputBoxShown = false,
+        CheatsDisabled = false,
         Requester = {
             ActionFunction = nil,
             ActionRequester = nil,
@@ -94,6 +95,7 @@ function ModuleInputOutputCore.Local:OnGameStart()
         return;
     end
     self:OverrideQuicksave();
+    self:OverrideCheats();
     self:DialogOverwriteOriginal();
     self:DialogAltF4Hotkey();
     -- Some kind of wierd timing problem...
@@ -106,6 +108,7 @@ end
 function ModuleInputOutputCore.Local:OnEvent(_ID, _Event, _Text)
     if _ID == QSB.ScriptEvents.SaveGameLoaded then
         self:OverrideDebugInput();
+        self:OverrideCheats();
         self:DialogAltF4Hotkey();
     elseif _ID == QSB.ScriptEvents.ChatClosed then
         if _Text:find("^>") then
@@ -187,6 +190,24 @@ function ModuleInputOutputCore.Local:OverrideQuicksave()
         );
         XGUIEng.ShowWidget("/InGame/Dialog/Ok", 0);
         Framework.SaveGame("QuickSave", "Quicksave");
+    end
+end
+
+function ModuleInputOutputCore.Local:OverrideCheats()
+    if self.CheatsDisabled then
+        Input.KeyBindDown(
+            Keys.ModifierControl + Keys.ModifierShift + Keys.Divide,
+            "KeyBindings_EnableDebugMode(0)",
+            2,
+            false
+        );
+    else
+        Input.KeyBindDown(
+            Keys.ModifierControl + Keys.ModifierShift + Keys.Divide,
+            "KeyBindings_EnableDebugMode(2)",
+            2,
+            false
+        );
     end
 end
 

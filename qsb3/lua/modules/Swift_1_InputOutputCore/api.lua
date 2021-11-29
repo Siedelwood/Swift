@@ -410,3 +410,21 @@ function API.ShowTextInput()
     end
 end
 
+---
+-- Deaktiviert die Cheats.
+--
+-- <b>Hinweis</b>: Die Cheats werden nur für den Spieler deaktiviert. Wenn der
+-- Debug Mode die Cheats aktiviert hat, bleiben sie aktiv.
+--
+-- @usage
+-- API.DisableCheats();
+--
+function API.DisableCheats()
+    if not GUI then
+        Logic.ExecuteInLuaLocalState([[API.DisableCheats(%s)]]);
+        return;
+    end
+    ModuleInputOutputCore.Local.CheatsDisabled = true;
+    ModuleInputOutputCore.Local:OverrideCheats();
+end
+
