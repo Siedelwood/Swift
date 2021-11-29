@@ -29,6 +29,8 @@ BinWriter_ModuleFiles = {
     "Swift_2_DestructionControl/api.lua",
     "Swift_2_KnightTitleRequirements/source.lua",
     "Swift_2_KnightTitleRequirements/api.lua",
+    "Swift_2_Minimap/source.lua",
+    "Swift_2_Minimap/api.lua",
     "Swift_2_NpcInteraction/source.lua",
     "Swift_2_NpcInteraction/api.lua",
     "Swift_2_NpcInteraction/behavior.lua",

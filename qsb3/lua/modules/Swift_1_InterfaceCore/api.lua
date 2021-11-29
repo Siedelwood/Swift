@@ -107,8 +107,6 @@ end
 ---
 -- Gibt den Namen des Territoriums zurück.
 --
--- <p><b>Alias:</b> GetTerritoryName</p>
---
 -- @param[type=number] _TerritoryID ID des Territoriums
 -- @return[type=string]  Name des Territorium
 -- @within Anwenderfunktionen
@@ -133,8 +131,6 @@ GetTerritoryName = API.InterfaceGetTerritoryName;
 
 ---
 -- Gibt den Namen des Spielers zurück.
---
--- <p><b>Alias:</b> GetPlayerName</p>
 --
 -- @param[type=number] _PlayerID ID des Spielers
 -- @return[type=string]  Name des Spielers
@@ -166,8 +162,6 @@ GetPlayerName = API.InterfaceGetPlayerName;
 
 ---
 -- Gibt dem Spieler einen neuen Namen.
---
--- <p><b>Alias:</b> SetPlayerName</p>
 --
 -- @param[type=number] _playerID ID des Spielers
 -- @param[type=string] _name Name des Spielers
@@ -208,12 +202,11 @@ function API.InterfaceSetPlayerColor(_PlayerID, _Color, _Logo, _Pattern)
     g_ColorIndex["ExtraColor1"] = g_ColorIndex["ExtraColor1"] or 16;
     g_ColorIndex["ExtraColor2"] = g_ColorIndex["ExtraColor2"] or 17;
 
-    local Type    = type(_Color);
     local Col     = (type(_Color) == "string" and g_ColorIndex[_Color]) or _Color;
     local Logo    = _Logo or -1;
     local Pattern = _Pattern or -1;
 
-    Logic.PlayerSetPlayerColor(_PlayerID, Col, _Logo, _Pattern);
+    Logic.PlayerSetPlayerColor(_PlayerID, Col, Logo, Pattern);
     Logic.ExecuteInLuaLocalState([[
         Display.UpdatePlayerColors()
         GUI.RebuildMinimapTerrain()
