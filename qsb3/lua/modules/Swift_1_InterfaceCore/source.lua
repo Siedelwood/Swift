@@ -40,7 +40,7 @@ function ModuleInterfaceCore.Local:OnGameStart()
     end);
 end
 
-function ModuleInputOutputCore.Local:OnEvent(_ID, _Event, _Text)
+function ModuleInterfaceCore.Local:OnEvent(_ID, _Event, _Text)
     if _ID == QSB.ScriptEvents.SaveGameLoaded then
         self:DisplaySaveButtons();
     end
