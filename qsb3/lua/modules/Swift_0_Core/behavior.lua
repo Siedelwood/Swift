@@ -192,14 +192,6 @@ function Swift:IsQuestPositionReached(_Quest, _Objective)
     end
 end
 
-function Swift:GetInputFromQuest(_QuestName)
-    local Quest = Quests[GetQuestID(_QuestName)];
-    if not Quest then
-        return;
-    end
-    return Quest.InputDialogResult;
-end
-
 -- GOALS -------------------------------------------------------------------- --
 
 ---

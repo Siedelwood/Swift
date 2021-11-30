@@ -122,9 +122,6 @@ Swift:RegisterBehavior(B_Goal_Decide);
 ---
 -- Der Spieler muss im Chatdialog eine Eingabe tätigen.
 --
--- Die Eingabe wird im Quest gespeichert und kann zur späteren Verarbeitung
--- angefragt werden.
---
 -- Das Behaviour kann auch eingesetzt werden, um ein Passwort zu prüfen.
 -- In diesem Fall wird die Eingabe mit dem Passwort verglichen. Die Anzal der
 -- Versuche bestimmt, wie oft falsch eingegeben werden darf.
@@ -133,6 +130,10 @@ Swift:RegisterBehavior(B_Goal_Decide);
 -- den übrigen Versuchen angezeigt. Optional kann eine Nachricht angegeben
 -- werden, die stattdessen nach <u>jeder</u> Falscheingabe, <u>außer</u> der
 -- letzten, angezeigt wird.
+--
+-- <b>Achtung</b>: Alle aktiven Quests mit einem Input Behavior werden die
+-- erste Eingabe annehmen, die getätigt wird. Dabei ist es egal, ob der Input
+-- durch sie selbst oder extern aktiviert wurde.
 --
 -- <b>Hinweis</b>: Dieses Behavior kann nicht im Multiplayer verwendet werden.
 --
@@ -173,11 +174,7 @@ function B_Goal_InputDialog:AddParameter(_Index, _Parameter)
     elseif (_Index == 1) then
         self.Trials = (_Parameter or 0) * 1;
     elseif (_Index == 2) then
-        self.Message = _Parameter;
-        local lang = QSB.Language;
-        if type(self.Message) == "table" then
-            self.Message = self.Message[lang];
-        end
+        self.Message = (_Parameter ~= nil and API.Localize(_Parameter)) or nil;
     end
 end
 
@@ -201,11 +198,11 @@ function B_Goal_InputDialog:CustomFunction(_Quest)
     end
 
     if not API.IsCinematicEventActive or (API.IsCinematicEventActive and API.IsCinematicEventActive() == false) then
-        if _Quest.InputDialogResult then
+        if self.InputDialogResult then
             if self.Password ~= nil and self.Password ~= "" then
                 self.Shown = nil;
 
-                if self:LowerCase(_Quest.InputDialogResult) == self.Password then
+                if self:LowerCase(self.InputDialogResult) == self.Password then
                     return true;
                 elseif (self.Trials == 0) or (self.Trials > 0 and self.TrialCounter > 0) then
                     self:OnWrongInput(_Quest);
@@ -229,7 +226,7 @@ function B_Goal_InputDialog:OnWrongInput(_Quest)
     if self.Message then
         Logic.DEBUG_AddNote(self.Message);
     end
-    _Quest.InputDialogResult = nil;
+    self.InputDialogResult = nil;
     self.Shown = nil;
 end
 
@@ -243,6 +240,10 @@ function B_Goal_InputDialog:LowerCase(_Text)
     return _Text;
 end
 
+function B_Goal_InputDialog:GetIcon()
+    return {12,2};
+end
+
 function B_Goal_InputDialog:Debug(_Quest)
     if Framewok.IsNetworkGame() then
         error(_Quest.Identifier.. ": " ..self.Name..": Can not be used in multiplayer!");
@@ -251,13 +252,9 @@ function B_Goal_InputDialog:Debug(_Quest)
     return false;
 end
 
-function B_Goal_InputDialog:GetIcon()
-    return {12,2};
-end
-
 function B_Goal_InputDialog:Reset(_Quest)
     QSB.GoalInputDialogQuest = nil;
-    _Quest.InputDialogResult = nil;
+    self.InputDialogResult = nil;
     self.TrialCounter = nil;
     self.Shown = nil;
 end

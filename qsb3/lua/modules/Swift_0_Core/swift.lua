@@ -43,6 +43,7 @@ Swift = {
     m_LoadActionRegister        = {};
     m_Language                  = "de";
     m_Environment               = "global";
+    m_ProcessDebugCommands      = false;
     m_HistoryEdition            = false;
     m_NoQuicksaveConditions     = {};
     m_LogLevel                  = 2;

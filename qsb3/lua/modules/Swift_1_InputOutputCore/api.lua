@@ -395,19 +395,23 @@ end
 -- String übergeben wird. In diesem Fall wurde nichts eingegeben.
 -- @within Anwenderfunktionen
 --
+-- @param[type=boolean] _AllowDebug Debug Commands auswerten
 -- @usage
--- API.ShowTextInput();
+-- -- Debug Options werden geblockt
+-- API.ShowTextInput(false);
+-- -- Debug Options werden ausgewertet
+-- API.ShowTextInput(true);
 --
-function API.ShowTextInput()
+function API.ShowTextInput(_AllowDebug)
     if not GUI then
-        Logic.ExecuteInLuaLocalState([[
-            ModuleInputOutputCore.Local:PrepareInputVariable()
-            ModuleInputOutputCore.Local:ShowInputBox()
-        ]]);
-    else
-        ModuleInputOutputCore.Local:PrepareInputVariable();
-        ModuleInputOutputCore.Local:ShowInputBox();
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.ShowTextInput(%s)]],
+            tostring(_AllowDebug == true)
+        ))
+        return;
     end
+    ModuleInputOutputCore.Local:PrepareInputVariable();
+    ModuleInputOutputCore.Local:ShowInputBox(_AllowDebug == true);
 end
 
 ---

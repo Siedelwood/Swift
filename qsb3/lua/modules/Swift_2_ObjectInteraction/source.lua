@@ -47,11 +47,13 @@ function ModuleObjectInteraction.Global:OnGameStart()
     self:CreateDefaultObjectNames();
 end
 
-function ModuleObjectInteraction.Global:OnEvent(_ID, _Event, _ScriptName, _KnightID, _PlayerID)
+function ModuleObjectInteraction.Global:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.ObjectInteraction then
-        self:OnObjectInteraction(_ScriptName, _KnightID, _PlayerID);
+        self:OnObjectInteraction(arg[1], arg[2], arg[3]);
     elseif _ID == QSB.ScriptEvents.ChatClosed then
-        self:ProcessChatInput(_PlayerID);
+        if Swift:IsProcessDebugCommands() then
+            self:ProcessChatInput(arg[1]);
+        end
     end
 end
 

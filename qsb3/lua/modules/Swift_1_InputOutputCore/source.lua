@@ -16,6 +16,7 @@ ModuleInputOutputCore = {
     Global = {};
     Local  = {
         InputBoxShown = false,
+        ProccessDebugCommands = false,
         CheatsDisabled = false,
         Requester = {
             ActionFunction = nil,
@@ -65,17 +66,19 @@ function ModuleInputOutputCore.Global:OnGameStart()
     end
 end
 
-function ModuleInputOutputCore.Global:OnEvent(_ID, _Event, _Text)
+function ModuleInputOutputCore.Global:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.ChatClosed then
-        if _Text == "restartmap" then
-            Framework.RestartMap();
+        if arg[1] == "restartmap" then
+            if Swift:IsProcessDebugCommands() then
+                Framework.RestartMap();
+            end
         else
             for i= 1, Quests[0], 1 do
                 if Quests[i].State == QuestState.Active and QSB.GoalInputDialogQuest == Quests[i].Identifier then
                     for j= 1, #Quests[i].Objectives, 1 do
                         if Quests[i].Objectives[j].Type == Objective.Custom2 then
                             if Quests[i].Objectives[j].Data[1].Name == "Goal_InputDialog" then
-                                Quests[i].InputDialogResult = _Text;
+                                Quests[i].Objectives[j].Data[1].InputDialogResult = arg[1];
                             end
                         end
                     end
@@ -105,27 +108,29 @@ function ModuleInputOutputCore.Local:OnGameStart()
     end);
 end
 
-function ModuleInputOutputCore.Local:OnEvent(_ID, _Event, _Text)
+function ModuleInputOutputCore.Local:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.SaveGameLoaded then
         self:OverrideDebugInput();
         self:OverrideCheats();
         self:DialogAltF4Hotkey();
     elseif _ID == QSB.ScriptEvents.ChatClosed then
-        if _Text:find("^>") then
-            GUI.SendScriptCommand(_Text:sub(3), true);
-        elseif _Text:find("^>>") then
-            GUI.SendScriptCommand(_Text:sub(4), false);
-        elseif _Text:find("^<") then
-            GUI.SendScriptCommand(string.format(
-                [[Script.Load("%s")]],
-                _Text:sub(3)
-            ));
-        elseif _Text:find("^<<") then
-            Script.Load(_Text:sub(4));
-        elseif _Text:find("^clear$") then
-            GUI.ClearNotes();
-        elseif _Text:find("^version$") then
-            GUI.AddStaticNote(QSB.Version);
+        if Swift:IsProcessDebugCommands() then
+            if arg[1]:find("^>") then
+                GUI.SendScriptCommand(arg[1]:sub(3), true);
+            elseif arg[1]:find("^>>") then
+                GUI.SendScriptCommand(arg[1]:sub(4), false);
+            elseif arg[1]:find("^<") then
+                GUI.SendScriptCommand(string.format(
+                    [[Script.Load("%s")]],
+                    arg[1]:sub(3)
+                ));
+            elseif arg[1]:find("^<<") then
+                Script.Load(arg[1]:sub(4));
+            elseif arg[1]:find("^clear$") then
+                GUI.ClearNotes();
+            elseif arg[1]:find("^version$") then
+                GUI.AddStaticNote(QSB.Version);
+            end
         end
     end
 end
@@ -218,7 +223,7 @@ function ModuleInputOutputCore.Local:OverrideDebugInput()
         if not self.m_DevelopingShell then
             return;
         end
-        Input.KeyBindDown(Keys.ModifierShift + Keys.OemPipe, "API.ShowTextInput()", 2, false);
+        Input.KeyBindDown(Keys.ModifierShift + Keys.OemPipe, "API.ShowTextInput(true)", 2, false);
     end
     Swift:InitalizeQsbDebugShell();
 end
@@ -450,7 +455,8 @@ function ModuleInputOutputCore.Local:DialogOverwriteOriginal()
     end
 end
 
-function ModuleInputOutputCore.Local:ShowInputBox()
+function ModuleInputOutputCore.Local:ShowInputBox(_Debug)
+    Swift:SetProcessDebugCommands(_Debug);
     StartSimpleHiResJob("ModuleInputOutputCore_Local_InputBoxJob");
 end
 
@@ -498,6 +504,7 @@ function ModuleInputOutputCore.Local:LocalToGlobal(_Text)
         _Text,
         GUI.GetPlayerID()
     ));
+    Swift:SetProcessDebugCommands(false);
 end
 
 -- Shared ------------------------------------------------------------------- --

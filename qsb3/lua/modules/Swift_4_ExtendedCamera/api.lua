@@ -25,8 +25,6 @@ You may use and modify this file unter the terms of the MIT licence.
 ---
 -- Aktiviert den Hotkey zum Wechsel zwischen normalen und erweiterten Zoom.
 --
--- <p><b>Alias:</b> AllowExtendedZoom</p>
---
 -- @param _Flag [boolean] Erweiterter Zoom gestattet
 -- @within Anwenderfunktionen
 --
@@ -48,8 +46,6 @@ AllowExtendedZoom = API.AllowExtendedZoom;
 ---
 -- Fokusiert die Kamera auf dem Primärritter des Spielers.
 --
--- <p><b>Alias:</b> SetCameraToPlayerKnight</p>
---
 -- @param[type=number] _Player Partei
 -- @param[type=number] _Rotation Kamerawinkel
 -- @param[type=number] _ZoomFactor Zoomfaktor
@@ -62,8 +58,6 @@ SetCameraToPlayerKnight = API.FocusCameraOnKnight;
 
 ---
 -- Fokusiert die Kamera auf dem Entity.
---
--- <p><b>Alias:</b> SetCameraToEntity</p>
 --
 -- @param _Entity Entity (Skriptname oder ID)
 -- @param[type=number] _Rotation Kamerawinkel

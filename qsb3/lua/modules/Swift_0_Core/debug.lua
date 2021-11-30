@@ -8,11 +8,12 @@ You may use and modify this file unter the terms of the MIT licence.
 (See https://en.wikipedia.org/wiki/MIT_License)
 ]]
 
-Swift.m_CheckAtRun       = false;
-Swift.m_TraceQuests      = false;
-Swift.m_DevelopingCheats = false;
-Swift.m_DevelopingShell  = false;
-Swift.m_DebugInputShown  = false;
+Swift.m_CheckAtRun           = false;
+Swift.m_TraceQuests          = false;
+Swift.m_DevelopingCheats     = false;
+Swift.m_DevelopingShell      = false;
+Swift.m_DebugInputShown      = false;
+Swift.m_ProcessDebugCommands = false;
 
 function Swift:InitalizeDebugModeGlobal()
     self:InitalizeQsbDebugEvents();
@@ -140,6 +141,7 @@ function Swift:InitalizeQsbDebugShell()
             return true;
         end
         -- Call cheap version
+        Swift.m_ProcessDebugCommands = true;
         Swift:DisplayQsbDebugShell();
     end
 
@@ -150,41 +152,52 @@ function Swift:OpenQsbDebugShell()
     StartSimpleHiResJob('QSB_DEBUG_InputBoxJob');
 end
 
+function Swift:IsProcessDebugCommands()
+    return self.m_ProcessDebugCommands;
+end
+
+function Swift:SetProcessDebugCommands(_Debug)
+    self.m_ProcessDebugCommands = _Debug;
+end
+
 function Swift:DisplayQsbDebugShell()
     local MotherWidget = "/InGame/Root/Normal/ChatInput";
-    if not Swift.m_DebugInputShown then
+    if not self.m_DebugInputShown then
         Input.ChatMode();
         Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
         XGUIEng.ShowWidget(MotherWidget, 1);
         XGUIEng.SetText(MotherWidget.. "/ChatInput", "");
         XGUIEng.SetFocus(MotherWidget.. "/ChatInput");
-        Swift.m_DebugInputShown = true;
-    elseif Swift.m_ChatBoxInput then
-        Swift.m_ChatBoxInput = string.gsub(Swift.m_ChatBoxInput,"'","\'");
-        Swift:ConfirmQsbDebugShell();
+        self.m_DebugInputShown = true;
+    elseif self.m_ChatBoxInput then
+        self.m_ChatBoxInput = string.gsub(self.m_ChatBoxInput,"'","\'");
+        self:ConfirmQsbDebugShell();
         GUI.SendScriptCommand([[
             Swift:DispatchScriptEvent(
                 QSB.ScriptEvents.DebugChatConfirmed, 
-                "]]..Swift.m_ChatBoxInput..[["
+                "]]..self.m_ChatBoxInput..[["
             );
         ]]);
-        Swift:DispatchScriptEvent(
-            QSB.ScriptEvents.DebugChatConfirmed, 
-            Swift.m_ChatBoxInput
+        self:DispatchScriptEvent(
+            QSB.ScriptEvents.DebugChatConfirmed,
+            self.m_ChatBoxInput
         );
-        Swift.m_DebugInputShown = nil;
+        self.m_ProcessDebugCommands = false;
+        self.m_DebugInputShown = nil;
         return true;
     end
 end
 
 function Swift:ConfirmQsbDebugShell()
-    if Swift.m_ChatBoxInput == "restartmap" then
-        Framework.RestartMap();
-    else
-        if string.find(Swift.m_ChatBoxInput, "^>.*$") then
-            GUI.SendScriptCommand(Swift.m_ChatBoxInput.sub(Swift.m_ChatBoxInput, 3), true);
-        elseif string.find(Swift.m_ChatBoxInput, "^>>.*$") then
-            GUI.SendScriptCommand(Swift.m_ChatBoxInput.sub(Swift.m_ChatBoxInput, 4), false);
+    if self:IsProcessDebugCommands() then
+        if self.m_ChatBoxInput == "restartmap" then
+            Framework.RestartMap();
+        else
+            if string.find(self.m_ChatBoxInput, "^>.*$") then
+                GUI.SendScriptCommand(self.m_ChatBoxInput.sub(self.m_ChatBoxInput, 3), true);
+            elseif string.find(self.m_ChatBoxInput, "^>>.*$") then
+                GUI.SendScriptCommand(self.m_ChatBoxInput.sub(self.m_ChatBoxInput, 4), false);
+            end
         end
     end
 end

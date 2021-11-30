@@ -33,9 +33,11 @@ function ModuleQuests.Global:OnGameStart()
     end);
 end
 
-function ModuleQuests.Global:OnEvent(_ID, _Event, _Text)
+function ModuleQuests.Global:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.ChatClosed then
-        self:ProcessChatInput(_Text);
+        if Swift:IsProcessDebugCommands() then
+            self:ProcessChatInput(arg[1]);
+        end
     end
 end
 
