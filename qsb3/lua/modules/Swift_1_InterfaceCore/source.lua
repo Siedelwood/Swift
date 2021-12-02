@@ -1,6 +1,12 @@
--- -------------------------------------------------------------------------- --
--- Module Dialog Tools                                                        --
--- -------------------------------------------------------------------------- --
+--[[
+Swift_2_InterfaceCore/Source
+
+Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+
+This file is part of Swift. Swift is created by totalwarANGEL.
+You may use and modify this file unter the terms of the MIT licence.
+(See https://en.wikipedia.org/wiki/MIT_License)
+]]
 
 ModuleInterfaceCore = {
     Properties = {
@@ -9,6 +15,7 @@ ModuleInterfaceCore = {
 
     Global = {},
     Local = {
+        HiddenWidgets = {},
         HotkeyDescriptions = {},
         ForbidRegularSave = false;
         DisableHEAutoSave = false;
@@ -28,6 +35,7 @@ end
 
 function ModuleInterfaceCore.Local:OnGameStart()
     self:OverrideMissionGoodCounter();
+    self:OverrideUpdateClaimTerritory();
     self:SetupHackRegisterHotkey();
 
     -- Schnellspeichern generell verbieten
@@ -40,8 +48,9 @@ function ModuleInterfaceCore.Local:OnGameStart()
     end);
 end
 
-function ModuleInterfaceCore.Local:OnEvent(_ID, _Event, _Text)
+function ModuleInterfaceCore.Local:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.SaveGameLoaded then
+        self:UpdateHiddenWidgets();
         self:DisplaySaveButtons();
     end
 end
@@ -56,18 +65,41 @@ function ModuleInterfaceCore.Local:DisplaySaveButtons()
     end
 end
 
+function ModuleInterfaceCore.Local:DisplayInterfaceButton(_Widget, _Hide)
+    self.HiddenWidgets[_Widget] = _Hide == true;
+    XGUIEng.ShowWidget(_Widget, (_Hide == true and 0) or 1);
+end
+
+function ModuleInterfaceCore.Local:UpdateHiddenWidgets()
+    for k, v in pairs(self.HiddenWidgets) do
+        XGUIEng.ShowWidget(k, 0);
+    end
+end
+
 function ModuleInterfaceCore.Local:OverrideMissionGoodCounter()
     StartMissionGoodOrEntityCounter = function(_Icon, _AmountToReach)
+        local IconWidget = "/InGame/Root/Normal/MissionGoodOrEntityCounter/Icon";
+        local CounterWidget = "/InGame/Root/Normal/MissionGoodOrEntityCounter";
         if type(_Icon[3]) == "string" then
-            ModuleInterfaceCore.Local:SetIcon("/InGame/Root/Normal/MissionGoodOrEntityCounter/Icon", _Icon, 64, _Icon[3]);
+            ModuleInterfaceCore.Local:SetIcon(IconWidget, _Icon, 64, _Icon[3]);
         else
-            SetIcon("/InGame/Root/Normal/MissionGoodOrEntityCounter/Icon", _Icon);
+            SetIcon(IconWidget, _Icon);
         end
-
         g_MissionGoodOrEntityCounterAmountToReach = _AmountToReach;
         g_MissionGoodOrEntityCounterIcon = _Icon;
+        XGUIEng.ShowWidget(CounterWidget, 1);
+    end
+end
 
-        XGUIEng.ShowWidget("/InGame/Root/Normal/MissionGoodOrEntityCounter", 1);
+function ModuleInterfaceCore.Local:OverrideUpdateClaimTerritory()
+    GUI_Knight.ClaimTerritoryUpdate_Orig_QSB_InterfaceCore = GUI_Knight.ClaimTerritoryUpdate;
+    GUI_Knight.ClaimTerritoryUpdate = function()
+        GUI_Knight.ClaimTerritoryUpdate_Orig_QSB_InterfaceCore();
+        local Key = "/InGame/Root/Normal/AlignBottomRight/DialogButtons/Knight/ClaimTerritory";
+        if ModuleInterfaceCore.Local.HiddenWidgets[Key] == true then
+            XGUIEng.ShowWidget(Key, 0);
+            return true;
+        end
     end
 end
 

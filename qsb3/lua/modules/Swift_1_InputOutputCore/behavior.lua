@@ -174,7 +174,7 @@ function B_Goal_InputDialog:AddParameter(_Index, _Parameter)
     elseif (_Index == 1) then
         self.Trials = (_Parameter or 0) * 1;
     elseif (_Index == 2) then
-        self.Message = (_Parameter ~= nil and API.Localize(_Parameter)) or nil;
+        self.Message = _Parameter;
     end
 end
 
@@ -220,11 +220,11 @@ end
 function B_Goal_InputDialog:OnWrongInput(_Quest)
     if self.Trials > 0 and not self.Message then
         local lang = QSB.Language;
-        Logic.DEBUG_AddNote(self.DefaultMessage .. self.TrialCounter);
+        Logic.DEBUG_AddNote(API.Localize(self.DefaultMessage) .. self.TrialCounter);
         return;
     end
     if self.Message then
-        Logic.DEBUG_AddNote(self.Message);
+        Logic.DEBUG_AddNote(API.Localize(self.Message));
     end
     self.InputDialogResult = nil;
     self.Shown = nil;

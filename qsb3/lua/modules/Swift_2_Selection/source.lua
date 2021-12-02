@@ -412,10 +412,10 @@ function ModuleSelection.Local:OverwriteMultiselectIcon()
         end
         if EntityType == Entities.U_SiegeEngineCart then
             local TooltipData = API.Localize(ModuleSelection.Local.Tooltips.TrebuchetCart);
-            API.InterfaceSetTooltipNormal(TooltipData.Title, TooltipData.Text);
+            API.SetTooltipNormal(TooltipData.Title, TooltipData.Text);
         elseif EntityType == Entities.U_Trebuchet then
             local TooltipData = API.Localize(ModuleSelection.Local.Tooltips.Trebuchet);
-            API.InterfaceSetTooltipNormal(TooltipData.Title, TooltipData.Text);
+            API.SetTooltipNormal(TooltipData.Title, TooltipData.Text);
         end
     end
 end
@@ -537,7 +537,7 @@ function ModuleSelection.Local:OverwriteThiefDeliver()
             return;
         end
         local Text = API.Localize(ModuleSelection.Local.Tooltips.ReleaseSoldiers);
-        API.InterfaceSetTooltipNormal(Text.Title, Text.Text, Text.Disabled);
+        API.SetTooltipNormal(Text.Title, Text.Text, Text.Disabled);
     end
 
     GUI_Thief.ThiefDeliverUpdate_Orig_ModuleSelection = GUI_Thief.ThiefDeliverUpdate;
@@ -699,13 +699,13 @@ function ModuleSelection.Local:OverwriteNamesAndDescription()
 
         if XGUIEng.GetWidgetID(MotherWidget.. "/MapFrame/KnightButton") == CurrentWidgetID then
             local Text = API.Localize(ModuleSelection.Local.Tooltips.KnightButton);
-            API.InterfaceSetTooltipNormal(Text.Title, Text.Text);
+            API.SetTooltipNormal(Text.Title, Text.Text);
             return;
         end
 
         if XGUIEng.GetWidgetID(MotherWidget.. "/MapFrame/BattalionButton") == CurrentWidgetID then
             local Text = API.Localize(ModuleSelection.Local.Tooltips.BattalionButton);
-            API.InterfaceSetTooltipNormal(Text.Title, Text.Text);
+            API.SetTooltipNormal(Text.Title, Text.Text);
             return;
         end
 
@@ -720,7 +720,7 @@ function ModuleSelection.Local:OverwriteNamesAndDescription()
                     local GuardedEntity = Logic.GetGuardedEntityID(SelectedEntity);
                     if GuardianEntity == 0 and GuardedEntity == 0 then
                         local Text = API.Localize(ModuleSelection.Local.Tooltips.ReleaseSoldiers);
-                        API.InterfaceSetTooltipNormal(Text.Title, Text.Text, Text.Disabled);
+                        API.SetTooltipNormal(Text.Title, Text.Text, Text.Disabled);
                         return;
                     end
                 end

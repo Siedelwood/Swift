@@ -1,4 +1,12 @@
--- Interface API ------------------------------------------------------------ --
+--[[
+Swift_2_InterfaceCore/API
+
+Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+
+This file is part of Swift. Swift is created by totalwarANGEL.
+You may use and modify this file unter the terms of the MIT licence.
+(See https://en.wikipedia.org/wiki/MIT_License)
+]]
 
 ---
 -- Dieses Modul bietet grundlegende Funktionen zur Steuerung des Interface.
@@ -50,7 +58,7 @@
 -- @param[type=string] _Name Name der Icon Matrix
 -- @within Anwenderfunktionen
 --
-function API.InterfaceSetIcon(_WidgetID, _Coordinates, _Size, _Name)
+function API.SetIcon(_WidgetID, _Coordinates, _Size, _Name)
     if not GUI then
         return;
     end
@@ -74,13 +82,13 @@ end
 -- @param[type=string] _disabledText Textzusatz wenn inaktiv
 -- @within Anwenderfunktionen
 --
-function API.InterfaceSetTooltipNormal(_title, _text, _disabledText)
+function API.SetTooltipNormal(_title, _text, _disabledText)
     if not GUI then
         return;
     end
     ModuleInterfaceCore.Local:TextNormal(_title, _text, _disabledText);
 end
-UserSetTextNormal = API.InterfaceSetTooltipNormal;
+UserSetTextNormal = API.SetTooltipNormal;
 
 ---
 -- Ändert den Beschreibungstext und die Kosten eines Button.
@@ -88,7 +96,7 @@ UserSetTextNormal = API.InterfaceSetTooltipNormal;
 -- Wichtig ist zu beachten, dass diese Funktion in der Update-Funktion des
 -- Button oder Icon ausgeführt werden muss.
 --
--- @see API.InterfaceSetTooltipNormal
+-- @see API.SetTooltipNormal
 --
 -- @param[type=string]  _title        Titel des Tooltip
 -- @param[type=string]  _text         Text des Tooltip
@@ -97,7 +105,7 @@ UserSetTextNormal = API.InterfaceSetTooltipNormal;
 -- @param[type=boolean] _inSettlement Kosten in Siedlung suchen
 -- @within Anwenderfunktionen
 --
-function API.InterfaceSetTooltipCosts(_title,_text,_disabledText,_costs,_inSettlement)
+function API.SetTooltipCosts(_title,_text,_disabledText,_costs,_inSettlement)
     if not GUI then
         return;
     end
@@ -111,7 +119,7 @@ end
 -- @return[type=string]  Name des Territorium
 -- @within Anwenderfunktionen
 --
-function API.InterfaceGetTerritoryName(_TerritoryID)
+function API.GetTerritoryName(_TerritoryID)
     local Name = Logic.GetTerritoryName(_TerritoryID);
     local MapType = Framework.GetCurrentMapTypeAndCampaignName();
     if MapType == 1 or MapType == 3 then
@@ -127,7 +135,7 @@ function API.InterfaceGetTerritoryName(_TerritoryID)
     end
     return TerritoryName;
 end
-GetTerritoryName = API.InterfaceGetTerritoryName;
+GetTerritoryName = API.GetTerritoryName;
 
 ---
 -- Gibt den Namen des Spielers zurück.
@@ -136,7 +144,7 @@ GetTerritoryName = API.InterfaceGetTerritoryName;
 -- @return[type=string]  Name des Spielers
 -- @within Anwenderfunktionen
 --
-function API.InterfaceGetPlayerName(_PlayerID)
+function API.GetPlayerName(_PlayerID)
     local PlayerName = Logic.GetPlayerName(_PlayerID);
     local name = QSB.PlayerNames[_PlayerID];
     if name ~= nil and name ~= "" then
@@ -158,7 +166,7 @@ function API.InterfaceGetPlayerName(_PlayerID)
     end
 end
 GetPlayerName_OrigName = GetPlayerName;
-GetPlayerName = API.InterfaceGetPlayerName;
+GetPlayerName = API.GetPlayerName;
 
 ---
 -- Gibt dem Spieler einen neuen Namen.
@@ -167,7 +175,7 @@ GetPlayerName = API.InterfaceGetPlayerName;
 -- @param[type=string] _name Name des Spielers
 -- @within Anwenderfunktionen
 --
-function API.InterfaceSetPlayerName(_playerID,_name)
+function API.SetPlayerName(_playerID,_name)
     assert(type(_playerID) == "number");
     assert(type(_name) == "string");
     if not GUI then
@@ -184,7 +192,7 @@ function API.InterfaceSetPlayerName(_playerID,_name)
     end
     QSB.PlayerNames[_playerID] = _name;
 end
-SetPlayerName = API.InterfaceSetPlayerName;
+SetPlayerName = API.SetPlayerName;
 
 ---
 -- Setzt eine andere Spielerfarbe.
@@ -195,7 +203,7 @@ SetPlayerName = API.InterfaceSetPlayerName;
 -- @param[type=number] _Pattern Pattern (optional)
 -- @within Anwenderfunktionen
 --
-function API.InterfaceSetPlayerColor(_PlayerID, _Color, _Logo, _Pattern)
+function API.SetPlayerColor(_PlayerID, _Color, _Logo, _Pattern)
     if GUI then
         return;
     end
@@ -237,20 +245,20 @@ end
 -- @within Anwenderfunktionen
 --
 -- @usage -- Kopf des Primary Knight
--- API.InterfaceSetPlayerPortrait(2);
+-- API.SetPlayerPortrait(2);
 -- -- Kopf durch Entity bestimmen
--- API.InterfaceSetPlayerPortrait(2, "amma");
+-- API.SetPlayerPortrait(2, "amma");
 -- -- Kopf durch Modelname setzen
--- API.InterfaceSetPlayerPortrait(2, "H_NPC_Monk_AS");
+-- API.SetPlayerPortrait(2, "H_NPC_Monk_AS");
 --
-function API.InterfaceSetPlayerPortrait(_PlayerID, _Portrait)
+function API.SetPlayerPortrait(_PlayerID, _Portrait)
     if not _PlayerID or type(_PlayerID) ~= "number" or (_PlayerID < 1 or _PlayerID > 8) then
-        error("API.InterfaceSetPlayerPortrait: Invalid player ID!");
+        error("API.SetPlayerPortrait: Invalid player ID!");
         return;
     end
     if not GUI then
         local Portrait = (_Portrait ~= nil and "'" .._Portrait.. "'") or "nil";
-        Logic.ExecuteInLuaLocalState("API.InterfaceSetPlayerPortrait(" .._PlayerID.. ", " ..Portrait.. ")")
+        Logic.ExecuteInLuaLocalState("API.SetPlayerPortrait(" .._PlayerID.. ", " ..Portrait.. ")")
         return;
     end
     
@@ -275,7 +283,7 @@ end
 -- @return[type=number] Index oder Fehlercode
 -- @within Anwenderfunktionen
 --
-function API.AddHotKey(_Key, _Description)
+function API.AddShortcut(_Key, _Description)
     if not GUI then
         return;
     end
@@ -290,12 +298,12 @@ end
 -- @param[type=number] _Index Index in Table
 -- @within Anwenderfunktionen
 --
-function API.RemoveHotKey(_Index)
+function API.RemoveShortcut(_Index)
     if not GUI then
         return;
     end
     if type(_Index) ~= "number" or _Index > #ModuleInterfaceCore.Local.HotkeyDescriptions then
-        error("API.RemoveHotKey: No candidate found or Index is nil!");
+        error("API.RemoveShortcut: No candidate found or Index is nil!");
         return;
     end
     ModuleInterfaceCore.Local.HotkeyDescriptions[_Index] = nil;
@@ -336,5 +344,237 @@ function API.DisableHistoryEditionAutoSave(_Flag)
         return;
     end
     ModuleInterfaceCore.Local.DisableHEAutoSave = _Flag == true;
+end
+
+---
+-- Graut die Minimap aus oder macht sie wieder verwendbar.
+--
+-- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+-- aktiv und muss explizit zurückgenommen werden!</p>
+--
+-- @param[type=boolean] _Flag Widget versteckt
+-- @within Anwenderfunktionen
+--
+function API.HideMinimap(_Flag)
+    if not GUI then
+        Logic.ExecuteInLuaLocalState("API.HideMinimap(" ..tostring(_Flag).. ")");
+        return;
+    end
+
+    ModuleInterfaceCore.Local:DisplayInterfaceButton(
+        "/InGame/Root/Normal/AlignBottomRight/MapFrame/Minimap/MinimapOverlay",
+        _Flag
+    );
+    ModuleInterfaceCore.Local:DisplayInterfaceButton(
+        "/InGame/Root/Normal/AlignBottomRight/MapFrame/Minimap/MinimapTerrain",
+        _Flag
+    );
+end
+
+---
+-- Versteckt den Umschaltknopf der Minimap oder blendet ihn ein.
+--
+-- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+-- aktiv und muss explizit zurückgenommen werden!</p>
+--
+-- @param[type=boolean] _Flag Widget versteckt
+-- @within Anwenderfunktionen
+--
+function API.HideToggleMinimap(_Flag)
+    if not GUI then
+        Logic.ExecuteInLuaLocalState("API.HideToggleMinimap(" ..tostring(_Flag).. ")");
+        return;
+    end
+
+    ModuleInterfaceCore.Local:DisplayInterfaceButton(
+        "/InGame/Root/Normal/AlignBottomRight/MapFrame/MinimapButton",
+        _Flag
+    );
+end
+
+---
+-- Versteckt den Button des Diplomatiemenü oder blendet ihn ein.
+--
+-- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+-- aktiv und muss explizit zurückgenommen werden!</p>
+--
+-- @param[type=boolean] _Flag Widget versteckt
+-- @within Anwenderfunktionen
+--
+function API.HideDiplomacyMenu(_Flag)
+    if not GUI then
+        Logic.ExecuteInLuaLocalState("API.HideDiplomacyMenu(" ..tostring(_Flag).. ")");
+        return;
+    end
+
+    ModuleInterfaceCore.Local:DisplayInterfaceButton(
+        "/InGame/Root/Normal/AlignBottomRight/MapFrame/DiplomacyMenuButton",
+        _Flag
+    );
+end
+
+---
+-- Versteckt den Button des Produktionsmenü oder blendet ihn ein.
+--
+-- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+-- aktiv und muss explizit zurückgenommen werden!</p>
+--
+-- @param[type=boolean] _Flag Widget versteckt
+-- @within Anwenderfunktionen
+--
+function API.HideProductionMenu(_Flag)
+    if not GUI then
+        Logic.ExecuteInLuaLocalState("API.HideProductionMenu(" ..tostring(_Flag).. ")");
+        return;
+    end
+
+    ModuleInterfaceCore.Local:DisplayInterfaceButton(
+        "/InGame/Root/Normal/AlignBottomRight/MapFrame/ProductionMenuButton",
+        _Flag
+    );
+end
+
+---
+-- Versteckt den Button des Wettermenüs oder blendet ihn ein.
+--
+-- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+-- aktiv und muss explizit zurückgenommen werden!</p>
+--
+-- @param[type=boolean] _Flag Widget versteckt
+-- @within Anwenderfunktionen
+--
+function API.HideWeatherMenu(_Flag)
+    if not GUI then
+        Logic.ExecuteInLuaLocalState("API.HideWeatherMenu(" ..tostring(_Flag).. ")");
+        return;
+    end
+
+    ModuleInterfaceCore.Local:DisplayInterfaceButton(
+        "/InGame/Root/Normal/AlignBottomRight/MapFrame/WeatherMenuButton",
+        _Flag
+    );
+end
+
+---
+-- Versteckt den Button zum Territorienkauf oder blendet ihn ein.
+--
+-- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+-- aktiv und muss explizit zurückgenommen werden!</p>
+--
+-- @param[type=boolean] _Flag Widget versteckt
+-- @within Anwenderfunktionen
+--
+function API.HideBuyTerritory(_Flag)
+    if not GUI then
+        Logic.ExecuteInLuaLocalState("API.HideBuyTerritory(" ..tostring(_Flag).. ")");
+        return;
+    end
+
+    ModuleInterfaceCore.Local:DisplayInterfaceButton(
+        "/InGame/Root/Normal/AlignBottomRight/DialogButtons/Knight/ClaimTerritory",
+        _Flag
+    );
+end
+
+---
+-- Versteckt den Button der Heldenfähigkeit oder blendet ihn ein.
+--
+-- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+-- aktiv und muss explizit zurückgenommen werden!</p>
+--
+-- @param[type=boolean] _Flag Widget versteckt
+-- @within Anwenderfunktionen
+--
+function API.HideKnightAbility(_Flag)
+    if not GUI then
+        Logic.ExecuteInLuaLocalState("API.HideKnightAbility(" ..tostring(_Flag).. ")");
+        return;
+    end
+
+    ModuleInterfaceCore.Local:DisplayInterfaceButton(
+        "/InGame/Root/Normal/AlignBottomRight/DialogButtons/Knight/StartAbilityProgress",
+        _Flag
+    );
+    ModuleInterfaceCore.Local:DisplayInterfaceButton(
+        "/InGame/Root/Normal/AlignBottomRight/DialogButtons/Knight/StartAbility",
+        _Flag
+    );
+end
+
+---
+-- Versteckt den Button zur Heldenselektion oder blendet ihn ein.
+--
+-- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+-- aktiv und muss explizit zurückgenommen werden!</p>
+--
+-- @param[type=boolean] _Flag Widget versteckt
+-- @within Anwenderfunktionen
+--
+function API.HideKnightButton(_Flag)
+    if not GUI then
+        Logic.ExecuteInLuaLocalState("API.HideKnightButton(" ..tostring(_Flag).. ")");
+        return;
+    end
+
+    local KnightID = Logic.GetKnightID(GUI.GetPlayerID());
+    if _Flag then
+        GUI.SendScriptCommand("Logic.SetEntitySelectableFlag("..KnightID..", 0)");
+        GUI.DeselectEntity(KnightID);
+    else
+        GUI.SendScriptCommand("Logic.SetEntitySelectableFlag("..KnightID..", 1)");
+    end
+
+    ModuleInterfaceCore.Local:DisplayInterfaceButton(
+        "/InGame/Root/Normal/AlignBottomRight/MapFrame/KnightButtonProgress",
+        _Flag
+    );
+    ModuleInterfaceCore.Local:DisplayInterfaceButton(
+        "/InGame/Root/Normal/AlignBottomRight/MapFrame/KnightButton",
+        _Flag
+    );
+end
+
+---
+-- Versteckt den Button zur Selektion des Militärs oder blendet ihn ein.
+--
+-- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+-- aktiv und muss explizit zurückgenommen werden!</p>
+--
+-- @param[type=boolean] _Flag Widget versteckt
+-- @within Anwenderfunktionen
+--
+function API.HideSelectionButton(_Flag)
+    if not GUI then
+        Logic.ExecuteInLuaLocalState("API.HideSelectionButton(" ..tostring(_Flag).. ")");
+        return;
+    end
+    API.HideKnightButton(_Flag);
+    GUI.ClearSelection();
+
+    ModuleInterfaceCore.Local:DisplayInterfaceButton(
+        "/InGame/Root/Normal/AlignBottomRight/MapFrame/BattalionButton",
+        _Flag
+    );
+end
+
+---
+-- Versteckt das Baumenü oder blendet es ein.
+--
+-- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+-- aktiv und muss explizit zurückgenommen werden!</p>
+--
+-- @param[type=boolean] _Flag Widget versteckt
+-- @within Anwenderfunktionen
+--
+function API.HideBuildMenu(_Flag)
+    if not GUI then
+        Logic.ExecuteInLuaLocalState("API.HideBuildMenu(" ..tostring(_Flag).. ")");
+        return;
+    end
+
+    ModuleInterfaceCore.Local:DisplayInterfaceButton(
+        "/InGame/Root/Normal/AlignBottomRight/BuildMenu",
+        _Flag
+    );
 end
 

@@ -1099,15 +1099,15 @@ end
 
 function ModuleCastleStore.Local.CastleStore:DescribeHotkeys()
     if not self.HotkeysAddToList then
-        API.AddHotKey(
+        API.AddShortcut(
             {de = "Umschalt + B", en = "Shift + B"},
             {de = "Burglager: Waren einlagern", en = "Vault: Store goods"}
         );
-        API.AddHotKey(
+        API.AddShortcut(
             {de = "Umschalt + N", en = "Shift + N"},
             {de = "Burglager: Waren sperren", en = "Vault: Lock goods"}
         );
-        API.AddHotKey(
+        API.AddShortcut(
             {de = "Umschalt + M", en = "Shift + M"},
             {de = "Burglager: Lager räumen", en = "Vault: Empty store"}
         );

@@ -642,7 +642,7 @@ function ModuleKnightTitleRequirements.Local:RequirementTooltipWrapped(_key, _i)
         Title = ModuleKnightTitleRequirements.Local.Description[_key].Title;
         Text  = ModuleKnightTitleRequirements.Local.Description[_key].Text;
     end
-    API.InterfaceSetTooltipNormal(API.Localize(Title), API.Localize(Text), nil);
+    API.SetTooltipNormal(API.Localize(Title), API.Localize(Text), nil);
 end
 
 -- -------------------------------------------------------------------------- --

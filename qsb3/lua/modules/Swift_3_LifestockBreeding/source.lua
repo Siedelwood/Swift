@@ -291,7 +291,7 @@ function ModuleLifestockBreeding.Local:OverwriteBuySiegeEngine()
             if Logic.IsBuildingStopped(BarrackID) then
                 Description = ModuleLifestockBreeding.Local.Description.BreedingInactive;
             end
-            API.InterfaceSetTooltipCosts(
+            API.SetTooltipCosts(
                 API.Localize(Description.Title), API.Localize(Description.Text), API.Localize(Description.Disabled),
                 {Goods.G_Grain, 1},
                 false
@@ -301,7 +301,7 @@ function ModuleLifestockBreeding.Local:OverwriteBuySiegeEngine()
             if Logic.IsBuildingStopped(BarrackID) then
                 Description = ModuleLifestockBreeding.Local.Description.BreedingInactive;
             end
-            API.InterfaceSetTooltipCosts(
+            API.SetTooltipCosts(
                 API.Localize(Description.Title), API.Localize(Description.Text), API.Localize(Description.Disabled),
                 {Goods.G_Grain, 1},
                 false

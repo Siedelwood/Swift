@@ -57,7 +57,7 @@ function ModuleExtendedCamera.Local:SetCameraToEntity(_Entity, _Rotation, _ZoomF
 end
 
 function ModuleExtendedCamera.Local:RegisterExtendedZoomHotkey()
-    API.AddHotKey(
+    API.AddShortcut(
         {de = "STRG + SHIFT + K",
          en = "CTRL + SHIFT + K"},
         {de = "Alternativen Zoom ein/aus",

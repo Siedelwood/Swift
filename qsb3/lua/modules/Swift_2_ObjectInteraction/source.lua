@@ -526,7 +526,7 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
             if Costs and Costs[1] and Costs[1] ~= Goods.G_Gold and Logic.GetGoodCategoryForGoodType(Costs[1]) ~= GoodCategories.GC_Resource then
                 CheckSettlement = true;
             end
-            API.InterfaceSetTooltipCosts(Title, Text, Disabled, Costs, CheckSettlement);
+            API.SetTooltipCosts(Title, Text, Disabled, Costs, CheckSettlement);
             return;
         end
         GUI_Interaction.InteractiveObjectMouseOver_Orig_ModuleObjectInteraction();
