@@ -46,30 +46,40 @@ CinematicEventStatus = {
 QSB.ScriptEvents = QSB.ScriptEvents or {};
 
 ---
--- Blendet einen schwarzen Hintergrund über der Spielwelt aber hinter dem
+-- Blendet einen farbigen Hintergrund über der Spielwelt aber hinter dem
 -- Interface ein.
 --
+-- @param[type=number] _R (Optional) Rotwert
+-- @param[type=number] _G (Optional) Grünwert
+-- @param[type=number] _B (Optional) Blauwert
+-- @param[type=number] _A (Optional) Alphawert
 -- @within Anwenderfunktionen
 --
-function API.ActivateBlackScreen()
+function API.ActivateColoredScreen(_R, _G, _B, _A)
     if not GUI then
-        Logic.ExecuteInLuaLocalState("ModuleDisplayCore.Local:InterfaceActivateBlackBackground()");
+        Logic.ExecuteInLuaLocalState(string.format(
+            "ModuleDisplayCore.Local:InterfaceActivateColoredBackground(%d, %d, %d, %d)",
+            (_R ~= nil and _R) or 0,
+            (_G ~= nil and _G) or 0,
+            (_B ~= nil and _B) or 0,
+            (_A ~= nil and _A) or 255
+        ));
         return;
     end
-    ModuleDisplayCore.Local:InterfaceActivateBlackBackground();
+    ModuleDisplayCore.Local:InterfaceActivateColoredBackground(_R, _G, _B, _A);
 end
 
 ---
--- Deaktiviert den schwarzen Hintergrund, wenn er angezeigt wird.
+-- Deaktiviert den farbigen Hintergrund, wenn er angezeigt wird.
 --
 -- @within Anwenderfunktionen
 --
-function API.DeactivateBlackScreen()
+function API.DeactivateColoredScreen()
     if not GUI then
-        Logic.ExecuteInLuaLocalState("ModuleDisplayCore.Local:InterfaceDeactivateBlackBackground()");
+        Logic.ExecuteInLuaLocalState("ModuleDisplayCore.Local:InterfaceDeactivateColoredBackground()");
         return;
     end
-    ModuleDisplayCore.Local:InterfaceDeactivateBlackBackground();
+    ModuleDisplayCore.Local:InterfaceDeactivateColoredBackground();
 end
 
 ---

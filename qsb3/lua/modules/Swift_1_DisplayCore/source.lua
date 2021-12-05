@@ -239,7 +239,7 @@ function ModuleDisplayCore.Local:OverrideInterfaceThroneroomForCinematicMode()
     end
 end
 
-function ModuleDisplayCore.Local:InterfaceActivateBlackBackground()
+function ModuleDisplayCore.Local:InterfaceActivateColoredBackground(_R, _G, _B, _A)
     if self.PauseScreenShown then
         return;
     end
@@ -247,13 +247,13 @@ function ModuleDisplayCore.Local:InterfaceActivateBlackBackground()
 
     XGUIEng.PushPage("/InGame/Root/Normal/PauseScreen", false)
     XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 1);
-    XGUIEng.SetMaterialColor("/InGame/Root/Normal/PauseScreen", 0, 0, 0, 0, 255);
+    XGUIEng.SetMaterialColor("/InGame/Root/Normal/PauseScreen", 0, _R, _G, _B, _A);
 
     GUI.SendScriptCommand(string.format("API.SendScriptEvent(QSB.ScriptEvents.BlackScreenShown, %d)", GUI.GetPlayerID()));
     API.SendScriptEvent(QSB.ScriptEvents.BlackScreenShown, GUI.GetPlayerID());
 end
 
-function ModuleDisplayCore.Local:InterfaceDeactivateBlackBackground()
+function ModuleDisplayCore.Local:InterfaceDeactivateColoredBackground()
     if not self.PauseScreenShown then
         return;
     end
