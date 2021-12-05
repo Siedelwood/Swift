@@ -689,7 +689,7 @@ end
 -- AAN("Page1", "HQ1", -20, 7500, 38);
 -- -- animierte Bewegung (relativ)
 -- -- AAN(_Identifier, _Position1, _Rotation1, _Zoom1, _Angle1, _Position2, _Rotation2, _Zoom2, _Angle2, _Duration)
--- AAN("Page1", "HQ1", -20, 7500, 38, "Macrus", -40, 3500, 28, 30);
+-- AAN("Page1", "HQ1", -20, 7500, 38, "Marcus", -40, 3500, 28, 30);
 -- -- statische Position (Vektor)
 -- -- AAN(_Identifier, _X1, _Y1, _Z1, _X2, _Y2, _Z2)
 -- local x1, y1, z1 = Logic.EntityGetPos("CamPos1");

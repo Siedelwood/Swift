@@ -29,6 +29,8 @@ end
 -- Local Script ----------------------------------------------------------------
 
 function ModuleTypewriter.Local:OnGameStart()
+    QSB.SimpleTypewriterCounter = nil;
+    QSB.SimpleTypewriter = nil;
 end
 
 -- Typewriter class ------------------------------------------------------------
@@ -36,15 +38,16 @@ end
 QSB.SimpleTypewriterCounter = 0;
 
 QSB.SimpleTypewriter = {
-    m_Tokens     = {},
-    m_Delay      = 15,
-    m_Waittime   = 80,
-    m_Speed      = 1,
-    m_Index      = 0,
-    m_Text       = nil,
-    m_JobID      = nil,
-    m_Callback   = nil,
-    m_PaintBlack = true,
+    m_Tokens      = {},
+    m_Delay       = 15,
+    m_Waittime    = 80,
+    m_TokenOffset = 1,
+    m_Color       = {R= 0, G= 0, B= 0, A = 255},
+    m_Index       = 0,
+    m_Position    = nil,
+    m_Text        = nil,
+    m_JobID       = nil,
+    m_Callback    = nil,
 };
 
 ---
@@ -55,31 +58,69 @@ QSB.SimpleTypewriter = {
 -- @within QSB.SimpleTypewriter
 -- @local
 --
-function QSB.SimpleTypewriter:New(_Text, _Callback)
+function QSB.SimpleTypewriter:New(_Data)
     local typewriter = table.copy(self);
-    typewriter.m_Text = _Text;
-    typewriter.m_Callback = _Callback;
+    typewriter.m_Text = API.ConvertPlaceholders(API.Localize(_Data.Text));
     return typewriter;
 end
 
 ---
--- Setzt, ob der schwarze Hintergrund benutzt wird oder nicht.
--- @param[type=boolean] _Flag Schwarzen Hintergrund zeichnen
+-- Setzt das Callback, welches am Ende der Anzeige aufgerufen wird.
+-- @param[type=function] _Callback Funktion, die am Ende ausgeführt wird
 -- @within QSB.SimpleTypewriter
 -- @local
 --
-function QSB.SimpleTypewriter:SetBlackBackground(_Flag)
-    self.m_PaintBlack = _Flag == true;
+function QSB.SimpleTypewriter:SetCallback(_Callback)
+    self.m_Callback = _Callback;
+    return self;
+end
+
+---
+-- Setzt das Entity auf das die Kamera fixiert wird.
+-- @param _Position Skriptname oder ID
+-- @within QSB.SimpleTypewriter
+-- @local
+--
+function QSB.SimpleTypewriter:SetPosition(_Position)
+    self.m_Position = _Position;
+    return self;
+end
+
+---
+-- Legt fest, wie transparent der Hintergund dargestellt wird.
+-- @param[type=number] _Opacity Transparenz des Hintergrund
+-- @within QSB.SimpleTypewriter
+-- @local
+--
+function QSB.SimpleTypewriter:SetOpacity(_Opacity)
+    self.m_Color.A = 255 * _Opacity;
+    return self;
+end
+
+---
+-- Legt fest, welche Farbe der Hindergrund hat.
+-- @param[type=number] _Red   Rotwert des Hintergrund
+-- @param[type=number] _Green Grünwert des Hintergrund
+-- @param[type=number] _Blue  Blauwert des Hintergrund
+-- @within QSB.SimpleTypewriter
+-- @local
+--
+function QSB.SimpleTypewriter:SetColor(_Red, _Green, _Blue)
+    self.m_Color.R = _Red;
+    self.m_Color.G = _Green;
+    self.m_Color.B = _Blue;
+    return self;
 end
 
 ---
 -- Stellt ein, wie viele Zeichen in einer Interation angezeigt werden.
--- @param[type=number] _Speed Anzahl an Character pro 1/10 Sekunde
+-- @param[type=number] _Speed Anzahl an Zeichen pro 1/10 Sekunde
 -- @within QSB.SimpleTypewriter
 -- @local
 --
 function QSB.SimpleTypewriter:SetSpeed(_Speed)
-    self.m_Speed = _Speed;
+    self.m_TokenOffset = _Speed;
+    return self;
 end
 
 ---
@@ -91,6 +132,7 @@ end
 --
 function QSB.SimpleTypewriter:SetWaittime(_Waittime)
     self.m_Waittime = _Waittime;
+    return self;
 end
 
 ---
@@ -116,15 +158,19 @@ function QSB.SimpleTypewriter:Play()
     QSB.SimpleTypewriterCounter = QSB.SimpleTypewriterCounter +1;
     local Name = "CinmaticEventTypewriter" ..QSB.SimpleTypewriterCounter;
     self.m_CinematicEventName = Name;
-    API.StartCinematicEvent(Name, GUI.GetPlayerID);
-    if self.m_PaintBlack then
-        API.ActivateBlackScreen();
-    end
+    API.StartCinematicEvent(Name, QSB.HumanPlayerID);
+    API.ActivateColoredScreen(self.m_Color.R, self.m_Color.G, self.m_Color.B, self.m_Color.A);
     API.DeactivateNormalInterface();
+    API.DeactivateBorderScroll(self.m_Position);
     self.m_InitialWaittime = self.m_Delay;
     self:TokenizeText();
-    Logic.ExecuteInLuaLocalState("Input.CutsceneMode()");
-    self.m_JobID = StartSimpleHiResJobEx(self.ControllerJob, self);
+    Logic.ExecuteInLuaLocalState([[
+        Input.CutsceneMode()
+        GUI.ClearNotes()
+    ]]);
+    self.m_JobID = StartSimpleHiResJobEx(function()
+        self:ControllerJob();
+    end);
 end
 
 ---
@@ -133,10 +179,14 @@ end
 -- @local
 --
 function QSB.SimpleTypewriter:Stop()
-    API.FinishCinematicEvent(self.m_CinematicEventName, GUI.GetPlayerID);
-    API.DeactivateBlackScreen();
+    API.FinishCinematicEvent(self.m_CinematicEventName, QSB.HumanPlayerID);
+    API.DeactivateColoredScreen();
     API.ActivateNormalInterface();
-    Logic.ExecuteInLuaLocalState("Input.GameMode()");
+    API.ActivateBorderScroll();
+    Logic.ExecuteInLuaLocalState([[
+        Input.GameMode()
+        GUI.ClearNotes()
+    ]]);
     EndJob(self.m_JobID);
 end
 
@@ -224,32 +274,32 @@ end
 -- @within QSB.SimpleTypewriter
 -- @local
 --
-function QSB.SimpleTypewriter.ControllerJob(_Data)
-    if _Data.m_InitialWaittime > 0 then
-        _Data.m_InitialWaittime = _Data.m_InitialWaittime -1;
+function QSB.SimpleTypewriter:ControllerJob()
+    if self.m_InitialWaittime > 0 then
+        self.m_InitialWaittime = self.m_InitialWaittime -1;
     end
-    if _Data.m_InitialWaittime == 0 then
-        _Data.m_Index = _Data.m_Index + _Data.m_Speed;
-        if _Data.m_Index > #_Data.m_Tokens then
-            _Data.m_Index = #_Data.m_Tokens;
+    if self.m_InitialWaittime == 0 then
+        self.m_Index = self.m_Index + self.m_TokenOffset;
+        if self.m_Index > #self.m_Tokens then
+            self.m_Index = #self.m_Tokens;
         end
-        local Index = math.ceil(_Data.m_Index);
+        local Index = math.floor(self.m_Index + 0.5);
 
         local Text = "";
         for i= 1, Index, 1 do
-            Text = Text .. _Data.m_Tokens[i];
+            Text = Text .. self.m_Tokens[i];
         end
         Logic.ExecuteInLuaLocalState([[
             GUI.ClearNotes()
             GUI.AddNote("]] ..Text.. [[");
         ]])
         
-        if Index == #_Data.m_Tokens then
-            _Data.m_Waittime = _Data.m_Waittime -1;
-            if _Data.m_Waittime <= 0 then
-                _Data:Stop();
-                if _Data.m_Callback then
-                    _Data.m_Callback(_Data);
+        if Index == #self.m_Tokens then
+            self.m_Waittime = self.m_Waittime -1;
+            if self.m_Waittime <= 0 then
+                self:Stop();
+                if self.m_Callback then
+                    self:m_Callback();
                 end
                 return true;
             end
