@@ -35,7 +35,75 @@ You may use and modify this file unter the terms of the MIT licence.
 QSB.ScriptEvents = QSB.ScriptEvents or {};
 
 ---
+-- Startet eine Cutscene.
 --
+-- <h5>Einstellungen</h5>
+-- Für eine Cutscene können verschiedene spezielle Einstellungen vorgenommen
+-- werden.
+--
+-- Mögliche Werte:
+-- <table border="1">
+-- <tr>
+-- <td><b>Feldname</b></td>
+-- <td><b>Typ</b></td>
+-- <td><b>Beschreibung</b></td>
+-- </tr>
+-- <tr>
+-- <td>Starting</td>
+-- <td>function</td>
+-- <td>(Optional) Eine Funktion, die beim Start der Cutscene ausgeführt wird.</td>
+-- </tr>
+-- <tr>
+-- <td>Finished</td>
+-- <td>function</td>
+-- <td>(Optional) Eine Funktion, die nach Beendigung der Cutscene ausgeführt wird.</td>
+-- </tr>
+-- <tr>
+-- <td>EnableGlobalImmortality</td>
+-- <td>boolean</td>
+-- <td>(Optional) Alle Einheiten und Gebäude werden unverwundbar solange die Cutscene aktiv ist.</td>
+-- </tr>
+-- <tr>
+-- <td>EnableSky</td>
+-- <td>boolean</td>
+-- <td>(Optional) Der Himmel wird während der Cutscene angezeigt.</td>
+-- </tr>
+-- <tr>
+-- <td>DisableFoW</td>
+-- <td>boolean</td>
+-- <td>(Optional) Der Nebel des Krieges wird für die Dauer der Cutscene ausgeblendet.</td>
+-- </tr>
+-- <tr>
+-- <td>DisableBorderPins</td>
+-- <td>boolean</td>
+-- <td>(Optional) Die Grenzsteine werden für die Dauer der Cutscene ausgeblendet.</td>
+-- </tr>
+-- </table>
+--
+-- @param[type=table]  _Cutscene Definition der Cutscene
+-- @param[type=string] _Name     Name der Cutscene
+-- @param[type=number] _PlayerID Empfänger der Cutscene
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- function Cutscene1(_Name, _PlayerID)
+--     local Cutscene = {
+--         DisableFoW = true,
+--         EnableSky = true,
+--         DisableBoderPins = true,
+--     };
+--     local AP, ASP = API.AddCutscenePages(Cutscene);
+--
+--     -- Aufrufe von AP oder ASP um Seiten zu erstellen
+--
+--     Cutscene.Starting = function(_Data)
+--         -- Mach was tolles hier wenn es anfängt.
+--     end
+--     Cutscene.Finished = function(_Data)
+--         -- Mach was tolles hier wenn es endet.
+--     end
+--     API.StartCutscene(Cutscene, _Name, _PlayerID);
+-- end
 --
 function API.StartCutscene(_Cutscene, _Name, _PlayerID)
     if GUI then
@@ -70,7 +138,7 @@ end
 -- Funktion muss vor dem Start einer Cutscene aufgerufen werden, damit Seiten
 -- gebunden werden können.
 --
--- @param[type=table] _Briefing Briefing Definition
+-- @param[type=table] _Cutscene Cutscene Definition
 -- @return[type=function] <a href="#AF">AF</a>
 -- @within Anwenderfunktionen
 --
@@ -113,10 +181,64 @@ function API.AddCutscenePages(_Cutscene)
 end
 
 ---
+-- Erzeugt einen neuen Flight für die Cutscene.
+--
+-- <b>Achtung</b>: Diese Funktion wird von
+-- <a href="#API.AddCutscenePages">API.AddCutscenePages</a> erzeugt und an
+-- die Cutscene gebunden.
+--
+-- Folgende Parameter werden als Felder (Name = Wert) übergeben:
+-- <table border="1">
+-- <tr>
+-- <td><b>Feldname</b></td>
+-- <td><b>Typ</b></td>
+-- <td><b>Beschreibung</b></td>
+-- </tr>
+-- <tr>
+-- <td>Flight</td>
+-- <td>string</td>
+-- <td>Name der CS-Datei ohne Dateiendung</td>
+-- </tr>
+-- <tr>
+-- <td>Title</td>
+-- <td>string|table</td>
+-- <td>Der Titel, der oben angezeigt wird. Es ist möglich eine Table mit
+-- deutschen und englischen Texten anzugeben.</td>
+-- </tr>
+-- <tr>
+-- <td>Text</td>
+-- <td>string|table</td>
+-- <td>Der Text, der unten angezeigt wird. Es ist möglich eine Table mit
+-- deutschen und englischen Texten anzugeben.</td>
+-- </tr>
+-- <tr>
+-- <td>Action</td>
+-- <td>function</td>
+-- <td>(Optional) Eine Funktion, die ausgeführt wird, sobald der Flight
+-- angezeigt wird.</td>
+-- </tr>
+-- <tr>
+-- <td>FadeIn</td>
+-- <td>number</td>
+-- <td>(Optional) Dauer des Einblendens von Schwarz zu Beginn des Flight.</td>
+-- </tr>
+-- <tr>
+-- <td>FadeOut</td>
+-- <td>number</td>
+-- <td>(Optional) Dauer des Abblendens zu Schwarz am Ende des Flight.</td>
+-- </tr>
+-- <tr>
+-- <td>FaderAlpha</td>
+-- <td>number</td>
+-- <td>(Optional) Zeigt entweder die Blende an (1) oder nicht (0). Per Default
+-- wird die Blende nicht angezeigt. <br><b>Zwischen einer Seite mit FadeOut und
+-- der nächsten mit Fade In muss immer eine Seite mit FaderAlpha sein!</b></td>
+-- </tr>
+-- </table>
 --
 -- @within Cutscene
 --
 function AF(_Data)
-    error("AF (Cutscene System): not bound to a cutscene!");
+    assert(false);
 end
 

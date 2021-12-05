@@ -22,25 +22,6 @@ function Mission_FirstMapAction()
 end
 
 -- -------------------------------------------------------------------------- --
--- Lade zusätzliche Skriptdateien automatisch nach dem Laden der QSB aber
--- bevor die Mission beginnt.
--- Füge für jede Datei einen absoluten Pfad zum Speicherort hinzu. Dateien
--- werden aus der Map geladen oder während der Entwicklung aus dem Datei-
--- system. Das Root-Verzeichnis der Map ist in gvMission.ContentPath
--- gespeichert.
---
--- Beispiel:
--- return {
---    gvMission.ContentPath .. "promotion.lua",
---    gvMission.ContentPath .. "briefings.lua",
---    gvMission.ContentPath .. "quests.lua"
--- };
---
-function Mission_LoadFiles()
-    return {};
-end
-
--- -------------------------------------------------------------------------- --
 -- Mit dieser Funktion können KI-Spieler gesteuert werden.
 --
 -- Beispiel:
@@ -80,6 +61,25 @@ end
 -- Logic.TradePost_SetTradeDefinition(TPID, 3, Goods.G_Wood, 24, Goods.G_Iron, 12);
 --
 function Mission_InitMerchants()
+end
+
+-- -------------------------------------------------------------------------- --
+-- Lade zusätzliche Skriptdateien automatisch nach dem Laden der QSB aber
+-- bevor die Mission beginnt.
+-- Füge für jede Datei einen absoluten Pfad zum Speicherort hinzu. Dateien
+-- werden aus der Map geladen oder während der Entwicklung aus dem Datei-
+-- system. Das Root-Verzeichnis der Map ist in gvMission.ContentPath
+-- gespeichert.
+--
+-- Beispiel:
+-- return {
+--    gvMission.ContentPath .. "promotion.lua",
+--    gvMission.ContentPath .. "briefings.lua",
+--    gvMission.ContentPath .. "quests.lua"
+-- };
+--
+function Mission_LoadFiles()
+    return {};
 end
 
 -- -------------------------------------------------------------------------- --

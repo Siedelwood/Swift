@@ -51,14 +51,14 @@ function NormalDialogBriefing(_Name, _PlayerID)
     -- Parameter) wird automatisch die Kameraeinstellung errechnet. Mit dem
     -- Boolean am Ende kannst du noch einstellen, ob Nahsicht aktiv ist. Die
     -- Kamera schaut das Entity an, wenn es sich um einen Siedler handelt.
-    ASP("", "Marcus", "Ist das nicht ein schöner Tag heute?", "marcus", true);
-    ASP("", "Alandra", "In der Tat. Wenn ich Euch nicht sehen müsste, wäre er noch schöner.", "alandra", true);
-    ASP("", "Marcus", "Waaas? Wieso seid Ihr so gemein zu mir?", "marcus", true);
-    ASP("", "Alandra", "Na weil Ihr der Notnagel der Programmierer des Spiels seid.", "alandra", true);
-    ASP("", "Marcus", "Eben. Bin ich nicht schon diskriminiert genug?", "marcus", true);
+    ASP("Marcus", "Ist das nicht ein schöner Tag heute?", "marcus", true);
+    ASP("Alandra", "In der Tat. Wenn ich Euch nicht sehen müsste, wäre er noch schöner.", "alandra", true);
+    ASP("Marcus", "Waaas? Wieso seid Ihr so gemein zu mir?", "marcus", true);
+    ASP("Alandra", "Na weil Ihr der Notnagel der Programmierer des Spiels seid.", "alandra", true);
+    ASP("Marcus", "Eben. Bin ich nicht schon diskriminiert genug?", "marcus", true);
     -- Bei dieser Seite wurde eine Funktion referenziert, welche aufgerufen
     -- wird, sobald die Seite angezeigt wird.
-    ASP("", "Alandra", "Ach, halt die Klappe!", "alandra", true, AlandraVerhautMarcus);
+    ASP("Alandra", "Ach, halt die Klappe!", "alandra", true, AlandraVerhautMarcus);
 
     -- Diese Funktion ist optional. Du kannst sie verwenden, um beim Start des
     -- Briefings eine Aktion auszuführen. Das kann nützlich sein, wenn irgend
@@ -96,7 +96,7 @@ function MultipleChoiceDialogBriefing(_Name, _PlayerID)
     };
     local AP, ASP, AAN = API.AddBriefingPages(Briefing);
 
-    ASP("", "Marcus", "Ist das nicht ein schöner Tag heute?", "marcus", true);
+    ASP("Marcus", "Ist das nicht ein schöner Tag heute?", "marcus", true);
 
     -- Mittels der AP-Funktion können Seiten mit erweiterter Funktion erzeugt
     -- werden. Hier für die Auswahl von Optionen. Eine solche Seite kann auch
@@ -109,7 +109,7 @@ function MultipleChoiceDialogBriefing(_Name, _PlayerID)
     -- Alternativ kannst du auch eine Referenz auf die Seite speichern.
     -- In diesem Beispiel machen wir beides.
     local ChoicePage1 = AP {
-        Name         = "ChoicePage1",
+        Name         = "ChoicePage1Name",
         Title        = "Alandra",
         Text         = "",
         Position     = "alandra",
@@ -131,28 +131,30 @@ function MultipleChoiceDialogBriefing(_Name, _PlayerID)
         }
     }
 
-    -- Hier beginnt die nette Route. Die erste Seite hat den Namen NiceRoute
-    -- erhalten, so wie bei den Optionen angegeben. Der Name der Seite steht
-    -- bei ASP immer an erster Stelle, wenn er angegeben wird.
+    -- Hier beginnt die nette Route. Den Name geben wir explizit vor, da der
+    -- automatische Name sich bei Änderungen in der Reihenfolge oder der Anzahl
+    -- der Pages ändern würde.
     -- Wählt der Spieler die erste Möglichkeit, wird zu dieser Seite gesprungen.
-    ASP("NiceRoute", "Alandra", "In der Tat. Wie schön ihn mit Euch zu erleben.", "alandra", true);
-    ASP("", "Marcus", "Danke. Ihr seid wirklich nett zu mir.", "marcus", true);
-    ASP("", "Alandra", "Natürlich bin ich das. Ich kann doch gar nicht böse sein.", "alandra", true);
-    ASP("", "Marcus", "Das ist wahr. Habt Ihr zufällig noch einen Kräuterschnapps rumliegen?", "marcus", true);
-    ASP("", "Alandra", "Klar. Klosterfrau Melissengeist kommt sofort.", "alandra", true);
+    local Page = ASP("Alandra", "In der Tat. Wie schön ihn mit Euch zu erleben.", "alandra", true);
+    Page.Name = "NiceRoute";
+    ASP("Marcus", "Danke. Ihr seid wirklich nett zu mir.", "marcus", true);
+    ASP("Alandra", "Natürlich bin ich das. Ich kann doch gar nicht böse sein.", "alandra", true);
+    ASP("Marcus", "Das ist wahr. Habt Ihr zufällig noch einen Kräuterschnapps rumliegen?", "marcus", true);
+    ASP("Alandra", "Klar. Klosterfrau Melissengeist kommt sofort.", "alandra", true);
 
     -- Diese leere Seite trennt die Routen voneinander ab. Auf diese Weise ist
     -- Das Briefing an dieser Stelle zu Ende. Es wäre genauso möglich, von hier
     -- aus auf eine andere Seite zu springen. Siehe dazu die Doku.
     AP();
 
-    -- Hier beginnt die gemeine Route. Wieder wird die erste Seite der Route
-    -- benannt. Hier dann folglich MeanRoute, weil es die zweite Variante ist.
-    ASP("MeanRoute", "Alandra", "In der Tat. Wenn ich Euch nicht sehen müsste, wäre er noch schöner.", "alandra", true);
-    ASP("", "Marcus", "Waaas? Wieso seid Ihr so gemein zu mir?", "marcus", true);
-    ASP("", "Alandra", "Na weil Ihr der Notnagel der Programmierer des Spiels seid.", "alandra", true);
-    ASP("", "Marcus", "Eben. Bin ich nicht schon diskriminiert genug?", "marcus", true);
-    ASP("", "Alandra", "Ach, halt die Klappe!", "alandra", true);
+    -- Hier beginnt die gemeine Route. Auch hier geben wir den Namen vor.
+    -- Bei Wahl der zweiten Möglichkeit wird zu dieser Seite gesprungen.
+    local Page = ASP("Alandra", "In der Tat. Wenn ich Euch nicht sehen müsste, wäre er noch schöner.", "alandra", true);
+    Page.Name = "MeanRoute";
+    ASP("Marcus", "Waaas? Wieso seid Ihr so gemein zu mir?", "marcus", true);
+    ASP("Alandra", "Na weil Ihr der Notnagel der Programmierer des Spiels seid.", "alandra", true);
+    ASP("Marcus", "Eben. Bin ich nicht schon diskriminiert genug?", "marcus", true);
+    ASP("Alandra", "Ach, halt die Klappe!", "alandra", true);
 
     -- In der Finished kann auf die ausgewählte Option zugegriffen werden. Dabei
     -- wird stets die ID der ausgewählten Option zurückgegeben. Die IDs beginnen
@@ -165,7 +167,7 @@ function MultipleChoiceDialogBriefing(_Name, _PlayerID)
         -- (1) Globaler Zugriff
         -- Hier könntest du auch von beliebiger anderer Stelle auf die Antwort
         -- zugreifen, wenn du die Table des Briefings global speicherst.
-        local Selected = Briefing:GetPage("ChoicePage1"):GetSelected();
+        local Selected = Briefing:GetPage("ChoicePage1Name"):GetSelected();
         -- (2) Lokaler Zugriff
         -- Du kannst eine Referenz auf die Seite speichern (siehe oben) und dann
         -- hier auf diese Referenz zugreifen, um die Auswahl zu erhalten.
@@ -234,14 +236,15 @@ function AnimiertesDialogBriefing(_Name, _PlayerID)
     -- Dies ist eine normale Seite, wie du sie schon kennst. Wird bei ASP eine
     -- Position angegeben, wird implizit eine Animation erstellt. Animationen,
     -- die gerade laufen, werden automatisch abgebrochen.
-    ASP("", "Marcus", "Ist das nicht ein schöner Tag heute?", "marcus", true);
+    ASP("Marcus", "Ist das nicht ein schöner Tag heute?", "marcus", true);
 
     -- Wenn eine Seite eine Animation starten soll, braucht sie ebenfalls einen
     -- Namen. Wie das geht, weißt du ja.
-    ASP("AnimPage1", "Alandra", "In der Tat. Wenn ich Euch nicht sehen müsste, wäre er noch schöner.");
+    local Page = ASP("Alandra", "In der Tat. Wenn ich Euch nicht sehen müsste, wäre er noch schöner.");
+    Page.Name = "AnimPage1";
     -- Zuerst müssen wir die alte Animation loswerden.
     AAN("AnimPage1", true);
-    -- Nun können wir beliebig viele Animationen zunzufügen.
+    -- Nun können wir beliebig viele Animationen hinzufügen.
     -- (Für eine Beschreibung der Parameter schaue in die Doku!)
     -- Alle diese Animationen kommen in die Warteschlange und werden eine nach
     -- der anderen ausgeführt. Sobald alle Animationen vorbei sind, bleibt die
@@ -251,7 +254,6 @@ function AnimiertesDialogBriefing(_Name, _PlayerID)
     
     -- Bei den nachfolgenden Seiten verzichtest du auf die Positionsangabe. So
     -- wird die laufende Animation nicht überschrieben, wenn die Seite wechselt.
-    -- Außerdem kannst du nun den leeren Namen weglassen.
     ASP("Marcus", "Waaas? Wieso seid Ihr so gemein zu mir?");
     ASP("Alandra", "Na weil Ihr der Notnagel der Programmierer des Spiels seid.");
     -- Du kannst auch AP mit minimalem Input verwenden.

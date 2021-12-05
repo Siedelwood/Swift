@@ -51,7 +51,7 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- Mögliche Werte:
 -- <table border="1">
 -- <tr>
--- <td><b>Einstellung</b></td>
+-- <td><b>Feldname</b></td>
 -- <td><b>Typ</b></td>
 -- <td><b>Beschreibung</b></td>
 -- </tr>
@@ -342,19 +342,13 @@ function API.AddBriefingPages(_Briefing)
     local ASP = function(...)
         _Briefing.PageAnimations = _Briefing.PageAnimations or {};
 
-        local Name;
-        local Title;
-        local Text;
-        local Position;
+        local Name, Title,Text, Position;
         local DialogCam = false;
         local Action = function() end;
         local NoSkipping = false;
 
         -- Set page parameters
-        Name = table.remove(arg, 1);
-        if Name == -1 or Name == "" then
-            Name = nil;
-        end
+        Name = "Page" .. (#_Briefing);
         Title = table.remove(arg, 1);
         Text = table.remove(arg, 1);
         if #arg > 0 then
@@ -404,10 +398,10 @@ end
 -- Eine Dialog Page ist eine einfache Seite. Sie kann für die Darstellung von
 -- Dialogen zwischen Spielfiguren benutzt werden.
 --
--- Mögliche Felder:
+-- Folgende Parameter werden als Felder (Name = Wert) übergeben:
 -- <table border="1">
 -- <tr>
--- <td><b>Einstellung</b></td>
+-- <td><b>Feldname</b></td>
 -- <td><b>Typ</b></td>
 -- <td><b>Beschreibung</b></td>
 -- </tr>
@@ -468,6 +462,23 @@ end
 -- <td>number</td>
 -- <td>(Optional) Der Angle gibt den Winkel an, in dem die Kamera gekippt wird.
 -- </td>
+-- </tr>
+-- <tr>
+-- <td>FadeIn</td>
+-- <td>number</td>
+-- <td>(Optional) Dauer des Einblendens von Schwarz zu Beginn des Flight.</td>
+-- </tr>
+-- <tr>
+-- <td>FadeOut</td>
+-- <td>number</td>
+-- <td>(Optional) Dauer des Abblendens zu Schwarz am Ende des Flight.</td>
+-- </tr>
+-- <tr>
+-- <td>FaderAlpha</td>
+-- <td>number</td>
+-- <td>(Optional) Zeigt entweder die Blende an (1) oder nicht (0). Per Default
+-- wird die Blende nicht angezeigt. <br><b>Zwischen einer Seite mit FadeOut und
+-- der nächsten mit Fade In muss immer eine Seite mit FaderAlpha sein!</b></td>
 -- </tr>
 -- <tr>
 -- <td>MC</td>
@@ -550,7 +561,7 @@ end
 --};
 --
 function AP(_Data)
-    error("AP (Briefing System): not bound to a dialog!");
+    assert(false);
 end
 
 ---
@@ -560,6 +571,10 @@ end
 -- <a href="#API.AddBriefingPages">API.AddBriefingPages</a> erzeugt und an
 -- das Briefing gebunden.
 --
+-- Die Seite erhält automatisch einen Namen, entsprechend der Reihenfolge aller
+-- Seitenaufrufe von AP oder ASP. Werden also vor dem Aufruf bereits 2 Seiten
+-- erzeugt, so würde die Seite den Namen "Page3" erhalten.
+--
 -- Folgende Parameter werden in <u>genau dieser Reihenfolge</u> an die Funktion
 -- übergeben:
 -- <table border="1">
@@ -567,12 +582,6 @@ end
 -- <td><b>Bezeichnung</b></td>
 -- <td><b>Typ</b></td>
 -- <td><b>Beschreibung</b></td>
--- </tr>
--- <tr>
--- <td>Name</td>
--- <td>string</td>
--- <td>Name der Page. Wird gebraucht, um die Seite zu identifizieren (z.B. als
--- Sprungziel für Multiple Choice).</td>
 -- </tr>
 -- <tr>
 -- <td>Title</td>
@@ -621,18 +630,16 @@ end
 -- -- man die Leerstellen mit nil auffüllen.
 --
 -- -- Fernsicht
--- ASP("", "Title", "Some important text.", "HQ", false);
+-- ASP("Title", "Some important text.", "HQ", false);
 -- -- Nahsicht
--- ASP("", "Title", "Some important text.", "Marcus", true);
+-- ASP("Title", "Some important text.", "Marcus", true);
 -- -- Aktion ausführen
--- ASP("", "Title", "Some important text.", "Marcus", true, MyFunction);
--- -- Seite benennen
--- ASP("MyPage", "Title", "Some important text.", "HQ");
+-- ASP("Title", "Some important text.", "Marcus", true, MyFunction);
 -- -- Überspringen erlauben/verbieten
--- ASP("", "Title", "Some important text.", "HQ", nil, QSB.EmptyFunction, true);
+-- ASP("Title", "Some important text.", "HQ", nil, nil, true);
 --
 function ASP(...)
-    error("ASP (Briefing System): not bound to a dialog!");
+    assert(false);
 end
 
 ---
@@ -641,6 +648,8 @@ end
 -- <b>Achtung</b>: Diese Funktion wird von
 -- <a href="#API.AddBriefingPages">API.AddBriefingPages</a> erzeugt und an
 -- das Briefing gebunden.
+--
+-- <b>Hinweis</b>: Diese Funktion erzeugt keine eigene Seite!
 --
 -- Animationen werden beim Aufruf der Seite in die Warteschlange geschoben und
 -- ausgeführt, sobald keine anderen Animationen mehr laufen. Dadurch ist es nun
@@ -697,6 +706,6 @@ end
 -- AAN("Page1", true);
 --
 function AAN(_Data)
-    error("AA (Briefing System): not bound to a dialog!");
+    assert(false);
 end
 

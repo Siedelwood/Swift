@@ -108,7 +108,7 @@ function ModuleCutsceneSystem.Global:NextCutscene(_PlayerID)
         Cutscene.CurrentPage = 0;
         self.Cutscene[_PlayerID] = Cutscene;
 
-        if Cutscene.EnableGlobalInvulnerability then
+        if Cutscene.EnableGlobalImmortality then
             Logic.SetGlobalInvulnerability(1);
         end
         if self.Cutscene[_PlayerID].Starting then

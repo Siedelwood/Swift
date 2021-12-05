@@ -364,6 +364,7 @@ function ModuleDialogSystem.Local:DisplayPage(_PlayerID, _PageData)
             XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/QuestLog", 0);
             XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/Update", 0);
             XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles/Update", 1);
+            self:ResetPlayerPortrait(_PageData.Sender);
             self:ResetSubtitlesPosition(_PlayerID);
             self:SetSubtitlesText(_PlayerID);
             self:SetSubtitlesPosition(_PlayerID);
@@ -425,6 +426,15 @@ function ModuleDialogSystem.Local:SetSubtitlesPosition(_PlayerID)
         Y = 1115 - Height;
         XGUIEng.SetWidgetLocalPosition(MotherWidget, 46, Y);
     end
+end
+
+function ModuleDialogSystem.Local:ResetPlayerPortrait(_PlayerID)
+    local PortraitWidget = "/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/3DPortraitFaceFX";
+    local Actor = g_PlayerPortrait[_PlayerID];
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/QuestObjectives", 0);
+    SetPortraitWithCameraSettings(PortraitWidget, Actor);
+    GUI.PortraitWidgetSetRegister(PortraitWidget, "Mood_Friendly", 1,2,0);
+    GUI.PortraitWidgetSetRegister(PortraitWidget, "Mood_Angry", 1,2,0);
 end
 
 function ModuleDialogSystem.Local:ResetSubtitlesPosition(_PlayerID)
