@@ -62,6 +62,7 @@ function Swift:LoadCore()
         self:InstallBehaviorGlobal();
         self:OverrideQuestSystemGlobal();
         self:InitalizeCallbackGlobal();
+        self:DisableLogicFestival();
     end
 
     if self:IsLocalEnvironment() then
@@ -487,6 +488,18 @@ function Swift:DispatchScriptEvent(_ID, ...)
     -- Call event listener
     if GameCallback_QSB_OnEventReceived then
         GameCallback_QSB_OnEventReceived(_ID, unpack(arg));
+    end
+end
+
+-- AI
+
+function Swift:DisableLogicFestival()
+    Swift.Logic_StartFestival = Logic.StartFestival;
+    Logic.StartFestival = function(_PlayerID, _Type)
+        if Logic.PlayerGetIsHumanFlag(_PlayerID) ~= true then
+            return;
+        end
+        Swift.Logic_StartFestival(_PlayerID, _Type);
     end
 end
 

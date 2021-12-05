@@ -61,6 +61,7 @@ function Swift:RestoreAfterLoad()
     self:OverrideTable();
     if self:IsGlobalEnvironment() then
         self:GlobalRestoreDebugAfterLoad();
+        self:DisableLogicFestival();
     end
     if self:IsLocalEnvironment() then
         self:LocalRestoreDebugAfterLoad();
