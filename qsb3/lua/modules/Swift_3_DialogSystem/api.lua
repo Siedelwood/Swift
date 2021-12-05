@@ -176,10 +176,6 @@ function API.AddDialogPages(_Dialog)
     end
 
     local ASP = function(...)
-        local Name;
-        if type(arg[4]) ~= "boolean" then
-            Name = table.remove(arg, 1);
-        end
         local Sender   = table.remove(arg, 1);
         local Position = table.remove(arg, 1);
         local Text     = table.remove(arg, 1);
@@ -189,7 +185,6 @@ function API.AddDialogPages(_Dialog)
             Action = table.remove(arg, 1);
         end
         return AP {
-            Name   = Name,
             Text   = Text,
             Sender = Sender,
             Target = Position,
@@ -327,7 +322,7 @@ end
 -- }
 --
 function AP(_Data)
-    error("AP (Dialog System): not bound to a dialog!");
+    assert(false);
 end
 
 ---
@@ -338,8 +333,8 @@ end
 -- <a href="#API.AddPages">API.AddDialogPages</a> erzeugt und an
 -- den Dialog gebunden.
 --
--- @param[type=string]   _PageName     (optional) Briefing-Seite Namen geben
--- @param[type=string]   _Entity       Entity, das die Kamera zeigt
+-- @param[type=number]   _Sender       Spieler (-1 für kein Portrait)
+-- @param[type=string]   _Position     Position der Kamera
 -- @param[type=string]   _Text         Text der Seite
 -- @param[type=boolean]  _DialogCamera Nahsicht an/aus
 -- @param[type=function] _Action       (Optional) Callback-Funktion
@@ -347,11 +342,9 @@ end
 -- @within Dialog
 -- 
 -- @usage -- Beispiel ohne Page Name
--- ASP("hans", "Ich gehe in die weitel Welt hinein.", true);
--- -- Beispiel mit Page Name
--- ASP("B1P1", "hans", "Ich gehe in die weitel Welt hinein.", true);
+-- ASP(1, "hans", "Ich gehe in die weitel Welt hinein.", true);
 --
 function ASP(_Data)
-    error("ASP (Dialog System): not bound to a dialog!");
+    assert(false);
 end
 
