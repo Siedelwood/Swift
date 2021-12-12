@@ -1715,14 +1715,13 @@ function API.GetGeometricFocus(...)
     local SumY = 0;
     local SumZ = 0;
     for i= 1, #arg, 1 do
-        local Position = arg[i];
-        if type(arg[i]) ~= "table" then
-            Position = GetPosition(arg[i]);
-        end
-        SumX = SumX + Position.X;
-        SumY = SumY + Position.Y;
-        if Position.Z then
-            SumZ = SumZ + Position.Z;
+        local Position = API.GetPosition(arg[i]);
+        if API.IsValidPosition(Position) then
+            SumX = SumX + Position.X;
+            SumY = SumY + Position.Y;
+            if Position.Z then
+                SumZ = SumZ + Position.Z;
+            end
         end
     end
     return {
@@ -1856,21 +1855,21 @@ end
 -- @return[type=boolean] Position ist valide
 -- @within Position
 --
-function API.ValidatePosition(_pos)
+function API.IsValidPosition(_pos)
     if type(_pos) == "table" then
         if (_pos.X ~= nil and type(_pos.X) == "number") and (_pos.Y ~= nil and type(_pos.Y) == "number") then
-            local world = {Logic.WorldGetSize()}
+            local world = {Logic.WorldGetSize()};
             if _pos.Z and _pos.Z < 0 then
                 return false;
             end
-            if _pos.X <= world[1] and _pos.X > 0 and _pos.Y <= world[2] and _pos.Y > 0 then
+            if _pos.X < world[1] and _pos.X > 0 and _pos.Y < world[2] and _pos.Y > 0 then
                 return true;
             end
         end
     end
     return false;
 end
-IsValidPosition = API.ValidatePosition;
+IsValidPosition = API.IsValidPosition;
 
 ---
 -- Berechnet den Faktor der linearen Interpolation.
