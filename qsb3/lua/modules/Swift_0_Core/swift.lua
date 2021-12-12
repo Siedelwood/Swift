@@ -47,6 +47,7 @@ Swift = {
     m_HistoryEdition            = false;
     m_NoQuicksaveConditions     = {};
     m_LogLevel                  = 2;
+    m_FileLogLevel              = 3;
 };
 
 function Swift:LoadCore()
@@ -352,7 +353,9 @@ LOG_LEVEL_ERROR   = 1;
 LOG_LEVEL_OFF     = 0;
 
 function Swift:Log(_Text, _Level, _Verbose)
-    Framework.WriteToLog(_Text);
+    if Swift.m_FileLogLevel >= _Level then
+        Framework.WriteToLog(_Text);
+    end
     if _Verbose then
         if self:IsGlobalEnvironment() then
             if Swift.m_LogLevel >= _Level then
@@ -369,16 +372,23 @@ function Swift:Log(_Text, _Level, _Verbose)
     end
 end
 
-function Swift:SetLogLevel(_Level)
+function Swift:SetLogLevel(_ScreenLogLevel, _FileLogLevel)
     if self:IsGlobalEnvironment() then
         Logic.ExecuteInLuaLocalState(string.format(
-            [[Swift.m_LogLevel = %d]],
-            _Level
+            [[Swift.m_FileLogLevel = %d]],
+            (_FileLogLevel or 0)
         ));
-        self.m_LogLevel = _Level;
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[Swift.m_LogLevel = %d]],
+            (_ScreenLogLevel or 0)
+        ));
+        self.m_FileLogLevel = (_FileLogLevel or 0);
+        self.m_LogLevel = (_ScreenLogLevel or 0);
     end
 end
 
+-- note that debug is a reserved word in normal lua but in settlers lua debug
+-- is removed so it does not matter.
 function debug(_Text, _Silent)
     Swift:Log("DEBUG: " .._Text, LOG_LEVEL_ALL, not _Silent);
 end
