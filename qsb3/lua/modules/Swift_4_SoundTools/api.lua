@@ -235,6 +235,7 @@ end
 -- Erstellt ein Backup der Soundeinstellungen, wenn noch keins erstellt wurde.
 --
 -- @within Anwenderfunktionen
+-- @local
 --
 -- @usage API.SoundSave();
 --

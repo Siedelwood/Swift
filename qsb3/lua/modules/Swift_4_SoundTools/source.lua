@@ -46,7 +46,8 @@ function ModuleSoundCore.Local:AdjustSound(_Global, _Music, _Voice, _Atmo, _UI)
 end
 
 function ModuleSoundCore.Local:SaveSound()
-    if self.SoundBackup.FXSP == nil then
+    if not self.SoundBackup.Saved then
+        self.SoundBackup.Saved = true;
         self.SoundBackup.FXSP = Sound.GetFXSoundpointVolume();
         self.SoundBackup.FXAtmo = Sound.GetFXAtmoVolume();
         self.SoundBackup.FXVol = Sound.GetFXVolume();
@@ -58,7 +59,7 @@ function ModuleSoundCore.Local:SaveSound()
 end
 
 function ModuleSoundCore.Local:RestoreSound()
-    if self.SoundBackup.FXSP ~= nil then
+    if self.SoundBackup.Saved then
         Sound.SetFXSoundpointVolume(self.SoundBackup.FXSP);
         Sound.SetFXAtmoVolume(self.SoundBackup.FXAtmo);
         Sound.SetFXVolume(self.SoundBackup.FXVol);
