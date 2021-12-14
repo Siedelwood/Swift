@@ -93,7 +93,7 @@ function API.WeatherEventRegister(_Event, _Duration)
         return;
     end
     if type(_Event) ~= "table" or not _Event.GFX then
-        log("API.WeatherEventStart: Invalid weather event!", LEVEL_ERROR);
+        error("API.WeatherEventStart: Invalid weather event!");
         return;
     end
     ModuleWeatherManipulation.Global:AddEvent(_Event, _Duration);
@@ -116,13 +116,13 @@ function API.WeatherEventRegisterLoop(_Event)
         return;
     end
     if type(_Event) ~= "table" or not _Event.GFX then
-        log("API.WeatherEventStartLoop: Invalid weather event!", LEVEL_ERROR);
+        error("API.WeatherEventStartLoop: Invalid weather event!");
         return;
     end
     
     _Event.Loop = function(_Data)
         if _Data.Duration <= 36 then
-            ModuleWeatherManipulation.Global:AddEvent(_Event, _Data.Name, 120);
+            ModuleWeatherManipulation.Global:AddEvent(_Event, 120);
             ModuleWeatherManipulation.Global:StopEvent();
             ModuleWeatherManipulation.Global:ActivateEvent();
         end

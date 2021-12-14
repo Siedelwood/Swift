@@ -25,7 +25,9 @@ ModuleWeatherManipulation = {
 -- Global ------------------------------------------------------------------- --
 
 function ModuleWeatherManipulation.Global:OnGameStart()
-    StartSimpleHiResJobEx(self.EventController);
+    API.StartHiResJob(function()
+        ModuleWeatherManipulation.Global:EventController();
+    end);
 end
 
 function ModuleWeatherManipulation.Global:OnEvent(_ID, _Event)
@@ -97,7 +99,7 @@ end
 
 function ModuleWeatherManipulation.Global:StopEvent()
     Logic.ExecuteInLuaLocalState("ModuleWeatherManipulation.Local.ActiveEvent = nil");
-    ModuleWeatherManipulation.Global.ActiveEvent = nil;
+    self.ActiveEvent = nil;
     Logic.DeactivateWeatherEvent();
 end
 
@@ -112,25 +114,16 @@ function ModuleWeatherManipulation.Global:IsEventActive()
     return self.ActiveEvent ~= nil;
 end
 
-function ModuleWeatherManipulation.Global.OnSaveGameLoaded()
-    if ModuleWeatherManipulation.Global:IsEventActive() then
-        Logic.ExecuteInLuaLocalState([[
-            Display.StopAllEnvironmentSettingsSequences()
-            ModuleWeatherManipulation.Local:DisplayEvent(]] ..ModuleWeatherManipulation.Global:GetEventRemainingTime().. [[)
-        ]]);
-    end
-end
-
-function ModuleWeatherManipulation.Global.EventController()
-    if ModuleWeatherManipulation.Global:IsEventActive() then
-        ModuleWeatherManipulation.Global.ActiveEvent.Duration = ModuleWeatherManipulation.Global.ActiveEvent.Duration -1;
-        if ModuleWeatherManipulation.Global.ActiveEvent.Loop then
-            ModuleWeatherManipulation.Global.ActiveEvent:Loop();
+function ModuleWeatherManipulation.Global:EventController()
+    if self:IsEventActive() then
+        self.ActiveEvent.Duration = self.ActiveEvent.Duration -1;
+        if self.ActiveEvent.Loop then
+            self.ActiveEvent:Loop();
         end
         
-        if ModuleWeatherManipulation.Global.ActiveEvent.Duration == 0 then
-            ModuleWeatherManipulation.Global:StopEvent();
-            ModuleWeatherManipulation.Global:NextEvent();
+        if self.ActiveEvent.Duration == 0 then
+            self:StopEvent();
+            self:NextEvent();
         end
     end
 end
