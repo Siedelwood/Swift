@@ -1,7 +1,7 @@
 {
-    "name": "Swift_3_CastleStore",
+    "name": "Swift_2_CastleStore",
     "version": "1.0.0",
-    "caption": "(3) Castle Store",
+    "caption": "(2) Castle Store",
     "shortdesc": "Verleiht dem Spieler die Fähigkeit Lagerplatz in der Burg zu nutzen.",
     "description": "",
     "files": [

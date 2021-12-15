@@ -241,37 +241,16 @@ end
 -- )
 --
 function API.StartRealTimeJob(_Waittime, _Action, ...)
-    ModuleJobsCore.Shared.RealTimeWaitID = ModuleJobsCore.Shared.RealTimeWaitID +1;
-    local ID = ModuleJobsCore.Shared.RealTimeWaitID;
-    ModuleJobsCore.Shared.RealTimeWaitActiveFlag[ID] = true;
-
-    StartSimpleJobEx( function(_StartTime, _Delay, _Callback, _Arguments)
-        if not ModuleJobsCore.Shared.RealTimeWaitActiveFlag[ID] then
-            return true;
-        end
+    local ID = API.StartJob( function(_StartTime, _Delay, _Callback, _Arguments)
         if (ModuleJobsCore.Shared.SecondsSinceGameStart >= _StartTime + _Delay) then
             if #_Arguments > 0 then
                 _Callback(unpack(_Arguments));
             else
                 _Callback();
             end
-            ModuleJobsCore.Shared.RealTimeWaitActiveFlag[ID] = nil;
             return true;
         end
     end, ModuleJobsCore.Shared.SecondsSinceGameStart, _Waittime, _Action, {...});
     return ID;
-end
-
----
--- Stoppt den Real Time Timer mit der angegebenen ID.
---
--- @param[type=number] _ID ID der Verzögerung
--- @within Anwenderfunktionen
---
--- @usage TIMER_ID = API.StartRealTimeJob(...); -- (Parameter unerheblich)
--- API.EndRealTimeJob(TIMER_ID);
---
-function API.EndRealTimeJob(_ID)
-    ModuleJobsCore.Shared.RealTimeWaitActiveFlag[_ID] = nil;
 end
 

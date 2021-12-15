@@ -19,8 +19,6 @@ ModuleJobsCore = {
             [Events.LOGIC_EVENT_EVERY_SECOND]              = {},
             [Events.LOGIC_EVENT_EVERY_TURN]                = {},
         };
-        RealTimeWaitActiveFlag = {};
-        RealTimeWaitID = 0;
         SecondsSinceGameStart = 0;
         LastTimeStamp = 0;
     };

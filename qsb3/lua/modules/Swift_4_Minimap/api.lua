@@ -1,5 +1,5 @@
 --[[
-Swift_2_Minimap/API
+Swift_4_Minimap/API
 
 Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
 

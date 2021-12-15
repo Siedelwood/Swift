@@ -33,6 +33,7 @@ Source: "E:\Repositories\symfonia\app\mapmakers5\bin\QuestSystemBehavior.exe"; D
 Source: "E:\Repositories\symfonia\app\mapmakers5\bin\QuestSystemBehavior.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "E:\Repositories\symfonia\app\swapplicationupdater\var\updater.jar"; DestDir: "{app}"; Flags: ignoreversion
 Source: "E:\Repositories\symfonia\app\swapplicationupdater\var\logback-spring.xml"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Repositories\symfonia\app\swapplicationupdater\src\main\resources\config\icon.png"; DestDir: "{app}\config"; Flags: ignoreversion
 Source: "E:\Repositories\symfonia\app\swapplicationupdater\src\main\resources\application.properties"; DestDir: "{app}\config"; Flags: ignoreversion
 Source: "E:\Repositories\symfonia\app\swapplicationupdater\src\main\resources\application-s5mapmaker.properties"; DestDir: "{app}\config"; Flags: ignoreversion
 Source: "E:\Repositories\symfonia\app\swapplicationupdater\var\jre\*"; DestDir: "{app}\jre"; Flags: ignoreversion recursesubdirs
