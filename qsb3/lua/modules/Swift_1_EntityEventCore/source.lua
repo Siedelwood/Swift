@@ -16,6 +16,9 @@ ModuleEntityEventCore = {
     Global = {
         RegisteredEntities = {},
         AttackedEntities = {},
+        DisableThiefStorehouseHeist = false,
+        DisableThiefCathedralSabotage = false,
+        DisableThiefCisternSabotage = false,
 
         SpawnerTypes = {
             "S_AxisDeer_AS",
@@ -70,6 +73,8 @@ function ModuleEntityEventCore.Global:OnGameStart()
     QSB.ScriptEvents.EntityKilled = API.RegisterScriptEvent("Event_EntityKilled");
     QSB.ScriptEvents.EntityOwnerChanged = API.RegisterScriptEvent("Event_EntityOwnerChanged");
     QSB.ScriptEvents.EntityResourceChanged = API.RegisterScriptEvent("Event_EntityResourceChanged");
+    QSB.ScriptEvents.ThiefInfiltratedBuilding = API.RegisterScriptEvent("ThiefInfiltratedBuilding");
+    QSB.ScriptEvents.ThiefDeliverEarnings = API.RegisterScriptEvent("Event_ThiefDeliverEarnings");
 
     self:StartTriggers();
     self:OverrideCallback();
@@ -143,21 +148,21 @@ function ModuleEntityEventCore.Global:CleanTaggedAndDeadEntities()
 end
 
 function ModuleEntityEventCore.Global:OverrideCallback()
-    GameCallback_SettlerSpawned_Orig_Swift_EntityCore = GameCallback_SettlerSpawned
+    GameCallback_SettlerSpawned_Orig_QSB_EntityCore = GameCallback_SettlerSpawned
     GameCallback_SettlerSpawned = function(_PlayerID, _EntityID)
-        GameCallback_SettlerSpawned_Orig_Swift_EntityCore(_PlayerID, _EntityID);
+        GameCallback_SettlerSpawned_Orig_QSB_EntityCore(_PlayerID, _EntityID);
         ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(_EntityID);
     end
 
-    GameCallback_OnBuildingConstructionComplete_Orig_Swift_EntityCore = GameCallback_SettlerSpawned
+    GameCallback_OnBuildingConstructionComplete_Orig_QSB_EntityCore = GameCallback_SettlerSpawned
     GameCallback_OnBuildingConstructionComplete = function(_PlayerID, _EntityID)
-        GameCallback_OnBuildingConstructionComplete_Orig_Swift_EntityCore(_PlayerID, _EntityID);
+        GameCallback_OnBuildingConstructionComplete_Orig_QSB_EntityCore(_PlayerID, _EntityID);
         ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(_EntityID);
     end
 
-    GameCallback_FarmAnimalChangedPlayerID_Orig_Swift_EntityCore = GameCallback_FarmAnimalChangedPlayerID;
+    GameCallback_FarmAnimalChangedPlayerID_Orig_QSB_EntityCore = GameCallback_FarmAnimalChangedPlayerID;
     GameCallback_FarmAnimalChangedPlayerID = function(_PlayerID, _NewEntityID, _OldEntityID)
-        GameCallback_FarmAnimalChangedPlayerID_Orig_Swift_EntityCore(_PlayerID, _NewEntityID, _OldEntityID);
+        GameCallback_FarmAnimalChangedPlayerID_Orig_QSB_EntityCore(_PlayerID, _NewEntityID, _OldEntityID);
         ModuleEntityEventCore.Global.RegisteredEntities[_OldEntityID] = nil;
         ModuleEntityEventCore.Global.RegisteredEntities[_NewEntityID] = true;
         local OldPlayerID = Logic.EntityGetPlayer(_OldEntityID);
@@ -165,20 +170,32 @@ function ModuleEntityEventCore.Global:OverrideCallback()
         ModuleEntityEventCore.Global:TriggerEntityOnwershipChangedEvent(_OldEntityID, OldPlayerID, _NewEntityID, NewPlayerID);
     end
 
-    GameCallback_EntityCaptured_Orig_Swift_EntityCore = GameCallback_EntityCaptured;
+    GameCallback_EntityCaptured_Orig_QSB_EntityCore = GameCallback_EntityCaptured;
     GameCallback_EntityCaptured = function(_OldEntityID, _OldEntityPlayerID, _NewEntityID, _NewEntityPlayerID)
-        GameCallback_EntityCaptured_Orig_Swift_EntityCore(_OldEntityID, _OldEntityPlayerID, _NewEntityID, _NewEntityPlayerID)
+        GameCallback_EntityCaptured_Orig_QSB_EntityCore(_OldEntityID, _OldEntityPlayerID, _NewEntityID, _NewEntityPlayerID)
         ModuleEntityEventCore.Global.RegisteredEntities[_OldEntityID] = nil;
         ModuleEntityEventCore.Global.RegisteredEntities[_NewEntityID] = true;
         ModuleEntityEventCore.Global:TriggerEntityOnwershipChangedEvent(_OldEntityID, _OldEntityPlayerID, _NewEntityID, _NewEntityPlayerID);
     end
     
-    GameCallback_CartFreed_Orig_Swift_EntityCore = GameCallback_CartFreed;
+    GameCallback_CartFreed_Orig_QSB_EntityCore = GameCallback_CartFreed;
     GameCallback_CartFreed = function(_OldEntityID, _OldEntityPlayerID, _NewEntityID, _NewEntityPlayerID)
-        GameCallback_CartFreed_Orig_Swift_EntityCore(_OldEntityID, _OldEntityPlayerID, _NewEntityID, _NewEntityPlayerID);
+        GameCallback_CartFreed_Orig_QSB_EntityCore(_OldEntityID, _OldEntityPlayerID, _NewEntityID, _NewEntityPlayerID);
         ModuleEntityEventCore.Global.RegisteredEntities[_OldEntityID] = nil;
         ModuleEntityEventCore.Global.RegisteredEntities[_NewEntityID] = true;
         ModuleEntityEventCore.Global:TriggerEntityOnwershipChangedEvent(_OldEntityID, _OldEntityPlayerID, _NewEntityID, _NewEntityPlayerID);
+    end
+
+    GameCallback_OnThiefDeliverEarnings_Orig_QSB_EntityCore = GameCallback_OnThiefDeliverEarnings;
+    GameCallback_OnThiefDeliverEarnings = function(_ThiefPlayerID, _ThiefID, _BuildingID, _GoodAmount)
+        GameCallback_OnThiefDeliverEarnings_Orig_QSB_EntityCore(_ThiefPlayerID, _ThiefID, _BuildingID, _GoodAmount);
+        local BuildingPlayerID = Logic.EntityGetPlayer(_BuildingID);
+        ModuleEntityEventCore.Global:TriggerThiefDeliverEarningsEvent(_ThiefID, _ThiefPlayerID, _BuildingID, BuildingPlayerID, _GoodAmount);
+    end
+
+    GameCallback_OnThiefStealBuilding_Orig_QSB_EntityCore = GameCallback_OnThiefStealBuilding;
+    GameCallback_OnThiefStealBuilding = function(_ThiefID, _ThiefPlayerID, _BuildingID, _BuildingPlayerID)
+        ModuleEntityEventCore.Global:TriggerThiefStealFromBuildingEvent(_ThiefID, _ThiefPlayerID, _BuildingID, _BuildingPlayerID);
     end
 end
 
@@ -239,6 +256,57 @@ function ModuleEntityEventCore.Global:OverrideLogic()
         ModuleEntityEventCore.Global:TriggerEntityOnwershipChangedEvent(OldID, OldPlayerID, NewID, NewPlayerID);
         return NewID[1];
     end
+end
+
+function ModuleEntityEventCore.Global:TriggerThiefDeliverEarningsEvent(_ThiefID, _ThiefPlayerID, _BuildingID, _BuildingPlayerID, _GoodAmount)
+    API.SendScriptEvent(QSB.ScriptEvents.ThiefDeliverEarnings, _ThiefID, _ThiefPlayerID, _BuildingID, _BuildingPlayerID, _GoodAmount);
+    Logic.ExecuteInLuaLocalState(string.format(
+        "API.SendScriptEvent(QSB.ScriptEvents.ThiefDeliverEarnings, %d, %d, %d, %d, %d);",
+        _ThiefID,
+        _ThiefPlayerID,
+        _BuildingID,
+        _BuildingPlayerID,
+        _GoodAmount
+    ));
+end
+
+function ModuleEntityEventCore.Global:TriggerThiefStealFromBuildingEvent(_ThiefID, _ThiefPlayerID, _BuildingID, _BuildingPlayerID)
+    local HeadquartersID = Logic.GetHeadquarters(_BuildingPlayerID);
+    local CathedralID = Logic.GetCathedral(_BuildingPlayerID);
+    local StorehouseID = Logic.GetStoreHouse(_BuildingPlayerID);
+    local IsVillageStorehouse = Logic.IsEntityInCategory(StorehouseID, EntityCategories.VillageStorehouse) == 0;
+    local BuildingType = Logic.GetEntityType(_BuildingID);
+
+    -- Aus Lagerhaus stehlen
+    if StorehouseID == _BuildingID and (not IsVillageStorehouse or HeadquartersID == 0) then
+        if not self.DisableThiefStorehouseHeist then
+            GameCallback_OnThiefStealBuilding_Orig_QSB_EntityCore(_ThiefID, _ThiefPlayerID, _BuildingID, _BuildingPlayerID);
+        end
+    end
+
+    -- Kirche sabotieren
+    if CathedralID == _BuildingID then
+        if not self.DisableThiefCathedralSabotage then
+            GameCallback_OnThiefStealBuilding_Orig_QSB_EntityCore(_ThiefID, _ThiefPlayerID, _BuildingID, _BuildingPlayerID);
+        end
+    end
+
+    -- Brunnen sabotieren
+    if Framework.GetGameExtraNo() > 0 and BuildingType == Entities.B_Cistern then
+        if not self.DisableThiefCisternSabotage then
+            GameCallback_OnThiefStealBuilding_Orig_QSB_EntityCore(_ThiefID, _ThiefPlayerID, _BuildingID, _BuildingPlayerID);
+        end
+    end
+    
+    -- Send event
+    API.SendScriptEvent(QSB.ScriptEvents.ThiefInfiltratedBuilding, _ThiefID, _ThiefPlayerID, _BuildingID, _BuildingPlayerID);
+    Logic.ExecuteInLuaLocalState(string.format(
+        "API.SendScriptEvent(QSB.ScriptEvents.ThiefDeliverEarnings, %d, %d, %d, %d);",
+        _ThiefID,
+        _ThiefPlayerID,
+        _BuildingID,
+        _BuildingPlayerID
+    ));
 end
 
 function ModuleEntityEventCore.Global:StartTriggers()
@@ -313,6 +381,8 @@ function ModuleEntityEventCore.Local:OnGameStart()
     QSB.ScriptEvents.EntityKilled = API.RegisterScriptEvent("Event_EntityKilled");
     QSB.ScriptEvents.EntityOwnerChanged = API.RegisterScriptEvent("Event_EntityOwnerChanged");
     QSB.ScriptEvents.EntityResourceChanged = API.RegisterScriptEvent("Event_EntityResourceChanged");
+    QSB.ScriptEvents.ThiefInfiltratedBuilding = API.RegisterScriptEvent("ThiefInfiltratedBuilding");
+    QSB.ScriptEvents.ThiefDeliverEarnings = API.RegisterScriptEvent("Event_ThiefDeliverEarnings");
 
     self:StartTriggers();
 end
@@ -321,9 +391,9 @@ function ModuleEntityEventCore.Local:OnEvent(_ID, _Event, ...)
 end
 
 function ModuleEntityEventCore.Local:StartTriggers()
-    GameCallback_Feedback_EntityHurt_Orig_Swift_EntityCore = GameCallback_Feedback_EntityHurt;
+    GameCallback_Feedback_EntityHurt_Orig_QSB_EntityCore = GameCallback_Feedback_EntityHurt;
     GameCallback_Feedback_EntityHurt = function(_HurtPlayerID, _HurtEntityID, _HurtingPlayerID, _HurtingEntityID, _DamageReceived, _DamageDealt)
-        GameCallback_Feedback_EntityHurt_Orig_Swift_EntityCore(_HurtPlayerID, _HurtEntityID, _HurtingPlayerID, _HurtingEntityID, _DamageReceived, _DamageDealt);
+        GameCallback_Feedback_EntityHurt_Orig_QSB_EntityCore(_HurtPlayerID, _HurtEntityID, _HurtingPlayerID, _HurtingEntityID, _DamageReceived, _DamageDealt);
 
         GUI.SendScriptCommand(string.format(
             "API.SendScriptEvent(QSB.ScriptEvents.EntityHurt, %d, %d, %d, %d, %d, %d);",
@@ -337,9 +407,9 @@ function ModuleEntityEventCore.Local:StartTriggers()
         API.SendScriptEvent(QSB.ScriptEvents.EntityHurt, _HurtEntityID, _HurtPlayerID, _HurtingEntityID, _HurtingPlayerID, _DamageDealt, _DamageReceived);
     end
 
-    GameCallback_Feedback_MineAmountChanged_Orig_Swift_EntityCore = GameCallback_Feedback_MineAmountChanged;
+    GameCallback_Feedback_MineAmountChanged_Orig_QSB_EntityCore = GameCallback_Feedback_MineAmountChanged;
     GameCallback_Feedback_MineAmountChanged = function(_MineID, _GoodType, _TerritoryID, _PlayerID, _Amount)
-        GameCallback_Feedback_MineAmountChanged_Orig_Swift_EntityCore(_MineID, _GoodType, _TerritoryID, _PlayerID, _Amount);
+        GameCallback_Feedback_MineAmountChanged_Orig_QSB_EntityCore(_MineID, _GoodType, _TerritoryID, _PlayerID, _Amount);
 
         GUI.SendScriptCommand(string.format(
             "API.SendScriptEvent(QSB.ScriptEvents.EntityResourceChanged, %d, %d, %d);",
