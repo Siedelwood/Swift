@@ -127,7 +127,7 @@ IsEntitySelected = API.IsEntityInSelection;
 function API.GetSelectedEntity(_PlayerID)
     local SelectedEntity;
     if not GUI then
-        SelectedEntity = ModuleSelection.Global.SelectedEntities[_PlayerID];
+        SelectedEntity = ModuleSelection.Global.SelectedEntities[_PlayerID][1];
     else
         SelectedEntity = GUI.GetSelectedEntity();
     end
