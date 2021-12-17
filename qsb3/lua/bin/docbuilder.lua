@@ -4,6 +4,7 @@ dofile("loader.lua");
 BinDocBuilder_Data = {
     Extensions = {".api", ".behavior", ".callback", ".requirements"},
     Modules = {},
+    Parsed = {},
 };
 
 function BinDocBuilder_CreateDocumentationIndex()
@@ -151,8 +152,13 @@ function BinDocBuilder_ReadModule(_Module)
     end
 end
 
-function BinDocBuilder_ParseHTML(_Modue)
-    local Path = "../../doc/html/modules/" .._Modue.. ".html";
+function BinDocBuilder_ParseHTML(_Module)
+    if BinDocBuilder_Data.Parsed[_Module] then
+        return false;
+    end
+    BinDocBuilder_Data.Parsed[_Module] = true;
+
+    local Path = "../../doc/html/modules/" .._Module.. ".html";
     local fh = io.open(Path, "rt");
     if not fh then
         print ("Could not parse file: ", Path);

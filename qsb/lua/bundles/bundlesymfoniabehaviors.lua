@@ -780,7 +780,7 @@ Core:RegisterBehavior(b_Goal_CityReputation);
 -- </ul>
 --
 -- @param _GoodType      Typ der Ware
--- @param _GoodAmount    Menga der Ware in Prozent
+-- @param _GoodAmount    Menge der Ware in Prozent
 -- @param _OtherTarget   Anderes Ziel als Auftraggeber
 -- @param _IgnoreCapture Wagen kann zurückerobert werden
 --
@@ -859,7 +859,7 @@ end
 function b_Goal_CollectValuables:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.SearchPositions = _Parameter;
-    elseif (_Index == 0) then
+    elseif (_Index == 1) then
         self.Model = _Parameter;
     elseif (_Index == 2) then
         if _Parameter == nil then

@@ -1993,6 +1993,7 @@ function API.RestartQuest(_QuestName, _NoMessage)
                     data[3] = nil;
                     data[4] = nil;
                     data[5] = nil;
+                    data[9] = nil;
 
                 elseif g_GameExtraNo and g_GameExtraNo >= 1 and objectiveType == Objective.Refill then
                     objective.Data[2] = nil;
@@ -2007,6 +2008,7 @@ function API.RestartQuest(_QuestName, _NoMessage)
                     objective.Data[3] = objective.DestroyTypeAmount;
                 elseif objectiveType == Objective.DestroyEntities and objective.Data[1] == 3 then
                     objective.Data[4] = nil;
+                    objective.Data[5] = nil;
 
                 elseif objectiveType == Objective.Distance then
                     if objective.Data[1] == -65565 then
