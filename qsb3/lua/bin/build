@@ -4,9 +4,10 @@
 rm -rf ../var/*
 mkdir ../var/qsb
 lua writer.lua
-mv ../var/qsb.lua ../var/qsb/qsb.lua
+cp ../var/qsb.lua ../var/qsb/qsb.lua
 cd ../../luaminifyer
-./LuaMinify.sh ../lua/var/qsb/qsb.lua
+./LuaMinify.sh ../lua/var/qsb.lua
+cp ../var/qsb_min.lua ../var/qsb/qsb_min.lua
 cd ../lua
 # rm var/qsb/qsb.lua
 # mv var/qsb/qsb_min.lua var/qsb/qsb.lua
