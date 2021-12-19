@@ -73,8 +73,11 @@ function ModuleEntityEventCore.Global:OnGameStart()
     QSB.ScriptEvents.EntityKilled = API.RegisterScriptEvent("Event_EntityKilled");
     QSB.ScriptEvents.EntityOwnerChanged = API.RegisterScriptEvent("Event_EntityOwnerChanged");
     QSB.ScriptEvents.EntityResourceChanged = API.RegisterScriptEvent("Event_EntityResourceChanged");
-    QSB.ScriptEvents.ThiefInfiltratedBuilding = API.RegisterScriptEvent("ThiefInfiltratedBuilding");
+
+    QSB.ScriptEvents.ThiefInfiltratedBuilding = API.RegisterScriptEvent("Event_ThiefInfiltratedBuilding");
     QSB.ScriptEvents.ThiefDeliverEarnings = API.RegisterScriptEvent("Event_ThiefDeliverEarnings");
+    QSB.ScriptEvents.BuildingConstructed = API.RegisterScriptEvent("Event_BuildingConstructed");
+    QSB.ScriptEvents.BuildingUpgraded = API.RegisterScriptEvent("Event_BuildingUpgraded");
 
     self:StartTriggers();
     self:OverrideCallback();
@@ -95,7 +98,7 @@ function ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(_EntityID)
             self.RegisteredEntities[_EntityID] = true;
             API.SendScriptEvent(QSB.ScriptEvents.EntityCreated, _EntityID);
             Logic.ExecuteInLuaLocalState(string.format(
-                "API.SendScriptEvent(QSB.ScriptEvents.EntityCreated, %d);",
+                "API.SendScriptEvent(QSB.ScriptEvents.EntityCreated, %d)",
                 _EntityID
             ))
         end
@@ -107,7 +110,7 @@ function ModuleEntityEventCore.Global:UnregisterEntityAndTriggerEvent(_EntityID)
         self.RegisteredEntities[_EntityID] = nil;
         API.SendScriptEvent(QSB.ScriptEvents.EntityDestroyed, _EntityID);
         Logic.ExecuteInLuaLocalState(string.format(
-            "API.SendScriptEvent(QSB.ScriptEvents.EntityDestroyed, %d);",
+            "API.SendScriptEvent(QSB.ScriptEvents.EntityDestroyed, %d)",
             _EntityID
         ))
     end
@@ -120,7 +123,7 @@ function ModuleEntityEventCore.Global:TriggerEntityOnwershipChangedEvent(_OldID,
     for i=1, #_OldID do
         API.SendScriptEvent(QSB.ScriptEvents.EntityOwnerChanged, _OldID[i], _OldOwnerID, _NewID[i], _NewOwnerID);
         Logic.ExecuteInLuaLocalState(string.format(
-            "API.SendScriptEvent(QSB.ScriptEvents.EntityOwnerChanged, %d);",
+            "API.SendScriptEvent(QSB.ScriptEvents.EntityOwnerChanged, %d)",
             _OldID[i],
             _OldOwnerID,
             _NewID[i],
@@ -158,6 +161,7 @@ function ModuleEntityEventCore.Global:OverrideCallback()
     GameCallback_OnBuildingConstructionComplete = function(_PlayerID, _EntityID)
         GameCallback_OnBuildingConstructionComplete_Orig_QSB_EntityCore(_PlayerID, _EntityID);
         ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(_EntityID);
+        ModuleEntityEventCore.Global:TriggerConstructionCompleteEvent(_PlayerID, _EntityID);
     end
 
     GameCallback_FarmAnimalChangedPlayerID_Orig_QSB_EntityCore = GameCallback_FarmAnimalChangedPlayerID;
@@ -177,7 +181,7 @@ function ModuleEntityEventCore.Global:OverrideCallback()
         ModuleEntityEventCore.Global.RegisteredEntities[_NewEntityID] = true;
         ModuleEntityEventCore.Global:TriggerEntityOnwershipChangedEvent(_OldEntityID, _OldEntityPlayerID, _NewEntityID, _NewEntityPlayerID);
     end
-    
+
     GameCallback_CartFreed_Orig_QSB_EntityCore = GameCallback_CartFreed;
     GameCallback_CartFreed = function(_OldEntityID, _OldEntityPlayerID, _NewEntityID, _NewEntityPlayerID)
         GameCallback_CartFreed_Orig_QSB_EntityCore(_OldEntityID, _OldEntityPlayerID, _NewEntityID, _NewEntityPlayerID);
@@ -196,6 +200,12 @@ function ModuleEntityEventCore.Global:OverrideCallback()
     GameCallback_OnThiefStealBuilding_Orig_QSB_EntityCore = GameCallback_OnThiefStealBuilding;
     GameCallback_OnThiefStealBuilding = function(_ThiefID, _ThiefPlayerID, _BuildingID, _BuildingPlayerID)
         ModuleEntityEventCore.Global:TriggerThiefStealFromBuildingEvent(_ThiefID, _ThiefPlayerID, _BuildingID, _BuildingPlayerID);
+    end
+
+    GameCallback_OnBuildingUpgradeFinished_Orig_QSB_EntityCore = GameCallback_OnBuildingUpgradeFinished;
+	GameCallback_OnBuildingUpgradeFinished = function(_PlayerID, _EntityID, _NewUpgradeLevel)
+		GameCallback_OnBuildingUpgradeFinished_Orig_QSB_EntityCore(_PlayerID, _EntityID, _NewUpgradeLevel);
+        ModuleEntityEventCore.Global:TriggerUpgradeCompleteEvent(_PlayerID, _EntityID, _NewUpgradeLevel);
     end
 end
 
@@ -261,7 +271,7 @@ end
 function ModuleEntityEventCore.Global:TriggerThiefDeliverEarningsEvent(_ThiefID, _ThiefPlayerID, _BuildingID, _BuildingPlayerID, _GoodAmount)
     API.SendScriptEvent(QSB.ScriptEvents.ThiefDeliverEarnings, _ThiefID, _ThiefPlayerID, _BuildingID, _BuildingPlayerID, _GoodAmount);
     Logic.ExecuteInLuaLocalState(string.format(
-        "API.SendScriptEvent(QSB.ScriptEvents.ThiefDeliverEarnings, %d, %d, %d, %d, %d);",
+        "API.SendScriptEvent(QSB.ScriptEvents.ThiefDeliverEarnings, %d, %d, %d, %d, %d)",
         _ThiefID,
         _ThiefPlayerID,
         _BuildingID,
@@ -301,11 +311,30 @@ function ModuleEntityEventCore.Global:TriggerThiefStealFromBuildingEvent(_ThiefI
     -- Send event
     API.SendScriptEvent(QSB.ScriptEvents.ThiefInfiltratedBuilding, _ThiefID, _ThiefPlayerID, _BuildingID, _BuildingPlayerID);
     Logic.ExecuteInLuaLocalState(string.format(
-        "API.SendScriptEvent(QSB.ScriptEvents.ThiefDeliverEarnings, %d, %d, %d, %d);",
+        "API.SendScriptEvent(QSB.ScriptEvents.ThiefDeliverEarnings, %d, %d, %d, %d)",
         _ThiefID,
         _ThiefPlayerID,
         _BuildingID,
         _BuildingPlayerID
+    ));
+end
+
+function ModuleEntityEventCore.Global:TriggerConstructionCompleteEvent(_PlayerID, _EntityID)
+    API.SendScriptEvent(QSB.ScriptEvents.BuildingConstructed, _PlayerID, _EntityID);
+    Logic.ExecuteInLuaLocalState(string.format(
+        "API.SendScriptEvent(QSB.ScriptEvents.BuildingConstructed, %d, %d)",
+        _PlayerID,
+        _EntityID
+    ));
+end
+
+function ModuleEntityEventCore.Global:TriggerUpgradeCompleteEvent(_PlayerID, _EntityID, _NewUpgradeLevel)
+    API.SendScriptEvent(QSB.ScriptEvents.BuildingUpgraded, _PlayerID, _EntityID, _NewUpgradeLevel);
+    Logic.ExecuteInLuaLocalState(string.format(
+        "API.SendScriptEvent(QSB.ScriptEvents.BuildingUpgraded, %d, %d, %d)",
+        _PlayerID,
+        _EntityID,
+        _NewUpgradeLevel
     ));
 end
 
@@ -381,8 +410,11 @@ function ModuleEntityEventCore.Local:OnGameStart()
     QSB.ScriptEvents.EntityKilled = API.RegisterScriptEvent("Event_EntityKilled");
     QSB.ScriptEvents.EntityOwnerChanged = API.RegisterScriptEvent("Event_EntityOwnerChanged");
     QSB.ScriptEvents.EntityResourceChanged = API.RegisterScriptEvent("Event_EntityResourceChanged");
-    QSB.ScriptEvents.ThiefInfiltratedBuilding = API.RegisterScriptEvent("ThiefInfiltratedBuilding");
+
+    QSB.ScriptEvents.ThiefInfiltratedBuilding = API.RegisterScriptEvent("Event_ThiefInfiltratedBuilding");
     QSB.ScriptEvents.ThiefDeliverEarnings = API.RegisterScriptEvent("Event_ThiefDeliverEarnings");
+    QSB.ScriptEvents.BuildingConstructed = API.RegisterScriptEvent("Event_BuildingConstructed");
+    QSB.ScriptEvents.BuildingUpgraded = API.RegisterScriptEvent("Event_BuildingUpgraded");
 
     self:StartTriggers();
 end
@@ -396,7 +428,7 @@ function ModuleEntityEventCore.Local:StartTriggers()
         GameCallback_Feedback_EntityHurt_Orig_QSB_EntityCore(_HurtPlayerID, _HurtEntityID, _HurtingPlayerID, _HurtingEntityID, _DamageReceived, _DamageDealt);
 
         GUI.SendScriptCommand(string.format(
-            "API.SendScriptEvent(QSB.ScriptEvents.EntityHurt, %d, %d, %d, %d, %d, %d);",
+            "API.SendScriptEvent(QSB.ScriptEvents.EntityHurt, %d, %d, %d, %d, %d, %d)",
             _HurtEntityID,
             _HurtPlayerID,
             _HurtingEntityID,
@@ -412,7 +444,7 @@ function ModuleEntityEventCore.Local:StartTriggers()
         GameCallback_Feedback_MineAmountChanged_Orig_QSB_EntityCore(_MineID, _GoodType, _TerritoryID, _PlayerID, _Amount);
 
         GUI.SendScriptCommand(string.format(
-            "API.SendScriptEvent(QSB.ScriptEvents.EntityResourceChanged, %d, %d, %d);",
+            "API.SendScriptEvent(QSB.ScriptEvents.EntityResourceChanged, %d, %d, %d)",
             _MineID,
             _GoodType,
             _Amount

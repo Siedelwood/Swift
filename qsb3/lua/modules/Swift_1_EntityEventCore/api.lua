@@ -37,6 +37,8 @@ You may use and modify this file unter the terms of the MIT licence.
 -- @field EntityKilled Ein Entity wurde getötet. (Parameter: KilledEntityID, KilledPlayerID, KillerEntityID, KillerPlayerID)
 -- @field EntityOwnerChanged Ein Entity wechselt den Besitzer. (Parameter: OldID, OldPlayer, NewID, OldPlayer)
 -- @field EntityResourceChanged Resourcen im Entity verändern sich. (Parameter: EntityID, GoodType, Amount)
+-- @field BuildingConstructed Ein Gebäude wurde fertiggestellt. (Parameter: PlayerID, BuildingID)
+-- @field BuildingUpgraded Ein Gebäude wurde aufgewertet. (Parameter: PlayerID, BuildingID, NewUpgradeLevel)
 -- @field ThiefInfiltratedBuilding Ein Dieb hat ein Gebäude infiltriert. (Parameter: ThiefID, PlayerID, BuildingID, BuildingPlayerID)
 -- @field ThiefDeliverEarnings Ein Dieb liefert seine Beute ab. (Parameter: ThiefID, PlayerID, BuildingID, BuildingPlayerID, GoldAmount)
 --

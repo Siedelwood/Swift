@@ -550,6 +550,9 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 ---
 -- Wird aufgerufen, wenn ein beliebiges Event empfangen wird.
 --
+-- <b>Hinweis</b>: Der Enent Listener darf nur einmal im globalen und lokalen
+-- Skript definiert werden.
+--
 -- Wenn ein Event empfangen wird, kann es sein, dass Parameter mit übergeben
 -- werden. Um für alle Events gewappnet zu sein, muss der Listener als
 -- Varargs-Funktion, also mit ... in der Parameterliste geschrieben werden.
@@ -562,11 +565,13 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- @within Event
 --
 -- @usage
--- GameCallback_QSB_OnEventReceived = function(_EventID, ...)
---     if _EventID == QSB.ScriptEvents.EscapePressed then
---         API.AddNote("Player " ..arg[1].. " has pressed Escape!");
---     elseif _EventID == QSB.ScriptEvents.SaveGameLoaded then
---         API.AddNote("A save has been loaded!");
+-- function DefineEventListener()
+--     GameCallback_QSB_OnEventReceived = function(_EventID, ...)
+--         if _EventID == QSB.ScriptEvents.EscapePressed then
+--             API.AddNote("Player " ..arg[1].. " has pressed Escape!");
+--         elseif _EventID == QSB.ScriptEvents.SaveGameLoaded then
+--             API.AddNote("A save has been loaded!");
+--         end
 --     end
 -- end
 --

@@ -111,7 +111,7 @@ table.index td { text-align: left; vertical-align: top; hyphens: auto; }
 
 #navigation {
     float: left;
-    width: 18em;
+    width: 25em;
     vertical-align: top;
     background-color: #f0f0f0;
     overflow: visible;
@@ -145,7 +145,7 @@ table.index td { text-align: left; vertical-align: top; hyphens: auto; }
 }
 
 #content {
-    margin-left: 18em;
+    margin-left: 25em;
     padding: 1em;
     border-left: 2px solid #cccccc;
     border-right: 2px solid #cccccc;
