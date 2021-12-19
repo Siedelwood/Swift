@@ -144,12 +144,18 @@ function ModuleObjectInteraction.Global:SetupObject(_Object)
     local ID = GetID((_Object.Slave and _Object.Slave) or _Object.Name);
     Logic.InteractiveObjectClearCosts(ID);
     Logic.InteractiveObjectClearRewards(ID);
-    Logic.InteractiveObjectSetInteractionDistance(ID,_Object.Distance);
-    Logic.InteractiveObjectSetTimeToOpen(ID,_Object.Waittime);
-    Logic.InteractiveObjectSetRewardResourceCartType(ID, Entities.U_ResourceMerchant);
-    Logic.InteractiveObjectSetRewardGoldCartType(ID, Entities.U_GoldCart);
-    Logic.InteractiveObjectSetCostResourceCartType(ID, Entities.U_ResourceMerchant);
-    Logic.InteractiveObjectSetCostGoldCartType(ID, Entities.U_GoldCart);
+    Logic.InteractiveObjectSetInteractionDistance(ID, _Object.Distance);
+    Logic.InteractiveObjectSetTimeToOpen(ID, _Object.Waittime);
+    
+    local RewardResourceCart = _Object.RewardResourceCartType or Entities.U_ResourceMerchant;
+    Logic.InteractiveObjectSetRewardResourceCartType(ID, RewardResourceCart);
+    local RewardGoldCart = _Object.RewardGoldCartType or Entities.U_GoldCart;
+    Logic.InteractiveObjectSetRewardGoldCartType(ID, RewardGoldCart);
+    local CostResourceCart = _Object.CostResourceCartType or Entities.U_ResourceMerchant;
+    Logic.InteractiveObjectSetCostResourceCartType(ID, CostResourceCart);
+    local CostGoldCart = _Object.CostGoldCartType or Entities.U_GoldCart;
+    Logic.InteractiveObjectSetCostGoldCartType(ID, CostGoldCart);
+    
     if _Object.Reward then
         Logic.InteractiveObjectAddRewards(ID, _Object.Reward[1], _Object.Reward[2]);
     end

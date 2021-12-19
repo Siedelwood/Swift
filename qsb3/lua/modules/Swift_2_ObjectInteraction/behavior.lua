@@ -16,6 +16,8 @@ You may use and modify this file unter the terms of the MIT licence.
 -- @set sort=true
 --
 
+-- -------------------------------------------------------------------------- --
+
 ---
 -- Der Spieler muss bis zu 4 interaktive Objekte benutzen.
 --
@@ -63,4 +65,41 @@ function B_Goal_ActivateSeveralObjects:GetMsgKey()
 end
 
 Swift:RegisterBehavior(B_Goal_ActivateSeveralObjects);
+
+-- -------------------------------------------------------------------------- --
+
+-- Überschreibt ObjectInit, sodass auch Custom Objects verwaltet werden können.
+B_Reward_ObjectInit.CustomFunction = function(self, _Quest)
+    local EntityID = GetID(self.ScriptName);
+    if EntityID == 0 then
+        return;
+    end
+    QSB.InitalizedObjekts[EntityID] = _Quest.Identifier;
+
+    local GoodReward;
+    if self.RewardType and self.RewardType ~= "-" then
+        GoodReward = {Goods[self.RewardType], self.RewardAmount};
+    end
+
+    local GoodCosts;
+    if self.FirstCostType and self.FirstCostType ~= "-" then
+        GoodCosts = GoodReward or {};
+        table.insert(GoodCosts, Goods[self.FirstCostType]);
+        table.insert(GoodCosts, Goods[self.FirstCostAmount]);
+    end
+    if self.SecondCostType and self.SecondCostType ~= "-" then
+        GoodCosts = GoodReward or {};
+        table.insert(GoodCosts, Goods[self.SecondCostType]);
+        table.insert(GoodCosts, Goods[self.SecondCostAmount]);
+    end
+
+    API.SetupObject {
+        Name                   = self.ScriptName,
+        Distance               = self.Distance,
+        Waittime               = self.Waittime,
+        Reward                 = GoodReward,
+        Costs                  = GoodCosts,
+    };
+    API.InteractiveObjectActivate(self.ScriptName, self.UsingState);
+end
 

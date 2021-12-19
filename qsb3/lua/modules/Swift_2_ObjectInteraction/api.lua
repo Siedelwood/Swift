@@ -145,6 +145,30 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- <td>Eine Funktion, die nach der Aktivierung aufgerufen wird.</td>
 -- <td>ja</td>
 -- </tr>
+-- <tr>
+-- <td>RewardResourceCartType</td>
+-- <td>number</td>
+-- <td>Erlaubt, einen anderern Karren für Rohstoffkosten einstellen.</td>
+-- <td>ja</td>
+-- </tr>
+-- <tr>
+-- <td>RewardGoldCartType</td>
+-- <td>number</td>
+-- <td>Erlaubt, einen anderern Karren für Goldkosten einstellen.</td>
+-- <td>ja</td>
+-- </tr>
+-- <tr>
+-- <td>CostResourceCartType</td>
+-- <td>number</td>
+-- <td>Erlaubt, einen anderern Karren für Rohstoffbelohnungen einstellen.</td>
+-- <td>ja</td>
+-- </tr>
+-- <tr>
+-- <td>CostGoldCartType</td>
+-- <td>number</td>
+-- <td>Erlaubt, einen anderern Karren für Goldbelohnung einstellen.</td>
+-- <td>ja</td>
+-- </tr>
 -- </table>
 --
 -- @param[type=table] _Description Beschreibung
