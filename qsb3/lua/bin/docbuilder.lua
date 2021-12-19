@@ -60,7 +60,7 @@ function BinDocBuilder_GetBundleLinks()
 end
 
 function BinDocBuilder_CreateDocumentationIndexLink(_Name)
-    local fh = io.open("../tpl/index.panel.template.html", "rt");
+    local fh = io.open("../../tpl/index.panel.template.html", "rt");
     assert(fh, "File not found: index.panel.template.html");
     fh:seek("set", 0);
 
@@ -71,7 +71,7 @@ function BinDocBuilder_CreateDocumentationIndexLink(_Name)
 end
 
 function BinDocBuilder_LoadDocumentationIndexTemplate()
-    local fh = io.open("../tpl/index.template.html", "rb");
+    local fh = io.open("../../tpl/index.template.html", "rb");
     assert(fh, "File not found: index.template.html");
     fh:seek("set", 0);
     local Contents = fh:read("*all");

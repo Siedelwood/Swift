@@ -109,12 +109,12 @@ end
 
 function BinWriter_Write()
     local QsbContent = BinWriter_ConcatSources();
-    local fh = io.open("../var/qsb.lua", "rt");
+    local fh = io.open("../../var/qsb.lua", "rt");
     if fh ~= nil then
-        os.remove("../var/qsb.lua");
+        os.remove("../../var/qsb.lua");
         fh:close();
     end
-    local fh = io.open("../var/qsb.lua", "wt");
+    local fh = io.open("../../var/qsb.lua", "wt");
     assert(fh, "Output file can not be created!");
     print("write qsb to var");
     fh:write(QsbContent);
