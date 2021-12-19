@@ -22,12 +22,12 @@ You may use and modify this file unter the terms of the MIT licence.
 -- Die Farbe eines Markers kann auf 2 verschiedene Weisen bestimmt werden.
 -- <ol>
 -- <li>Durch die Spielerfarbe des "Besitzers" der Markierung.
--- <pre> API.CreateMinimapSignal(1, GetPosition("pos"));</pre>
+-- <pre> API.CreateMinimapSignal(1, 1, GetPosition("pos"));</pre>
 -- </li>
 -- <li>Durch Übergabe einer vordefinierten Farbe oder einer Farbtabelle
 -- <pre>
 -- API.CreateMinimapSignal(MarkerColor.Red, GetPosition("pos"));
--- API.CreateMinimapSignal({180, 180, 180, 255}, GetPosition("pos"));</pre>
+-- API.CreateMinimapSignal(1, {180, 180, 180, 255}, GetPosition("pos"));</pre>
 -- </li>
 -- </ol>
 --
@@ -49,7 +49,7 @@ You may use and modify this file unter the terms of the MIT licence.
 -- @field Yellow Sonnengelb
 -- @field Green Blattgrün
 --
--- @usage API.CreateMinimapSignal(MarkerColor.Red, GetPosition("pos"));
+-- @usage API.CreateMinimapSignal(1, MarkerColor.Red, GetPosition("pos"));
 --
 MarkerColor = {
     Blue    = { 17,   7, 216},
@@ -63,28 +63,16 @@ MarkerColor = {
 --
 -- <b>Hinweis</b>: Die Farbe richtet sich nach der Spielerfarbe!
 --
--- @param _PlayerIDOrColorTable PlayerID oder Farbtabelle (Spielernummer oder Farbtabelle)
--- @param _Position             Position des Markers (Skriptname, ID oder Position)
+-- @param[type=number] _PlayerID             Anzeige für Spieler
+-- @param              _PlayerIDOrColorTable PlayerID oder Farbtabelle (Spielernummer oder Farbtabelle)
+-- @param              _Position             Position des Markers (Skriptname, ID oder Position)
 -- @return[type=number] ID des Markers
 -- @within Anwenderfunktionen
 --
--- @usage API.CreateMinimapSignal(1, GetPosition("pos"));
+-- @usage API.CreateMinimapSignal(1, 1, GetPosition("pos"));
 --
-function API.CreateMinimapSignal(_PlayerIDOrColorTable, _Position)
+function API.CreateMinimapSignal(_PlayerID, _PlayerIDOrColorTable, _Position)
     if GUI then
-        local Color = _PlayerIDOrColorTable;
-        if type(_PlayerIDOrColorTable) == "table" then
-            Color = table.tostring(_PlayerIDOrColorTable);
-        end
-        local Position = _Position;
-        if type(_Position) == "table" then
-            Position = table.tostring(_Position);
-        end
-        Logic.ExecuteInLuaLocalState(string.format(
-            [[API.CreateMinimapSignal(%s, %s)]],
-            tostring(Color),
-            tostring(Position)
-        ))
         return;
     end
 
@@ -96,7 +84,7 @@ function API.CreateMinimapSignal(_PlayerIDOrColorTable, _Position)
         error("API.CreateMinimapSignal: Position is invalid!");
         return;
     end
-    return ModuleMinimap.Global:CreateMinimapMarker(_PlayerIDOrColorTable, Position.X, Position.Y, 7);
+    return ModuleMinimap.Global:CreateMinimapMarker(_PlayerID, _PlayerIDOrColorTable, Position.X, Position.Y, 7);
 end
 CreateMinimapSignal = API.CreateMinimapSignal;
 
@@ -105,14 +93,16 @@ CreateMinimapSignal = API.CreateMinimapSignal;
 --
 -- <b>Hinweis</b>: Die Farbe richtet sich nach der Spielerfarbe!
 --
--- @param _PlayerIDOrColorTable PlayerID oder Farbtabelle (Spielernummer oder Farbtabelle)
--- @param _Position             Position des Markers (Skriptname, ID oder Position)
+-- @param[type=number] _PlayerID             Anzeige für Spieler
+-- @param              _PlayerIDOrColorTable PlayerID oder Farbtabelle (Spielernummer oder Farbtabelle)
+-- @param              _Position             Position des Markers (Skriptname, ID oder Position)
 -- @return[type=number] ID des Markers
 -- @within Anwenderfunktionen
 --
--- @usage API.CreateMinimapMarker(1, GetPosition("pos"));
+-- @usage API.CreateMinimapMarker(1, 1, GetPosition("pos"));
 --
-function API.CreateMinimapMarker(_PlayerIDOrColorTable, _Position)
+function API.CreateMinimapMarker(_PlayerID, _PlayerIDOrColorTable, _Position)
+    -- API.CreateMinimapMarker(1, 2, Logic.GetMarketplace(1))
     if GUI then
         return;
     end
@@ -125,7 +115,7 @@ function API.CreateMinimapMarker(_PlayerIDOrColorTable, _Position)
         error("API.CreateMinimapMarker: Position is invalid!");
         return;
     end
-    return ModuleMinimap.Global:CreateMinimapMarker(_PlayerIDOrColorTable, Position.X, Position.Y, 6);
+    return ModuleMinimap.Global:CreateMinimapMarker(_PlayerID, _PlayerIDOrColorTable, Position.X, Position.Y, 6);
 end
 CreateMinimapMarker = API.CreateMinimapMarker;
 
@@ -134,14 +124,15 @@ CreateMinimapMarker = API.CreateMinimapMarker;
 --
 -- <b>Hinweis</b>: Die Farbe richtet sich nach der Spielerfarbe!
 --
--- @param _PlayerIDOrColorTable PlayerID oder Farbtabelle (Spielernummer oder Farbtabelle)
--- @param _Position             Position des Markers (Skriptname, ID oder Position)
+-- @param[type=number] _PlayerID             Anzeige für Spieler
+-- @param              _PlayerIDOrColorTable PlayerID oder Farbtabelle (Spielernummer oder Farbtabelle)
+-- @param              _Position             Position des Markers (Skriptname, ID oder Position)
 -- @return[type=number] ID des Markers
 -- @within Anwenderfunktionen
 --
--- @usage API.CreateMinimapPulse(1, GetPosition("pos"));
+-- @usage API.CreateMinimapPulse(1, 1, GetPosition("pos"));
 --
-function API.CreateMinimapPulse(_PlayerIDOrColorTable, _Position)
+function API.CreateMinimapPulse(_PlayerID, _PlayerIDOrColorTable, _Position)
     if GUI then
         return;
     end
@@ -154,7 +145,7 @@ function API.CreateMinimapPulse(_PlayerIDOrColorTable, _Position)
         error("API.CreateMinimapPulse: Position is invalid!");
         return;
     end
-    return ModuleMinimap.Global:CreateMinimapMarker(_PlayerIDOrColorTable, Position.X, Position.Y, 1);
+    return ModuleMinimap.Global:CreateMinimapMarker(_PlayerID, _PlayerIDOrColorTable, Position.X, Position.Y, 1);
 end
 CreateMinimapPulse = API.CreateMinimapPulse;
 

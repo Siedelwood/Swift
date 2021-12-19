@@ -37,10 +37,10 @@ function ModuleMinimap.Global:OnEvent(_ID, _Event, ...)
     end
 end
 
-function ModuleMinimap.Global:CreateMinimapMarker(_PlayerIDOrColorTable, _X, _Y, _Type)
+function ModuleMinimap.Global:CreateMinimapMarker(_PlayerID, _PlayerIDOrColorTable, _X, _Y, _Type)
     local ID = self.MarkerCounter;
     self.MarkerCounter = self.MarkerCounter +1;
-    self.CreatedMinimapMarkers[ID] = {_PlayerIDOrColorTable, _X, _Y, _Type};
+    self.CreatedMinimapMarkers[ID] = {_PlayerID, _PlayerIDOrColorTable, _X, _Y, _Type};
     self:ShowMinimapMarker(ID);
     return ID;
 end
@@ -56,12 +56,13 @@ end
 function ModuleMinimap.Global:ShowMinimapMarker(_ID)
     local Data = self.CreatedMinimapMarkers[_ID];
     Logic.ExecuteInLuaLocalState(string.format(
-        [[ModuleMinimap.Local:ShowMinimapMarker(%d, %s, %f, %f, %d)]],
+        [[ModuleMinimap.Local:ShowMinimapMarker(%d, %d, %s, %f, %f, %d)]],
         _ID,
-        (type(Data[1]) == "table" and table.tostring(Data[1])) or tostring(Data[1]),
-        Data[2],
+        Data[1],
+        (type(Data[2]) == "table" and table.tostring(Data[2])) or tostring(Data[2]),
         Data[3],
-        Data[4]
+        Data[4],
+        Data[5]
     ))
 end
 
@@ -70,7 +71,10 @@ end
 function ModuleMinimap.Local:OnGameStart()
 end
 
-function ModuleMinimap.Local:ShowMinimapMarker(_ID, _PlayerIDOrColorTable, _X, _Y, _Type)
+function ModuleMinimap.Local:ShowMinimapMarker(_ID, _PlayerID, _PlayerIDOrColorTable, _X, _Y, _Type)
+    if GUI.GetPlayerID() ~= _PlayerID then
+        return;
+    end
     local R, G, B, A = 0, 0, 0, 255;
     if type(_PlayerIDOrColorTable) == "number" then
         R, G, B = GUI.GetPlayerColor(_PlayerIDOrColorTable);
