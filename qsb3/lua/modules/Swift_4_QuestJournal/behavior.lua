@@ -1,5 +1,5 @@
 --[[
-Swift_2_ObjectInteraction/Behavior
+Swift_4_QuestJournal/Behavior
 
 Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
 

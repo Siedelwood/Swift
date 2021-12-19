@@ -75,6 +75,7 @@ BinLoader_ModuleFiles = {
     "Swift_4_InteractiveSites/api.lua",
     "Swift_4_Minimap/source.lua",
     "Swift_4_Minimap/api.lua",
+    "Swift_4_Minimap/behavior.lua",
     "Swift_4_QuestJournal/source.lua",
     "Swift_4_QuestJournal/api.lua",
     "Swift_4_QuestJournal/behavior.lua",
