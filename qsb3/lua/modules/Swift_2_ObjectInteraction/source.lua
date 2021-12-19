@@ -58,7 +58,7 @@ function ModuleObjectInteraction.Global:OnEvent(_ID, _Event, ...)
 end
 
 function ModuleObjectInteraction.Global:OnObjectInteraction(_ScriptName, _KnightID, _PlayerID)
-    QSB.IO.LastNpcEntityID = GetID(_ScriptName);
+    QSB.IO.LastObjectEntityID = GetID(_ScriptName);
     QSB.IO.LastHeroEntityID = _KnightID;
 
     if IO_SlaveToMaster[_ScriptName] then
@@ -332,7 +332,7 @@ end
 
 function ModuleObjectInteraction.Local:OnEvent(_ID, _Event, _ScriptName, _KnightID, _PlayerID)
     if _ID == QSB.ScriptEvents.ObjectInteraction then
-        QSB.IO.LastNpcEntityID = GetID(_ScriptName);
+        QSB.IO.LastObjectEntityID = GetID(_ScriptName);
         QSB.IO.LastHeroEntityID = _KnightID;
     end
 end

@@ -68,18 +68,12 @@ end
 
 function ModuleInputOutputCore.Global:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.ChatClosed then
-        if arg[1] == "restartmap" then
-            if Swift:IsProcessDebugCommands() then
-                Framework.RestartMap();
-            end
-        else
-            for i= 1, Quests[0], 1 do
-                if Quests[i].State == QuestState.Active and QSB.GoalInputDialogQuest == Quests[i].Identifier then
-                    for j= 1, #Quests[i].Objectives, 1 do
-                        if Quests[i].Objectives[j].Type == Objective.Custom2 then
-                            if Quests[i].Objectives[j].Data[1].Name == "Goal_InputDialog" then
-                                Quests[i].Objectives[j].Data[1].InputDialogResult = arg[1];
-                            end
+        for i= 1, Quests[0], 1 do
+            if Quests[i].State == QuestState.Active and QSB.GoalInputDialogQuest == Quests[i].Identifier then
+                for j= 1, #Quests[i].Objectives, 1 do
+                    if Quests[i].Objectives[j].Type == Objective.Custom2 then
+                        if Quests[i].Objectives[j].Data[1].Name == "Goal_InputDialog" then
+                            Quests[i].Objectives[j].Data[1].InputDialogResult = arg[1];
                         end
                     end
                 end
@@ -115,7 +109,9 @@ function ModuleInputOutputCore.Local:OnEvent(_ID, _Event, ...)
         self:DialogAltF4Hotkey();
     elseif _ID == QSB.ScriptEvents.ChatClosed then
         if Swift:IsProcessDebugCommands() then
-            if arg[1]:find("^>") then
+            if arg[1] == "restartmap" then
+                Framework.RestartMap();
+            elseif arg[1]:find("^>") then
                 GUI.SendScriptCommand(arg[1]:sub(3), true);
             elseif arg[1]:find("^>>") then
                 GUI.SendScriptCommand(arg[1]:sub(4), false);
