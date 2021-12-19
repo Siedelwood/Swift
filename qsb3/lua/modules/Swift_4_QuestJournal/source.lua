@@ -19,8 +19,8 @@ ModuleQuestJournal = {
     -- This is a shared structure but the values are asynchronous!
     Shared = {
         Text = {
-            Next  = {de = "Notizen anzeigen", en = "Show Notebook"},
-            Title = {de = "Notizbuch", en = "Journal"},
+            Next  = {de = "Tagebuch anzeigen", en = "Show Journal"},
+            Title = {de = "Tagebuch", en = "Journal"},
         },
     };
 };
