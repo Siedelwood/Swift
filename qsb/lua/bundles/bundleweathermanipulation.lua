@@ -143,7 +143,7 @@ function API.WeatherEventAbort()
     if GUI then
         return;
     end
-    GUI.SendScriptCommand("Display.StopAllEnvironmentSettingsSequences()");
+    Logic.ExecuteInLocalLuaState("Display.StopAllEnvironmentSettingsSequences()");
     BundleWeatherManipulation.Global:StopEvent();
 end
 
@@ -160,7 +160,7 @@ function API.WeatherEventPurge()
         return;
     end
     BundleWeatherManipulation.Global:PurgeAllEvents();
-    GUI.SendScriptCommand("Display.StopAllEnvironmentSettingsSequences()");
+    Logic.ExecuteInLocalLuaState("Display.StopAllEnvironmentSettingsSequences()");
     BundleWeatherManipulation.Global:StopEvent();
 end
 
