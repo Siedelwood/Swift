@@ -16,10 +16,20 @@ ModuleEntityEventCore = {
     Global = {
         RegisteredEntities = {},
         AttackedEntities = {},
+        RegisteredPredatorSpawner = {},
         DisableThiefStorehouseHeist = false,
         DisableThiefCathedralSabotage = false,
         DisableThiefCisternSabotage = false,
 
+        PredatorSpawnerTypes = {
+            "S_Bear",
+            "S_Bear_Black",
+            "S_BearBlack",
+            "S_LionPack_NA",
+            "S_PolarBear_NE",
+            "S_TigerPack_AS",
+            "S_WolfPack",
+        },
         SpawnerTypes = {
             "S_AxisDeer_AS",
             "S_Bear",
@@ -61,7 +71,10 @@ ModuleEntityEventCore = {
     },
     Local = {},
     -- This is a shared structure but the values are asynchronous!
-    Shared = {};
+    Shared = {
+        ReplacementEntityID = {},
+        HighestEntityID = 0,
+    };
 }
 
 -- Global ------------------------------------------------------------------- --
@@ -82,6 +95,12 @@ function ModuleEntityEventCore.Global:OnGameStart()
     self:StartTriggers();
     self:OverrideCallback();
     self:OverrideLogic();
+
+    for k, v in pairs(self.PredatorSpawnerTypes) do
+        self.RegisteredPredatorSpawner[v] = {};
+    end
+    local ID = Logic.CreateEntity(Entities.XD_ScriptEntity, 5, 5, 0, 0);
+    Logic.DestroyEntity(ID);
 end
 
 function ModuleEntityEventCore.Global:OnEvent(_ID, _Event, ...)
@@ -89,6 +108,8 @@ function ModuleEntityEventCore.Global:OnEvent(_ID, _Event, ...)
         self:OnSaveGameLoaded();
     elseif _ID == QSB.ScriptEvents.EntityHurt then
         self.AttackedEntities[arg[1]] = {arg[3], 100};
+    elseif _ID == QSB.ScriptEvents.EntityCreated then
+        ModuleEntityEventCore.Shared:SaveHighestEntity(arg[1]);
     end
 end
 
@@ -167,26 +188,26 @@ function ModuleEntityEventCore.Global:OverrideCallback()
     GameCallback_FarmAnimalChangedPlayerID_Orig_QSB_EntityCore = GameCallback_FarmAnimalChangedPlayerID;
     GameCallback_FarmAnimalChangedPlayerID = function(_PlayerID, _NewEntityID, _OldEntityID)
         GameCallback_FarmAnimalChangedPlayerID_Orig_QSB_EntityCore(_PlayerID, _NewEntityID, _OldEntityID);
-        ModuleEntityEventCore.Global.RegisteredEntities[_OldEntityID] = nil;
-        ModuleEntityEventCore.Global.RegisteredEntities[_NewEntityID] = true;
         local OldPlayerID = Logic.EntityGetPlayer(_OldEntityID);
         local NewPlayerID = Logic.EntityGetPlayer(_NewEntityID);
+        ModuleEntityEventCore.Global:UnregisterEntityAndTriggerEvent(_OldEntityID);
+        ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(_NewEntityID);
         ModuleEntityEventCore.Global:TriggerEntityOnwershipChangedEvent(_OldEntityID, OldPlayerID, _NewEntityID, NewPlayerID);
     end
 
     GameCallback_EntityCaptured_Orig_QSB_EntityCore = GameCallback_EntityCaptured;
     GameCallback_EntityCaptured = function(_OldEntityID, _OldEntityPlayerID, _NewEntityID, _NewEntityPlayerID)
         GameCallback_EntityCaptured_Orig_QSB_EntityCore(_OldEntityID, _OldEntityPlayerID, _NewEntityID, _NewEntityPlayerID)
-        ModuleEntityEventCore.Global.RegisteredEntities[_OldEntityID] = nil;
-        ModuleEntityEventCore.Global.RegisteredEntities[_NewEntityID] = true;
+        ModuleEntityEventCore.Global:UnregisterEntityAndTriggerEvent(_OldEntityID);
+        ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(_NewEntityID);
         ModuleEntityEventCore.Global:TriggerEntityOnwershipChangedEvent(_OldEntityID, _OldEntityPlayerID, _NewEntityID, _NewEntityPlayerID);
     end
 
     GameCallback_CartFreed_Orig_QSB_EntityCore = GameCallback_CartFreed;
     GameCallback_CartFreed = function(_OldEntityID, _OldEntityPlayerID, _NewEntityID, _NewEntityPlayerID)
         GameCallback_CartFreed_Orig_QSB_EntityCore(_OldEntityID, _OldEntityPlayerID, _NewEntityID, _NewEntityPlayerID);
-        ModuleEntityEventCore.Global.RegisteredEntities[_OldEntityID] = nil;
-        ModuleEntityEventCore.Global.RegisteredEntities[_NewEntityID] = true;
+        ModuleEntityEventCore.Global:UnregisterEntityAndTriggerEvent(_OldEntityID);
+        ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(_NewEntityID);
         ModuleEntityEventCore.Global:TriggerEntityOnwershipChangedEvent(_OldEntityID, _OldEntityPlayerID, _NewEntityID, _NewEntityPlayerID);
     end
 
@@ -209,7 +230,7 @@ function ModuleEntityEventCore.Global:OverrideCallback()
     end
 end
 
-function ModuleEntityEventCore.Global:OverrideLogic()
+function ModuleEntityEventCore.Global:OverrideLogic()    
     self.Logic_CreateConstructionSite = Logic.CreateConstructionSite;
     Logic.CreateConstructionSite = function(...)
         local ID = self.Logic_CreateConstructionSite(unpack(arg));
@@ -221,6 +242,7 @@ function ModuleEntityEventCore.Global:OverrideLogic()
     Logic.CreateEntity = function(...)
         local ID = self.Logic_CreateEntity(unpack(arg));
         ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(ID);
+        ModuleEntityEventCore.Global:RegisterPredatorSpawner(ID);
         return ID;
     end
 
@@ -228,6 +250,7 @@ function ModuleEntityEventCore.Global:OverrideLogic()
     Logic.CreateEntityOnUnblockedLand = function(...)
         local ID = self.Logic_CreateEntityOnUnblockedLand(unpack(arg));
         ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(ID);
+        ModuleEntityEventCore.Global:RegisterPredatorSpawner(ID);
         return ID;
     end
 
@@ -293,14 +316,12 @@ function ModuleEntityEventCore.Global:TriggerThiefStealFromBuildingEvent(_ThiefI
             GameCallback_OnThiefStealBuilding_Orig_QSB_EntityCore(_ThiefID, _ThiefPlayerID, _BuildingID, _BuildingPlayerID);
         end
     end
-
     -- Kirche sabotieren
     if CathedralID == _BuildingID then
         if not self.DisableThiefCathedralSabotage then
             GameCallback_OnThiefStealBuilding_Orig_QSB_EntityCore(_ThiefID, _ThiefPlayerID, _BuildingID, _BuildingPlayerID);
         end
     end
-
     -- Brunnen sabotieren
     if Framework.GetGameExtraNo() > 0 and BuildingType == Entities.B_Cistern then
         if not self.DisableThiefCisternSabotage then
@@ -373,6 +394,21 @@ function ModuleEntityEventCore.Global:StartTriggers()
     Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_DESTROYED, "", "ModuleEntityEventCore_Trigger_EntityDestroyed", 1);
 end
 
+function ModuleEntityEventCore.Global:GetAllEntitiesOfType(_Type)
+    local ResultList = {};
+    for i= 1, 8 do
+        local n,eID = Logic.GetPlayerEntities(i, _Type, 1);
+        if (n > 0) then
+            local firstEntity = eID;
+            repeat
+                table.insert(ResultList,eID)
+                eID = Logic.GetNextEntityOfPlayerOfType(eID);
+            until (firstEntity == eID);
+        end
+    end
+    return ResultList;
+end
+
 function ModuleEntityEventCore.Global:CheckOnNonTrackableEntities()
     -- Buildings
     for i= 1, 8 do
@@ -382,14 +418,42 @@ function ModuleEntityEventCore.Global:CheckOnNonTrackableEntities()
     end
 end
 
+function ModuleEntityEventCore.Global:RegisterPredatorSpawner(_ID)
+    local TypeName = Logic.GetEntityTypeName(Logic.GetEntityType(_ID));
+    if not table.contains(self.PredatorSpawnerTypes, TypeName) then
+        return;
+    end
+    table.insert(self.RegisteredPredatorSpawner[TypeName], _ID);
+end
+
 function ModuleEntityEventCore.Global:CheckOnSpawnerEntities()
     -- Get spawners
     local SpawnerEntities = {};
     for i= 1, #self.SpawnerTypes do
         if Entities[self.SpawnerTypes[i]] then
-            for k, v in pairs{Logic.GetEntities(Entities[self.SpawnerTypes[i]])} do
-                self:RegisterEntityAndTriggerEvent(v);
-                table.insert(SpawnerEntities, v);
+            if self.SpawnerTypes[i]:find("^B_") then
+                for k, v in pairs(self:GetAllEntitiesOfType(Entities[self.SpawnerTypes[i]])) do
+                    self:RegisterEntityAndTriggerEvent(v);
+                    table.insert(SpawnerEntities, v);
+                end
+            else
+                if table.contains(self.PredatorSpawnerTypes, self.SpawnerTypes[i]) then
+                    for k, v in pairs(self.RegisteredPredatorSpawner[self.SpawnerTypes[i]]) do
+                        if IsExisting(v) then
+                            self:RegisterEntityAndTriggerEvent(v);
+                            table.insert(SpawnerEntities, v);
+                        end
+                    end
+                else
+                    -- Es darf niemal mehr als 30 Spawner eines Typs geben!
+                    -- Diese Spawner können auch nicht gespeichert werden. Sobald
+                    -- sie aufgebraucht sind, werden sie gelöscht und vom Spiel neu
+                    -- gesetzt. Es gibt keinen Weg an die neue ID ranzukommen.
+                    for k, v in pairs{Logic.GetEntities(Entities[self.SpawnerTypes[i]], 65536)} do
+                        self:RegisterEntityAndTriggerEvent(v);
+                        table.insert(SpawnerEntities, v);
+                    end
+                end
             end
         end
     end
@@ -420,6 +484,9 @@ function ModuleEntityEventCore.Local:OnGameStart()
 end
 
 function ModuleEntityEventCore.Local:OnEvent(_ID, _Event, ...)
+    if _ID == QSB.ScriptEvents.EntityCreated then
+        ModuleEntityEventCore.Shared:SaveHighestEntity(arg[1]);
+    end
 end
 
 function ModuleEntityEventCore.Local:StartTriggers()
@@ -451,6 +518,25 @@ function ModuleEntityEventCore.Local:StartTriggers()
         ));
         API.SendScriptEvent(QSB.ScriptEvents.EntityResourceChanged, _MineID, _GoodType, _Amount);
     end
+end
+
+-- Shared ------------------------------------------------------------------- --
+
+function ModuleEntityEventCore.Shared:SaveHighestEntity(_ID)
+    if _ID > 131072 then
+		local OldID = (_ID - math.floor(_ID/65536)*65536) + 65536;
+		self.ReplacementEntityID[OldID] = _ID
+	else
+		self.HighestEntityID = _ID;
+	end
+end
+
+function ModuleEntityEventCore.Shared:GetHighestEntity()
+    return self.HighestEntityID;
+end
+
+function ModuleEntityEventCore.Shared:GetReplacementID(_ID)
+    return self.ReplacementEntityID[_ID];
 end
 
 -- -------------------------------------------------------------------------- --

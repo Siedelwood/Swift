@@ -94,3 +94,13 @@ function Mission_FirstMapAction()
         end
     end);
 end
+
+function SearchWithPredicateTest()
+    return API.CommenceEntitySearch(
+        {QSB.Search.OfPlayer, 1},
+        {QSB.Search.Or,
+         {QSB.Search.OfCategory, EntityCategories.CityBuilding},
+         {QSB.Search.OfCategory, EntityCategories.OuterRimBuilding}},
+        {QSB.Search.InTerritory, 1}
+    )
+end

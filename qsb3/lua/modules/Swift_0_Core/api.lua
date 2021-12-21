@@ -617,100 +617,6 @@ function API.IsHistoryEditionNetworkGame()
     return API.IsHistoryEdition() and Framework.IsNetworkGame();
 end
 
--- Debug
-
----
--- Aktiviert oder deaktiviert Optionen des Debug Mode.
---
--- <b>Hinweis:</b> Du kannst alle Optionen unbegrenzt oft beliebig ein-
--- und ausschalten.
---
--- @param[type=boolean] _CheckAtRun       Custom Behavior prüfen an/aus
--- @param[type=boolean] _TraceQuests      Quest Trace an/aus
--- @param[type=boolean] _DevelopingCheats Cheats an/aus
--- @param[type=boolean] _DevelopingShell  Eingabeaufforderung an/aus
--- @within Debug
---
-function API.ActivateDebugMode(_CheckAtRun, _TraceQuests, _DevelopingCheats, _DevelopingShell)
-    Swift:ActivateDebugMode(
-        _CheckAtRun == true,
-        _TraceQuests == true,
-        _DevelopingCheats == true,
-        _DevelopingShell == true
-    );
-end
-
----
--- Prüft, ob der Debug Behavior überprüfen darf.
---
--- <b>Hinweis:</b> Module müssen die Behandlung dieser Option selbst
--- inmpelentieren. Das Core Modul übernimmt diese Aufgabe nicht!
---
--- @return[type=boolean] Option Aktiv
--- @within Debug
---
-function API.IsDebugBehaviorCheckActive()
-    return Swift.m_CheckAtRun == true;
-end
-
----
--- Prüft, ob Quest Trace benutzt wird.
---
--- @return[type=boolean] Option Aktiv
--- @within Debug
---
-function API.IsDebugQuestTraceActive()
-    return Swift.m_TraceQuests == true;
-end
-
----
--- Prüft, ob die Cheats aktiviert sind.
---
--- @return[type=boolean] Option Aktiv
--- @within Debug
---
-function API.IsDebugCheatsActive()
-    return Swift.m_DevelopingCheats == true;
-end
-
----
--- Prüft, ob die Eingabeaufforderung aktiv ist.
---
--- <b>Hinweis:</b> Viele Kommandos müssen von Modulen implementiert werden.
--- Siehe die Doku dieser Module.
---
--- @return[type=boolean] Option Aktiv
--- @within Debug
---
-function API.IsDebugShellActive()
-    return Swift.m_DevelopingShell == true;
-end
-
----
--- Legt ein neues Script Event an.
---
--- @param[type=string]   _Name     Identifier des Event
--- @return[type=number] ID des neuen Script Event
--- @within Event
---
-function API.RegisterScriptEvent(_Name)
-    return Swift:CreateScriptEvent(_Name, nil);
-end
-
----
--- Sendet das Script Event mit der übergebenen ID und überträgt optional
--- Parameter.
---
--- @param[type=number] _ID ID des Event
--- @param              ... Optionale Parameter
--- @within Event
---
-function API.SendScriptEvent(_ID, ...)
-    Swift:DispatchScriptEvent(_ID, unpack(arg));
-end
-
--- Base API
-
 ---
 -- Speichert den Wert der Custom Variable im globalen und lokalen Skript.
 --
@@ -876,6 +782,98 @@ end
 
 function API.IsLoadscreenVisible()
     return Swift.m_LoadScreenHidden ~= true;
+end
+
+-- Debug
+
+---
+-- Aktiviert oder deaktiviert Optionen des Debug Mode.
+--
+-- <b>Hinweis:</b> Du kannst alle Optionen unbegrenzt oft beliebig ein-
+-- und ausschalten.
+--
+-- @param[type=boolean] _CheckAtRun       Custom Behavior prüfen an/aus
+-- @param[type=boolean] _TraceQuests      Quest Trace an/aus
+-- @param[type=boolean] _DevelopingCheats Cheats an/aus
+-- @param[type=boolean] _DevelopingShell  Eingabeaufforderung an/aus
+-- @within Debug
+--
+function API.ActivateDebugMode(_CheckAtRun, _TraceQuests, _DevelopingCheats, _DevelopingShell)
+    Swift:ActivateDebugMode(
+        _CheckAtRun == true,
+        _TraceQuests == true,
+        _DevelopingCheats == true,
+        _DevelopingShell == true
+    );
+end
+
+---
+-- Prüft, ob der Debug Behavior überprüfen darf.
+--
+-- <b>Hinweis:</b> Module müssen die Behandlung dieser Option selbst
+-- inmpelentieren. Das Core Modul übernimmt diese Aufgabe nicht!
+--
+-- @return[type=boolean] Option Aktiv
+-- @within Debug
+--
+function API.IsDebugBehaviorCheckActive()
+    return Swift.m_CheckAtRun == true;
+end
+
+---
+-- Prüft, ob Quest Trace benutzt wird.
+--
+-- @return[type=boolean] Option Aktiv
+-- @within Debug
+--
+function API.IsDebugQuestTraceActive()
+    return Swift.m_TraceQuests == true;
+end
+
+---
+-- Prüft, ob die Cheats aktiviert sind.
+--
+-- @return[type=boolean] Option Aktiv
+-- @within Debug
+--
+function API.IsDebugCheatsActive()
+    return Swift.m_DevelopingCheats == true;
+end
+
+---
+-- Prüft, ob die Eingabeaufforderung aktiv ist.
+--
+-- <b>Hinweis:</b> Viele Kommandos müssen von Modulen implementiert werden.
+-- Siehe die Doku dieser Module.
+--
+-- @return[type=boolean] Option Aktiv
+-- @within Debug
+--
+function API.IsDebugShellActive()
+    return Swift.m_DevelopingShell == true;
+end
+
+---
+-- Legt ein neues Script Event an.
+--
+-- @param[type=string]   _Name     Identifier des Event
+-- @return[type=number] ID des neuen Script Event
+-- @within Event
+--
+function API.RegisterScriptEvent(_Name)
+    return Swift:CreateScriptEvent(_Name, nil);
+end
+
+---
+-- Sendet das Script Event mit der übergebenen ID und überträgt optional
+-- Parameter.
+--
+-- @param[type=number] _ID ID des Event
+-- @param              ... Optionale Parameter
+-- @within Event
+--
+function API.SendScriptEvent(_ID, ...)
+    Swift:DispatchScriptEvent(_ID, unpack(arg));
 end
 
 -- Entity
@@ -1588,6 +1586,8 @@ function API.GroupHurt(_Entity, _Damage, _Attacker)
 end
 HurtEntity = API.GroupHurt;
 
+-- Object --
+
 ---
 -- Aktiviert ein Interaktives Objekt.
 --
@@ -1876,6 +1876,8 @@ function API.IsValidPosition(_pos)
 end
 IsValidPosition = API.IsValidPosition;
 
+-- Math --
+
 ---
 -- Berechnet den Faktor der linearen Interpolation.
 --
@@ -1892,6 +1894,8 @@ function API.LERP(_Start, _Current, _End)
     end
     return Factor;
 end
+
+-- Quest --
 
 ---
 -- Gibt die ID des Quests mit dem angegebenen Namen zurück. Existiert der

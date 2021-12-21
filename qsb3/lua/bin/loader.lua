@@ -33,6 +33,8 @@ BinLoader_ModuleFiles = {
     "Swift_2_ConstructionControl/api.lua",
     "Swift_2_DestructionControl/source.lua",
     "Swift_2_DestructionControl/api.lua",
+    "Swift_2_EntitySearch/source.lua",
+    "Swift_2_EntitySearch/api.lua",
     "Swift_2_KnightTitleRequirements/source.lua",
     "Swift_2_KnightTitleRequirements/api.lua",
     "Swift_2_KnightTitleRequirements/requirements.lua",
