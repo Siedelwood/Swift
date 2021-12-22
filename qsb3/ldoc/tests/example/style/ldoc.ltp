@@ -93,7 +93,7 @@
 
 #   if item.see then
 #     local li,il = use_li(item.see)
-    <h3>see also:</h3>
+    <h3>Verwandte Themen:</h3>
     <ul>
 #     for see in iter(item.see) do
          $(li)<a href="$(see.mod).html#$(see.name)">$(see.label)</a>$(il)

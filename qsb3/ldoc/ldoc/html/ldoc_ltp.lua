@@ -97,7 +97,7 @@ return [==[
 #   end
 #   if module.see then
 #     local li,il = use_li(module.see)
-    <h3>See also:</h3>
+    <h3>Verwandte Themen:</h3>
     <ul>
 #     for see in iter(module.see) do
          $(li)<a href="$(ldoc.href(see))">$(see.label)</a>$(il)
@@ -259,7 +259,7 @@ return [==[
 
 #   if item.see then
 #     local li,il = use_li(item.see)
-    <h3>See also:</h3>
+    <h3>Verwandte Themen:</h3>
     <ul>
 #     for see in iter(item.see) do
          $(li)<a href="$(ldoc.href(see))">$(see.label)</a>$(il)

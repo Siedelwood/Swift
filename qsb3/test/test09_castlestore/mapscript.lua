@@ -93,12 +93,24 @@ function Mission_FirstMapAction()
             return true;
         end
     end);
+
+    GameCallback_QSB_OnEventReceived = function(_EventID, ...)
+        if _EventID == QSB.ScriptEvents.EntityCreated then
+            local TypeID = Logic.GetEntityType(arg[1]);
+            local TypeName = Logic.GetEntityTypeName(TypeID);
+            API.Note("Create: " ..TypeName);
+        elseif _EventID == QSB.ScriptEvents.EntityDestroyed then
+            local TypeID = Logic.GetEntityType(arg[1]);
+            local TypeName = Logic.GetEntityTypeName(TypeID);
+            API.Note("Destroyed: " ..TypeName);
+        end
+    end
 end
 
 function SearchWithPredicateTest()
     return API.CommenceEntitySearch(
         {QSB.Search.OfPlayer, 1},
-        {QSB.Search.Or,
+        {QSB.Search.OR,
          {QSB.Search.OfCategory, EntityCategories.CityBuilding},
          {QSB.Search.OfCategory, EntityCategories.OuterRimBuilding}},
         {QSB.Search.InTerritory, 1}

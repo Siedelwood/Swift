@@ -16,20 +16,10 @@ ModuleEntityEventCore = {
     Global = {
         RegisteredEntities = {},
         AttackedEntities = {},
-        RegisteredPredatorSpawner = {},
         DisableThiefStorehouseHeist = false,
         DisableThiefCathedralSabotage = false,
         DisableThiefCisternSabotage = false,
 
-        PredatorSpawnerTypes = {
-            "S_Bear",
-            "S_Bear_Black",
-            "S_BearBlack",
-            "S_LionPack_NA",
-            "S_PolarBear_NE",
-            "S_TigerPack_AS",
-            "S_WolfPack",
-        },
         SpawnerTypes = {
             "S_AxisDeer_AS",
             "S_Bear",
@@ -96,9 +86,6 @@ function ModuleEntityEventCore.Global:OnGameStart()
     self:OverrideCallback();
     self:OverrideLogic();
 
-    for k, v in pairs(self.PredatorSpawnerTypes) do
-        self.RegisteredPredatorSpawner[v] = {};
-    end
     local ID = Logic.CreateEntity(Entities.XD_ScriptEntity, 5, 5, 0, 0);
     Logic.DestroyEntity(ID);
 end
@@ -242,7 +229,6 @@ function ModuleEntityEventCore.Global:OverrideLogic()
     Logic.CreateEntity = function(...)
         local ID = self.Logic_CreateEntity(unpack(arg));
         ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(ID);
-        ModuleEntityEventCore.Global:RegisterPredatorSpawner(ID);
         return ID;
     end
 
@@ -250,7 +236,6 @@ function ModuleEntityEventCore.Global:OverrideLogic()
     Logic.CreateEntityOnUnblockedLand = function(...)
         local ID = self.Logic_CreateEntityOnUnblockedLand(unpack(arg));
         ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(ID);
-        ModuleEntityEventCore.Global:RegisterPredatorSpawner(ID);
         return ID;
     end
 
@@ -416,14 +401,15 @@ function ModuleEntityEventCore.Global:CheckOnNonTrackableEntities()
             self:RegisterEntityAndTriggerEvent(v);
         end
     end
-end
-
-function ModuleEntityEventCore.Global:RegisterPredatorSpawner(_ID)
-    local TypeName = Logic.GetEntityTypeName(Logic.GetEntityType(_ID));
-    if not table.contains(self.PredatorSpawnerTypes, TypeName) then
-        return;
+    -- Ambiend and Resources
+    for k, v in pairs(Entities) do
+        if string.find(k, "^A_") or string.find(k, "^R_") then
+            local FoundEntities = Logic.GetEntitiesOfType(v);
+            for i= 1, #FoundEntities do
+                self:RegisterEntityAndTriggerEvent(FoundEntities[i]);
+            end
+        end
     end
-    table.insert(self.RegisteredPredatorSpawner[TypeName], _ID);
 end
 
 function ModuleEntityEventCore.Global:CheckOnSpawnerEntities()
@@ -431,29 +417,9 @@ function ModuleEntityEventCore.Global:CheckOnSpawnerEntities()
     local SpawnerEntities = {};
     for i= 1, #self.SpawnerTypes do
         if Entities[self.SpawnerTypes[i]] then
-            if self.SpawnerTypes[i]:find("^B_") then
-                for k, v in pairs(self:GetAllEntitiesOfType(Entities[self.SpawnerTypes[i]])) do
-                    self:RegisterEntityAndTriggerEvent(v);
-                    table.insert(SpawnerEntities, v);
-                end
-            else
-                if table.contains(self.PredatorSpawnerTypes, self.SpawnerTypes[i]) then
-                    for k, v in pairs(self.RegisteredPredatorSpawner[self.SpawnerTypes[i]]) do
-                        if IsExisting(v) then
-                            self:RegisterEntityAndTriggerEvent(v);
-                            table.insert(SpawnerEntities, v);
-                        end
-                    end
-                else
-                    -- Es darf niemal mehr als 30 Spawner eines Typs geben!
-                    -- Diese Spawner können auch nicht gespeichert werden. Sobald
-                    -- sie aufgebraucht sind, werden sie gelöscht und vom Spiel neu
-                    -- gesetzt. Es gibt keinen Weg an die neue ID ranzukommen.
-                    for k, v in pairs{Logic.GetEntities(Entities[self.SpawnerTypes[i]], 65536)} do
-                        self:RegisterEntityAndTriggerEvent(v);
-                        table.insert(SpawnerEntities, v);
-                    end
-                end
+            for k, v in pairs(Logic.GetEntitiesOfType(Entities[self.SpawnerTypes[i]])) do
+                self:RegisterEntityAndTriggerEvent(v);
+                table.insert(SpawnerEntities, v);
             end
         end
     end

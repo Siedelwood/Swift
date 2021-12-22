@@ -21,17 +21,6 @@ You may use and modify this file unter the terms of the MIT licence.
 -- Dabei gibt es Prädikate, welche schneller als andere abgearbeitet werden.
 -- Die Reihenfolge, in der sie gelistet werden, ist also wichtig.
 --
--- <h5>Probleme</h5>
--- Aufgrund des Fehlens eines richtigen Entity Created Triggers gibt es nur den
--- nachgebauten. Dieser kann einige Entities nicht erfassen.
---
--- Bekannte Probleme:
--- <ul>
--- <li>Kräuter, wenn es mehr als 30 Kräuterresourcen gibt</li>
--- <li>Beutetiere, wenn es mehr als 30 Resourcen des Typs gibt</li>
--- <li>Tierkadaver, wenn ein Tier erlegt oder gerissen wird</li>
--- </ul>
---
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
 -- <li><a href="Swift_0_Core.api.html">(0) Core</a></li>
@@ -39,7 +28,7 @@ You may use and modify this file unter the terms of the MIT licence.
 -- </ul>
 --
 -- @within Beschreibung
--- @set sort=true
+-- @set sort=false
 --
 
 ---
@@ -59,33 +48,11 @@ You may use and modify this file unter the terms of the MIT licence.
 -- @field AND (...) - Alle Prädikate müssen wahr sein.
 -- @field OR (...) - Mindestes ein Prädikat mus wahr sein
 --
+-- @see API.CommenceEntitySearch
+--
 QSB.Search = QSB.Search or {};
 
 -- -------------------------------------------------------------------------- --
-
----
--- Führt eine benutzerdefinierte Suche nach Entities aus.
---
--- <b>Achtung</b>: Die Reihenfolge der angewandten Predikate hat maßgeblichen
--- Einfluss auf die Dauer der Suche. Während Abfragen auf den Besitzer oder
--- den Typ schnell gehen, dauern Gebietssuchen lange! Es ist daher klug, zuerst
--- Kriterien auszuschließen, die schnell bestimmt werden!
---
--- @param[type=table] ... Liste mit Suchprädikaten
--- @return[type=table] Liste mit Ergebnissen
---
--- @usage
--- local Result = API.CommenceEntitySearch(
---     {QSB.Search.OfPlayer, 1},
---     {QSB.Search.OR,
---      {QSB.Search.OfCategory, EntityCategories.SheepPasture},
---      {QSB.Search.OfCategory, EntityCategories.CattlePasture}},
---     {QSB.Search.InTerritory, 15}
--- );
---
-function API.CommenceEntitySearch(...)
-    return ModuleEntitySearch.Shared:IterateEntities(arg);
-end
 
 ---
 -- Findet <u>alle</u> Entities.
@@ -94,6 +61,8 @@ end
 --
 -- @param[type=number] _PlayerID (Optional) ID des Besitzers
 -- @return[type=table] Liste mit Ergebnissen
+-- @within Anwenderfunktionen
+-- @see API.CommenceEntitySearch
 --
 -- @usage
 -- -- ALLE Entities
@@ -119,6 +88,8 @@ end
 -- @param[type=number] _Type     (Optional) Typ des Entity
 -- @param[type=number] _Category (Optional) Category des Entity
 -- @return[type=table] Liste mit Ergebnissen
+-- @within Anwenderfunktionen
+-- @see API.CommenceEntitySearch
 --
 -- @usage
 -- local Result = API.SearchEntitiesInArea(5000, "Busches", 0, Entities.R_HerbBush);
@@ -151,6 +122,8 @@ end
 -- @param[type=number] _Type      (Optional) Typ des Entity
 -- @param[type=number] _Category  (Optional) Category des Entity
 -- @return[type=table] Liste mit Ergebnissen
+-- @within Anwenderfunktionen
+-- @see API.CommenceEntitySearch
 --
 -- @usage
 -- local Result = API.SearchEntitiesInTerritory(7, 0, Entities.R_HerbBush);
@@ -169,5 +142,31 @@ function API.SearchEntitiesInTerritory(_Territory, _PlayerID, _Type, _Category)
         table.insert(Predicates, {QSB.Search.OfPlayer, _PlayerID});
     end
     return API.CommenceEntitySearch(unpack(Predicates));
+end
+
+---
+-- Führt eine benutzerdefinierte Suche nach Entities aus.
+--
+-- <b>Achtung</b>: Die Reihenfolge der angewandten Predikate hat maßgeblichen
+-- Einfluss auf die Dauer der Suche. Während Abfragen auf den Besitzer oder
+-- den Typ schnell gehen, dauern Gebietssuchen lange! Es ist daher klug, zuerst
+-- Kriterien auszuschließen, die schnell bestimmt werden!
+--
+-- @param[type=table] ... Liste mit Suchprädikaten
+-- @return[type=table] Liste mit Ergebnissen
+-- @within Anwenderfunktionen
+-- @see QSB.Search
+--
+-- @usage
+-- local Result = API.CommenceEntitySearch(
+--     {QSB.Search.OfPlayer, 1},
+--     {QSB.Search.OR,
+--      {QSB.Search.OfCategory, EntityCategories.SheepPasture},
+--      {QSB.Search.OfCategory, EntityCategories.CattlePasture}},
+--     {QSB.Search.InTerritory, 15}
+-- );
+--
+function API.CommenceEntitySearch(...)
+    return ModuleEntitySearch.Shared:IterateEntities(arg);
 end
 
