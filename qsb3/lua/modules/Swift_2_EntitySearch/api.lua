@@ -43,10 +43,12 @@ You may use and modify this file unter the terms of the MIT licence.
 -- @field InArea (_X, _Y, _AreaSize) - Schränkt auf Entities im Gebiet ein.
 -- @field InTerritory (_Territory) - Schränkt auf Entities im Territorium.
 --
--- @field ANY () - Immer wahr
--- @field NOT (_Predicate) - Negiert das Ergebnis des Prädikat.
--- @field AND (...) - Alle Prädikate müssen wahr sein.
--- @field OR (...) - Mindestes ein Prädikat mus wahr sein
+-- Predikate können verknüpft werden über Operatoren.
+-- <ul>
+-- <li>NOT (_Predicate) - Negiert das Ergebnis des Prädikat.</li>
+-- <li>ALL (...) - Alle Prädikate müssen wahr sein.</li>
+-- <li>ANY (...) - Mindestes ein Prädikat mus wahr sein</li>
+-- </ul>
 --
 -- @see API.CommenceEntitySearch
 --
@@ -158,12 +160,19 @@ end
 -- @see QSB.Search
 --
 -- @usage
+-- -- Es werden alle Kühe und Schafe von Spieler 1 gefunden, die nicht auf den
+-- -- Territorien 7 und 15 sind.
 -- local Result = API.CommenceEntitySearch(
+--     -- Nur Entities von Spieler 1 akzeptieren
 --     {QSB.Search.OfPlayer, 1},
---     {QSB.Search.OR,
+--     -- Nur Entities akzeptieren, die Kühe oder Schafe sind.
+--     {ANY,
 --      {QSB.Search.OfCategory, EntityCategories.SheepPasture},
 --      {QSB.Search.OfCategory, EntityCategories.CattlePasture}},
---     {QSB.Search.InTerritory, 15}
+--     -- Nur Entities akzeptieren, die nicht auf den Territorien 7 und 15 sind.
+--     {ALL,
+--      {NOT, {QSB.Search.InTerritory, 15}},
+--      {NOT, {QSB.Search.InTerritory, 7}}}
 -- );
 --
 function API.CommenceEntitySearch(...)

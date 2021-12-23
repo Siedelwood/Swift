@@ -110,7 +110,7 @@ end
 function SearchWithPredicateTest()
     return API.CommenceEntitySearch(
         {QSB.Search.OfPlayer, 1},
-        {QSB.Search.OR,
+        {ANY,
          {QSB.Search.OfCategory, EntityCategories.CityBuilding},
          {QSB.Search.OfCategory, EntityCategories.OuterRimBuilding}},
         {QSB.Search.InTerritory, 1}

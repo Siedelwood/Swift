@@ -78,17 +78,13 @@ end
 
 QSB.Search = {};
 
-QSB.Search.ANY = function(_ID)
-    return true;
-end
-
-QSB.Search.NOT = function(_ID, _Predicate)
+NOT = function(_ID, _Predicate)
     local Predicate = table.copy(_Predicate);
     local Function = table.remove(Predicate, 1);
     return not Function(_ID, unpack(Predicate));
 end
 
-QSB.Search.AND = function(_ID, ...)
+ALL = function(_ID, ...)
     local Predicates = table.copy(arg);
     for i= 1, #Predicates do
         local Predicate = table.remove(Predicates[i], 1);
@@ -99,7 +95,7 @@ QSB.Search.AND = function(_ID, ...)
     return true;
 end
 
-QSB.Search.OR = function(_ID, ...)
+ANY = function(_ID, ...)
     local Predicates = table.copy(arg);
     for i= 1, #Predicates do
         local Predicate = table.remove(Predicates[i], 1);
