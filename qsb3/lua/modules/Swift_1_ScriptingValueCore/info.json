@@ -1,6 +1,7 @@
 {
     "name": "Swift_1_ScriptingValueCore",
     "version": "1.0.0",
+    "mandatory": false,
     "caption": "(1) Scripting Value Core",
     "shortdesc": "Ermöglicht die Manipulation von Scripting Values.",
     "description": "",

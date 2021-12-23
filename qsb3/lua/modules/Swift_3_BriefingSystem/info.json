@@ -1,6 +1,7 @@
 {
     "name": "Swift_3_BriefingSystem",
     "version": "1.0.0",
+    "mandatory": false,
     "caption": "(3) Briefing System",
     "shortdesc": "Ermöglicht es Briefing zu verwenden.",
     "description": "",

@@ -1,6 +1,7 @@
 {
     "name": "Swift_2_DestructionControl",
     "version": "1.0.0",
+    "mandatory": false,
     "caption": "(2) Destruction Control",
     "shortdesc": "Ermöglicht den Abriss von Gebäuden anhand von Kriterien zu verhindern.",
     "description": "",

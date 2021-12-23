@@ -1,6 +1,7 @@
 {
     "name": "Swift_4_Typewriter",
     "version": "1.0.0",
+    "mandatory": false,
     "caption": "(4) Typewriter",
     "shortdesc": "Ermöglicht die Anzeige von Text mit einem Schreibmaschineneffekt.",
     "description": "",

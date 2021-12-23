@@ -1,6 +1,7 @@
 {
     "name": "Swift_3_ShipSalesman",
     "version": "1.0.0",
+    "mandatory": false,
     "caption": "(3) Ship Salesman",
     "shortdesc": "",
     "description": "",

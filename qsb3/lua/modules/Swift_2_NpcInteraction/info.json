@@ -1,6 +1,7 @@
 {
     "name": "Swift_2_NpInteraction",
     "version": "1.0.0",
+    "mandatory": false,
     "caption": "(2) NPC Interaction",
     "shortdesc": "Ermöglicht die Interaktion mit Siedlern (NPCs).",
     "description": "",

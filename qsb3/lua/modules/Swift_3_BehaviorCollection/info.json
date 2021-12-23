@@ -1,6 +1,7 @@
 {
     "name": "Swift_3_BehaviorCollection",
     "version": "1.0.0",
+    "mandatory": false,
     "caption": "(3) Behavior Collection",
     "shortdesc": "Fügt weitere Behavior hinzu.",
     "description": "",

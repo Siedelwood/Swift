@@ -1,6 +1,7 @@
 {
     "name": "Swift_4_InteractiveSites",
     "version": "1.0.0",
+    "mandatory": false,
     "caption": "(4) Interactive Sites",
     "shortdesc": "Es können interaktive Baustellen gesetzt werden.",
     "description": "",

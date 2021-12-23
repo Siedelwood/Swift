@@ -1,6 +1,7 @@
 {
     "name": "Swift_2_WeatherManipulation",
     "version": "1.0.0",
+    "mandatory": false,
     "caption": "(2) Weather Manipulation",
     "shortdesc": "Dieses Modul ermöglicht das Ändern des Wetters.",
     "description": "",

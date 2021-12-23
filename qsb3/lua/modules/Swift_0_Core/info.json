@@ -1,6 +1,7 @@
 {
     "name": "Swift_0_Core",
     "version": "1.0.0",
+    "mandatory": true,
     "caption": "(0) Core",
     "shortdesc": "Stellt wichtige Kernfunktionen bereit.",
     "description": "",

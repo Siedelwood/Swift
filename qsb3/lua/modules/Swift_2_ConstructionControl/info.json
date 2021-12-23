@@ -1,6 +1,7 @@
 {
     "name": "Swift_2_ConstructionControl",
     "version": "1.0.0",
+    "mandatory": false,
     "caption": "(2) Construction Control",
     "shortdesc": "Ermöglicht den Bau von Gebäuden anhand von Kriterien zu verhindern.",
     "description": "",

@@ -1,6 +1,7 @@
 {
     "name": "Swift_1_SoundCore",
     "version": "1.0.0",
+    "mandatory": false,
     "caption": "(1) Sound Core",
     "shortdesc": "Ermöglicht Lautstärke zu regeln und Musik abzuspielen.",
     "description": "",

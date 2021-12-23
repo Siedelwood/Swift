@@ -1,6 +1,7 @@
 {
     "name": "Swift_3_CutsceneSystem",
     "version": "1.0.0",
+    "mandatory": false,
     "caption": "(3) Cutscene System",
     "shortdesc": "Ermöglicht es Cutscene zu verwenden.",
     "description": "",

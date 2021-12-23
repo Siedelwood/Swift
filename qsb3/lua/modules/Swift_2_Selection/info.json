@@ -1,6 +1,7 @@
 {
     "name": "Swift_2_Selection",
     "version": "1.0.0",
+    "mandatory": false,
     "caption": "(2) Selection",
     "shortdesc": "Erweitert die Selektion von Einheiten und bietet weitere Optionen an.",
     "description": "",

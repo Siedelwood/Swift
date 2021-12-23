@@ -1,6 +1,7 @@
 {
     "name": "Swift_1_InterfaceCore",
     "version": "1.0.0",
+    "mandatory": false,
     "caption": "(1) Interface Core",
     "shortdesc": "Fügt Basisfunktionen zur Gestaltung des Interface hinzu.",
     "description": "",

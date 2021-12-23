@@ -1,6 +1,7 @@
 {
     "name": "Swift_4_GraphVizExport",
     "version": "1.0.0",
+    "mandatory": false,
     "caption": "(4) GraphViz Export",
     "shortdesc": "Ermöglicht es die erstellten Quests als Diagramm darzustellen.",
     "description": "",

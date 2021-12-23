@@ -1,6 +1,7 @@
 {
     "name": "Swift_1_JobsCore",
     "version": "1.0.0",
+    "mandatory": false,
     "caption": "(1) Jobs Core",
     "shortdesc": "Dieses Modul erweitert die standardmäßig vorhandenen Jobs.",
     "description": "",

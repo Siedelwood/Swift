@@ -1,6 +1,7 @@
 {
     "name": "Swift_2_EntitySearch",
     "version": "1.0.0",
+    "mandatory": false,
     "caption": "(2) Entity Search",
     "shortdesc": "Stellt eine bessere Suche nach Entities bereit.",
     "description": "",

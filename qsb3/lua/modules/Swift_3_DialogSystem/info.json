@@ -1,6 +1,7 @@
 {
     "name": "Swift_3_DialogSystem",
     "version": "1.0.0",
+    "mandatory": false,
     "caption": "(3) Dialog System",
     "shortdesc": "Ermöglicht es Dialoge zu verwenden.",
     "description": "",

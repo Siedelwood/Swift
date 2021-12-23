@@ -1,6 +1,7 @@
 {
     "name": "Swift_1_EntityEventCore",
     "version": "1.0.0",
+    "mandatory": false,
     "caption": "(1) Entity Event Core",
     "shortdesc": "Ermöglicht das einfache Reagieren auf Ereignisse die Entities betreffen.",
     "description": "",
