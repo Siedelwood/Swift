@@ -40,10 +40,10 @@ cp -r ../doc qsb
 mkdir -p qsb/src/modules
 cp -r ../lua/modules/* qsb/src/modules
 zip -r -o qsb/* qsb/src/* qsb/doc/* &>/dev/null
-rm -rf qsb/doc
+#rm -rf qsb/doc
 rm -rf qsb/src
-rm qsb/localmapscript.lua
-rm qsb/mapscript.lua
+#rm qsb/localmapscript.lua
+#rm qsb/mapscript.lua
 mv qsb/doc.zip qsb.zip
 echo "done!"
 
