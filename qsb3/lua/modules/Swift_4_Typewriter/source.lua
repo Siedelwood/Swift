@@ -12,11 +12,13 @@ ModuleTypewriter = {
     Properties = {
         Name = "ModuleTypewriter",
     },
-    
-    Global = {},
-    Local = {
-        
+
+    Global = {
+        TypewriterEventData = {},
+        TypewriterEventQueue = {},
+        TypewriterEventCounter = 0,
     },
+    Local = {},
     -- This is a shared structure but the values are asynchronous!
     Shared = {};
 }
@@ -24,181 +26,96 @@ ModuleTypewriter = {
 -- Global Script ---------------------------------------------------------------
 
 function ModuleTypewriter.Global:OnGameStart()
-end
+    QSB.ScriptEvents.TypewriterStarted = API.RegisterScriptEvent("Event_TypewriterStarted");
+    QSB.ScriptEvents.TypewriterEnded = API.RegisterScriptEvent("Event_TypewriterEnded");
 
--- Local Script ----------------------------------------------------------------
-
-function ModuleTypewriter.Local:OnGameStart()
-    QSB.SimpleTypewriterCounter = nil;
-    QSB.SimpleTypewriter = nil;
-end
-
--- Typewriter class ------------------------------------------------------------
-
-QSB.SimpleTypewriterCounter = 0;
-
-QSB.SimpleTypewriter = {
-    m_Tokens      = {},
-    m_Delay       = 15,
-    m_Waittime    = 80,
-    m_TokenOffset = 1,
-    m_Color       = {R= 0, G= 0, B= 0, A = 255},
-    m_Index       = 0,
-    m_Position    = nil,
-    m_Text        = nil,
-    m_JobID       = nil,
-    m_Callback    = nil,
-};
-
----
--- Erzeugt eine Neue Instanz der Schreibmaschinenschrift.
--- @param[type=string]   _Text     Anzuzeigender Text
--- @param[type=function] _Callback Funktion, die am Ende ausgeführt wird
--- @return[type=table] Neue Instanz
--- @within QSB.SimpleTypewriter
--- @local
---
-function QSB.SimpleTypewriter:New(_Data)
-    local typewriter = table.copy(self);
-    typewriter.m_Text = API.ConvertPlaceholders(API.Localize(_Data.Text));
-    return typewriter;
-end
-
----
--- Setzt das Callback, welches am Ende der Anzeige aufgerufen wird.
--- @param[type=function] _Callback Funktion, die am Ende ausgeführt wird
--- @within QSB.SimpleTypewriter
--- @local
---
-function QSB.SimpleTypewriter:SetCallback(_Callback)
-    self.m_Callback = _Callback;
-    return self;
-end
-
----
--- Setzt das Entity auf das die Kamera fixiert wird.
--- @param _Position Skriptname oder ID
--- @within QSB.SimpleTypewriter
--- @local
---
-function QSB.SimpleTypewriter:SetPosition(_Position)
-    self.m_Position = _Position;
-    return self;
-end
-
----
--- Legt fest, wie transparent der Hintergund dargestellt wird.
--- @param[type=number] _Opacity Transparenz des Hintergrund
--- @within QSB.SimpleTypewriter
--- @local
---
-function QSB.SimpleTypewriter:SetOpacity(_Opacity)
-    self.m_Color.A = 255 * _Opacity;
-    return self;
-end
-
----
--- Legt fest, welche Farbe der Hindergrund hat.
--- @param[type=number] _Red   Rotwert des Hintergrund
--- @param[type=number] _Green Grünwert des Hintergrund
--- @param[type=number] _Blue  Blauwert des Hintergrund
--- @within QSB.SimpleTypewriter
--- @local
---
-function QSB.SimpleTypewriter:SetColor(_Red, _Green, _Blue)
-    self.m_Color.R = _Red;
-    self.m_Color.G = _Green;
-    self.m_Color.B = _Blue;
-    return self;
-end
-
----
--- Stellt ein, wie viele Zeichen in einer Interation angezeigt werden.
--- @param[type=number] _Speed Anzahl an Zeichen pro 1/10 Sekunde
--- @within QSB.SimpleTypewriter
--- @local
---
-function QSB.SimpleTypewriter:SetSpeed(_Speed)
-    self.m_TokenOffset = _Speed;
-    return self;
-end
-
----
--- Stellt ein, wie lange nach Ausgabe des letzten Zeichens gewartet wird, bis
--- die Schreibmaschine endet.
--- @param[type=number] _Waittime Zeit in 1/10 Sekunden (8 Sekunden = 80)
--- @within QSB.SimpleTypewriter
--- @local
---
-function QSB.SimpleTypewriter:SetWaittime(_Waittime)
-    self.m_Waittime = _Waittime;
-    return self;
-end
-
----
--- Startet die Laufschrift. Wenn ein Efekt im Kinomodus aktiv ist, oder die
--- Map noch nicht geladen ist, wird gewartet.
--- @within QSB.SimpleTypewriter
--- @local
---
-function QSB.SimpleTypewriter:Start()
-    if self:CanBePlayed() then
-        self:Play();
-        return;
+    for i= 1, 8 do
+        self.TypewriterEventQueue[i] = {};
     end
-    StartSimpleHiResJobEx(self.WaitForSceneToBeReady, self);
-end
-
----
--- Spielt die Schreibmaschine ab.
--- @within QSB.SimpleTypewriter
--- @local
---
-function QSB.SimpleTypewriter:Play()
-    QSB.SimpleTypewriterCounter = QSB.SimpleTypewriterCounter +1;
-    local Name = "CinmaticEventTypewriter" ..QSB.SimpleTypewriterCounter;
-    self.m_CinematicEventName = Name;
-    API.StartCinematicEvent(Name, QSB.HumanPlayerID);
-    API.ActivateColoredScreen(self.m_Color.R, self.m_Color.G, self.m_Color.B, self.m_Color.A);
-    API.DeactivateNormalInterface();
-    API.DeactivateBorderScroll(self.m_Position);
-    self.m_InitialWaittime = self.m_Delay;
-    self:TokenizeText();
-    Logic.ExecuteInLuaLocalState([[
-        Input.CutsceneMode()
-        GUI.ClearNotes()
-    ]]);
-    self.m_JobID = StartSimpleHiResJobEx(function()
-        self:ControllerJob();
+    StartSimpleHiResJobEx(function()
+        ModuleTypewriter.Global:ControlTypewriter();
     end);
 end
 
----
--- Stoppt eine aktive Schreibmaschine.
--- @within QSB.SimpleTypewriter
--- @local
---
-function QSB.SimpleTypewriter:Stop()
-    API.FinishCinematicEvent(self.m_CinematicEventName, QSB.HumanPlayerID);
-    API.DeactivateColoredScreen();
-    API.ActivateNormalInterface();
-    API.ActivateBorderScroll();
-    Logic.ExecuteInLuaLocalState([[
-        Input.GameMode()
-        GUI.ClearNotes()
-    ]]);
-    EndJob(self.m_JobID);
+function ModuleTypewriter.Global:StartTypewriter(_Data)
+    self.TypewriterEventCounter = self.TypewriterEventCounter +1;
+    local EventName = "CinematicEvent_Typewriter" ..self.TypewriterEventCounter;
+    _Data.Name = EventName;
+    if API.IsLoadscreenVisible() or API.IsCinematicEventActive(_Data.PlayerID) then
+        table.insert(self.TypewriterEventQueue[_Data.PlayerID], _Data);
+        return _Data.Name;
+    end
+    return self:PlayTypewriter(_Data);
 end
 
----
--- Spaltet den Text in Tokens auf und speichert die Tokens für die Wiedergabe.
--- @within QSB.SimpleTypewriter
--- @local
---
-function QSB.SimpleTypewriter:TokenizeText()
-    self.m_Text = self.m_Text:gsub("%s+", " ");
+function ModuleTypewriter.Global:PlayTypewriter(_Data)
+    local ID = API.StartCinematicEvent(_Data.Name, _Data.PlayerID);
+    _Data.ID = ID;
+    _Data.TextTokens = self:TokenizeText(_Data);
+    self.TypewriterEventData[_Data.PlayerID] = _Data;
+    Logic.ExecuteInLuaLocalState(string.format(
+        [[
+        if GUI.GetPlayerID() == %d then
+            API.ActivateColoredScreen(%d, %d, %d, %d);
+            API.DeactivateNormalInterface();
+            API.DeactivateBorderScroll(%d);
+            Input.CutsceneMode()
+            GUI.ClearNotes()
+        end
+        ]],
+        _Data.PlayerID,
+        _Data.Color.R,
+        _Data.Color.G,
+        _Data.Color.B,
+        _Data.Color.A,
+        _Data.TargetEntity
+    ));
+
+    API.SendScriptEvent(QSB.ScriptEvents.TypewriterStarted, _Data.PlayerID, _Data);
+    Logic.ExecuteInLuaLocalState(string.format(
+        [[API.SendScriptEvent(%d, %d, %s)]],
+        QSB.ScriptEvents.TypewriterStarted,
+        _Data.PlayerID,
+        table.tostring(_Data)
+    ));
+    return _Data.Name;
+end
+
+function ModuleTypewriter.Global:FinishTypewriter(_PlayerID)
+    if self.TypewriterEventData[_PlayerID] then
+        local EventData = table.copy(self.TypewriterEventData[_PlayerID]);
+        local EventPlayer = self.TypewriterEventData[_PlayerID].PlayerID;
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[
+            if GUI.GetPlayerID() == %d then
+                API.DeactivateColoredScreen()
+                API.ActivateNormalInterface()
+                API.ActivateBorderScroll()
+                Input.GameMode()
+                GUI.ClearNotes()
+            end
+            ]],
+            _PlayerID
+        ));
+        self.TypewriterEventData[_PlayerID]:Callback();
+        self.TypewriterEventData[_PlayerID] = nil;
+
+        API.FinishCinematicEvent(EventData.Name, EventPlayer);
+        API.SendScriptEvent(QSB.ScriptEvents.TypewriterEnded, EventPlayer, EventData);
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.SendScriptEvent(%d, %d, %s)]],
+            QSB.ScriptEvents.TypewriterEnded,
+            EventPlayer,
+            table.tostring(EventData)
+        ));
+    end
+end
+
+function ModuleTypewriter.Global:TokenizeText(_Data)
+    local TextTokens = {};
+    _Data.Text = _Data.Text:gsub("%s+", " ");
     local TempTokens = {};
-    local Text = self.m_Text;
+    local Text = _Data.Text;
     while (true) do
         local s1, e1 = Text:find("{");
         local s2, e2 = Text:find("}");
@@ -216,95 +133,85 @@ function QSB.SimpleTypewriter:TokenizeText()
     local LastWasPlaceholder = false;
     for i= 1, #TempTokens, 1 do
         if TempTokens[i]:find("{") then
-            local Index = #self.m_Tokens;
+            local Index = #TextTokens;
             if LastWasPlaceholder then
-                self.m_Tokens[Index] = self.m_Tokens[Index] .. TempTokens[i];
+                TextTokens[Index] = TextTokens[Index] .. TempTokens[i];
             else
-                table.insert(self.m_Tokens, Index+1, TempTokens[i]);
+                table.insert(TextTokens, Index+1, TempTokens[i]);
             end
             LastWasPlaceholder = true;
         else
             local Index = 1;
             while (Index <= #TempTokens[i]) do
                 if string.byte(TempTokens[i]:sub(Index, Index)) == 195 then
-                    table.insert(self.m_Tokens, TempTokens[i]:sub(Index, Index+1));
+                    table.insert(TextTokens, TempTokens[i]:sub(Index, Index+1));
                     Index = Index +1;
                 else
-                    table.insert(self.m_Tokens, TempTokens[i]:sub(Index, Index)); 
+                    table.insert(TextTokens, TempTokens[i]:sub(Index, Index));
                 end
                 Index = Index +1;
             end
             LastWasPlaceholder = false;
         end
     end
+    return TextTokens;
 end
 
----
--- Prüft, ob die Schreibmaschine gestartet werden kann.
--- @return[type=boolean] Schreibmaschine kann starten
--- @within QSB.SimpleTypewriter
--- @local
---
-function QSB.SimpleTypewriter:CanBePlayed()
-    if API.IsLoadscreenVisible() then
-        return false;
-    end
-    if API.IsCinematicEventActive() then
-        return false;
-    end
-    return true;
-end
-
----
--- Job: Warte solange, bis Briefings beendet sind.
--- @param[type=table] Data
--- @within QSB.SimpleTypewriter
--- @local
---
-function QSB.SimpleTypewriter.WaitForSceneToBeReady(_Data)
-    if _Data:CanBePlayed() == true then
-        _Data:Play();
-        return true;
-    end
-end
-
----
--- Job: Kontrolliert die Anzeige der Schreibmaschine.
--- @param[type=table] Data
--- @within QSB.SimpleTypewriter
--- @local
---
-function QSB.SimpleTypewriter:ControllerJob()
-    if self.m_InitialWaittime > 0 then
-        self.m_InitialWaittime = self.m_InitialWaittime -1;
-    end
-    if self.m_InitialWaittime == 0 then
-        self.m_Index = self.m_Index + self.m_TokenOffset;
-        if self.m_Index > #self.m_Tokens then
-            self.m_Index = #self.m_Tokens;
-        end
-        local Index = math.floor(self.m_Index + 0.5);
-
-        local Text = "";
-        for i= 1, Index, 1 do
-            Text = Text .. self.m_Tokens[i];
-        end
-        Logic.ExecuteInLuaLocalState([[
-            GUI.ClearNotes()
-            GUI.AddNote("]] ..Text.. [[");
-        ]])
-        
-        if Index == #self.m_Tokens then
-            self.m_Waittime = self.m_Waittime -1;
-            if self.m_Waittime <= 0 then
-                self:Stop();
-                if self.m_Callback then
-                    self:m_Callback();
-                end
-                return true;
+function ModuleTypewriter.Global:ControlTypewriter()
+    -- Check queue for next event
+    for k, v in pairs(self.TypewriterEventQueue) do
+        if not API.IsLoadscreenVisible() and not API.IsCinematicEventActive(k) then
+            if #v > 0 then
+                local Data = table.remove(self.TypewriterEventQueue[k], 1);
+                self:PlayTypewriter(Data);
             end
         end
     end
+
+    -- Perform active events
+    for k, v in pairs(self.TypewriterEventData) do
+        if self.TypewriterEventData[k].Delay > 0 then
+            self.TypewriterEventData[k].Delay = self.TypewriterEventData[k].Delay -1;
+            -- Just my paranoia...
+            Logic.ExecuteInLuaLocalState(string.format(
+                [[if GUI.GetPlayerID() == %d then GUI.ClearNotes() end]],
+                self.TypewriterEventData[k].PlayerID
+            ));
+        end
+        if self.TypewriterEventData[k].Delay == 0 then
+            self.TypewriterEventData[k].Index = v.Index + v.CharSpeed;
+            if v.Index > #self.TypewriterEventData[k].TextTokens then
+                self.TypewriterEventData[k].Index = #self.TypewriterEventData[k].TextTokens;
+            end
+            local Index = math.floor(v.Index + 0.5);
+            local Text = "";
+            for i= 1, Index, 1 do
+                Text = Text .. self.TypewriterEventData[k].TextTokens[i];
+            end
+            Logic.ExecuteInLuaLocalState(string.format(
+                [[
+                if GUI.GetPlayerID() == %d then
+                    GUI.ClearNotes()
+                    GUI.AddNote("]] ..Text.. [[");
+                end
+                ]],
+                self.TypewriterEventData[k].PlayerID
+            ));
+            if Index == #self.TypewriterEventData[k].TextTokens then
+                self.TypewriterEventData[k].Waittime = v.Waittime -1;
+                if v.Waittime <= 0 then
+                    self:FinishTypewriter(k);
+                end
+            end
+        end
+    end
+end
+
+-- Local Script ----------------------------------------------------------------
+
+function ModuleTypewriter.Local:OnGameStart()
+    QSB.ScriptEvents.TypewriterStarted = API.RegisterScriptEvent("Event_TypewriterStarted");
+    QSB.ScriptEvents.TypewriterEnded = API.RegisterScriptEvent("Event_TypewriterEnded");
 end
 
 -- -------------------------------------------------------------------------- --

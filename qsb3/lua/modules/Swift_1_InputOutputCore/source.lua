@@ -508,7 +508,10 @@ end
 function ModuleInputOutputCore.Shared:Note(_Text)
     _Text = self:ConvertPlaceholders(Swift:Localize(_Text));
     if Swift:IsGlobalEnvironment() then
-        Logic.DEBUG_AddNote(_Text);
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[GUI.AddNote("%s")]],
+            _Text
+        ));
     else
         GUI.AddNote(_Text);
     end
@@ -517,7 +520,10 @@ end
 function ModuleInputOutputCore.Shared:StaticNote(_Text)
     _Text = self:ConvertPlaceholders(Swift:Localize(_Text));
     if Swift:IsGlobalEnvironment() then
-        Logic.ExecuteInLuaLocalState(string.format([[GUI.AddStaticNote("%s")]], _Text));
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[GUI.AddStaticNote("%s")]],
+            _Text
+        ));
         return;
     end
     GUI.AddStaticNote(_Text);
@@ -526,7 +532,10 @@ end
 function ModuleInputOutputCore.Shared:Message(_Text)
     _Text = self:ConvertPlaceholders(Swift:Localize(_Text));
     if Swift:IsGlobalEnvironment() then
-        Logic.ExecuteInLuaLocalState(string.format([[Message("%s")]], _Text));
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[Message("%s")]],
+            _Text
+        ));
         return;
     end
     Message(_Text);

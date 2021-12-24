@@ -25,11 +25,21 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 
 ---
--- Blendet einen Text Zeichen für Zeichen auf schwarzem Grund ein.
+-- Events, auf die reagiert werden kann.
 --
--- Der Effekt startet erst, nachdem die Map geladen ist. Wenn ein Briefing
--- läuft, wird gewartet, bis das Briefing beendet ist. Wärhend der Effekt
--- läuft, können wiederrum keine Briefings starten.
+-- @field TypewriterStarted Ein Schreibmaschineneffekt beginnt (Parameter: PlayerID, DataTable)
+-- @field TypewriterEnded   Ein Schreibmaschineneffekt endet (Parameter: PlayerID, DataTable)
+--
+-- @within Event
+--
+QSB.ScriptEvents = QSB.ScriptEvents or {};
+
+---
+-- Blendet einen Text Zeichen für Zeichen ein.
+--
+-- Der Effekt startet erst, nachdem die Map geladen ist. Wenn ein anderes
+-- Cinematic Event läuft, wird gewartet, bis es beendet ist. Wärhend der Effekt
+-- läuft, können wiederrum keine Cinematic Events starten.
 --
 -- Mögliche Werte:
 -- <table border="1">
@@ -42,6 +52,11 @@ You may use and modify this file unter the terms of the MIT licence.
 -- <td>Text</td>
 -- <td>string|table</td>
 -- <td>Der anzuzeigene Text</td>
+-- </tr>
+-- <tr>
+-- <td>PlayerID</td>
+-- <td>number</td>
+-- <td>(Optional) Spieler, dem der Effekt angezeigt wird (Default: Menschlicher Spieler)</td>
 -- </tr>
 -- <tr>
 -- <td>Callback</td>
@@ -82,9 +97,10 @@ You may use and modify this file unter the terms of the MIT licence.
 -- Leerzeichen (vom Spiel) auf ein Leerzeichen reduziert!
 --
 -- @param[type=table] _Data Konfiguration
+-- @return[type=string] Name des zugeordneten Event
 --
 -- @usage
--- API.SimpleTypewriter {
+-- local EventName = API.StartTypewriter {
 --     Text     = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, "..
 --                "sed diam nonumy eirmod tempor invidunt ut labore et dolore"..
 --                "magna aliquyam erat, sed diam voluptua. At vero eos et"..
@@ -102,29 +118,25 @@ You may use and modify this file unter the terms of the MIT licence.
 -- };
 -- @within Anwenderfunktionen
 --
-function API.SimpleTypewriter(_Data)
-    if GUI then
+function API.StartTypewriter(_Data)
+    if Framework.IsNetworkGame() ~= true then
+        _Data.PlayerID = _Data.PlayerID or QSB.HumanPlayerID;
+    end
+    if _Data.PlayerID == nil or (_Data.PlayerID < 1 or _Data.PlayerID > 8) then
         return;
     end
-    local Instance = QSB.SimpleTypewriter:New(_Data);
-    if _Data.Callback then
-        Instance:SetCallback(_Data.Callback);
+    _Data.Text = API.ConvertPlaceholders(API.Localize(_Data.Text or ""));
+    _Data.Callback = _Data.Callback or function() end;
+    _Data.CharSpeed = _Data.CharSpeed or 1;
+    _Data.Waittime = (_Data.Waittime or 8) * 10;
+    _Data.TargetEntity = GetID(_Data.TargetEntity or 0);
+    _Data.Color = _Data.Color or {R= 0, G= 0, B= 0, A= 255};
+    if _Data.Opacity and _Data.Opacity >= 0 and _Data.Opacity then
+        _Data.Color.A = math.floor((255 * _Data.Opacity) + 0.5);
     end
-    if _Data.Position then
-        Instance:SetPosition(_Data.Position);
-    end
-    if _Data.CharSpeed and _Data.CharSpeed > 0 then
-        Instance:SetSpeed(_Data.CharSpeed);
-    end
-    if _Data.Waittime and _Data.Waittime > 0 then
-        Instance:SetWaittime(_Data.Waittime);
-    end
-    if _Data.Opacity and _Data.Opacity >= 0 and _Data.Opacity <= 1 then
-        Instance:SetOpacity(_Data.Opacity);
-    end
-    if _Data.Color then
-        Instance:SetColor(_Data.Color.R, _Data.Color.G, _Data.Color.B);
-    end
-    Instance:Start();
+    _Data.Delay = 15;
+    _Data.Index = 0;
+    return ModuleTypewriter.Global:StartTypewriter(_Data);
 end
+API.SimpleTypewriter = API.StartTypewriter;
 
