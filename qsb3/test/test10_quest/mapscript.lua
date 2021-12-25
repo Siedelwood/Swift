@@ -78,11 +78,16 @@ function Mission_FirstMapAction()
 
     API.ActivateDebugMode(true, false, true, true);
 
+end
+
+-- > CreateJournalQuest()
+
+function CreateJournalQuest()
     API.CreateQuest {
         Name        = "JournalQuest1",
         Suggestion  = "Test quest for showing the jornal.",
         Goal_NoChange(),
-        Trigger_Time(5),
+        Trigger_Time(0),
     };
 end
 

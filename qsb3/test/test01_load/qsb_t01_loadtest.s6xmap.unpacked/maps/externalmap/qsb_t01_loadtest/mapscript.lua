@@ -1,0 +1,1 @@
+Script.Load("E:/Repositories/symfonia/qsb3/test/test01_load/mapscript.lua");
