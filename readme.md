@@ -26,7 +26,7 @@ kann danach normal importiert und verwendet werden.
 
 #ä Entwicklung vorbereiten
 
-Um Symfonia zu entwickeln, muss das Repository zuerst geklont werden. Dafür
+Um Swift zu entwickeln, muss das Repository zuerst geklont werden. Dafür
 wird die Versionsverwaltung Git benötigt. Eine Windows-Version von Git kann
 hier heruntergeladen werden:
 https://git-scm.com/download/win
@@ -39,7 +39,7 @@ Dabei ist BITBUCKET_USER_NAME Dein Benutzername bei Bitbucket.
 
 # 3 Build
 
-Symfonia wird über die make.sh bzw. die publish.sh erzeugt. Dazu muss in der
+Swift wird über die make.sh bzw. die publish.sh erzeugt. Dazu muss in der
 Shell in das bin-Verzeichnis des Projektes gewechselt werden. Da dies aber
 Bash-Skripte sind, wird das auf Windows nicht funktionieren.
 

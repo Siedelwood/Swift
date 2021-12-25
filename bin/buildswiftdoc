@@ -1,6 +1,0 @@
-#!/bin/bash
-
-echo "start building doc..."
-echo "PWD is $PWD"
-lua qsb3/ldoc/ldoc.lua -d qsb3/doc qsb3/lua
-echo "finished"

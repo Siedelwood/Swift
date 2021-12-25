@@ -1,1 +1,0 @@
-Script.Load("E:/Repositories/symfonia/var/qsb.lua");
