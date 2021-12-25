@@ -80,6 +80,44 @@ function Mission_FirstMapAction()
 
 end
 
+-- > CreateSegmentedQuest()
+
+function CreateSegmentedQuest()
+    API.CreateNestedQuest {
+        Name        = "SegmentTest",
+        Success     = "It just work's!",
+        Receiver    = 1,
+        Sender      = 8,
+        Segments    = {
+            {
+                Suggestion  = "Talk to the first monk.",
+                Success     = "You did great!",
+                Goal_NPC("npc1"),
+            },
+            {
+                Suggestion  = "Talk to the second monk.",
+                Success     = "You did great!",
+                Goal_NPC("npc2"),
+                Trigger_OnQuestSuccess("SegmentTest@Segment1")
+            },
+            {
+                Suggestion  = "Talk to the third monk.",
+                Success     = "You did great!",
+                Goal_NPC("npc3"),
+                Trigger_OnQuestSuccess("SegmentTest@Segment2")
+            },
+            {
+                Suggestion  = "Talk to the fourth monk.",
+                Success     = "You did great!",
+                Goal_NPC("npc4"),
+                Trigger_OnQuestSuccess("SegmentTest@Segment3")
+            }
+        },
+
+        Trigger_Time(0);
+    };
+end
+
 -- > CreateJournalQuest()
 
 function CreateJournalQuest()

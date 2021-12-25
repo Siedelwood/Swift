@@ -12,22 +12,30 @@ ModuleQuests = {
         ExternalTriggerConditions = {},
         ExternalTimerConditions = {},
         ExternalDecisionConditions = {},
+        SegmentsOfQuest = {},
     };
     Local = {};
     -- This is a shared structure but the values are asynchronous!
     Shared = {};
 };
 
+QSB.SegmentResult = {
+    Success = 1,
+    Failure = 2,
+    Ignore  = 3,
+}
+
 -- Global Script ---------------------------------------------------------------
 
 function ModuleQuests.Global:OnGameStart()
     Quest_Loop = self.QuestLoop;
+    self:OverrideMethods();
 
-    -- Stop quest from triggering when cinematic event takes place
+    -- Stop quest from triggering when a cinematic event takes place
     table.insert(self.ExternalTriggerConditions, function(_PlayerID, _Quest)
         return not API.IsCinematicEventActive(_PlayerID);
     end);
-    -- Disable quest timers when cinematic event takes place
+    -- Disable quest timers when a cinematic event takes place
     table.insert(self.ExternalTimerConditions, function(_PlayerID, _Quest)
         return not API.IsCinematicEventActive(_PlayerID);
     end);
@@ -43,13 +51,11 @@ end
 
 function ModuleQuests.Global:QuestMessage(_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor, _QuestName)
     self.QuestMessageID = self.QuestMessageID +1;
-
-    -- Lokalisierung
+    -- Localize
     if _Text then
         _Text = API.ConvertPlaceholders(API.Localize(_Text));
     end
-
-    -- Quest erzeugen
+    -- Create quest
     local _, CreatedQuest = QuestTemplate:New(
         (_QuestName ~= nil and _QuestName) or ("QSB_QuestMessage_" ..self.QuestMessageID),
         (_Sender or 1),
@@ -61,7 +67,153 @@ function ModuleQuests.Global:QuestMessage(_Text, _Sender, _Receiver, _AncestorWt
     return CreatedQuest.Identifier;
 end
 
-function ModuleQuests.Global:QuestCreateNewQuest(_Data)
+function ModuleQuests.Global:CreateNestedQuest(_Data)
+    if not _Data.Segments then
+        return;
+    end
+    -- Add behavior to check on segments
+    table.insert(
+        _Data,
+        Goal_MapScriptFunction(self:GetCheckQuestSegmentsInlineGoal(), _Data.Name)
+    )
+    -- Create quest
+    local Name = self:CreateSimpleQuest(_Data);
+    Quests[GetQuestID(Name)].Visible = false;
+    self.SegmentsOfQuest[Name] = {};
+    -- Create segments
+    for i= 1, #_Data.Segments, 1 do
+        self:CreateSegmentForSegmentedQuest(_Data.Segments[i], Name, i);
+    end
+    return Name;
+end
+
+function ModuleQuests.Global:CreateSegmentForSegmentedQuest(_Data, _ParentName, _Index)
+    local Name = _Data.Name or _ParentName.. "@Segment" .._Index;
+    local Parent = Quests[GetQuestID(_ParentName)];
+
+    local QuestDescription = {
+        Name        = Name,
+        Segments    = _Data.Segments,
+        Result      = _Data.Result or QSB.SegmentResult.Success,
+        Sender      = _Data.Sender or Parent.SendingPlayer,
+        Receiver    = _Data.Receiver or Parent.ReceivingPlayer,
+        Time        = _Data.Time,
+        Suggestion  = _Data.Suggestion,
+        Success     = _Data.Success,
+        Failure     = _Data.Failure,
+        Description = _Data.Description,
+        Loop        = _Data.Loop,
+        Callback    = _Data.Callback,
+    };
+    for i= 1, #_Data do
+        table.insert(QuestDescription, _Data[i]);
+    end
+
+    table.insert(QuestDescription, Trigger_OnQuestActive(_ParentName, 0));
+    if QuestDescription.Segments then
+        self:CreateNestedQuest(QuestDescription);
+    else
+        self:CreateSimpleQuest(QuestDescription);
+    end
+    table.insert(self.SegmentsOfQuest[_ParentName], QuestDescription);
+end
+
+function ModuleQuests.Global:GetCheckQuestSegmentsInlineGoal()
+    return function (_QuestName)
+        local AllSegmentsConcluded = true;
+        local SegmentList = ModuleQuests.Global.SegmentsOfQuest[_QuestName];
+        for i= 1, #SegmentList, 1 do
+            local SegmentQuest = Quests[GetQuestID(SegmentList[i].Name)];
+            -- Non existing segment fails quest
+            if not SegmentQuest then
+                return false;
+            end
+            -- Not expectec result of segment fails quest
+            if SegmentQuest.State == QuestState.Over and SegmentQuest.Result ~= QuestResult.Interrupted then
+                if SegmentList[i].Result == QSB.SegmentResult.Success and SegmentQuest.Result ~= QuestResult.Success then
+                    ModuleQuests.Global:AbortAllQuestSegments(_QuestName);
+                    return false;
+                end
+                if SegmentList[i].Result == QSB.SegmentResult.Failure and SegmentQuest.Result ~= QuestResult.Failure then
+                    ModuleQuests.Global:AbortAllQuestSegments(_QuestName);
+                    return false;
+                end
+            end
+            -- Check if segment is concluded
+            if SegmentQuest.State ~= QuestState.Over then
+                AllSegmentsConcluded = false;
+            end
+        end
+        -- Success after all segments have been completed
+        if AllSegmentsConcluded then
+            return true;
+        end
+    end;
+end
+
+function ModuleQuests.Global:AbortAllQuestSegments(_QuestName)
+    for i= 1, #self.SegmentsOfQuest[_QuestName], 1 do
+        local SegmentName = self.SegmentsOfQuest[_QuestName][i].Name;
+        if API.IsValidQuest(_QuestName) and Quests[GetQuestID(SegmentName)].State ~= QuestState.Over then
+            API.StopQuest(SegmentName, true);
+        end
+    end
+end
+
+function ModuleQuests.Global:OverrideMethods()
+    API.FailQuest_Orig_ModuleQuest = API.FailQuest;
+    API.FailQuest = function(_QuestName, _Verbose)
+        for k, v in pairs(ModuleQuests.Global.SegmentsOfQuest[_QuestName]) do
+            if API.IsValidQuest(v.Name) and Quests[GetQuestID(v.Name)].State ~= QuestState.Over then
+                API.FailQuest_Orig_ModuleQuest(v.Name, true);
+            end
+        end
+        API.FailQuest_Orig_ModuleQuest(_QuestName, _Verbose);
+    end
+
+    API.RestartQuest_Orig_ModuleQuest = API.RestartQuest;
+    API.RestartQuest = function(_QuestName, _Verbose)
+        for k, v in pairs(ModuleQuests.Global.SegmentsOfQuest[_QuestName]) do
+            if API.IsValidQuest(v.Name) then
+                API.StopQuest_Orig_ModuleQuest(v.Name, true);
+                API.RestartQuest_Orig_ModuleQuest(v.Name, true);
+            end
+        end
+        API.RestartQuest_Orig_ModuleQuest(_QuestName, _Verbose);
+    end
+
+    API.StartQuest_Orig_ModuleQuest = API.StartQuest;
+    API.StartQuest = function(_QuestName, _Verbose)
+        for k, v in pairs(ModuleQuests.Global.SegmentsOfQuest[_QuestName]) do
+            if API.IsValidQuest(v.Name) and Quests[GetQuestID(v.Name)].State ~= QuestState.Over then
+                API.StartQuest_Orig_ModuleQuest(v.Name, true);
+            end
+        end
+        API.StartQuest_Orig_ModuleQuest(_QuestName, _Verbose);
+    end
+
+    API.StopQuest_Orig_ModuleQuest = API.StopQuest;
+    API.StopQuest = function(_QuestName, _Verbose)
+        for k, v in pairs(ModuleQuests.Global.SegmentsOfQuest[_QuestName]) do
+            if API.IsValidQuest(v.Name) and Quests[GetQuestID(v.Name)].State ~= QuestState.Over then
+                API.StopQuest_Orig_ModuleQuest(v.Name, true);
+            end
+        end
+        API.StopQuest_Orig_ModuleQuest(_QuestName, _Verbose);
+    end
+
+    API.WinQuest_Orig_ModuleQuest = API.WinQuest;
+    API.WinQuest = function(_QuestName, _Verbose)
+        for k, v in pairs(ModuleQuests.Global.SegmentsOfQuest[_QuestName]) do
+            if API.IsValidQuest(v.Name) and Quests[GetQuestID(v.Name)].State ~= QuestState.Over then
+                API.StopQuest_Orig_ModuleQuest(v.Name, true);
+            end
+        end
+        API.WinQuest_Orig_ModuleQuest(_QuestName, _Verbose);
+    end
+end
+
+function ModuleQuests.Global:CreateSimpleQuest(_Data)
     if not _Data.Name then
         QSB.AutomaticQuestNameCounter = (QSB.AutomaticQuestNameCounter or 0) +1;
         _Data.Name = string.format("AutoNamed_Quest_%d", QSB.AutomaticQuestNameCounter);
@@ -137,7 +289,6 @@ function ModuleQuests.Global:QuestCreateNewQuest(_Data)
     local QuestID, Quest = QuestTemplate:New(unpack(QuestData, 1, 16));
     Quest.MsgTableOverride = _Data.MSGKeyOverwrite;
     Quest.IconOverride = _Data.IconOverwrite;
-    Quest.SkipFunction = _Data.Skip;
     Quest.QuestInfo = _Data.InfoText;
     return _Data.Name, Quests[0];
 end
@@ -269,7 +420,6 @@ function ModuleQuests.Global.QuestLoop(_arguments)
                 end
                 -- Check Goal
                 local completed = self:IsObjectiveCompleted(self.Objectives[i]);
-                
                 if self.Objectives[i].Type == Objective.Deliver and completed == nil then
                     if self.Objectives[i].Data[4] == nil then
                         self.Objectives[i].Data[4] = 0;
@@ -277,7 +427,6 @@ function ModuleQuests.Global.QuestLoop(_arguments)
                     if self.Objectives[i].Data[3] ~= nil then
                         self.Objectives[i].Data[4] = self.Objectives[i].Data[4] + 1;
                     end
-                    
                     local st = self.StartTime;
                     local sd = self.Duration;
                     local dt = self.Objectives[i].Data[4];

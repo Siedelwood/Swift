@@ -3703,7 +3703,7 @@ function B_Reprisal_QuestRestart:AddParameter(_Index, _Parameter)
 end
 
 function B_Reprisal_QuestRestart:CustomFunction(_Quest)
-    RestartQuestByName(self.QuestName, true);
+    API.RestartQuest(self.QuestName, true);
 end
 
 function B_Reprisal_QuestRestart:Debug(_Quest)
@@ -3751,7 +3751,7 @@ function B_Reprisal_QuestFailure:AddParameter(_Index, _Parameter)
 end
 
 function B_Reprisal_QuestFailure:CustomFunction(_Quest)
-    FailQuestByName(self.QuestName, true);
+    API.FailQuest(self.QuestName, true);
 end
 
 function B_Reprisal_QuestFailure:Debug(_Quest)
@@ -3799,7 +3799,7 @@ function B_Reprisal_QuestSuccess:AddParameter(_Index, _Parameter)
 end
 
 function B_Reprisal_QuestSuccess:CustomFunction(_Quest)
-    WinQuestByName(self.QuestName, true);
+    API.WinQuest(self.QuestName, true);
 end
 
 function B_Reprisal_QuestSuccess:Debug(_Quest)
@@ -3849,7 +3849,7 @@ function B_Reprisal_QuestActivate:AddParameter(_Index, _Parameter)
 end
 
 function B_Reprisal_QuestActivate:CustomFunction(_Quest)
-    StartQuestByName(self.QuestName, true);
+    API.StartQuest(self.QuestName, true);
 end
 
 function B_Reprisal_QuestActivate:Debug(_Quest)
@@ -3902,7 +3902,7 @@ function B_Reprisal_QuestInterrupt:CustomFunction(_Quest)
         local QuestID = GetQuestID(self.QuestName)
         local Quest = Quests[QuestID]
         if Quest.State == QuestState.Active then
-            StopQuestByName(self.QuestName, true);
+            API.StopQuest(self.QuestName, true);
         end
     end
 end

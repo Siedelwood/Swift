@@ -44,11 +44,6 @@
 -- <td>QuestName</td>
 -- <td>Startet den angegebenen Quest neu.</td>
 -- </tr>
--- <tr>
--- <td>stopped</td>
--- <td>QuestName</td>
--- <td>Gibt die Namen abgebrochener Quests zurück.</td>
--- </tr>
 -- </table>
 --
 -- <b>Vorausgesetzte Module:</b>
@@ -62,6 +57,15 @@
 --
 
 QSB.GeneratedQuestDialogs = {};
+
+---
+-- Die Abschlussarten eines Quest Segment.
+--
+-- @field Success Phase muss erfolgreich abgeschlossen werden.
+-- @field Failure Phase muss fehlschlagen.
+-- @field Ignore  Erfolg und Misserfolg werden geleichermaßen akzeptiert.
+--
+QSB.SegmentResult = QSB.SegmentResult or {}
 
 ---
 -- Erstellt einen Quest.
@@ -85,19 +89,17 @@ QSB.GeneratedQuestDialogs = {};
 -- <li>Time: Zeit bis zu, Fehlschlag/Abschluss</li>
 -- <li>Loop: Funktion, die während der Laufzeit des Quests aufgerufen wird</li>
 -- <li>Callback: Funktion, die nach Abschluss aufgerufen wird</li>
--- <li>Skip: Funktion, die beim überspringen aufgerufen wird</li>
 -- </ul>
---
--- <p><b>Alias:</b> AddQuest</p>
 --
 -- @param[type=table] _Data Questdefinition
 -- @return[type=string] Name des Quests
 -- @return[type=number] Gesamtzahl Quests
 -- @within Anwenderfunktionen
+-- @see API.CreateNestedQuest
 --
 -- @usage
--- AddQuest {
---     Name        = "ExampleQuest",
+-- API.CreateQuest {
+--     Name        = "UnimaginativeQuestname",
 --     Suggestion  = "Wir müssen das Kloster finden.",
 --     Success     = "Dies sind die berümten Heilermönche.",
 --
@@ -114,9 +116,96 @@ function API.CreateQuest(_Data)
         error("API.CreateQuest: A quest named " ..tostring(_Data.Name).. " already exists!");
         return;
     end
-    return ModuleQuests.Global:QuestCreateNewQuest(_Data);
+    return ModuleQuests.Global:CreateSimpleQuest(_Data);
 end
-AddQuest = API.CreateQuest;
+
+---
+-- Erstellt einen verschachtelten Auftrag.
+--
+-- Verschachtelte Aufträge (Nested Quests) vereinfachen aufschreiben und
+-- zuordnen der zugeordneten Aufträge. Ein Nested Quest ist selbst unsichtbar
+-- und hat mindestens ein ihm untergeordnetes Segment. Die Segmente eines
+-- Nested Quest sind wiederum eigenständige Quests.
+--
+-- Du kannst für Segmente die gleichen Einträge setzen, wie bei gewöhnlichen
+-- Quests. Zudem kannst du auch ihnen einen Namen geben. Wenn du das nicht tust,
+-- werden sie automatisch benannt. Der Name setzt sich zusammen aus dem Namen
+-- des Nested Quest und ihrem Index (z.B. "UnimaginativeQuestname@Segment1").
+--
+-- Segmente haben ein erwartetes Ergebnis. Für gewöhnlich ist dies auf Erfolg
+-- festgelegt. Du kanns es aber auch auf Fehlschlag ändern oder ganz ignorieren.
+-- Ein Nested Quest ist abgeschlossen, wenn alle Segmente mit ihrem erwarteten
+-- Ergebnis abgeschlossen wurden (Erfolg) oder mindestens einer ein anderes
+-- Ergebnis als erwartet hatte (Fehlschlag).
+--
+-- Werden Status oder Resultat eines Quest über Funktionen verändert (zb.
+-- API.StopQuest bzw "stop" Konsolenbefehl), dann werden automatisch die
+-- Segmente ausgelöst oder abgebrochen.
+--
+-- Es ist nicht zwingend notwendig, einen Trigger für die Segmente zu setzen.
+-- Alle Segmente starten automatisch sobald der Nested Quest startet. Du kannst
+-- weitere Trigger zu Segmenten hinzufügen, um dieses Verhalten nach deinen
+-- Bedürfnissen abzuändern (z.B. auf ein vorangegangenes Segment triggern).
+--
+-- Nested Quests können auch ineinander verschachtelt werden. Man kann also
+-- innerhalb eines Hauptauftrag eine untergeordneten Hauptauftrag anlegen.
+--
+-- @param[type=table] _Data Daten des Quest
+-- @return[type=string] Name des Nested Quest oder nil bei Fehler
+-- @within Anwenderfunktionen
+-- @see QSB.SegmentResult
+-- @see API.CreateQuest
+--
+-- @usage API.CreateNestedQuest {
+--     Name        = "UnimaginativeQuestname",
+--     Segments    = {
+--         {
+--             Suggestion  = "Wir benötigen einen höheren Titel!",
+--
+--             Goal_KnightTitle("Mayor"),
+--         },
+--         {
+--             -- Mit dem Typ Ignore wird Fehlschlag ignoriert.
+--             Result      = QSB.SegmentResult.Ignore,
+--
+--             Suggestion  = "Wir benötigen außerdem mehr Asche! Und das sofort...",
+--             Success     = "Geschafft!",
+--             Failure     = "Versagt!",
+--             Time        = 3 * 60,
+--
+--             Goal_Produce("G_Gold", 5000),
+--
+--             Trigger_OnQuestSuccess("UnimaginativeQuestname@Segment1", 1),
+--             -- Segmented Quest wird gewonnen.
+--             Reward_QuestSuccess("UnimaginativeQuestname"),
+--         },
+--         {
+--             Suggestion  = "Dann versuchen wir es mit Eisen...",
+--             Success     = "Geschafft!",
+--             Failure     = "Versagt!",
+--             Time        = 3 * 60,
+--
+--             Trigger_OnQuestFailure("UnimaginativeQuestname@Segment2"),
+--             Goal_Produce("G_Iron", 50),
+--         }
+--     },
+--
+--     -- Wenn ein Quest nicht das erwartete Ergebnis hat, Fehlschlag.
+--     Reprisal_Defeat(),
+--     -- Wenn alles erfüllt wird, ist das Spiel gewonnen.
+--     Reward_VictoryWithParty(),
+-- };
+--
+function API.CreateNestedQuest(_Data)
+    if GUI or type(_Data) ~= "table" then
+        return;
+    end
+    if _Data.Segments == nil or #_Data.Segments == 0 then
+        error(string.format("API.CreateNestedQuest: Segmented quest '%s' is missing it's segments!", tostring(_Data.Name)));
+        return;
+    end
+    return ModuleQuests.Global:CreateNestedQuest(_Data);
+end
 
 ---
 -- Erzeugt eine Nachricht im Questfenster.
@@ -128,8 +217,6 @@ AddQuest = API.CreateQuest;
 --
 -- Alle Paramater sind optional und können von rechts nach links weggelassen
 -- oder mit nil aufgefüllt werden.
---
--- <b>Alias</b>: QuestMessage
 --
 -- @param[type=string]   _Text        Anzeigetext der Nachricht
 -- @param[type=number]   _Sender      Sender der Nachricht
@@ -157,7 +244,6 @@ function API.CreateQuestMessage(_Text, _Sender, _Receiver, _AncestorWt, _Callbac
     end
     return ModuleQuests.Global:QuestMessage(_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor);
 end
-QuestMessage = API.CreateQuestMessage;
 
 ---
 -- Fügt eine Prüfung hinzu, ob Quests getriggert werden. Soll ein Quest nicht
@@ -203,149 +289,4 @@ function API.AddDisableDecisionCondition(_Function)
     end
     table.insert(ModuleQuests.Global.ExternalDecisionConditions, _Function);
 end
-
----
--- <b>Deprecated!</b><br>
--- Diese Funktion ist veraltet und wird nicht zur Benutzung empfohlen!
---
--- Erzeugt aus einer Table mit Daten eine Reihe von Nachrichten, die nach
--- einander angezeigt werden.
---
--- Ein Dialog kann als Nachfolge auf einen Quest oder einen anderen Dialog
--- erzeugt werden, indem Ancestor gleich dem Questnamen gesetzt wird. Die
--- Wartezeit ist automatisch 0 Sekunden. Will man eine andere Wartezeit,
--- so muss Delay gesetzt werden.
---
--- Diese Funktion ist geeignet um längere Quest-Dialoge zu konfigurieren!
---
--- <b>Alias</b>: QuestDialog
---
--- Einzelne Parameter pro Eintrag:
--- <ul>
--- <li>Anzeigetext der Nachricht</li>
--- <li>PlayerID des Sender der Nachricht</li>
--- <li>PlayerID des Empfängers der Nachricht</li>
--- <li>Wartezeit zur vorangegangenen Nachricht</li>
--- <li>Action-Funktion der Nachricht</li>
--- </ul>
---
--- @param[type=table] _Messages Liste der anzuzeigenden Nachrichten
--- @return[type=string] Name des letzten Quest
--- @return[type=table] Namensliste der Quests
--- @within Anwenderfunktionen
---
--- @usage
--- API.CreateQuestDialog{
---     Name = "DialogName",
---     Ancestor = "SomeQuestName",
---     Delay = 12,
---
---     {"Hallo, wie geht es dir?", 4, 1, 8},
---     {"Mir geht es gut, wie immer!", 1, 1, 8, SomeCallbackFunction},
---     {"Das ist doch schön.", 4, 1, 8},
--- };
---
-function API.CreateQuestDialog(_Messages)
-    if GUI then
-        return;
-    end
-
-    table.insert(_Messages, {"KEY(NO_MESSAGE)", 1, 1});
-
-    local QuestName;
-    local GeneratedQuests = {};
-    for i= 1, #_Messages, 1 do
-        _Messages[i][4] = _Messages[i][4] or 12;
-        if i > 1 then
-            _Messages[i][6] = _Messages[i][6] or QuestName;
-        else
-            _Messages[i][6] = _Messages[i][6] or _Messages.Ancestor;
-            _Messages[i][4] = _Messages.Delay or 0;
-        end
-        if i == #_Messages and #_Messages[i-1] then
-            _Messages[i][7] = _Messages.Name;
-            _Messages[i][4] = _Messages[i-1][4];
-        end
-        QuestName = ModuleQuests.Global:QuestMessage(unpack(_Messages[i]));
-        table.insert(GeneratedQuests, QuestName);
-    end
-
-    -- Benannte Dialoge für spätere Zugriffe speichern.
-    if _Messages.Name then
-        QSB.GeneratedQuestDialogs[_Messages.Name] = GeneratedQuests;
-    end
-    return GeneratedQuests[#GeneratedQuests], GeneratedQuests;
-end
-QuestDialog = API.CreateQuestDialog;
-
----
--- <b>Deprecated!</b><br>
--- Diese Funktion ist veraltet und wird nicht zur Benutzung empfohlen!
---
--- Unterbricht einen laufenden oder noch nicht gestarteten Quest-Dialog.
---
--- Die Funktion kann entweder anhand eines Dialognamen den Dialog zurücksetzen
--- oder direkt die Table der erzeugten Quests annehmen.
---
--- <b>Alias</b>: QuestDialogInterrupt
---
--- @param[type=string] _Dialog Dialog der abgebrochen wird
--- @within Anwenderfunktionen
---
-function API.InterruptQuestDialog(_Dialog)
-    if GUI then
-        return;
-    end
-
-    local QuestDialog = _Dialog;
-    if type(QuestDialog) == "string" then
-        QuestDialog = QSB.GeneratedQuestDialogs[QuestDialog];
-    end
-    if QuestDialog == nil then
-        error("API.InterruptQuestDialog: Dialog is invalid!");
-        return;
-    end
-    for i= 1, #QuestDialog-1, 1 do
-        API.StopQuest(QuestDialog[i], true);
-    end
-    API.WinQuest(QuestDialog[#QuestDialog], true);
-end
-QuestDialogInterrupt = API.InterruptQuestDialog;
-
----
--- <b>Deprecated!</b><br>
--- Diese Funktion ist veraltet und wird nicht zur Benutzung empfohlen!
---
--- Setzt einen Quest-Dialog zurück sodass er erneut gestartet werden kann.
---
--- Die Funktion kann entweder anhand eines Dialognamen den Dialog zurücksetzen
--- oder direkt die Table der erzeugten Quests annehmen.
---
--- <b>Alias</b>: QuestDialogRestart
---
--- @param[type=string] _Dialog Dialog der neu gestartet wird
--- @within Anwenderfunktionen
---
-function API.RestartQuestDialog(_Dialog)
-    if GUI then
-        return;
-    end
-
-    local QuestDialog = _Dialog;
-    if type(QuestDialog) == "string" then
-        QuestDialog = QSB.GeneratedQuestDialogs[QuestDialog];
-    end
-    if QuestDialog == nil then
-        error("API.ResetQuestDialog: Dialog is invalid!");
-        return;
-    end
-    for i= 1, #QuestDialog, 1 do
-        Quests[GetQuestID(QuestDialog[i])].Triggers[1][2][1].WaitTimeTimer = nil;
-        API.RestartQuest(QuestDialog[i], true);
-    end
-
-    local CurrentQuest = Quests[GetQuestID(QuestDialog[1])];
-    CurrentQuest:Trigger();
-end
-QuestDialogRestart = API.RestartQuestDialog;
 

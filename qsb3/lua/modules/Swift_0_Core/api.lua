@@ -1965,7 +1965,6 @@ function API.FailQuest(_QuestName, _NoMessage)
         -- Note: Event is send in QuestTemplate:Fail()!
     end
 end
-FailQuestByName = API.FailQuest;
 
 ---
 -- Startet den Quest neu.
@@ -2050,34 +2049,12 @@ function API.RestartQuest(_QuestName, _NoMessage)
         resetCustom("Rewards", Reward.Custom);
         resetCustom("Reprisals", Reprisal.Custom);
 
-        -- Quest Output zurücksetzen
-        if Quest.Visible_OrigDebug then
-            Quest.Visible = Quest.Visible_OrigDebug;
-            Quest.Visible_OrigDebug = nil;
-        end
-        if Quest.ShowEndMessage then
-            Quest.ShowEndMessage = Quest.ShowEndMessage_OrigDebug;
-            Quest.ShowEndMessage_OrigDebug = nil;
-        end
-        if Quest.QuestStartMsg_OrigDebug then
-            Quest.QuestStartMsg = Quest.QuestStartMsg_OrigDebug;
-            Quest.QuestStartMsg_OrigDebug = nil;
-        end
-        if Quest.QuestSuccessMsg_OrigDebug then
-            Quest.QuestSuccessMsg = Quest.QuestSuccessMsg_OrigDebug;
-            Quest.QuestSuccessMsg_OrigDebug = nil;
-        end
-        if Quest.QuestFailureMsg_OrigDebug then
-            Quest.QuestFailureMsg = Quest.QuestFailureMsg_OrigDebug;
-            Quest.QuestFailureMsg_OrigDebug = nil;
-        end
-
         Quest.Result = nil;
         local OldQuestState = Quest.State;
         Quest.State = QuestState.NotTriggered;
         Logic.ExecuteInLuaLocalState("LocalScriptCallback_OnQuestStatusChanged("..Quest.Index..")");
         if OldQuestState == QuestState.Over then
-            StartSimpleJobEx(_G[QuestTemplate.Loop], Quest.QueueID);
+            Quest.Job = Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", "Quest_Loop", 1, 0, {Quest.QueueID});
         end
         -- Note: This is a special operation outside of the quest system!
         Swift:DispatchScriptEvent(QSB.ScriptEvents.QuestReset, QuestID);
@@ -2088,7 +2065,6 @@ function API.RestartQuest(_QuestName, _NoMessage)
         return QuestID, Quest;
     end
 end
-RestartQuestByName = API.RestartQuest;
 
 ---
 -- Startet den Quest sofort, sofern er existiert.
@@ -2112,7 +2088,6 @@ function API.StartQuest(_QuestName, _NoMessage)
         -- Note: Event is send in QuestTemplate:Trigger()!
     end
 end
-StartQuestByName = API.StartQuest;
 
 ---
 -- Unterbricht den Quest.
@@ -2136,7 +2111,6 @@ function API.StopQuest(_QuestName, _NoMessage)
         -- Note: Event is send in QuestTemplate:Interrupt()!
     end
 end
-StopQuestByName = API.StopQuest;
 
 ---
 -- Gewinnt den Quest.
@@ -2159,5 +2133,4 @@ function API.WinQuest(_QuestName, _NoMessage)
         -- Note: Event is send in QuestTemplate:Success()!
     end
 end
-WinQuestByName = API.WinQuest;
 
