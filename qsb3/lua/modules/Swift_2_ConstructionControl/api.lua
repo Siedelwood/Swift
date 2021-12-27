@@ -9,9 +9,11 @@ You may use and modify this file unter the terms of the MIT licence.
 ]]
 
 ---
--- Mit diesem Bundle kann der Bau von Gebäudetypen oder Gebäudekategorien
--- unterbunden werden. Verbote können für bestimmte Bereiche (kreisförmige
--- Gebiete um ein Zentrum) oder ganze Territorien vereinbart werden.
+-- Ermöglicht den Gebäudebau zu beschränken.
+--
+-- Der Bau von Gebäudetypen oder Gebäudekategorien kann reguliert werden.
+-- Verbote können für bestimmte Bereiche (kreisförmige Gebiete um ein Zentrum)
+-- oder ganze Territorien vereinbart werden.
 --
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>

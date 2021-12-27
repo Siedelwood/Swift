@@ -9,8 +9,10 @@ You may use and modify this file unter the terms of the MIT licence.
 ]]
 
 ---
--- Ermöglicht es einzelne Gebäude, Typen oder Kategorien von Gebäuden vor
--- dem Abriss zu schützen. Ebenso kann jeglicher Abriss von Gebäuden auf
+-- Ermöglicht es Gebäude vor dem Abriss zu schützen.
+--
+-- Es können einzelne Gebäude, Typen oder Kategorien von Gebäuden vor
+-- dem Abriss beschützt werden. Ebenso kann jeglicher Abriss von Gebäuden auf
 -- einem Territrium komplett unterbunden werden.
 --
 -- <b>Vorausgesetzte Module:</b>
