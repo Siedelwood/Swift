@@ -214,7 +214,19 @@ function ModuleTradingCore.Global:RemoveTradeOffer(_PlayerID, _GoodOrEntityType)
     if not IsExisting(BuildingID) then
         return;
     end
-    -- Wird benötigt, weil bei RemoveOffer die Trader-IDs vertauscht sind.
+    -- Trader IDs are mixed up in Logic.RemoveOffer
+    local MappedTraderID = (TraderID == 1 and 2) or (TraderID == 2 and 1) or 0;
+    Logic.RemoveOffer(BuildingID, MappedTraderID, OfferID);
+end
+
+function ModuleTradingCore.Global:RemoveTradeOfferByData(_Data, _Index)
+    local OfferID = _Data[1][_Index][2];
+    local TraderID = _Data[1][_Index][1];
+    local BuildingID = _Data.Storehouse;
+    if not IsExisting(BuildingID) then
+        return;
+    end
+    -- Trader IDs are mixed up in Logic.RemoveOffer
     local MappedTraderID = (TraderID == 1 and 2) or (TraderID == 2 and 1) or 0;
     Logic.RemoveOffer(BuildingID, MappedTraderID, OfferID);
 end

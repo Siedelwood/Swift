@@ -7,8 +7,8 @@
  <Name>Testmap 11 - Ship Trade</Name>
  <Desc>Testmap for testing the ship trader.</Desc>
  <Mode></Mode>
- <SizeX>129</SizeX>
- <SizeY>129</SizeY>
+ <SizeX>257</SizeX>
+ <SizeY>257</SizeY>
  <MaxPlayers>1</MaxPlayers>
  <PlayListBackground></PlayListBackground>
  <PlayListBackgroundWinter></PlayListBackgroundWinter>
@@ -17,7 +17,7 @@
  <PreloadModels>true</PreloadModels>
  <ClimateZone>MiddleEurope</ClimateZone>
  <GUID>
-  <GUID>b22778ec-3a4b-4b0d-8739-2973b2c18000</GUID>
+  <GUID>2e883991-e644-4d24-8a9a-b753712fc943</GUID>
  </GUID>
  <PlayerInfos>
   <Info>

@@ -77,9 +77,105 @@ function Mission_FirstMapAction()
     end
 
     API.ActivateDebugMode(true, false, true, true);
+    SetDiplomacyState(1, 2, 1);
 end
 
+-- > CreateTraderWithoutRoutesTest()
+
+function CreateTraderWithoutRoutesTest()
+    API.InitHarbor(2);
+end
+
+-- > CreateTraderTest()
+
 function CreateTraderTest()
+    API.InitHarbor(
+        2,
+        {
+            Name       = "Route1",
+            Path       = {"Spawn1", "Arrived1"},
+            Interval   = 60,
+            Duration   = 30,
+            Amount     = 2,
+            Offers     = {
+                {"G_Gems", 5},
+                {"G_Iron", 5},
+                {"G_Beer", 2},
+                {"G_Stone", 5},
+                {"G_Sheep", 1},
+                {"G_Cheese", 2},
+            }
+        }
+    );
+end
+
+-- > AddTradeRoute2Test()
+
+function AddTradeRoute2Test()
+    API.AddTradeRoute(
+        2,
+        {
+            Name       = "Route2",
+            Path       = {"Spawn2", "Arrived2"},
+            Interval   = 60,
+            Duration   = 30,
+            Amount     = 3,
+            Offers     = {
+                {"U_CatapultCart", 1},
+                {"U_MilitarySword", 3},
+                {"U_MilitaryBow", 3}
+            }
+        }
+    );
+end
+
+-- > AddTradeRoute3Test()
+
+function AddTradeRoute3Test()
+    API.AddTradeRoute(
+        2,
+        {
+            Name       = "Route3",
+            Path       = {"Spawn3", "Arrived3"},
+            Interval   = 70,
+            Duration   = 90,
+            Amount     = 1,
+            Offers     = {
+                {"G_Wool", 5},
+                {"G_Dye", 5},
+                {"G_Beer", 2},
+                {"G_Herb", 5},
+                {"G_Salt", 5},
+            }
+        }
+    );
+end
+
+-- > AddTradeRoute4Test()
+
+function AddTradeRoute4Test()
+    API.AddTradeRoute(
+        2,
+        {
+            Name       = "Route4",
+            Path       = {"Spawn4", "Arrived4"},
+            Interval   = 30,
+            Duration   = 45,
+            Amount     = 2,
+            Offers     = {
+                {"G_Honeycomb", 5},
+                {"G_Stone", 5},
+                {"G_Bread", 2},
+                {"G_Cow", 1},
+                {"G_Cheese", 2},
+            }
+        }
+    );
+end
+
+-- -------------------------------------------------------------------------- --
+
+function CreateOldTraderTest()
     local TraderDescription = {
         PlayerID        = 2,    -- Player ID des Hafen
         PartnerPlayerID = 1,    -- Player ID des Spielers

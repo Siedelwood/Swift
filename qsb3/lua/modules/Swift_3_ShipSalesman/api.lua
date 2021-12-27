@@ -9,15 +9,27 @@ You may use and modify this file unter the terms of the MIT licence.
 ]]
 
 ---
--- Mit diesem Bundle wird ein Fahrender Händler angeboten der periodisch den
--- Hafen mit einem Schiff anfährt. Dabei kann der Fahrtweg frei mit Wegpunkten
--- bestimmt werden. Es können auch mehrere Spieler zu Händlern gemacht werden.
+-- Ermöglicht einen KI-Spieler als Hafen einzurichten.
+--
+-- <h5>Was ein Hafen macht</h5>
+-- Häfen werden von Schiffen über Handelsrouten angesteuert. Ein Hafen kann
+-- prinzipiell ungebegrenzt viele Handelsrouten haben. Wenn ein Schiff im
+-- Hafen anlegt, werden die Waren den Angeboten hinzugefügt. Ist kein Platz
+-- mehr für ein weiteres Angebot, wird das jeweils älteste entfernt.
+--
+-- Die Angebote in einem Hafen werden nicht erneuert. Wenn alle Einheiten eines
+-- Angebotes gekauft wurden, wird das Angebot automatisch entfernt.
+--
+-- <h5>Was ein Hafen NICHT macht</h5>
+-- Die Einrichtung eines KI-Spielers als Hafen bringt keine automatischen
+-- Änderungen des Diplomatiestatus mehr mit sich, wie zuvor üblich. Des weiteren
+-- wird keine automatische Nachricht mehr versendet, wenn ein Schiff im Hafen
+-- anlegt oder diesen wieder verlässt.
 --
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
 -- <li><a href="Swift_1_JobsCore.api.html">(1) JobsCore</a></li>
 -- <li><a href="Swift_1_TradingCore.api.html">(1) TradingCore</a></li>
--- <li><a href="Swift_2_Quests.api.html">(2) Quests</a></li>
 -- </ul>
 --
 -- @within Beschreibung
@@ -27,251 +39,206 @@ You may use and modify this file unter the terms of the MIT licence.
 ---
 -- Events, auf die reagiert werden kann.
 --
--- @field TradeShipArrived Ein Handelsschiff ist am Hafen angekommen (Parameter: TraderPlayerID, PartnerPlayerID, ShipID)
--- @field TradeShipLeft    Ein Handelsschiff hat den Hafen verlassen (Parameter: TraderPlayerID, PartnerPlayerID, ShipID)
+-- @field TradeShipSpawned   Ein Schiff wurde erzeugt (Parameter: _PlayerID, _RouteName, _ShipID)
+-- @field TradeShipArrived   Ein Schiff hat den Hafen erreicht (Parameter: _PlayerID, _RouteName, _ShipID)
+-- @field TradeShipLeft      Ein Schiff hat den Hafen verlassen (Parameter: _PlayerID, _RouteName, _ShipID)
+-- @field TradeShipDespawned Ein Schiff wurde gelöscht (Parameter: _PlayerID, _RouteName, _ShipID)
 --
 -- @within Event
 --
 QSB.ScriptEvents = QSB.ScriptEvents or {};
 
-QSB.ShipWaypointDistance = 300;
+---
+-- Fügt einen Schiffshändler im Lagerhaus des Spielers hinzu.
+--
+-- Optional kann eine Liste von Handelsrouten übergeben werden.
+--
+-- @param[type=number] _PlayerID ID des Spielers
+-- @param[type=table] ...        Liste an Handelsrouten
+-- @see API.AddTradeRoute
+--
+-- @usage
+-- API.InitHarbor(2);
+--
+function API.InitHarbor(_PlayerID, ...)
+    if Logic.GetStoreHouse(_PlayerID) == 0 then
+        error("API.InitHarbor: player " .._PlayerID.. " is dead! :(");
+        return;
+    end
+    ModuleShipSalesment.Global:CreateHarbor(_PlayerID);
+    for i= 1, #arg do
+        API.AddTradeRoute(_PlayerID, arg[i]);
+    end
+end
 
 ---
--- Erstellt einen fahrender Händler mit zufälligen Angeboten.
+-- Entfernt den Schiffshändler vom Lagerhaus des Spielers.
 --
--- Soll immer das selbe angeboten werden, darf es nur genauso viele Angebote
--- geben, wie als Maximum gesetzt wird.
+-- @param[type=number] _PlayerID ID des Spielers
 --
--- Es kann mehr als einen fahrender Händler auf der Map geben.
+-- @usage
+-- API.DisposeHarbor(2);
 --
--- <h5>Angebote</h5>
--- Es können Waren, Soldaten oder Entertainer angeboten werden. Aus allen
--- definierten Angeboten werden zufällig Angebote in der angegebenen Mange
--- ausgesucht und gesetzt.
---
--- <h5>Routen</h5>
--- Um die Route anzugeben, wird ein Name eingegeben. Es werden alle fortlaufend
--- nummerierte Punkte mit diesem Namen gesucht. Alternativ kann auch eine
--- Liste von Punkten angegeben werden. Es muss mindestens 2 Punkte geben.
---
--- <b>Alias</b>: TravelingSalesmanActivate
---
--- @param[type=table]  _Description Definition des Händlers
--- @within Anwenderfunktionen
---
--- @usage local TraderDescription = {
---     PlayerID        = 2,       -- Player ID des Hafen
---     PartnerPlayerID = 1,       -- Player ID des Spielers
---     Path            = "SH2WP", -- Pfad (auch als Table einzelner Punkte möglich)
---     Duration        = 150,     -- Ankerzeit in Sekunden (Standard: 360)
---     Interval        = 3,       -- Monate zwischen zwei Anfarten (Standard: 2)
---     OfferCount      = 4,       -- Anzahl Angebote (1 bis 4) (Standard: 4)
---     NoIce           = true,    -- Schiff kommt nicht im Winter (Standard: false)
---     Offers          = {
---         -- Angebot, Menge
---         {"G_Gems", 5},
---         {"G_Iron", 5},
---         {"G_Beer", 2},
---         {"G_Stone", 5},
---         {"G_Sheep", 1},
---         {"G_Cheese", 2},
---         {"G_Milk", 5},
---         {"G_Grain", 5},
---         {"G_Broom", 2},
---         {"U_CatapultCart", 1},
---         {"U_MilitarySword", 3},
---         {"U_MilitaryBow", 3}
---     },
--- };
--- API.TravelingSalesmanCreate(TraderDescription);
---
-function API.TravelingSalesmanCreate(_TraderDescription)
-    if GUI then
+function API.DisposeHarbor(_PlayerID)
+    if Logic.GetStoreHouse(_PlayerID) == 0 then
+        error("API.AddTradeRoute: player " .._PlayerID.. " is dead! :(");
         return;
     end
-    if type(_TraderDescription) ~= "table" then
-        error("API.TravelingSalesmanCreate: _TraderDescription must be a table!");
+    ModuleShipSalesment.Global:DisposeHarbor(_PlayerID);
+end
+
+---
+-- Fügt eine Handelsroute zu einem Hafen hinzu.
+--
+-- Für jede Handelsroute eines Hafens erscheint ein Handelsschiff, das den Hafen
+-- mit neuen Waren versorgt.
+--
+-- Eine Handelsroute hat folgende Felder:
+-- <table border="1">
+-- <tr>
+-- <td><b>Feld</b></td>
+-- <td><b>Typ</b></td>
+-- <td><b>Beschreibung</b></td>
+-- </tr>
+-- <tr>
+-- <td>Name</td>
+-- <td>string</td>
+-- <td>Name der Handelsroute (Muss für die Partei eindeutig sein)</td>
+-- </tr>
+-- <tr>
+-- <td>Path</td>
+-- <td>table</td>
+-- <td>Liste der Wegpunkte des Handelsschiffs (mindestens 2)</td>
+-- </tr>
+-- <tr>
+-- <td>Offers</td>
+-- <td>table</td>
+-- <td>Liste mit Angeboten (Format: {_Angebot, _Menge})</td>
+-- </tr>
+-- <tr>
+-- <td>Amount</td>
+-- <td>number</td>
+-- <td>(Optional) Menge an ausgewählten Angeboten.</td>
+-- </tr>
+-- <tr>
+-- <td>Duration</td>
+-- <td>number</td>
+-- <td>(Option) Verweildauer im Hafen in Sekunden</td>
+-- </tr>
+-- <tr>
+-- <td>Interval</td>
+-- <td>number</td>
+-- <td>(Optional) Zeit bis zur Widerkehr in Sekunden</td>
+-- </tr>
+-- <tr>
+-- <td></td>
+-- <td></td>
+-- <td></td>
+-- </tr>
+-- </table>
+--
+-- @param[type=number] _PlayerID ID des Spielers
+-- @param[type=table]  _Route    Daten der Handelsroute
+-- @see API.InitHarbor
+-- @see API.RemoveTradeRoute
+--
+-- @usage
+-- API.AddTradeRoute(
+--     2,
+--     {
+--         Name       = "Route3",
+--         -- Wegpunkte - Der letzte sollte beim Hafen sein ;)
+--         Path       = {"Spawn3", "Arrived3"},
+--         -- Schiff kommt alle 10 Minuten
+--         Interval   = 10*60,
+--         -- Schiff bleibt 2 Minunten im Hafen
+--         Duration   = 2*60,
+--         -- Menge pro Anfahrt
+--         Amount     = 2,
+--         -- Liste an Angeboten
+--         Offers     = {
+--             {"G_Wool", 5},
+--             {"U_CatapultCart", 1},
+--             {"G_Beer", 2},
+--             {"G_Herb", 5},
+--             {"U_Entertainer_NA_StiltWalker", 5},
+--         }
+--     }
+-- );
+--
+function API.AddTradeRoute(_PlayerID, _Route)
+    if Logic.GetStoreHouse(_PlayerID) == 0 then
+        error("API.AddTradeRoute: player " .._PlayerID.. " is dead! :(");
         return;
     end
-    if type(_TraderDescription.PlayerID) ~= "number" or _TraderDescription.PlayerID < 1 or _TraderDescription.PlayerID > 8 then
-        error("API.TravelingSalesmanCreate: _TraderDescription.PlayerID (" ..tostring(_TraderDescription.PlayerID).. ") is wrong!");
+    if type(_Route) ~= "table" then
+        error("API.AddTradeRoute: _Route must be a table!");
         return;
     end
-    if type(_TraderDescription.PartnerPlayerID) ~= "number" or _TraderDescription.PartnerPlayerID < 1 or _TraderDescription.PartnerPlayerID > 8 then
-        error("API.TravelingSalesmanCreate: _TraderDescription.PartnerPlayerID (" ..tostring(_TraderDescription.PartnerPlayerID).. ") is wrong!");
+    if not _Route.Name then
+        error("API.AddTradeRoute: trade route needs a name!");
         return;
     end
-    if type(_TraderDescription.Duration) ~= "number" or _TraderDescription.Duration < 60 then
-        error("API.TravelingSalesmanCreate: _TraderDescription.Duration (" ..tostring(_TraderDescription.Duration).. ") must be at least 60 seconds!");
+    if not _Route.Path or #_Route.Path < 2 then
+        error("API.AddTradeRoute: path of route " .._Route.Name.. " is invalid!");
         return;
     end
-    if type(_TraderDescription.Interval) ~= "number" or _TraderDescription.Interval < 1 then
-        error("API.TravelingSalesmanCreate: _TraderDescription.Interval (" ..tostring(_TraderDescription.Interval).. ") must be at least 1 month!");
+    if not _Route.Offers or #_Route.Offers < 1 then
+        error("API.AddTradeRoute: route " .._Route.Name.. " has to few offers!");
         return;
     end
-    if type(_TraderDescription.OfferCount) ~= "number" or _TraderDescription.OfferCount < 1 or _TraderDescription.OfferCount > 4 then
-        error("API.TravelingSalesmanCreate: _TraderDescription.Duration (" ..tostring(_TraderDescription.OfferCount).. ") is wrong!");
+    _Route.Amount = _Route.Amount or ((#_Route.Offers > 4 and 4) or #_Route.Offers);
+    if _Route.Amount < 1 or _Route.Amount > 4 then
+        error("API.AddTradeRoute: offer amount of route " .._Route.Name.. " is invalid!");
         return;
     end
-    if type(_TraderDescription.Offers) ~= "table" or #_TraderDescription.Offers < _TraderDescription.OfferCount then
-        error("API.TravelingSalesmanCreate: _TraderDescription.Offers must have at least " .._TraderDescription.OfferCount.." entries!");
+    if _Route.Amount > #_Route.Offers then
+        error("API.AddTradeRoute: route " .._Route.Name.. " has not enough offers!");
         return;
     end
-    for i= 1, #_TraderDescription.Offers, 1 do
-        if Goods[_TraderDescription.Offers[i][1]] == nil and Entities[_TraderDescription.Offers[i][1]] == nil then
-            error("API.TravelingSalesmanCreate: _TraderDescription.Offers[" ..i.. "][1] is invalid good type!");
+    for i= 1, #_Route.Offers, 1 do
+        if Goods[_Route.Offers[i][1]] == nil and Entities[_Route.Offers[i][1]] == nil then
+            error("API.AddTradeRoute: Offers[" ..i.. "][1] is invalid good type!");
             return;
         end
-        if type(_TraderDescription.Offers[i][2]) ~= "number" or _TraderDescription.Offers[i][2] < 1 then
-            error("API.TravelingSalesmanCreate: _TraderDescription.Offers[" ..i.. "][2] amount must be at least 1!");
+        if type(_Route.Offers[i][2]) ~= "number" or _Route.Offers[i][2] < 1 then
+            error("API.AddTradeRoute: Offers[" ..i.. "][2] amount must be at least 1!");
             return;
         end
     end
-
-    API.TravelingSalesmanDispose(_TraderDescription.PlayerID);
-    _TraderDescription.Offers = API.ConvertOldOfferFormat(_TraderDescription.Offers);
-    _TraderDescription.Duration = _TraderDescription.Duration or (6 * 60);
-    _TraderDescription.Interval = _TraderDescription.Interval or 2;
-    _TraderDescription.OfferCount = _TraderDescription.OfferCount or 4;
-
-    local Harbor = QSB.TradeShipHarbor:New(_TraderDescription.PlayerID)
-        :SetPartnerPlayerID(_TraderDescription.PartnerPlayerID)
-        :SetPath(_TraderDescription.Path or _TraderDescription.Waypoints)
-        :SetDuration(_TraderDescription.Duration)
-        :SetInterval(_TraderDescription.Interval)
-        :SetNoIce(_TraderDescription.NoIce == true)
-        :SetOfferCount(_TraderDescription.OfferCount);
-
-    local OffersString = "";
-    for i= 1, #_TraderDescription.Offers, 1 do
-        Harbor:AddOffer(_TraderDescription.Offers[i][1], _TraderDescription.Offers[i][2]);       
-        OffersString = OffersString .. "(" ..tostring(_TraderDescription.Offers[i][1]).. ", " .._TraderDescription.Offers[i][2].. "){cr}";
-    end
-    Harbor:SetActive(true);
-    ModuleShipSalesment.Global:RegisterHarbor(Harbor);
-
-    info("API.TravelingSalesmanCreate: creating habor for player " .._TraderDescription.PlayerID.. "{cr}"..
-         "Partner: " .._TraderDescription.PartnerPlayerID.. "{cr}"..
-         "Duration: " .._TraderDescription.Duration.. "{cr}"..
-         "Interval: " .._TraderDescription.Interval.. "{cr}"..
-         "Offers per period: " .._TraderDescription.OfferCount.. "{cr}"..
-         "Offer types:{cr}" ..OffersString);
+    ModuleShipSalesment.Global:AddTradeRoute(_PlayerID, _Route);
 end
-TravelingSalesmanCreate = API.TravelingSalesmanCreate;
 
 ---
--- Konvertiert die Angebote, falls sie im alten Format angegeben wurden.
--- @param[type=table] _Offers Angebotsliste
--- @return Umgeformte Angebote
--- @within Anwenderfunktionen
--- @local
+-- Löscht die Route aus der Liste der Handelsrouten eines Hafen.
 --
-function API.ConvertOldOfferFormat(_Offers)
-    if type(_Offers[1][1]) ~= "table" then
-        return _Offers;
+-- @param[type=number] _PlayerID  ID des Spielers
+-- @param[type=string] _RouteName Name der Route
+--
+-- @usage
+-- API.RemoveTradeRoute(2, "Route1");
+--
+function API.RemoveTradeRoute(_PlayerID, _RouteName)
+    if Logic.GetStoreHouse(_PlayerID) == 0 then
+        error("API.RemoveTradeRoute: player " .._PlayerID.. " is dead! :(");
+        return;
     end
-    local Offers = {};
-    for i= 1, #_Offers, 1 do
-        for j= 1, #_Offers[i], 1 do
-            local Found = false;
-            for k= 1, #Offers, 1 do
-                if Offers[k][1] == _Offers[i][j][1] then
-                    Found = true;
-                    break;
-                end
-            end
-            if (not Found) then
-                table.insert(Offers, _Offers[i][j]);
-            end
-        end
-    end
-    return Offers;
+    ModuleShipSalesment.Global:PurgeTradeRoute(_PlayerID, _RouteName);
 end
-ConvertOldOfferFormat = API.ConvertOldOfferFormat;
 
 ---
--- Entfernt den fahrenden Händler von dem Spieler. Der Spieler bleibt
--- erhalten wird aber nicht mal als fahrender Händler fungieren.
+-- Löscht alle Routen eines Hafen.
 --
--- <b>Hinweis</b>: Wenn gerade ein Schiff unterwegs ist oder im Hafen liegt,
--- wird es sofort gelöscht!
+-- @param[type=number] _PlayerID  ID des Spielers
 --
--- <b>Alias</b>: TravelingSalesmanDeactivate
+-- @usage
+-- API.ClearTradeRoutes(2);
 --
--- @param[type=number] _PlayerID Spieler-ID des Händlers
--- @within Anwenderfunktionen
---
--- @usage API.TravelingSalesmanDispose(2);
---
-function API.TravelingSalesmanDispose(_PlayerID)
-    if GUI then
+function API.ClearTradeRoutes(_PlayerID)
+    if Logic.GetStoreHouse(_PlayerID) == 0 then
+        error("API.RemoveTradeRoute: player " .._PlayerID.. " is dead! :(");
         return;
     end
-    if type(_PlayerID) ~= "number" or _PlayerID < 1 or _PlayerID > 8 then
-        error("API.TravelingSalesmanDispose: _PlayerID (" ..tostring(_PlayerID).. ") is wrong!");
-        return;
-    end
-    local Harbor = ModuleShipSalesment.Global.Harbors[_PlayerID];
-    if Harbor then
-        info("API.TravelingSalesmanDispose: Deleting habor of player " .._PlayerID);
-        Harbor:Dispose();
-    end
-    ModuleShipSalesment.Global.Harbors[_PlayerID] = nil;
+    ModuleShipSalesment.Global:PurgeAllTradeRoutes(_PlayerID);
 end
-TravelingSalesmanDeactivate = API.TravelingSalesmanDispose;
-
----
--- Deaktiviert einen fahrenden Händler. Der aktuelle Zyklus wird noch beendet,
--- aber danach kommt der Händler nicht mehr wieder.
---
--- <b>Alias</b>: TravelingSalesmanYield
---
--- @param[type=number] _PlayerID Spieler-ID des Händlers
--- @within Anwenderfunktionen
---
--- @usage API.TravelingSalesmanYield(2);
---
-function API.TravelingSalesmanYield(_PlayerID)
-    if GUI then
-        return;
-    end
-    if type(_PlayerID) ~= "number" or _PlayerID < 1 or _PlayerID > 8 then
-        error("API.TravelingSalesmanYield: _PlayerID (" ..tostring(_PlayerID).. ") is wrong!");
-        return;
-    end
-    local Harbor = ModuleShipSalesment.Global.Harbors[_PlayerID];
-    if Harbor then
-        info("API.TravelingSalesmanYield: Suspending habor of player " .._PlayerID);
-        Harbor:SetActive(false);
-    end
-end
-API.TravelingSalesmanDeactivate = API.TravelingSalesmanYield;
-TravelingSalesmanYield = API.TravelingSalesmanYield;
-
----
--- Aktiviert einen fahrenden Händler, der zuvor deaktiviert wurde.
---
--- <b>Alias</b>: TravelingSalesmanResume
---
--- @param[type=number] _PlayerID Spieler-ID des Händlers
--- @within Anwenderfunktionen
---
--- @usage API.TravelingSalesmanResume(2);
---
-function API.TravelingSalesmanResume(_PlayerID)
-    if GUI then
-        return;
-    end
-    if type(_PlayerID) ~= "number" or _PlayerID < 1 or _PlayerID > 8 then
-        error("API.TravelingSalesmanResume: _PlayerID (" ..tostring(_PlayerID).. ") is wrong!");
-        return;
-    end
-    local Harbor = ModuleShipSalesment.Global.Harbors[_PlayerID];
-    if Harbor then
-        info("API.TravelingSalesmanResume: Resuming habor of player " .._PlayerID);
-        Harbor:SetActive(true);
-    end
-end
-API.TravelingSalesmanActivate = API.TravelingSalesmanResume;
-TravelingSalesmanResume = API.TravelingSalesmanResume;
 
