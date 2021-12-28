@@ -55,6 +55,8 @@ BinWriter_ModuleFiles = {
     "Swift_2_Selection/api.lua",
     "Swift_2_SpeedLimit/source.lua",
     "Swift_2_SpeedLimit/api.lua",
+    "Swift_2_ShipSalesman/source.lua",
+    "Swift_2_ShipSalesman/api.lua",
     "Swift_2_Typewriter/source.lua",
     "Swift_2_Typewriter/api.lua",
     "Swift_2_WeatherManipulation/source.lua",
@@ -82,8 +84,6 @@ BinWriter_ModuleFiles = {
     "Swift_3_QuestJournal/source.lua",
     "Swift_3_QuestJournal/api.lua",
     "Swift_3_QuestJournal/behavior.lua",
-    "Swift_2_ShipSalesman/source.lua",
-    "Swift_2_ShipSalesman/api.lua",
 
     "Swift_0_Core/selfload.lua",
 };

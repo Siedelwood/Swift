@@ -80,6 +80,49 @@ function Mission_FirstMapAction()
 
 end
 
+-- > CreateFloatingRock()
+
+function CreateFloatingRock()
+    FloatingType = Entities.D_ME_Rock_Set01_B_07;
+    FloatingModel = Models.Doodads_D_ME_Rock_Set01_B_07;
+    local x,y,z = Logic.EntityGetPos(GetID("pos4"));
+    FloatingHeight = z;
+    FloatingID = Logic.CreateEntity(FloatingType, x, y, 0, 0);
+
+    FloatingJob = API.StartHiResJob(function()
+        local x,y,z = Logic.EntityGetPos(GetID("pos4"));
+        DestroyEntity(FloatingID);
+        Logic.SetTerrainNodeHeight(x/100,y/100,FloatingHeight + 1000);
+        Logic.UpdateBlocking((x-1000)/100, (y-1000)/100, (x+1000)/100, (y+1000)/100);
+        FloatingID = Logic.CreateEntity(FloatingType, x, y, 0, 0);
+        Logic.SetTerrainNodeHeight(x/100,y/100,FloatingHeight);
+    end)
+end
+
+function FloatingRockCreate()
+    local x,y,z = Logic.EntityGetPos(GetID("pos4"));
+    FloatingID = Logic.CreateEntity(Entities.XD_ScriptEntity, x, y, 0, 0);
+    Logic.SetModel(FloatingID, Models.Doodads_D_ME_Rock_Set01_B_07);
+    Logic.SetVisible(FloatingID, true);
+
+    for i= x-150, x+150, 150 do
+        for j= y-150, y+150, 150 do
+            local ID = Logic.CreateEntity(Entities.E_NE_BlowingSnow01, i, j, 0, 0);
+            API.LookAt(ID, FloatingID);
+        end
+    end
+end
+
+function FloatingRockIncreaseHeight()
+    local x,y,z = Logic.EntityGetPos(GetID("pos4"));
+    Logic.SetTerrainNodeHeight(x/100,y/100,z + 1000);
+end
+
+function FloatingRockDecreaseHeight()
+    local x,y,z = Logic.EntityGetPos(GetID("pos4"));
+    Logic.SetTerrainNodeHeight(x/100,y/100,z - 1000);
+end
+
 -- > CreateSegmentedQuest()
 
 function CreateSegmentedQuest()
