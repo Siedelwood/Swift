@@ -1,8 +1,8 @@
 {
-    "name": "Swift_3_ShipSalesman",
+    "name": "Swift_2_ShipSalesman",
     "version": "1.0.0",
     "mandatory": false,
-    "caption": "(3) Ship Salesman",
+    "caption": "(2) Ship Salesman",
     "shortdesc": "",
     "description": "",
     "files": [

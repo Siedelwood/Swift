@@ -82,8 +82,8 @@ BinWriter_ModuleFiles = {
     "Swift_3_QuestJournal/source.lua",
     "Swift_3_QuestJournal/api.lua",
     "Swift_3_QuestJournal/behavior.lua",
-    "Swift_3_ShipSalesman/source.lua",
-    "Swift_3_ShipSalesman/api.lua",
+    "Swift_2_ShipSalesman/source.lua",
+    "Swift_2_ShipSalesman/api.lua",
 
     "Swift_0_Core/selfload.lua",
 };
