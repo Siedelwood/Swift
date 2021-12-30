@@ -1,5 +1,5 @@
 --[[
-Swift_1_DisplayCore/Source
+Swift_1_EntityEventCore/Source
 
 Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
 
@@ -313,7 +313,7 @@ function ModuleEntityEventCore.Global:TriggerThiefStealFromBuildingEvent(_ThiefI
             GameCallback_OnThiefStealBuilding_Orig_QSB_EntityCore(_ThiefID, _ThiefPlayerID, _BuildingID, _BuildingPlayerID);
         end
     end
-    
+
     -- Send event
     API.SendScriptEvent(QSB.ScriptEvents.ThiefInfiltratedBuilding, _ThiefID, _ThiefPlayerID, _BuildingID, _BuildingPlayerID);
     Logic.ExecuteInLuaLocalState(string.format(
@@ -398,6 +398,9 @@ function ModuleEntityEventCore.Global:CheckOnNonTrackableEntities()
     -- Buildings
     for i= 1, 8 do
         for k, v in pairs{Logic.GetPlayerEntitiesInCategory(i, EntityCategories.AttackableBuilding)} do
+            self:RegisterEntityAndTriggerEvent(v);
+        end
+        for k, v in pairs{Logic.GetPlayerEntitiesInCategory(i, EntityCategories.Wall)} do
             self:RegisterEntityAndTriggerEvent(v);
         end
     end

@@ -96,13 +96,17 @@ function Mission_FirstMapAction()
 
     GameCallback_QSB_OnEventReceived = function(_EventID, ...)
         if _EventID == QSB.ScriptEvents.EntityCreated then
-            local TypeID = Logic.GetEntityType(arg[1]);
-            local TypeName = Logic.GetEntityTypeName(TypeID);
-            API.Note("Create: " ..TypeName);
+            if IsExisting(arg[1]) then
+                local TypeID = Logic.GetEntityType(arg[1]);
+                local TypeName = Logic.GetEntityTypeName(TypeID);
+                API.Note("Create: " ..TypeName);
+            end
         elseif _EventID == QSB.ScriptEvents.EntityDestroyed then
-            local TypeID = Logic.GetEntityType(arg[1]);
-            local TypeName = Logic.GetEntityTypeName(TypeID);
-            API.Note("Destroyed: " ..TypeName);
+            if IsExisting(arg[1]) then
+                local TypeID = Logic.GetEntityType(arg[1]);
+                local TypeName = Logic.GetEntityTypeName(TypeID);
+                API.Note("Destroyed: " ..TypeName);
+            end
         end
     end
 end
