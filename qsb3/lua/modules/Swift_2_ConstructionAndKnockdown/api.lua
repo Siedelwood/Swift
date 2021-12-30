@@ -48,12 +48,12 @@ You may use and modify this file unter the terms of the MIT licence.
 -- @usage
 -- -- Vordefinierte Bedingung:
 -- -- Bäckereien dürfen nicht auf Territorium 13 gebaut werden.
--- local ID = API.AddConstructionRestrction(
+-- local ID = API.AddConstructionRestriction(
 --     API.GetForbidConstructTypeAtTerritory(1, 13, Entities.B_Bakery)
 -- );
 -- -- Benutzerdefinierte Bedingung:
 -- -- Steinmauern können nur auf Territorium 7 gebaut werden.
--- local ID = API.AddConstructionRestrction(function(_PlayerID, _Type, _x, _y)
+-- local ID = API.AddConstructionRestriction(function(_PlayerID, _Type, _x, _y)
 --     if  _PlayerID == 1
 --     and Logic.IsEntityTypeInCategory(_Type, EntityCategories.Palisade) == 0
 --     and Logic.IsEntityTypeInCategory(_Type, EntityCategories.Wall) == 1 then
@@ -64,7 +64,7 @@ You may use and modify this file unter the terms of the MIT licence.
 --     return true;
 -- end);
 --
-function API.AddConstructionRestrction(_Function)
+function API.AddConstructionRestriction(_Function)
     local ID = ModuleConstructionControl.Global:GenerateConstructionConditionID();
     ModuleConstructionControl.Global.ConstructionConditions[ID] = _Function;
     return ID;
@@ -75,9 +75,9 @@ end
 -- @param[type=number] _ID ID der Beschränkung
 -- @within Anwenderfunktionen
 --
--- @usage API.RemoveConstructionRestrction(SomeRestrictionID);
+-- @usage API.RemoveConstructionRestriction(SomeRestrictionID);
 --
-function API.RemoveConstructionRestrction(_ID)
+function API.RemoveConstructionRestriction(_ID)
     ModuleConstructionControl.Global.ConstructionConditions[_ID] = nil;
 end
 
@@ -269,16 +269,16 @@ end
 -- @usage
 -- -- Vordefinierte Bedingung:
 -- -- Bäckereien dürfen nicht auf Territorium 13 abgerissen werden.
--- local ID = API.AddKnockdownRestrction(
+-- local ID = API.AddKnockdownRestriction(
 --     API.GetForbidKnockdownTypeAtTerritory(1, 13, Entities.B_Bakery)
 -- );
 -- -- Benutzerdefinierte Bedingung:
 -- -- Das Gebäude mit dem namen "Bakery" darf nicht abgerissen werden.
--- local ID = API.AddKnockdownRestrction(function(_EntityID)
+-- local ID = API.AddKnockdownRestriction(function(_EntityID)
 --     return Logic.GetEntityName(_EntityID) ~= "Bakery";
 -- end);
 --
-function API.AddKnockdownRestrction(_Function)
+function API.AddKnockdownRestriction(_Function)
     local ID = ModuleConstructionControl.Global:GenerateKnockdownConditionID();
     ModuleConstructionControl.Global.KnockdownConditions[ID] = _Function;
     return ID;
@@ -289,9 +289,9 @@ end
 -- @param[type=number] _ID ID der Beschränkung
 -- @within Anwenderfunktionen
 --
--- @usage API.RemoveKnockdownRestrction(SomeRestrictionID);
+-- @usage API.RemoveKnockdownRestriction(SomeRestrictionID);
 --
-function API.RemoveKnockdownRestrction(_ID)
+function API.RemoveKnockdownRestriction(_ID)
     ModuleConstructionControl.Global.KnockdownConditions[_ID] = nil;
 end
 
