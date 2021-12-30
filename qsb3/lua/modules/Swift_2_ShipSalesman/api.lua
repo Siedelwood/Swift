@@ -12,19 +12,27 @@ You may use and modify this file unter the terms of the MIT licence.
 -- Ermöglicht einen KI-Spieler als Hafen einzurichten.
 --
 -- <h5>Was ein Hafen macht</h5>
--- Häfen werden von Schiffen über Handelsrouten angesteuert. Ein Hafen kann
--- prinzipiell ungebegrenzt viele Handelsrouten haben. Wenn ein Schiff im
+-- Häfen werden zyklisch von Schiffen über Handelsrouten angesteuert. Ein Hafen
+-- kann prinzipiell ungebegrenzt viele Handelsrouten haben. Wenn ein Schiff im
 -- Hafen anlegt, werden die Waren den Angeboten hinzugefügt. Ist kein Platz
 -- mehr für ein weiteres Angebot, wird das jeweils älteste entfernt.
 --
 -- Die Angebote in einem Hafen werden nicht erneuert. Wenn alle Einheiten eines
 -- Angebotes gekauft wurden, wird das Angebot automatisch entfernt.
 --
+-- Handelsschiffe einer Handelsroute haben einen Geschwindigkeitsbonus erhalten,
+-- damit man bei langen Wegen nicht ewig auf die Ankunft warten muss.
+--
+-- Sollte ein KI-Spieler, welcher als Hafen eingerichtet ist, vernichtet werden,
+-- werden automatisch alle aktiven Routen gelöscht. Schiffe, welche sich auf
+-- dem Weg vom oder zum Hafen befinden, verschwinden ebenfalls.
+--
 -- <h5>Was ein Hafen NICHT macht</h5>
 -- Die Einrichtung eines KI-Spielers als Hafen bringt keine automatischen
 -- Änderungen des Diplomatiestatus mehr mit sich, wie zuvor üblich. Des weiteren
 -- wird keine automatische Nachricht mehr versendet, wenn ein Schiff im Hafen
--- anlegt oder diesen wieder verlässt.
+-- anlegt oder diesen wieder verlässt. Bei vielen Handelsrouten würde sonst der
+-- Spieler in Nachrichten ersticken.
 --
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
@@ -74,6 +82,11 @@ end
 ---
 -- Entfernt den Schiffshändler vom Lagerhaus des Spielers.
 --
+-- <b>Hinweis</b>: Die Routen werden sofort gelöscht. Schiffe, die sich mitten
+-- in ihrem Zyklus befinden, werden ebenfalls gelöscht und alle aktiven Angebote
+-- im Lagerhaus des KI-Spielers werden sofort entfernt. Nutze dies, wenn z.B.
+-- der KI-Spieler feindlich wird.
+--
 -- @param[type=number] _PlayerID ID des Spielers
 --
 -- @usage
@@ -91,7 +104,7 @@ end
 -- Fügt eine Handelsroute zu einem Hafen hinzu.
 --
 -- Für jede Handelsroute eines Hafens erscheint ein Handelsschiff, das den Hafen
--- mit neuen Waren versorgt.
+-- zyklisch mit neuen Waren versorgt.
 --
 -- Eine Handelsroute hat folgende Felder:
 -- <table border="1">
@@ -140,6 +153,7 @@ end
 -- @param[type=number] _PlayerID ID des Spielers
 -- @param[type=table]  _Route    Daten der Handelsroute
 -- @see API.InitHarbor
+-- @see API.ChangeTradeRouteGoods
 -- @see API.RemoveTradeRoute
 --
 -- @usage
@@ -161,7 +175,7 @@ end
 --             {"U_CatapultCart", 1},
 --             {"G_Beer", 2},
 --             {"G_Herb", 5},
---             {"U_Entertainer_NA_StiltWalker", 5},
+--             {"U_Entertainer_NA_StiltWalker", 1},
 --         }
 --     }
 -- );
@@ -210,10 +224,63 @@ function API.AddTradeRoute(_PlayerID, _Route)
 end
 
 ---
--- Löscht die Route aus der Liste der Handelsrouten eines Hafen.
+-- Andert das Warenangebot einer Handelsroute.
+--
+-- Es können nur bestehende Handelsrouten geändert werden. Die Änderung wird
+-- erst im nächsten Zyklus wirksam.
+--
+-- @param[type=number] _PlayerID    ID des Spielers
+-- @param[type=string] _RouteName   Daten der Handelsroute
+-- @param[type=table]  _RouteOffers Daten der Handelsroute
+-- @see API.InitHarbor
+-- @see API.RemoveTradeRoute
+-- @see API.AddTradeRoute
+--
+-- @usage
+-- API.ChangeTradeRouteGoods(
+--     2,
+--     "Route3",
+--     {{"G_Wool", 3},
+--      {"U_CatapultCart", 5},
+--      {"G_Beer", 2},
+--      {"G_Herb", 3},
+--      {"U_Entertainer_NA_StiltWalker", 1}}
+-- );
+--
+function API.ChangeTradeRouteGoods(_PlayerID, _RouteName, _RouteOffers)
+    if Logic.GetStoreHouse(_PlayerID) == 0 then
+        error("API.ChangeTradeRouteGoods: player " .._PlayerID.. " is dead! :(");
+        return;
+    end
+    if type(_RouteOffers) ~= "table" and #_RouteOffers < 1 then
+        error("API.ChangeTradeRouteGoods: _RouteOffers must be a table with entries!");
+        return;
+    end
+    for i= 1, #_RouteOffers, 1 do
+        if Goods[_RouteOffers[i][1]] == nil and Entities[_RouteOffers[i][1]] == nil then
+            error("API.ChangeTradeRouteGoods: Offers[" ..i.. "][1] is invalid good type!");
+            return;
+        end
+        if type(_RouteOffers[i][2]) ~= "number" or _RouteOffers[i][2] < 1 then
+            error("API.ChangeTradeRouteGoods: Offers[" ..i.. "][2] amount must be at least 1!");
+            return;
+        end
+    end
+    ModuleShipSalesment.Global:AlterTradeRouteOffers(_PlayerID, _RouteName, _RouteOffers);
+end
+
+---
+-- Löscht eine Handelsroute, wenn ihr Zyklus beendet ist.
+--
+-- Der Befehl erzeugt einen Job, welcher auf das Ende des Zyklus wartet und
+-- erst dann die Route löscht. Über die ID kann der Job abgebrochen werden.
 --
 -- @param[type=number] _PlayerID  ID des Spielers
 -- @param[type=string] _RouteName Name der Route
+-- @return[type=number] Job ID
+-- @see API.InitHarbor
+-- @see API.AddTradeRoute
+-- @see API.ChangeTradeRouteGoods
 --
 -- @usage
 -- API.RemoveTradeRoute(2, "Route1");
@@ -221,24 +288,8 @@ end
 function API.RemoveTradeRoute(_PlayerID, _RouteName)
     if Logic.GetStoreHouse(_PlayerID) == 0 then
         error("API.RemoveTradeRoute: player " .._PlayerID.. " is dead! :(");
-        return;
+        return 0;
     end
-    ModuleShipSalesment.Global:PurgeTradeRoute(_PlayerID, _RouteName);
-end
-
----
--- Löscht alle Routen eines Hafen.
---
--- @param[type=number] _PlayerID  ID des Spielers
---
--- @usage
--- API.ClearTradeRoutes(2);
---
-function API.ClearTradeRoutes(_PlayerID)
-    if Logic.GetStoreHouse(_PlayerID) == 0 then
-        error("API.RemoveTradeRoute: player " .._PlayerID.. " is dead! :(");
-        return;
-    end
-    ModuleShipSalesment.Global:PurgeAllTradeRoutes(_PlayerID);
+    return ModuleShipSalesment.Global:ShutdownTradeRoute(_PlayerID, _RouteName);
 end
 

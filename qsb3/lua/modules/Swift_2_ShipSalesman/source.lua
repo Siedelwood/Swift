@@ -77,6 +77,18 @@ function ModuleShipSalesment.Global:AddTradeRoute(_PlayerID, _Data)
     table.insert(self.Harbors[_PlayerID].Routes, _Data);
 end
 
+function ModuleShipSalesment.Global:AlterTradeRouteOffers(_PlayerID, _Name, _Offers)
+    if not self.Harbors[_PlayerID] then
+        return;
+    end
+    for i= #self.Harbors[_PlayerID].Routes, 1, -1 do
+        if self.Harbors[_PlayerID].Routes[i].Name == _Name then
+            self.Harbors[_PlayerID].Routes[i].Offers = _Offers;
+            return;
+        end
+    end
+end
+
 function ModuleShipSalesment.Global:PurgeAllTradeRoutes(_PlayerID)
     if not self.Harbors[_PlayerID] then
         return;
@@ -110,6 +122,24 @@ function ModuleShipSalesment.Global:PurgeTradeRoute(_PlayerID, _Name)
     end
 end
 
+function ModuleShipSalesment.Global:ShutdownTradeRoute(_PlayerID, _Name)
+    if not self.Harbors[_PlayerID] then
+        return;
+    end
+    for i= #self.Harbors[_PlayerID].Routes, 1, -1 do
+        if self.Harbors[_PlayerID].Routes[i].Name == _Name then
+            return API.StartJob(function (_PlayerID, _Index)
+                if self.Harbors[_PlayerID].Routes[_Index].State == QSB.ShipTraderState.Waiting then
+                    local Name = self.Harbors[_PlayerID].Routes[_Index].Name;
+                    ModuleShipSalesment.Global:PurgeTradeRoute(_PlayerID, Name);
+                    return true;
+                end
+            end, _PlayerID, i);
+        end
+    end
+    return 0;
+end
+
 function ModuleShipSalesment.Global:SpawnShip(_PlayerID, _Index)
     local Route = self.Harbors[_PlayerID].Routes[_Index];
     local SpawnPointID = GetID(Route.Path[1]);
@@ -117,7 +147,7 @@ function ModuleShipSalesment.Global:SpawnShip(_PlayerID, _Index)
     local Orientation = Logic.GetEntityOrientation(SpawnPointID);
     local ID = Logic.CreateEntity(Entities.D_X_TradeShip, x, y, Orientation, 0);
     self.Harbors[_PlayerID].Routes[_Index].ShipID = ID;
-    Logic.SetSpeedFactor(ID, 2.0);
+    Logic.SetSpeedFactor(ID, 3.0);
     return ID;
 end
 
@@ -258,56 +288,60 @@ end
 
 function ModuleShipSalesment.Global:ControlHarbors()
     for k,v in pairs(self.Harbors) do
-        if #v.Routes > 0 then
-            -- remove sold out offers
-            local StoreData = ModuleTradingCore.Global:GetStorehouseInformation(k);
-            for i= 1, #StoreData[1] do
-                if StoreData[1][i][5] == 0 then
-                    ModuleTradingCore.Global:RemoveTradeOfferByData(StoreData, i);
-                    for j= #v.AddedOffers, 1, -1 do
-                        if v.AddedOffers[j] == StoreData[1][i][3] then
-                            table.remove(self.Harbors[k].AddedOffers, j);
+        if Logic.GetStoreHouse(k) == 0 then
+            self:DisposeHarbor(k);
+        else
+            if #v.Routes > 0 then
+                -- remove sold out offers
+                local StoreData = ModuleTradingCore.Global:GetStorehouseInformation(k);
+                for i= 1, #StoreData[1] do
+                    if StoreData[1][i][5] == 0 then
+                        ModuleTradingCore.Global:RemoveTradeOfferByData(StoreData, i);
+                        for j= #v.AddedOffers, 1, -1 do
+                            if v.AddedOffers[j] == StoreData[1][i][3] then
+                                table.remove(self.Harbors[k].AddedOffers, j);
+                            end
                         end
                     end
                 end
-            end
 
-            -- control trade routes
-            for i= 1, #v.Routes do
-                if v.Routes[i].State == QSB.ShipTraderState.Waiting then
-                    self.Harbors[k].Routes[i].Timer = v.Routes[i].Timer +1;
-                    if v.Routes[i].Timer >= v.Routes[i].Interval then
-                        self.Harbors[k].Routes[i].State = QSB.ShipTraderState.MovingIn;
-                        self.Harbors[k].Routes[i].Timer = 0;
-                        self:SpawnShip(k, i);
-                        self:MoveShipIn(k, i);
-                    end
+                -- control trade routes
+                for i= 1, #v.Routes do
+                    if v.Routes[i].State == QSB.ShipTraderState.Waiting then
+                        self.Harbors[k].Routes[i].Timer = v.Routes[i].Timer +1;
+                        if v.Routes[i].Timer >= v.Routes[i].Interval then
+                            self.Harbors[k].Routes[i].State = QSB.ShipTraderState.MovingIn;
+                            self.Harbors[k].Routes[i].Timer = 0;
+                            self:SpawnShip(k, i);
+                            self:MoveShipIn(k, i);
+                        end
 
-                elseif v.Routes[i].State == QSB.ShipTraderState.MovingIn then
-                    local AnchorPoint = v.Routes[i].Path[#v.Routes[i].Path];
-                    local ShipID = v.Routes[i].ShipID;
-                    if IsNear(ShipID, AnchorPoint, 300) then
-                        self.Harbors[k].Routes[i].State = QSB.ShipTraderState.Anchored;
-                        self:SendShipArrivedEvent(k, v.Routes[i], ShipID);
-                        self:AddTradeOffers(k, i);
-                    end
+                    elseif v.Routes[i].State == QSB.ShipTraderState.MovingIn then
+                        local AnchorPoint = v.Routes[i].Path[#v.Routes[i].Path];
+                        local ShipID = v.Routes[i].ShipID;
+                        if IsNear(ShipID, AnchorPoint, 300) then
+                            self.Harbors[k].Routes[i].State = QSB.ShipTraderState.Anchored;
+                            self:SendShipArrivedEvent(k, v.Routes[i], ShipID);
+                            self:AddTradeOffers(k, i);
+                        end
 
-                elseif v.Routes[i].State == QSB.ShipTraderState.Anchored then
-                    local ShipID = v.Routes[i].ShipID;
-                    self.Harbors[k].Routes[i].Timer = v.Routes[i].Timer +1;
-                    if v.Routes[i].Timer >= v.Routes[i].Duration then
-                        self.Harbors[k].Routes[i].State = QSB.ShipTraderState.MovingOut;
-                        self.Harbors[k].Routes[i].Timer = 0;
-                        self:SendShipLeftEvent(k, v.Routes[i], ShipID);
-                        self:MoveShipOut(k, i);
-                    end
+                    elseif v.Routes[i].State == QSB.ShipTraderState.Anchored then
+                        local ShipID = v.Routes[i].ShipID;
+                        self.Harbors[k].Routes[i].Timer = v.Routes[i].Timer +1;
+                        if v.Routes[i].Timer >= v.Routes[i].Duration then
+                            self.Harbors[k].Routes[i].State = QSB.ShipTraderState.MovingOut;
+                            self.Harbors[k].Routes[i].Timer = 0;
+                            self:SendShipLeftEvent(k, v.Routes[i], ShipID);
+                            self:MoveShipOut(k, i);
+                        end
 
-                elseif v.Routes[i].State == QSB.ShipTraderState.MovingOut then
-                    local SpawnPoint = v.Routes[i].Path[1];
-                    local ShipID = v.Routes[i].ShipID;
-                    if IsNear(ShipID, SpawnPoint, 300) then
-                        self.Harbors[k].Routes[i].State = QSB.ShipTraderState.Waiting;
-                        self:DespawnShip(k, i);
+                    elseif v.Routes[i].State == QSB.ShipTraderState.MovingOut then
+                        local SpawnPoint = v.Routes[i].Path[1];
+                        local ShipID = v.Routes[i].ShipID;
+                        if IsNear(ShipID, SpawnPoint, 300) then
+                            self.Harbors[k].Routes[i].State = QSB.ShipTraderState.Waiting;
+                            self:DespawnShip(k, i);
+                        end
                     end
                 end
             end
