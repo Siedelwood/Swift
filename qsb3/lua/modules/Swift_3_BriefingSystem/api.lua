@@ -71,6 +71,11 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- <td>(Optional) Alle Einheiten und Gebäude werden unverwundbar solange das Briefing aktiv ist.</td>
 -- </tr>
 -- <tr>
+-- <td>BarOpacity</td>
+-- <td>number</td>
+-- <td>(Optional) Setzt den Alphawert der Bars (Zwischen 0 und 1).</td>
+-- </tr>
+-- <tr>
 -- <td>EnableSky</td>
 -- <td>boolean</td>
 -- <td>(Optional) Der Himmel wird während des Briefing angezeigt.</td>
