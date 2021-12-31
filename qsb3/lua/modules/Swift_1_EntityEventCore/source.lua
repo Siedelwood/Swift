@@ -510,5 +510,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleEntityEventCore);
+Swift:RegisterModule(ModuleEntityEventCore);
 

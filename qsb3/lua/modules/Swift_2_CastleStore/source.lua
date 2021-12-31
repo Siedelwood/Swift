@@ -1394,5 +1394,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleCastleStore);
+Swift:RegisterModule(ModuleCastleStore);
 

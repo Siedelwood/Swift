@@ -129,5 +129,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleScriptingValue);
+Swift:RegisterModule(ModuleScriptingValue);
 

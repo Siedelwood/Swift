@@ -672,5 +672,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleCutsceneSystem);
+Swift:RegisterModule(ModuleCutsceneSystem);
 

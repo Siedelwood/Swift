@@ -143,5 +143,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleJobsCore);
+Swift:RegisterModule(ModuleJobsCore);
 

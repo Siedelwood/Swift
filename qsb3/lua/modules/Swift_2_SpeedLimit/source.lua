@@ -70,5 +70,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleSpeedLimitation);
+Swift:RegisterModule(ModuleSpeedLimitation);
 

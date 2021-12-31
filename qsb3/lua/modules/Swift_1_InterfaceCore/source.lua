@@ -364,5 +364,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleInterfaceCore);
+Swift:RegisterModule(ModuleInterfaceCore);
 

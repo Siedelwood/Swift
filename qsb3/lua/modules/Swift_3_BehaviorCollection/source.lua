@@ -401,5 +401,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleBehaviorCollection);
+Swift:RegisterModule(ModuleBehaviorCollection);
 

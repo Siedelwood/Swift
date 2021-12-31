@@ -141,5 +141,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleInteractiveSites);
+Swift:RegisterModule(ModuleInteractiveSites);
 

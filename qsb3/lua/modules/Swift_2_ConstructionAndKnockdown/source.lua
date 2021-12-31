@@ -121,5 +121,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleConstructionControl);
+Swift:RegisterModule(ModuleConstructionControl);
 

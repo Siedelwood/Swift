@@ -216,5 +216,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleTypewriter);
+Swift:RegisterModule(ModuleTypewriter);
 

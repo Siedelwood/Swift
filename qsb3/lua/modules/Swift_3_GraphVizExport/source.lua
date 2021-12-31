@@ -248,5 +248,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleGraphVizExport);
+Swift:RegisterModule(ModuleGraphVizExport);
 

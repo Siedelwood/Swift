@@ -677,5 +677,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleTradingCore);
+Swift:RegisterModule(ModuleTradingCore);
 

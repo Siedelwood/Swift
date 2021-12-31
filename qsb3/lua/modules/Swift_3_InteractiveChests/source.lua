@@ -184,5 +184,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleInteractiveChests);
+Swift:RegisterModule(ModuleInteractiveChests);
 

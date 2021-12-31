@@ -1030,5 +1030,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleBriefingSystem);
+Swift:RegisterModule(ModuleBriefingSystem);
 

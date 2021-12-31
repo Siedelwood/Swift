@@ -223,5 +223,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleQuestJournal);
+Swift:RegisterModule(ModuleQuestJournal);
 

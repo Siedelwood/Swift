@@ -221,5 +221,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleWeatherManipulation);
+Swift:RegisterModule(ModuleWeatherManipulation);
 

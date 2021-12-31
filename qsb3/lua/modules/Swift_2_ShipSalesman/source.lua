@@ -360,5 +360,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleShipSalesment);
+Swift:RegisterModule(ModuleShipSalesment);
 

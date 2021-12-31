@@ -106,7 +106,7 @@ function Swift:LoadModules()
     end
 end
 
-function Swift:RegisterModules(_Module)
+function Swift:RegisterModule(_Module)
     if (type(_Module) ~= "table") then
         assert(false, "Modules must be tables!");
         return;

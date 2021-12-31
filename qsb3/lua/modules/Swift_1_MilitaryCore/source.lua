@@ -297,5 +297,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleMilitaryCore);
+Swift:RegisterModule(ModuleMilitaryCore);
 

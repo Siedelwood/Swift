@@ -578,5 +578,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleQuests);
+Swift:RegisterModule(ModuleQuests);
 

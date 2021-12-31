@@ -522,5 +522,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleDialogSystem);
+Swift:RegisterModule(ModuleDialogSystem);
 

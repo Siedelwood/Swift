@@ -302,7 +302,7 @@ function ModuleInputOutputCore.Local:OpenDialog(_Title, _Text, _Action)
             _Text = _Text .. "{cr}";
         end
 
-        g_MapAndHeroPreview.SelectKnight = function()
+        g_MapAndHeroPreview.SelectKnight = function(_Knight)
         end
 
         XGUIEng.ShowAllSubWidgets("/InGame/Dialog/BG",1);
@@ -985,5 +985,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleInputOutputCore);
+Swift:RegisterModule(ModuleInputOutputCore);
 

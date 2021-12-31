@@ -99,5 +99,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleExtendedCamera);
+Swift:RegisterModule(ModuleExtendedCamera);
 

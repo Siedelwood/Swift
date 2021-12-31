@@ -73,5 +73,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleSoundCore);
+Swift:RegisterModule(ModuleSoundCore);
 

@@ -422,5 +422,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleNpcInteraction);
+Swift:RegisterModule(ModuleNpcInteraction);
 

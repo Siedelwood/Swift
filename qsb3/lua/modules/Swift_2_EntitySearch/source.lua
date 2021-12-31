@@ -156,5 +156,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleEntitySearch);
+Swift:RegisterModule(ModuleEntitySearch);
 

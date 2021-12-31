@@ -89,5 +89,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleMinimap);
+Swift:RegisterModule(ModuleMinimap);
 

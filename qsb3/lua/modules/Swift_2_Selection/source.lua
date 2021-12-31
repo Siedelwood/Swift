@@ -733,5 +733,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleSelection);
+Swift:RegisterModule(ModuleSelection);
 

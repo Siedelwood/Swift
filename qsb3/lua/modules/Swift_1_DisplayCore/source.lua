@@ -422,5 +422,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleDisplayCore);
+Swift:RegisterModule(ModuleDisplayCore);
 

@@ -610,5 +610,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModules(ModuleObjectInteraction);
+Swift:RegisterModule(ModuleObjectInteraction);
 
