@@ -455,7 +455,7 @@ function B_Goal_StealGold:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.Amount = _Parameter * 1;
     elseif (_Index == 1) then
-        local PlayerID = tonumber(_Paramater) or -1;
+        local PlayerID = tonumber(_Parameter) or -1;
         self.Target = PlayerID * 1;
     elseif (_Index == 2) then
         _Parameter = _Parameter or "false"
