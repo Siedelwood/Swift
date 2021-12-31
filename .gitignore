@@ -40,6 +40,10 @@ local.properties
 # STS (Spring Tool Suite)
 .springBeans
 
+# Intellij IDEA
+
+.idea
+
 # Code Recommenders
 .recommenders/
 
