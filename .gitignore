@@ -57,6 +57,7 @@ app/
 tmp/
 */ldoc/*
 qsb3/doc/html
+qsb3/lua/mods/doc
 qsb3/Swift
 qsb/lua/core.lua
 tmp/
