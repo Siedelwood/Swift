@@ -13,7 +13,7 @@ QSB = QSB or {};
 
 QSB.Version = "Version 3.0.0 XX/XX/20XX ALPHA";
 QSB.Language = "de";
-QSB.HumanPlayerID = -1;
+QSB.HumanPlayerID = 1;
 QSB.ScriptEvents = {};
 QSB.CustomVariable = {};
 

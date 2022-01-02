@@ -13,12 +13,17 @@ ModuleInterfaceCore = {
         Name = "ModuleInterfaceCore",
     },
 
-    Global = {},
+    Global = {
+        HumanKnightType = 0,
+        HumanPlayerID = 1,
+    },
     Local = {
         HiddenWidgets = {},
         HotkeyDescriptions = {},
-        ForbidRegularSave = false;
-        DisableHEAutoSave = false;
+        ForbidRegularSave = false,
+        DisableHEAutoSave = false,
+        HumanKnightType = 0,
+        HumanPlayerID = 1,
     },
     -- This is a shared structure but the values are asynchronous!
     Shared = {};
@@ -29,11 +34,80 @@ QSB.PlayerNames = {};
 -- Global ------------------------------------------------------------------- --
 
 function ModuleInterfaceCore.Global:OnGameStart()
+    self.HumanKnightType = Logic.GetEntityType(Logic.GetKnightID(QSB.HumanPlayerID));
+    self.HumanPlayerID = QSB.HumanPlayerID;
+end
+
+function ModuleInterfaceCore.Global:SetControllingPlayer(_OldPlayerID, _NewPlayerID, _NewStatisticsName)
+    assert(type(_OldPlayerID) == "number");
+    assert(type(_NewPlayerID) == "number");
+    _NewStatisticsName = _NewStatisticsName or "";
+    local EntityID = Logic.GetKnightID(_NewPlayerID);
+    local EntityType = Logic.GetEntityType(EntityID);
+
+    Logic.PlayerSetIsHumanFlag(_OldPlayerID, 0);
+    Logic.PlayerSetIsHumanFlag(_NewPlayerID, 1);
+    Logic.PlayerSetGameStateToPlaying(_NewPlayerID);
+
+    self.HumanKnightType = EntityType;
+    self.HumanPlayerID = _NewPlayerID;
+    QSB.HumanPlayerID = _NewPlayerID;
+
+    GameCallback_PlayerLost = function(_PlayerID)
+        if _PlayerID == QSB.HumanPlayerID then
+            QuestTemplate:TerminateEventsAndStuff()
+            if MissionCallback_Player1Lost then
+                MissionCallback_Player1Lost()
+            end
+        end
+    end
+
+    Logic.ExecuteInLuaLocalState([[
+        GUI.ClearSelection()
+        GUI.SetControlledPlayer(]].._NewPlayerID..[[)
+        
+        local KnightID = Logic.GetKnightID(]].._NewPlayerID..[[)
+        ModuleInterfaceCore.Local.HumanPlayerID = ]].._NewPlayerID..[[
+        QSB.HumanPlayerID = ]].._NewPlayerID..[[;
+
+        for k,v in pairs(Buffs) do
+            GUI_Buffs.UpdateBuffsInInterface(]].._NewPlayerID..[[, v)
+            GUI.ResetMiniMap()
+        end
+
+        if IsExisting(Logic.GetKnightID(GUI.GetPlayerID())) then
+            local Portrait = GetKnightActor(]]..EntityType..[[)
+            local KnightType = Logic.GetEntityType(KnightID)
+            ModuleInterfaceCore.Local.HumanKnightType = KnightType;
+            g_PlayerPortrait[GUI.GetPlayerID()] = Portrait
+            LocalSetKnightPicture()
+        end
+
+        local NewName = "]].._NewStatisticsName..[["
+        if NewName ~= "" then
+            GUI_MissionStatistic.PlayerNames[GUI.GetPlayerID()] = NewName
+        end
+        HideOtherMenus()
+
+        function GUI_Knight.GetTitleNameByTitleID(_KnightType, _TitleIndex)
+            local KeyName = "Title_" .. GetNameOfKeyInTable(KnightTitles, _TitleIndex) .. "_" .. KnightGender[]]..EntityType..[[]
+            local String = XGUIEng.GetStringTableText("UI_ObjectNames/" .. KeyName)
+            if String == nil or String == "" then
+                String = "Knight not in Gender Table? (localscript.lua)"
+            end
+            return String
+        end
+    ]]);
+
+    self.HumanPlayerChangedOnce = true;
 end
 
 -- Local -------------------------------------------------------------------- --
 
 function ModuleInterfaceCore.Local:OnGameStart()
+    self.HumanKnightType = Logic.GetEntityType(Logic.GetKnightID(QSB.HumanPlayerID));
+    self.HumanPlayerID = QSB.HumanPlayerID;
+
     self:OverrideMissionGoodCounter();
     self:OverrideUpdateClaimTerritory();
     self:SetupHackRegisterHotkey();

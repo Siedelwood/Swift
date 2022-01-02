@@ -169,6 +169,21 @@ GetPlayerName_OrigName = GetPlayerName;
 GetPlayerName = API.GetPlayerName;
 
 ---
+-- Wechselt die Spieler ID des menschlichen Spielers.
+--
+-- Die neue ID muss einen Primärritter haben. Diese Funktion kann nicht im
+-- Multiplayer Mode verwendet werden.
+--
+-- @param[type=number] _OldPlayerID Alte ID des menschlichen Spielers
+-- @param[type=number] _NewPlayerID Neue ID des menschlichen Spielers
+-- @param[type=string] _NewStatisticsName Name in der Statistik
+-- @within Anwenderfunktionen
+--
+function API.SetControllingPlayer(_OldPlayerID, _NewPlayerID, _NewStatisticsName)
+    ModuleInterfaceCore.Global:SetControllingPlayer(_OldPlayerID, _NewPlayerID, _NewStatisticsName);
+end
+
+---
 -- Gibt dem Spieler einen neuen Namen.
 --
 -- @param[type=number] _playerID ID des Spielers
