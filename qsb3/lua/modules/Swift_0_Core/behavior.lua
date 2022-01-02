@@ -2999,7 +2999,7 @@ end
 
 function B_Goal_TributeClaim:CureOutpost(_Quest)
     local Outpost = Logic.GetTerritoryAcquiringBuildingID(self.TerritoryID);
-    if IsExisting(Outpost) and GetHealth(Outpost) < 25 and Logic.IsBuildingBeingKnockedDown(Outpost) == false then
+    if IsExisting(Outpost) and API.GetEntityHealth(Outpost) < 25 and Logic.IsBuildingBeingKnockedDown(Outpost) == false then
         while (Logic.GetEntityHealth(Outpost) < Logic.GetEntityMaxHealth(Outpost) * 0.6) do
             Logic.HealEntity(Outpost, 1);
         end
