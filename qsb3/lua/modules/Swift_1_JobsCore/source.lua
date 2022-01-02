@@ -11,11 +11,10 @@ ModuleJobsCore = {
     Local = {},
     -- This is a shared structure but the values are asynchronous!
     Shared = {
-        EventJobID = 0;
+        EventJobID = 0,
+        TimeLineData = {},
         EventJobs = {
-            [Events.LOGIC_EVENT_ENTITY_CREATED]            = {},
             [Events.LOGIC_EVENT_ENTITY_DESTROYED]          = {},
-            [Events.LOGIC_EVENT_ENTITY_HURT_ENTITY]        = {},
             [Events.LOGIC_EVENT_EVERY_SECOND]              = {},
             [Events.LOGIC_EVENT_EVERY_TURN]                = {},
         };
@@ -77,20 +76,6 @@ function ModuleJobsCore.Shared:InstallEventJobs()
     );
 
     Trigger.RequestTrigger(
-        Events.LOGIC_EVENT_ENTITY_CREATED,
-        "",
-        "ModuleEventJob_OnEntityCreated",
-        1
-    );
-
-    Trigger.RequestTrigger(
-        Events.LOGIC_EVENT_ENTITY_HURT_ENTITY,
-        "",
-        "ModuleEventJob_OnEntityHurtEntity",
-        1
-    );
-
-    Trigger.RequestTrigger(
         Events.LOGIC_EVENT_EVERY_TURN,
         "",
         "ModuleEventJob_RealtimeController",
@@ -119,26 +104,11 @@ ModuleEventJob_OnEntityDestroyed = function()
     local PlayerID = Event.GetPlayerID();
     ModuleJobsCore.Shared:TriggerEventJobs(Events.LOGIC_EVENT_ENTITY_DESTROYED, PlayerID, EntityID);
 end
-ModuleEventJob_OnEntityHurtEntity = function()
-    local EntityID1 = Event.GetEntityID1();
-    local PlayerID1 = Logic.EntityGetPlayer(EntityID1);
-    local EntityID2 = Event.GetEntityID2();
-    local PlayerID2 = Logic.EntityGetPlayer(EntityID2);
-    ModuleJobsCore.Shared:TriggerEventJobs(Events.LOGIC_EVENT_ENTITY_HURT_ENTITY, PlayerID1, EntityID1, PlayerID2, EntityID2);
-end
 ModuleEventJob_OnEverySecond = function()
     ModuleJobsCore.Shared:TriggerEventJobs(Events.LOGIC_EVENT_EVERY_SECOND);
 end
 ModuleEventJob_OnEveryTurn = function()
     ModuleJobsCore.Shared:TriggerEventJobs(Events.LOGIC_EVENT_EVERY_TURN);
-end
-
--- FIXME: Useless?
-
-ModuleEventJob_OnEntityCreated = function()
-    local PlayerID = Event.GetPlayerID();
-    local EntityID = Event.GetEntityID();
-    ModuleJobsCore.Shared:TriggerEventJobs(Events.LOGIC_EVENT_ENTITY_CREATED, PlayerID, EntityID);
 end
 
 -- -------------------------------------------------------------------------- --
