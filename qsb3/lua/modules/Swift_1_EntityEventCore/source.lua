@@ -20,6 +20,50 @@ ModuleEntityEventCore = {
         DisableThiefCathedralSabotage = false,
         DisableThiefCisternSabotage = false,
 
+        SharedAnimalTypes = {
+            "A_Bees",
+            "A_Bird01",
+            "A_Butterfly01",
+            "A_Butterfly02",
+            "A_Butterfly03",
+            "A_Butterfly04",
+            "A_Butterfly05",
+            "A_Butterfly06",
+            "A_Chicken",
+            "A_Chicken02",
+            "A_Chicken03",
+            "A_Crab",
+            "A_Dragonfly",
+            "A_Fireflys",
+            "A_Fish_River",
+            "A_Frog",
+            "A_Mosquitos",
+            "A_Scorpion",
+            "A_Seagull",
+            "A_Swarm01",
+            "A_X_BrownBird",
+            "A_X_Cat",
+            "A_X_Cow01",
+            "A_X_Dog",
+            "A_X_Rabbit",
+            "A_X_Sheep01",
+            "A_X_Sheep02",
+            "A_X_WildBoar_Child",
+            "A_X_WildBoar_Female",
+            "A_X_WildBoar_Male",
+        },
+
+        SharedResourceTypes = {
+            "R_StoneMine",
+            "R_WildBoar_Child",
+            "R_WildBoar_Female",
+            "R_WildBoar_Male",
+            "R_DeadCow",
+            "R_DeadSheep",
+            "R_HerbBush",
+            "R_IronMine",
+        },
+
         SpawnerTypes = {
             "S_AxisDeer_AS",
             "S_Bear",
@@ -82,6 +126,7 @@ function ModuleEntityEventCore.Global:OnGameStart()
     QSB.ScriptEvents.BuildingConstructed = API.RegisterScriptEvent("Event_BuildingConstructed");
     QSB.ScriptEvents.BuildingUpgraded = API.RegisterScriptEvent("Event_BuildingUpgraded");
 
+    self.ClimateShort = self:GetClimateZoneShort();
     self:StartTriggers();
     self:OverrideCallback();
     self:OverrideLogic();
@@ -405,14 +450,45 @@ function ModuleEntityEventCore.Global:CheckOnNonTrackableEntities()
         end
     end
     -- Ambiend and Resources
+    for k, v in pairs(self.SharedAnimalTypes) do
+        local FoundEntities = Logic.GetEntitiesOfType(Entities[v]);
+        for i= 1, #FoundEntities do
+            self:RegisterEntityAndTriggerEvent(FoundEntities[i]);
+        end
+    end
+    for k, v in pairs(self.SharedResourceTypes) do
+        local FoundEntities = Logic.GetEntitiesOfType(Entities[v]);
+        for i= 1, #FoundEntities do
+            self:RegisterEntityAndTriggerEvent(FoundEntities[i]);
+        end
+    end
     for k, v in pairs(Entities) do
-        if string.find(k, "^A_") or string.find(k, "^R_") then
+        if string.find(k, "^A_" ..self.ClimateShort.. "_") or string.find(k, "^R_" ..self.ClimateShort.. "_") then
             local FoundEntities = Logic.GetEntitiesOfType(v);
             for i= 1, #FoundEntities do
                 self:RegisterEntityAndTriggerEvent(FoundEntities[i]);
             end
         end
     end
+end
+
+function ModuleEntityEventCore.Global:GetClimateZoneShort()
+    local ClimateZone = Logic.GetClimateZone();
+    local Suffix = ""
+
+    if ClimateZone ==  ClimateZones.Generic
+    or ClimateZone == ClimateZones.MiddleEurope then
+        Suffix = "ME"
+    elseif ClimateZone == ClimateZones.NorthEurope then
+        Suffix = "NE"
+    elseif ClimateZone == ClimateZones.SouthEurope then
+        Suffix = "SE"
+    elseif ClimateZone == ClimateZones.NorthAfrica then
+        Suffix = "NA"
+    elseif ClimateZone == ClimateZones.Asia then
+        Suffix = "AS"
+    end
+    return Suffix;
 end
 
 function ModuleEntityEventCore.Global:CheckOnSpawnerEntities()
