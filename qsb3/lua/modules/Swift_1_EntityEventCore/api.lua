@@ -31,7 +31,7 @@ You may use and modify this file unter the terms of the MIT licence.
 ---
 -- Events, auf die reagiert werden kann.
 --
--- @field EntityCreated Ein Entity wurde erzeugt. Wird auch durch Spieler ändern ausgelöst! (Parameter: EntityID)
+-- @field EntityRegistered Ein Entity wurde erzeugt. Wird auch durch Spieler ändern ausgelöst! (Parameter: EntityID)
 -- @field EntityDestroyed Ein Entity wurde zerstört. Wird auch durch Spieler ändern ausgelöst! (Parameter: EntityID)
 -- @field EntityHurt Ein Entity wurde angegriffen. (Parameter: HurtEntityID, HurtPlayerID, HurtingEntityID, HurtingPlayerID, DamageOriginal, DamageReceived)
 -- @field EntityKilled Ein Entity wurde getötet. (Parameter: KilledEntityID, KilledPlayerID, KillerEntityID, KillerPlayerID)

@@ -88,7 +88,7 @@ function Mission_FirstMapAction()
     MakeHeroAlandra();
 
     function GameCallback_QSB_OnEventReceived(_ID, ...)
-        if _ID == QSB.ScriptEvents.EntityCreated then
+        if _ID == QSB.ScriptEvents.EntityRegistered then
             API.Note("Entity " ..arg[1].. " was created!");
         elseif _ID == QSB.ScriptEvents.EntityDestroyed then
             API.Note("Entity " ..arg[1].. " was destroyed!");

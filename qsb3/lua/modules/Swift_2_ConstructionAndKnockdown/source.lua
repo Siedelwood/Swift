@@ -31,7 +31,7 @@ function ModuleConstructionControl.Global:OnGameStart()
 end
 
 function ModuleConstructionControl.Global:OnEvent(_ID, _Event, ...)
-    if _ID == QSB.ScriptEvents.EntityCreated then
+    if _ID == QSB.ScriptEvents.EntityRegistered then
         self:OnEntityCreated(arg[1]);
     end
 end
