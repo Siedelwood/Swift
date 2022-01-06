@@ -70,6 +70,11 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- festgelegt. Die Beschreibung ist eine Table, die bestimmte Werte für das
 -- Objekt beinhaltet. Dabei müssen nicht immer alle Werte angegeben werden.
 --
+-- <b>Achtung</b>: Wird eine Straße über einem Objekt platziert, während die
+-- Kosten bereits bezahlt und auf dem Weg sind, läuft die Aktivierung ins Leere.
+-- Zwar wird das Objekt zurückgesetzt, doch die bereits geschickten Waren sind
+-- dann futsch.
+--
 -- Mögliche Angaben:
 -- <table border="1">
 -- <tr>

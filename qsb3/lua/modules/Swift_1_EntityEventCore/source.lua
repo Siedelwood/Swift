@@ -419,23 +419,33 @@ function ModuleEntityEventCore.Global:CheckOnNonTrackableEntities()
         end
     end
     -- Ambiend and Resources
-    for k, v in pairs(self.SharedAnimalTypes) do
-        local FoundEntities = Logic.GetEntitiesOfType(Entities[v]);
-        for i= 1, #FoundEntities do
-            self:RegisterEntityAndTriggerEvent(FoundEntities[i]);
+    for i= 1, #self.SharedAnimalTypes do
+        if Logic.GetCurrentTurn() % 10 == i then
+            local FoundEntities = Logic.GetEntitiesOfType(Entities[self.SharedAnimalTypes[i]]);
+            for j= 1, #FoundEntities do
+                self:RegisterEntityAndTriggerEvent(FoundEntities[j]);
+            end
         end
     end
-    for k, v in pairs(self.SharedResourceTypes) do
-        local FoundEntities = Logic.GetEntitiesOfType(Entities[v]);
-        for i= 1, #FoundEntities do
-            self:RegisterEntityAndTriggerEvent(FoundEntities[i]);
+    for i= 1, #self.SharedResourceTypes do
+        if Logic.GetCurrentTurn() % 10 == i then
+            local FoundEntities = Logic.GetEntitiesOfType(Entities[self.SharedResourceTypes[i]]);
+            for j= 1, #FoundEntities do
+                self:RegisterEntityAndTriggerEvent(FoundEntities[j]);
+            end
         end
     end
     for k, v in pairs(Entities) do
+        local TypesToSearch = {};
         if string.find(k, "^A_" ..self.ClimateShort.. "_") or string.find(k, "^R_" ..self.ClimateShort.. "_") then
-            local FoundEntities = Logic.GetEntitiesOfType(v);
-            for i= 1, #FoundEntities do
-                self:RegisterEntityAndTriggerEvent(FoundEntities[i]);
+            table.insert(TypesToSearch, v);
+        end
+        for i= 1, #TypesToSearch do
+            if Logic.GetCurrentTurn() % 10 == i then
+                local FoundEntities = Logic.GetEntitiesOfType(TypesToSearch[i]);
+                for j= 1, #FoundEntities do
+                    self:RegisterEntityAndTriggerEvent(FoundEntities[j]);
+                end
             end
         end
     end
@@ -465,9 +475,11 @@ function ModuleEntityEventCore.Global:CheckOnSpawnerEntities()
     local SpawnerEntities = {};
     for i= 1, #self.SpawnerTypes do
         if Entities[self.SpawnerTypes[i]] then
-            for k, v in pairs(Logic.GetEntitiesOfType(Entities[self.SpawnerTypes[i]])) do
-                self:RegisterEntityAndTriggerEvent(v);
-                table.insert(SpawnerEntities, v);
+            if Logic.GetCurrentTurn() % 10 == i then
+                for k, v in pairs(Logic.GetEntitiesOfType(Entities[self.SpawnerTypes[i]])) do
+                    self:RegisterEntityAndTriggerEvent(v);
+                    table.insert(SpawnerEntities, v);
+                end
             end
         end
     end
