@@ -83,7 +83,7 @@ ModuleEntityEventCore = {
 -- Global ------------------------------------------------------------------- --
 
 function ModuleEntityEventCore.Global:OnGameStart()
-    QSB.ScriptEvents.EntityCreated = API.RegisterScriptEvent("Event_EntityCreated");
+    QSB.ScriptEvents.EntityRegistered = API.RegisterScriptEvent("Event_EntityRegistered");
     QSB.ScriptEvents.EntityDestroyed = API.RegisterScriptEvent("Event_EntityDestroyed");
     QSB.ScriptEvents.EntityHurt = API.RegisterScriptEvent("Event_EntityHurt");
     QSB.ScriptEvents.EntityKilled = API.RegisterScriptEvent("Event_EntityKilled");
@@ -109,7 +109,7 @@ function ModuleEntityEventCore.Global:OnEvent(_ID, _Event, ...)
         self:OnSaveGameLoaded();
     elseif _ID == QSB.ScriptEvents.EntityHurt then
         self.AttackedEntities[arg[1]] = {arg[3], 100};
-    elseif _ID == QSB.ScriptEvents.EntityCreated then
+    elseif _ID == QSB.ScriptEvents.EntityRegistered then
         ModuleEntityEventCore.Shared:SaveHighestEntity(arg[1]);
     end
 end
@@ -118,9 +118,9 @@ function ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(_EntityID)
     if _EntityID and IsExisting(_EntityID) then
         if not self.RegisteredEntities[_EntityID] then
             self.RegisteredEntities[_EntityID] = true;
-            API.SendScriptEvent(QSB.ScriptEvents.EntityCreated, _EntityID);
+            API.SendScriptEvent(QSB.ScriptEvents.EntityRegistered, _EntityID);
             Logic.ExecuteInLuaLocalState(string.format(
-                "API.SendScriptEvent(QSB.ScriptEvents.EntityCreated, %d)",
+                "API.SendScriptEvent(QSB.ScriptEvents.EntityRegistered, %d)",
                 _EntityID
             ))
         end
@@ -494,7 +494,7 @@ end
 -- Local -------------------------------------------------------------------- --
 
 function ModuleEntityEventCore.Local:OnGameStart()
-    QSB.ScriptEvents.EntityCreated = API.RegisterScriptEvent("Event_EntityCreated");
+    QSB.ScriptEvents.EntityRegistered = API.RegisterScriptEvent("Event_EntityRegistered");
     QSB.ScriptEvents.EntityDestroyed = API.RegisterScriptEvent("Event_EntityDestroyed");
     QSB.ScriptEvents.EntityHurt = API.RegisterScriptEvent("Event_EntityHurt");
     QSB.ScriptEvents.EntityKilled = API.RegisterScriptEvent("Event_EntityKilled");
@@ -510,7 +510,7 @@ function ModuleEntityEventCore.Local:OnGameStart()
 end
 
 function ModuleEntityEventCore.Local:OnEvent(_ID, _Event, ...)
-    if _ID == QSB.ScriptEvents.EntityCreated then
+    if _ID == QSB.ScriptEvents.EntityRegistered then
         ModuleEntityEventCore.Shared:SaveHighestEntity(arg[1]);
     end
 end
