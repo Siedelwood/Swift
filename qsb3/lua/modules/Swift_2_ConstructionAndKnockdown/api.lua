@@ -15,6 +15,13 @@ You may use and modify this file unter the terms of the MIT licence.
 -- Verbote können für bestimmte Bereiche (kreisförmige Gebiete um ein Zentrum)
 -- oder ganze Territorien vereinbart werden.
 --
+-- <b>Hinweis</b>: Werden Mauern oder Palisaden verboten, werden diese zwar
+-- gesetzt, aber sofort danach wieder zerstört. Der Wagen mit den Steinen kehrt
+-- dann in das Lagerhaus zurück.
+--
+-- <b>Hinweis</b>: Es können nur Abrisse verhindert werden, wenn ein Gebäude
+-- für den Abriss einen Siedler benötigt.
+--
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
 -- <li><a href="Swift_0_Core.api.html">(0) Core</a></li>
