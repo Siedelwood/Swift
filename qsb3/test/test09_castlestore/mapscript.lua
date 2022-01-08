@@ -79,34 +79,34 @@ function Mission_FirstMapAction()
     API.ActivateDebugMode(true, false, true, true);
     API.CastleStoreCreate(1);
 
-    StartSimpleJobEx(function()
-        if Logic.GetTime() > 5 then
-            API.CreateQuest {
-                Name = "Test1",
-                Sender = 2,
-                Receiver = 1,
-                Suggestion = "Deliver this shit!",
+    -- StartSimpleJobEx(function()
+    --     if Logic.GetTime() > 5 then
+    --         API.CreateQuest {
+    --             Name = "Test1",
+    --             Sender = 2,
+    --             Receiver = 1,
+    --             Suggestion = "Deliver this shit!",
                 
-                Goal_Deliver("G_Dye", 50),
-                Trigger_Time(6)
-            }
-            return true;
-        end
-    end);
+    --             Goal_Deliver("G_Dye", 50),
+    --             Trigger_Time(6)
+    --         }
+    --         return true;
+    --     end
+    -- end);
+end
 
-    GameCallback_QSB_OnEventReceived = function(_EventID, ...)
-        if _EventID == QSB.ScriptEvents.EntityRegistered then
-            if IsExisting(arg[1]) then
-                local TypeID = Logic.GetEntityType(arg[1]);
-                local TypeName = Logic.GetEntityTypeName(TypeID);
-                API.Note("Create: " ..TypeName);
-            end
-        elseif _EventID == QSB.ScriptEvents.EntityDestroyed then
-            if IsExisting(arg[1]) then
-                local TypeID = Logic.GetEntityType(arg[1]);
-                local TypeName = Logic.GetEntityTypeName(TypeID);
-                API.Note("Destroyed: " ..TypeName);
-            end
+GameCallback_QSB_OnEventReceived = function(_EventID, ...)
+    if _EventID == QSB.ScriptEvents.EntityRegistered then
+        if IsExisting(arg[1]) then
+            local TypeID = Logic.GetEntityType(arg[1]);
+            local TypeName = Logic.GetEntityTypeName(TypeID);
+            API.Note("Create: " ..TypeName);
+        end
+    elseif _EventID == QSB.ScriptEvents.EntityDestroyed then
+        if IsExisting(arg[1]) then
+            local TypeID = Logic.GetEntityType(arg[1]);
+            local TypeName = Logic.GetEntityTypeName(TypeID);
+            API.Note("Destroyed: " ..TypeName);
         end
     end
 end
