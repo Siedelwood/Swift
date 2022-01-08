@@ -547,35 +547,42 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 
 -- Script Event Callback --
 
----
--- Wird aufgerufen, wenn ein beliebiges Event empfangen wird.
---
--- <b>Hinweis</b>: Der Enent Listener darf nur einmal im globalen und lokalen
--- Skript definiert werden.
---
--- Wenn ein Event empfangen wird, kann es sein, dass Parameter mit übergeben
--- werden. Um für alle Events gewappnet zu sein, muss der Listener als
--- Varargs-Funktion, also mit ... in der Parameterliste geschrieben werden.
---
--- Zugegriffen wird auf die Parameter, indem die Parameterliste entsprechend
--- indexiert wird. Für Parameter 1 wird dann arg[1] geschrieben usw.
---
--- @param[type=number] _EventID ID des Event
--- @param              ...      Parameterliste des Event
--- @within Event
---
--- @usage
--- function DefineEventListener()
---     GameCallback_QSB_OnEventReceived = function(_EventID, ...)
---         if _EventID == QSB.ScriptEvents.EscapePressed then
---             API.AddNote("Player " ..arg[1].. " has pressed Escape!");
---         elseif _EventID == QSB.ScriptEvents.SaveGameLoaded then
---             API.AddNote("A save has been loaded!");
---         end
---     end
--- end
---
-GameCallback_QSB_OnEventReceived = function(_EventID, ...)
+-- The callback is put into a never called local function because LDOC cant
+-- process the callback when it self is declared local. For ... reasons we do
+-- not want to use the -a switch on LDOC so that seems to be the only solution.
+-- Creators should never give a funktion this name. But I don't think that
+-- concern will be very likley to happen. ;)
+local function ThisWillForeverBeLostToTheVoid()
+    ---
+    -- Wird aufgerufen, wenn ein beliebiges Event empfangen wird.
+    --
+    -- <b>Hinweis</b>: Der Enent Listener darf nur einmal im globalen und lokalen
+    -- Skript definiert werden.
+    --
+    -- Wenn ein Event empfangen wird, kann es sein, dass Parameter mit übergeben
+    -- werden. Um für alle Events gewappnet zu sein, muss der Listener als
+    -- Varargs-Funktion, also mit ... in der Parameterliste geschrieben werden.
+    --
+    -- Zugegriffen wird auf die Parameter, indem die Parameterliste entsprechend
+    -- indexiert wird. Für Parameter 1 wird dann arg[1] geschrieben usw.
+    --
+    -- @param[type=number] _EventID ID des Event
+    -- @param              ...      Parameterliste des Event
+    -- @within Event
+    --
+    -- @usage
+    -- function DefineEventListener()
+    --     GameCallback_QSB_OnEventReceived = function(_EventID, ...)
+    --         if _EventID == QSB.ScriptEvents.EscapePressed then
+    --             API.AddNote("Player " ..arg[1].. " has pressed Escape!");
+    --         elseif _EventID == QSB.ScriptEvents.SaveGameLoaded then
+    --             API.AddNote("A save has been loaded!");
+    --         end
+    --     end
+    -- end
+    --
+    GameCallback_QSB_OnEventReceived = function(_EventID, ...)
+    end
 end
 
 -- Base --
