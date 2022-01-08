@@ -556,8 +556,8 @@ local function ThisWillForeverBeLostToTheVoid()
     ---
     -- Wird aufgerufen, wenn ein beliebiges Event empfangen wird.
     --
-    -- <b>Hinweis</b>: Der Enent Listener darf nur einmal im globalen und lokalen
-    -- Skript definiert werden.
+    -- <b>Hinweis</b>: Der Enent Listener darf jeweils nur einmal im globalen
+    -- und lokalen Skript definiert werden.
     --
     -- Wenn ein Event empfangen wird, kann es sein, dass Parameter mit übergeben
     -- werden. Um für alle Events gewappnet zu sein, muss der Listener als
@@ -571,13 +571,11 @@ local function ThisWillForeverBeLostToTheVoid()
     -- @within Event
     --
     -- @usage
-    -- function DefineEventListener()
-    --     GameCallback_QSB_OnEventReceived = function(_EventID, ...)
-    --         if _EventID == QSB.ScriptEvents.EscapePressed then
-    --             API.AddNote("Player " ..arg[1].. " has pressed Escape!");
-    --         elseif _EventID == QSB.ScriptEvents.SaveGameLoaded then
-    --             API.AddNote("A save has been loaded!");
-    --         end
+    -- GameCallback_QSB_OnEventReceived = function(_EventID, ...)
+    --     if _EventID == QSB.ScriptEvents.EscapePressed then
+    --         API.AddNote("Player " ..arg[1].. " has pressed Escape!");
+    --     elseif _EventID == QSB.ScriptEvents.SaveGameLoaded then
+    --         API.AddNote("A save has been loaded!");
     --     end
     -- end
     --
