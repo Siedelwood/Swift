@@ -11,7 +11,7 @@ You may use and modify this file unter the terms of the MIT licence.
 API = API or {};
 QSB = QSB or {};
 
-QSB.Version = "Version 3.0.0 BETA (1.0.5)";
+QSB.Version = "Version 3.0.0 BETA (1.0.6)";
 QSB.Language = "de";
 QSB.HumanPlayerID = 1;
 QSB.ScriptEvents = {};

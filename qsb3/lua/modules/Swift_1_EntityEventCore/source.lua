@@ -360,12 +360,15 @@ end
 
 function ModuleEntityEventCore.Global:StartTriggers()
     function ModuleEntityEventCore_Trigger_EveryTurn()
-        ModuleEntityEventCore.Global:CheckOnSpawnerEntities();
-        ModuleEntityEventCore.Global:CheckOnNonTrackableEntities();
-        ModuleEntityEventCore.Global:CleanTaggedAndDeadEntities();
+        if Logic.GetCurrentTurn() > 0 then
+            ModuleEntityEventCore.Global:CheckOnSpawnerEntities();
+            ModuleEntityEventCore.Global:CheckOnNonTrackableEntities();
+            ModuleEntityEventCore.Global:CleanTaggedAndDeadEntities();
+        end
     end
     Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_TURN, "", "ModuleEntityEventCore_Trigger_EveryTurn", 1);
 
+    -- Why did I even put this here... This trigger is dead... :(
     function ModuleEntityEventCore_Trigger_EntityCreated()
         local EntityID = Event.GetEntityID();
         ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(EntityID);
@@ -409,18 +412,20 @@ function ModuleEntityEventCore.Global:GetAllEntitiesOfType(_Type)
 end
 
 function ModuleEntityEventCore.Global:CheckOnNonTrackableEntities()
-    -- Buildings
+    -- -- Buildings
     for i= 1, 8 do
-        for k, v in pairs{Logic.GetPlayerEntitiesInCategory(i, EntityCategories.AttackableBuilding)} do
-            self:RegisterEntityAndTriggerEvent(v);
+        local Buildings = {Logic.GetPlayerEntitiesInCategory(i, EntityCategories.AttackableBuilding)};
+        for j= 1, #Buildings do
+            self:RegisterEntityAndTriggerEvent(Buildings[j]);
         end
-        for k, v in pairs{Logic.GetPlayerEntitiesInCategory(i, EntityCategories.Wall)} do
-            self:RegisterEntityAndTriggerEvent(v);
+        local Walls = {Logic.GetPlayerEntitiesInCategory(i, EntityCategories.AttackableBuilding)};
+        for j= 1, #Walls do
+            self:RegisterEntityAndTriggerEvent(Walls[j]);
         end
     end
-    -- Ambiend and Resources
+    -- -- Ambiend and Resources
     for i= 1, #self.SharedAnimalTypes do
-        if Logic.GetCurrentTurn() % 10 == i then
+        if Logic.GetCurrentTurn() % 10 == i and Entities[self.SharedAnimalTypes[i]] then
             local FoundEntities = Logic.GetEntitiesOfType(Entities[self.SharedAnimalTypes[i]]);
             for j= 1, #FoundEntities do
                 self:RegisterEntityAndTriggerEvent(FoundEntities[j]);
@@ -428,7 +433,7 @@ function ModuleEntityEventCore.Global:CheckOnNonTrackableEntities()
         end
     end
     for i= 1, #self.SharedResourceTypes do
-        if Logic.GetCurrentTurn() % 10 == i then
+        if Logic.GetCurrentTurn() % 10 == i and Entities[self.SharedAnimalTypes[i]] then
             local FoundEntities = Logic.GetEntitiesOfType(Entities[self.SharedResourceTypes[i]]);
             for j= 1, #FoundEntities do
                 self:RegisterEntityAndTriggerEvent(FoundEntities[j]);
@@ -438,7 +443,9 @@ function ModuleEntityEventCore.Global:CheckOnNonTrackableEntities()
     for k, v in pairs(Entities) do
         local TypesToSearch = {};
         if string.find(k, "^A_" ..self.ClimateShort.. "_") or string.find(k, "^R_" ..self.ClimateShort.. "_") then
-            table.insert(TypesToSearch, v);
+            if Entities[k] then
+                table.insert(TypesToSearch, v);
+            end
         end
         for i= 1, #TypesToSearch do
             if Logic.GetCurrentTurn() % 10 == i then
