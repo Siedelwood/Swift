@@ -16,6 +16,7 @@ ModuleEntityEventCore = {
     Global = {
         RegisteredEntities = {},
         AttackedEntities = {},
+        OverkillEntities = {},
         DisableThiefStorehouseHeist = false,
         DisableThiefCathedralSabotage = false,
         DisableThiefCisternSabotage = false,
@@ -159,12 +160,40 @@ function ModuleEntityEventCore.Global:OnSaveGameLoaded()
 end
 
 function ModuleEntityEventCore.Global:CleanTaggedAndDeadEntities()
+    -- check if entity should no longer be considered attacked
     for k,v in pairs(self.AttackedEntities) do
         self.AttackedEntities[k][2] = v[2] - 1;
         if v[2] <= 0 then
             self.AttackedEntities[k] = nil;
+        else
+            -- Send killed event for knights
+            if IsExisting(k) and IsExisting(v[1]) and Logic.IsKnight(k) then
+                if not self.OverkillEntities[k] and Logic.KnightGetResurrectionProgress(k) ~= 1 then
+                    local PlayerID1 = Logic.EntityGetPlayer(k);
+                    local PlayerID2 = Logic.EntityGetPlayer(v[1]);
+                    API.SendScriptEvent(QSB.ScriptEvents.EntityKilled, k, PlayerID1, v[1], PlayerID2);
+                    Logic.ExecuteInLuaLocalState(string.format(
+                        "API.SendScriptEvent(QSB.ScriptEvents.EntityKilled, %d, %d, %d, %d)",
+                        k,
+                        PlayerID1,
+                        v[1],
+                        PlayerID2
+                    ));
+                    self.OverkillEntities[k] = 50;
+                    self.AttackedEntities[k] = nil;
+                end
+            end
         end
     end
+    -- unregister overkill entities
+    for k,v in pairs(self.OverkillEntities) do
+        self.OverkillEntities[k] = v - 1;
+        if v <= 0 then
+            self.OverkillEntities[k] = nil;
+        end
+    end
+
+    -- unregister dead entities if not already unregistered
     for k,v in pairs(self.RegisteredEntities) do
         if not IsExisting(v) then
             self:UnregisterEntityAndTriggerEvent(v);
@@ -382,6 +411,7 @@ function ModuleEntityEventCore.Global:StartTriggers()
         if ModuleEntityEventCore.Global.AttackedEntities[EntityID1] ~= nil then
             local EntityID2 = ModuleEntityEventCore.Global.AttackedEntities[EntityID1][1];
             local PlayerID2 = Logic.EntityGetPlayer(EntityID2);
+            ModuleEntityEventCore.Global.AttackedEntities[EntityID1] = nil;
 
             API.SendScriptEvent(QSB.ScriptEvents.EntityKilled, EntityID1, PlayerID1, EntityID2, PlayerID2);
             Logic.ExecuteInLuaLocalState(string.format(
