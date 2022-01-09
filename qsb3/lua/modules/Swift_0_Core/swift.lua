@@ -64,6 +64,7 @@ function Swift:LoadCore()
         self:OverrideQuestSystemGlobal();
         self:InitalizeCallbackGlobal();
         self:DisableLogicFestival();
+        self:LogGlobalCFunctions();
     end
 
     if self:IsLocalEnvironment() then
@@ -73,6 +74,7 @@ function Swift:LoadCore()
         self:OverrideDoQuicksave();
         self:InitalizeCallbackLocal();
         self:ValidateTerritories();
+        self:LogLocalCFunctions();
 
         -- Human player ID makes only sense in singleplayer context
         if not Framework.IsNetworkGame() then
@@ -354,7 +356,15 @@ LOG_LEVEL_OFF     = 0;
 
 function Swift:Log(_Text, _Level, _Verbose)
     if Swift.m_FileLogLevel >= _Level then
-        Framework.WriteToLog(_Text);
+        local Level = _Text:sub(1, _Text:find(":"));
+        local Text = _Text:sub(_Text:find(":")+1);
+        Text = string.format(
+            " (%s) %s%s",
+            Swift.m_Environment,
+            Framework.GetSystemTimeDateString(),
+            Text
+        )
+        Framework.WriteToLog(Level .. Text);
     end
     if _Verbose then
         if self:IsGlobalEnvironment() then
@@ -400,6 +410,44 @@ function warn(_Text, _Silent)
 end
 function error(_Text, _Silent)
     Swift:Log("ERROR: " .._Text, LOG_LEVEL_ERROR, not _Silent);
+end
+
+function Swift:LogCFunctionTable(_TableName)
+    if _G[_TableName] and type(_G[_TableName]) == "table" then
+        for k, v in pairs(_G[_TableName]) do
+            if type(v) == "function" then
+                _G[_TableName][k.. "_Orig_SwiftCore"] = v;
+                _G[_TableName][k] = function(...)
+                    if Swift.m_FileLogLevel == LOG_LEVEL_ALL then
+                        local ArgsString = "";
+                        for i=1, #arg do
+                            local Arg = tostring(arg[i]);
+                            if type(arg[i]) == "string" then
+                                Arg = "\"" .. Arg .. "\"";
+                            end
+                            ArgsString = ArgsString .. (((i > 1 and ", ") or "") .. Arg);
+                        end
+                        if not k:find("Orig") then
+                            debug(string.format("Call: %s.%s(%s)", _TableName, k, ArgsString), true);
+                        end
+                    end
+                    return _G[_TableName][k.. "_Orig_SwiftCore"](unpack(arg));
+                end
+            end
+        end;
+    end
+end;
+
+function Swift:LogGlobalCFunctions()
+    self:LogCFunctionTable("AICore");
+    self:LogCFunctionTable("Logic");
+end
+
+function Swift:LogLocalCFunctions()
+    self:LogCFunctionTable("Display");
+    self:LogCFunctionTable("Game");
+    self:LogCFunctionTable("GUI");
+    self:LogCFunctionTable("Logic");
 end
 
 -- Lua base functions
@@ -470,7 +518,7 @@ function Swift:CreateScriptEvent(_Name, _Function)
         end
     end
     local ID = #self.m_ScriptEventRegister+1;
-    debug(string.format("Create script event %s", _Name), true);
+    info(string.format("Create script event %s", _Name), true);
     self.m_ScriptEventRegister[ID] = {_Name, _Function};
     return ID;
 end
@@ -486,7 +534,7 @@ function Swift:DispatchScriptEvent(_ID, ...)
             Env = "Global";
         end
         if self.m_ModuleRegister[i][Env] and self.m_ModuleRegister[i][Env].OnEvent then
-            debug(string.format(
+            info(string.format(
                 "Dispatching %s script event %s to Module %s",
                 Env:lower(),
                 self.m_ScriptEventRegister[_ID][1],
