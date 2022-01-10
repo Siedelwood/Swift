@@ -62,11 +62,11 @@ function Swift:RestoreAfterLoad()
     if self:IsGlobalEnvironment() then
         self:GlobalRestoreDebugAfterLoad();
         self:DisableLogicFestival();
-        self:LogGlobalCFunctions();
+        -- self:LogGlobalCFunctions();
     end
     if self:IsLocalEnvironment() then
         self:LocalRestoreDebugAfterLoad();
-        self:LogLocalCFunctions();
+        -- self:LogLocalCFunctions();
     end
 end
 
