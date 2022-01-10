@@ -176,7 +176,7 @@ function API.SetEntityScale(_Entity, _Scale)
     end
     local EntityID = GetID(_Entity);
     if EntityID > 0 then
-        API.SetInteger(EntityID, QSB.ScriptingValue.Size, _Scale);
+        API.SetFloat(EntityID, QSB.ScriptingValue.Size, _Scale);
         if Logic.IsSettler(EntityID) == 1 then
             Logic.SetSpeedFactor(EntityID, _Scale);
         end
