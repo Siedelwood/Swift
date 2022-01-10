@@ -1,5 +1,5 @@
 --[[
-Swift_1_MilitaryCore/Source
+Swift_2_MilitaryLimit/Source
 
 Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
 
@@ -8,43 +8,89 @@ You may use and modify this file unter the terms of the MIT licence.
 (See https://en.wikipedia.org/wiki/MIT_License)
 ]]
 
-ModuleMilitaryCore = {
+ModuleMilitaryLimit = {
     Properties = {
-        Name = "ModuleMilitaryCore",
+        Name = "ModuleMilitaryLimit",
     },
 
-    Global = {};
+    Global = {
+        SoldierLimitCalculators = {},
+        SoldierKillsCounter = {},
+    };
     Local = {
         SelectionBackup = {},
     },
     -- This is a shared structure but the values are asynchronous!
     Shared = {
-        Event = {},
+        DefaultSoldierLimits = {25, 43, 61, 91, 91},
         SoldierLimits = {},
     },
-
-    Text = {
-        DestroySoldiers = {
-            de = "{center}SOLDATEN ZERSTÖREN {cr}{cr}von der Partei: %s{cr}{cr}Anzahl: %d",
-            en = "{center}DESTROY SOLDIERS {cr}{cr}from faction: %s{cr}{cr}Amount: %d",
-        },
-    }
 };
+
+QSB.DestroyedSoldiers = {};
 
 -- -------------------------------------------------------------------------- --
 
-function ModuleMilitaryCore.Global:OnGameStart()
+function ModuleMilitaryLimit.Global:OnGameStart()
     QSB.ScriptEvents.ProducedThief = API.RegisterScriptEvent("Event_ProducedThief");
     QSB.ScriptEvents.ProducedBattalion = API.RegisterScriptEvent("Event_ProducedBattalion");
     QSB.ScriptEvents.RefilledBattalion = API.RegisterScriptEvent("Event_RefilledBattalion");
 
+    for i= 1, 8 do
+        self.SoldierKillsCounter[i] = {};
+    end
+
     if API.IsHistoryEditionNetworkGame() then
         return;
     end
-    ModuleMilitaryCore.Shared:InitLimits();
+    for i= 1, 8 do
+        self:SetLimitsForPlayer(i);
+    end
+    self:UpdateSoldierLimits();
+    API.StartJob(function()
+        ModuleMilitaryLimit.Global:UpdateSoldierLimits();
+    end);
 end
 
-function ModuleMilitaryCore.Global:ProduceUnit(_PlayerID, _BarrackID, _UnitType, _Costs)
+function ModuleMilitaryLimit.Global:OnEvent(_ID, _Name, ...)
+    if _ID == QSB.ScriptEvents.EntityKilled then
+        self:OnEntityKilledController(arg[1], arg[2], arg[3], arg[4]);
+    end
+end
+
+-- Destroy soldiers --------------------------------------------------------- --
+
+function ModuleMilitaryLimit.Global:OnEntityKilledController(_KilledEntityID, _KilledPlayerID, _KillerEntityID, _KillerPlayerID)
+    if _KilledEntityID ~= 0 and _KillerEntityID ~= 0 then
+        self.SoldierKillsCounter[_KillerPlayerID][_KilledPlayerID] = self.SoldierKillsCounter[_KillerPlayerID][_KilledPlayerID] or 0
+        if Logic.IsEntityTypeInCategory( _KillerPlayerID, EntityCategories.Soldier ) == 1 then
+            self.SoldierKillsCounter[_KillerPlayerID][_KilledPlayerID] = self.SoldierKillsCounter[_KillerPlayerID][_KilledPlayerID] +1
+        end
+    end
+end
+
+function ModuleMilitaryLimit.Global:GetEnemySoldierKillsOfPlayer(_PlayerID1, _PlayerID2)
+    return self.SoldierKillsCounter[_PlayerID1][_PlayerID2] or 0;
+end
+
+-- Soldier imits ------------------------------------------------------------ --
+
+function ModuleMilitaryLimit.Global:SetLimitsForPlayer(_PlayerID, _Function)
+    local Function = _Function;
+    if not Function then
+        Function = function(_Player)
+            local Level = 1;
+            local CastleID = Logic.GetHeadquarters(_Player);
+            if CastleID ~= 0 then
+                Level = Logic.GetUpgradeLevel(CastleID) +1;
+            end
+            return ModuleMilitaryLimit.Shared.DefaultSoldierLimits[Level];
+        end
+    end
+    self.SoldierLimitCalculators[_PlayerID] = Function;
+end
+
+function ModuleMilitaryLimit.Global:ProduceUnit(_PlayerID, _BarrackID, _UnitType, _Costs)
     local x1, y1 = Logic.GetBuildingApproachPosition(_BarrackID);
     local x2, y2 = Logic.GetRallyPoint(_BarrackID);
     local o = Logic.GetEntityOrientation(_BarrackID);
@@ -71,7 +117,7 @@ function ModuleMilitaryCore.Global:ProduceUnit(_PlayerID, _BarrackID, _UnitType,
     end
 end
 
-function ModuleMilitaryCore.Global:RefillBattalion(_PlayerID, _BarrackID, _LeaderID, _Costs)
+function ModuleMilitaryLimit.Global:RefillBattalion(_PlayerID, _BarrackID, _LeaderID, _Costs)
     local x1, y1, z1 = Logic.EntityGetPos(_LeaderID);
     local x2, y2 = Logic.GetBuildingApproachPosition(_BarrackID);
     local o1 = Logic.GetEntityOrientation(_LeaderID);
@@ -95,12 +141,12 @@ function ModuleMilitaryCore.Global:RefillBattalion(_PlayerID, _BarrackID, _Leade
         [[
             local ID1 = %d
             local ID2 = %d
-            for i= #ModuleMilitaryCore.Local.SelectionBackup, 1, -1 do
-                if ModuleMilitaryCore.Local.SelectionBackup[i] ~= ID1 then
-                    GUI.SelectEntity(ModuleMilitaryCore.Local.SelectionBackup[i])
+            for i= #ModuleMilitaryLimit.Local.SelectionBackup, 1, -1 do
+                if ModuleMilitaryLimit.Local.SelectionBackup[i] ~= ID1 then
+                    GUI.SelectEntity(ModuleMilitaryLimit.Local.SelectionBackup[i])
                 end
             end
-            ModuleMilitaryCore.Local.SelectionBackup = {}
+            ModuleMilitaryLimit.Local.SelectionBackup = {}
 
             GUI.SelectEntity(ID2)
             GUI_MultiSelection.CreateEX()
@@ -127,7 +173,7 @@ function ModuleMilitaryCore.Global:RefillBattalion(_PlayerID, _BarrackID, _Leade
     ));
 end
 
-function ModuleMilitaryCore.Global:SubFromPlayerGoods(_PlayerID, _BarrackID, _Costs)
+function ModuleMilitaryLimit.Global:SubFromPlayerGoods(_PlayerID, _BarrackID, _Costs)
     for i= 1, 3, 2 do
         if _Costs[i] then
             local ResourceCategory = Logic.GetGoodCategoryForGoodType(_Costs[i]);
@@ -140,9 +186,21 @@ function ModuleMilitaryCore.Global:SubFromPlayerGoods(_PlayerID, _BarrackID, _Co
     end
 end
 
+function ModuleMilitaryLimit.Global:UpdateSoldierLimits()
+    for i= 1, 8 do
+        local Limit = self.SoldierLimitCalculators[i](i);
+        ModuleMilitaryLimit.Shared.SoldierLimits[i] = Limit;
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[ModuleMilitaryLimit.Shared.SoldierLimits[%d] = %d]],
+            i,
+            Limit
+        ));
+    end
+end
+
 -- -------------------------------------------------------------------------- --
 
-function ModuleMilitaryCore.Local:OnGameStart()
+function ModuleMilitaryLimit.Local:OnGameStart()
     QSB.ScriptEvents.ProducedThief = API.RegisterScriptEvent("Event_ProducedThief");
     QSB.ScriptEvents.ProducedBattalion = API.RegisterScriptEvent("Event_ProducedBattalion");
     QSB.ScriptEvents.RefilledBattalion = API.RegisterScriptEvent("Event_RefilledBattalion");
@@ -150,21 +208,15 @@ function ModuleMilitaryCore.Local:OnGameStart()
     if Framework.IsNetworkGame() then
         return;
     end
-    ModuleMilitaryCore.Shared:InitLimits();
     self:OverrideUI();
 end
 
-function ModuleMilitaryCore.Local:OverrideUI()
+function ModuleMilitaryLimit.Local:OverrideUI()
     function GUI_CityOverview.LimitUpdate()
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
         local PlayerID = GUI.GetPlayerID();
-        local CastleID = Logic.GetHeadquarters(PlayerID);
-        local CastleLevel = 1;
-        if CastleID ~= 0 then
-            CastleLevel = Logic.GetUpgradeLevel(CastleID) +1;
-        end
         local Count = Logic.GetCurrentSoldierCount(PlayerID);
-        local Limit = ModuleMilitaryCore.Shared:GetLimitForPlayer(PlayerID, CastleLevel);
+        local Limit = ModuleMilitaryLimit.Shared:GetLimitForPlayer(PlayerID);
         local Color = "{@color:none}";
         if Count >= Limit then
             Color = "{@color:255,20,30,255}";
@@ -174,11 +226,6 @@ function ModuleMilitaryCore.Local:OverrideUI()
 
     function GUI_BuildingButtons.BuyBattalionClicked()
         local PlayerID  = GUI.GetPlayerID();
-        local CastleID = Logic.GetHeadquarters(PlayerID);
-        local CastleLevel = 1;
-        if CastleID ~= 0 then
-            CastleLevel = Logic.GetUpgradeLevel(CastleID) +1;
-        end
         local BarrackID = GUI.GetSelectedEntity();
         local BarrackEntityType = Logic.GetEntityType(BarrackID);
         local EntityType;
@@ -194,7 +241,7 @@ function ModuleMilitaryCore.Local:OverrideUI()
         local Costs = {Logic.GetUnitCost(BarrackID, EntityType)};
         local CanBuyBoolean, CanNotBuyString = AreCostsAffordable(Costs);
         local CurrentSoldierCount = Logic.GetCurrentSoldierCount(PlayerID);
-        local CurrentSoldierLimit = ModuleMilitaryCore.Shared:GetLimitForPlayer(PlayerID, CastleLevel);
+        local CurrentSoldierLimit = ModuleMilitaryLimit.Shared:GetLimitForPlayer(PlayerID);
         local SoldierSize;
         if EntityType == Entities.U_Thief then
             SoldierSize = 1;
@@ -210,7 +257,7 @@ function ModuleMilitaryCore.Local:OverrideUI()
             if EntityType == Entities.U_Thief then
                 -- GUI.BuyThief(PlayerID)
                 GUI.SendScriptCommand(string.format(
-                    [[ModuleMilitaryCore.Global:ProduceUnit(%d, %d, %d, %s)]],
+                    [[ModuleMilitaryLimit.Global:ProduceUnit(%d, %d, %d, %s)]],
                     PlayerID,
                     BarrackID,
                     EntityType,
@@ -219,7 +266,7 @@ function ModuleMilitaryCore.Local:OverrideUI()
             else
                 -- GUI.ProduceUnits(BarrackID, EntityType)
                 GUI.SendScriptCommand(string.format(
-                    [[ModuleMilitaryCore.Global:ProduceUnit(%d, %d, %d, %s)]],
+                    [[ModuleMilitaryLimit.Global:ProduceUnit(%d, %d, %d, %s)]],
                     PlayerID,
                     BarrackID,
                     EntityType,
@@ -240,37 +287,34 @@ function ModuleMilitaryCore.Local:OverrideUI()
         local LeaderSoldiers = Logic.GetSoldiersAttachedToLeader(LeaderID);
         local EntityType = Logic.LeaderGetSoldiersType(LeaderID);
         local Costs = {Logic.GetEntityTypeRefillCost(BarracksID, EntityType)};
-        local CastleID = Logic.GetHeadquarters(PlayerID);
-        local CastleLevel = 1;
-        if CastleID ~= 0 then
-            CastleLevel = Logic.GetUpgradeLevel(CastleID) +1;
-        end
         local SoldierCount = Logic.GetCurrentSoldierCount(PlayerID);
-        local SoldierMax = ModuleMilitaryCore.Shared:GetLimitForPlayer(PlayerID, CastleLevel);
+        local SoldierMax = ModuleMilitaryLimit.Shared:GetLimitForPlayer(PlayerID);
 
         local CanBuyBoolean, CanNotBuyString;
         if LeaderSoldiers < LeaderMaxSoldiers then
-            CanBuyBoolean, CanNotBuyString = AreCostsAffordable(Costs);
-            if CanBuyBoolean == false then
-                Message(CanNotBuyString);
-                return;
-            end
-            local CanRefillBoolean = Logic.CanRefillBattalion(LeaderID)
-            if CanRefillBoolean == false then
-                local MessageText = XGUIEng.GetStringTableText("Feedback_TextLines/TextLine_NotCloseToBarracksForRefilling");
-                Message(MessageText);
-            else
-                -- local Selection = {GUI.GetSelectedEntities()};
-                local Selection = table.copy(g_MultiSelection.EntityList);
-                ModuleMilitaryCore.Local.SelectionBackup = Selection;
-                GUI.ClearSelection();
-                GUI.SendScriptCommand(string.format(
-                    [[ModuleMilitaryCore.Global:RefillBattalion(%d, %d, %d, %s)]],
-                    PlayerID,
-                    BarracksID,
-                    LeaderID,
-                    table.tostring(Costs)
-                ));
+            if SoldierCount < SoldierMax then
+                CanBuyBoolean, CanNotBuyString = AreCostsAffordable(Costs);
+                if CanBuyBoolean == false then
+                    Message(CanNotBuyString);
+                    return;
+                end
+                local CanRefillBoolean = Logic.CanRefillBattalion(LeaderID);
+                if CanRefillBoolean == false then
+                    local MessageText = XGUIEng.GetStringTableText("Feedback_TextLines/TextLine_NotCloseToBarracksForRefilling");
+                    Message(MessageText);
+                else
+                    -- local Selection = {GUI.GetSelectedEntities()};
+                    local Selection = table.copy(g_MultiSelection.EntityList);
+                    ModuleMilitaryLimit.Local.SelectionBackup = Selection;
+                    GUI.ClearSelection();
+                    GUI.SendScriptCommand(string.format(
+                        [[ModuleMilitaryLimit.Global:RefillBattalion(%d, %d, %d, %s)]],
+                        PlayerID,
+                        BarracksID,
+                        LeaderID,
+                        table.tostring(Costs)
+                    ));
+                end
             end
         end
     end
@@ -278,24 +322,14 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-function ModuleMilitaryCore.Shared:InitLimits()
-    for i= 1, 8 do
-        self.SoldierLimits[i] = {25, 43, 61, 91, 91};
-    end
-end
-
-function ModuleMilitaryCore.Shared:SetLimitsForPlayer(_PlayerID, _Lv1, _Lv2, _Lv3, _Lv4)
-    self.SoldierLimits[_PlayerID] = {_Lv1, _Lv2, _Lv3, _Lv4, _Lv4};
-end
-
-function ModuleMilitaryCore.Shared:GetLimitForPlayer(_PlayerID, _Level)
+function ModuleMilitaryLimit.Shared:GetLimitForPlayer(_PlayerID)
     if API.IsHistoryEditionNetworkGame() then
         return Logic.GetCurrentSoldierLimit(_PlayerID);
     end
-    return self.SoldierLimits[_PlayerID][_Level];
+    return self.SoldierLimits[_PlayerID];
 end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModule(ModuleMilitaryCore);
+Swift:RegisterModule(ModuleMilitaryLimit);
 

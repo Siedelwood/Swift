@@ -1,8 +1,8 @@
 {
-    "name": "Swift_1_MilitaryCore",
+    "name": "Swift_2_MilitaryLimit",
     "version": "1.0.0",
     "mandatory": false,
-    "caption": "(1) Military Core",
+    "caption": "(2) Military Limit",
     "shortdesc": "Ermöglicht es, benutzerdefiniertes Soldatenlimit festzulegen.",
     "description": "",
     "files": [
@@ -11,6 +11,8 @@
         "behavior.lua"
     ],
     "dependencies": [
-        "Swift_0_Core"
+        "Swift_0_Core",
+        "Swift_1_EntityEventCore",
+        "Swift_1_JobsCore"
     ]
 }
