@@ -84,22 +84,23 @@ function Mission_FirstMapAction()
     AddGood(Goods.G_Wood, 30, 1);
 
     Logic.SetKnightTitle(1, 2);
-    API.SetPlayerSoldierLimits(1, 100, 200, 300, 400);
     MakeHeroAlandra();
+end
 
-    function GameCallback_QSB_OnEventReceived(_ID, ...)
-        if _ID == QSB.ScriptEvents.EntityRegistered then
-            API.Note("Entity " ..arg[1].. " was created!");
-        elseif _ID == QSB.ScriptEvents.EntityDestroyed then
-            API.Note("Entity " ..arg[1].. " was destroyed!");
-        elseif _ID == QSB.ScriptEvents.EntityHurt then
-            API.Note("Entity " ..arg[1].. " was hurt by " ..arg[3].. "!");
-        elseif _ID == QSB.ScriptEvents.EntityKilled then
-            API.Note("Entity " ..arg[1].. " was killed by " ..arg[3].. "!");
-        elseif _ID == QSB.ScriptEvents.EntityOwnerChanged then
-            API.Note("Entity " ..arg[1].. " of player " ..arg[2].. " changed to " ..arg[3].. " of player " ..arg[4].. "!");
-        end
+function GameCallback_QSB_OnEventReceived(_ID, ...)
+    if _ID == QSB.ScriptEvents.EntityHurt then
+        API.Note("Entity " ..arg[1].. " was hurt by " ..arg[3].. "!");
+    elseif _ID == QSB.ScriptEvents.EntityKilled then
+        API.Note("Entity " ..arg[1].. " was killed by " ..arg[3].. "!");
+    elseif _ID == QSB.ScriptEvents.EntityOwnerChanged then
+        API.Note("Entity " ..arg[1].. " of player " ..arg[2].. " changed to " ..arg[3].. " of player " ..arg[4].. "!");
     end
+end
+
+function ChangePlayerSoldierLimit()
+    API.SetPlayerSoldierLimit(1, function(_PlayerID)
+        return 601;
+    end);
 end
 
 function MakeHeroMacrus()

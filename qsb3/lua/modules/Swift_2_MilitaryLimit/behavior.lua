@@ -1,5 +1,5 @@
 --[[
-Swift_1_MilitaryCore/Behavior
+Swift_2_MilitaryLimit/Behavior
 
 Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
 
@@ -56,6 +56,11 @@ B_Goal_DestroySoldiers = {
         {ParameterType.PlayerID, en = "Defending Player", de = "Verteidiger", },
         {ParameterType.Number, en = "Amount", de = "Anzahl", },
     },
+
+    Text = {
+        de = "{center}SOLDATEN ZERSTÖREN {cr}{cr}von der Partei: %s{cr}{cr}Anzahl: %d",
+        en = "{center}DESTROY SOLDIERS {cr}{cr}from faction: %s{cr}{cr}Amount: %d",
+    }
 }
 
 function B_Goal_DestroySoldiers:GetGoalTable()
@@ -77,19 +82,15 @@ function B_Goal_DestroySoldiers:CustomFunction(_Quest)
         local PlayerName = GetPlayerName(self.AttackedPlayer) or "";
         Swift:ChangeCustomQuestCaptionText(
             string.format(
-                Swift:GetTextOfDesiredLanguage(ModuleMilitaryCore.Text.DestroySoldiers),
+                Swift:GetTextOfDesiredLanguage(ModuleMilitaryLimit.Text),
                 PlayerName, self.KillsNeeded
             ),
             _Quest
         );
     end
-
-    local currentKills = 0;
-    if QSB.DestroyedSoldiers[self.AttackingPlayer] and QSB.DestroyedSoldiers[self.AttackingPlayer][self.AttackedPlayer] then
-        currentKills = QSB.DestroyedSoldiers[self.AttackingPlayer][self.AttackedPlayer]
+    if self.KillsNeeded >= ModuleMilitaryLimit.Global:GetEnemySoldierKillsOfPlayer(self.AttackingPlayer, self.AttackedPlayer) then
+        return true;
     end
-    self.SaveAmount = self.SaveAmount or currentKills
-    return self.KillsNeeded <= currentKills - self.SaveAmount or nil
 end
 
 function B_Goal_DestroySoldiers:Debug(_Quest)
@@ -107,10 +108,6 @@ end
 
 function B_Goal_DestroySoldiers:GetIcon()
     return {7,12}
-end
-
-function B_Goal_DestroySoldiers:Reset()
-    self.SaveAmount = nil
 end
 
 Swift:RegisterBehavior(B_Goal_DestroySoldiers)

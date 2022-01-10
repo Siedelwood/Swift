@@ -1,5 +1,5 @@
 --[[
-Swift_1_MilitaryCore/API
+Swift_2_MilitaryLimit/API
 
 Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
 
@@ -19,6 +19,8 @@ You may use and modify this file unter the terms of the MIT licence.
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
 -- <li><a href="Swift_0_Core.api.html">(0) Core</a></li>
+-- <li><a href="Swift_1_EntityEventCore.api.html">(1) Entity Event Core</a></li>
+-- <li><a href="Swift_1_JobsCore.api.html">(1) JobsCore</a></li>
 -- </ul>
 --
 -- @within Beschreibung
@@ -45,31 +47,28 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- @usage local Limit = API.GetPlayerSoldierLimit(1);
 --
 function API.GetPlayerSoldierLimit(_PlayerID)
-    local CastleID = Logic.GetHeadquarters(_PlayerID);
-    local CastleLevel = 1;
-    if CastleID ~= 0 then
-        CastleLevel = Logic.GetUpgradeLevel(CastleID) +1;
-    end
-    return ModuleMilitaryCore.Shared:GetLimitForPlayer(_PlayerID, CastleLevel);
+    return ModuleMilitaryLimit.Shared:GetLimitForPlayer(_PlayerID);
 end
 
 ---
--- Setzt das Soldatenlimit des Spielers für jede Burgausbaustufe fest.
+-- Setzt die Funktion zur Berechnung des Soldatenlimit.
 --
--- @param[type=number] _PlayerID ID des Spielers
--- @param[type=number] _Lv1      Limit Burgstufe 1
--- @param[type=number] _Lv2      Limit Burgstufe 2
--- @param[type=number] _Lv3      Limit Burgstufe 3
--- @param[type=number] _Lv4      Limit Burgstufe 4
+-- Wird die Funktion nil gesetzt, wird der Standard in Abhängigkeit der
+-- Burgausbaustufe verwendet.
+--
+-- @param[type=number]   _PlayerID ID des Spielers
+-- @param[type=function] _Function (Optional) Funktion zur Ermittlung
 -- @within Anwenderfunktionen
--- @usage API.SetPlayerSoldierLimits(1, 100, 200, 300, 400);
+-- -- Verwende den Standard (25, 43, 61, 91)
+-- @usage API.SetPlayerSoldierLimit(1);
+-- -- Verwende eigene Funktion (Limit ist für den Spieler immer 2000)
+-- @usage API.SetPlayerSoldierLimit(1, function(_PlayerID)
+--     return 2000;
+-- end);
 --
-function API.SetPlayerSoldierLimits(_PlayerID, _Lv1, _Lv2, _Lv3, _Lv4)
-    ModuleMilitaryCore.Shared:SetLimitsForPlayer(_PlayerID, _Lv1, _Lv2, _Lv3, _Lv4);
-    if not GUI then
-        Logic.ExecuteInLuaLocalState(string.format(
-            [[ModuleMilitaryCore.Shared:SetLimitsForPlayer(%d, %d, %d, %d, %d)]],
-            _PlayerID, _Lv1, _Lv2, _Lv3, _Lv4
-        ));
+function API.SetPlayerSoldierLimit(_PlayerID, _Function)
+    if GUI then
+        return;
     end
+    ModuleMilitaryLimit.Global:SetLimitsForPlayer(_PlayerID, _Function);
 end
