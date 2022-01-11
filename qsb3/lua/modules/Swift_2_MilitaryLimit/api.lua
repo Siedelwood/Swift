@@ -72,3 +72,4 @@ function API.SetPlayerSoldierLimit(_PlayerID, _Function)
     end
     ModuleMilitaryLimit.Global:SetLimitsForPlayer(_PlayerID, _Function);
 end
+

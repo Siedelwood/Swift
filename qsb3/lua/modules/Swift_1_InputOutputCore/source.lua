@@ -354,7 +354,7 @@ function ModuleInputOutputCore.Local:OpenRequesterDialog(_Title, _Text, _Action,
         XGUIEng.ShowWidget(RequesterDialog_No,1);
         XGUIEng.ShowWidget(RequesterDialog_Ok,0);
 
-        if _OkCancel ~= nil then
+        if _OkCancel then
             XGUIEng.SetText(RequesterDialog_Yes, XGUIEng.GetStringTableText("UI_Texts/Ok_center"));
             XGUIEng.SetText(RequesterDialog_No, XGUIEng.GetStringTableText("UI_Texts/Cancel_center"));
         else

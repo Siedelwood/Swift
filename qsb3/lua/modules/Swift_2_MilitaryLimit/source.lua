@@ -36,7 +36,7 @@ function ModuleMilitaryLimit.Global:OnGameStart()
     QSB.ScriptEvents.ProducedBattalion = API.RegisterScriptEvent("Event_ProducedBattalion");
     QSB.ScriptEvents.RefilledBattalion = API.RegisterScriptEvent("Event_RefilledBattalion");
 
-    for i= 1, 8 do
+    for i= 0, 8 do
         self.SoldierKillsCounter[i] = {};
     end
 
