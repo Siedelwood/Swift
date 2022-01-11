@@ -44,6 +44,8 @@ BinWriter_ModuleFiles = {
     "Swift_2_ObjectInteraction/source.lua",
     "Swift_2_ObjectInteraction/api.lua",
     "Swift_2_ObjectInteraction/behavior.lua",
+    "Swift_2_Pathing/source.lua",
+    "Swift_2_Pathing/api.lua",
     "Swift_2_Quests/source.lua",
     "Swift_2_Quests/api.lua",
     "Swift_2_Selection/source.lua",

@@ -1,0 +1,16 @@
+{
+    "name": "Swift_2_Pathing",
+    "version": "1.0.0",
+    "mandatory": false,
+    "caption": "(2) Pathing",
+    "shortdesc": "Bringt eine grundlegende Wegfindung für Entities mit.",
+    "description": "",
+    "files": [
+        "source.lua",
+        "api.lua"
+    ],
+    "dependencies": [
+        "Swift_0_Core",
+        "Swift_1_JobsCore"
+    ]
+}
