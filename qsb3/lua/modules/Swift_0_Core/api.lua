@@ -373,7 +373,7 @@ function API.OverrideTable()
         end
         return true;
     end
-    
+
     ---
     -- Prüft, ob ein Element in einer eindimensionenen Table enthalten ist.
     -- @param[type=table] t Table
@@ -382,12 +382,45 @@ function API.OverrideTable()
     --
     table.contains = function (t, e)
         assert(type(t) == "table");
-        for k, v in ipairs(t) do
+        for k, v in pairs(t) do
             if v == e then
                 return true;
             end
         end
         return false;
+    end
+
+    ---
+    -- Gibt die Anzahl an Elementen in einer Table zurück.
+    -- @param[type=table] t Quelle
+    -- @return[type=number] Anzahl Elemente
+    -- @within table
+    --
+    table.length = function(t)
+        local c = 0;
+        for k, v in pairs(t) do
+            if tonumber(k) then
+                c = c +1;
+            end
+        end
+        return c;
+    end
+
+    ---
+    -- Gibt die Anzahl an Elementen in einer Table zurück.
+    -- @param[type=table] t Quelle
+    -- @return[type=number] Anzahl Elemente
+    -- @within table
+    --
+    table.size = function(t)
+        local c = 0;
+        for k, v in pairs(t) do
+            -- Ignore n if set
+            if k ~= "n" or (k == "n" and type(k) ~= "number") then
+                c = c +1;
+            end
+        end
+        return c;
     end
 
     ---
@@ -454,6 +487,50 @@ function API.OverrideTable()
     end
 
     ---
+    -- Fügt alle angegebenen Elemente zur Table hinzu, wenn sie noch nicht
+    -- vorhanden sind.
+    -- @param[type=table] t Table
+    -- @param ...           Parameterliste
+    -- @return[type=table] Table
+    -- @within table
+    --
+    table.insertAll = function(t, ...)
+        for i= 1, #arg do
+            if not table.contains(t, arg[i]) then
+                table.insert(t, arg[i]);
+            end
+        end
+        return t;
+    end
+
+    ---
+    -- Entfernt alle angegebenen Elemente aus der Table, wenn sie vorhanden
+    -- sind.
+    -- @param[type=table] t Table
+    -- @param ...           Parameterliste
+    -- @return[type=table] Table
+    -- @within table
+    --
+    table.removeAll = function(t, ...)
+        for i= 1, #arg do
+            for k, v in pairs(t) do
+                if type(v) == "table" and type(arg[i]) then
+                    if table.equals(v, arg[i]) then
+                        t[k] = nil;
+                    end
+                else
+                    if v == arg[i] then
+                        t[k] = nil;
+                    end
+                end
+            end
+        end
+        -- Set n as table remove would do
+        t.n = table.length(t);
+        return t;
+    end
+
+    ---
     -- Setzt die Metatable für die übergebene Table.
     -- @param[type=table] t    Table
     -- @param[type=table] meta Metatable
@@ -462,7 +539,7 @@ function API.OverrideTable()
     table.setMetatable = function(t, meta)
         assert(type(t) == "table");
         assert(type(meta) == "table" or meta == nil);
-    
+
         local oldmeta = meta;
         meta = {};
         for k,v in pairs(oldmeta) do
@@ -525,6 +602,62 @@ function API.OverrideString()
     string.indexOf = function (self, s)
         return self:find(s);
     end
+
+    ---
+    -- Zerlegt einen String anhand des Seperators.
+    -- @param[type=string] _sep Seperator
+    -- @return[type=table] Liste der Teilstrings
+    -- @within string
+    --
+    string.slice = function(self, _sep)
+        _sep = _sep or "%s";
+        local t = {};
+        for str in string.gmatch(self, "([^".._sep.."]+)") do
+            table.insert(t, str)
+         end
+        return t;
+    end
+
+    ---
+    -- Für mehrere Werte zu einem String zusammen.
+    -- @param ... Werteliste
+    -- @return[type=string] Stringkombinat
+    -- @within string
+    --
+    string.join = function(self, ...)
+        local s = "";
+        local parts = {self, unpack(arg)};
+        for i= 1, #parts do
+            if type("part") == "table" then
+                s = s .. string.join(unpack(parts[i]));
+            else
+                s = s .. tostring(parts[i]);
+            end
+        end
+        return s;
+    end
+
+    ---
+    -- Ersetzt das erste Vorkommens des Musters im String.
+    -- @param[type=string] p Muster
+    -- @param[type=string] r Ersatz
+    -- @return[type=string] Neuer String
+    -- @within string
+    --
+    string.replace = function(self, p, r)
+        return self:gsub(p, r, 1);
+    end
+
+    ---
+    -- Ersetzt alle Vorkommen des Musters im String.
+    -- @param[type=string] p Muster
+    -- @param[type=string] r Ersatz
+    -- @return[type=string] Neuer String
+    -- @within string
+    --
+    string.replaceAll = function(self, p, r)
+        return self:gsub(p, r);
+    end
 end
 
 -- Script Events
@@ -532,27 +665,29 @@ end
 ---
 -- Liste der grundlegenden Script Events.
 --
--- @field SaveGameLoaded Ein Spielstand wird geladen.
--- @field EscapePressed Escape wurde gedrückt. (Parameter: PlayerID)
--- @field QuestFailure Ein Quest schlug fehl (Parameter: QuestID)
--- @field QuestInterrupt Ein Quest wurde unterbrochen (Parameter: QuestID)
--- @field QuestReset Ein Quest wurde zurückgesetzt (Parameter: QuestID)
--- @field QuestSuccess Ein Quest wurde erfolgreich abgeschlossen (Parameter: QuestID)
--- @field QuestTrigger Ein Quest wurde aktiviert (Parameter: QuestID)
+-- @field SaveGameLoaded     Ein Spielstand wird geladen.
+-- @field EscapePressed      Escape wurde gedrückt. (Parameter: PlayerID)
+-- @field QuestFailure       Ein Quest schlug fehl (Parameter: QuestID)
+-- @field QuestInterrupt     Ein Quest wurde unterbrochen (Parameter: QuestID)
+-- @field QuestReset         Ein Quest wurde zurückgesetzt (Parameter: QuestID)
+-- @field QuestSuccess       Ein Quest wurde erfolgreich abgeschlossen (Parameter: QuestID)
+-- @field QuestTrigger       Ein Quest wurde aktiviert (Parameter: QuestID)
 -- @field CustomValueChanged Eine Custom Variable hat sich geändert (Parameter: Name, OldValue, NewValue)
--- @field LanguageSet Die Sprache wurde geändert (Parameter: OldLanguage, NewLanguage)
+-- @field LanguageSet        Die Sprache wurde geändert (Parameter: OldLanguage, NewLanguage)
+-- @field EntityArrived      Ein Entity hat das Ziel erreicht. (Parameter: EntityID, TargetID, TargetX, TargetY)
+-- @field EntityStuck        Ein Entity kann das Ziel nicht erreichen. (Parameter: EntityID, TargetID, TargetX, TargetY)
 -- @within Event
 --
 QSB.ScriptEvents = QSB.ScriptEvents or {};
 
 -- Script Event Callback --
 
--- The callback is put into a never called local function because LDOC cant
+-- The callback is put into a never called local function because LDOC can't
 -- process the callback when it self is declared local. For ... reasons we do
 -- not want to use the -a switch on LDOC so that seems to be the only solution.
 -- Creators should never give a funktion this name. But I don't think that
--- concern will be very likley to happen. ;)
-local function ThisWillForeverBeLostToTheVoid()
+-- will be very likley to happen. ;)
+local function ThisWillForeverBeLostToTheVoidBecauseNoOneComesUpWithThat()
     ---
     -- Wird aufgerufen, wenn ein beliebiges Event empfangen wird.
     --
@@ -710,6 +845,8 @@ end
 -- @local
 --
 -- @usage local Bool = API.ToBoolean("+")  --> Bool = true
+-- local Bool = API.ToBoolean("1")  --> Bool = true
+-- local Bool = API.ToBoolean(1)  --> Bool = true
 -- local Bool = API.ToBoolean("no") --> Bool = false
 --
 function API.ToBoolean(_Value)
@@ -719,9 +856,6 @@ AcceptAlternativeBoolean = API.ToBoolean;
 
 ---
 -- Rundet eine Dezimalzahl kaufmännisch ab.
---
--- <b>Hinweis</b>: Es wird manuell gerundet um den Rundungsfehler in der
--- History Edition zu umgehen.
 --
 -- @param[type=string] _Value         Zu rundender Wert
 -- @param[type=string] _DecimalDigits Maximale Dezimalstellen
@@ -845,6 +979,8 @@ function API.IsDebugCheatsActive()
     return Swift.m_DevelopingCheats == true;
 end
 
+-- Event
+
 ---
 -- Prüft, ob die Eingabeaufforderung aktiv ist.
 --
@@ -887,6 +1023,9 @@ end
 -- Ersetzt ein Entity mit einem neuen eines anderen Typs. Skriptname,
 -- Rotation, Position und Besitzer werden übernommen.
 --
+-- Für Siedler wird automatisch die Tasklist TL_NPC_IDLE gesetzt, damit
+-- sie nicht versteinert in der Landschaft rumstehen.
+--
 -- <b>Hinweis</b>: Die Entity-ID ändert sich und beim Ersetzen von
 -- Spezialgebäuden kann eine Niederlage erfolgen.
 --
@@ -898,21 +1037,21 @@ end
 -- @usage API.ReplaceEntity("Stein", Entities.XD_ScriptEntity)
 --
 function API.ReplaceEntity(_Entity, _Type, _NewOwner)
-    local eID = GetID(_Entity);
-    if eID == 0 then
+    local ID1 = GetID(_Entity);
+    if ID1 == 0 then
         return;
     end
-    local pos = GetPosition(eID);
-    local player = _NewOwner or Logic.EntityGetPlayer(eID);
-    local orientation = Logic.GetEntityOrientation(eID);
-    local name = Logic.GetEntityName(eID);
-    DestroyEntity(eID);
-    -- TODO: Logging
-    if Logic.IsEntityTypeInCategory(_Type, EntityCategories.Soldier) == 1 then
-        return CreateBattalion(player, _Type, pos.X, pos.Y, 1, name, orientation);
-    else
-        return CreateEntity(player, _Type, pos, name, orientation);
+    local pos = GetPosition(ID1);
+    local player = _NewOwner or Logic.EntityGetPlayer(ID1);
+    local orientation = Logic.GetEntityOrientation(ID1);
+    local name = Logic.GetEntityName(ID1);
+    DestroyEntity(ID1);
+    local ID2 = Logic.CreateEntity(_Type, pos.X, pos.Y, orientation, player);
+    Logic.SetEntityName(ID2, name);
+    if Logic.IsSettler(ID2) == 1 then
+        Logic.SetTaskList(ID2, TaskLists.TL_NPC_IDLE);
     end
+    return ID2;
 end
 ReplaceEntity = API.ReplaceEntity;
 
@@ -983,28 +1122,51 @@ end
 ---
 -- Rotiert ein Entity, sodass es zum Ziel schaut.
 --
--- @param _entity         Entity (Skriptname oder ID)
--- @param _entityToLookAt Ziel (Skriptname oder ID)
--- @param[type=number]    _offsetEntity Winkel Offset
+-- @param _Entity      Entity (Skriptname oder ID)
+-- @param _Target      Ziel (Skriptname, ID oder Position)
+-- @param[type=number] _Offset Winkel Offset
 -- @within Entity
 -- @usage API.LookAt("Hakim", "Alandra")
 --
-function API.LookAt(_entity, _entityToLookAt, _offsetEntity)
-    local entity = GetID(_entity);
-    local entityTLA = GetID(_entityToLookAt);
-    if not IsExisting(entity) or not IsExisting(entityTLA) then
-        warn("API.LookAt: One entity is invalid or dead!");
+function API.LookAt(_Entity, _Target, _Offset)
+    _Offset = _Offset or 0;
+    local ID1 = GetID(_Entity);
+    if ID1 == 0 then
         return;
     end
-    local eX, eY = Logic.GetEntityPosition(entity);
-    local eTLAX, eTLAY = Logic.GetEntityPosition(entityTLA);
-    local orientation = math.deg(math.atan2((eTLAY - eY), (eTLAX - eX)));
-    if Logic.IsBuilding(entity) == 1 then
-        orientation = orientation - 90;
+    local x1,y1,z1 = Logic.EntityGetPos(ID1);
+    local ID2;
+    local x2, y2, z2;
+    if type(_Target) == "table" then
+        x2 = _Target.X;
+        y2 = _Target.Y;
+        z2 = _Target.Z;
+    else
+        ID2 = GetID(_Target);
+        if ID2 == 0 then
+            return;
+        end
+        x2,y2,z2 = Logic.EntityGetPos(ID2);
     end
-    _offsetEntity = _offsetEntity or 0;
-    info("API.LookAt: Entity " ..entity.. " is looking at " ..entityTLA);
-    Logic.SetOrientation(entity, orientation + _offsetEntity);
+
+    if not API.IsValidPosition({X= x1, Y= y1, Z= z1}) then
+        return;
+    end
+    if not API.IsValidPosition({X= x2, Y= y2, Z= z2}) then
+        return;
+    end
+    Angle = math.deg(math.atan2((y2 - y1), (x2 - x1))) + _Offset;
+    if Angle < 0 then
+        Angle = Angle + 360;
+    end
+
+    if Logic.IsLeader(ID1) == 1 then
+        local Soldiers = {Logic.GetSoldiersAttachedToLeader(ID1)};
+        for i= 2, Soldiers[1]+1 do
+            Logic.SetOrientation(Soldiers[i], Angle);
+        end
+    end
+    Logic.SetOrientation(ID1, Angle);
 end
 LookAt = API.LookAt;
 
@@ -1021,6 +1183,68 @@ function API.Confront(_entity, _entityToLookAt)
     API.LookAt(_entityToLookAt, _entity);
 end
 ConfrontEntities = API.LookAt;
+
+---
+-- Bewegt ein Entity zum Zielpunkt.
+--
+-- Wenn das Ziel zu irgend einem Zeitpunkt nicht erreicht werden kann, wird die
+-- Bewegung abgebrochen und das Event QSB.ScriptEvents.EntityStuck geworfen.
+--
+-- Das Ziel gilt als erreicht, sobald sich das Entity nicht mehr bewegt. Dann
+-- wird das Event QSB.ScriptEvents.EntityArrived geworfen.
+--
+-- @param               _Entity         Bewegtes Entity (Skriptname oder ID)
+-- @param               _Target         Ziel (Skriptname, ID oder Position)
+-- @param[type=boolean] _IgnoreBlocking Direkten Weg benutzen
+-- @within Position
+--
+function API.MoveEntity(_Entity, _Target, _IgnoreBlocking)
+    local ID1 = GetID(_Entity);
+    if not IsExisting(ID1) then
+        error("API.MoveEntity: entity '" ..tostring(_Entity).. "' does not exist!");
+        return;
+    end
+
+    local TargetID = 0;
+    local Target;
+    if type(_Target) ~= "table" then
+        local ID2 = GetID(_Target);
+        if not IsExisting(ID2) then
+            error("API.MoveEntity: target '" ..tostring(_Target).. "' does not exist!");
+            return;
+        end
+        TargetID = ID2;
+        local x,y,z = Logic.EntityGetPos(ID2);
+        if Logic.IsBuilding(ID2) == 1 then
+            x,y = Logic.GetBuildingApproachPosition(ID2);
+        end
+        Target = {X= x, Y= y};
+    else
+        if not IsValidPosition(_Target) then
+            error("API.MoveEntity: target position is invalid!");
+            return;
+        end
+        Target = _Target;
+    end
+
+    if _IgnoreBlocking then
+        if Logic.IsSettler(ID1) == 1 then
+            Logic.SetTaskList(ID1, TaskLists.TL_NPC_WALK);
+        end
+        Logic.MoveEntity(ID1, Target.X, Target.Y);
+    else
+        Logic.MoveSettler(ID1, Target.X, Target.Y);
+    end
+
+    Trigger.RequestTrigger(
+        Events.LOGIC_EVENT_EVERY_TURN,
+        "",
+        "Swift_BasicJob_MoveEntityController",
+        1,
+        0,
+        {ID1, TargetID, Target.X, Target.Y}
+    )
+end
 
 ---
 -- Sendet einen Handelskarren zu dem Spieler. Startet der Karren von einem
@@ -1687,6 +1911,44 @@ end
 GetDistance = API.GetDistance;
 
 ---
+-- Bestimmt den Winkel zwischen zwei Punkten. Es können Entity-IDs,
+-- Skriptnamen oder Positionstables angegeben werden.
+--
+-- @param _Pos1 Erste Vergleichsposition (Skriptname, ID oder Positions-Table)
+-- @param _Pos2 Zweite Vergleichsposition (Skriptname, ID oder Positions-Table)
+-- @return[type=number] Winkel zwischen den Punkten
+-- @within Position
+-- @usage local Angle = API.GetAngleBetween("HQ1", Logic.GetKnightID(1))
+--
+function API.GetAngleBetween(_Pos1, _Pos2)
+	local delta_X = 0;
+	local delta_Y = 0;
+	local alpha   = 0;
+	if type (_Pos1) == "string" or type (_Pos1) == "number" then
+		_Pos1 = GetPosition(GetID(_Pos1));
+	end
+	if type (_Pos2) == "string" or type (_Pos2) == "number" then
+		_Pos2 = GetPosition(GetID(_Pos2));
+	end
+	delta_X = _Pos1.X - _Pos2.X;
+	delta_Y = _Pos1.Y - _Pos2.Y;
+	if delta_X == 0 and delta_Y == 0 then
+		return 0;
+	end
+	alpha = math.deg(math.asin(math.abs(delta_X)/(math.sqrt((delta_X ^ 2)+delta_Y ^ 2))));
+	if delta_X >= 0 and delta_Y > 0 then
+		alpha = 270 - alpha ;
+	elseif delta_X < 0 and delta_Y > 0 then
+		alpha = 270 + alpha;
+	elseif delta_X < 0 and delta_Y <= 0 then
+		alpha = 90  - alpha;
+	elseif delta_X >= 0 and delta_Y <= 0 then
+		alpha = 90  + alpha;
+	end
+	return alpha;
+end
+
+---
 -- Gibt das Entity aus der Liste zurück, welches dem Ziel am nähsten ist.
 --
 -- @param             _Target Entity oder Position
@@ -1716,51 +1978,113 @@ end
 -- @param _Entity Entity (Skriptname oder ID)
 -- @return[type=table] Positionstabelle {X= x, Y= y, Z= z}
 -- @within Position
--- @usage local Position = API.LocateEntity("Hans")
+-- @usage local Position = API.GetPosition("Hans");
 --
-function API.LocateEntity(_Entity)
+function API.GetPosition(_Entity)
     if _Entity == nil then
-        return {X= 1, Y= 1, Z= 1};
+        return {X= 0, Y= 0, Z= 0};
     end
     if (type(_Entity) == "table") then
         return _Entity;
     end
     if (not IsExisting(_Entity)) then
-        warn("API.LocateEntity: Entity (" ..tostring(_Entity).. ") does not exist!");
+        warn("API.GetPosition: Entity (" ..tostring(_Entity).. ") does not exist!");
         return {X= 0, Y= 0, Z= 0};
     end
     local x, y, z = Logic.EntityGetPos(GetID(_Entity));
     return {X= API.Round(x), Y= API.Round(y), Z= API.Round(y)};
 end
-GetPosition = API.LocateEntity;
+API.LocateEntity = API.GetPosition;
+GetPosition = API.GetPosition;
+
+---
+-- Setzt ein Entity auf eine neue Position
+--
+-- @param _Entity Entity (Skriptname oder ID)
+-- @param _Target Ziel (Skriptname, ID oder Position)
+-- @within Position
+-- @usage API.SetPosition("Hans", "Horst");
+--
+function API.SetPosition(_Entity, _Target)
+    local ID = GetID(_Entity);
+    if not ID then
+        return;
+    end
+
+    local Target;
+    if type(_Target) ~= "table" then
+        local ID2 = GetID(_Target);
+        local x,y,z = Logic.EntityGetPos(ID2);
+        Target = {X= x, Y= y};
+    else
+        Target = _Target;
+    end
+
+    if Logic.IsLeader(ID) == 1 then
+        local Soldiers = {Logic.GetSoldiersAttachedToLeader(ID)};
+        for i= 2, Soldiers[1]+1 do
+            Logic.DEBUG_SetSettlerPosition(Soldiers[i], Target.X, Target.Y);
+        end
+    end
+    Logic.DEBUG_SetSettlerPosition(ID, Target.X, Target.Y);
+end
+API.RelocateEntity = API.SetPosition;
+SetPosition = API.SetPosition;
+
+---
+-- Prüft, ob eine Positionstabelle eine gültige Position enthält.
+--
+-- Eine Position ist Ungültig, wenn sie sich nicht auf der Welt befindet.
+-- Das ist der Fall bei negativen Werten oder Werten, welche die Größe
+-- der Welt übersteigen.
+--
+-- @param[type=table] _pos Positionstable {X= x, Y= y}
+-- @return[type=boolean] Position ist valide
+-- @within Position
+--
+function API.IsValidPosition(_pos)
+    if type(_pos) == "table" then
+        if (_pos.X ~= nil and type(_pos.X) == "number") and (_pos.Y ~= nil and type(_pos.Y) == "number") then
+            local world = {Logic.WorldGetSize()};
+            if _pos.Z and _pos.Z < 0 then
+                return false;
+            end
+            if _pos.X < world[1] and _pos.X > 0 and _pos.Y < world[2] and _pos.Y > 0 then
+                return true;
+            end
+        end
+    end
+    return false;
+end
+IsValidPosition = API.IsValidPosition;
+
+-- Math --
 
 ---
 -- Bestimmt die Durchschnittsposition mehrerer Entities.
 --
 -- @param ... Positionen mit Komma getrennt
 -- @return[type=table] Durchschnittsposition aller Positionen
--- @within Position
+-- @within Mathematik
 -- @usage local Center = API.GetGeometricFocus("Hakim", "Marcus", "Alandra");
 --
 function API.GetGeometricFocus(...)
-    local SumX = 0;
-    local SumY = 0;
-    local SumZ = 0;
-    for i= 1, #arg, 1 do
+    local PositionData = {X= 0, Y= 0, Z= 0};
+    local ValidEntryCount = 0;
+    for i= 1, #arg do
         local Position = API.GetPosition(arg[i]);
         if API.IsValidPosition(Position) then
-            SumX = SumX + Position.X;
-            SumY = SumY + Position.Y;
-            if Position.Z then
-                SumZ = SumZ + Position.Z;
-            end
+            PositionData.X = PositionData.X + Position.X;
+            PositionData.Y = PositionData.Y + Position.Y;
+            PositionData.Z = PositionData.Z + (Position.Z or 0);
+            ValidEntryCount = ValidEntryCount +1;
         end
     end
     return {
-        X= 1/#arg * SumX,
-        Y= 1/#arg * SumY,
-        Z= 1/#arg * SumZ
-    };
+        X= PositionData.X * (1/ValidEntryCount);
+        Y= PositionData.Y * (1/ValidEntryCount);
+        Z= PositionData.Z * (1/ValidEntryCount);
+    }
 end
 GetAveragePosition = API.GetGeometricFocus;
 
@@ -1772,7 +2096,7 @@ GetAveragePosition = API.GetGeometricFocus;
 -- @param               _Pos2       Zweite Position
 -- @param[type=number]  _Percentage Entfernung zu Erster Position
 -- @return[type=table] Position auf Linie
--- @within Position
+-- @within Mathematik
 -- @usage local Position = API.GetLinePosition("HQ1", "HQ2", 0.75);
 --
 function API.GetLinePosition(_Pos1, _Pos2, _Percentage)
@@ -1810,7 +2134,7 @@ end
 -- @param               _Pos2    Zweite Position
 -- @param[type=number]  _Periode Anzahl an Positionen
 -- @return[type=table] Positionen auf Linie
--- @within Position
+-- @within Mathematik
 -- @usage local PositionList = API.GetLinePosition("HQ1", "HQ2", 6);
 --
 function API.GetLinePositions(_Pos1, _Pos2, _Periode)
@@ -1829,7 +2153,7 @@ end
 -- @param[type=number]  _Distance        Entfernung um das Zentrum
 -- @param[type=number]  _Angle           Winkel auf dem Kreis
 -- @return[type=table] Position auf Kreisbahn
--- @within Position
+-- @within Mathematik
 -- @usage local Position = API.GetCirclePosition("HQ1", 3000, -45);
 --
 function API.GetCirclePosition(_Target, _Distance, _Angle)
@@ -1863,7 +2187,7 @@ API.GetRelatiePos = API.GetCirclePosition;
 -- @param[type=number]  _Periode         Anzahl an Positionen
 -- @param[type=number]  _Offset          Start Offset
 -- @return[type=table] Positionend auf Kreisbahn
--- @within Position
+-- @within Mathematik
 -- @usage local PositionList = API.GetCirclePosition("Position", 3000, 6, 45);
 --
 function API.GetCirclePositions(_Target, _Distance, _Periode, _Offset)
@@ -1875,35 +2199,6 @@ function API.GetCirclePositions(_Target, _Distance, _Periode, _Offset)
     end
     return PositionList;
 end
-
----
--- Prüft, ob eine Positionstabelle eine gültige Position enthält.
---
--- Eine Position ist Ungültig, wenn sie sich nicht auf der Welt befindet.
--- Das ist der Fall bei negativen Werten oder Werten, welche die Größe
--- der Welt übersteigen.
---
--- @param[type=table] _pos Positionstable {X= x, Y= y}
--- @return[type=boolean] Position ist valide
--- @within Position
---
-function API.IsValidPosition(_pos)
-    if type(_pos) == "table" then
-        if (_pos.X ~= nil and type(_pos.X) == "number") and (_pos.Y ~= nil and type(_pos.Y) == "number") then
-            local world = {Logic.WorldGetSize()};
-            if _pos.Z and _pos.Z < 0 then
-                return false;
-            end
-            if _pos.X < world[1] and _pos.X > 0 and _pos.Y < world[2] and _pos.Y > 0 then
-                return true;
-            end
-        end
-    end
-    return false;
-end
-IsValidPosition = API.IsValidPosition;
-
--- Math --
 
 ---
 -- Berechnet den Faktor der linearen Interpolation.
