@@ -500,6 +500,8 @@ function Swift:InitalizeEventsGlobal()
     QSB.ScriptEvents.QuestTrigger = Swift:CreateScriptEvent("Event_QuestTrigger", nil);
     QSB.ScriptEvents.CustomValueChanged = Swift:CreateScriptEvent("Event_CustomValueChanged", nil);
     QSB.ScriptEvents.LanguageSet = Swift:CreateScriptEvent("Event_LanguageSet", nil);
+    QSB.ScriptEvents.EntityArrived = Swift:CreateScriptEvent("Event_EntityArrived", nil);
+    QSB.ScriptEvents.EntityStuck = Swift:CreateScriptEvent("Event_EntityStuck", nil);
 end
 function Swift:InitalizeEventsLocal()
     QSB.ScriptEvents.SaveGameLoaded = Swift:CreateScriptEvent("Event_SaveGameLoaded", nil);
@@ -511,6 +513,8 @@ function Swift:InitalizeEventsLocal()
     QSB.ScriptEvents.QuestTrigger = Swift:CreateScriptEvent("Event_QuestTrigger", nil);
     QSB.ScriptEvents.CustomValueChanged = Swift:CreateScriptEvent("Event_CustomValueChanged", nil);
     QSB.ScriptEvents.LanguageSet = Swift:CreateScriptEvent("Event_LanguageSet", nil);
+    QSB.ScriptEvents.EntityArrived = Swift:CreateScriptEvent("Event_EntityArrived", nil);
+    QSB.ScriptEvents.EntityStuck = Swift:CreateScriptEvent("Event_EntityStuck", nil);
 end
 
 function Swift:CreateScriptEvent(_Name, _Function)
@@ -660,7 +664,7 @@ function Swift:ToBoolean(_Input)
     if type(_Input) == "boolean" then
         return _Input;
     end
-    if string.find(string.lower(tostring(_Input)), "^[tjy\\+].*$") then
+    if _Input == 1 or string.find(string.lower(tostring(_Input)), "^[1tjy\\+].*$") then
         return true;
     end
     return false;
