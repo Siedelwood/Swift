@@ -14,6 +14,7 @@ ModuleEntityEventCore = {
     },
 
     Global = {
+        MovingEntities = {},
         RegisteredEntities = {},
         AttackedEntities = {},
         OverkillEntities = {},
@@ -112,6 +113,8 @@ function ModuleEntityEventCore.Global:OnEvent(_ID, _Event, ...)
         self.AttackedEntities[arg[1]] = {arg[3], 100};
     elseif _ID == QSB.ScriptEvents.EntityRegistered then
         ModuleEntityEventCore.Shared:SaveHighestEntity(arg[1]);
+    elseif _ID == QSB.ScriptEvents.EntityArrived then
+        self:OnMovingEntityArrived(arg[1], arg[2], arg[3], arg[4]);
     end
 end
 
@@ -157,6 +160,16 @@ end
 
 function ModuleEntityEventCore.Global:OnSaveGameLoaded()
     self:OverrideLogic();
+end
+
+function ModuleEntityEventCore.Global:OnMovingEntityArrived(_EntityID, _TargetID, _X, _Y)
+    if self.MovingEntities[_EntityID] then
+        if type(self.MovingEntities[_EntityID]) == "function" then
+            self.MovingEntities[_EntityID](_EntityID, _TargetID, _X, _Y);
+        else
+            API.LookAt(_EntityID, self.MovingEntities[_EntityID]);
+        end
+    end
 end
 
 function ModuleEntityEventCore.Global:CleanTaggedAndDeadEntities()

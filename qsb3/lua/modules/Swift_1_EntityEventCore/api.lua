@@ -102,3 +102,63 @@ function API.ThiefDisableCisternEffect(_Flag)
     ModuleEntityEventCore.Global.DisableThiefCisternSabotage = _Flag == true;
 end
 
+---
+-- Bewegt ein Entity zum Zielpunkt und lässt es das Ziel anschauen.
+--
+-- Wenn das Ziel zu irgend einem Zeitpunkt nicht erreicht werden kann, wird die
+-- Bewegung abgebrochen und das Event QSB.ScriptEvents.EntityStuck geworfen.
+--
+-- Das Ziel gilt als erreicht, sobald sich das Entity nicht mehr bewegt. Dann
+-- wird das Event QSB.ScriptEvents.EntityArrived geworfen.
+--
+-- @param               _Entity         Bewegtes Entity (Skriptname oder ID)
+-- @param               _Position       Ziel (Skriptname, ID oder Position)
+-- @param               _Target         Angeschaute Position (Skriptname, ID oder Position)
+-- @param[type=boolean] _IgnoreBlocking Direkten Weg benutzen
+-- @within Anwenderfunktionen
+--
+function API.MoveEntityAndLookAt(_Entity, _Position, _Target, _IgnoreBlocking)
+    local ID1 = GetID(_Entity);
+    if not IsExisting(ID1) then
+        error("API.MoveEntityAndLookAt: entity '" ..tostring(_Entity).. "' does not exist!");
+        return;
+    end
+    local ID2 = GetID(_Target);
+    if not IsExisting(ID2) then
+        error("API.MoveEntityAndLookAt: entity '" ..tostring(_Target).. "' does not exist!");
+        return;
+    end
+    ModuleEntityEventCore.Global.MovingEntities[ID1] = ID2;
+    API.MoveEntity(_Entity, _Position, _IgnoreBlocking);
+end
+
+---
+-- Bewegt ein Entity zum Zielpunkt und führt die Funktion aus.
+--
+-- Wenn das Ziel zu irgend einem Zeitpunkt nicht erreicht werden kann, wird die
+-- Bewegung abgebrochen und das Event QSB.ScriptEvents.EntityStuck geworfen.
+--
+-- Das Ziel gilt als erreicht, sobald sich das Entity nicht mehr bewegt. Dann
+-- wird das Event QSB.ScriptEvents.EntityArrived geworfen.
+--
+-- @param                _Entity         Bewegtes Entity (Skriptname oder ID)
+-- @param                _Target         Ziel (Skriptname, ID oder Position)
+-- @param[type=function] _Action         Funktion wenn Entity ankommt
+-- @param[type=boolean]  _IgnoreBlocking Direkten Weg benutzen
+-- @within Anwenderfunktionen
+--
+function API.MoveEntityAndExecute(_Entity, _Target, _Action, _IgnoreBlocking)
+    local ID1 = GetID(_Entity);
+    if not IsExisting(ID1) then
+        error("API.MoveEntityAndExecute: entity '" ..tostring(_Entity).. "' does not exist!");
+        return;
+    end
+    local ID2 = GetID(_Target);
+    if not IsExisting(ID2) then
+        error("API.MoveEntityAndExecute: entity '" ..tostring(_Target).. "' does not exist!");
+        return;
+    end
+    ModuleEntityEventCore.Global.MovingEntities[ID1] = _Action;
+    API.MoveEntity(_Entity, _Target, _IgnoreBlocking);
+end
+
