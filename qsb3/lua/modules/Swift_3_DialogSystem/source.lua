@@ -149,8 +149,8 @@ function ModuleDialogSystem.Global:NextPage(_PlayerID)
     if type(Page) == "table" then
         if Page.MC then
             for i= 1, #Page.MC, 1 do
-                if type(Page.MC[i].Disable) == "function" then
-                    self.Dialog[_PlayerID][PageID].MC[i].Disabled = Page.MC[i].Disable(_PlayerID, PageID)
+                if type(Page.MC[i][3]) == "function" then
+                    self.Dialog[_PlayerID][PageID].MC[i].Visible = not Page.MC[i][3](_PlayerID, PageID, i)
                 end
             end
         end
@@ -185,16 +185,13 @@ function ModuleDialogSystem.Global:OnOptionSelected(_PlayerID, _OptionID)
         local Option;
         for i= 1, #Page.MC, 1 do
             if Page.MC[i].ID == _OptionID then
-                if Page.Remove then
-                    self.Dialog[_PlayerID][PageID].MC[i].Visible = false;
-                end
                 Option = Page.MC[i];
             end
         end
         if Option ~= nil then
             local Target = Option[2];
             if type(Option[2]) == "function" then
-                Target = Option[2](_PlayerID, PageID);
+                Target = Option[2](_PlayerID, PageID, _OptionID);
             end
             self.Dialog[_PlayerID][PageID].MC.Selected = Option.ID;
             self.Dialog[_PlayerID].CurrentPage = self:GetPageIDByName(_PlayerID, Target) -1;
@@ -451,7 +448,7 @@ function ModuleDialogSystem.Local:SetOptionsDialogContent(_PlayerID)
     XGUIEng.ListBoxPopAll(Listbox);
     self.Dialog[_PlayerID].MCSelectionOptionsMap = {};
     for i=1, #PageData.MC, 1 do
-        if PageData.MC[i].Visible and not PageData.MC[i].Disabled then
+        if PageData.MC[i].Visible then
             XGUIEng.ListBoxPushItem(Listbox, PageData.MC[i][1]);
             table.insert(self.Dialog[_PlayerID].MCSelectionOptionsMap, PageData.MC[i].ID);
         end

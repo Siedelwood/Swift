@@ -162,7 +162,7 @@ end
 
 function CreateTestNPCDialogQuest()
     ReplaceEntity("npc1", Entities.U_KnightSabatta);
-    
+
     AddQuest {
         Name        = "TestNpcQuest3",
         Suggestion  = "Speak to this npc.",
@@ -182,6 +182,8 @@ function CreateTestNPCDialogBriefing(_Name, _PlayerID)
     };
     local AP, ASP = API.AddDialogPages(Dialog);
 
+    TestOptionVisibility = true;
+
     AP {
         Name   = "StartPage",
         Text   = "This is a test!",
@@ -190,6 +192,12 @@ function CreateTestNPCDialogBriefing(_Name, _PlayerID)
         Zoom   = 0.1,
         MC     = {
             {"Continue testing", "ContinuePage"},
+            {"Remove answer",
+             function()
+                TestOptionVisibility = false;
+                return "ContinuePage";
+             end,
+             function() return not TestOptionVisibility; end},
             {"Stop testing", "EndPage"}
         }
     }
