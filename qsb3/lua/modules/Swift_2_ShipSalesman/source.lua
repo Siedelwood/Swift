@@ -98,8 +98,8 @@ function ModuleShipSalesment.Global:PurgeAllTradeRoutes(_PlayerID)
         if IsExisting(Data.ShipID) then
             DestroyEntity(Data.ShipID);
         end
-        if API.JobIsRunning(Data.ShipID) then
-            API.EndJob(Data.ShipJob);
+        if JobIsRunning(Data.ShipID) then
+            EndJob(Data.ShipJob);
         end
     end
 end
@@ -114,8 +114,8 @@ function ModuleShipSalesment.Global:PurgeTradeRoute(_PlayerID, _Name)
             if IsExisting(Data.ShipID) then
                 DestroyEntity(Data.ShipID);
             end
-            if API.JobIsRunning(Data.ShipID) then
-                API.EndJob(Data.ShipJob);
+            if JobIsRunning(Data.ShipID) then
+                EndJob(Data.ShipJob);
             end
             break;
         end

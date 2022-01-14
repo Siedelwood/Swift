@@ -268,7 +268,7 @@ end
 -- Local -------------------------------------------------------------------- --
 
 function ModuleDialogSystem.Local:OnGameStart()
-    StartSimpleHiResJobEx(function()
+    API.StartHiResJob(function()
         for i= 1, 8 do
             ModuleDialogSystem.Local:Update(i);
         end
