@@ -255,7 +255,7 @@ function ModuleBriefingSystem.Global:DisplayPage(_PlayerID, _PageID)
         if Page.MC then
             for i= 1, #Page.MC, 1 do
                 if type(Page.MC[i][3]) == "function" then
-                    self.Briefing[_PlayerID][PageID].MC[i].Disabled = Page.MC[i][3](_PlayerID, PageID)
+                    self.Briefing[_PlayerID][PageID].MC[i].Visible = Page.MC[i][3](_PlayerID, PageID, i);
                 end
             end
         end
@@ -292,16 +292,13 @@ function ModuleBriefingSystem.Global:OnOptionSelected(_PlayerID, _OptionID)
         local Option;
         for i= 1, #Page.MC, 1 do
             if Page.MC[i].ID == _OptionID then
-                if Page.Remove then
-                    self.Briefing[_PlayerID][PageID].MC[i].Visible = false;
-                end
                 Option = Page.MC[i];
             end
         end
         if Option ~= nil then
             local Target = Option[2];
             if type(Option[2]) == "function" then
-                Target = Option[2](_PlayerID, PageID);
+                Target = Option[2](_PlayerID, PageID, _OptionID);
             end
             self.Briefing[_PlayerID][PageID].MC.Selected = Option.ID;
             self.Briefing[_PlayerID].CurrentPage = self:GetPageIDByName(_PlayerID, Target) -1;
@@ -623,7 +620,7 @@ function ModuleBriefingSystem.Local:DisplayPageOptionsDialog(_PlayerID, _PageID)
     XGUIEng.ListBoxPopAll(Listbox);
     self.Briefing[_PlayerID].MCSelectionOptionsMap = {};
     for i=1, #Page.MC, 1 do
-        if Page.MC[i].Visible and not Page.MC[i].Disabled then
+        if Page.MC[i].Visible then
             XGUIEng.ListBoxPushItem(Listbox, Page.MC[i][1]);
             table.insert(self.Briefing[_PlayerID].MCSelectionOptionsMap, Page.MC[i].ID);
         end
