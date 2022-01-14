@@ -305,7 +305,7 @@ function ModuleObjectInteraction.Global:StartObjectDestructionController()
 end
 
 function ModuleObjectInteraction.Global:StartObjectConditionController()
-    API.StartJobByEventType(Events.LOGIC_EVENT_EVERY_TURN, function()
+    API.StartHiResJob(function()
         for k, v in pairs(IO) do
             if v and not v.IsUsed and v.IsActive then
                 IO[k].IsFullfilled = true;

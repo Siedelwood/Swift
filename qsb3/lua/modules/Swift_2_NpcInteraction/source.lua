@@ -41,7 +41,7 @@ function ModuleNpcInteraction.Global:OnGameStart()
 
     self:OverrideQuestFunctions();
 
-    API.StartJobByEventType(Events.LOGIC_EVENT_EVERY_TURN, function()
+    API.StartHiResJob(function()
         if Logic.GetTime() > 1 then
             ModuleNpcInteraction.Global:DialogTriggerController();
         end

@@ -15,91 +15,15 @@
 --
 
 ---
--- Pausiert einen laufenden Job.
---
--- <b>Hinweis</b>: Der Job darf nicht direkt mit Trigger.RequestTrigger
--- gestartet worden sein.
---
--- @param[type=number] _JobID Job-ID
+-- Gibt die real vergangene Zeit seit dem Spielstart in Sekunden zurück.
+-- @return[type=number] Vergangene reale Zeit
 -- @within Anwenderfunktionen
 --
--- @usage API.YieldJob(SOME_JOB_ID);
+-- @usage local RealTime = API.RealTimeGetSecondsPassedSinceGameStart();
 --
-function API.YieldJob(_JobID)
-    if ModuleJobsCore.Shared then
-        for k, v in pairs(ModuleJobsCore.Shared.EventJobs) do
-            if ModuleJobsCore.Shared.EventJobs[k][_JobID] then
-                ModuleJobsCore.Shared.EventJobs[k][_JobID].Enabled = false;
-            end
-        end
-    end
+function API.RealTimeGetSecondsPassedSinceGameStart()
+    return ModuleJobsCore.Shared.SecondsSinceGameStart;
 end
-YieldJob = API.YieldJob;
-
----
--- Aktiviert einen angehaltenen Job.
---
--- <b>Hinweis</b>: Der Job darf nicht direkt mit Trigger.RequestTrigger
--- gestartet worden sein.
---
--- @param[type=number] _JobID Job-ID
--- @within Anwenderfunktionen
---
--- @usage API.ResumeJob(SOME_JOB_ID);
---
-function API.ResumeJob(_JobID)
-    if ModuleJobsCore.Shared then
-        for k, v in pairs(ModuleJobsCore.Shared.EventJobs) do
-            if ModuleJobsCore.Shared.EventJobs[k][_JobID] then
-                ModuleJobsCore.Shared.EventJobs[k][_JobID].Enabled = true;
-            end
-        end
-    end
-end
-ResumeJob = API.ResumeJob;
-
----
--- Prüft ob der angegebene Job aktiv und eingeschaltet ist.
---
--- @param[type=number] _JobID Job-ID
--- @within Anwenderfunktionen
---
--- @usage local Runnint = API.JobIsRunning(SOME_JOB_ID);
---
-function API.JobIsRunning(_JobID)
-    if ModuleJobsCore.Shared then
-        for k, v in pairs(ModuleJobsCore.Shared.EventJobs) do
-            if ModuleJobsCore.Shared.EventJobs[k][_JobID] then
-                if  ModuleJobsCore.Shared.EventJobs[k][_JobID].Active == true 
-                and ModuleJobsCore.Shared.EventJobs[k][_JobID].Enabled == true then
-                    return true;
-                end
-            end
-        end
-    end
-    return false;
-end
-JobIsRunning = API.JobIsRunning;
-
----
--- Beendet einen aktiven Job endgültig.
---
--- @param[type=number] _JobID Job-ID
--- @within Anwenderfunktionen
---
--- @usage API.EndJob(SOME_JOB_ID);
---
-function API.EndJob(_JobID)
-    if ModuleJobsCore.Shared then
-        for k, v in pairs(ModuleJobsCore.Shared.EventJobs) do
-            if ModuleJobsCore.Shared.EventJobs[k][_JobID] then
-                ModuleJobsCore.Shared.EventJobs[k][_JobID].Active = false;
-                return;
-            end
-        end
-    end
-end
-EndJob = API.EndJob;
 
 ---
 -- Erzeugt einen neuen Event-Job.
@@ -125,34 +49,17 @@ EndJob = API.EndJob;
 -- );
 --
 function API.StartJobByEventType(_EventType, _Function, ...)
-    local Function = _Function;
-    if type(Function) == "string" then
-        Function = _G[Function];
-    end
+    local Function = _G[_Function] or _Function;
     if type(Function) ~= "function" then
         error("API.StartJobByEventType: Can not find function!")
         return;
     end
-
-    local ID = -1;
-    if ModuleJobsCore.Shared then
-        ModuleJobsCore.Shared.EventJobID = ModuleJobsCore.Shared.EventJobID +1;
-        ID = ModuleJobsCore.Shared.EventJobID;
-        if ModuleJobsCore.Shared.EventJobs[_EventType] then
-            ModuleJobsCore.Shared.EventJobs[_EventType][ID] = {
-                Function = Function,
-                Arguments = table.copy(arg or {});
-                Active = true,
-                Enabled = true,
-            }
-        end
-    end
-    return ID;
+    return ModuleJobsCore.Shared:CreateEventJob(_EventType, _Function, unpack(arg));
 end
 
 ---
--- Fügt eine Funktion als Job hinzu, die einmal pro Sekunde ausgeführt
--- wird. Die Argumente werden an die Funktion übergeben.
+-- Führt eine Funktion ein mal pro Sekunde aus. Die weiteren Argumente werden an
+-- die Funktion übergeben.
 --
 -- Die Funktion kann als Referenz, Inline oder als String übergeben werden.
 --
@@ -173,10 +80,7 @@ end
 -- StartSimpleJob("MeinJob");
 --
 function API.StartJob(_Function, ...)
-    local Function = _Function;
-    if type(Function) == "string" then
-        Function = _G[Function];
-    end
+    local Function = _G[_Function] or _Function;
     if type(Function) ~= "function" then
         error("API.StartJob: _Function must be a function!");
         return;
@@ -187,8 +91,9 @@ StartSimpleJob = API.StartJob;
 StartSimpleJobEx = API.StartJob;
 
 ---
--- Fügt eine Funktion als Job hinzu, die zehn Mal pro Sekunde ausgeführt
--- wird. Die Argumente werden an die Funktion übergeben.
+-- Führt eine Funktion ein mal pro Turn aus. Ein Turn entspricht einer 1/10
+-- Sekunde in der Spielzeit. Die weiteren Argumente werden an die Funktion
+-- übergeben.
 --
 -- Die Funktion kann als Referenz, Inline oder als String übergeben werden.
 --
@@ -199,10 +104,7 @@ StartSimpleJobEx = API.StartJob;
 -- @see API.StartJob
 --
 function API.StartHiResJob(_Function, ...)
-    local Function = _Function;
-    if type(Function) == "string" then
-        Function = _G[Function];
-    end
+    local Function = _G[_Function] or _Function;
     if type(Function) ~= "function" then
         error("API.StartHiResJob: _Function must be a function!");
         return;
@@ -213,111 +115,126 @@ StartSimpleHiResJob = API.StartHiResJob;
 StartSimpleHiResJobEx = API.StartHiResJob;
 
 ---
--- Startet einen Zeitstrahl-Job.
+-- Wartet die angebene Zeit in Sekunden und führt anschließend die Funktion aus.
 --
--- Ein Zeitstrahl hat Stationen, an denen eine Aktion ausgeführt wird. Jede
--- Station muss mindestens eine Sekunde nach der vorherigen liegen.
+-- Die Funktion kann als Referenz, Inline oder als String übergeben werden.
 --
--- Jede Aktion eines Zeitstrahls erhält die Table des aktuellen Ereignisses
--- als Argument. So können Parameter an die Funktion übergeben werden.
---
--- @param[type=table] _Description Beschreibung
--- @return[type=number] ID des Zeitstrahls
--- @within Anwenderfunktionen
--- @see API.StartJob
---
--- @usage JobID = API.StartTimelineJob {
---     {Time = 5, Action = MyFirstAction},
---     -- MySecondAction erhält "BOCKWURST" als Parameter
---     {Time = 15, Action = MySecondAction, "BOCKWURST"},
---     -- Inline-Funktion
---     {Time = 30, Action = function() end},
--- }
---
-function API.StartTimelineJob(_Data)
-    -- check params
-    for i= 1, #_Data do
-        if type(_Data[i]) ~= "table" then
-            error("API.StartTimelineJob: _Data[" ..i.. "] must be a table!");
-            return;
-        end
-        if #_Data[i] < 2 then
-            error("API.StartTimelineJob: _Data[" ..i.. "] has too few entries!");
-            return;
-        end
-        if type(_Data[i][1]) ~= "number" or _Data[i][1] < 0 then
-            error("API.StartTimelineJob: _Data[" ..i.. "][1] must be a number equal oder greater than 0!");
-            return;
-        end
-        if type(_Data[i][2]) ~= "function" then
-            error("API.StartTimelineJob: _Data[" ..i.. "][2] must be a function!");
-            return;
-        end
-    end
-
-    -- start job
-    local JobID = API.StartJob(
-        function(_JobID, _Time)
-            if not ModuleJobsCore.Shared.TimeLineData[_JobID] then
-                return true;
-            end
-            if #ModuleJobsCore.Shared.TimeLineData[_JobID] == 0 then
-                ModuleJobsCore.Shared.TimeLineData[_JobID] = nil;
-                return true;
-            end
-            if ModuleJobsCore.Shared.TimeLineData[_JobID][1].Time == _Time then
-                local Data = table.remove(ModuleJobsCore.Shared.TimeLineData[_JobID], 1);
-                Data.Action(unpack(Data));
-            end
-        end,
-        -- little hack to get the job ID into the job
-        ModuleJobsCore.Shared.EventJobID +1,
-        math.floor(Logic.GetTime())
-    );
-    ModuleJobsCore.Shared.TimeLineData[JobID] = _Data;
-    return JobID;
-end
-
----
--- Gibt die real vergangene Zeit seit dem Spielstart in Sekunden zurück.
--- @return[type=number] Vergangene reale Zeit
--- @within Anwenderfunktionen
---
--- @usage local RealTime = API.RealTimeGetSecondsPassedSinceGameStart();
---
-function API.RealTimeGetSecondsPassedSinceGameStart()
-    return ModuleJobsCore.Shared.SecondsSinceGameStart;
-end
-
----
--- Wartet die angebene Zeit in realen Sekunden und führt anschließend das
--- Callback aus. Die Ausführung erfolgt asynchron. Das bedeutet, dass das
+-- <b>Achtung</b>: Die Ausführung erfolgt asynchron. Das bedeutet, dass das
 -- Skript weiterläuft.
 --
--- @param[type=number] _Waittime Wartezeit in realen Sekunden
--- @param[type=function] _Action Callback-Funktion
+-- @param[type=number] _Waittime   Wartezeit in Sekunden
+-- @param[type=function] _Function Callback-Funktion
 -- @param ... Liste der Argumente
 -- @return[type=number] ID der Verzögerung
 -- @within Anwenderfunktionen
 --
--- @usage API.StartRealTimeJob(
+-- @usage API.StartDelay(
 --     30,
 --     function()
 --         Logic.DEBUG_AddNote("Zeit abgelaufen!");
 --     end
 -- )
 --
-function API.StartRealTimeJob(_Waittime, _Action, ...)
-    local ID = API.StartJob( function(_StartTime, _Delay, _Callback, _Arguments)
-        if (ModuleJobsCore.Shared.SecondsSinceGameStart >= _StartTime + _Delay) then
-            if #_Arguments > 0 then
-                _Callback(unpack(_Arguments));
-            else
-                _Callback();
+function API.StartDelay(_Waittime, _Function, ...)
+    local Function = _G[_Function] or _Function;
+    if type(Function) ~= "function" then
+        error("API.StartDelay: _Function must be a function!");
+        return;
+    end
+    return API.StartHiResJob(
+        function(_StartTime, _Delay, _Callback, _Arguments)
+            if _StartTime + _Delay <= Logic.GetTime() then
+                _Callback(unpack(_Arguments or {}));
+                return true;
             end
-            return true;
-        end
-    end, ModuleJobsCore.Shared.SecondsSinceGameStart, _Waittime, _Action, {...});
-    return ID;
+        end,
+        Logic.GetTime(),
+        _Waittime,
+        _Function,
+        {...}
+    );
+end
+
+---
+-- Wartet die angebene Zeit in Turns und führt anschließend die Funktion aus.
+--
+-- Die Funktion kann als Referenz, Inline oder als String übergeben werden.
+--
+-- <b>Achtung</b>: Die Ausführung erfolgt asynchron. Das bedeutet, dass das
+-- Skript weiterläuft.
+--
+-- @param[type=number] _Waittime   Wartezeit in Turns
+-- @param[type=function] _Function Callback-Funktion
+-- @param ... Liste der Argumente
+-- @return[type=number] ID der Verzögerung
+-- @within Anwenderfunktionen
+--
+-- @usage API.StartHiResDelay(
+--     30,
+--     function()
+--         Logic.DEBUG_AddNote("Zeit abgelaufen!");
+--     end
+-- )
+--
+function API.StartHiResDelay(_Waittime, _Function, ...)
+    local Function = _G[_Function] or _Function;
+    if type(Function) ~= "function" then
+        error("API.StartHiResDelay: _Function must be a function!");
+        return;
+    end
+    return API.StartHiResJob(
+        function(_StartTime, _Delay, _Callback, _Arguments)
+            if _StartTime + _Delay <= Logic.GetCurrentTurn() then
+                _Callback(unpack(_Arguments or {}));
+                return true;
+            end
+        end,
+        Logic.GetTime(),
+        _Waittime,
+        _Function,
+        {...}
+    );
+end
+
+---
+-- Wartet die angebene Zeit in realen Sekunden und führt anschließend die
+-- Funktion aus.
+--
+-- Die Funktion kann als Referenz, Inline oder als String übergeben werden.
+--
+-- <b>Achtung</b>: Die Ausführung erfolgt asynchron. Das bedeutet, dass das
+-- Skript weiterläuft.
+--
+-- @param[type=number] _Waittime   Wartezeit in realen Sekunden
+-- @param[type=function] _Function Callback-Funktion
+-- @param ... Liste der Argumente
+-- @return[type=number] ID der Verzögerung
+-- @within Anwenderfunktionen
+--
+-- @usage API.StartRealTimeDelay(
+--     30,
+--     function()
+--         Logic.DEBUG_AddNote("Zeit abgelaufen!");
+--     end
+-- )
+--
+function API.StartRealTimeDelay(_Waittime, _Function, ...)
+    local Function = _G[_Function] or _Function;
+    if type(Function) ~= "function" then
+        error("API.StartRealTimeDelay: _Function must be a function!");
+        return;
+    end
+    return API.StartHiResJob(
+        function(_StartTime, _Delay, _Callback, _Arguments)
+            if (ModuleJobsCore.Shared.SecondsSinceGameStart >= _StartTime + _Delay) then
+                _Callback(unpack(_Arguments or {}));
+                return true;
+            end
+        end,
+        ModuleJobsCore.Shared.SecondsSinceGameStart,
+        _Waittime,
+        _Function,
+        {...}
+    );
 end
 
