@@ -13,7 +13,9 @@ ModulePathing = {
         Name = "ModulePathing",
     },
 
-    Global = {};
+    Global = {
+        MovingEntities = {},
+    };
     Local = {},
     -- This is a shared structure but the values are asynchronous!
     Shared = {},
@@ -22,6 +24,8 @@ ModulePathing = {
 -- -------------------------------------------------------------------------- --
 
 function ModulePathing.Global:OnGameStart()
+    QSB.ScriptEvents.EntityArrived = Swift:CreateScriptEvent("Event_EntityArrived", nil);
+    QSB.ScriptEvents.EntityStuck = Swift:CreateScriptEvent("Event_EntityStuck", nil);
     QSB.ScriptEvents.PathFindingFinished = API.RegisterScriptEvent("Event_PathFindingFinished");
     QSB.ScriptEvents.PathFindingFailed = API.RegisterScriptEvent("Event_PathFindingFailed");
 
@@ -30,12 +34,67 @@ function ModulePathing.Global:OnGameStart()
     end);
 end
 
-function ModulePathing.Global:OnEvent(_ID, _Name, ...)
+function ModulePathing.Global:OnEvent(_ID, _Event, ...)
+    if _ID == QSB.ScriptEvents.EntityArrived then
+        self:OnMovingEntityArrived(arg[1], arg[2], arg[3], arg[4]);
+    end
+end
+
+function ModulePathing.Global:OnMovingEntityArrived(_EntityID, _TargetID, _X, _Y)
+    if self.MovingEntities[_EntityID] then
+        if type(self.MovingEntities[_EntityID]) == "function" then
+            self.MovingEntities[_EntityID](_EntityID, _TargetID, _X, _Y);
+        else
+            API.LookAt(_EntityID, self.MovingEntities[_EntityID]);
+        end
+    end
+end
+
+-- Entity move controller
+-- Don't ever call this manually!
+function ModulePathing.Global:MoveEntityController(_ID1, _ID2, _X, _Y)
+    local CanMove = true;
+    if not IsExisting(_ID1) then
+        CanMove = false;
+    end
+    if CanMove then
+        local x,y,z = Logic.EntityGetPos(_ID1);
+        local PlayerID = Logic.EntityGetPlayer(_ID1);
+        local SectorType = Logic.GetEntityPlayerSectorType(_ID1);
+        local Sector1 = Logic.GetPlayerSectorID(PlayerID, SectorType, x,y);
+        local Sector2 = Logic.GetPlayerSectorID(PlayerID, SectorType, _X, _Y);
+        if Sector1 ~= Sector2 then
+            Logic.SetTaskList(_ID1, TaskLists.TL_NPC_IDLE);
+            CanMove = false;
+        end
+    end
+    if not CanMove then
+        API.SendScriptEvent(QSB.ScriptEvents.EntityStuck, _ID1, _ID2, _X, _Y);
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.SendScriptEvent(QSB.ScriptEvents.EntityStuck, %d, %d, %f, %f)]],
+            _ID1, _ID2, _X, _Y
+        ));
+        return true;
+    end
+
+    if Logic.IsEntityMoving(_ID1) == false then
+        if Logic.IsSettler(_ID1) == 1 then
+            Logic.SetTaskList(_ID1, TaskLists.TL_NPC_IDLE);
+        end
+        API.SendScriptEvent(QSB.ScriptEvents.EntityArrived, _ID1, _ID2, _X, _Y);
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.SendScriptEvent(QSB.ScriptEvents.EntityArrived, %d, %d, %f, %f)]],
+            _ID1, _ID2, _X, _Y
+        ));
+        return true;
+    end
 end
 
 -- -------------------------------------------------------------------------- --
 
 function ModulePathing.Local:OnGameStart()
+    QSB.ScriptEvents.EntityArrived = Swift:CreateScriptEvent("Event_EntityArrived", nil);
+    QSB.ScriptEvents.EntityStuck = Swift:CreateScriptEvent("Event_EntityStuck", nil);
     QSB.ScriptEvents.PathFindingFinished = API.RegisterScriptEvent("Event_PathFindingFinished");
     QSB.ScriptEvents.PathFindingFailed = API.RegisterScriptEvent("Event_PathFindingFailed");
 end
