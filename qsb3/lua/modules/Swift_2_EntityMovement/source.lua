@@ -14,7 +14,7 @@ ModulePathing = {
     },
 
     Global = {
-        MovingEntities = {},
+        PathMovingEntities = {},
     };
     Local = {},
     -- This is a shared structure but the values are asynchronous!
@@ -24,8 +24,10 @@ ModulePathing = {
 -- -------------------------------------------------------------------------- --
 
 function ModulePathing.Global:OnGameStart()
-    QSB.ScriptEvents.EntityArrived = Swift:CreateScriptEvent("Event_EntityArrived", nil);
-    QSB.ScriptEvents.EntityStuck = Swift:CreateScriptEvent("Event_EntityStuck", nil);
+    QSB.ScriptEvents.EntityArrived = API.RegisterScriptEvent("Event_EntityArrived");
+    QSB.ScriptEvents.EntityStuck = API.RegisterScriptEvent("Event_EntityStuck");
+    QSB.ScriptEvents.EntityAtCheckpoint = API.RegisterScriptEvent("Event_EntityAtCheckpoint");
+
     QSB.ScriptEvents.PathFindingFinished = API.RegisterScriptEvent("Event_PathFindingFinished");
     QSB.ScriptEvents.PathFindingFailed = API.RegisterScriptEvent("Event_PathFindingFailed");
 
@@ -35,56 +37,100 @@ function ModulePathing.Global:OnGameStart()
 end
 
 function ModulePathing.Global:OnEvent(_ID, _Event, ...)
-    if _ID == QSB.ScriptEvents.EntityArrived then
-        self:OnMovingEntityArrived(arg[1], arg[2], arg[3], arg[4]);
-    end
 end
 
-function ModulePathing.Global:OnMovingEntityArrived(_EntityID, _TargetID, _X, _Y)
-    if self.MovingEntities[_EntityID] then
-        if type(self.MovingEntities[_EntityID]) == "function" then
-            self.MovingEntities[_EntityID](_EntityID, _TargetID, _X, _Y);
-        else
-            API.LookAt(_EntityID, self.MovingEntities[_EntityID]);
-        end
+function ModulePathing.Global:FillMovingEntityDataForController(_Entity, _Path, _LookAt, _Action, _IgnoreBlocking)
+    local Index = #self.PathMovingEntities +1;
+    self.PathMovingEntities[Index] = {
+        Entity = GetID(_Entity),
+        IgnoreBlocking = _IgnoreBlocking == true,
+        LookAt = _LookAt,
+        Callback = _Action,
+        Index = 0
+    };
+    for i= 1, #_Path do
+        table.insert(self.PathMovingEntities[Index], _Path[i]);
     end
+    return Index;
 end
 
--- Entity move controller
--- Don't ever call this manually!
-function ModulePathing.Global:MoveEntityController(_ID1, _ID2, _X, _Y)
+function ModulePathing.Global:MoveEntityPathController(_Index)
+    local Data = self.PathMovingEntities[_Index];
+
     local CanMove = true;
-    if not IsExisting(_ID1) then
+    if not IsExisting(Data.Entity) then
         CanMove = false;
     end
-    if CanMove then
-        local x,y,z = Logic.EntityGetPos(_ID1);
-        local PlayerID = Logic.EntityGetPlayer(_ID1);
-        local SectorType = Logic.GetEntityPlayerSectorType(_ID1);
-        local Sector1 = Logic.GetPlayerSectorID(PlayerID, SectorType, x,y);
-        local Sector2 = Logic.GetPlayerSectorID(PlayerID, SectorType, _X, _Y);
+
+    if CanMove and Logic.IsEntityMoving(Data.Entity) == false then
+        -- Arrived at waypoint
+        if Data.Index > 0 then
+            API.SendScriptEvent(QSB.ScriptEvents.EntityAtCheckpoint, Data.Entity, GetID(Data[Data.Index]), _Index);
+            Logic.ExecuteInLuaLocalState(string.format(
+                [[API.SendScriptEvent(QSB.ScriptEvents.EntityAtCheckpoint, %d, %d, %d)]],
+                Data.Entity, GetID(Data[Data.Index]), _Index
+            ));
+        end
+        self.PathMovingEntities[_Index].Index = Data.Index +1;
+
+        -- Check entity arrived
+        if #Data < Data.Index then
+            if Logic.IsSettler(Data.Entity) == 1 then
+                Logic.SetTaskList(Data.Entity, TaskLists.TL_NPC_IDLE);
+                if Data.LookAt then
+                    API.LookAt(Data.Entity, Data.LookAt);
+                end
+                if Data.Callback then
+                    Data:Callback();
+                end
+            end
+            API.SendScriptEvent(QSB.ScriptEvents.EntityArrived, Data.Entity, GetID(Data[#Data]), _Index);
+            Logic.ExecuteInLuaLocalState(string.format(
+                [[API.SendScriptEvent(QSB.ScriptEvents.EntityArrived, %d, %d, %d)]],
+                Data.Entity, GetID(Data[#Data]), _Index
+            ));
+            return true;
+        end
+
+        -- Check reachablility
+        local x1,y1,z1 = Logic.EntityGetPos(Data.Entity);
+        local x2,y2,z2;
+        if type(Data[Data.Index]) == "zable" then
+            x2 = Data[Data.Index].X;
+            y2 = Data[Data.Index].Y;
+        else
+            x2,y2,z2 = Logic.EntityGetPos(GetID(Data[Data.Index]));
+        end
+        local PlayerID = Logic.EntityGetPlayer(Data.Entity);
+        local SectorType = Logic.GetEntityPlayerSectorType(Data.Entity);
+        local Sector1 = Logic.GetPlayerSectorID(PlayerID, SectorType, x1, y1);
+        local Sector2 = Logic.GetPlayerSectorID(PlayerID, SectorType, x2, y2);
         if Sector1 ~= Sector2 then
-            Logic.SetTaskList(_ID1, TaskLists.TL_NPC_IDLE);
+            if Logic.IsSettler(Data.Entity) == 1 then
+                Logic.SetTaskList(Data.Entity, TaskLists.TL_NPC_IDLE);
+            end
             CanMove = false;
         end
-    end
-    if not CanMove then
-        API.SendScriptEvent(QSB.ScriptEvents.EntityStuck, _ID1, _ID2, _X, _Y);
-        Logic.ExecuteInLuaLocalState(string.format(
-            [[API.SendScriptEvent(QSB.ScriptEvents.EntityStuck, %d, %d, %f, %f)]],
-            _ID1, _ID2, _X, _Y
-        ));
-        return true;
+
+        -- Move entity
+        if CanMove then
+            if Data.IgnoreBlocking then
+                if Logic.IsSettler(Data.Entity) == 1 then
+                    Logic.SetTaskList(Data.Entity, TaskLists.TL_NPC_WALK);
+                end
+                Logic.MoveEntity(Data.Entity, x2, y2);
+            else
+                Logic.MoveSettler(Data.Entity, x2, y2);
+            end
+        end
     end
 
-    if Logic.IsEntityMoving(_ID1) == false then
-        if Logic.IsSettler(_ID1) == 1 then
-            Logic.SetTaskList(_ID1, TaskLists.TL_NPC_IDLE);
-        end
-        API.SendScriptEvent(QSB.ScriptEvents.EntityArrived, _ID1, _ID2, _X, _Y);
+    -- Send movement failed event
+    if not CanMove then
+        API.SendScriptEvent(QSB.ScriptEvents.EntityStuck, Data.Entity, GetID(Data[Data.Index]), _Index);
         Logic.ExecuteInLuaLocalState(string.format(
-            [[API.SendScriptEvent(QSB.ScriptEvents.EntityArrived, %d, %d, %f, %f)]],
-            _ID1, _ID2, _X, _Y
+            [[API.SendScriptEvent(QSB.ScriptEvents.EntityStuck, %d, %d, %d)]],
+            Data.Entity, GetID(Data[Data.Index]), _Index
         ));
         return true;
     end
@@ -93,8 +139,10 @@ end
 -- -------------------------------------------------------------------------- --
 
 function ModulePathing.Local:OnGameStart()
-    QSB.ScriptEvents.EntityArrived = Swift:CreateScriptEvent("Event_EntityArrived", nil);
-    QSB.ScriptEvents.EntityStuck = Swift:CreateScriptEvent("Event_EntityStuck", nil);
+    QSB.ScriptEvents.EntityArrived = API.RegisterScriptEvent("Event_EntityArrived");
+    QSB.ScriptEvents.EntityStuck = API.RegisterScriptEvent("Event_EntityStuck");
+    QSB.ScriptEvents.EntityAtCheckpoint = API.RegisterScriptEvent("Event_EntityAtCheckpoint");
+
     QSB.ScriptEvents.PathFindingFinished = API.RegisterScriptEvent("Event_PathFindingFinished");
     QSB.ScriptEvents.PathFindingFailed = API.RegisterScriptEvent("Event_PathFindingFailed");
 end
@@ -125,8 +173,8 @@ function Pathfinder:Insert(_Start, _End, _NodeDistance, _StepsPerTick, _Filter, 
 
     self.m_PathCounter = self.m_PathCounter +1;
     self.m_ProcessedPaths[self.m_PathCounter] = {
-        NodeDistance = _NodeDistance,
-        StepsPerTick = _StepsPerTick,
+        NodeDistance = _NodeDistance or 300,
+        StepsPerTick = _StepsPerTick or 1,
         StartNode = Start,
         TargetNode = End,
         Suspended = false,
@@ -313,6 +361,10 @@ function Pathfinder:IsPathExisting(_ID)
     return self.m_Paths[_ID] ~= nil;
 end
 
+function Pathfinder:IsPathStillCalculated(_ID)
+    return self.m_ProcessedPaths[_ID] ~= nil;
+end
+
 function Pathfinder:GetPath(_ID)
     if self:IsPathExisting(_ID) then
         return table.copy(self.m_Paths[_ID]);
@@ -404,6 +456,19 @@ function PathModel:Next()
     end
 end
 
+function PathModel:GetCurrentWaypoint()
+    local lastWP;
+    local id = 1;
+    repeat
+        lastWP = self.m_Nodes[id];
+        id = id +1;
+    until ((not self.m_Nodes[id]) or self.m_Nodes[id].Visited == false);
+    if not self.m_Nodes[id] then
+        id = id -1;
+    end
+    return lastWP, id;
+end
+
 function PathModel:Convert()
     if self.m_Nodes then
         local nodes = {};
@@ -419,19 +484,6 @@ function PathModel:Convert()
         end
         return nodes;
     end
-end
-
-function PathModel:GetCurrentWaypoint()
-    local lastWP;
-    local id = 1;
-    repeat
-        lastWP = self.m_Nodes[id];
-        id = id +1;
-    until ((not self.m_Nodes[id]) or self.m_Nodes[id].Visited == false);
-    if not self.m_Nodes[id] then
-        id = id -1;
-    end
-    return lastWP, id;
 end
 
 function PathModel:Show()
