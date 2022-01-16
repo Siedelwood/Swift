@@ -1,5 +1,5 @@
 --[[
-Swift_2_MilitaryLimit/API
+Swift_2_EntityMovement/API
 
 Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
 
@@ -62,11 +62,11 @@ function API.MoveEntity(_Entity, _Target, _IgnoreBlocking)
         error("API.MoveEntity: entity '" ..tostring(_Target).. "' does not exist!");
         return;
     end
-    local Index = ModulePathing.Global:FillMovingEntityDataForController(
+    local Index = ModuleEntityMovement.Global:FillMovingEntityDataForController(
         _Entity, {_Target}, nil, nil, _IgnoreBlocking
     );
     API.StartHiResJob(function(_Index)
-        return ModulePathing.Global:MoveEntityPathController(_Index);
+        return ModuleEntityMovement.Global:MoveEntityPathController(_Index);
     end, Index);
     return Index;
 end
@@ -97,11 +97,11 @@ function API.MoveEntityAndLookAt(_Entity, _Target, _LookAt, _IgnoreBlocking)
         error("API.MoveEntityAndLookAt: entity '" ..tostring(_Target).. "' does not exist!");
         return;
     end
-    local Index = ModulePathing.Global:FillMovingEntityDataForController(
+    local Index = ModuleEntityMovement.Global:FillMovingEntityDataForController(
         _Entity, {_Target}, _LookAt, nil, _IgnoreBlocking
     );
     API.StartHiResJob(function(_Index)
-        return ModulePathing.Global:MoveEntityPathController(_Index);
+        return ModuleEntityMovement.Global:MoveEntityPathController(_Index);
     end, Index);
     return Index;
 end
@@ -132,11 +132,11 @@ function API.MoveEntityAndExecute(_Entity, _Target, _Action, _IgnoreBlocking)
         error("API.MoveEntityAndExecute: entity '" ..tostring(_Target).. "' does not exist!");
         return;
     end
-    local Index = ModulePathing.Global:FillMovingEntityDataForController(
+    local Index = ModuleEntityMovement.Global:FillMovingEntityDataForController(
         _Entity, {_Target}, nil, _Action, _IgnoreBlocking
     );
     API.StartHiResJob(function(_Index)
-        return ModulePathing.Global:MoveEntityPathController(_Index);
+        return ModuleEntityMovement.Global:MoveEntityPathController(_Index);
     end, Index);
     return Index;
 end
@@ -168,11 +168,11 @@ function API.MoveEntityOnCheckpoints(_Entity, _Targets, _IgnoreBlocking)
         error("API.MoveEntityOnCheckpoints: target list must be a table!");
         return;
     end
-    local Index = ModulePathing.Global:FillMovingEntityDataForController(
+    local Index = ModuleEntityMovement.Global:FillMovingEntityDataForController(
         _Entity, _Targets, nil, nil, _IgnoreBlocking
     );
     API.StartHiResJob(function(_Index)
-        return ModulePathing.Global:MoveEntityPathController(_Index);
+        return ModuleEntityMovement.Global:MoveEntityPathController(_Index);
     end, Index);
     return Index;
 end
