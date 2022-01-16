@@ -706,9 +706,9 @@ local function ThisWillForeverBeLostToTheVoidBecauseNoOneComesUpWithThat()
     -- @usage
     -- GameCallback_QSB_OnEventReceived = function(_EventID, ...)
     --     if _EventID == QSB.ScriptEvents.EscapePressed then
-    --         API.AddNote("Player " ..arg[1].. " has pressed Escape!");
+    --         API.Note("Player " ..arg[1].. " has pressed Escape!");
     --     elseif _EventID == QSB.ScriptEvents.SaveGameLoaded then
-    --         API.AddNote("A save has been loaded!");
+    --         API.Note("A save has been loaded!");
     --     end
     -- end
     --
@@ -977,8 +977,6 @@ function API.IsDebugCheatsActive()
     return Swift.m_DevelopingCheats == true;
 end
 
--- Event
-
 ---
 -- Prüft, ob die Eingabeaufforderung aktiv ist.
 --
@@ -992,12 +990,17 @@ function API.IsDebugShellActive()
     return Swift.m_DevelopingShell == true;
 end
 
+-- Event
+
 ---
 -- Legt ein neues Script Event an.
 --
 -- @param[type=string]   _Name     Identifier des Event
 -- @return[type=number] ID des neuen Script Event
 -- @within Event
+--
+-- @usage
+-- local EventID = API.RegisterScriptEvent("MyNewEvent");
 --
 function API.RegisterScriptEvent(_Name)
     return Swift:CreateScriptEvent(_Name, nil);
@@ -1007,12 +1010,64 @@ end
 -- Sendet das Script Event mit der übergebenen ID und überträgt optional
 -- Parameter.
 --
--- @param[type=number] _ID ID des Event
+-- @param[type=number] _EventID ID des Event
 -- @param              ... Optionale Parameter
 -- @within Event
 --
-function API.SendScriptEvent(_ID, ...)
-    Swift:DispatchScriptEvent(_ID, unpack(arg));
+-- @usage
+-- API.SendScriptEvent(SomeEventID, Param1, Param2, ...);
+--
+function API.SendScriptEvent(_EventID, ...)
+    Swift:DispatchScriptEvent(_EventID, unpack(arg));
+end
+
+---
+-- Erstellt einen neuen Listener für das Event.
+--
+-- An den Listener werden die gleichen Parameter übergeben, die für das Event
+-- auch bei GameCallback_QSB_OnEventReceived übergeben werden.
+--
+-- Es wird eine für das Event im Environment eindeutige ID erzeugt. Diese
+-- muss in einer Variable gespeichert werden, um den Listener später löschen
+-- zu können.
+--
+-- <b>Hinweis</b>: Event Listener für ein spezifisches Event werden nach
+-- GameCallback_QSB_OnEventReceived aufgerufen.
+--
+-- @param[type=number]   _EventID  ID des Event
+-- @param[type=function] _Function Listener Funktion
+-- @return[type=number] ID des Listener
+-- @within Event
+--
+-- @usage
+-- local ListenerID = API.AddScriptEventListener(QSB.ScriptEvents.SaveGameLoaded, function()
+--     API.Note("A save has been loaded!");
+-- end);
+--
+function API.AddScriptEventListener(_EventID, _Function)
+    if not Swift.m_ScriptEventListener[_EventID] then
+        Swift.m_ScriptEventListener[_EventID] = {
+            IDSequence = 0;
+        }
+    end
+    local Data = Swift.m_ScriptEventListener[_EventID];
+    assert(type(_Function) == "function");
+    Swift.m_ScriptEventListener[_EventID].IDSequence = Data.IDSequence +1;
+    Swift.m_ScriptEventListener[_EventID][Data.IDSequence] = _Function;
+    return Data.IDSequence;
+end
+
+---
+-- Entfernt einen Listener von dem Event.
+--
+-- @param[type=number] _EventID ID des Event
+-- @param[type=number] _ID      ID des Listener
+-- @within Event
+--
+function API.RemoveScriptEventListener(_EventID, _ID)
+    if Swift.m_ScriptEventListener[_EventID] then
+        Swift.m_ScriptEventListener[_EventID][_ID] = nil;
+    end
 end
 
 -- Entity
