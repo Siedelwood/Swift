@@ -40,7 +40,7 @@ Swift = {
     m_ModuleRegister            = {};
     m_BehaviorRegister          = {};
     m_ScriptEventRegister       = {};
-    m_LoadActionRegister        = {};
+    m_ScriptEventListener       = {};
     m_Language                  = "de";
     m_Environment               = "global";
     m_ProcessDebugCommands      = false;
@@ -545,9 +545,17 @@ function Swift:DispatchScriptEvent(_ID, ...)
             self.m_ModuleRegister[i][Env]:OnEvent(_ID, self.m_ScriptEventRegister[_ID], unpack(arg));
         end
     end
-    -- Call event listener
+    -- Call event callback
     if GameCallback_QSB_OnEventReceived then
         GameCallback_QSB_OnEventReceived(_ID, unpack(arg));
+    end
+    -- Call event listeners
+    if self.m_ScriptEventListener[_ID] then
+        for k, v in pairs(self.m_ScriptEventListener[_ID]) do
+            if tonumber(k) then
+                v(_ID, unpack(arg));
+            end
+        end
     end
 end
 
