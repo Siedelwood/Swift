@@ -1,5 +1,5 @@
 --[[
-Swift_2_MilitaryLimit/Source
+Swift_2_EntityMovement/Source
 
 Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
 
@@ -8,9 +8,9 @@ You may use and modify this file unter the terms of the MIT licence.
 (See https://en.wikipedia.org/wiki/MIT_License)
 ]]
 
-ModulePathing = {
+ModuleEntityMovement = {
     Properties = {
-        Name = "ModulePathing",
+        Name = "ModuleEntityMovement",
     },
 
     Global = {
@@ -23,7 +23,7 @@ ModulePathing = {
 
 -- -------------------------------------------------------------------------- --
 
-function ModulePathing.Global:OnGameStart()
+function ModuleEntityMovement.Global:OnGameStart()
     QSB.ScriptEvents.EntityArrived = API.RegisterScriptEvent("Event_EntityArrived");
     QSB.ScriptEvents.EntityStuck = API.RegisterScriptEvent("Event_EntityStuck");
     QSB.ScriptEvents.EntityAtCheckpoint = API.RegisterScriptEvent("Event_EntityAtCheckpoint");
@@ -36,10 +36,10 @@ function ModulePathing.Global:OnGameStart()
     end);
 end
 
-function ModulePathing.Global:OnEvent(_ID, _Event, ...)
+function ModuleEntityMovement.Global:OnEvent(_ID, _Event, ...)
 end
 
-function ModulePathing.Global:FillMovingEntityDataForController(_Entity, _Path, _LookAt, _Action, _IgnoreBlocking)
+function ModuleEntityMovement.Global:FillMovingEntityDataForController(_Entity, _Path, _LookAt, _Action, _IgnoreBlocking)
     local Index = #self.PathMovingEntities +1;
     self.PathMovingEntities[Index] = {
         Entity = GetID(_Entity),
@@ -54,7 +54,7 @@ function ModulePathing.Global:FillMovingEntityDataForController(_Entity, _Path, 
     return Index;
 end
 
-function ModulePathing.Global:MoveEntityPathController(_Index)
+function ModuleEntityMovement.Global:MoveEntityPathController(_Index)
     local Data = self.PathMovingEntities[_Index];
 
     local CanMove = true;
@@ -138,7 +138,7 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-function ModulePathing.Local:OnGameStart()
+function ModuleEntityMovement.Local:OnGameStart()
     QSB.ScriptEvents.EntityArrived = API.RegisterScriptEvent("Event_EntityArrived");
     QSB.ScriptEvents.EntityStuck = API.RegisterScriptEvent("Event_EntityStuck");
     QSB.ScriptEvents.EntityAtCheckpoint = API.RegisterScriptEvent("Event_EntityAtCheckpoint");
@@ -147,7 +147,7 @@ function ModulePathing.Local:OnGameStart()
     QSB.ScriptEvents.PathFindingFailed = API.RegisterScriptEvent("Event_PathFindingFailed");
 end
 
-function ModulePathing.Local:OnEvent(_ID, _Name, ...)
+function ModuleEntityMovement.Local:OnEvent(_ID, _Name, ...)
 end
 
 -- - Path Finder ------------------------------------------------------------ --
@@ -512,5 +512,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Swift:RegisterModule(ModulePathing);
+Swift:RegisterModule(ModuleEntityMovement);
 

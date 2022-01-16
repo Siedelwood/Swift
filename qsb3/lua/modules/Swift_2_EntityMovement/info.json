@@ -2,7 +2,7 @@
     "name": "Swift_2_EntityMovement",
     "version": "1.0.0",
     "mandatory": false,
-    "caption": "(2) Pathing",
+    "caption": "(2) Entity Movement",
     "shortdesc": "Bringt eine grundlegende Wegfindung für Entities mit.",
     "description": "",
     "files": [
