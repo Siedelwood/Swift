@@ -49,7 +49,7 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- @param               _Entity         Bewegtes Entity (Skriptname oder ID)
 -- @param               _Target         Ziel (Skriptname oder ID)
 -- @param[type=boolean] _IgnoreBlocking Direkten Weg benutzen
--- @within Position
+-- @within Anwenderfunktionen
 --
 function API.MoveEntity(_Entity, _Target, _IgnoreBlocking)
     local ID1 = GetID(_Entity);

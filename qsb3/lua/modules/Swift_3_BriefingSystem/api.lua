@@ -126,7 +126,7 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 --         EnableSky = true,
 --         DisableBoderPins = true,
 --     };
---     local AP, ASP = API.AddBriefingPages(Briefing);
+--     local AP, ASP, AAN = API.AddBriefingPages(Briefing);
 --
 --     -- Aufrufe von AP oder ASP um Seiten zu erstellen
 --
@@ -710,7 +710,7 @@ end
 -- -- laufende Animationen abbrechen
 -- AAN("Page1", true);
 --
-function AAN(_Data)
+function AAN(...)
     assert(false);
 end
 

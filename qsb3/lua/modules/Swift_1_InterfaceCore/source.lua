@@ -253,8 +253,9 @@ function ModuleInterfaceCore.Local:SetPlayerPortraitByModelName(_PlayerID, _Port
 end
 
 function ModuleInterfaceCore.Local:SetIcon(_WidgetID, _Coordinates, _Size, _Name)
-    if type(_Name) == "number" then
-        _Name = "icons" .. ((_Name > 0 and _Name+1) or "");
+    local Appendix = "";
+    if type(_Coordinates[3]) == "number" then
+        Appendix = ((_Coordinates[3] > 0 and _Coordinates[3]+1) or "");
     end
     if _Name == nil then
         _Name = "icons";
@@ -263,13 +264,13 @@ function ModuleInterfaceCore.Local:SetIcon(_WidgetID, _Coordinates, _Size, _Name
         _Size = 64;
     end
     if _Size == 44 then
-        _Name = _Name .. ".png";
+        _Name = _Name..Appendix.. ".png";
     end
     if _Size == 64 then
-        _Name = _Name .. "big.png";
+        _Name = _Name.. "big" ..Appendix.. ".png";
     end
     if _Size == 128 then
-        _Name = _Name .. "verybig.png";
+        _Name = _Name.. "verybig" ..Appendix.. ".png";
     end
 
     local u0, u1, v0, v1;

@@ -64,6 +64,7 @@ function Swift:LoadCore()
         self:OverrideQuestSystemGlobal();
         self:InitalizeCallbackGlobal();
         self:DisableLogicFestival();
+        -- Fixme: Causes game freeze
         -- self:LogGlobalCFunctions();
     end
 
@@ -74,6 +75,7 @@ function Swift:LoadCore()
         self:OverrideDoQuicksave();
         self:InitalizeCallbackLocal();
         self:ValidateTerritories();
+        -- Fixme: Causes game freeze
         -- self:LogLocalCFunctions();
 
         -- Human player ID makes only sense in singleplayer context
@@ -84,9 +86,22 @@ function Swift:LoadCore()
         end
         StartSimpleHiResJob("Swift_EventJob_WaitForLoadScreenHidden");
     end
-
     self:LoadExternFiles();
     self:LoadBehaviors();
+    -- Random seed
+    local Value = Framework.GetSystemTimeDateString():sub(15, 23):gsub("'", "");
+    math.randomseed(tonumber("1" ..Value));
+    math.random(1, 100);
+    -- Copy texture positions
+    if self:IsLocalEnvironment() then
+        StartSimpleJobEx(function()
+            GUI.SendScriptCommand(string.format(
+                [[g_TexturePositions = %s]],
+                table.tostring(g_TexturePositions)
+            ));
+            return true;
+        end);
+    end
 end
 
 -- Modules
