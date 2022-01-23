@@ -100,7 +100,9 @@ function ModuleDialogSystem.Global:EndDialog(_PlayerID)
 end
 
 function ModuleDialogSystem.Global:CanStartDialog(_PlayerID)
-    return self.Dialog[_PlayerID] == nil and not API.IsCinematicEventActive(_PlayerID);
+    return  self.Dialog[_PlayerID] == nil and
+            not API.IsCinematicEventActive(_PlayerID) and
+            not API.IsLoadscreenVisible();
 end
 
 function ModuleDialogSystem.Global:NextDialog(_PlayerID)
@@ -448,7 +450,7 @@ function ModuleDialogSystem.Local:SetOptionsDialogContent(_PlayerID)
     XGUIEng.ListBoxPopAll(Listbox);
     self.Dialog[_PlayerID].MCSelectionOptionsMap = {};
     for i=1, #PageData.MC, 1 do
-        if PageData.MC[i].Visible then
+        if PageData.MC[i].Visible ~= false then
             XGUIEng.ListBoxPushItem(Listbox, PageData.MC[i][1]);
             table.insert(self.Dialog[_PlayerID].MCSelectionOptionsMap, PageData.MC[i].ID);
         end

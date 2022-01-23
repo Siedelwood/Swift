@@ -196,7 +196,9 @@ function ModuleCutsceneSystem.Global:GetPageIDByName(_PlayerID, _Name)
 end
 
 function ModuleCutsceneSystem.Global:CanStartCutscene(_PlayerID)
-    return self.Cutscene[_PlayerID] == nil and not API.IsCinematicEventActive(_PlayerID);
+    return  self.Cutscene[_PlayerID] == nil and
+            not API.IsCinematicEventActive(_PlayerID) and
+            not API.IsLoadscreenVisible();
 end
 
 -- Local -------------------------------------------------------------------- --
