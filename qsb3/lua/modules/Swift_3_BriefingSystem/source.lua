@@ -333,7 +333,9 @@ function ModuleBriefingSystem.Global:GetPageIDByName(_PlayerID, _Name)
 end
 
 function ModuleBriefingSystem.Global:CanStartBriefing(_PlayerID)
-    return self.Briefing[_PlayerID] == nil and not API.IsCinematicEventActive(_PlayerID);
+    return  self.Briefing[_PlayerID] == nil and
+            not API.IsCinematicEventActive(_PlayerID) and
+            not API.IsLoadscreenVisible();
 end
 
 -- Local -------------------------------------------------------------------- --
@@ -411,7 +413,7 @@ function ModuleBriefingSystem.Local:DisplayPage(_PlayerID, _PageID)
         self:DisplayPageFader(_PlayerID, _PageID);
         self:DisplayPagePortraits(_PlayerID, _PageID);
         self:DisplayPageSplashScreen(_PlayerID, _PageID);
-        if self.Briefing[_PlayerID].MC then
+        if self.Briefing[_PlayerID][_PageID].MC then
             self:DisplayPageOptionsDialog(_PlayerID, _PageID);
         end
     end
@@ -620,7 +622,7 @@ function ModuleBriefingSystem.Local:DisplayPageOptionsDialog(_PlayerID, _PageID)
     XGUIEng.ListBoxPopAll(Listbox);
     self.Briefing[_PlayerID].MCSelectionOptionsMap = {};
     for i=1, #Page.MC, 1 do
-        if Page.MC[i].Visible then
+        if Page.MC[i].Visible ~= false then
             XGUIEng.ListBoxPushItem(Listbox, Page.MC[i][1]);
             table.insert(self.Briefing[_PlayerID].MCSelectionOptionsMap, Page.MC[i].ID);
         end
