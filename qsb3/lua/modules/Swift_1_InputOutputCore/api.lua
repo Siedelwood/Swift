@@ -144,8 +144,11 @@ GUI_ClearNotes = API.ClearNotes;
 --
 -- Mögliche Platzhalter:
 -- <ul>
--- <li>{name:xyz} - Ersetzt einen Skriptnamen mit dem zuvor gesetzten Wert.</li>
--- <li>{type:xyz} - Ersetzt einen Typen mit dem zuvor gesetzten Wert.</li>
+-- <li>{n:xyz} - Ersetzt einen Skriptnamen mit dem zuvor gesetzten Wert.</li>
+-- <li>{t:xyz} - Ersetzt einen Typen mit dem zuvor gesetzten Wert.</li>
+-- <li>{v:xyz} - Ersetzt mit dem Inhalt der angegebenen Variable. Der Wert muss
+-- in der Umgebung vorhanden sein, in der er verwendet wird. Das ist meistens
+-- das lokale Skript!</li>
 -- </ul>
 --
 -- Außerdem werden einige Standardfarben ersetzt.
@@ -179,9 +182,10 @@ GUI_ClearNotes = API.ClearNotes;
 -- @return Ersetzter Text
 -- @within Anwenderfunktionen
 --
--- @usage local Placeholder = API.ConvertPlaceholders("{scarlet}Dieser Text ist rot!");
--- local Placeholder2 = API.ConvertPlaceholders("{name:placeholder2} wird ersetzt!");
--- local Placeholder3 = API.ConvertPlaceholders("{type:U_KnightHealing} wird ersetzt!");
+-- @usage local Placeholder = API.ConvertPlaceholders("{scarlet}Dieser Text ist jetzt rot!");
+-- local Placeholder2 = API.ConvertPlaceholders("{n:placeholder2} wurde ersetzt!");
+-- local Placeholder3 = API.ConvertPlaceholders("{t:U_KnightHealing} wurde ersetzt!");
+-- local Placeholder3 = API.ConvertPlaceholders("{v:MyVariable.1.MyValue} wurde ersetzt!");
 --
 function API.ConvertPlaceholders(_Message)
     if type(_Message) == "table" then
@@ -200,8 +204,8 @@ end
 -- Fügt einen Platzhalter für den angegebenen Namen hinzu.
 --
 -- Innerhalb des Textes wird der Plathalter wie folgt geschrieben:
--- <pre>{name:YOUR_NAME}</pre>
--- YOUR_NAME muss mit dem Namen ersetzt werden.
+-- <pre>{n:SOME_NAME}</pre>
+-- SOME_NAME muss mit dem Namen ersetzt werden.
 --
 -- @param[type=string] _Name        Name, der ersetzt werden soll
 -- @param[type=string] _Replacement Wert, der ersetzt wird
@@ -222,7 +226,7 @@ end
 -- Fügt einen Platzhalter für einen Entity-Typ hinzu.
 --
 -- Innerhalb des Textes wird der Plathalter wie folgt geschrieben:
--- <pre>{type:ENTITY_TYP}</pre>
+-- <pre>{t:ENTITY_TYP}</pre>
 -- ENTITY_TYP muss mit einem Entity-Typ ersetzt werden. Der Typ wird ohne
 -- Entities. davor geschrieben.
 --
@@ -287,8 +291,8 @@ function API.DialogInfoBox(_Title, _Text, _Action)
         return;
     end
 
-    _Title = API.ConvertPlaceholders(API.Localize(_Title));
-    _Text  = API.ConvertPlaceholders(API.Localize(_Text));
+    _Title = API.Localize(_Title);
+    _Text  = API.Localize(_Text);
     return ModuleInputOutputCore.Local:OpenDialog(_Title, _Text, _Action);
 end
 
@@ -334,8 +338,8 @@ function API.DialogRequestBox(_Title, _Text, _Action, _OkCancel)
         ));
         return;
     end
-    _Title = API.ConvertPlaceholders(API.Localize(_Title));
-    _Text = API.ConvertPlaceholders(API.Localize(_Text));
+    _Title = API.Localize(_Title);
+    _Text = API.Localize(_Text);
     return ModuleInputOutputCore.Local:OpenRequesterDialog(_Title, _Text, _Action, _OkCancel);
 end
 
@@ -381,8 +385,8 @@ function API.DialogSelectBox(_Title, _Text, _Action, _List)
         ));
         return;
     end
-    _Title = API.ConvertPlaceholders(API.Localize(_Title));
-    _Text = API.ConvertPlaceholders(API.Localize(_Text));
+    _Title = API.Localize(_Title);
+    _Text = API.Localize(_Text);
     _Text = _Text .. "{cr}";
     ModuleInputOutputCore.Local:OpenSelectionDialog(_Title, _Text, _Action, _List);
 end
@@ -412,8 +416,8 @@ end
 -- API.SimpleTextWindow("Überschrift", Text);
 --
 function API.SimpleTextWindow(_Caption, _Content)
-    _Caption = API.ConvertPlaceholders(API.Localize(_Caption));
-    _Content = API.ConvertPlaceholders(API.Localize(_Content));
+    _Caption = API.Localize(_Caption);
+    _Content = API.Localize(_Content);
     if not GUI then
         Logic.ExecuteInLuaLocalState(
             string.format([[API.SimpleTextWindow("%s", "%s")]], _Caption, _Content)

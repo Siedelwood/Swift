@@ -314,11 +314,10 @@ InteractiveObjectDeactivate = API.InteractiveObjectDeactivate;
 -- API.SetObjectCustomName("D_X_ChestOpenEmpty", "Leere Schatztruhe");
 --
 function API.SetObjectCustomName(_Key, _Text)
-    _Text = API.ConvertPlaceholders(API.Localize(_Text));
     if GUI then
         return;
     end
-    IO_UserDefindedNames[_Key] = _Text;
+    IO_UserDefindedNames[_Key] = API.Localize(_Text);
 end
 API.InteractiveObjectSetName = API.SetObjectCustomName;
 AddCustomIOName = API.SetObjectCustomName;

@@ -583,7 +583,7 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
                         ObjectName = "Debug: ObjectName missing for " .. ObjectTypeName;
                     end
                 end
-                table.insert(ObjectList, ObjectName);
+                table.insert(ObjectList, API.ConvertPlaceholders(ObjectName));
             end
             for i = 1, 4 do
                 local String = ObjectList[i];

@@ -249,8 +249,8 @@ function API.AddBriefingPages(_Briefing)
             end
 
             -- Language
-            _Page.Title = API.ConvertPlaceholders(API.Localize(_Page.Title));
-            _Page.Text = API.ConvertPlaceholders(API.Localize(_Page.Text));
+            _Page.Title = API.Localize(_Page.Title);
+            _Page.Text = API.Localize(_Page.Text);
 
             -- Display time
             if not _Page.Duration then

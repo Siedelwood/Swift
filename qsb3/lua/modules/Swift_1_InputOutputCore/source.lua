@@ -297,7 +297,8 @@ function ModuleInputOutputCore.Local:OpenDialog(_Title, _Text, _Action)
         assert(type(_Title) == "string");
         assert(type(_Text) == "string");
 
-        _Title = "{center}" .. _Title;
+        _Title = "{center}" .. API.ConvertPlaceholders(_Title);
+        _Text  = API.ConvertPlaceholders(_Text);
         if string.len(_Text) < 35 then
             _Text = _Text .. "{cr}";
         end
@@ -553,14 +554,18 @@ function ModuleInputOutputCore.Shared:ConvertPlaceholders(_Text)
     local s1, e1, s2, e2;
     while true do
         local Before, Placeholder, After, Replacement, s1, e1, s2, e2;
-        if _Text:find("{name:") then
-            Before, Placeholder, After, s1, e1, s2, e2 = self:SplicePlaceholderText(_Text, "{name:");
+        if _Text:find("{n:") then
+            Before, Placeholder, After, s1, e1, s2, e2 = self:SplicePlaceholderText(_Text, "{n:");
             Replacement = self.Placeholders.Names[Placeholder];
-            _Text = Before .. Swift:Localize(Replacement or "ERROR_PLACEHOLDER_NOT_FOUND") .. After;
-        elseif _Text:find("{type:") then
-            Before, Placeholder, After, s1, e1, s2, e2 = self:SplicePlaceholderText(_Text, "{type:");
+            _Text = Before .. Swift:Localize(Replacement or ("n:" ..tostring(Placeholder).. ": not found")) .. After;
+        elseif _Text:find("{t:") then
+            Before, Placeholder, After, s1, e1, s2, e2 = self:SplicePlaceholderText(_Text, "{t:");
             Replacement = self.Placeholders.EntityTypes[Placeholder];
-            _Text = Before .. Swift:Localize(Replacement or "ERROR_PLACEHOLDER_NOT_FOUND") .. After;
+            _Text = Before .. Swift:Localize(Replacement or ("n:" ..tostring(Placeholder).. ": not found")) .. After;
+        elseif _Text:find("{v:") then
+            Before, Placeholder, After, s1, e1, s2, e2 = self:SplicePlaceholderText(_Text, "{v:");
+            Replacement = self:ReplaceValuePlaceholder(Placeholder);
+            _Text = Before .. Swift:Localize(Replacement or ("v:" ..tostring(Placeholder).. ": not found")) .. After;
         end
         if s1 == nil or e1 == nil or s2 == nil or e2 == nil then
             break;
@@ -585,6 +590,23 @@ function ModuleInputOutputCore.Shared:ReplaceColorPlaceholders(_Text)
         _Text = _Text:gsub("{" ..k.. "}", v);
     end
     return _Text;
+end
+
+function ModuleInputOutputCore.Shared:ReplaceValuePlaceholder(_Text)
+    local Ref = _G;
+    local Slice = string.slice(_Text, "%.");
+    for i= 1, #Slice do
+        local KeyOrIndex = Slice[i];
+        local Index = tonumber(KeyOrIndex);
+        if Index ~= nil then
+            KeyOrIndex = Index;
+        end
+        if not Ref[KeyOrIndex] then
+            return nil;
+        end
+        Ref = Ref[KeyOrIndex];
+    end
+    return Ref;
 end
 
 function ModuleInputOutputCore.Shared:CommandTokenizer(_Input)
@@ -943,13 +965,13 @@ function QSB.TextWindow:Prepare()
     end
 
     if type(self.Caption) == "table" then
-        self.Caption = API.Localize(self.Caption);
+        self.Caption = API.ConvertPlaceholders(API.Localize(self.Caption));
     end
     if type(self.ButtonText) == "table" then
-        self.ButtonText = API.Localize(self.ButtonText);
+        self.ButtonText = API.ConvertPlaceholders(API.Localize(self.ButtonText));
     end
     if type(self.Text) == "table" then
-        self.Text = API.Localize(self.Text);
+        self.Text = API.ConvertPlaceholders(API.Localize(self.Text));
     end
 
     XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatModeAllPlayers",0);
