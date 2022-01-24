@@ -113,9 +113,9 @@ end
 
 function ModuleTypewriter.Global:TokenizeText(_Data)
     local TextTokens = {};
-    _Data.Text = _Data.Text:gsub("%s+", " ");
     local TempTokens = {};
-    local Text = _Data.Text;
+    local Text = API.ConvertPlaceholders(_Data.Text);
+    Text = Text:gsub("%s+", " ");
     while (true) do
         local s1, e1 = Text:find("{");
         local s2, e2 = Text:find("}");

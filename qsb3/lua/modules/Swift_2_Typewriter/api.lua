@@ -125,7 +125,7 @@ function API.StartTypewriter(_Data)
     if _Data.PlayerID == nil or (_Data.PlayerID < 1 or _Data.PlayerID > 8) then
         return;
     end
-    _Data.Text = API.ConvertPlaceholders(API.Localize(_Data.Text or ""));
+    _Data.Text = API.Localize(_Data.Text or "");
     _Data.Callback = _Data.Callback or function() end;
     _Data.CharSpeed = _Data.CharSpeed or 1;
     _Data.Waittime = (_Data.Waittime or 8) * 10;

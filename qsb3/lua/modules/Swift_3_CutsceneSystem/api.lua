@@ -156,12 +156,13 @@ function API.AddCutscenePages(_Cutscene)
             _Page.__Legit = true;
             
             -- Language
-            _Page.Title = API.ConvertPlaceholders(API.Localize(_Page.Title));
+            _Page.Title = API.Localize(_Page.Title);
             if _Page.Text then
-                _Page.Text = API.ConvertPlaceholders(API.Localize(_Page.Text));
+                _Page.Text = API.Localize(_Page.Text);
             end
+            -- Fixme: not implemented?
             if _Page.Lines then
-                _Page.Lines = API.ConvertPlaceholders(API.Localize(_Page.Lines));
+                _Page.Lines = API.Localize(_Page.Lines);
             end
             if not _Page.Lines and not _Page.Text then
                 local Name = "Cutscene #" ..(ModuleCutsceneSystem.Global.CutsceneCounter +1);

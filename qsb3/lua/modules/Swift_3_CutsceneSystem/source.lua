@@ -385,7 +385,7 @@ function ModuleCutsceneSystem.Local:DisplayPageTitle(_PlayerID, _PageID)
     local TitleWidget = "/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight";
     XGUIEng.SetText(TitleWidget, "");
     if Page.Title then
-        local Title = Page.Title;
+        local Title = API.ConvertPlaceholders(Page.Title);
         if Title:find("^[A-Za-Z0-9_]+/[A-Za-Z0-9_]+$") then
             Title = XGUIEng.GetStringTableText(Title);
         end
@@ -401,7 +401,7 @@ function ModuleCutsceneSystem.Local:DisplayPageText(_PlayerID, _PageID)
     local TextWidget = "/InGame/ThroneRoom/Main/MissionBriefing/Text";
     XGUIEng.SetText(TextWidget, "Bockwurst");
     if Page.Text then
-        local Text = Page.Text;
+        local Text = API.ConvertPlaceholders(Page.Text);
         if Text:find("^[A-Za-Z0-9_]+/[A-Za-Z0-9_]+$") then
             Text = XGUIEng.GetStringTableText(Text);
         end
