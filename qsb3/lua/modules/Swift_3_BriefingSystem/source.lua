@@ -578,21 +578,20 @@ function ModuleBriefingSystem.Local:SetPageSplashScreen(_PlayerID, _PageID, _U0,
     local Page = self.Briefing[_PlayerID][_PageID];
     local SSW = "/InGame/ThroneRoom/KnightInfo/BG";
 
+    local size = {GUI.GetScreenSize()};
+    local u0, v0, u1, v1 = _U0 or 0, _V0 or 0, _U1 or 1, _V1 or 1;
+    if size[1]/size[2] < 1.6 then
+        u0 = u0 + (u0 / 0.125);
+        u1 = u1 - (u1 * 0.125);
+    end
     if type(Page.Splashscreen) == "table" then
-        local size = {GUI.GetScreenSize()};
-        local u0, v0, u1, v1 = _U0 or 0, _V0 or 0, _U1 or 1, _V1 or 1;
-        if size[1]/size[2] < 1.6 then
-            u0 = u0 + (u0 / 0.125);
-            u1 = u1 - (u1 * 0.125);
-        end
-        local Image = _I or Page.Splashscreen.Image;
         XGUIEng.SetMaterialAlpha(SSW, 0, _A or 255);
-        XGUIEng.SetMaterialTexture(SSW, 0, Image);
-        XGUIEng.SetMaterialUV(SSW, 0, _U0, _V0, _U1, _V1);
+        XGUIEng.SetMaterialTexture(SSW, 0, _I or Page.Splashscreen.Image);
+        XGUIEng.SetMaterialUV(SSW, 0, u0, v0, u1, v1);
     else
         XGUIEng.SetMaterialAlpha(SSW, 0, _A or 255);
         XGUIEng.SetMaterialTexture(SSW, 0, _I or Page.Splashscreen);
-        XGUIEng.SetMaterialUV(SSW, 0, _U0, _V0, _U1, _V1);
+        XGUIEng.SetMaterialUV(SSW, 0, u0, v0, u1, v1);
     end
 end
 
