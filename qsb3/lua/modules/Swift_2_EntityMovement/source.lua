@@ -75,7 +75,8 @@ function ModuleEntityMovement.Global:MoveEntityPathController(_Index)
 
         -- Check entity arrived
         if #Data < Data.Index then
-            if Logic.IsSettler(Data.Entity) == 1 then
+            if  Logic.IsSettler(Data.Entity) == 1
+            and Logic.GetEntityType(Data.Entity) ~= Entities.D_X_TradeShip then
                 Logic.SetTaskList(Data.Entity, TaskLists.TL_NPC_IDLE);
                 if Data.LookAt then
                     API.LookAt(Data.Entity, Data.LookAt);
@@ -95,7 +96,7 @@ function ModuleEntityMovement.Global:MoveEntityPathController(_Index)
         -- Check reachablility
         local x1,y1,z1 = Logic.EntityGetPos(Data.Entity);
         local x2,y2,z2;
-        if type(Data[Data.Index]) == "zable" then
+        if type(Data[Data.Index]) == "table" then
             x2 = Data[Data.Index].X;
             y2 = Data[Data.Index].Y;
         else
@@ -115,7 +116,8 @@ function ModuleEntityMovement.Global:MoveEntityPathController(_Index)
         -- Move entity
         if CanMove then
             if Data.IgnoreBlocking then
-                if Logic.IsSettler(Data.Entity) == 1 then
+                if  Logic.IsSettler(Data.Entity) == 1
+                and Logic.GetEntityType(Data.Entity) ~= Entities.D_X_TradeShip then
                     Logic.SetTaskList(Data.Entity, TaskLists.TL_NPC_WALK);
                 end
                 Logic.MoveEntity(Data.Entity, x2, y2);
