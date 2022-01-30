@@ -134,6 +134,20 @@ function API.StartCutscene(_Cutscene, _Name, _PlayerID)
 end
 
 ---
+-- Prüft ob für den Spieler gerade eine Cutscene aktiv ist.
+--
+-- @param[type=number] _PlayerID ID des Spielers
+-- @return[type=boolean] Cutscene ist aktiv
+-- @within Anwenderfunktionen
+--
+function API.IsCutsceneActive(_PlayerID)
+    if Swift:IsGlobalEnvironment() then
+        return ModuleCutsceneSystem.Global:GetCurrentCutscene(_PlayerID) ~= nil;
+    end
+    return ModuleCutsceneSystem.Local:GetCurrentCutscene(_PlayerID) ~= nil;
+end
+
+---
 -- Erzeugt die Funktion zur Erstellung von Flights in einer Cutscene. Diese
 -- Funktion muss vor dem Start einer Cutscene aufgerufen werden, damit Seiten
 -- gebunden werden können.

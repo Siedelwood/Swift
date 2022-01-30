@@ -116,6 +116,20 @@ function API.StartDialog(_Dialog, _Name, _PlayerID)
 end
 
 ---
+-- Prüft ob für den Spieler gerade ein Dialog aktiv ist.
+--
+-- @param[type=number] _PlayerID ID des Spielers
+-- @return[type=boolean] Dialog ist aktiv
+-- @within Anwenderfunktionen
+--
+function API.IsDialogActive(_PlayerID)
+    if Swift:IsGlobalEnvironment() then
+        return ModuleDialogSystem.Global:GetCurrentDialog(_PlayerID) ~= nil;
+    end
+    return ModuleDialogSystem.Local:GetCurrentDialog(_PlayerID) ~= nil;
+end
+
+---
 -- Erzeugt die Funktionen zur Erstellung von Seiten in einem Dialog und bindet
 -- sie an selbigen. Diese Funktion muss vor dem Start eines Dialog aufgerufen
 -- werden um Seiten hinzuzufügen.

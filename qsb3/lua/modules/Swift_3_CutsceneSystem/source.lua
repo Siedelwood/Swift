@@ -185,7 +185,7 @@ function ModuleCutsceneSystem.Global:GetPageIDByName(_PlayerID, _Name)
     if type(_Name) == "string" then
         if self.Cutscene[_PlayerID] ~= nil then
             for i= 1, #self.Cutscene[_PlayerID], 1 do
-                if self.Cutscene[_PlayerID][i].Name == _Name then
+                if type(self.Cutscene[_PlayerID][i]) == "table" and self.Cutscene[_PlayerID][i].Name == _Name then
                     return i;
                 end
             end
@@ -514,7 +514,7 @@ function ModuleCutsceneSystem.Local:GetPageIDByName(_PlayerID, _Name)
     if type(_Name) == "string" then
         if self.Cutscene[_PlayerID] ~= nil then
             for i= 1, #self.Cutscene[_PlayerID], 1 do
-                if self.Cutscene[_PlayerID][i].Name == _Name then
+                if type(self.Cutscene[_PlayerID][i]) == "table" and self.Cutscene[_PlayerID][i].Name == _Name then
                     return i;
                 end
             end

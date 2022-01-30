@@ -168,6 +168,20 @@ function API.StartBriefing(_Briefing, _Name, _PlayerID)
 end
 
 ---
+-- Prüft ob für den Spieler gerade ein Briefing aktiv ist.
+--
+-- @param[type=number] _PlayerID ID des Spielers
+-- @return[type=boolean] Briefing ist aktiv
+-- @within Anwenderfunktionen
+--
+function API.IsBriefingActive(_PlayerID)
+    if Swift:IsGlobalEnvironment() then
+        return ModuleBriefingSystem.Global:GetCurrentBriefing(_PlayerID) ~= nil;
+    end
+    return ModuleBriefingSystem.Local:GetCurrentBriefing(_PlayerID) ~= nil;
+end
+
+---
 -- Erzeugt die Funktionen zur Erstellung von Seiten und Animationen in einem
 -- Briefing. Diese Funktion muss vor dem Start eines Briefing aufgerufen werden,
 -- damit Seiten gebunden werden können. Je nach Bedarf können Rückgaben von
@@ -297,13 +311,13 @@ function API.AddBriefingPages(_Briefing)
         if type(_Identifier) == "string" then
             PageID = nil;
             for i= 1, #_Briefing do
-                if _Briefing[i].Name == _Identifier then
+                if type(_Briefing[i]) == "table" and _Briefing[i].Name == _Identifier then
                     PageID = i;
                 end
             end
         end
         if not PageID then
-            error("AA (Briefing System): Can not find name or ID '".. tostring(_Identifier).. "'!");
+            error("AAN (Briefing System): Can not find name or ID '".. tostring(_Identifier).. "'!");
             return;
         end
         if not _Briefing.PageAnimations[_Identifier] then

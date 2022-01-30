@@ -75,10 +75,15 @@ function ModuleBriefingSystem.Global:OnEvent(_ID, _Event, ...)
             table.tostring(arg[2])
         ));
     elseif _ID == QSB.ScriptEvents.BriefingPageShown then
+        local Page = self.Briefing[arg[1]][arg[2]];
+        if type(Page) == "table" then
+            Page = table.tostring(Page);
+        end
         Logic.ExecuteInLuaLocalState(string.format(
-            [[API.SendScriptEvent(QSB.ScriptEvents.BriefingPageShown, %d, %d)]],
+            [[API.SendScriptEvent(QSB.ScriptEvents.BriefingPageShown, %d, %d, %s)]],
             arg[1],
-            arg[2]
+            arg[2],
+            Page
         ));
     elseif _ID == QSB.ScriptEvents.BriefingOptionSelected then
         self:OnOptionSelected(arg[1], arg[2]);
@@ -264,7 +269,8 @@ function ModuleBriefingSystem.Global:DisplayPage(_PlayerID, _PageID)
     API.SendScriptEvent(
         QSB.ScriptEvents.BriefingPageShown,
         _PlayerID,
-        _PageID
+        _PageID,
+        self.Briefing[_PlayerID][_PageID]
     );
 end
 
@@ -322,7 +328,7 @@ function ModuleBriefingSystem.Global:GetPageIDByName(_PlayerID, _Name)
     if type(_Name) == "string" then
         if self.Briefing[_PlayerID] ~= nil then
             for i= 1, #self.Briefing[_PlayerID], 1 do
-                if self.Briefing[_PlayerID][i].Name == _Name then
+                if type(self.Briefing[_PlayerID][i]) == "table" and self.Briefing[_PlayerID][i].Name == _Name then
                     return i;
                 end
             end
@@ -359,7 +365,7 @@ function ModuleBriefingSystem.Local:OnEvent(_ID, _Event, ...)
     elseif _ID == QSB.ScriptEvents.BriefingEnded then
         self:EndBriefing(arg[1], arg[2]);
     elseif _ID == QSB.ScriptEvents.BriefingPageShown then
-        self:DisplayPage(arg[1], arg[2]);
+        self:DisplayPage(arg[1], arg[2], arg[3]);
     elseif _ID == QSB.ScriptEvents.BriefingSkipButtonPressed then
         self:SkipButtonPressed(arg[1]);
     end
@@ -397,10 +403,11 @@ function ModuleBriefingSystem.Local:EndBriefing(_PlayerID, _Briefing)
     Display.SetRenderSky(0);
 end
 
-function ModuleBriefingSystem.Local:DisplayPage(_PlayerID, _PageID)
+function ModuleBriefingSystem.Local:DisplayPage(_PlayerID, _PageID, _PageData)
     if GUI.GetPlayerID() ~= _PlayerID then
         return;
     end
+    self.Briefing[_PlayerID][_PageID] = _PageData;
     self.Briefing[_PlayerID].AnimationQueue = self.Briefing[_PlayerID].AnimationQueue or {};
     self.Briefing[_PlayerID].CurrentPage = _PageID;
     if type(self.Briefing[_PlayerID][_PageID]) == "table" then
@@ -788,9 +795,9 @@ end
 
 function ModuleBriefingSystem.Local:ConvertPosition(_Table)
     local x, y, z;
-    if _Table and _Table.X then
-        x = _Table.X; y = _Table.Y; z = _Table.Z;
-    elseif _Table and not _Table.X then
+    if _Table and _Table[3] then
+        x = _Table[1]; y = _Table[2]; z = _Table[3];
+    elseif _Table and not _Table[3] then
         x, y, z = Logic.EntityGetPos(GetID(_Table[1]));
         z = z + (_Table[2] or 0);
     end
@@ -832,7 +839,7 @@ function ModuleBriefingSystem.Local:GetPageIDByName(_PlayerID, _Name)
     if type(_Name) == "string" then
         if self.Briefing[_PlayerID] ~= nil then
             for i= 1, #self.Briefing[_PlayerID], 1 do
-                if self.Briefing[_PlayerID][i].Name == _Name then
+                if type(self.Briefing[_PlayerID][i]) == "table" and self.Briefing[_PlayerID][i].Name == _Name then
                     return i;
                 end
             end

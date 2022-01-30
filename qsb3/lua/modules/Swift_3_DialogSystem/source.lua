@@ -249,7 +249,7 @@ function ModuleDialogSystem.Global:GetPageIDByName(_PlayerID, _Name)
     if type(_Name) == "string" then
         if self.Dialog[_PlayerID] ~= nil then
             for i= 1, #self.Dialog[_PlayerID], 1 do
-                if self.Dialog[_PlayerID][i].Name == _Name then
+                if type(self.Dialog[_PlayerID][i]) == "table" and self.Dialog[_PlayerID][i].Name == _Name then
                     return i;
                 end
             end
