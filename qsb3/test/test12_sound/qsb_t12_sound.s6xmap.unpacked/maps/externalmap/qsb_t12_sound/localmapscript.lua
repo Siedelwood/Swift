@@ -1,1 +1,1 @@
-Script.Load("E:/Repositories/symfonia/qsb3/test/test12_sound/localmapscript.lua");
+Script.Load("E:/Repositories/swift/qsb3/test/test12_sound/localmapscript.lua");
