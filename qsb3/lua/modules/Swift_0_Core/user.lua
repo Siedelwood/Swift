@@ -16,7 +16,7 @@ function Swift:InitalizeCallbackGlobal()
 end
 
 function Swift:InitalizeCallbackLocal()
-    self:OverrideEscapeCallback();
+    self:SetEscapeKeyTrigger();
 end
 
 -- Trigger Entity Killed Callbacks
@@ -66,6 +66,7 @@ function Swift:RestoreAfterLoad()
     end
     if self:IsLocalEnvironment() then
         self:LocalRestoreDebugAfterLoad();
+        self:SetEscapeKeyTrigger();
         -- self:LogLocalCFunctions();
     end
     -- Set new random seed
@@ -76,17 +77,21 @@ end
 
 -- Escape Callback
 
-function Swift:OverrideEscapeCallback()
-    GameCallback_Escape_Orig_Swift = GameCallback_Escape;
-    GameCallback_Escape = function()
-        GameCallback_Escape_Orig_Swift();
+function Swift:SetEscapeKeyTrigger()
+    Input.KeyBindDown(Keys.Escape, "Swift:ExecuteEscapeCallback()", 30, false);
+end
 
-        Swift:DispatchScriptEvent(QSB.ScriptEvents.EscapePressed, GUI.GetPlayerID());
-        GUI.SendScriptCommand(string.format(
-            [[Swift:DispatchScriptEvent(QSB.ScriptEvents.EscapePressed, %d)]],
-            GUI.GetPlayerID()
-        ));
-    end
+function Swift:ExecuteEscapeCallback()
+    -- Local
+    GUI.SendScriptCommand(string.format(
+        [[Swift:DispatchScriptEvent(QSB.ScriptEvents.EscapePressed, %d)]],
+        GUI.GetPlayerID()
+    ), true);
+    -- Global
+    GUI.SendScriptCommand(string.format(
+        [[Swift:DispatchScriptEvent(QSB.ScriptEvents.EscapePressed, %d)]],
+        GUI.GetPlayerID()
+    ), false);
 end
 
 -- Geologist Refill Callback
