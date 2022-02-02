@@ -44,7 +44,6 @@ Swift = {
     m_Language                  = "de";
     m_Environment               = "global";
     m_ProcessDebugCommands      = false;
-    m_HistoryEdition            = false;
     m_NoQuicksaveConditions     = {};
     m_LogLevel                  = 2;
     m_FileLogLevel              = 3;
@@ -57,7 +56,6 @@ function Swift:LoadCore()
     self:DetectLanguage();
 
     if self:IsGlobalEnvironment() then
-        self:DetectHistoryEdition();
         self:InitalizeDebugModeGlobal();
         self:InitalizeEventsGlobal();
         self:InstallBehaviorGlobal();
@@ -316,21 +314,8 @@ end
 
 -- History Edition
 
-function Swift:DetectHistoryEdition()
-    if self:IsLocalEnvironment() then
-        return true;
-    end
-    local EntityID = Logic.CreateEntity(Entities.U_NPC_Amma_NE, 100, 100, 0, 8);
-    MakeInvulnerable(EntityID);
-    if Logic.GetEntityScriptingValue(EntityID, -68) == 8 then
-        Logic.ExecuteInLuaLocalState("Swift.m_HistoryEdition = true");
-        self.m_HistoryEdition = true;
-    end
-    DestroyEntity(EntityID);
-end
-
 function Swift:IsHistoryEdition()
-    return self.m_HistoryEdition == true;
+    return Network.IsNATReady ~= nil;
 end
 
 function Swift:OverrideDoQuicksave()

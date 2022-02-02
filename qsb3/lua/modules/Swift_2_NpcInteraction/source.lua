@@ -121,10 +121,10 @@ function ModuleNpcInteraction.Global:PerformNpcInteraction(_PlayerID)
         end
 
         if Data.Condition == nil
-        or Data:Condition() then
+        or Data:Condition(_PlayerID) then
             Data.Active = false;
             if Data.Callback then
-                Data:Callback();
+                Data:Callback(_PlayerID);
             end
         else
             Data.TalkedTo = 0;

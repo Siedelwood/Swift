@@ -193,9 +193,9 @@ function Swift:ConfirmQsbDebugShell()
         if self.m_ChatBoxInput == "restartmap" then
             Framework.RestartMap();
         else
-            if string.find(self.m_ChatBoxInput, "^>.*$") then
+            if string.find(self.m_ChatBoxInput, "^> .*$") then
                 GUI.SendScriptCommand(self.m_ChatBoxInput.sub(self.m_ChatBoxInput, 3), true);
-            elseif string.find(self.m_ChatBoxInput, "^>>.*$") then
+            elseif string.find(self.m_ChatBoxInput, "^>> .*$") then
                 GUI.SendScriptCommand(self.m_ChatBoxInput.sub(self.m_ChatBoxInput, 4), false);
             end
         end

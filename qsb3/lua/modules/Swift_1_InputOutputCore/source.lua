@@ -111,16 +111,19 @@ function ModuleInputOutputCore.Local:OnEvent(_ID, _Event, ...)
         if Swift:IsProcessDebugCommands() then
             if arg[1] == "restartmap" then
                 Framework.RestartMap();
-            elseif arg[1]:find("^>") then
+            elseif arg[1]:find("^> ") then
                 GUI.SendScriptCommand(arg[1]:sub(3), true);
-            elseif arg[1]:find("^>>") then
-                GUI.SendScriptCommand(arg[1]:sub(4), false);
-            elseif arg[1]:find("^<") then
+            elseif arg[1]:find("^>> ") then
+                GUI.SendScriptCommand(string.format(
+                    "Logic.ExecuteInLuaLocalState(\"%s\")",
+                    arg[1]:sub(4)
+                ), true);
+            elseif arg[1]:find("^< ") then
                 GUI.SendScriptCommand(string.format(
                     [[Script.Load("%s")]],
                     arg[1]:sub(3)
                 ));
-            elseif arg[1]:find("^<<") then
+            elseif arg[1]:find("^<< ") then
                 Script.Load(arg[1]:sub(4));
             elseif arg[1]:find("^clear$") then
                 GUI.ClearNotes();
