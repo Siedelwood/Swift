@@ -471,7 +471,7 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
                 local a = (IO[ScriptName].Texture[1]) or 14;
                 local b = (IO[ScriptName].Texture[2]) or 10;
                 local c = (IO[ScriptName].Texture[3]) or 0;
-                API.InterfaceSetIcon(Widget, {a, b, c}, nil, c);
+                API.SetIcon(Widget, {a, b, c}, nil, nil);
             end
         end
     end

@@ -18,6 +18,57 @@ ModuleInterfaceCore = {
         HumanPlayerID = 1,
     },
     Local = {
+        BuildingButtons = {
+            BindingCounter = 0,
+            Bindings = {},
+            Configuration = {
+                ["BuyAmmunitionCart"] = {
+                    TypeExclusion = "^B_.*StoreHouse",
+                    Position = nil,
+                    Bind = nil,
+                },
+                ["BuyBattallion"] = {
+                    TypeExclusion = "^B_[CB]a[sr][tr][la][ec]",
+                    Position = nil,
+                    Bind = nil,
+                },
+                ["PlaceField"] = {
+                    TypeExclusion = "^B_.*[FH][ai][rv][me]",
+                    Position = nil,
+                    Bind = nil,
+                },
+                ["StartFestival"] = {
+                    TypeExclusion = "^B_Marketplace",
+                    Position = nil,
+                    Bind = nil,
+                },
+                ["StartTheatrePlay"] = {
+                    TypeExclusion = "^B_Theatre",
+                    Position = nil,
+                    Bind = nil,
+                },
+                ["UpgradeTurret"] = {
+                    TypeExclusion = "^B_WallTurret",
+                    Position = nil,
+                    Bind = nil,
+                },
+                ["BuyBatteringRamCart"] = {
+                    TypeExclusion = "^B_SiegeEngineWorkshop",
+                    Position = nil,
+                    Bind = nil,
+                },
+                ["BuyCatapultCart"] = {
+                    TypeExclusion = "^B_SiegeEngineWorkshop",
+                    Position = nil,
+                    Bind = nil,
+                },
+                ["BuySiegeTowerCart"] = {
+                    TypeExclusion = "^B_SiegeEngineWorkshop",
+                    Position = nil,
+                    Bind = nil,
+                },
+            },
+        },
         HiddenWidgets = {},
         HotkeyDescriptions = {},
         ForbidRegularSave = false,
@@ -108,9 +159,17 @@ function ModuleInterfaceCore.Local:OnGameStart()
     self.HumanKnightType = Logic.GetEntityType(Logic.GetKnightID(QSB.HumanPlayerID));
     self.HumanPlayerID = QSB.HumanPlayerID;
 
+    self:OverrideOnSelectionChanged();
     self:OverrideMissionGoodCounter();
     self:OverrideUpdateClaimTerritory();
     self:SetupHackRegisterHotkey();
+    self:OverrideBuyAmmunitionCart();
+    self:OverrideBuyBattalion();
+    self:OverrideBuySiegeEngineCart();
+    self:OverridePlaceField();
+    self:OverrideStartFestival();
+    self:OverrideStartTheatrePlay();
+    self:OverrideUpgradeTurret();
 
     -- Schnellspeichern generell verbieten
     API.AddBlockQuicksaveCondition(function()
@@ -128,6 +187,380 @@ function ModuleInterfaceCore.Local:OnEvent(_ID, _Event, ...)
         self:DisplaySaveButtons();
     end
 end
+
+-- -------------------------------------------------------------------------- --
+
+function ModuleInterfaceCore.Local:OverrideOnSelectionChanged()
+    GameCallback_GUI_SelectionChanged_Orig_InterfaceCore = GameCallback_GUI_SelectionChanged;
+    GameCallback_GUI_SelectionChanged = function(_Source)
+        GameCallback_GUI_SelectionChanged_Orig_InterfaceCore(_Source);
+        ModuleInterfaceCore.Local:UnbindButtons();
+        ModuleInterfaceCore.Local:BindButtons(GUI.GetSelectedEntity());
+    end
+end
+
+function ModuleInterfaceCore.Local:OverrideBuyAmmunitionCart()
+    GUI_BuildingButtons.BuyAmmunitionCartClicked_Orig_InterfaceCore = GUI_BuildingButtons.BuyAmmunitionCartClicked;
+    GUI_BuildingButtons.BuyAmmunitionCartClicked = function()
+        local WidgetID = XGUIEng.GetCurrentWidgetID();
+        local WidgetName = XGUIEng.GetWidgetNameByID(WidgetID);
+        local EntityID = GUI.GetSelectedEntity();
+        local Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
+        if not Button then
+            return GUI_BuildingButtons.BuyAmmunitionCartClicked_Orig_InterfaceCore();
+        end
+        Button.Action(WidgetID, EntityID);
+    end
+
+    GUI_BuildingButtons.BuyAmmunitionCartUpdate_Orig_InterfaceCore = GUI_BuildingButtons.BuyAmmunitionCartUpdate;
+    GUI_BuildingButtons.BuyAmmunitionCartUpdate = function()
+        local WidgetID = XGUIEng.GetCurrentWidgetID();
+        local WidgetName = XGUIEng.GetWidgetNameByID(WidgetID);
+        local EntityID = GUI.GetSelectedEntity();
+        local Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
+        if not Button then
+            SetIcon(WidgetID, {10, 4});
+            return GUI_BuildingButtons.BuyAmmunitionCartUpdate_Orig_InterfaceCore();
+        end
+        Button.Update(WidgetID, EntityID);
+    end
+end
+
+function ModuleInterfaceCore.Local:OverrideBuyBattalion()
+    GUI_BuildingButtons.BuyBattalionClicked_Orig_InterfaceCore = GUI_BuildingButtons.BuyBattalionClicked;
+    GUI_BuildingButtons.BuyBattalionClicked = function()
+        local WidgetID = XGUIEng.GetCurrentWidgetID();
+        local WidgetName = XGUIEng.GetWidgetNameByID(WidgetID);
+        local EntityID = GUI.GetSelectedEntity();
+        local Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
+        if not Button then
+            return GUI_BuildingButtons.BuyBattalionClicked_Orig_InterfaceCore();
+        end
+        Button.Action(WidgetID, EntityID);
+    end
+
+    GUI_BuildingButtons.BuyBattalionMouseOver_Orig_InterfaceCore = GUI_BuildingButtons.BuyBattalionMouseOver;
+    GUI_BuildingButtons.BuyBattalionMouseOver = function()
+        local WidgetID = XGUIEng.GetCurrentWidgetID();
+        local WidgetName = XGUIEng.GetWidgetNameByID(WidgetID);
+        local EntityID = GUI.GetSelectedEntity();
+        local Button;
+        if ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName] then
+            Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
+        end
+        if not Button then
+            return GUI_BuildingButtons.BuyBattalionMouseOver_Orig_InterfaceCore();
+        end
+        Button.Tooltip(WidgetID, EntityID);
+    end
+
+    GUI_BuildingButtons.BuyBattalionUpdate_Orig_InterfaceCore = GUI_BuildingButtons.BuyBattalionUpdate;
+    GUI_BuildingButtons.BuyBattalionUpdate = function()
+        local WidgetID = XGUIEng.GetCurrentWidgetID();
+        local WidgetName = XGUIEng.GetWidgetNameByID(WidgetID);
+        local EntityID = GUI.GetSelectedEntity();
+        local Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
+        if not Button then
+            return GUI_BuildingButtons.BuyBattalionUpdate_Orig_InterfaceCore();
+        end
+        Button.Update(WidgetID, EntityID);
+    end
+end
+
+function ModuleInterfaceCore.Local:OverridePlaceField()
+    GUI_BuildingButtons.PlaceFieldClicked_Orig_InterfaceCore = GUI_BuildingButtons.PlaceFieldClicked;
+    GUI_BuildingButtons.PlaceFieldClicked = function()
+        local WidgetID = XGUIEng.GetCurrentWidgetID();
+        local WidgetName = XGUIEng.GetWidgetNameByID(WidgetID);
+        local EntityID = GUI.GetSelectedEntity();
+        local Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
+        if not Button then
+            return GUI_BuildingButtons.PlaceFieldClicked_Orig_InterfaceCore();
+        end
+        Button.Action(WidgetID, EntityID);
+    end
+
+    GUI_BuildingButtons.PlaceFieldMouseOver_Orig_InterfaceCore = GUI_BuildingButtons.PlaceFieldMouseOver;
+    GUI_BuildingButtons.PlaceFieldMouseOver = function()
+        local WidgetID = XGUIEng.GetCurrentWidgetID();
+        local WidgetName = XGUIEng.GetWidgetNameByID(WidgetID);
+        local EntityID = GUI.GetSelectedEntity();
+        local Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
+        if not Button then
+            return GUI_BuildingButtons.PlaceFieldMouseOver_Orig_InterfaceCore();
+        end
+        Button.Tooltip(WidgetID, EntityID);
+    end
+
+    GUI_BuildingButtons.PlaceFieldUpdate_Orig_InterfaceCore = GUI_BuildingButtons.PlaceFieldUpdate;
+    GUI_BuildingButtons.PlaceFieldUpdate = function()
+        local WidgetID = XGUIEng.GetCurrentWidgetID();
+        local WidgetName = XGUIEng.GetWidgetNameByID(WidgetID);
+        local EntityID = GUI.GetSelectedEntity();
+        local Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
+        if not Button then
+            return GUI_BuildingButtons.PlaceFieldUpdate_Orig_InterfaceCore();
+        end
+        Button.Update(WidgetID, EntityID);
+    end
+end
+
+function ModuleInterfaceCore.Local:OverrideStartFestival()
+    GUI_BuildingButtons.StartFestivalClicked_Orig_InterfaceCore = GUI_BuildingButtons.StartFestivalClicked;
+    GUI_BuildingButtons.StartFestivalClicked = function()
+        local WidgetID = XGUIEng.GetCurrentWidgetID();
+        local WidgetName = XGUIEng.GetWidgetNameByID(WidgetID);
+        local EntityID = GUI.GetSelectedEntity();
+        local Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
+        if not Button then
+            return GUI_BuildingButtons.StartFestivalClicked_Orig_InterfaceCore();
+        end
+        Button.Action(WidgetID, EntityID);
+    end
+
+    GUI_BuildingButtons.StartFestivalMouseOver_Orig_InterfaceCore = GUI_BuildingButtons.StartFestivalMouseOver;
+    GUI_BuildingButtons.StartFestivalMouseOver = function()
+        local WidgetID = XGUIEng.GetCurrentWidgetID();
+        local WidgetName = XGUIEng.GetWidgetNameByID(WidgetID);
+        local EntityID = GUI.GetSelectedEntity();
+        local Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
+        if not Button then
+            return GUI_BuildingButtons.StartFestivalMouseOver_Orig_InterfaceCore();
+        end
+        Button.Tooltip(WidgetID, EntityID);
+    end
+
+    GUI_BuildingButtons.StartFestivalUpdate_Orig_InterfaceCore = GUI_BuildingButtons.StartFestivalUpdate;
+    GUI_BuildingButtons.StartFestivalUpdate = function()
+        local WidgetID = XGUIEng.GetCurrentWidgetID();
+        local WidgetName = XGUIEng.GetWidgetNameByID(WidgetID);
+        local EntityID = GUI.GetSelectedEntity();
+        local Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
+        if not Button then
+            return GUI_BuildingButtons.StartFestivalUpdate_Orig_InterfaceCore();
+        end
+        Button.Update(WidgetID, EntityID);
+    end
+end
+
+function ModuleInterfaceCore.Local:OverrideStartTheatrePlay()
+    GUI_BuildingButtons.StartTheatrePlayClicked_Orig_InterfaceCore = GUI_BuildingButtons.StartTheatrePlayClicked;
+    GUI_BuildingButtons.StartTheatrePlayClicked = function()
+        local WidgetID = XGUIEng.GetCurrentWidgetID();
+        local WidgetName = XGUIEng.GetWidgetNameByID(WidgetID);
+        local EntityID = GUI.GetSelectedEntity();
+        local Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
+        if not Button then
+            return GUI_BuildingButtons.StartTheatrePlayClicked_Orig_InterfaceCore();
+        end
+        Button.Action(WidgetID, EntityID);
+    end
+
+    GUI_BuildingButtons.StartTheatrePlayMouseOver_Orig_InterfaceCore = GUI_BuildingButtons.StartTheatrePlayMouseOver;
+    GUI_BuildingButtons.StartTheatrePlayMouseOver = function()
+        local WidgetID = XGUIEng.GetCurrentWidgetID();
+        local WidgetName = XGUIEng.GetWidgetNameByID(WidgetID);
+        local EntityID = GUI.GetSelectedEntity();
+        local Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
+        if not Button then
+            return GUI_BuildingButtons.StartTheatrePlayMouseOver_Orig_InterfaceCore();
+        end
+        Button.Tooltip(WidgetID, EntityID);
+    end
+
+    GUI_BuildingButtons.StartTheatrePlayUpdate_Orig_InterfaceCore = GUI_BuildingButtons.StartTheatrePlayUpdate;
+    GUI_BuildingButtons.StartTheatrePlayUpdate = function()
+        local WidgetID = XGUIEng.GetCurrentWidgetID();
+        local WidgetName = XGUIEng.GetWidgetNameByID(WidgetID);
+        local EntityID = GUI.GetSelectedEntity();
+        local Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
+        if not Button then
+            return GUI_BuildingButtons.StartTheatrePlayUpdate_Orig_InterfaceCore();
+        end
+        Button.Update(WidgetID, EntityID);
+    end
+end
+
+function ModuleInterfaceCore.Local:OverrideUpgradeTurret()
+    GUI_BuildingButtons.UpgradeTurretClicked_Orig_InterfaceCore = GUI_BuildingButtons.UpgradeTurretClicked;
+    GUI_BuildingButtons.UpgradeTurretClicked = function()
+        local WidgetID = XGUIEng.GetCurrentWidgetID();
+        local WidgetName = XGUIEng.GetWidgetNameByID(WidgetID);
+        local EntityID = GUI.GetSelectedEntity();
+        local Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
+        if not Button then
+            return GUI_BuildingButtons.UpgradeTurretClicked_Orig_InterfaceCore();
+        end
+        Button.Action(WidgetID, EntityID);
+    end
+
+    GUI_BuildingButtons.UpgradeTurretMouseOver_Orig_InterfaceCore = GUI_BuildingButtons.UpgradeTurretMouseOver;
+    GUI_BuildingButtons.UpgradeTurretMouseOver = function()
+        local WidgetID = XGUIEng.GetCurrentWidgetID();
+        local WidgetName = XGUIEng.GetWidgetNameByID(WidgetID);
+        local EntityID = GUI.GetSelectedEntity();
+        local Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
+        if not Button then
+            return GUI_BuildingButtons.UpgradeTurretMouseOver_Orig_InterfaceCore();
+        end
+        Button.Tooltip(WidgetID, EntityID);
+    end
+
+    GUI_BuildingButtons.UpgradeTurretUpdate_Orig_InterfaceCore = GUI_BuildingButtons.UpgradeTurretUpdate;
+    GUI_BuildingButtons.UpgradeTurretUpdate = function()
+        local WidgetID = XGUIEng.GetCurrentWidgetID();
+        local WidgetName = XGUIEng.GetWidgetNameByID(WidgetID);
+        local EntityID = GUI.GetSelectedEntity();
+        local Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
+        if not Button then
+            return GUI_BuildingButtons.UpgradeTurretUpdate_Orig_InterfaceCore();
+        end
+        Button.Update(WidgetID, EntityID);
+    end
+end
+
+function ModuleInterfaceCore.Local:OverrideBuySiegeEngineCart()
+    GUI_BuildingButtons.BuySiegeEngineCartClicked_Orig_InterfaceCore = GUI_BuildingButtons.BuySiegeEngineCartClicked;
+    GUI_BuildingButtons.BuySiegeEngineCartClicked = function(_EntityType)
+        local WidgetID = XGUIEng.GetCurrentWidgetID();
+        local WidgetName = XGUIEng.GetWidgetNameByID(WidgetID);
+        local EntityID = GUI.GetSelectedEntity();
+        local Button;
+        if WidgetName == "BuyCatapultCart"
+        or WidgetName == "BuySiegeTowerCart"
+        or WidgetName == "BuyBatteringRamCart" then
+            Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
+        end
+        if not Button then
+            return GUI_BuildingButtons.BuySiegeEngineCartClicked_Orig_InterfaceCore(_EntityType);
+        end
+        Button.Action(WidgetID, EntityID);
+    end
+
+    GUI_BuildingButtons.BuySiegeEngineCartMouseOver_Orig_InterfaceCore = GUI_BuildingButtons.BuySiegeEngineCartMouseOver;
+    GUI_BuildingButtons.BuySiegeEngineCartMouseOver = function(_EntityType, _Right)
+        local WidgetID = XGUIEng.GetCurrentWidgetID();
+        local WidgetName = XGUIEng.GetWidgetNameByID(WidgetID);
+        local EntityID = GUI.GetSelectedEntity();
+        local Button;
+        if WidgetName == "BuyCatapultCart"
+        or WidgetName == "BuySiegeTowerCart"
+        or WidgetName == "BuyBatteringRamCart" then
+            Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
+        end
+        if not Button then
+            return GUI_BuildingButtons.BuySiegeEngineCartMouseOver_Orig_InterfaceCore(_EntityType, _Right);
+        end
+        Button.Tooltip(WidgetID, EntityID);
+    end
+
+    GUI_BuildingButtons.BuySiegeEngineCartUpdate_Orig_InterfaceCore = GUI_BuildingButtons.BuySiegeEngineCartUpdate;
+    GUI_BuildingButtons.BuySiegeEngineCartUpdate = function(_EntityType)
+        local WidgetID = XGUIEng.GetCurrentWidgetID();
+        local WidgetName = XGUIEng.GetWidgetNameByID(WidgetID);
+        local EntityID = GUI.GetSelectedEntity();
+        local Button;
+        if WidgetName == "BuyCatapultCart"
+        or WidgetName == "BuySiegeTowerCart"
+        or WidgetName == "BuyBatteringRamCart" then
+            Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
+        end
+        if not Button then
+            return GUI_BuildingButtons.BuySiegeEngineCartUpdate_Orig_InterfaceCore(_EntityType);
+        end
+        XGUIEng.ShowWidget(WidgetID, 1);
+        Button.Update(WidgetID, EntityID);
+    end
+end
+
+-- -------------------------------------------------------------------------- --
+
+function ModuleInterfaceCore.Local:GetButtonsForOverwrite(_ID, _Amount)
+    local Buttons = {};
+    local Type = Logic.GetEntityType(_ID);
+    local TypeName = Logic.GetEntityTypeName(Type);
+    for k, v in pairs(self.BuildingButtons.Configuration) do
+        if #Buttons == _Amount then
+            break;
+        end
+        if not TypeName:find(v.TypeExclusion) then
+            table.insert(Buttons, k);
+        end
+    end
+    assert(#Buttons == _Amount);
+    table.sort(Buttons);
+    return Buttons;
+end
+
+function ModuleInterfaceCore.Local:AddButtonBinding(_Type, _ActionFunction, _TooltipController, _UpdateController)
+    if not self.BuildingButtons.Bindings[_Type] then
+        self.BuildingButtons.Bindings[_Type] = {};
+    end
+    if #self.BuildingButtons.Bindings[_Type] < 6 then
+        self.BuildingButtons.BindingCounter = self.BuildingButtons.BindingCounter +1;
+        table.insert(self.BuildingButtons.Bindings[_Type], {
+            ID      = self.BuildingButtons.Bindings[_Type],
+            Action  = _ActionFunction,
+            Tooltip = _TooltipController,
+            Update  = _UpdateController,
+        });
+        return self.BuildingButtons.Bindings[_Type];
+    end
+    return 0;
+end
+
+function ModuleInterfaceCore.Local:RemoveButtonBinding(_Type, _ID)
+    if not self.BuildingButtons.Bindings[_Type] then
+        self.BuildingButtons.Bindings[_Type] = {};
+    end
+    for i= #self.BuildingButtons.Bindings[_Type], 1, -1 do
+        if self.BuildingButtons.Bindings[_Type][i].ID == _ID then
+            table.remove(self.BuildingButtons.Bindings[_Type], i);
+        end
+    end
+end
+
+function ModuleInterfaceCore.Local:BindButtons(_ID)
+    if _ID == nil or _ID == 0 or (Logic.IsBuilding(_ID) == 0 and not Logic.IsWall(_ID)) then
+        return self:UnbindButtons();
+    end
+    local Name = Logic.GetEntityName(_ID);
+    local Type = Logic.GetEntityType(_ID);
+
+    local Key;
+    if self.BuildingButtons.Bindings[Name] then
+        Key = Name;
+    end
+    if not Key and self.BuildingButtons.Bindings[Type] then
+        Key = Type;
+    end
+    if not Key and self.BuildingButtons.Bindings[0] then
+        Key = 0;
+    end
+
+    if Key then
+        local ButtonNames = self:GetButtonsForOverwrite(_ID, #self.BuildingButtons.Bindings[Key]);
+        for i= 1, #self.BuildingButtons.Bindings[Key] do
+            self.BuildingButtons.Configuration[ButtonNames[i]].Bind = self.BuildingButtons.Bindings[Key][i];
+            XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons/" ..ButtonNames[i], 1);
+            local x, y = XGUIEng.GetWidgetLocalPosition("/InGame/Root/Normal/BuildingButtons/" ..ButtonNames[i]);
+            self.BuildingButtons.Configuration[ButtonNames[i]].Position = {x, y};
+        end
+    end
+end
+
+function ModuleInterfaceCore.Local:UnbindButtons()
+    for k, v in pairs(self.BuildingButtons.Configuration) do
+        local Position = self.BuildingButtons.Configuration[k].Position;
+        if Position then
+            XGUIEng.SetWidgetLocalPosition("/InGame/Root/Normal/BuildingButtons/" ..k, Position[1], Position[2]);
+            self.BuildingButtons.Configuration[k].Position = nil;
+        end
+        self.BuildingButtons.Configuration[k].Bind = nil;
+    end
+end
+
+-- -------------------------------------------------------------------------- --
 
 function ModuleInterfaceCore.Local:DisplaySaveButtons()
     if self.ForbidRegularSave then
@@ -307,10 +740,6 @@ function ModuleInterfaceCore.Local:TextNormal(_title, _text, _disabledText)
     local TooltipBGWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/BG");
     local TooltipFadeInContainer = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn");
     local PositionWidget = XGUIEng.GetCurrentWidgetID();
-    GUI_Tooltip.ResizeBG(TooltipBGWidget, TooltipDescriptionWidget);
-    local TooltipContainerSizeWidgets = {TooltipBGWidget};
-    GUI_Tooltip.SetPosition(TooltipContainer, TooltipContainerSizeWidgets, PositionWidget);
-    GUI_Tooltip.FadeInTooltip(TooltipFadeInContainer);
 
     local title = (_title and _title) or "";
     local text = (_text and _text) or "";
@@ -324,6 +753,11 @@ function ModuleInterfaceCore.Local:TextNormal(_title, _text, _disabledText)
     local Height = XGUIEng.GetTextHeight(TooltipDescriptionWidget, true);
     local W, H = XGUIEng.GetWidgetSize(TooltipDescriptionWidget);
     XGUIEng.SetWidgetSize(TooltipDescriptionWidget, W, Height);
+
+    GUI_Tooltip.ResizeBG(TooltipBGWidget, TooltipDescriptionWidget);
+    local TooltipContainerSizeWidgets = {TooltipBGWidget};
+    GUI_Tooltip.SetPosition(TooltipContainer, TooltipContainerSizeWidgets, PositionWidget);
+    GUI_Tooltip.FadeInTooltip(TooltipFadeInContainer);
 end
 
 function ModuleInterfaceCore.Local:TextCosts(_title,_text,_disabledText,_costs,_inSettlement)
@@ -352,12 +786,6 @@ function ModuleInterfaceCore.Local:TextCosts(_title,_text,_disabledText,_costs,_
     local TooltipFadeInContainer = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn");
     local TooltipCostsContainer = XGUIEng.GetWidgetID(TooltipContainerPath .. "/Costs");
     local PositionWidget = XGUIEng.GetCurrentWidgetID();
-    GUI_Tooltip.ResizeBG(TooltipBGWidget, TooltipDescriptionWidget);
-    GUI_Tooltip.SetCosts(TooltipCostsContainer, Costs, _inSettlement);
-    local TooltipContainerSizeWidgets = {TooltipContainer, TooltipCostsContainer, TooltipBGWidget};
-    GUI_Tooltip.SetPosition(TooltipContainer, TooltipContainerSizeWidgets, PositionWidget, nil, true);
-    GUI_Tooltip.OrderTooltip(TooltipContainerSizeWidgets, TooltipFadeInContainer, TooltipCostsContainer, PositionWidget, TooltipBGWidget);
-    GUI_Tooltip.FadeInTooltip(TooltipFadeInContainer);
 
     local title = (_title and _title) or "";
     local text = (_text and _text) or "";
@@ -371,6 +799,13 @@ function ModuleInterfaceCore.Local:TextCosts(_title,_text,_disabledText,_costs,_
     local Height = XGUIEng.GetTextHeight(TooltipDescriptionWidget, true);
     local W, H = XGUIEng.GetWidgetSize(TooltipDescriptionWidget);
     XGUIEng.SetWidgetSize(TooltipDescriptionWidget, W, Height);
+
+    GUI_Tooltip.ResizeBG(TooltipBGWidget, TooltipDescriptionWidget);
+    GUI_Tooltip.SetCosts(TooltipCostsContainer, Costs, _inSettlement);
+    local TooltipContainerSizeWidgets = {TooltipContainer, TooltipCostsContainer, TooltipBGWidget};
+    GUI_Tooltip.SetPosition(TooltipContainer, TooltipContainerSizeWidgets, PositionWidget, nil, true);
+    GUI_Tooltip.OrderTooltip(TooltipContainerSizeWidgets, TooltipFadeInContainer, TooltipCostsContainer, PositionWidget, TooltipBGWidget);
+    GUI_Tooltip.FadeInTooltip(TooltipFadeInContainer);
 end
 
 function ModuleInterfaceCore.Local:SetupHackRegisterHotkey()
