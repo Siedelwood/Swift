@@ -17,9 +17,9 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={commonpf}\Siedelwood\SWS6Tools
 DefaultGroupName=Siedelwood
-OutputDir=E:\Repositories\symfonia\cnf\SWS6Tools
+OutputDir=E:\Repositories\swift\cnf\SWS6Tools
 OutputBaseFilename=SWS6ToolsInstaller
-SetupIconFile=E:\Repositories\symfonia\bin\SWS6Tools.ico
+SetupIconFile=E:\Repositories\swift\bin\SWS6Tools.ico
 Compression=lzma
 SolidCompression=yes
 DisableProgramGroupPage=no
@@ -29,14 +29,14 @@ DisableDirPage=no
 Name: "german"; MessagesFile: "compiler:Languages\German.isl"
 
 [Files]
-Source: "E:\Repositories\symfonia\bin\SWS6Tools.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "E:\Repositories\symfonia\bin\SWS6Tools.ico"; DestDir: "{app}"; Flags: ignoreversion
-Source: "E:\Repositories\symfonia\app\swapplicationupdater\var\updater.jar"; DestDir: "{app}"; Flags: ignoreversion
-Source: "E:\Repositories\symfonia\app\swapplicationupdater\src\main\resources\logback-spring.xml"; DestDir: "{app}"; Flags: ignoreversion
-Source: "E:\Repositories\symfonia\app\swapplicationupdater\src\main\resources\config\logo_100.png"; DestDir: "{app}\config"; Flags: ignoreversion
-Source: "E:\Repositories\symfonia\app\swapplicationupdater\src\main\resources\application.properties"; DestDir: "{app}\config"; Flags: ignoreversion
-Source: "E:\Repositories\symfonia\app\swapplicationupdater\src\main\resources\application-sws6tools.properties"; DestDir: "{app}\config"; Flags: ignoreversion
-Source: "E:\Repositories\symfonia\app\swapplicationupdater\var\jre\*"; DestDir: "{app}\jre"; Flags: ignoreversion recursesubdirs
+Source: "E:\Repositories\swift\bin\SWS6Tools.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Repositories\swift\bin\SWS6Tools.ico"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Repositories\swift\app\swapplicationupdater\var\updater.jar"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Repositories\swift\app\swapplicationupdater\src\main\resources\logback-spring.xml"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Repositories\swift\app\swapplicationupdater\src\main\resources\config\logo_100.png"; DestDir: "{app}\config"; Flags: ignoreversion
+Source: "E:\Repositories\swift\app\swapplicationupdater\src\main\resources\application.properties"; DestDir: "{app}\config"; Flags: ignoreversion
+Source: "E:\Repositories\swift\app\swapplicationupdater\src\main\resources\application-sws6tools.properties"; DestDir: "{app}\config"; Flags: ignoreversion
+Source: "E:\Repositories\swift\app\swapplicationupdater\var\jre\*"; DestDir: "{app}\jre"; Flags: ignoreversion recursesubdirs
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{%USERPROFILE}\Siedelwood\SWS6Tools"

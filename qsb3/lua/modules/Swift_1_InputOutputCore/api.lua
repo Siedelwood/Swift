@@ -261,9 +261,7 @@ end
 -- Öffnet einen Info-Dialog. Sollte bereits ein Dialog zu sehen sein, wird
 -- der Dialog der Dialogwarteschlange hinzugefügt.
 --
--- <b>Hinweis</b>: Aus dem globalen Skript aufgerufen muss der Name der Action
--- als String angegeben werden. Es wird dann eine Funktion im lokalen Skript
--- als Aktion aufgerufen.
+-- <b>Hinweis</b>: Kann nicht aus dem globalen Skript heraus benutzt werden.
 --
 -- @param[type=string]   _Title  Titel des Dialog
 -- @param[type=string]   _Text   Text des Dialog
@@ -275,24 +273,14 @@ end
 --
 function API.DialogInfoBox(_Title, _Text, _Action)
     if not GUI then
-        if _Action and type(_Action) ~= "string" then
-            return;
-        end
-
-        local Title = (type(_Title) == "table" and table.tostring(_Title)) or ("\"" .._Title.. "\"");
-        local Text  = (type(_Text) == "table" and table.tostring(_Text)) or ("\"" .._Text.. "\"");
-
-        Logic.ExecuteInLuaLocalState(string.format(
-            [[ModuleInputOutputCore.Local:OpenDialog(%s, %s, %s)]],
-            Title,
-            Text,
-            tostring(_Action)
-        ));
         return;
     end
-
-    _Title = API.Localize(_Title);
-    _Text  = API.Localize(_Text);
+    if type(_Title) == "table" then
+        _Title = API.Localize(_Title);
+    end
+    if type(_Text) == "table" then
+        _Text  = API.Localize(_Text);
+    end
     return ModuleInputOutputCore.Local:OpenDialog(_Title, _Text, _Action);
 end
 
@@ -322,24 +310,14 @@ end
 --
 function API.DialogRequestBox(_Title, _Text, _Action, _OkCancel)
     if not GUI then
-        if _Action and type(_Action) ~= "string" then
-            return;
-        end
-
-        local Title = (type(_Title) == "table" and table.tostring(_Title)) or ("\"" .._Title.. "\"");
-        local Text  = (type(_Text) == "table" and table.tostring(_Text)) or ("\"" .._Text.. "\"");
-
-        Logic.ExecuteInLuaLocalState(string.format(
-            [[ModuleInputOutputCore.Local:OpenRequesterDialog(%s, %s, %s, %s)]],
-            Title,
-            Text,
-            tostring(_Action),
-            tostring(_OkCancel == true)
-        ));
         return;
     end
-    _Title = API.Localize(_Title);
-    _Text = API.Localize(_Text);
+    if type(_Title) == "table" then
+        _Title = API.Localize(_Title);
+    end
+    if type(_Text) == "table" then
+        _Text  = API.Localize(_Text);
+    end
     return ModuleInputOutputCore.Local:OpenRequesterDialog(_Title, _Text, _Action, _OkCancel);
 end
 
@@ -369,24 +347,14 @@ end
 --
 function API.DialogSelectBox(_Title, _Text, _Action, _List)
     if not GUI then
-        if _Action and type(_Action) ~= "string" then
-            return;
-        end
-
-        local Title = (type(_Title) == "table" and table.tostring(_Title)) or ("\"" .._Title.. "\"");
-        local Text  = (type(_Text) == "table" and table.tostring(_Text)) or ("\"" .._Text.. "\"");
-
-        Logic.ExecuteInLuaLocalState(string.format(
-            [[ModuleInputOutputCore.Local:OpenSelectionDialog(%s, %s, %s, %s)]],
-            Title,
-            Text,
-            tostring(_Action),
-            table.tostring(_List)
-        ));
         return;
     end
-    _Title = API.Localize(_Title);
-    _Text = API.Localize(_Text);
+    if type(_Title) == "table" then
+        _Title = API.Localize(_Title);
+    end
+    if type(_Text) == "table" then
+        _Text  = API.Localize(_Text);
+    end
     _Text = _Text .. "{cr}";
     ModuleInputOutputCore.Local:OpenSelectionDialog(_Title, _Text, _Action, _List);
 end

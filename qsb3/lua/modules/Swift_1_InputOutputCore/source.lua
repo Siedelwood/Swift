@@ -208,7 +208,7 @@ function ModuleInputOutputCore.Local:OverrideCheats()
     else
         Input.KeyBindDown(
             Keys.ModifierControl + Keys.ModifierShift + Keys.Divide,
-            "KeyBindings_EnableDebugMode(2)",
+            "KeyBindings_EnableDebugMode(1)",
             2,
             false
         );
