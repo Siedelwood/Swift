@@ -292,9 +292,7 @@ end
 -- Das Callback bekommt eine Boolean übergeben, sobald der Spieler die
 -- Entscheidung getroffen hat.
 --
--- <b>Hinweis</b>: Aus dem globalen Skript aufgerufen muss der Name der Action
--- als String angegeben werden. Es wird dann eine Funktion im lokalen Skript
--- als Aktion aufgerufen.
+-- <b>Hinweis</b>: Kann nicht aus dem globalen Skript heraus benutzt werden.
 --
 -- @param[type=string]   _Title    Titel des Dialog
 -- @param[type=string]   _Text     Text des Dialog
@@ -328,9 +326,7 @@ end
 -- In diesem Dialog wählt der Spieler eine Option aus einer Liste von Optionen
 -- aus. Anschließend erhält das Callback den Index der selektierten Option.
 --
--- <b>Hinweis</b>: Aus dem globalen Skript aufgerufen muss der Name der Action
--- als String angegeben werden. Es wird dann eine Funktion im lokalen Skript
--- als Aktion aufgerufen.
+-- <b>Hinweis</b>: Kann nicht aus dem globalen Skript heraus benutzt werden.
 --
 -- @param[type=string]   _Title  Titel des Dialog
 -- @param[type=string]   _Text   Text des Dialog

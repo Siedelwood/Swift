@@ -680,10 +680,10 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 
 -- Script Event Callback --
 
--- The callback is put into a never called local function because LDOC can't
+-- The callback is put into a never called local function because LDoc can't
 -- process the callback when it self is declared local. For ... reasons we do
--- not want to use the -a switch on LDOC so that seems to be the only solution.
--- Creators should never give a funktion this name. But I don't think that
+-- not want to use the -a switch on LDoc so that seems to be the only solution.
+-- Creators should never give a function this name. But I don't think that
 -- will be very likley to happen. ;)
 local function ThisWillForeverBeLostToTheVoidBecauseNoOneComesUpWithThat()
     ---

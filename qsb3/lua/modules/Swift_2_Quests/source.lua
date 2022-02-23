@@ -306,6 +306,7 @@ function ModuleQuests.Global:CreateSimpleQuest(_Data)
     Quest.MsgTableOverride = _Data.MSGKeyOverwrite;
     Quest.IconOverride = _Data.IconOverwrite;
     Quest.QuestInfo = _Data.InfoText;
+    Quest.Arguments = (_Data.Arguments ~= nil and table.copy(_Data.Arguments)) or {};
     return _Data.Name, Quests[0];
 end
 
