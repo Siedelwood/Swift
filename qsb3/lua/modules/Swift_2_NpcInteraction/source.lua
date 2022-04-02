@@ -14,6 +14,7 @@ ModuleNpcInteraction = {
     },
 
     Global = {
+        Interactions = {},
         NPC = {},
     };
     Local  = {};
@@ -52,6 +53,13 @@ function ModuleNpcInteraction.Global:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.NpcInteraction then
         QSB.Npc.LastNpcEntityID = arg[1];
         QSB.Npc.LastHeroEntityID = arg[2];
+        self.Interactions[arg[1]] = self.Interactions[arg[1]] or {};
+        if self.Interactions[arg[1]][arg[2]] then
+            if Logic.GetCurrentTurn() <= self.Interactions[arg[1]][arg[2]] + 5 then
+                return;
+            end
+        end
+        self.Interactions[arg[1]][arg[2]] = Logic.GetCurrentTurn();
         self:PerformNpcInteraction(arg[3]);
     end
 end

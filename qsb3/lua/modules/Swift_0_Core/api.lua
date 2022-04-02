@@ -1241,12 +1241,13 @@ ConfrontEntities = API.LookAt;
 -- Sendet einen Handelskarren zu dem Spieler. Startet der Karren von einem
 -- Gebäude, wird immer die Position des Eingangs genommen.
 --
--- @param _position                        Position (Skriptname oder Positionstable)
--- @param[type=number] _player             Zielspieler
--- @param[type=number] _good               Warentyp
--- @param[type=number] _amount             Warenmenge
--- @param[type=number] _cartOverlay        (optional) Overlay für Goldkarren
--- @param[type=boolean] _ignoreReservation (optional) Marktplatzreservation ignorieren
+-- @param _Position                        Position (Skriptname oder Entity-ID)
+-- @param[type=number] _PlayerID           Zielspieler
+-- @param[type=number] _GoodType           Warentyp
+-- @param[type=number] _Amount             Warenmenge
+-- @param[type=number] _CartOverlay        (optional) Overlay für Goldkarren
+-- @param[type=boolean] _IgnoreReservation (optional) Marktplatzreservation ignorieren
+-- @param[type=boolean] _Overtake          (optional) Mit Position austauschen
 -- @return[type=number] Entity-ID des erzeugten Wagens
 -- @within Entity
 -- @usage -- API-Call
@@ -1254,62 +1255,66 @@ ConfrontEntities = API.LookAt;
 -- -- Legacy-Call mit ID-Speicherung
 -- local ID = SendCart("Position_1", 5, Goods.G_Wool, 5)
 --
-function API.SendCart(_position, _player, _good, _amount, _cartOverlay, _ignoreReservation)
-    local eID = GetID(_position);
-    if not IsExisting(eID) then
+function API.SendCart(_Position, _PlayerID, _GoodType, _Amount, _CartOverlay, _IgnoreReservation, _Overtake)
+    local OriginalID = GetID(_Position);
+    if not IsExisting(OriginalID) then
         return;
     end
     local ID;
-    local x,y,z = Logic.EntityGetPos(eID);
-    local resCat = Logic.GetGoodCategoryForGoodType(_good);
-    local orientation = Logic.GetEntityOrientation(eID);
-    if Logic.IsBuilding(eID) == 1 then
-        x,y = Logic.GetBuildingApproachPosition(eID);
-        orientation = Logic.GetEntityOrientation(eID)-90;
+    local x,y,z = Logic.EntityGetPos(OriginalID);
+    local ResourceCategory = Logic.GetGoodCategoryForGoodType(_GoodType);
+    local Orientation = Logic.GetEntityOrientation(OriginalID);
+    local ScriptName = Logic.GetEntityName(OriginalID);
+    if Logic.IsBuilding(OriginalID) == 1 then
+        x,y = Logic.GetBuildingApproachPosition(OriginalID);
+        Orientation = Logic.GetEntityOrientation(OriginalID)-90;
     end
 
     -- Macht Waren lagerbar im Lagerhaus
-    if resCat == GoodCategories.GC_Resource or _good == Goods.G_None then
-        local TypeName = Logic.GetGoodTypeName(_good);
-        local Category = Logic.GetGoodCategoryForGoodType(_good);
-        local SHID = Logic.GetStoreHouse(_player);
-        local HQID = Logic.GetHeadquarters(_player);
-        if SHID ~= 0 and Logic.GetIndexOnInStockByGoodType(SHID, _good) == -1 then
-            local CreateSlot = true;
-            if _good ~= Goods.G_Gold or (_good == Goods.G_Gold and HQID == 0) then
+    if ResourceCategory == GoodCategories.GC_Resource or _GoodType == Goods.G_None then
+        local TypeName = Logic.GetGoodTypeName(_GoodType);
+        local SHID = Logic.GetStoreHouse(_PlayerID);
+        local HQID = Logic.GetHeadquarters(_PlayerID);
+        if SHID ~= 0 and Logic.GetIndexOnInStockByGoodType(SHID, _GoodType) == -1 then
+            if _GoodType ~= Goods.G_Gold or (_GoodType == Goods.G_Gold and HQID == 0) then
                 info(
                     "API.SendCart: creating stock for " ..TypeName.. " in" ..
-                    "storehouse of player " .._player.. "."
+                    "storehouse of player " .._PlayerID.. "."
                 );
-                Logic.AddGoodToStock(SHID, _good, 0, true, true);
+                Logic.AddGoodToStock(SHID, _GoodType, 0, true, true);
             end
         end
     end
 
     info("API.SendCart: Creating cart ("..
-        tostring(_position) ..","..
-        tostring(_player) ..","..
-        Logic.GetGoodTypeName(_good) ..","..
-        tostring(_amount) ..","..
-        tostring(_cartOverlay) ..","..
-        tostring(_ignoreReservation) ..
+        tostring(_Position) ..","..
+        tostring(_PlayerID) ..","..
+        Logic.GetGoodTypeName(_GoodType) ..","..
+        tostring(_Amount) ..","..
+        tostring(_CartOverlay) ..","..
+        tostring(_IgnoreReservation) ..
     ")");
 
-    if resCat == GoodCategories.GC_Resource then
-        ID = Logic.CreateEntityOnUnblockedLand(Entities.U_ResourceMerchant, x, y,orientation,_player)
-    elseif _good == Goods.G_Medicine then
-        ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Medicus, x, y,orientation,_player)
-    elseif _good == Goods.G_Gold or _good == Goods.G_None or _good == Goods.G_Information then
-        if _cartOverlay then
-            ID = Logic.CreateEntityOnUnblockedLand(_cartOverlay, x, y,orientation,_player)
+    if ResourceCategory == GoodCategories.GC_Resource then
+        ID = Logic.CreateEntityOnUnblockedLand(Entities.U_ResourceMerchant, x, y, Orientation, _PlayerID);
+    elseif _GoodType == Goods.G_Medicine then
+        ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Medicus, x, y, Orientation,_PlayerID);
+    elseif _GoodType == Goods.G_Gold or _GoodType == Goods.G_None or _GoodType == Goods.G_Information then
+        if _CartOverlay then
+            ID = Logic.CreateEntityOnUnblockedLand(_CartOverlay, x, y, Orientation, _PlayerID);
         else
-            ID = Logic.CreateEntityOnUnblockedLand(Entities.U_GoldCart, x, y,orientation,_player)
+            ID = Logic.CreateEntityOnUnblockedLand(Entities.U_GoldCart, x, y, Orientation, _PlayerID);
         end
     else
-        ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Marketer, x, y,orientation,_player)
+        ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Marketer, x, y, Orientation, _PlayerID);
     end
     info("API.SendCart: Executing hire merchant...");
-    Logic.HireMerchant( ID, _player, _good, _amount, _player, _ignoreReservation)
+    Logic.HireMerchant(ID, _PlayerID, _GoodType, _Amount, _PlayerID, _IgnoreReservation);
+    if _Overtake and Logic.IsBuilding(OriginalID) == 0 then
+        info("API.SendCart: Cart replaced original.");
+        Logic.SetEntityName(ID, ScriptName);
+        DestroyEntity(OriginalID);
+    end
     info("API.SendCart: Cart has been send successfully.");
     return ID
 end

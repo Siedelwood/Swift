@@ -168,7 +168,7 @@ end
 
 function ModuleQuests.Global:OverrideMethods()
     API.FailQuest_Orig_ModuleQuest = API.FailQuest;
-    API.FailQuest = function(_QuestName, _Verbose)
+    API.FailQuest = function(_QuestName, _NoMessage)
         if ModuleQuests.Global.SegmentsOfQuest[_QuestName] then
             for k, v in pairs(ModuleQuests.Global.SegmentsOfQuest[_QuestName]) do
                 if API.IsValidQuest(v.Name) and Quests[GetQuestID(v.Name)].State ~= QuestState.Over then
@@ -176,11 +176,11 @@ function ModuleQuests.Global:OverrideMethods()
                 end
             end
         end
-        API.FailQuest_Orig_ModuleQuest(_QuestName, _Verbose);
+        API.FailQuest_Orig_ModuleQuest(_QuestName, _NoMessage);
     end
 
     API.RestartQuest_Orig_ModuleQuest = API.RestartQuest;
-    API.RestartQuest = function(_QuestName, _Verbose)
+    API.RestartQuest = function(_QuestName, _NoMessage)
         if ModuleQuests.Global.SegmentsOfQuest[_QuestName] then
             for k, v in pairs(ModuleQuests.Global.SegmentsOfQuest[_QuestName]) do
                 if API.IsValidQuest(v.Name) then
@@ -189,11 +189,11 @@ function ModuleQuests.Global:OverrideMethods()
                 end
             end
         end
-        API.RestartQuest_Orig_ModuleQuest(_QuestName, _Verbose);
+        API.RestartQuest_Orig_ModuleQuest(_QuestName, _NoMessage);
     end
 
     API.StartQuest_Orig_ModuleQuest = API.StartQuest;
-    API.StartQuest = function(_QuestName, _Verbose)
+    API.StartQuest = function(_QuestName, _NoMessage)
         if ModuleQuests.Global.SegmentsOfQuest[_QuestName] then
             for k, v in pairs(ModuleQuests.Global.SegmentsOfQuest[_QuestName]) do
                 if API.IsValidQuest(v.Name) and Quests[GetQuestID(v.Name)].State ~= QuestState.Over then
@@ -201,11 +201,11 @@ function ModuleQuests.Global:OverrideMethods()
                 end
             end
         end
-        API.StartQuest_Orig_ModuleQuest(_QuestName, _Verbose);
+        API.StartQuest_Orig_ModuleQuest(_QuestName, _NoMessage);
     end
 
     API.StopQuest_Orig_ModuleQuest = API.StopQuest;
-    API.StopQuest = function(_QuestName, _Verbose)
+    API.StopQuest = function(_QuestName, _NoMessage)
         if ModuleQuests.Global.SegmentsOfQuest[_QuestName] then
             for k, v in pairs(ModuleQuests.Global.SegmentsOfQuest[_QuestName]) do
                 if API.IsValidQuest(v.Name) and Quests[GetQuestID(v.Name)].State ~= QuestState.Over then
@@ -213,11 +213,11 @@ function ModuleQuests.Global:OverrideMethods()
                 end
             end
         end
-        API.StopQuest_Orig_ModuleQuest(_QuestName, _Verbose);
+        API.StopQuest_Orig_ModuleQuest(_QuestName, _NoMessage);
     end
 
     API.WinQuest_Orig_ModuleQuest = API.WinQuest;
-    API.WinQuest = function(_QuestName, _Verbose)
+    API.WinQuest = function(_QuestName, _NoMessage)
         if ModuleQuests.Global.SegmentsOfQuest[_QuestName] then
             for k, v in pairs(ModuleQuests.Global.SegmentsOfQuest[_QuestName]) do
                 if API.IsValidQuest(v.Name) and Quests[GetQuestID(v.Name)].State ~= QuestState.Over then
@@ -225,7 +225,7 @@ function ModuleQuests.Global:OverrideMethods()
                 end
             end
         end
-        API.WinQuest_Orig_ModuleQuest(_QuestName, _Verbose);
+        API.WinQuest_Orig_ModuleQuest(_QuestName, _NoMessage);
     end
 end
 
