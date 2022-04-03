@@ -36,12 +36,13 @@ B_Reprisal_Cutscene = {
         de = "Lohn: Ruft die Funktion auf und startet die enthaltene Cutscene.",
     },
     Parameter = {
+        { ParameterType.Default, en = "Cutscene name",     de = "Name der Cutscene" },
         { ParameterType.Default, en = "Cutscene function", de = "Funktion mit Cutscene" },
     },
 }
 
 function B_Reprisal_Cutscene:GetReprisalTable()
-    return { Reprisal.Custom,{self, self.CustomFunction} }
+    return { Reprisal.Custom, {self, self.CustomFunction} }
 end
 
 function B_Reprisal_Cutscene:AddParameter(_Index, _Parameter)
@@ -53,7 +54,7 @@ function B_Reprisal_Cutscene:AddParameter(_Index, _Parameter)
 end
 
 function B_Reprisal_Cutscene:CustomFunction(_Quest)
-    _G[self.Function](self, self.CutsceneName, _Quest.ReceivingPlayer);
+    _G[self.Function](self.CutsceneName, _Quest.ReceivingPlayer);
 end
 
 function B_Reprisal_Cutscene:Debug(_Quest)
@@ -92,11 +93,7 @@ B_Reward_Cutscene.Description.de = "Lohn: Ruft die Funktion auf und startet die 
 B_Reward_Cutscene.GetReprisalTable = nil;
 
 B_Reward_Cutscene.GetRewardTable = function(self, _Quest)
-    return { Reward.Custom,{self, self.CustomFunction} }
-end
-
-B_Reward_Cutscene.CustomFunction = function(self, _Quest)
-    _G[self.Function](self, self.CutsceneName, _Quest.ReceivingPlayer);
+    return { Reward.Custom, {self, self.CustomFunction} }
 end
 
 Swift:RegisterBehavior(B_Reward_Cutscene);
@@ -121,7 +118,7 @@ B_Trigger_Cutscene = {
         de = "Ausloeser: Prüft, ob eine Cutscene beendet ist und startet dann den Quest.",
     },
     Parameter = {
-        { ParameterType.Default, en = "Cutscene name", de = "Name des Cutscene" },
+        { ParameterType.Default, en = "Cutscene name", de = "Name der Cutscene" },
         { ParameterType.Number,  en = "Wait time",     de = "Wartezeit" },
     },
 }

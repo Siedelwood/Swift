@@ -36,6 +36,7 @@ B_Reprisal_Briefing = {
         de = "Lohn: Ruft die Funktion auf und startet das enthaltene Briefing.",
     },
     Parameter = {
+        { ParameterType.Default, en = "Briefing name",     de = "Name des Briefing" },
         { ParameterType.Default, en = "Briefing function", de = "Funktion mit Briefing" },
     },
 }
@@ -53,7 +54,7 @@ function B_Reprisal_Briefing:AddParameter(_Index, _Parameter)
 end
 
 function B_Reprisal_Briefing:CustomFunction(_Quest)
-    _G[self.Function](self, self.BriefingName, _Quest.ReceivingPlayer);
+    _G[self.Function](self.BriefingName, _Quest.ReceivingPlayer);
 end
 
 function B_Reprisal_Briefing:Debug(_Quest)
@@ -121,7 +122,7 @@ B_Trigger_Briefing = {
         de = "Ausloeser: Prüft, ob ein Briefing beendet ist und startet dann den Quest.",
     },
     Parameter = {
-        { ParameterType.Default, en = "Briefing name",   de = "Name des Briefing" },
+        { ParameterType.Default, en = "Briefing name", de = "Name des Briefing" },
         { ParameterType.Number,  en = "Wait time",     de = "Wartezeit" },
     },
 }

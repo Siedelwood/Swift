@@ -190,6 +190,7 @@ function ModuleObjectInteraction.Global:SetObjectAvailability(_ScriptName, _Stat
     for i= 1, #arg, 1 do
         Logic.InteractiveObjectSetPlayerState(GetID(_ScriptName), arg[i], _State);
     end
+    Logic.InteractiveObjectSetAvailability(GetID(_ScriptName), _State ~= 2);
 end
 
 function ModuleObjectInteraction.Global:CreateDefaultObjectNames()
