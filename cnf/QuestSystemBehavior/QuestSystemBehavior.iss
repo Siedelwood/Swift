@@ -1,5 +1,5 @@
 ; QSB S% Installer Script
-; Dieses Skript erzeugt den Installer für den Cutscene Maker.
+; Dieses Skript erzeugt den Installer fï¿½r den Cutscene Maker.
 
 #define MyAppName "QuestSystemBehavior"
 #define MyAppVersion "1.0"
@@ -15,7 +15,7 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={pf}\Siedelwood\QuestSystemBehavior
+DefaultDirName={userappdata}\Siedelwood\QuestSystemBehavior
 DefaultGroupName=Siedelwood
 OutputDir=E:\Repositories\symfonia\cnf\QuestSystemBehavior
 OutputBaseFilename=QuestSystemBehaviorInstaller

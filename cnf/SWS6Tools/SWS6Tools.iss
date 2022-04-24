@@ -1,5 +1,5 @@
 ; S6 Tools Installer Script
-; Dieses Skript erzeugt den Installer für die S6 Tools.
+; Dieses Skript erzeugt den Installer fï¿½r die S6 Tools.
 
 #define MyAppName "SWS6Tools"
 #define MyAppVersion "1.0"
@@ -15,7 +15,7 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={commonpf}\Siedelwood\SWS6Tools
+DefaultDirName={userappdata}\Siedelwood\SWS6Tools
 DefaultGroupName=Siedelwood
 OutputDir=E:\Repositories\swift\cnf\SWS6Tools
 OutputBaseFilename=SWS6ToolsInstaller
