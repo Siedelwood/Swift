@@ -14,6 +14,8 @@ QSB = QSB or {};
 QSB.Version = "Version 3.0.0 BETA (1.0.11)";
 QSB.Language = "de";
 QSB.HumanPlayerID = 1;
+QSB.ScriptCommandSequence = 2;
+QSB.ScriptCommands = {};
 QSB.ScriptEvents = {};
 QSB.CustomVariable = {};
 
@@ -41,6 +43,7 @@ Swift = {
     m_BehaviorRegister          = {};
     m_ScriptEventRegister       = {};
     m_ScriptEventListener       = {};
+    m_ScriptCommandRegister     = {};
     m_Language                  = "de";
     m_Environment               = "global";
     m_ProcessDebugCommands      = false;
@@ -57,6 +60,7 @@ function Swift:LoadCore()
 
     if self:IsGlobalEnvironment() then
         self:InitalizeDebugModeGlobal();
+        self:InitalizeScriptCommands();
         self:InitalizeEventsGlobal();
         self:InstallBehaviorGlobal();
         self:OverrideQuestSystemGlobal();
@@ -486,6 +490,88 @@ function Swift:ConvertTableToString(_Table)
     end
     String = String .. "}";
     return String;
+end
+
+-- Local Script Command
+
+function Swift:InitalizeScriptCommands()
+end
+
+function Swift:CreateScriptCommand(_Name, _Function)
+    if not self:IsGlobalEnvironment() then
+        return 0;
+    end
+    QSB.ScriptCommandSequence = QSB.ScriptCommandSequence +1;
+    local ID = QSB.ScriptCommandSequence;
+    self.m_ScriptCommandRegister[ID] = {_Name, _Function};
+    Logic.ExecuteInLuaLocalState(string.format(
+        [[
+            Swift.m_ScriptCommandRegister[%d] = "%s"
+            QSB.ScriptCommands["%s"] = %d
+        ]],
+        ID,
+        _Name,
+        _Name,
+        ID
+    ));
+    QSB.ScriptCommands[_Name] = ID;
+    return ID;
+end
+
+function Swift:DispatchScriptCommand(_ID, ...)
+    if not self:IsLocalEnvironment() then
+        return;
+    end
+    if self.m_ScriptCommandRegister[_ID] then
+        local PlayerID = GUI.GetPlayerID();
+        local PlayerName = Logic.GetPlayerName(PlayerID);
+        local Parameters = self:EncodeScriptCommandParameters(unpack(arg));
+        GUI.SetPlayerName(8, Parameters);
+        GUI.SetSoldierPaymentLevel(_ID);
+        GUI.SetPlayerName(8, PlayerName);
+        GUI.SetSoldierPaymentLevel(PlayerSoldierPaymentLevel[PlayerID]);
+    end
+end
+
+function Swift:ProcessScriptCommand(_PlayerID, _ID)
+    if not self.m_ScriptCommandRegister[_ID] then
+        return;
+    end
+    local PlayerName = Logic.GetPlayerName(8);
+    local Parameters = self:DecodeScriptCommandParameters(PlayerName);
+    self.m_ScriptCommandRegister[_ID][2](_PlayerID, unpack(Parameters));
+end
+
+function Swift:EncodeScriptCommandParameters(...)
+    local Query = "";
+    for i= 1, #arg do
+        local Parameter = arg[i];
+        if type(Parameter) == "string" then
+            Parameter = string.replaceAll(Parameter, '#', "<HT>");
+        end
+        if string.len(Query) > 0 then
+            Query = Query .. "#";
+        end
+        Query = Query .. Parameter;
+    end
+    return Query;
+end
+
+function Swift:DecodeScriptCommandParameters(_Query)
+    local Parameters = {};
+    for k, v in pairs(string.slice(_Query, "#")) do
+        local Value = v;
+        Value = string.replaceAll(Value, "<HT>", '#');
+        if Value == "" or Value == "" then
+            Value = nil;
+        elseif Value == "true" or Value == "false" then
+            Value = Value == "true";
+        elseif tonumber(Value) ~= nil then
+            Value = tonumber(Value);
+        end
+        table.insert(Parameters, Value);
+    end
+    return Parameters;
 end
 
 -- Script Events

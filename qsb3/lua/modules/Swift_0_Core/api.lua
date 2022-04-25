@@ -613,7 +613,7 @@ function API.OverrideString()
         _sep = _sep or "%s";
         local t = {};
         for str in string.gmatch(self, "([^".._sep.."]+)") do
-            table.insert(t, str)
+            table.insert(t, str);
          end
         return t;
     end
@@ -988,6 +988,25 @@ end
 --
 function API.IsDebugShellActive()
     return Swift.m_DevelopingShell == true;
+end
+
+-- Command
+
+function API.RegisterScriptCommand(_Name, _Function)
+    return Swift:CreateScriptCommand(_Name, _Function);
+end
+
+function API.SendScriptCommand(_NameOrID, ...)
+    local ID = _NameOrID;
+    if type(ID) == "string" then
+        for i= 1, #self.m_ScriptCommandRegister, 1 do
+            if self.m_ScriptCommandRegister[i][1] == _NameOrID then
+                ID = i;
+            end
+        end
+    end
+    assert(type(ID) == "number");
+    Swift:DispatchScriptCommand(ID, unpack(arg));
 end
 
 -- Event

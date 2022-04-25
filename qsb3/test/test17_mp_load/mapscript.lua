@@ -68,63 +68,43 @@ end
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Mission_FirstMapAction()
     Script.Load("maps/externalmap/" ..Framework.GetCurrentMapName().. "/questsystembehavior.lua");
-
     -- Mapeditor-Einstellungen werden geladen
     if Framework.IsNetworkGame() ~= true then
         Startup_Player();
         Startup_StartGoods();
         Startup_Diplomacy();
     end
+    Mission_OnQsbLoaded();
+end
 
+-- -------------------------------------------------------------------------- --
+-- In dieser Funktion können eigene Funktionrn aufgerufen werden. Sie werden
+-- atomatisch dann gestartet, wenn die QSB vollständig geladen wurde.
+function Mission_OnQsbLoaded()
+    -- Testmodus aktivieren
+    -- (Auskommentieren, wenn nicht benötigt)
     API.ActivateDebugMode(true, false, true, true);
+    -- Assistenten Quests starten
+    -- (Auskommentieren, wenn nicht benötigt)
+    -- CreateQuests();
 
-    CreateObjects();
+    API.Note("Test")
+    TEST_COMMAND = API.RegisterScriptCommand("TestFunction", TestFunction);
+
+    API.StartJob(function()
+        if Logic.GetTime() >= 10 then
+            API.Note("execute");
+            CallTestFunction()
+            return true;
+        end
+    end)
 end
 
-function CreateObjects()
-    local ID = GetID("IO1");
-    Logic.InteractiveObjectClearCosts(ID);
-    Logic.InteractiveObjectClearRewards(ID);
-    Logic.InteractiveObjectSetInteractionDistance(ID, 1000);
-    Logic.InteractiveObjectSetTimeToOpen(ID, 0);
-    Logic.InteractiveObjectSetRewardResourceCartType(ID, Entities.U_ResourceMerchant);
-    Logic.InteractiveObjectSetRewardGoldCartType(ID, Entities.U_GoldCart);
-    Logic.InteractiveObjectSetCostResourceCartType(ID, Entities.U_ResourceMerchant);
-    Logic.InteractiveObjectSetCostGoldCartType(ID, Entities.U_GoldCart);
-
-    local ID = GetID("IO2");
-    Logic.InteractiveObjectClearCosts(ID);
-    Logic.InteractiveObjectClearRewards(ID);
-    Logic.InteractiveObjectSetInteractionDistance(ID, 1000);
-    Logic.InteractiveObjectSetTimeToOpen(ID, 0);
-    Logic.InteractiveObjectSetRewardResourceCartType(ID, Entities.U_ResourceMerchant);
-    Logic.InteractiveObjectSetRewardGoldCartType(ID, Entities.U_GoldCart);
-    Logic.InteractiveObjectSetCostResourceCartType(ID, Entities.U_ResourceMerchant);
-    Logic.InteractiveObjectSetCostGoldCartType(ID, Entities.U_GoldCart);
+function TestFunction(_PlayerID, _Number, _String)
+    local Text = "TestFunction :: PlayerID: " .._PlayerID.. " Param1: " .._Number.. " Param2: " .._String;
+    API.Note(Text);
 end
 
-function ReplaceHero(_Player, _Type)
-    ReplaceEntity(Logic.GetKnightID(_Player), _Type);
-    Logic.DEBUG_AddNote("Hero of player" .._Player.. " has been replaced with "..Logic.GetEntityTypeName(_Type));
+function CallTestFunction()
+    Logic.ExecuteInLuaLocalState("CallTestFunction()");
 end
-
--- Comforts --
-
-function ReplaceEntity(_Entity, _Type, _NewOwner)
-    local eID = GetID(_Entity);
-    if eID == 0 then
-        return;
-    end
-    local pos = GetPosition(eID);
-    local player = _NewOwner or Logic.EntityGetPlayer(eID);
-    local orientation = Logic.GetEntityOrientation(eID);
-    local name = Logic.GetEntityName(eID);
-    DestroyEntity(eID);
-    -- TODO: Logging
-    if Logic.IsEntityTypeInCategory(_Type, EntityCategories.Soldier) == 1 then
-        return CreateBattalion(player, _Type, pos.X, pos.Y, 1, name, orientation);
-    else
-        return CreateEntity(player, _Type, pos, name, orientation);
-    end
-end
-

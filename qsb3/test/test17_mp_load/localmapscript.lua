@@ -39,28 +39,12 @@ end
 -- Die QSB ist im lokalen Skript initialisiert.
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Mission_LocalOnQsbLoaded()
-    StartSimpleJobEx(function()
-        if Logic.GetTime() > 10 then
-            OverrideInteractiveObjectStuff();
-            GUI.AddNote("IO stuff overwritten.");
-            return true;
-        end
-    end)
-
     Input.EnableDebugMode(1);
     Input.EnableDebugMode(2);
     Input.EnableDebugMode(3);
 end
 
-function OverrideInteractiveObjectStuff()
-    GUI_Interaction.InteractiveObjectClicked = function()
-        local i = tonumber(XGUIEng.GetWidgetNameByID(XGUIEng.GetCurrentWidgetID()));
-        local EntityID = g_Interaction.ActiveObjectsOnScreen[i];
-        if not EntityID then
-            return;
-        end
-        GUI.AddNote("player " ..GUI.GetPlayerID().. " clicked button.");
-        GUI.SendScriptCommand("ReplaceHero(" ..GUI.GetPlayerID().. ", Entities.U_KnightHealing)");
-    end
+function CallTestFunction()
+    API.SendScriptCommand(QSB.ScriptCommands.TestFunction, 123, "abc");
 end
 

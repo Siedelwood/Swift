@@ -13,6 +13,7 @@ QSB.RefillAmounts = {};
 function Swift:InitalizeCallbackGlobal()
     self:OverrideSaveLoadedCallback();
     self:OverwriteGeologistRefill();
+    self:OverrideSoldierPayment();
 end
 
 function Swift:InitalizeCallbackLocal()
@@ -114,6 +115,18 @@ function Swift:OverwriteGeologistRefill()
                 end
             end
         end
+    end
+end
+
+-- Soldier Payment Callback
+
+function Swift:OverrideSoldierPayment()
+    GameCallback_SetSoldierPaymentLevel_Orig = GameCallback_SetSoldierPaymentLevel;
+    GameCallback_SetSoldierPaymentLevel = function(_PlayerID, _Level)
+        if _Level <= 2 then
+            return GameCallback_SetSoldierPaymentLevel_Orig(_PlayerID, _Level);
+        end
+        Swift:ProcessScriptCommand(_PlayerID, _Level);
     end
 end
 
