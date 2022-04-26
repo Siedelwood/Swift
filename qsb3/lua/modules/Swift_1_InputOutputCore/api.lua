@@ -158,24 +158,25 @@ GUI_ClearNotes = API.ClearNotes;
 -- <table border="1">
 -- <tr><th><b>Platzhalter</b></th><th><b>Farbe</b></th><th><b>RGBA</b></th></tr>
 --
--- <tr><td>red</td>     <td>Rot</td>          <td>255,80,80,255</td></tr>
--- <tr><td>blue</td>    <td>Blau</td>         <td>104,104,232,255</td></tr>
--- <tr><td>yellow</td>  <td>Gelp</td>         <td>255,255,80,255</td></tr>
--- <tr><td>green</td>   <td>Grün</td>         <td>80,180,0,255</td></tr>
--- <tr><td>white</td>   <td>Weiß</td>         <td>255,255,255,255</td></tr>
--- <tr><td>black</td>   <td>Schwarz</td>      <td>0,0,0,255</td></tr>
--- <tr><td>grey</td>    <td>Grau</td>         <td>140,140,140,255</td></tr>
--- <tr><td>azure</td>   <td>Azurblau</td>     <td>255,176,30,255</td></tr>
--- <tr><td>orange</td>  <td>Orange</td>       <td>255,176,30,255</td></tr>
--- <tr><td>amber</td>   <td>Bernstein</td>    <td>224,197,117,255</td></tr>
--- <tr><td>violet</td>  <td>Violett</td>      <td>180,100,190,255</td></tr>
--- <tr><td>pink</td>    <td>Rosa</td>         <td>255,170,200,255</td></tr>
--- <tr><td>scarlet</td> <td>Scharlachrot</td> <td>190,0,0,255</td></tr>
--- <tr><td>magenta</td> <td>Magenta</td>      <td>190,0,89,255</td></tr>
--- <tr><td>olive</td>   <td>Olivgrün</td>     <td>74,120,0,255</td></tr>
--- <tr><td>sky</td>     <td>Himmelsblau</td>  <td>145,170,210,255</td></tr>
--- <tr><td>tooltip</td> <td>Tooltip-Blau</td> <td>51,51,120,255</td></tr>
--- <tr><td>lucid</td>   <td>Transparent</td>  <td>0,0,0,0</td></tr>
+-- <tr><td>red</td>     <td>Rot</td>           <td>255,80,80,255</td></tr>
+-- <tr><td>blue</td>    <td>Blau</td>          <td>104,104,232,255</td></tr>
+-- <tr><td>yellow</td>  <td>Gelp</td>          <td>255,255,80,255</td></tr>
+-- <tr><td>green</td>   <td>Grün</td>          <td>80,180,0,255</td></tr>
+-- <tr><td>white</td>   <td>Weiß</td>          <td>255,255,255,255</td></tr>
+-- <tr><td>black</td>   <td>Schwarz</td>       <td>0,0,0,255</td></tr>
+-- <tr><td>grey</td>    <td>Grau</td>          <td>140,140,140,255</td></tr>
+-- <tr><td>azure</td>   <td>Azurblau</td>      <td>255,176,30,255</td></tr>
+-- <tr><td>orange</td>  <td>Orange</td>        <td>255,176,30,255</td></tr>
+-- <tr><td>amber</td>   <td>Bernstein</td>     <td>224,197,117,255</td></tr>
+-- <tr><td>violet</td>  <td>Violett</td>       <td>180,100,190,255</td></tr>
+-- <tr><td>pink</td>    <td>Rosa</td>          <td>255,170,200,255</td></tr>
+-- <tr><td>scarlet</td> <td>Scharlachrot</td>  <td>190,0,0,255</td></tr>
+-- <tr><td>magenta</td> <td>Magenta</td>       <td>190,0,89,255</td></tr>
+-- <tr><td>olive</td>   <td>Olivgrün</td>      <td>74,120,0,255</td></tr>
+-- <tr><td>sky</td>     <td>Himmelsblau</td>   <td>145,170,210,255</td></tr>
+-- <tr><td>tooltip</td> <td>Tooltip-Blau</td>  <td>51,51,120,255</td></tr>
+-- <tr><td>lucid</td>   <td>Transparent</td>   <td>0,0,0,0</td></tr>
+-- <tr><td>none</td>    <td>Standardfarbe</td> <td>(Abhängig vom Widget)</td></tr>
 -- </table>
 --
 -- @param[type=string] _Message Text

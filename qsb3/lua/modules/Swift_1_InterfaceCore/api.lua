@@ -528,15 +528,13 @@ end
 function API.HideKnightButton(_Flag)
     if not GUI then
         Logic.ExecuteInLuaLocalState("API.HideKnightButton(" ..tostring(_Flag).. ")");
+        Logic.SetEntitySelectableFlag("..KnightID..", (_Flag and 0) or 1);
         return;
     end
 
     local KnightID = Logic.GetKnightID(GUI.GetPlayerID());
     if _Flag then
-        GUI.SendScriptCommand("Logic.SetEntitySelectableFlag("..KnightID..", 0)");
         GUI.DeselectEntity(KnightID);
-    else
-        GUI.SendScriptCommand("Logic.SetEntitySelectableFlag("..KnightID..", 1)");
     end
 
     ModuleInterfaceCore.Local:DisplayInterfaceButton(

@@ -249,7 +249,8 @@ function ModuleDisplayCore.Local:InterfaceActivateColoredBackground(_R, _G, _B, 
     XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 1);
     XGUIEng.SetMaterialColor("/InGame/Root/Normal/PauseScreen", 0, _R, _G, _B, _A);
 
-    GUI.SendScriptCommand(string.format("API.SendScriptEvent(QSB.ScriptEvents.BlackScreenShown, %d)", GUI.GetPlayerID()));
+    API.SendScriptCommand(QSB.ScriptCommands.SendScriptEvent, QSB.ScriptEvents.EscapePressed, GUI.GetPlayerID());
+    -- GUI.SendScriptCommand(string.format("API.SendScriptEvent(QSB.ScriptEvents.BlackScreenShown, %d)", GUI.GetPlayerID()));
     API.SendScriptEvent(QSB.ScriptEvents.BlackScreenShown, GUI.GetPlayerID());
 end
 
@@ -263,7 +264,8 @@ function ModuleDisplayCore.Local:InterfaceDeactivateColoredBackground()
     XGUIEng.SetMaterialColor("/InGame/Root/Normal/PauseScreen", 0, 40, 40, 40, 180);
     XGUIEng.PopPage();
 
-    GUI.SendScriptCommand(string.format("API.SendScriptEvent(QSB.ScriptEvents.BlackScreenHidden, %d)", GUI.GetPlayerID()));
+    API.SendScriptCommand(QSB.ScriptCommands.SendScriptEvent, QSB.ScriptEvents.EscapePressed, GUI.GetPlayerID());
+    -- GUI.SendScriptCommand(string.format("API.SendScriptEvent(QSB.ScriptEvents.BlackScreenHidden, %d)", GUI.GetPlayerID()));
     API.SendScriptEvent(QSB.ScriptEvents.BlackScreenHidden, GUI.GetPlayerID());
 end
 
@@ -281,11 +283,17 @@ function ModuleDisplayCore.Local:InterfaceDeactivateBorderScroll(_PositionID)
     Camera.RTS_SetZoomFactorMax(0.5001);
     Camera.RTS_SetZoomFactorMin(0.4999);
 
-    GUI.SendScriptCommand(string.format(
-        "API.SendScriptEvent(QSB.ScriptEvents.BorderScrollLocked, %d, %d)",
+    API.SendScriptCommand(
+        QSB.ScriptCommands.SendScriptEvent,
+        QSB.ScriptEvents.BorderScrollLocked,
         GUI.GetPlayerID(),
         (_PositionID or 0)
-    ));
+    );
+    -- GUI.SendScriptCommand(string.format(
+    --     "API.SendScriptEvent(QSB.ScriptEvents.BorderScrollLocked, %d, %d)",
+    --     GUI.GetPlayerID(),
+    --     (_PositionID or 0)
+    -- ));
     API.SendScriptEvent(QSB.ScriptEvents.BorderScrollLocked, GUI.GetPlayerID(), _PositionID);
 end
 
@@ -301,10 +309,15 @@ function ModuleDisplayCore.Local:InterfaceActivateBorderScroll()
     Camera.RTS_SetZoomFactorMax(0.5001);
     Camera.RTS_SetZoomFactorMin(0.0999);
 
-    GUI.SendScriptCommand(string.format(
-        "API.SendScriptEvent(QSB.ScriptEvents.BorderScrollReset, %d)",
+    API.SendScriptCommand(
+        QSB.ScriptCommands.SendScriptEvent,
+        QSB.ScriptEvents.BorderScrollReset,
         GUI.GetPlayerID()
-    ));
+    );
+    -- GUI.SendScriptCommand(string.format(
+    --     "API.SendScriptEvent(QSB.ScriptEvents.BorderScrollReset, %d)",
+    --     GUI.GetPlayerID()
+    -- ));
     API.SendScriptEvent(QSB.ScriptEvents.BorderScrollReset, GUI.GetPlayerID());
 end
 
@@ -357,10 +370,15 @@ function ModuleDisplayCore.Local:InterfaceDeactivateNormalInterface()
         XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Tradepost", 0);
     end
 
-    GUI.SendScriptCommand(string.format(
-        "API.SendScriptEvent(QSB.ScriptEvents.GameInterfaceHidden, %d)",
+    API.SendScriptCommand(
+        QSB.ScriptCommands.SendScriptEvent,
+        QSB.ScriptEvents.GameInterfaceHidden,
         GUI.GetPlayerID()
-    ));
+    );
+    -- GUI.SendScriptCommand(string.format(
+    --     "API.SendScriptEvent(QSB.ScriptEvents.GameInterfaceHidden, %d)",
+    --     GUI.GetPlayerID()
+    -- ));
     API.SendScriptEvent(QSB.ScriptEvents.GameInterfaceHidden, GUI.GetPlayerID());
 end
 
@@ -413,10 +431,15 @@ function ModuleDisplayCore.Local:InterfaceActivateNormalInterface()
         XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Tradepost", 1);
     end
 
-    GUI.SendScriptCommand(string.format(
-        "API.SendScriptEvent(QSB.ScriptEvents.GameInterfaceShown, %d)",
+    API.SendScriptCommand(
+        QSB.ScriptCommands.SendScriptEvent,
+        QSB.ScriptEvents.GameInterfaceShown,
         GUI.GetPlayerID()
-    ));
+    );
+    -- GUI.SendScriptCommand(string.format(
+    --     "API.SendScriptEvent(QSB.ScriptEvents.GameInterfaceShown, %d)",
+    --     GUI.GetPlayerID()
+    -- ));
     API.SendScriptEvent(QSB.ScriptEvents.GameInterfaceShown, GUI.GetPlayerID());
 end
 

@@ -28,6 +28,8 @@ ModuleConstructionControl = {
 
 function ModuleConstructionControl.Global:OnGameStart()
     self:OverrideCanPlayerPlaceBuilding();
+
+    API.RegisterScriptCommand("CheckCancelKnockdown", API.CheckCancelBuildingKnockdown);
 end
 
 function ModuleConstructionControl.Global:OnEvent(_ID, _Event, ...)
@@ -111,11 +113,13 @@ function ModuleConstructionControl.Local:OverrideDeleteEntityStateBuilding()
     GameCallback_GUI_DeleteEntityStateBuilding_Orig_ConstructionControl = GameCallback_GUI_DeleteEntityStateBuilding;
     GameCallback_GUI_DeleteEntityStateBuilding = function(_BuildingID, _State)
         GameCallback_GUI_DeleteEntityStateBuilding_Orig_ConstructionControl(_BuildingID, _State);
-        GUI.SendScriptCommand(string.format(
-            [[ModuleConstructionControl.Global:CheckCancelBuildingKnockdown(%d, %d)]],
-            _BuildingID,
-            _State
-        ))
+
+        API.SendScriptCommand(QSB.ScriptCommands.CheckCancelKnockdown, _BuildingID, _State);
+        -- GUI.SendScriptCommand(string.format(
+        --     [[ModuleConstructionControl.Global:CheckCancelBuildingKnockdown(%d, %d)]],
+        --     _BuildingID,
+        --     _State
+        -- ))
     end
 end
 

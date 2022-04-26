@@ -557,15 +557,25 @@ function ModuleEntityEventCore.Local:StartTriggers()
     GameCallback_Feedback_EntityHurt = function(_HurtPlayerID, _HurtEntityID, _HurtingPlayerID, _HurtingEntityID, _DamageReceived, _DamageDealt)
         GameCallback_Feedback_EntityHurt_Orig_QSB_EntityCore(_HurtPlayerID, _HurtEntityID, _HurtingPlayerID, _HurtingEntityID, _DamageReceived, _DamageDealt);
 
-        GUI.SendScriptCommand(string.format(
-            "API.SendScriptEvent(QSB.ScriptEvents.EntityHurt, %d, %d, %d, %d, %d, %d)",
+        API.SendScriptCommand(
+            QSB.ScriptCommands.SendScriptEvent,
+            QSB.ScriptEvents.EntityHurt,
             _HurtEntityID,
             _HurtPlayerID,
             _HurtingEntityID,
             _HurtingPlayerID,
             _DamageDealt,
             _DamageReceived
-        ));
+        );
+        -- GUI.SendScriptCommand(string.format(
+        --     "API.SendScriptEvent(QSB.ScriptEvents.EntityHurt, %d, %d, %d, %d, %d, %d)",
+        --     _HurtEntityID,
+        --     _HurtPlayerID,
+        --     _HurtingEntityID,
+        --     _HurtingPlayerID,
+        --     _DamageDealt,
+        --     _DamageReceived
+        -- ));
         API.SendScriptEvent(QSB.ScriptEvents.EntityHurt, _HurtEntityID, _HurtPlayerID, _HurtingEntityID, _HurtingPlayerID, _DamageDealt, _DamageReceived);
     end
 
@@ -573,12 +583,19 @@ function ModuleEntityEventCore.Local:StartTriggers()
     GameCallback_Feedback_MineAmountChanged = function(_MineID, _GoodType, _TerritoryID, _PlayerID, _Amount)
         GameCallback_Feedback_MineAmountChanged_Orig_QSB_EntityCore(_MineID, _GoodType, _TerritoryID, _PlayerID, _Amount);
 
-        GUI.SendScriptCommand(string.format(
-            "API.SendScriptEvent(QSB.ScriptEvents.EntityResourceChanged, %d, %d, %d)",
+        API.SendScriptCommand(
+            QSB.ScriptCommands.SendScriptEvent,
+            QSB.ScriptEvents.EntityResourceChanged,
             _MineID,
             _GoodType,
             _Amount
-        ));
+        );
+        -- GUI.SendScriptCommand(string.format(
+        --     "API.SendScriptEvent(QSB.ScriptEvents.EntityResourceChanged, %d, %d, %d)",
+        --     _MineID,
+        --     _GoodType,
+        --     _Amount
+        -- ));
         API.SendScriptEvent(QSB.ScriptEvents.EntityResourceChanged, _MineID, _GoodType, _Amount);
     end
 end

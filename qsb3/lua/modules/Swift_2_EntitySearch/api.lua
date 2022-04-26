@@ -179,3 +179,13 @@ function API.CommenceEntitySearch(...)
     return ModuleEntitySearch.Shared:IterateEntities(arg);
 end
 
+-- Local callbacks
+
+-- FIX: Die höchste ID vom Trigger ermitteln und speichern lassen. Das ist
+-- nötig, da die Abfrage über alle Spawner möglicher Weise noch nicht durch
+-- ist, wenn der Aufruf ausgeführt wird und somit Entities verpasst werden.
+function API.TriggerEntityTrigger()
+    local ID = Logic.CreateEntity(Entities.XD_ScriptEntity, 5, 5, 0, 0);
+    Logic.DestroyEntity(ID);
+end
+

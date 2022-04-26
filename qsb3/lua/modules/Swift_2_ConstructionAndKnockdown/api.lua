@@ -482,3 +482,9 @@ function API.GetPermitKnockdownCategoryInArea(_PlayerID, _AreaCenter, _AreaSize,
     end
 end
 
+-- Local callbacks
+
+function API.CheckCancelBuildingKnockdown(_BuildingID, _State)
+    ModuleConstructionControl.Global:CheckCancelBuildingKnockdown(_BuildingID, _State)
+end
+

@@ -83,16 +83,22 @@ function Swift:SetEscapeKeyTrigger()
 end
 
 function Swift:ExecuteEscapeCallback()
-    -- Local
-    GUI.SendScriptCommand(string.format(
-        [[Swift:DispatchScriptEvent(QSB.ScriptEvents.EscapePressed, %d)]],
-        GUI.GetPlayerID()
-    ), true);
     -- Global
-    GUI.SendScriptCommand(string.format(
-        [[Swift:DispatchScriptEvent(QSB.ScriptEvents.EscapePressed, %d)]],
+    Swift:DispatchScriptCommand(
+        QSB.ScriptCommands.SendScriptEvent,
+        QSB.ScriptEvents.EscapePressed,
         GUI.GetPlayerID()
-    ), false);
+    )
+    -- Local
+    Swift:DispatchScriptEvent(QSB.ScriptEvents.EscapePressed, GUI.GetPlayerID());
+    -- GUI.SendScriptCommand(string.format(
+    --     [[Swift:DispatchScriptEvent(QSB.ScriptEvents.EscapePressed, %d)]],
+    --     GUI.GetPlayerID()
+    -- ), true);
+    -- GUI.SendScriptCommand(string.format(
+    --     [[Swift:DispatchScriptEvent(QSB.ScriptEvents.EscapePressed, %d)]],
+    --     GUI.GetPlayerID()
+    -- ), false);
 end
 
 -- Geologist Refill Callback

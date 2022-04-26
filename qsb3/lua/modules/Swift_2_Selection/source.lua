@@ -100,8 +100,7 @@ end
 
 function ModuleSelection.Global:OnEvent(_ID, _Event, _PlayerID, _OldSelection, _NewSelection)
     if _ID == QSB.ScriptEvents.SelectionChanged then
-        local NewSelection = string.slice(_NewSelection) or {};
-        self.SelectedEntities[_PlayerID] = NewSelection;
+        self.SelectedEntities[_PlayerID] = _NewSelection;
     end
 end
 
@@ -333,14 +332,14 @@ function ModuleSelection.Local:OnSelectionCanged(_Source)
     API.SendScriptEvent(
         QSB.ScriptEvents.SelectionChanged,
         PlayerID,
-        table.concat(OldSelection[PlayerID], ","),
-        table.concat(SelectedEntities, ",")
+        OldSelection[PlayerID],
+        SelectedEntities
     );
     API.SendScriptEventToEnv(
         "global", QSB.ScriptEvents.SelectionChanged,
         PlayerID,
-        table.concat(OldSelection[PlayerID], ","),
-        table.concat(SelectedEntities, ",")
+        OldSelection[PlayerID],
+        SelectedEntities
     );
     -- GUI.SendScriptCommand(string.format(
     --     [[API.SendScriptEvent(QSB.ScriptEvents.SelectionChanged, %d, %s, %s)]],

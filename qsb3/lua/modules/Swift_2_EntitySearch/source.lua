@@ -22,6 +22,7 @@ ModuleEntitySearch = {
 -- Global ------------------------------------------------------------------- --
 
 function ModuleEntitySearch.Global:OnGameStart()
+    API.RegisterScriptCommand("TriggerEntityTrigger", API.TriggerEntityTrigger);
 end
 
 -- Local -------------------------------------------------------------------- --
@@ -32,17 +33,10 @@ end
 -- Shared ------------------------------------------------------------------- --
 
 function ModuleEntitySearch.Shared:IterateEntities(...)
-    -- FIX: Die höchste ID vom Trigger ermitteln und speichern lassen. Das ist
-    -- nötig, da die Abfrage über alle Spawner möglicher Weise noch nicht durch
-    -- ist, wenn der Aufruf ausgeführt wird und somit Entities verpasst werden.
     if not GUI then
-        local ID = Logic.CreateEntity(Entities.XD_ScriptEntity, 5, 5, 0, 0);
-        Logic.DestroyEntity(ID);
+        API.TriggerEntityTrigger();
     else
-        GUI.SendScriptCommand([[
-            local ID = Logic.CreateEntity(Entities.XD_ScriptEntity, 5, 5, 0, 0);
-            Logic.DestroyEntity(ID);
-        ]]);
+        API.SendScriptCommand(QSB.ScriptCommands.TriggerEntityTrigger);
     end
 
     -- Speichert die Predikate für spätere Prüfung.

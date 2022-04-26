@@ -1044,18 +1044,7 @@ end
 
 function API.SendScriptEventToEnv(_Env, _EventID, ...)
     _Env = _Env or Swift.m_Environment;
-
-    -- Check parameter
-    for i= 1, #arg do
-        if  arg[i] ~= nil
-        and type(arg[i]) ~= "string"
-        and type(arg[i]) ~= "number"
-        and type(arg[i]) ~= "boolean" then
-            error("API.SendScriptEvent: Param " ..i.. " is neighter number, string or boolean!");
-            return;
-        end
-    end
-
+    
     -- Dispatch to local script
     if string.lower(_Env) == "local" then
         local ParamString = "";
@@ -2511,5 +2500,11 @@ function API.WinQuest(_QuestName, _NoMessage)
         Quest:Success();
         -- Note: Event is send in QuestTemplate:Success()!
     end
+end
+
+-- Local callbacks
+
+function API.RegisterLoadscreenHidden()
+    Swift.m_LoadScreenHidden = true;
 end
 

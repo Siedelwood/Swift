@@ -496,6 +496,7 @@ end
 
 function Swift:InitalizeScriptCommands()
     Swift:CreateScriptCommand("SendScriptEvent", API.SendScriptEvent);
+    Swift:CreateScriptCommand("RegisterLoadscreenHidden", API.RegisterLoadscreenHidden);
 end
 
 function Swift:CreateScriptCommand(_Name, _Function)
@@ -550,6 +551,9 @@ function Swift:EncodeScriptCommandParameters(...)
         local Parameter = arg[i];
         if type(Parameter) == "string" then
             Parameter = string.replaceAll(Parameter, '#', "<HT>");
+            Parameter = string.replaceAll(Parameter, '"', "<QT>");
+        elseif type(Parameter) == "table" then
+            Parameter = "{" ..table.concat(Parameter, ",") .."}";
         end
         if string.len(Query) > 0 then
             Query = Query .. "#";
@@ -564,10 +568,19 @@ function Swift:DecodeScriptCommandParameters(_Query)
     for k, v in pairs(string.slice(_Query, "#")) do
         local Value = v;
         Value = string.replaceAll(Value, "<HT>", '#');
-        if Value == "" or Value == "" then
+        Value = string.replaceAll(Value, "<QT>", '"');
+        if Value == "" or Value == nil then
             Value = nil;
         elseif Value == "true" or Value == "false" then
             Value = Value == "true";
+        elseif string.indexOf(Value, "{") == 1 then
+            -- FIXME This covers only array tables!
+            -- (But we shouldn't encourage passing objects anyway!)
+            local ValueTable = string.slice(string.sub(Value, 2, string.len(Value)-1), ",");
+            Value = {};
+            for i= 1, #ValueTable do
+                Value[i] = (tonumber(ValueTable[i]) ~= nil and tonumber(ValueTable[i]) or ValueTable);
+            end
         elseif tonumber(Value) ~= nil then
             Value = tonumber(Value);
         end
@@ -782,7 +795,8 @@ end
 
 function Swift_EventJob_WaitForLoadScreenHidden()
     if XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 0 then
-        GUI.SendScriptCommand("Swift.m_LoadScreenHidden = true");
+        Swift:DispatchScriptCommand(QSB.ScriptCommands.RegisterLoadscreenHidden);
+        -- GUI.SendScriptCommand("Swift.m_LoadScreenHidden = true");
         Swift.m_LoadScreenHidden = true;
         return true;
     end

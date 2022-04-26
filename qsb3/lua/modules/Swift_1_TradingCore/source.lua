@@ -448,8 +448,9 @@ function ModuleTradingCore.Local:OverrideMerchantPurchaseOfferClicked()
                 end
 
                 API.SendScriptEvent(QSB.ScriptEvents.GoodsPurchased, TraderType, OfferIndex, GoodType, PlayerID, TraderPlayerID, OfferGoodAmount, Price);
-                GUI.SendScriptCommand(string.format(
-                    "ModuleTradingCore.Global:SendEventGoodsPurchased(%d, %d, %d, %d, %d, %d, %d)",
+                API.SendScriptCommand(
+                    QSB.ScriptCommands.SendScriptEvent,
+                    QSB.ScriptEvents.GoodsPurchased,
                     TraderType,
                     OfferIndex,
                     GoodType,
@@ -457,7 +458,17 @@ function ModuleTradingCore.Local:OverrideMerchantPurchaseOfferClicked()
                     TraderPlayerID,
                     OfferGoodAmount,
                     Price
-                ));
+                );
+                -- GUI.SendScriptCommand(string.format(
+                --     "ModuleTradingCore.Global:SendEventGoodsPurchased(%d, %d, %d, %d, %d, %d, %d)",
+                --     TraderType,
+                --     OfferIndex,
+                --     GoodType,
+                --     PlayerID,
+                --     TraderPlayerID,
+                --     OfferGoodAmount,
+                --     Price
+                -- ));
             else
                 local MessageText = XGUIEng.GetStringTableText("Feedback_TextLines/TextLine_NotEnough_G_Gold");
                 Message(MessageText);
@@ -550,14 +561,24 @@ function ModuleTradingCore.Local:OverrideMerchantSellGoodsClicked()
             end
 
             API.SendScriptEvent(QSB.ScriptEvents.GoodsSold, g_Trade.GoodType, PlayerID, TargetID, g_Trade.GoodAmount, Price);
-            GUI.SendScriptCommand(string.format(
-                "ModuleTradingCore.Global:SendEventGoodsSold(%d, %d, %d, %d, %d)",
+            
+            API.SendScriptCommand(
+                QSB.ScriptCommands.SendScriptEvent,
+                QSB.ScriptEvents.GoodsSold,
                 g_Trade.GoodType,
                 PlayerID,
                 TargetID,
                 g_Trade.GoodAmount,
                 Price
-            ));
+            );
+            -- GUI.SendScriptCommand(string.format(
+            --     "ModuleTradingCore.Global:SendEventGoodsSold(%d, %d, %d, %d, %d)",
+            --     g_Trade.GoodType,
+            --     PlayerID,
+            --     TargetID,
+            --     g_Trade.GoodAmount,
+            --     Price
+            -- ));
         end
     end
 end
