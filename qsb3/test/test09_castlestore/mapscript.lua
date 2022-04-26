@@ -93,6 +93,21 @@ function Mission_FirstMapAction()
     --         return true;
     --     end
     -- end);
+
+    TEST_COMMAND = API.RegisterScriptCommand("TestFunction", TestFunction);
+end
+
+function TestFunction(_PlayerID, _Number, _String)
+    local Text = "TestFunction :: PlayerID: " .._PlayerID.. " Param1: " .._Number.. " Param2: " .._String;
+    API.Note(Text);
+end
+
+function CallTestFunction()
+    Logic.ExecuteInLuaLocalState("CallTestFunction()");
+end
+
+function CallTestFunction2()
+    Logic.ExecuteInLuaLocalState("CallTestFunction2()");
 end
 
 GameCallback_QSB_OnEventReceived = function(_EventID, ...)

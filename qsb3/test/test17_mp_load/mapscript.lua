@@ -108,3 +108,7 @@ end
 function CallTestFunction()
     Logic.ExecuteInLuaLocalState("CallTestFunction()");
 end
+
+function CallTestFunction2()
+    Logic.ExecuteInLuaLocalState("CallTestFunction2()");
+end

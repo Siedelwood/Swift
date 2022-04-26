@@ -202,11 +202,12 @@ function ModuleQuestJournal.Local:OverrideTutorialNext()
         if g_Interaction.CurrentMessageQuestIndex then
             local QuestID = g_Interaction.CurrentMessageQuestIndex;
             local Quest = Quests[QuestID];
-            GUI.SendScriptCommand(string.format(
-                [[API.SendScriptEvent(QSB.ScriptEvents.QuestJournalDisplayed, "%s", %d, nil)]],
-                Quest.Identifier,
-                GUI.GetPlayerID()
-            ));
+            API.SendScriptEventToEnv("global", QSB.ScriptEvents.QuestJournalDisplayed, Quest.Identifier, GUI.GetPlayerID());
+            -- GUI.SendScriptCommand(string.format(
+            --     [[API.SendScriptEvent(QSB.ScriptEvents.QuestJournalDisplayed, "%s", %d, nil)]],
+            --     Quest.Identifier,
+            --     GUI.GetPlayerID()
+            -- ));
         end
     end
 end

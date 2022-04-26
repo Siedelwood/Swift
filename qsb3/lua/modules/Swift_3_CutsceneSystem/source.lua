@@ -55,7 +55,7 @@ function ModuleCutsceneSystem.Global:OnEvent(_ID, _Event, ...)
     elseif _ID == QSB.ScriptEvents.CutsceneStarted then
         -- Nothing to do?
     elseif _ID == QSB.ScriptEvents.CutsceneEnded then
-        self:EndCutscene(arg[1], arg[2]);
+        self:EndCutscene(arg[1]);
     elseif _ID == QSB.ScriptEvents.CutsceneFlightStarted then
         self:StartCutsceneFlight(arg[1], arg[2], arg[3]);
     elseif _ID == QSB.ScriptEvents.CutsceneFlightEnded then
@@ -82,16 +82,15 @@ function ModuleCutsceneSystem.Global:StartCutscene(_Name, _PlayerID, _Data)
     table.insert(self.CutsceneQueue[_PlayerID], {_Name, _Data});
 end
 
-function ModuleCutsceneSystem.Global:EndCutscene(_PlayerID, _Cutscene)
+function ModuleCutsceneSystem.Global:EndCutscene(_PlayerID)
     API.FinishCinematicEvent(self.Cutscene[_PlayerID].Name, _PlayerID);
     Logic.SetGlobalInvulnerability(0);
     if self.Cutscene[_PlayerID].Finished then
         self.Cutscene[_PlayerID]:Finished();
     end
     Logic.ExecuteInLuaLocalState(string.format(
-        [[API.SendScriptEvent(QSB.ScriptEvents.CutsceneEnded, %d, %s)]],
-        _PlayerID,
-        table.tostring(self.Cutscene[_PlayerID])
+        [[API.SendScriptEvent(QSB.ScriptEvents.CutsceneEnded, %d)]],
+        _PlayerID
     ));
     self.Cutscene[_PlayerID] = nil;
 end
@@ -219,7 +218,7 @@ function ModuleCutsceneSystem.Local:OnEvent(_ID, _Event, ...)
     elseif _ID == QSB.ScriptEvents.CutsceneStarted then
         self:StartCutscene(arg[1], arg[2]);
     elseif _ID == QSB.ScriptEvents.CutsceneEnded then
-        self:EndCutscene(arg[1], arg[2]);
+        self:EndCutscene(arg[1]);
     elseif _ID == QSB.ScriptEvents.CutsceneFlightStarted then
         self:StartCutsceneFlight(arg[1], arg[2], arg[3]);
     elseif _ID == QSB.ScriptEvents.CutsceneFlightEnded then
@@ -247,7 +246,7 @@ function ModuleCutsceneSystem.Local:StartCutscene(_PlayerID, _Cutscene)
     self:NextFlight(_PlayerID);
 end
 
-function ModuleCutsceneSystem.Local:EndCutscene(_PlayerID, _Cutscene)
+function ModuleCutsceneSystem.Local:EndCutscene(_PlayerID)
     if GUI.GetPlayerID() ~= _PlayerID then
         return;
     end
@@ -288,23 +287,24 @@ function ModuleCutsceneSystem.Local:PropagateCutsceneEnded(_PlayerID)
     if not self.Cutscene[_PlayerID] then
         return;
     end
-    GUI.SendScriptCommand(string.format(
-        [[API.SendScriptEvent(QSB.ScriptEvents.CutsceneEnded, %d, %s)]],
-        _PlayerID,
-        table.tostring(self.Cutscene[_PlayerID])
-    ));
+    API.SendScriptEventToEnv("global", QSB.ScriptEvents.CutsceneEnded, _PlayerID);
+    -- GUI.SendScriptCommand(string.format(
+    --     [[API.SendScriptEvent(QSB.ScriptEvents.CutsceneEnded, %d, %s)]],
+    --     _PlayerID
+    -- ));
 end
 
 function ModuleCutsceneSystem.Local:FlightStarted(_Duration)
     local PlayerID = GUI.GetPlayerID();
     if self.Cutscene[PlayerID] then
         local PageID = self.Cutscene[PlayerID].CurrentPage;
-        GUI.SendScriptCommand(string.format(
-            [[API.SendScriptEvent(QSB.ScriptEvents.CutsceneFlightStarted, %d, %d, %d)]],
-            PlayerID,
-            PageID,
-            _Duration
-        ))
+        API.SendScriptEventToEnv("global", QSB.ScriptEvents.CutsceneFlightStarted, PlayerID, PageID, _Duration);
+        -- GUI.SendScriptCommand(string.format(
+        --     [[API.SendScriptEvent(QSB.ScriptEvents.CutsceneFlightStarted, %d, %d, %d)]],
+        --     PlayerID,
+        --     PageID,
+        --     _Duration
+        -- ))
     end
 end
 CutsceneFlightStarted = function(_Duration)
@@ -322,11 +322,12 @@ function ModuleCutsceneSystem.Local:FlightFinished()
     local PlayerID = GUI.GetPlayerID();
     if self.Cutscene[PlayerID] then
         local PageID = self.Cutscene[PlayerID].CurrentPage;
-        GUI.SendScriptCommand(string.format(
-            [[API.SendScriptEvent(QSB.ScriptEvents.CutsceneFlightEnded, %d, %d)]],
-            PlayerID,
-            PageID
-        ))
+        API.SendScriptEventToEnv("global", QSB.ScriptEvents.CutsceneFlightEnded, PlayerID, PageID);
+        -- GUI.SendScriptCommand(string.format(
+        --     [[API.SendScriptEvent(QSB.ScriptEvents.CutsceneFlightEnded, %d, %d)]],
+        --     PlayerID,
+        --     PageID
+        -- ))
     end
 end
 CutsceneFlightFinished = function()
@@ -529,10 +530,11 @@ function ModuleCutsceneSystem.Local:OverrideThroneRoomFunctions()
     GameCallback_Camera_SkipButtonPressed = function(_PlayerID)
         GameCallback_Camera_SkipButtonPressed_Orig_ModuleCutsceneSystem(_PlayerID);
         if _PlayerID == GUI.GetPlayerID() then
-            GUI.SendScriptCommand(string.format(
-                [[API.SendScriptEvent(QSB.ScriptEvents.CutsceneSkipButtonPressed, %d)]],
-                GUI.GetPlayerID()
-            ));
+            API.SendScriptEventToEnv("global", QSB.ScriptEvents.CutsceneSkipButtonPressed, GUI.GetPlayerID());
+            -- GUI.SendScriptCommand(string.format(
+            --     [[API.SendScriptEvent(QSB.ScriptEvents.CutsceneSkipButtonPressed, %d)]],
+            --     GUI.GetPlayerID()
+            -- ));
             API.SendScriptEvent(
                 QSB.ScriptEvents.CutsceneSkipButtonPressed,
                 GUI.GetPlayerID()

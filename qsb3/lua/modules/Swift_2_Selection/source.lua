@@ -100,7 +100,8 @@ end
 
 function ModuleSelection.Global:OnEvent(_ID, _Event, _PlayerID, _OldSelection, _NewSelection)
     if _ID == QSB.ScriptEvents.SelectionChanged then
-        self.SelectedEntities[_PlayerID] = _NewSelection or {};
+        local NewSelection = string.slice(_NewSelection) or {};
+        self.SelectedEntities[_PlayerID] = NewSelection;
     end
 end
 
@@ -329,13 +330,24 @@ function ModuleSelection.Local:OnSelectionCanged(_Source)
     self.SelectedEntities[PlayerID] = SelectedEntities;
     local NewSelectionString = Swift:ConvertTableToString(self.SelectedEntities[PlayerID] or {});
 
-    API.SendScriptEvent(QSB.ScriptEvents.SelectionChanged, PlayerID, OldSelection, SelectedEntities);
-    GUI.SendScriptCommand(string.format(
-        [[API.SendScriptEvent(QSB.ScriptEvents.SelectionChanged, %d, %s, %s)]],
+    API.SendScriptEvent(
+        QSB.ScriptEvents.SelectionChanged,
         PlayerID,
-        OldSelectionString,
-        NewSelectionString
-    ));
+        table.concat(OldSelection[PlayerID], ","),
+        table.concat(SelectedEntities, ",")
+    );
+    API.SendScriptEventToEnv(
+        "global", QSB.ScriptEvents.SelectionChanged,
+        PlayerID,
+        table.concat(OldSelection[PlayerID], ","),
+        table.concat(SelectedEntities, ",")
+    );
+    -- GUI.SendScriptCommand(string.format(
+    --     [[API.SendScriptEvent(QSB.ScriptEvents.SelectionChanged, %d, %s, %s)]],
+    --     PlayerID,
+    --     OldSelectionString,
+    --     NewSelectionString
+    -- ));
 
     if EntityID ~= nil then
         if EntityType == Entities.U_SiegeEngineCart then

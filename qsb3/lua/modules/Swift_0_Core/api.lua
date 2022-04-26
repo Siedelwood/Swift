@@ -611,11 +611,13 @@ function API.OverrideString()
     --
     string.slice = function(self, _sep)
         _sep = _sep or "%s";
-        local t = {};
-        for str in string.gmatch(self, "([^".._sep.."]+)") do
-            table.insert(t, str);
-         end
-        return t;
+        if self then
+            local t = {};
+            for str in string.gmatch(self, "([^".._sep.."]+)") do
+                table.insert(t, str);
+            end
+            return t;
+        end
     end
 
     ---
@@ -1030,7 +1032,7 @@ end
 -- Parameter.
 --
 -- @param[type=number] _EventID ID des Event
--- @param              ... Optionale Parameter
+-- @param              ... Optionale Parameter (nil, string, number, boolean)
 -- @within Event
 --
 -- @usage
@@ -1038,6 +1040,46 @@ end
 --
 function API.SendScriptEvent(_EventID, ...)
     Swift:DispatchScriptEvent(_EventID, unpack(arg));
+end
+
+function API.SendScriptEventToEnv(_Env, _EventID, ...)
+    _Env = _Env or Swift.m_Environment;
+
+    -- Check parameter
+    for i= 1, #arg do
+        if  arg[i] ~= nil
+        and type(arg[i]) ~= "string"
+        and type(arg[i]) ~= "number"
+        and type(arg[i]) ~= "boolean" then
+            error("API.SendScriptEvent: Param " ..i.. " is neighter number, string or boolean!");
+            return;
+        end
+    end
+
+    -- Dispatch to local script
+    if string.lower(_Env) == "local" then
+        local ParamString = "";
+        for i= 1, #arg do
+            local IsString = type(arg[i]) == "string";
+            ParamString = ParamString .. "," ..
+                ((IsString and "\"") or "") ..
+                tostring(arg[i]) ..
+                ((IsString and "\"") or "");
+        end
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[Swift:DispatchScriptEvent(%d%s)]],
+            _EventID,
+            ParamString
+        ));
+
+    -- Dispatch to global script
+    else
+        Swift:DispatchScriptCommand(
+            QSB.ScriptCommands.SendScriptEvent,
+            _EventID,
+            unpack(arg)
+        );
+    end
 end
 
 ---

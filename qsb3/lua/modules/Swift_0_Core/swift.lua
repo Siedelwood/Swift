@@ -495,6 +495,7 @@ end
 -- Local Script Command
 
 function Swift:InitalizeScriptCommands()
+    Swift:CreateScriptCommand("SendScriptEvent", API.SendScriptEvent);
 end
 
 function Swift:CreateScriptCommand(_Name, _Function)
@@ -524,11 +525,12 @@ function Swift:DispatchScriptCommand(_ID, ...)
     end
     if self.m_ScriptCommandRegister[_ID] then
         local PlayerID = GUI.GetPlayerID();
+        local NamePlayerID = 8;
         local PlayerName = Logic.GetPlayerName(PlayerID);
         local Parameters = self:EncodeScriptCommandParameters(unpack(arg));
-        GUI.SetPlayerName(8, Parameters);
+        GUI.SetPlayerName(NamePlayerID, Parameters);
         GUI.SetSoldierPaymentLevel(_ID);
-        GUI.SetPlayerName(8, PlayerName);
+        GUI.SetPlayerName(NamePlayerID, PlayerName);
         GUI.SetSoldierPaymentLevel(PlayerSoldierPaymentLevel[PlayerID]);
     end
 end
@@ -539,7 +541,7 @@ function Swift:ProcessScriptCommand(_PlayerID, _ID)
     end
     local PlayerName = Logic.GetPlayerName(8);
     local Parameters = self:DecodeScriptCommandParameters(PlayerName);
-    self.m_ScriptCommandRegister[_ID][2](_PlayerID, unpack(Parameters));
+    self.m_ScriptCommandRegister[_ID][2](unpack(Parameters));
 end
 
 function Swift:EncodeScriptCommandParameters(...)

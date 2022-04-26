@@ -48,3 +48,7 @@ function CallTestFunction()
     API.SendScriptCommand(QSB.ScriptCommands.TestFunction, 123, "abc");
 end
 
+function CallTestFunction2()
+    API.SendScriptCommand(QSB.ScriptCommands.TestFunction, 456, "def");
+end
+
