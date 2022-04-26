@@ -50,6 +50,9 @@ function ModuleMilitaryLimit.Global:OnGameStart()
     API.StartJob(function()
         ModuleMilitaryLimit.Global:UpdateSoldierLimits();
     end);
+
+    API.RegisterScriptCommand("MilitaryLimitProduceUnits", API.MilitaryLimitProduceUnits);
+    API.RegisterScriptCommand("MilitaryLimitRefillBattalion", API.MilitaryLimitRefillBattalion);
 end
 
 function ModuleMilitaryLimit.Global:OnEvent(_ID, _Name, ...)
@@ -255,23 +258,35 @@ function ModuleMilitaryLimit.Local:OverrideUI()
         if CanBuyBoolean == true then
             Sound.FXPlay2DSound("ui\\menu_click");
             if EntityType == Entities.U_Thief then
-                -- GUI.BuyThief(PlayerID)
-                GUI.SendScriptCommand(string.format(
-                    [[ModuleMilitaryLimit.Global:ProduceUnit(%d, %d, %d, %s)]],
+                API.SendScriptCommand(
+                    QSB.ScriptCommands.MilitaryLimitProduceUnits,
                     PlayerID,
                     BarrackID,
                     EntityType,
-                    table.tostring(Costs)
-                ));
+                    Costs
+                );
+                -- GUI.SendScriptCommand(string.format(
+                --     [[ModuleMilitaryLimit.Global:ProduceUnit(%d, %d, %d, %s)]],
+                --     PlayerID,
+                --     BarrackID,
+                --     EntityType,
+                --     table.tostring(Costs)
+                -- ));
             else
-                -- GUI.ProduceUnits(BarrackID, EntityType)
-                GUI.SendScriptCommand(string.format(
-                    [[ModuleMilitaryLimit.Global:ProduceUnit(%d, %d, %d, %s)]],
+                API.SendScriptCommand(
+                    QSB.ScriptCommands.MilitaryLimitProduceUnits,
                     PlayerID,
                     BarrackID,
                     EntityType,
-                    table.tostring(Costs)
-                ));
+                    Costs
+                );
+                -- GUI.SendScriptCommand(string.format(
+                --     [[ModuleMilitaryLimit.Global:ProduceUnit(%d, %d, %d, %s)]],
+                --     PlayerID,
+                --     BarrackID,
+                --     EntityType,
+                --     table.tostring(Costs)
+                -- ));
                 StartKnightVoiceForPermanentSpecialAbility(Entities.U_KnightChivalry);
             end
         else
@@ -307,13 +322,21 @@ function ModuleMilitaryLimit.Local:OverrideUI()
                     local Selection = table.copy(g_MultiSelection.EntityList);
                     ModuleMilitaryLimit.Local.SelectionBackup = Selection;
                     GUI.ClearSelection();
-                    GUI.SendScriptCommand(string.format(
-                        [[ModuleMilitaryLimit.Global:RefillBattalion(%d, %d, %d, %s)]],
+
+                    API.SendScriptCommand(
+                        QSB.ScriptCommands.MilitaryLimitRefillBattalion,
                         PlayerID,
                         BarracksID,
                         LeaderID,
-                        table.tostring(Costs)
-                    ));
+                        table.concat(Costs, ",")
+                    );
+                    -- GUI.SendScriptCommand(string.format(
+                    --     [[ModuleMilitaryLimit.Global:RefillBattalion(%d, %d, %d, %s)]],
+                    --     PlayerID,
+                    --     BarracksID,
+                    --     LeaderID,
+                    --     table.tostring(Costs)
+                    -- ));
                 end
             end
         end
