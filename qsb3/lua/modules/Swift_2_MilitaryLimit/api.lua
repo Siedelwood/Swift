@@ -75,11 +75,11 @@ end
 
 -- Local callbacks
 
-function API.MilitaryLimitProduceUnits(_PlayerID, _BarrackID, _EntityType, _Costs)
+function SCP.MilitaryLimit.ProduceUnits(_PlayerID, _BarrackID, _EntityType, _Costs)
     ModuleMilitaryLimit.Global:ProduceUnit(_PlayerID, _BarrackID, _EntityType, _Costs);
 end
 
-function API.MilitaryLimitRefillBattalion(_PlayerID, _BarracksID, _LeaderID, _Costs)
+function SCP.MilitaryLimit.RefillBattalion(_PlayerID, _BarracksID, _LeaderID, _Costs)
     ModuleMilitaryLimit.Global:RefillBattalion(_PlayerID, _BarracksID, _LeaderID, _Costs);
 end
 

@@ -1044,7 +1044,7 @@ end
 
 function API.SendScriptEventToEnv(_Env, _EventID, ...)
     _Env = _Env or Swift.m_Environment;
-    
+
     -- Dispatch to local script
     if string.lower(_Env) == "local" then
         local ParamString = "";
@@ -2504,7 +2504,7 @@ end
 
 -- Local callbacks
 
-function API.RegisterLoadscreenHidden()
+function SCP.Core.LoadscreenHidden()
     Swift.m_LoadScreenHidden = true;
 end
 

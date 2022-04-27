@@ -10,6 +10,9 @@ You may use and modify this file unter the terms of the MIT licence.
 
 API = API or {};
 QSB = QSB or {};
+SCP = SCP or {
+    Core = {}
+};
 
 QSB.Version = "Version 3.0.0 BETA (1.0.11)";
 QSB.Language = "de";
@@ -496,7 +499,7 @@ end
 
 function Swift:InitalizeScriptCommands()
     Swift:CreateScriptCommand("SendScriptEvent", API.SendScriptEvent);
-    Swift:CreateScriptCommand("RegisterLoadscreenHidden", API.RegisterLoadscreenHidden);
+    Swift:CreateScriptCommand("RegisterLoadscreenHidden", SCP.Core.LoadscreenHidden);
 end
 
 function Swift:CreateScriptCommand(_Name, _Function)

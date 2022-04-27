@@ -484,7 +484,7 @@ end
 
 -- Local callbacks
 
-function API.CheckCancelBuildingKnockdown(_BuildingID, _State)
+function SCP.ConstructionAndKnockdown.CancelKnockdown(_BuildingID, _State)
     ModuleConstructionControl.Global:CheckCancelBuildingKnockdown(_BuildingID, _State)
 end
 

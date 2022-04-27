@@ -8,6 +8,8 @@ You may use and modify this file unter the terms of the MIT licence.
 (See https://en.wikipedia.org/wiki/MIT_License)
 ]]
 
+SCP.ConstructionAndKnockdown = {};
+
 ModuleConstructionControl = {
     Properties = {
         Name = "ModuleConstructionControl",
@@ -29,7 +31,7 @@ ModuleConstructionControl = {
 function ModuleConstructionControl.Global:OnGameStart()
     self:OverrideCanPlayerPlaceBuilding();
 
-    API.RegisterScriptCommand("CheckCancelKnockdown", API.CheckCancelBuildingKnockdown);
+    API.RegisterScriptCommand("CheckCancelKnockdown", SCP.ConstructionAndKnockdown.CancelKnockdown);
 end
 
 function ModuleConstructionControl.Global:OnEvent(_ID, _Event, ...)

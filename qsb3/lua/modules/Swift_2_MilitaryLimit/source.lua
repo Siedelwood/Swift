@@ -8,6 +8,8 @@ You may use and modify this file unter the terms of the MIT licence.
 (See https://en.wikipedia.org/wiki/MIT_License)
 ]]
 
+SCP.MilitaryLimit = {};
+
 ModuleMilitaryLimit = {
     Properties = {
         Name = "ModuleMilitaryLimit",
@@ -51,8 +53,8 @@ function ModuleMilitaryLimit.Global:OnGameStart()
         ModuleMilitaryLimit.Global:UpdateSoldierLimits();
     end);
 
-    API.RegisterScriptCommand("MilitaryLimitProduceUnits", API.MilitaryLimitProduceUnits);
-    API.RegisterScriptCommand("MilitaryLimitRefillBattalion", API.MilitaryLimitRefillBattalion);
+    API.RegisterScriptCommand("MilitaryLimitProduceUnits", SCP.MilitaryLimit.ProduceUnits);
+    API.RegisterScriptCommand("MilitaryLimitRefillBattalion", SCP.MilitaryLimit.RefillBattalion);
 end
 
 function ModuleMilitaryLimit.Global:OnEvent(_ID, _Name, ...)

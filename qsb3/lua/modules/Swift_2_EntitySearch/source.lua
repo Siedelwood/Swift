@@ -8,6 +8,8 @@ You may use and modify this file unter the terms of the MIT licence.
 (See https://en.wikipedia.org/wiki/MIT_License)
 ]]
 
+SCP.EntitySearch = {};
+
 ModuleEntitySearch = {
     Properties = {
         Name = "ModuleEntitySearch",
@@ -22,7 +24,7 @@ ModuleEntitySearch = {
 -- Global ------------------------------------------------------------------- --
 
 function ModuleEntitySearch.Global:OnGameStart()
-    API.RegisterScriptCommand("TriggerEntityTrigger", API.TriggerEntityTrigger);
+    API.RegisterScriptCommand("TriggerEntityTrigger", SCP.EntitySearch.TriggerEntityTrigger);
 end
 
 -- Local -------------------------------------------------------------------- --
@@ -34,7 +36,7 @@ end
 
 function ModuleEntitySearch.Shared:IterateEntities(...)
     if not GUI then
-        API.TriggerEntityTrigger();
+        SCP.EntitySearch.TriggerEntityTrigger();
     else
         API.SendScriptCommand(QSB.ScriptCommands.TriggerEntityTrigger);
     end
