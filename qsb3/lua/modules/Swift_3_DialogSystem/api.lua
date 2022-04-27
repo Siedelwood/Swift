@@ -362,3 +362,9 @@ function ASP(_Data)
     assert(false);
 end
 
+-- Local callbacks
+
+function SCP.DialogSystem.OptionSelected(_PlayerID, _OptionID)
+    ModuleDialogSystem.Global:OnOptionSelected(_PlayerID, _OptionID);
+end
+

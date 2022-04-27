@@ -437,3 +437,9 @@ function API.DisableCheats()
     ModuleInputOutputCore.Local:OverrideCheats();
 end
 
+-- Local callbacks
+
+function SCP.InputOutputCore.SetDecisionResult(_PlayerID, _Yes)
+    QSB.DecisionWindowResult = _Yes == true;
+end
+

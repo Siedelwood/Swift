@@ -8,6 +8,8 @@ You may use and modify this file unter the terms of the MIT licence.
 (See https://en.wikipedia.org/wiki/MIT_License)
 ]]
 
+SCP.DialogSystem = {};
+
 ModuleDialogSystem = {
     Properties = {
         Name = "ModuleDialogSystem",
@@ -44,10 +46,12 @@ QSB.Dialog = {
 -- Global ------------------------------------------------------------------- --
 
 function ModuleDialogSystem.Global:OnGameStart()
+    API.RegisterScriptCommand("DialogSystemOptionSelected", SCP.DialogSystem.OptionSelected);
+
     for i= 1, 8 do
         self.DialogQueue[i] = {};
     end
-    
+
     -- Quests can not be decided while a dialog is active. This must be done to
     -- prevent flickering when a quest ends. Dialog quests themselves must run!
     API.AddDisableDecisionCondition(function(_PlayerID, _Quest)
@@ -499,11 +503,16 @@ function ModuleDialogSystem.Local:OnOptionSelected(_PlayerID)
 
     local Selected = XGUIEng.ListBoxGetSelectedIndex(Widget .. "/ListBox")+1;
     local AnswerID = self.Dialog[_PlayerID].MCSelectionOptionsMap[Selected];
-    GUI.SendScriptCommand(string.format(
-        "ModuleDialogSystem.Global:OnOptionSelected(%d, %d)",
+    API.SendScriptCommand(
+        QSB.ScriptCommands.DialogSystemOptionSelected,
         _PlayerID,
         AnswerID
-    ))
+    );
+    -- GUI.SendScriptCommand(string.format(
+    --     "ModuleDialogSystem.Global:OnOptionSelected(%d, %d)",
+    --     _PlayerID,
+    --     AnswerID
+    -- ))
 end
 
 function ModuleDialogSystem.Local:Update(_PlayerID)

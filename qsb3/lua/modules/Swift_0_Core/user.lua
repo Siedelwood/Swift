@@ -71,9 +71,7 @@ function Swift:RestoreAfterLoad()
         -- self:LogLocalCFunctions();
     end
     -- Set new random seed
-    local Value = Framework.GetSystemTimeDateString():sub(15, 23):gsub("'", "");
-    math.randomseed(tonumber("1" ..Value));
-    math.random(1, 100);
+    self:CreateRandomSeed();
 end
 
 -- Escape Callback

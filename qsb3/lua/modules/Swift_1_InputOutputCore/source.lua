@@ -8,6 +8,8 @@ You may use and modify this file unter the terms of the MIT licence.
 (See https://en.wikipedia.org/wiki/MIT_License)
 ]]
 
+SCP.InputOutputCore = {};
+
 ModuleInputOutputCore = {
     Properties = {
         Name = "ModuleInputOutputCore",
@@ -61,6 +63,8 @@ ModuleInputOutputCore = {
 function ModuleInputOutputCore.Global:OnGameStart()
     QSB.ScriptEvents.ChatOpened = API.RegisterScriptEvent("Event_ChatOpened");
     QSB.ScriptEvents.ChatClosed = API.RegisterScriptEvent("Event_ChatClosed");
+
+    API.RegisterScriptCommand("SetDecisionResult", SCP.InputOutputCore.SetDecisionResult);
 
     if Framework.IsNetworkGame() then
         return;

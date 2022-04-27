@@ -2508,3 +2508,7 @@ function SCP.Core.LoadscreenHidden()
     Swift.m_LoadScreenHidden = true;
 end
 
+function SCP.Core.UpdateCustomVariable(_Name, Value)
+    Swift:UpdateCustomVariable(_Name, Value);
+end
+

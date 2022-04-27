@@ -156,3 +156,21 @@ function API.GetSelectedEntities(_PlayerID)
 end
 GetSelectedEntities = API.GetSelectedEntities;
 
+-- Local callbacks
+
+function SCP.Selection.DestroyEntity(_Entity)
+    DestroyEntity(_Entity);
+end
+
+function SCP.Selection.SetTaskList(_Entity)
+    Logic.SetTaskList(_Entity, TaskLists.TL_NPC_IDLE);
+end
+
+function SCP.Selection.ErectTrebuchet(_Entity)
+    ModuleSelection.Global:MilitaryErectTrebuchet(_Entity);
+end
+
+function SCP.Selection.DisambleTrebuchet(_Entity)
+    ModuleSelection.Global:MilitaryDisambleTrebuchet(_Entity);
+end
+

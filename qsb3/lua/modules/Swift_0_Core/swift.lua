@@ -83,7 +83,9 @@ function Swift:LoadCore()
         -- Fixme: Causes game freeze
         -- self:LogLocalCFunctions();
 
-        -- Human player ID makes only sense in singleplayer context
+        -- Saving human player ID makes only sense in singleplayer context
+        -- cause in multiplayer there would be more than one.
+        -- FIXME Find sufficient solution for this!
         if not Framework.IsNetworkGame() then
             local HumanID = GUI.GetPlayerID();
             GUI.SendScriptCommand("QSB.HumanPlayerID = " ..HumanID);
@@ -94,12 +96,12 @@ function Swift:LoadCore()
     self:LoadExternFiles();
     self:LoadBehaviors();
     -- Random seed
-    local Value = Framework.GetSystemTimeDateString():sub(15, 23):gsub("'", "");
-    math.randomseed(tonumber("1" ..Value));
-    math.random(1, 100);
+    self:CreateRandomSeed();
     -- Copy texture positions
     if self:IsLocalEnvironment() then
         StartSimpleJobEx(function()
+            -- FIXME We can not send complicated tables to global script when
+            -- in multiplayer mode.
             GUI.SendScriptCommand(string.format(
                 [[g_TexturePositions = %s]],
                 table.tostring(g_TexturePositions)
@@ -144,6 +146,26 @@ function Swift:IsModuleRegistered(_Name)
     for k, v in pairs(self.m_ModuleRegister) do
         return v.Properties and v.Properties.Name == _Name;
     end
+end
+
+-- Random Seed
+
+function Swift:CreateRandomSeed()
+    local Seed = 0;
+    if Framework.IsNetworkGame() then
+        for i= 1, Framework.GetMapMaxPlayers(Network.GetCurrentMap()) do
+            if Logic.PlayerGetGameState(i) < 2 and Logic.PlayerGetIsHumanFlag(i) then
+                for s in Logic.GetPlayerName(i):gmatch(".") do
+                    Seed = Seed + s:byte();
+                end
+            end
+        end
+    else
+        local DateText = Framework.GetSystemTimeDateString():sub(15, 23):gsub("'", "");
+        Seed = math.randomseed(tonumber("1" ..DateText));
+    end
+    math.randomseed(Seed);
+    return math.random(1, 100);
 end
 
 -- Quests
@@ -500,6 +522,7 @@ end
 function Swift:InitalizeScriptCommands()
     Swift:CreateScriptCommand("SendScriptEvent", API.SendScriptEvent);
     Swift:CreateScriptCommand("RegisterLoadscreenHidden", SCP.Core.LoadscreenHidden);
+    Swift:CreateScriptCommand("UpdateCustomVariable", SCP.Core.UpdateCustomVariable);
 end
 
 function Swift:CreateScriptCommand(_Name, _Function)
@@ -687,11 +710,14 @@ function Swift:SetCustomVariable(_Name, _Value)
     if type(_Value) ~= "number" then
         Value = [["]] ..Value.. [["]];
     end
-    local Execution = string.format([[Swift:UpdateCustomVariable("%s", %s)]], _Name, Value);
     if GUI then
-        GUI.SendScriptCommand(Execution);
+        Swift:DispatchScriptCommand(QSB.ScriptCommands.UpdateCustomVariable, _Name, Value);
     else
-        Logic.ExecuteInLuaLocalState(Execution);
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[Swift:UpdateCustomVariable("%s", %s)]],
+            _Name,
+            Value
+        ));
     end
 end
 

@@ -72,10 +72,12 @@ function B_Goal_Decide:CustomFunction(_Quest)
             local buttons = (self.Buttons and "true") or "nil"
             QSB.GoalDecideDialogDisplayed = true;
             
+            -- FIXME This will not work in multiplayer when more than one
+            -- instances of this behavior are active!
             Logic.ExecuteInLuaLocalState(string.format(
                 [[
                     local Action = function(_Yes)
-                        GUI.SendScriptCommand("QSB.DecisionWindowResult = " ..tostring(_Yes == true).. " == true")
+                        API.SendScriptCommand(QSB.ScriptCommands.SetDecisionResult, GUI.GetPlayerID(), _Yes == true);
                     end
                     API.DialogRequestBox("%s", "%s", Action, %s)
                 ]],

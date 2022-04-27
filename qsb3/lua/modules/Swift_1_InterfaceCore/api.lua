@@ -180,6 +180,9 @@ GetPlayerName = API.GetPlayerName;
 -- @within Anwenderfunktionen
 --
 function API.SetControllingPlayer(_OldPlayerID, _NewPlayerID, _NewStatisticsName)
+    if Framework.IsNetworkGame() then
+        return;
+    end
     ModuleInterfaceCore.Global:SetControllingPlayer(_OldPlayerID, _NewPlayerID, _NewStatisticsName);
 end
 
