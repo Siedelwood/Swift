@@ -566,15 +566,6 @@ function ModuleEntityEventCore.Local:StartTriggers()
             _DamageDealt,
             _DamageReceived
         );
-        -- GUI.SendScriptCommand(string.format(
-        --     "API.SendScriptEvent(QSB.ScriptEvents.EntityHurt, %d, %d, %d, %d, %d, %d)",
-        --     _HurtEntityID,
-        --     _HurtPlayerID,
-        --     _HurtingEntityID,
-        --     _HurtingPlayerID,
-        --     _DamageDealt,
-        --     _DamageReceived
-        -- ));
         API.SendScriptEvent(QSB.ScriptEvents.EntityHurt, _HurtEntityID, _HurtPlayerID, _HurtingEntityID, _HurtingPlayerID, _DamageDealt, _DamageReceived);
     end
 
@@ -588,12 +579,6 @@ function ModuleEntityEventCore.Local:StartTriggers()
             _GoodType,
             _Amount
         );
-        -- GUI.SendScriptCommand(string.format(
-        --     "API.SendScriptEvent(QSB.ScriptEvents.EntityResourceChanged, %d, %d, %d)",
-        --     _MineID,
-        --     _GoodType,
-        --     _Amount
-        -- ));
         API.SendScriptEvent(QSB.ScriptEvents.EntityResourceChanged, _MineID, _GoodType, _Amount);
     end
 end

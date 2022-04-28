@@ -383,12 +383,6 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
         local KnightIDs = {};
         Logic.GetKnights(PlayerID, KnightIDs);
         local KnightID = API.GetClosestToTarget(EntityID, KnightIDs);
-        -- GUI.SendScriptCommand(string.format(
-        --     [[API.SendScriptEvent(QSB.ScriptEvents.ObjectClicked, "%s", %d, %d)]],
-        --     ScriptName,
-        --     KnightID,
-        --     PlayerID
-        -- ));
         API.SendScriptEventToGlobal(QSB.ScriptEvents.ObjectClicked, ScriptName, KnightID, PlayerID);
         API.SendScriptEvent(QSB.ScriptEvents.ObjectClicked, ScriptName, KnightID, PlayerID);
     end

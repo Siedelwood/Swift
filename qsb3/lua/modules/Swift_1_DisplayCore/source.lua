@@ -286,11 +286,6 @@ function ModuleDisplayCore.Local:InterfaceDeactivateBorderScroll(_PositionID)
         GUI.GetPlayerID(),
         (_PositionID or 0)
     );
-    -- GUI.SendScriptCommand(string.format(
-    --     "API.SendScriptEvent(QSB.ScriptEvents.BorderScrollLocked, %d, %d)",
-    --     GUI.GetPlayerID(),
-    --     (_PositionID or 0)
-    -- ));
     API.SendScriptEvent(QSB.ScriptEvents.BorderScrollLocked, GUI.GetPlayerID(), _PositionID);
 end
 
@@ -307,10 +302,6 @@ function ModuleDisplayCore.Local:InterfaceActivateBorderScroll()
     Camera.RTS_SetZoomFactorMin(0.0999);
 
     API.SendScriptEventToGlobal(QSB.ScriptEvents.BorderScrollReset, GUI.GetPlayerID());
-    -- GUI.SendScriptCommand(string.format(
-    --     "API.SendScriptEvent(QSB.ScriptEvents.BorderScrollReset, %d)",
-    --     GUI.GetPlayerID()
-    -- ));
     API.SendScriptEvent(QSB.ScriptEvents.BorderScrollReset, GUI.GetPlayerID());
 end
 
@@ -364,10 +355,6 @@ function ModuleDisplayCore.Local:InterfaceDeactivateNormalInterface()
     end
 
     API.SendScriptEventToGlobal(QSB.ScriptEvents.GameInterfaceHidden, GUI.GetPlayerID());
-    -- GUI.SendScriptCommand(string.format(
-    --     "API.SendScriptEvent(QSB.ScriptEvents.GameInterfaceHidden, %d)",
-    --     GUI.GetPlayerID()
-    -- ));
     API.SendScriptEvent(QSB.ScriptEvents.GameInterfaceHidden, GUI.GetPlayerID());
 end
 
@@ -421,10 +408,6 @@ function ModuleDisplayCore.Local:InterfaceActivateNormalInterface()
     end
 
     API.SendScriptEventToGlobal(QSB.ScriptEvents.GameInterfaceShown, GUI.GetPlayerID());
-    -- GUI.SendScriptCommand(string.format(
-    --     "API.SendScriptEvent(QSB.ScriptEvents.GameInterfaceShown, %d)",
-    --     GUI.GetPlayerID()
-    -- ));
     API.SendScriptEvent(QSB.ScriptEvents.GameInterfaceShown, GUI.GetPlayerID());
 end
 

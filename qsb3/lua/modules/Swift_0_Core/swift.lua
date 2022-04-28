@@ -829,7 +829,6 @@ end
 function Swift_EventJob_WaitForLoadScreenHidden()
     if XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 0 then
         Swift:DispatchScriptCommand(QSB.ScriptCommands.RegisterLoadscreenHidden);
-        -- GUI.SendScriptCommand("Swift.m_LoadScreenHidden = true");
         Swift.m_LoadScreenHidden = true;
         return true;
     end

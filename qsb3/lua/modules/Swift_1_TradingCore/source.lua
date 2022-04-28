@@ -459,16 +459,6 @@ function ModuleTradingCore.Local:OverrideMerchantPurchaseOfferClicked()
                     OfferGoodAmount,
                     Price
                 );
-                -- GUI.SendScriptCommand(string.format(
-                --     "ModuleTradingCore.Global:SendEventGoodsPurchased(%d, %d, %d, %d, %d, %d, %d)",
-                --     TraderType,
-                --     OfferIndex,
-                --     GoodType,
-                --     PlayerID,
-                --     TraderPlayerID,
-                --     OfferGoodAmount,
-                --     Price
-                -- ));
             else
                 local MessageText = XGUIEng.GetStringTableText("Feedback_TextLines/TextLine_NotEnough_G_Gold");
                 Message(MessageText);
@@ -570,14 +560,6 @@ function ModuleTradingCore.Local:OverrideMerchantSellGoodsClicked()
                 g_Trade.GoodAmount,
                 Price
             );
-            -- GUI.SendScriptCommand(string.format(
-            --     "ModuleTradingCore.Global:SendEventGoodsSold(%d, %d, %d, %d, %d)",
-            --     g_Trade.GoodType,
-            --     PlayerID,
-            --     TargetID,
-            --     g_Trade.GoodAmount,
-            --     Price
-            -- ));
         end
     end
 end

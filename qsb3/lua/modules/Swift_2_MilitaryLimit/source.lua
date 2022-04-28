@@ -267,13 +267,6 @@ function ModuleMilitaryLimit.Local:OverrideUI()
                     EntityType,
                     Costs
                 );
-                -- GUI.SendScriptCommand(string.format(
-                --     [[ModuleMilitaryLimit.Global:ProduceUnit(%d, %d, %d, %s)]],
-                --     PlayerID,
-                --     BarrackID,
-                --     EntityType,
-                --     table.tostring(Costs)
-                -- ));
             else
                 API.SendScriptCommand(
                     QSB.ScriptCommands.MilitaryLimitProduceUnits,
@@ -282,13 +275,6 @@ function ModuleMilitaryLimit.Local:OverrideUI()
                     EntityType,
                     Costs
                 );
-                -- GUI.SendScriptCommand(string.format(
-                --     [[ModuleMilitaryLimit.Global:ProduceUnit(%d, %d, %d, %s)]],
-                --     PlayerID,
-                --     BarrackID,
-                --     EntityType,
-                --     table.tostring(Costs)
-                -- ));
                 StartKnightVoiceForPermanentSpecialAbility(Entities.U_KnightChivalry);
             end
         else
@@ -332,13 +318,6 @@ function ModuleMilitaryLimit.Local:OverrideUI()
                         LeaderID,
                         table.concat(Costs, ",")
                     );
-                    -- GUI.SendScriptCommand(string.format(
-                    --     [[ModuleMilitaryLimit.Global:RefillBattalion(%d, %d, %d, %s)]],
-                    --     PlayerID,
-                    --     BarracksID,
-                    --     LeaderID,
-                    --     table.tostring(Costs)
-                    -- ));
                 end
             end
         end

@@ -511,11 +511,6 @@ function ModuleDialogSystem.Local:OnOptionSelected(_PlayerID)
         _PlayerID,
         AnswerID
     );
-    -- GUI.SendScriptCommand(string.format(
-    --     "ModuleDialogSystem.Global:OnOptionSelected(%d, %d)",
-    --     _PlayerID,
-    --     AnswerID
-    -- ))
 end
 
 function ModuleDialogSystem.Local:Update(_PlayerID)

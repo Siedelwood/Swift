@@ -89,14 +89,6 @@ function Swift:ExecuteEscapeCallback()
     )
     -- Local
     Swift:DispatchScriptEvent(QSB.ScriptEvents.EscapePressed, GUI.GetPlayerID());
-    -- GUI.SendScriptCommand(string.format(
-    --     [[Swift:DispatchScriptEvent(QSB.ScriptEvents.EscapePressed, %d)]],
-    --     GUI.GetPlayerID()
-    -- ), true);
-    -- GUI.SendScriptCommand(string.format(
-    --     [[Swift:DispatchScriptEvent(QSB.ScriptEvents.EscapePressed, %d)]],
-    --     GUI.GetPlayerID()
-    -- ), false);
 end
 
 -- Geologist Refill Callback

@@ -117,11 +117,6 @@ function ModuleConstructionControl.Local:OverrideDeleteEntityStateBuilding()
         GameCallback_GUI_DeleteEntityStateBuilding_Orig_ConstructionControl(_BuildingID, _State);
 
         API.SendScriptCommand(QSB.ScriptCommands.CheckCancelKnockdown, GUI.GetPlayerID(), _BuildingID, _State);
-        -- GUI.SendScriptCommand(string.format(
-        --     [[ModuleConstructionControl.Global:CheckCancelBuildingKnockdown(%d, %d, %d)]],
-        --     _BuildingID,
-        --     _State
-        -- ))
     end
 end
 
