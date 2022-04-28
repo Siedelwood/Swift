@@ -302,8 +302,8 @@ end
 -- @within Anwenderfunktionen
 --
 -- @usage
--- function YesNoAction(_yes)
---     if _yes then GUI.AddNote("Ja wurde gedrückt"); end
+-- function YesNoAction(_Yes, _PlayerID)
+--     if _Yes then GUI.AddNote("Ja wurde gedrückt"); end
 -- end
 -- API.DialogRequestBox("Frage", "Möchtest du das wirklich tun?", YesNoAction, false);
 --
@@ -336,8 +336,8 @@ end
 -- @within Anwenderfunktionen
 --
 -- @usage
--- function OptionsAction(_idx)
---     GUI.AddNote(_idx.. " wurde ausgewählt!");
+-- function OptionsAction(_Idx, _PlayerID)
+--     GUI.AddNote(_Idx.. " wurde ausgewählt!");
 -- end
 -- local List = {"Option A", "Option B", "Option C"};
 -- API.DialogSelectBox("Auswahl", "Wähle etwas aus!", OptionsAction, List);

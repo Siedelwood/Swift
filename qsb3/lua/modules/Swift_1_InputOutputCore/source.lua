@@ -17,8 +17,6 @@ ModuleInputOutputCore = {
 
     Global = {};
     Local  = {
-        InputBoxShown = false,
-        ProccessDebugCommands = false,
         CheatsDisabled = false,
         Requester = {
             ActionFunction = nil,
@@ -101,7 +99,7 @@ function ModuleInputOutputCore.Local:OnGameStart()
     self:DialogOverwriteOriginal();
     self:DialogAltF4Hotkey();
     -- Some kind of wierd timing problem...
-    API.StartJob(function()
+    StartSimpleJobEx(function()
         self:OverrideDebugInput();
         return true;
     end);
@@ -261,16 +259,16 @@ function ModuleInputOutputCore.Local:DialogAltF4Action()
     XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 1);
 end
 
-function ModuleInputOutputCore.Local:Callback()
+function ModuleInputOutputCore.Local:Callback(_PlayerID)
     if self.Requester.ActionFunction then
-        self.Requester.ActionFunction(CustomGame.Knight + 1);
+        self.Requester.ActionFunction(CustomGame.Knight + 1, _PlayerID);
     end
     self:OnDialogClosed();
 end
 
-function ModuleInputOutputCore.Local:CallbackRequester(_yes)
+function ModuleInputOutputCore.Local:CallbackRequester(_yes, _PlayerID)
     if self.Requester.ActionRequester then
-        self.Requester.ActionRequester(_yes);
+        self.Requester.ActionRequester(_yes, _PlayerID);
     end
     self:OnDialogClosed();
 end
@@ -326,14 +324,14 @@ function ModuleInputOutputCore.Local:OpenDialog(_Title, _Text, _Action)
             local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)";
             Action = Action .. "; Game.GameTimeSetFactor(GUI.GetPlayerID(), 1)";
             Action = Action .. "; XGUIEng.PopPage()";
-            Action = Action .. "; ModuleInputOutputCore.Local.Callback(ModuleInputOutputCore.Local)";
+            Action = Action .. "; ModuleInputOutputCore.Local.Callback(ModuleInputOutputCore.Local, GUI.GetPlayerID())";
             XGUIEng.SetActionFunction(RequesterDialog_Ok, Action);
         else
             self.Requester.ActionFunction = nil;
             local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)";
             Action = Action .. "; Game.GameTimeSetFactor(GUI.GetPlayerID(), 1)";
             Action = Action .. "; XGUIEng.PopPage()";
-            Action = Action .. "; ModuleInputOutputCore.Local.Callback(ModuleInputOutputCore.Local)";
+            Action = Action .. "; ModuleInputOutputCore.Local.Callback(ModuleInputOutputCore.Local, GUI.GetPlayerID())";
             XGUIEng.SetActionFunction(RequesterDialog_Ok, Action);
         end
 
@@ -379,12 +377,12 @@ function ModuleInputOutputCore.Local:OpenRequesterDialog(_Title, _Text, _Action,
         local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)";
         Action = Action .. "; Game.GameTimeSetFactor(GUI.GetPlayerID(), 1)";
         Action = Action .. "; XGUIEng.PopPage()";
-        Action = Action .. "; ModuleInputOutputCore.Local.CallbackRequester(ModuleInputOutputCore.Local, true)"
+        Action = Action .. "; ModuleInputOutputCore.Local.CallbackRequester(ModuleInputOutputCore.Local, true, GUI.GetPlayerID())"
         XGUIEng.SetActionFunction(RequesterDialog_Yes, Action);
         local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)"
         Action = Action .. "; Game.GameTimeSetFactor(GUI.GetPlayerID(), 1)";
         Action = Action .. "; XGUIEng.PopPage()";
-        Action = Action .. "; ModuleInputOutputCore.Local.CallbackRequester(ModuleInputOutputCore.Local, false)"
+        Action = Action .. "; ModuleInputOutputCore.Local.CallbackRequester(ModuleInputOutputCore.Local, false, GUI.GetPlayerID())"
         XGUIEng.SetActionFunction(RequesterDialog_No, Action);
     else
         self:DialogQueuePush("OpenRequesterDialog", {_Title, _Text, _Action, _OkCancel});
@@ -408,7 +406,7 @@ function ModuleInputOutputCore.Local:OpenSelectionDialog(_Title, _Text, _Action,
         Action = Action .. "; XGUIEng.PopPage()";
         Action = Action .. "; XGUIEng.PopPage()";
         Action = Action .. "; XGUIEng.PopPage()";
-        Action = Action .. "; ModuleInputOutputCore.Local.Callback(ModuleInputOutputCore.Local)";
+        Action = Action .. "; ModuleInputOutputCore.Local.Callback(ModuleInputOutputCore.Local, GUI.GetPlayerID())";
         XGUIEng.SetActionFunction(RequesterDialog_Ok, Action);
 
         local Container = "/InGame/Singleplayer/CustomGame/ContainerSelection/";
