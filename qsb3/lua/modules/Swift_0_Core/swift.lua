@@ -520,9 +520,9 @@ end
 -- Local Script Command
 
 function Swift:InitalizeScriptCommands()
-    Swift:CreateScriptCommand("SendScriptEvent", API.SendScriptEvent);
-    Swift:CreateScriptCommand("RegisterLoadscreenHidden", SCP.Core.LoadscreenHidden);
-    Swift:CreateScriptCommand("UpdateCustomVariable", SCP.Core.UpdateCustomVariable);
+    Swift:CreateScriptCommand("Cmd_SendScriptEvent", API.SendScriptEvent);
+    Swift:CreateScriptCommand("Cmd_RegisterLoadscreenHidden", SCP.Core.LoadscreenHidden);
+    Swift:CreateScriptCommand("Cmd_UpdateCustomVariable", SCP.Core.UpdateCustomVariable);
 end
 
 function Swift:CreateScriptCommand(_Name, _Function)
@@ -531,18 +531,22 @@ function Swift:CreateScriptCommand(_Name, _Function)
     end
     QSB.ScriptCommandSequence = QSB.ScriptCommandSequence +1;
     local ID = QSB.ScriptCommandSequence;
-    self.m_ScriptCommandRegister[ID] = {_Name, _Function};
+    local Name = _Name;
+    if string.find(_Name, "^Cmd_") then
+        Name = string.sub(_Name, 5);
+    end
+    self.m_ScriptCommandRegister[ID] = {Name, _Function};
     Logic.ExecuteInLuaLocalState(string.format(
         [[
             Swift.m_ScriptCommandRegister[%d] = "%s"
             QSB.ScriptCommands["%s"] = %d
         ]],
         ID,
-        _Name,
-        _Name,
+        Name,
+        Name,
         ID
     ));
-    QSB.ScriptCommands[_Name] = ID;
+    QSB.ScriptCommands[Name] = ID;
     return ID;
 end
 

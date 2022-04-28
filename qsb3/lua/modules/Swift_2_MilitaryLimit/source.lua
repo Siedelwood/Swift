@@ -53,8 +53,8 @@ function ModuleMilitaryLimit.Global:OnGameStart()
         ModuleMilitaryLimit.Global:UpdateSoldierLimits();
     end);
 
-    API.RegisterScriptCommand("MilitaryLimitProduceUnits", SCP.MilitaryLimit.ProduceUnits);
-    API.RegisterScriptCommand("MilitaryLimitRefillBattalion", SCP.MilitaryLimit.RefillBattalion);
+    API.RegisterScriptCommand("Cmd_MilitaryLimitProduceUnits", SCP.MilitaryLimit.ProduceUnits);
+    API.RegisterScriptCommand("Cmd_MilitaryLimitRefillBattalion", SCP.MilitaryLimit.RefillBattalion);
 end
 
 function ModuleMilitaryLimit.Global:OnEvent(_ID, _Name, ...)

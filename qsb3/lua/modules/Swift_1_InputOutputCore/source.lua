@@ -64,7 +64,7 @@ function ModuleInputOutputCore.Global:OnGameStart()
     QSB.ScriptEvents.ChatOpened = API.RegisterScriptEvent("Event_ChatOpened");
     QSB.ScriptEvents.ChatClosed = API.RegisterScriptEvent("Event_ChatClosed");
 
-    API.RegisterScriptCommand("SetDecisionResult", SCP.InputOutputCore.SetDecisionResult);
+    API.RegisterScriptCommand("Cmd_SetDecisionResult", SCP.InputOutputCore.SetDecisionResult);
 
     if Framework.IsNetworkGame() then
         return;

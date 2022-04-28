@@ -95,10 +95,10 @@ ModuleSelection = {
 function ModuleSelection.Global:OnGameStart()
     QSB.ScriptEvents.SelectionChanged = API.RegisterScriptEvent("Event_SelectionChanged");
 
-    API.RegisterScriptCommand("SelectionDestroyEntity", SCP.Selection.DestroyEntity);
-    API.RegisterScriptCommand("SelectionSetTaskList", SCP.Selection.SetTaskList);
-    API.RegisterScriptCommand("SelectionErectTrebuchet", SCP.Selection.ErectTrebuchet);
-    API.RegisterScriptCommand("SelectionDisambleTrebuchet", SCP.Selection.DisambleTrebuchet);
+    API.RegisterScriptCommand("Cmd_SelectionDestroyEntity", SCP.Selection.DestroyEntity);
+    API.RegisterScriptCommand("Cmd_SelectionSetTaskList", SCP.Selection.SetTaskList);
+    API.RegisterScriptCommand("Cmd_SelectionErectTrebuchet", SCP.Selection.ErectTrebuchet);
+    API.RegisterScriptCommand("Cmd_SelectionDisambleTrebuchet", SCP.Selection.DisambleTrebuchet);
 
     for i= 1, 8 do
         self.SelectedEntities[i] = {};

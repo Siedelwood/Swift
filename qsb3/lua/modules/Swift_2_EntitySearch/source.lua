@@ -24,7 +24,7 @@ ModuleEntitySearch = {
 -- Global ------------------------------------------------------------------- --
 
 function ModuleEntitySearch.Global:OnGameStart()
-    API.RegisterScriptCommand("TriggerEntityTrigger", SCP.EntitySearch.TriggerEntityTrigger);
+    API.RegisterScriptCommand("Cmd_TriggerEntityTrigger", SCP.EntitySearch.TriggerEntityTrigger);
 end
 
 -- Local -------------------------------------------------------------------- --
