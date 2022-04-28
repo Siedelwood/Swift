@@ -100,8 +100,8 @@ function Mission_OnQsbLoaded()
     end)
 end
 
-function TestFunction(_PlayerID, _Number, _String)
-    local Text = "TestFunction :: PlayerID: " .._PlayerID.. " Param1: " .._Number.. " Param2: " .._String;
+function TestFunction(_Number, _String)
+    local Text = "TestFunction :: Param1: " .._Number.. " Param2: " .._String;
     API.Note(Text);
 end
 
