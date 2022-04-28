@@ -230,13 +230,12 @@ function ModuleNpcInteraction.Global:OverrideQuestFunctions()
 
         local ClosestKnightID = _KnightID or ModuleNpcInteraction.Global:GetClosestKnight(_EntityID, _PlayerID);
         API.SendScriptEvent(QSB.ScriptEvents.NpcInteraction, _EntityID, ClosestKnightID, _PlayerID);
-        API.SendScriptEventToEnv("local", QSB.ScriptEvents.NpcInteraction, _EntityID, ClosestKnightID, _PlayerID);
-        -- Logic.ExecuteInLuaLocalState(string.format(
-        --     [[API.SendScriptEvent(QSB.ScriptEvents.NpcInteraction, %d, %d, %d)]],
-        --     _EntityID,
-        --     ClosestKnightID,
-        --     _PlayerID
-        -- ));
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.SendScriptEvent(QSB.ScriptEvents.NpcInteraction, %d, %d, %d)]],
+            _EntityID,
+            ClosestKnightID,
+            _PlayerID
+        ));
     end
 
     QuestTemplate.RemoveQuestMarkers_Orig_ModuleNpcInteraction = QuestTemplate.RemoveQuestMarkers

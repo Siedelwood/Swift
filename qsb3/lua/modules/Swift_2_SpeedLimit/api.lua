@@ -25,7 +25,7 @@ You may use and modify this file unter the terms of the MIT licence.
 -- @see API.SpeedLimitSet
 --
 function API.LockGameSpeed(_Flag)
-    if GUI then
+    if GUI or Framework.IsNetworkGame() then
         return;
     end
     return Logic.ExecuteInLuaLocalState("ModuleSpeedLimitation.Local:ActivateSpeedLimit(" ..tostring(_Flag).. ")");

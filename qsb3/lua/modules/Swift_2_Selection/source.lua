@@ -355,7 +355,7 @@ function ModuleSelection.Local:OnSelectionCanged(_Source)
         OldSelection[PlayerID],
         SelectedEntities
     );
-    API.SendScriptEventToEnv(
+    API.SendScriptEventToGlobal(
         "global",
         QSB.ScriptEvents.SelectionChanged,
         PlayerID,

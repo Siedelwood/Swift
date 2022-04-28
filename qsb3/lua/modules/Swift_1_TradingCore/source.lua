@@ -448,8 +448,8 @@ function ModuleTradingCore.Local:OverrideMerchantPurchaseOfferClicked()
                 end
 
                 API.SendScriptEvent(QSB.ScriptEvents.GoodsPurchased, TraderType, OfferIndex, GoodType, PlayerID, TraderPlayerID, OfferGoodAmount, Price);
-                API.SendScriptCommand(
-                    QSB.ScriptCommands.SendScriptEvent,
+                
+                API.SendScriptEventToGlobal(
                     QSB.ScriptEvents.GoodsPurchased,
                     TraderType,
                     OfferIndex,
@@ -562,8 +562,7 @@ function ModuleTradingCore.Local:OverrideMerchantSellGoodsClicked()
 
             API.SendScriptEvent(QSB.ScriptEvents.GoodsSold, g_Trade.GoodType, PlayerID, TargetID, g_Trade.GoodAmount, Price);
             
-            API.SendScriptCommand(
-                QSB.ScriptCommands.SendScriptEvent,
+            API.SendScriptEventToGlobal(
                 QSB.ScriptEvents.GoodsSold,
                 g_Trade.GoodType,
                 PlayerID,

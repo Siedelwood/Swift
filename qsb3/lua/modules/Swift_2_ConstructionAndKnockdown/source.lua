@@ -71,8 +71,8 @@ function ModuleConstructionControl.Global:OnEntityCreated(_EntityID)
     end
 end
 
-function ModuleConstructionControl.Global:CheckCancelBuildingKnockdown(_BuildingID, _State)
-    if _State == 1 and not self:CheckKnockdownConditions(_BuildingID) then
+function ModuleConstructionControl.Global:CheckCancelBuildingKnockdown(_PlayerID, _BuildingID, _State)
+    if Logic.EntityGetPlayer(_BuildingID) == _PlayerID and _State == 1 and not self:CheckKnockdownConditions(_BuildingID) then
         Logic.ExecuteInLuaLocalState(string.format([[GUI.CancelBuildingKnockDown(%d)]], _BuildingID));
     end
 end
@@ -116,9 +116,9 @@ function ModuleConstructionControl.Local:OverrideDeleteEntityStateBuilding()
     GameCallback_GUI_DeleteEntityStateBuilding = function(_BuildingID, _State)
         GameCallback_GUI_DeleteEntityStateBuilding_Orig_ConstructionControl(_BuildingID, _State);
 
-        API.SendScriptCommand(QSB.ScriptCommands.CheckCancelKnockdown, _BuildingID, _State);
+        API.SendScriptCommand(QSB.ScriptCommands.CheckCancelKnockdown, GUI.GetPlayerID(), _BuildingID, _State);
         -- GUI.SendScriptCommand(string.format(
-        --     [[ModuleConstructionControl.Global:CheckCancelBuildingKnockdown(%d, %d)]],
+        --     [[ModuleConstructionControl.Global:CheckCancelBuildingKnockdown(%d, %d, %d)]],
         --     _BuildingID,
         --     _State
         -- ))

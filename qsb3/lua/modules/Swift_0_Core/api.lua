@@ -1042,33 +1042,22 @@ function API.SendScriptEvent(_EventID, ...)
     Swift:DispatchScriptEvent(_EventID, unpack(arg));
 end
 
-function API.SendScriptEventToEnv(_Env, _EventID, ...)
-    _Env = _Env or Swift.m_Environment;
-
-    -- Dispatch to local script
-    if string.lower(_Env) == "local" then
-        local ParamString = "";
-        for i= 1, #arg do
-            local IsString = type(arg[i]) == "string";
-            ParamString = ParamString .. "," ..
-                ((IsString and "\"") or "") ..
-                tostring(arg[i]) ..
-                ((IsString and "\"") or "");
-        end
-        Logic.ExecuteInLuaLocalState(string.format(
-            [[Swift:DispatchScriptEvent(%d%s)]],
-            _EventID,
-            ParamString
-        ));
-
-    -- Dispatch to global script
-    else
-        Swift:DispatchScriptCommand(
-            QSB.ScriptCommands.SendScriptEvent,
-            _EventID,
-            unpack(arg)
-        );
-    end
+---
+-- Triggerd ein Script Event im globalen Skript aus dem lokalen Skript.
+--
+-- @param[type=number] _EventID ID des Event
+-- @param              ... Optionale Parameter (nil, string, number, boolean)
+-- @within Event
+--
+-- @usage
+-- API.SendScriptEventToGlobal(SomeEventID, Param1, Param2, ...);
+--
+function API.SendScriptEventToGlobal(_EventID, ...)
+    Swift:DispatchScriptCommand(
+        QSB.ScriptCommands.SendScriptEvent,
+        _EventID,
+        unpack(arg)
+    );
 end
 
 ---

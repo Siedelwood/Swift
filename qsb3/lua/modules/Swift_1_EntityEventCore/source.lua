@@ -557,8 +557,7 @@ function ModuleEntityEventCore.Local:StartTriggers()
     GameCallback_Feedback_EntityHurt = function(_HurtPlayerID, _HurtEntityID, _HurtingPlayerID, _HurtingEntityID, _DamageReceived, _DamageDealt)
         GameCallback_Feedback_EntityHurt_Orig_QSB_EntityCore(_HurtPlayerID, _HurtEntityID, _HurtingPlayerID, _HurtingEntityID, _DamageReceived, _DamageDealt);
 
-        API.SendScriptCommand(
-            QSB.ScriptCommands.SendScriptEvent,
+        API.SendScriptEventToGlobal(
             QSB.ScriptEvents.EntityHurt,
             _HurtEntityID,
             _HurtPlayerID,
@@ -583,8 +582,7 @@ function ModuleEntityEventCore.Local:StartTriggers()
     GameCallback_Feedback_MineAmountChanged = function(_MineID, _GoodType, _TerritoryID, _PlayerID, _Amount)
         GameCallback_Feedback_MineAmountChanged_Orig_QSB_EntityCore(_MineID, _GoodType, _TerritoryID, _PlayerID, _Amount);
 
-        API.SendScriptCommand(
-            QSB.ScriptCommands.SendScriptEvent,
+        API.SendScriptEventToGlobal(
             QSB.ScriptEvents.EntityResourceChanged,
             _MineID,
             _GoodType,

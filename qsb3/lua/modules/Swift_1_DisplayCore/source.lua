@@ -249,8 +249,7 @@ function ModuleDisplayCore.Local:InterfaceActivateColoredBackground(_R, _G, _B, 
     XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 1);
     XGUIEng.SetMaterialColor("/InGame/Root/Normal/PauseScreen", 0, _R, _G, _B, _A);
 
-    API.SendScriptCommand(QSB.ScriptCommands.SendScriptEvent, QSB.ScriptEvents.EscapePressed, GUI.GetPlayerID());
-    -- GUI.SendScriptCommand(string.format("API.SendScriptEvent(QSB.ScriptEvents.BlackScreenShown, %d)", GUI.GetPlayerID()));
+    API.SendScriptEventToGlobal( QSB.ScriptEvents.BlackScreenShown, GUI.GetPlayerID());
     API.SendScriptEvent(QSB.ScriptEvents.BlackScreenShown, GUI.GetPlayerID());
 end
 
@@ -264,8 +263,7 @@ function ModuleDisplayCore.Local:InterfaceDeactivateColoredBackground()
     XGUIEng.SetMaterialColor("/InGame/Root/Normal/PauseScreen", 0, 40, 40, 40, 180);
     XGUIEng.PopPage();
 
-    API.SendScriptCommand(QSB.ScriptCommands.SendScriptEvent, QSB.ScriptEvents.EscapePressed, GUI.GetPlayerID());
-    -- GUI.SendScriptCommand(string.format("API.SendScriptEvent(QSB.ScriptEvents.BlackScreenHidden, %d)", GUI.GetPlayerID()));
+    API.SendScriptEventToGlobal( QSB.ScriptEvents.BlackScreenHidden, GUI.GetPlayerID());
     API.SendScriptEvent(QSB.ScriptEvents.BlackScreenHidden, GUI.GetPlayerID());
 end
 
@@ -283,8 +281,7 @@ function ModuleDisplayCore.Local:InterfaceDeactivateBorderScroll(_PositionID)
     Camera.RTS_SetZoomFactorMax(0.5001);
     Camera.RTS_SetZoomFactorMin(0.4999);
 
-    API.SendScriptCommand(
-        QSB.ScriptCommands.SendScriptEvent,
+    API.SendScriptEventToGlobal(
         QSB.ScriptEvents.BorderScrollLocked,
         GUI.GetPlayerID(),
         (_PositionID or 0)
@@ -309,11 +306,7 @@ function ModuleDisplayCore.Local:InterfaceActivateBorderScroll()
     Camera.RTS_SetZoomFactorMax(0.5001);
     Camera.RTS_SetZoomFactorMin(0.0999);
 
-    API.SendScriptCommand(
-        QSB.ScriptCommands.SendScriptEvent,
-        QSB.ScriptEvents.BorderScrollReset,
-        GUI.GetPlayerID()
-    );
+    API.SendScriptEventToGlobal(QSB.ScriptEvents.BorderScrollReset, GUI.GetPlayerID());
     -- GUI.SendScriptCommand(string.format(
     --     "API.SendScriptEvent(QSB.ScriptEvents.BorderScrollReset, %d)",
     --     GUI.GetPlayerID()
@@ -370,11 +363,7 @@ function ModuleDisplayCore.Local:InterfaceDeactivateNormalInterface()
         XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Tradepost", 0);
     end
 
-    API.SendScriptCommand(
-        QSB.ScriptCommands.SendScriptEvent,
-        QSB.ScriptEvents.GameInterfaceHidden,
-        GUI.GetPlayerID()
-    );
+    API.SendScriptEventToGlobal(QSB.ScriptEvents.GameInterfaceHidden, GUI.GetPlayerID());
     -- GUI.SendScriptCommand(string.format(
     --     "API.SendScriptEvent(QSB.ScriptEvents.GameInterfaceHidden, %d)",
     --     GUI.GetPlayerID()
@@ -431,11 +420,7 @@ function ModuleDisplayCore.Local:InterfaceActivateNormalInterface()
         XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Tradepost", 1);
     end
 
-    API.SendScriptCommand(
-        QSB.ScriptCommands.SendScriptEvent,
-        QSB.ScriptEvents.GameInterfaceShown,
-        GUI.GetPlayerID()
-    );
+    API.SendScriptEventToGlobal(QSB.ScriptEvents.GameInterfaceShown, GUI.GetPlayerID());
     -- GUI.SendScriptCommand(string.format(
     --     "API.SendScriptEvent(QSB.ScriptEvents.GameInterfaceShown, %d)",
     --     GUI.GetPlayerID()

@@ -656,7 +656,7 @@ function ModuleBriefingSystem.Local:OnOptionSelected(_PlayerID)
 
     local Selected = XGUIEng.ListBoxGetSelectedIndex(Widget .. "/ListBox")+1;
     local AnswerID = self.Briefing[_PlayerID].MCSelectionOptionsMap[Selected];
-    API.SendScriptEventToEnv("global", QSB.ScriptEvents.BriefingOptionSelected, _PlayerID, AnswerID);
+    API.SendScriptEventToGlobal(QSB.ScriptEvents.BriefingOptionSelected, _PlayerID, AnswerID);
     -- GUI.SendScriptCommand(string.format(
     --     [[API.SendScriptEvent(QSB.ScriptEvents.BriefingOptionSelected, %d, %d)]],
     --     _PlayerID,
@@ -855,7 +855,7 @@ function ModuleBriefingSystem.Local:OverrideThroneRoomFunctions()
     GameCallback_Camera_ThroneRoomLeftClick = function(_PlayerID)
         GameCallback_Camera_ThroneRoomLeftClick_Orig_ModuleBriefingSystem(_PlayerID);
         if _PlayerID == GUI.GetPlayerID() then
-            API.SendScriptEventToEnv("global", QSB.ScriptEvents.BriefingLeftClick, _PlayerID);
+            API.SendScriptEventToGlobal(QSB.ScriptEvents.BriefingLeftClick, _PlayerID);
             -- GUI.SendScriptCommand(string.format(
             --     [[API.SendScriptEvent(QSB.ScriptEvents.BriefingLeftClick, %d)]],
             --     GUI.GetPlayerID()
@@ -871,7 +871,7 @@ function ModuleBriefingSystem.Local:OverrideThroneRoomFunctions()
     GameCallback_Camera_SkipButtonPressed = function(_PlayerID)
         GameCallback_Camera_SkipButtonPressed_Orig_ModuleBriefingSystem(_PlayerID);
         if _PlayerID == GUI.GetPlayerID() then
-            API.SendScriptEventToEnv("global", QSB.ScriptEvents.BriefingSkipButtonPressed, _PlayerID);
+            API.SendScriptEventToGlobal(QSB.ScriptEvents.BriefingSkipButtonPressed, _PlayerID);
             -- GUI.SendScriptCommand(string.format(
             --     [[API.SendScriptEvent(QSB.ScriptEvents.BriefingSkipButtonPressed, %d)]],
             --     GUI.GetPlayerID()

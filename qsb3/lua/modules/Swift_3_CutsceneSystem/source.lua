@@ -287,7 +287,7 @@ function ModuleCutsceneSystem.Local:PropagateCutsceneEnded(_PlayerID)
     if not self.Cutscene[_PlayerID] then
         return;
     end
-    API.SendScriptEventToEnv("global", QSB.ScriptEvents.CutsceneEnded, _PlayerID);
+    API.SendScriptEventToGlobal(QSB.ScriptEvents.CutsceneEnded, _PlayerID);
     -- GUI.SendScriptCommand(string.format(
     --     [[API.SendScriptEvent(QSB.ScriptEvents.CutsceneEnded, %d, %s)]],
     --     _PlayerID
@@ -298,7 +298,7 @@ function ModuleCutsceneSystem.Local:FlightStarted(_Duration)
     local PlayerID = GUI.GetPlayerID();
     if self.Cutscene[PlayerID] then
         local PageID = self.Cutscene[PlayerID].CurrentPage;
-        API.SendScriptEventToEnv("global", QSB.ScriptEvents.CutsceneFlightStarted, PlayerID, PageID, _Duration);
+        API.SendScriptEventToGlobal(QSB.ScriptEvents.CutsceneFlightStarted, PlayerID, PageID, _Duration);
         -- GUI.SendScriptCommand(string.format(
         --     [[API.SendScriptEvent(QSB.ScriptEvents.CutsceneFlightStarted, %d, %d, %d)]],
         --     PlayerID,
@@ -322,7 +322,7 @@ function ModuleCutsceneSystem.Local:FlightFinished()
     local PlayerID = GUI.GetPlayerID();
     if self.Cutscene[PlayerID] then
         local PageID = self.Cutscene[PlayerID].CurrentPage;
-        API.SendScriptEventToEnv("global", QSB.ScriptEvents.CutsceneFlightEnded, PlayerID, PageID);
+        API.SendScriptEventToGlobal(QSB.ScriptEvents.CutsceneFlightEnded, PlayerID, PageID);
         -- GUI.SendScriptCommand(string.format(
         --     [[API.SendScriptEvent(QSB.ScriptEvents.CutsceneFlightEnded, %d, %d)]],
         --     PlayerID,
@@ -530,7 +530,7 @@ function ModuleCutsceneSystem.Local:OverrideThroneRoomFunctions()
     GameCallback_Camera_SkipButtonPressed = function(_PlayerID)
         GameCallback_Camera_SkipButtonPressed_Orig_ModuleCutsceneSystem(_PlayerID);
         if _PlayerID == GUI.GetPlayerID() then
-            API.SendScriptEventToEnv("global", QSB.ScriptEvents.CutsceneSkipButtonPressed, GUI.GetPlayerID());
+            API.SendScriptEventToGlobal(QSB.ScriptEvents.CutsceneSkipButtonPressed, GUI.GetPlayerID());
             -- GUI.SendScriptCommand(string.format(
             --     [[API.SendScriptEvent(QSB.ScriptEvents.CutsceneSkipButtonPressed, %d)]],
             --     GUI.GetPlayerID()

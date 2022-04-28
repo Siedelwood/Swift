@@ -147,6 +147,7 @@ function ModuleShipSalesment.Global:SpawnShip(_PlayerID, _Index)
     local Orientation = Logic.GetEntityOrientation(SpawnPointID);
     local ID = Logic.CreateEntity(Entities.D_X_TradeShip, x, y, Orientation, 0);
     self.Harbors[_PlayerID].Routes[_Index].ShipID = ID;
+    self:SendShipSpawnedEvent(_PlayerID, Route, ID);
     Logic.SetSpeedFactor(ID, 3.0);
     return ID;
 end

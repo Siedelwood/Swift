@@ -389,7 +389,7 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
         --     KnightID,
         --     PlayerID
         -- ));
-        API.SendScriptEventToEnv("global", QSB.ScriptEvents.ObjectClicked, ScriptName, KnightID, PlayerID);
+        API.SendScriptEventToGlobal(QSB.ScriptEvents.ObjectClicked, ScriptName, KnightID, PlayerID);
         API.SendScriptEvent(QSB.ScriptEvents.ObjectClicked, ScriptName, KnightID, PlayerID);
     end
 
