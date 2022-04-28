@@ -162,7 +162,7 @@ function Swift:CreateRandomSeed()
         end
     else
         local DateText = Framework.GetSystemTimeDateString():sub(15, 23):gsub("'", "");
-        Seed = math.randomseed(tonumber("1" ..DateText));
+        Seed = tonumber("1" ..DateText);
     end
     math.randomseed(Seed);
     return math.random(1, 100);
