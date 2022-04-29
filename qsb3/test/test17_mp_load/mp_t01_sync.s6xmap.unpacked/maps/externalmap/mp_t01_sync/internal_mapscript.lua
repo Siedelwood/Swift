@@ -88,17 +88,50 @@ function Mission_OnQsbLoaded()
     -- (Auskommentieren, wenn nicht benötigt)
     -- CreateQuests();
 
-    API.Note("Test")
     TEST_COMMAND = API.RegisterScriptCommand("TestFunction", TestFunction);
-
-    API.StartJob(function()
-        if Logic.GetTime() >= 10 then
-            API.Note("execute");
-            CallTestFunction()
-            return true;
-        end
-    end)
+    CreateTestIOs();
+    CreateTestNPCs();
 end
+
+-- -------------------------------------------------------------------------- --
+-- IO
+
+function CreateTestIOs()
+    for i= 1, 2 do
+        API.SetupObject {
+            Name     = "IO" ..i,
+            Distance = 1500,
+            Costs    = {Goods.G_Wood, 5},
+            Reward   = {Goods.G_Gold, 1000},
+            Player   = i,
+            Callback = function(_Data, _KnightID, _PlayerID)
+                API.Note("Player " .._PlayerID.. " has activated " .._Data.Name);
+            end
+        };
+        API.InteractiveObjectActivate(NPC1, 1, i);
+    end
+end
+
+-- -------------------------------------------------------------------------- --
+-- NPC
+
+function CreateTestNPCs()
+    for i= 1, 2 do
+        MyNpc = API.NpcCompose {
+            Name              = "NPC" ..i,
+            Player            = i,
+            WrongPlayerAction = function(_Data, _PlayerID, _KnightID)
+                API.Note("Player ".._PlayerID.. " can not talk to " .._Data.Name);
+            end,
+            Callback          = function(_Data, _PlayerID, _KnightID)
+                API.Note("Player " .._PlayerID.. " has talked to " .._Data.Name);
+            end
+        }
+    end
+end
+
+-- -------------------------------------------------------------------------- --
+-- General communication
 
 function TestFunction(_Number, _String)
     local Text = "TestFunction :: Param1: " .._Number.. " Param2: " .._String;

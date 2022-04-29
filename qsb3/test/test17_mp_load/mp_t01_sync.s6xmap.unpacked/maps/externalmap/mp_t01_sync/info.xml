@@ -17,7 +17,7 @@
  <PreloadModels>true</PreloadModels>
  <ClimateZone>MiddleEurope</ClimateZone>
  <GUID>
-  <GUID>059950a1-9b42-4cb5-a267-4cf3bac530d3</GUID>
+  <GUID>dc88f77f-0923-4202-9f39-b34338b61f20</GUID>
  </GUID>
  <PlayerInfos>
   <Info>
@@ -37,8 +37,40 @@
    </Diplomacy>
   </Info>
   <Info>
-   <Name></Name>
+   <Name>Player 1</Name>
    <Head>H_Knight_Saraya</Head>
+   <AI>0</AI>
+   <Diplomacy>
+    <State>-1</State>
+    <State>-1</State>
+    <State>-1</State>
+    <State>-1</State>
+    <State>-1</State>
+    <State>-1</State>
+    <State>-1</State>
+    <State>-1</State>
+    <State>-1</State>
+   </Diplomacy>
+  </Info>
+  <Info>
+   <Name>Player 2</Name>
+   <Head>H_Knight_Saraya</Head>
+   <AI>0</AI>
+   <Diplomacy>
+    <State>-1</State>
+    <State>-1</State>
+    <State>-1</State>
+    <State>-1</State>
+    <State>-1</State>
+    <State>-1</State>
+    <State>-1</State>
+    <State>-1</State>
+    <State>-1</State>
+   </Diplomacy>
+  </Info>
+  <Info>
+   <Name>Player 3</Name>
+   <Head>H_NPC_Villager01_NE</Head>
    <AI>0</AI>
    <Diplomacy>
     <State>-1</State>
@@ -117,40 +149,8 @@
    </Diplomacy>
   </Info>
   <Info>
-   <Name></Name>
-   <Head>H_Knight_Saraya</Head>
-   <AI>0</AI>
-   <Diplomacy>
-    <State>-1</State>
-    <State>-1</State>
-    <State>-1</State>
-    <State>-1</State>
-    <State>-1</State>
-    <State>-1</State>
-    <State>-1</State>
-    <State>-1</State>
-    <State>-1</State>
-   </Diplomacy>
-  </Info>
-  <Info>
-   <Name></Name>
-   <Head>H_Knight_Saraya</Head>
-   <AI>0</AI>
-   <Diplomacy>
-    <State>-1</State>
-    <State>-1</State>
-    <State>-1</State>
-    <State>-1</State>
-    <State>-1</State>
-    <State>-1</State>
-    <State>-1</State>
-    <State>-1</State>
-    <State>-1</State>
-   </Diplomacy>
-  </Info>
-  <Info>
-   <Name></Name>
-   <Head>H_Knight_Saraya</Head>
+   <Name>Player 8</Name>
+   <Head>H_NPC_Villager01_SE</Head>
    <AI>0</AI>
    <Diplomacy>
     <State>-1</State>
