@@ -506,7 +506,6 @@ function ModuleDialogSystem.Local:OnOptionSelected(_PlayerID)
     local Selected = XGUIEng.ListBoxGetSelectedIndex(Widget .. "/ListBox")+1;
     local AnswerID = self.Dialog[_PlayerID].MCSelectionOptionsMap[Selected];
     API.SendScriptEventToGlobal(
-        "global",
         QSB.ScriptEvents.DialogOptionSelected,
         _PlayerID,
         AnswerID
