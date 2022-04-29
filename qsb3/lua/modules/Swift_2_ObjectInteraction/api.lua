@@ -264,10 +264,10 @@ function API.InteractiveObjectActivate(_ScriptName, _State, _PlayerID)
         if IO[_ScriptName].Slave then
             IO_SlaveState[SlaveName] = 1;
         end
-        ModuleObjectInteraction.Global:SetObjectAvailability(SlaveName, _State, _PlayerID);
+        ModuleObjectInteraction.Global:SetObjectState(SlaveName, _State, _PlayerID);
         IO[_ScriptName].IsActive = true;
     else
-        ModuleObjectInteraction.Global:SetObjectAvailability(_ScriptName, _State, _PlayerID);
+        ModuleObjectInteraction.Global:SetObjectState(_ScriptName, _State, _PlayerID);
     end
 end
 InteractiveObjectActivate = API.InteractiveObjectActivate;
@@ -291,10 +291,10 @@ function API.InteractiveObjectDeactivate(_ScriptName, _PlayerID)
         if IO[_ScriptName].Slave then
             IO_SlaveState[SlaveName] = 0;
         end
-        ModuleObjectInteraction.Global:SetObjectAvailability(SlaveName, 2, _PlayerID);
+        ModuleObjectInteraction.Global:SetObjectState(SlaveName, 2, _PlayerID);
         IO[_ScriptName].IsActive = false;
     else
-        ModuleObjectInteraction.Global:SetObjectAvailability(_ScriptName, 2, _PlayerID);
+        ModuleObjectInteraction.Global:SetObjectState(_ScriptName, 2, _PlayerID);
     end
 end
 InteractiveObjectDeactivate = API.InteractiveObjectDeactivate;

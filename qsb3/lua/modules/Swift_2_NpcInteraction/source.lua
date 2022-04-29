@@ -119,7 +119,7 @@ function ModuleNpcInteraction.Global:PerformNpcInteraction(_PlayerID)
         self:RotateActorsToEachother(_PlayerID);
         self:AdjustHeroTalkingDistance(Data.Distance);
 
-        if not self:InteractionIsAppropriatePlayer(ScriptName, _PlayerID) then
+        if not self:InteractionIsAppropriatePlayer(ScriptName, _PlayerID, QSB.Npc.LastHeroEntityID) then
             return;
         end
         Data.TalkedTo = QSB.Npc.LastHeroEntityID;
@@ -129,10 +129,10 @@ function ModuleNpcInteraction.Global:PerformNpcInteraction(_PlayerID)
         end
 
         if Data.Condition == nil
-        or Data:Condition(_PlayerID) then
+        or Data:Condition(_PlayerID, QSB.Npc.LastHeroEntityID) then
             Data.Active = false;
             if Data.Callback then
-                Data:Callback(_PlayerID);
+                Data:Callback(_PlayerID, QSB.Npc.LastHeroEntityID);
             end
         else
             Data.TalkedTo = 0;
@@ -142,22 +142,23 @@ function ModuleNpcInteraction.Global:PerformNpcInteraction(_PlayerID)
     end
 end
 
-function ModuleNpcInteraction.Global:InteractionIsAppropriatePlayer(_ScriptName, _PlayerID)
+function ModuleNpcInteraction.Global:InteractionIsAppropriatePlayer(_ScriptName, _PlayerID, _HeroID)
     local Appropriate = true;
     if self.NPC[_ScriptName] then
         local Data = self.NPC[_ScriptName];
         if Data.Player ~= nil then
             if type(Data.Player) == "table" then
                 Appropriate = table.contains(Data.Player, _PlayerID);
+            else
+                Appropriate = Data.Player == _PlayerID;
             end
-            Appropriate = Data.Player == _PlayerID;
 
             if not Appropriate then
                 local LastTime = (Data.WrongHeroTick or 0) +1;
                 local CurrentTime = Logic.GetTime();
                 if Data.WrongPlayerAction and LastTime < CurrentTime then
                     self.NPC[_ScriptName].LastWongPlayerTick = CurrentTime;
-                    Data:WrongPlayerAction();
+                    Data:WrongPlayerAction(_PlayerID);
                 end
             end
         end
@@ -180,7 +181,7 @@ function ModuleNpcInteraction.Global:InteractionIsAppropriateHero(_ScriptName)
                 local CurrentTime = Logic.GetTime();
                 if Data.WrongHeroAction and LastTime < CurrentTime then
                     self.NPC[_ScriptName].WrongHeroTick = CurrentTime;
-                    Data:WrongHeroAction();
+                    Data:WrongHeroAction(QSB.Npc.LastHeroEntityID);
                 end
             end
         end

@@ -67,7 +67,7 @@ function ModuleObjectInteraction.Global:OnObjectInteraction(_ScriptName, _Knight
     if IO[_ScriptName] then
         IO[_ScriptName].IsUsed = true;
         if IO[_ScriptName].Action then
-            IO[_ScriptName]:Action(_KnightID, _PlayerID);
+            IO[_ScriptName]:Action(_PlayerID, _KnightID);
         end
     end
     -- Avoid reference bug
@@ -88,6 +88,7 @@ function ModuleObjectInteraction.Global:CreateObject(_Description)
 
     _Description.IsActive = true;
     _Description.IsUsed = false;
+    _Description.Player = _Description.Player or {1, 2, 3, 4, 5, 6, 7, 8};
     IO[_Description.Name] = _Description;
     self:SetupObject(_Description);
     -- Avoid reference bug
@@ -104,7 +105,7 @@ function ModuleObjectInteraction.Global:DestroyObject(_ScriptName)
         IO_SlaveState[IO[_ScriptName].Slave] = nil;
         DestroyEntity(IO[_ScriptName].Slave);
     end
-    self:SetObjectAvailability(_ScriptName, 2);
+    self:SetObjectState(_ScriptName, 2);
     API.SendScriptEvent(QSB.ScriptEvents.ObjectDelete, _ScriptName);
     Logic.ExecuteInLuaLocalState(string.format(
         [[API.SendScriptEvent(QSB.ScriptEvents.ObjectDelete, "%s")]],
@@ -169,24 +170,27 @@ function ModuleObjectInteraction.Global:SetupObject(_Object)
     API.InteractiveObjectActivate(Logic.GetEntityName(ID), _Object.State or 0);
 end
 
-function ModuleObjectInteraction.Global:ResetObject(_SkriptName)
-    local ID = GetID((IO[_SkriptName].Slave and IO[_SkriptName].Slave) or _SkriptName);
+function ModuleObjectInteraction.Global:ResetObject(_ScriptName)
+    local ID = GetID((IO[_ScriptName].Slave and IO[_ScriptName].Slave) or _ScriptName);
     RemoveInteractiveObjectFromOpenedList(ID);
     table.insert(HiddenTreasures, ID);
     Logic.InteractiveObjectSetAvailability(ID, true);
-    self:SetObjectAvailability(ID, IO[_SkriptName].State or 0);
-    IO[_SkriptName].IsUsed = false;
-    IO[_SkriptName].IsActive = true;
+    self:SetObjectState(ID, IO[_ScriptName].State or 0);
+    IO[_ScriptName].IsUsed = false;
+    IO[_ScriptName].IsActive = true;
 
-    API.SendScriptEvent(QSB.ScriptEvents.ObjectReset, _SkriptName);
+    API.SendScriptEvent(QSB.ScriptEvents.ObjectReset, _ScriptName);
     Logic.ExecuteInLuaLocalState(string.format(
         [[API.SendScriptEvent(QSB.ScriptEvents.ObjectReset, "%s")]],
-        _SkriptName
+        _ScriptName
     ));
 end
 
-function ModuleObjectInteraction.Global:SetObjectAvailability(_ScriptName, _State, ...)
+function ModuleObjectInteraction.Global:SetObjectState(_ScriptName, _State, ...)
     arg = ((not arg or #arg == 0) and {1, 2, 3, 4, 5, 6, 7, 8}) or arg;
+    for i= 1, 8 do
+        Logic.InteractiveObjectSetPlayerState(GetID(_ScriptName), i, 2);
+    end
     for i= 1, #arg, 1 do
         Logic.InteractiveObjectSetPlayerState(GetID(_ScriptName), arg[i], _State);
     end
@@ -433,12 +437,19 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
                 local IsAvailable = Logic.InteractiveObjectGetAvailability(ObjectID);
                 local HasSpace = Logic.InteractiveObjectHasPlayerEnoughSpaceForRewards(ObjectID, PlayerID);
                 local Disable = false;
+
                 if BaseCosts[1] ~= nil and EffectiveCosts[1] == nil and IsAvailable == true then
                     Disable = true;
                 end
                 if HasSpace == false then
                     Disable = true
                 end
+                if type(IO[ScriptName].Player) == "table" then
+                    Disable = not table.contains(IO[ScriptName].Player, PlayerID);
+                elseif type(IO[ScriptName].Player) == "number" then
+                    Disable = IO[ScriptName].Player ~= PlayerID;
+                end
+
                 if Disable == true then
                     XGUIEng.DisableButton(Widget, 1);
                 else
@@ -500,7 +511,9 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
         local CheckSettlement;
         if IO[ScriptName] and IO[ScriptName].IsUsed ~= true then
             local Key = "InteractiveObjectAvailable";
-            if Logic.InteractiveObjectGetAvailability(ObjectID) == false then
+            if (type(IO[ScriptName].Player) == "table" and not table.contains(IO[ScriptName].Player, PlayerID))
+            or (type(IO[ScriptName].Player) == "number" and IO[ScriptName].Player ~= PlayerID)
+            or Logic.InteractiveObjectGetAvailability(ObjectID) == false then
                 Key = "InteractiveObjectNotAvailable";
             end
             local DisabledKey;
