@@ -69,7 +69,7 @@ function ModuleNpcInteraction.Global:CreateNpc(_Data)
         Name              = _Data.Name,
         Active            = true,
         Type              = _Data.Type or 1,
-        Player            = _Data.Player or 1,
+        Player            = _Data.Player or {1, 2, 3, 4, 5, 6, 7, 8},
         WrongPlayerAction = _Data.WrongPlayerAction,
         Hero              = _Data.Hero,
         WrongHeroAction   = _Data.WrongHeroAction,

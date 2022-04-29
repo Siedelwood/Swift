@@ -64,7 +64,7 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- </tr>
 -- <tr>
 -- <td>Player</td>
--- <td>(number) Spieler, die mit dem NPC sprechen können.</td>
+-- <td>(number|table) Spieler, der/die mit dem NPC sprechen kann/können.</td>
 -- </tr>
 -- <tr>
 -- <td>WrongPlayerAction</td>
@@ -83,8 +83,9 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- @param[type=table]  _Data Definition des NPC
 -- @return[type=table] NPC Table
 -- @within Anwenderfunktionen
+--
 -- @usage
--- -- Einen NPC mit Aktion erstellen
+-- -- Einen NPC mit Aktion erstellen:
 -- MyNpc = API.NpcCompose {
 --     Name     = "HansWurst",
 --     Callback = function(_Data)
@@ -93,15 +94,33 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 --         -- mach was tolles
 --     end
 -- }
--- -- Einen NPC mit Aktion und Bedingung erstellen
+--
+-- -- Einen NPC mit Aktion und Bedingung erstellen:
+-- -- Der NPC kann nur angesprochen werden, wenn die Bedingung erfüllt ist.
 -- MyNpc = API.NpcCompose {
 --     Name      = "HansWurst",
 --     Condition = function(_Data)
 --         local NpcID = GetID(_Data.Name);
 --         -- prüfe irgend was
---         return MyConditon
+--         return MyConditon == true;
 --     end
 --     Callback  = function(_Data)
+--         local HeroID = QSB.LastHeroEntityID;
+--         local NpcID = GetID(_Data.Name);
+--         -- mach was tolles
+--     end
+-- }
+--
+-- -- Einen NPC für mehrere Spieler erstellen:
+-- -- Jeder gelistete Spieler kann mit dem NPC sprechen. Bei allen anderen
+-- -- Spielern wird eine optionale Aktion ausgeführt.
+-- MyNpc = API.NpcCompose {
+--     Name              = "HansWurst",
+--     Player            = {1, 2},
+--     WrongPlayerAction = function(_Data)
+--         API.Note("Ich rede nicht mit Euch!");
+--     end,
+--     Callback          = function(_Data)
 --         local HeroID = QSB.LastHeroEntityID;
 --         local NpcID = GetID(_Data.Name);
 --         -- mach was tolles
