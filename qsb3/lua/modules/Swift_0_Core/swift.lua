@@ -559,7 +559,7 @@ function Swift:DispatchScriptCommand(_ID, ...)
     if self.m_ScriptCommandRegister[_ID] then
         local PlayerID = GUI.GetPlayerID();
         local NamePlayerID = 8;
-        local PlayerName = Logic.GetPlayerName(PlayerID);
+        local PlayerName = Logic.GetPlayerName(NamePlayerID);
         local Parameters = self:EncodeScriptCommandParameters(unpack(arg));
         GUI.SetPlayerName(NamePlayerID, Parameters);
         GUI.SetSoldierPaymentLevel(_ID);
