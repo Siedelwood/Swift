@@ -95,6 +95,7 @@ function API.StartDialog(_Dialog, _Name, _PlayerID)
     if not PlayerID and not Framework.IsNetworkGame() then
         PlayerID = QSB.HumanPlayerID;
     end
+    assert(_PlayerID ~= nil);
     if type(_Dialog) ~= "table" then
         local Name = "Dialog #" ..(ModuleDialogSystem.Global.DialogCounter +1);
         error("API.StartDialog (" ..Name.. "): _Dialog must be a table!");

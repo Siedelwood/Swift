@@ -87,7 +87,7 @@ function Mission_FirstMapAction()
     --             Receiver = 1,
     --             Suggestion = "Deliver this shit!",
                 
-    --             Goal_Deliver("G_Dye", 50),
+    --             Goal_Deliver("G_Wood", 200),
     --             Trigger_Time(6)
     --         }
     --         return true;

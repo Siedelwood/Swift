@@ -1581,10 +1581,10 @@ function B_Reward_VictoryWithParty:CustomFunction(_Quest)
         local pos = GetPosition(market)
         Logic.CreateEffect(EGL_Effects.FXFireworks01,pos.X,pos.Y,0);
         Logic.CreateEffect(EGL_Effects.FXFireworks02,pos.X,pos.Y,0);
-        
+
         local Generated = self:GenerateParty(pID);
         QSB.VictoryWithPartyEntities[pID] = Generated;
-        
+
         Logic.ExecuteInLuaLocalState(string.format(
             [[
             if IsExisting(%d) then

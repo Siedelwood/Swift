@@ -210,9 +210,6 @@ function ModuleMilitaryLimit.Local:OnGameStart()
     QSB.ScriptEvents.ProducedBattalion = API.RegisterScriptEvent("Event_ProducedBattalion");
     QSB.ScriptEvents.RefilledBattalion = API.RegisterScriptEvent("Event_RefilledBattalion");
 
-    if Framework.IsNetworkGame() then
-        return;
-    end
     self:OverrideUI();
 end
 

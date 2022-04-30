@@ -113,6 +113,7 @@ function API.StartCutscene(_Cutscene, _Name, _PlayerID)
     if not PlayerID and not Framework.IsNetworkGame() then
         PlayerID = QSB.HumanPlayerID;
     end
+    assert(_PlayerID ~= nil);
     if type(_Cutscene) ~= "table" then
         local Name = "Cutscene #" ..(ModuleCutsceneSystem.Global.CutsceneCounter +1);
         error("API.StartCutscene (" ..Name.. "): _Cutscene must be a table!");

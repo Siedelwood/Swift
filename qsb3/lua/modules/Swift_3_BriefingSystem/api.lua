@@ -147,6 +147,7 @@ function API.StartBriefing(_Briefing, _Name, _PlayerID)
     if not PlayerID and not Framework.IsNetworkGame() then
         PlayerID = QSB.HumanPlayerID;
     end
+    assert(_PlayerID ~= nil);
     if type(_Briefing) ~= "table" then
         local Name = "Briefing #" ..(ModuleBriefingSystem.Global.BriefingCounter +1);
         error("API.StartBriefing (" ..Name.. "): _Briefing must be a table!");

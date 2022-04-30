@@ -21,9 +21,7 @@ ModuleConstructionControl = {
         KnockdownConditionCounter = 0,
         KnockdownConditions = {},
     },
-    Local = {
-
-    },
+    Local = {},
 }
 
 -- Global ------------------------------------------------------------------- --
