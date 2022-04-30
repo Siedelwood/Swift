@@ -2501,3 +2501,9 @@ function SCP.Core.UpdateCustomVariable(_Name, Value)
     Swift:UpdateCustomVariable(_Name, Value);
 end
 
+function SCP.Core.UpdateTexturePosition(_Category, _Key, _Value)
+    g_TexturePositions = g_TexturePositions or {};
+    g_TexturePositions[_Category] = g_TexturePositions[_Category] or {};
+    g_TexturePositions[_Category][_Key] = _Value;
+end
+

@@ -14,7 +14,7 @@ SCP = SCP or {
     Core = {}
 };
 
-QSB.Version = "Version 3.0.0 BETA (1.0.11)";
+QSB.Version = "Version 3.0.0 BETA (1.1.0)";
 QSB.Language = "de";
 QSB.HumanPlayerID = 1;
 QSB.ScriptCommandSequence = 2;
@@ -100,13 +100,14 @@ function Swift:LoadCore()
     -- Copy texture positions
     if self:IsLocalEnvironment() then
         StartSimpleJobEx(function()
-            -- FIXME We can not send complicated tables to global script when
-            -- in multiplayer mode.
-            GUI.SendScriptCommand(string.format(
-                [[g_TexturePositions = %s]],
-                table.tostring(g_TexturePositions)
-            ));
-            return true;
+            if Logic.GetTime() > 1 then
+                for k, v in pairs(g_TexturePositions) do
+                    for kk, vv in pairs(v) do
+                        Swift:DispatchScriptCommand(QSB.ScriptCommands.UpdateTexturePosition, k, kk, vv);
+                    end
+                end
+                return true;
+            end
         end);
     end
 end
@@ -523,6 +524,7 @@ function Swift:InitalizeScriptCommands()
     Swift:CreateScriptCommand("Cmd_SendScriptEvent", API.SendScriptEvent);
     Swift:CreateScriptCommand("Cmd_RegisterLoadscreenHidden", SCP.Core.LoadscreenHidden);
     Swift:CreateScriptCommand("Cmd_UpdateCustomVariable", SCP.Core.UpdateCustomVariable);
+    Swift:CreateScriptCommand("Cmd_UpdateTexturePosition", SCP.Core.UpdateTexturePosition);
 end
 
 function Swift:CreateScriptCommand(_Name, _Function)
@@ -830,6 +832,17 @@ function Swift_EventJob_WaitForLoadScreenHidden()
     if XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 0 then
         Swift:DispatchScriptCommand(QSB.ScriptCommands.RegisterLoadscreenHidden);
         Swift.m_LoadScreenHidden = true;
+        return true;
+    end
+end
+
+function Swift_EventJob_PostTexturesToGlobal()
+    if Logic.GetTime() > 1 then
+        for k, v in pairs(g_TexturePositions) do
+            for kk, vv in pairs(v) do
+                Swift:DispatchScriptCommand(QSB.ScriptCommands.UpdateTexturePosition, k, kk, v);
+            end
+        end
         return true;
     end
 end

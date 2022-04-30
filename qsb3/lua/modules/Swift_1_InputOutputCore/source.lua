@@ -63,10 +63,6 @@ function ModuleInputOutputCore.Global:OnGameStart()
     QSB.ScriptEvents.ChatClosed = API.RegisterScriptEvent("Event_ChatClosed");
 
     API.RegisterScriptCommand("Cmd_SetDecisionResult", SCP.InputOutputCore.SetDecisionResult);
-
-    if Framework.IsNetworkGame() then
-        return;
-    end
 end
 
 function ModuleInputOutputCore.Global:OnEvent(_ID, _Event, ...)
@@ -91,17 +87,16 @@ function ModuleInputOutputCore.Local:OnGameStart()
     QSB.ScriptEvents.ChatOpened = API.RegisterScriptEvent("Event_ChatOpened");
     QSB.ScriptEvents.ChatClosed = API.RegisterScriptEvent("Event_ChatClosed");
 
-    if Framework.IsNetworkGame() then
-        return;
-    end
     self:OverrideQuicksave();
     self:OverrideCheats();
     self:DialogOverwriteOriginal();
     self:DialogAltF4Hotkey();
     -- Some kind of wierd timing problem...
     StartSimpleJobEx(function()
-        self:OverrideDebugInput();
-        return true;
+        if Logic.GetTime() > 1 then
+            self:OverrideDebugInput();
+            return true;
+        end
     end);
 end
 
@@ -248,14 +243,18 @@ function ModuleInputOutputCore.Local:DialogAltF4Action()
             if _Yes then 
                 Framework.ExitGame();
             end
-            Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
+            if not Framework.IsNetworkGame() then
+                Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
+            end
             if not ModuleDisplayCore or not ModuleDisplayCore.Local.PauseScreenShown then
                 XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 0);
             end
             ModuleInputOutputCore.Local:DialogAltF4Hotkey();
         end
     );
-    Game.GameTimeSetFactor(GUI.GetPlayerID(), 0.0000001);
+    if not Framework.IsNetworkGame() then
+        Game.GameTimeSetFactor(GUI.GetPlayerID(), 0.0000001);
+    end
     XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 1);
 end
 
@@ -322,14 +321,14 @@ function ModuleInputOutputCore.Local:OpenDialog(_Title, _Text, _Action)
         if type(_Action) == "function" then
             self.Requester.ActionFunction = _Action;
             local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)";
-            Action = Action .. "; Game.GameTimeSetFactor(GUI.GetPlayerID(), 1)";
+            Action = Action .. "; if not Framework.IsNetworkGame() then Game.GameTimeSetFactor(GUI.GetPlayerID(), 1) end";
             Action = Action .. "; XGUIEng.PopPage()";
             Action = Action .. "; ModuleInputOutputCore.Local.Callback(ModuleInputOutputCore.Local, GUI.GetPlayerID())";
             XGUIEng.SetActionFunction(RequesterDialog_Ok, Action);
         else
             self.Requester.ActionFunction = nil;
             local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)";
-            Action = Action .. "; Game.GameTimeSetFactor(GUI.GetPlayerID(), 1)";
+            Action = Action .. "; if not Framework.IsNetworkGame() then Game.GameTimeSetFactor(GUI.GetPlayerID(), 1) end";
             Action = Action .. "; XGUIEng.PopPage()";
             Action = Action .. "; ModuleInputOutputCore.Local.Callback(ModuleInputOutputCore.Local, GUI.GetPlayerID())";
             XGUIEng.SetActionFunction(RequesterDialog_Ok, Action);
@@ -343,8 +342,10 @@ function ModuleInputOutputCore.Local:OpenDialog(_Title, _Text, _Action)
         XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/QuickSave", 0);
         XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/SaveGame", 0);
         self.DialogWindowShown = true;
-        Game.GameTimeSetFactor(GUI.GetPlayerID(), 0.0000001);
-        XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 1);
+        if not Framework.IsNetworkGame() then
+            Game.GameTimeSetFactor(GUI.GetPlayerID(), 0.0000001);
+            XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 1);
+        end
     else
         self:DialogQueuePush("OpenDialog", {_Title, _Text, _Action});
     end
@@ -375,12 +376,12 @@ function ModuleInputOutputCore.Local:OpenRequesterDialog(_Title, _Text, _Action,
             self.Requester.ActionRequester = _Action;
         end
         local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)";
-        Action = Action .. "; Game.GameTimeSetFactor(GUI.GetPlayerID(), 1)";
+        Action = Action .. "; if not Framework.IsNetworkGame() then Game.GameTimeSetFactor(GUI.GetPlayerID(), 1) end";
         Action = Action .. "; XGUIEng.PopPage()";
         Action = Action .. "; ModuleInputOutputCore.Local.CallbackRequester(ModuleInputOutputCore.Local, true, GUI.GetPlayerID())"
         XGUIEng.SetActionFunction(RequesterDialog_Yes, Action);
         local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)"
-        Action = Action .. "; Game.GameTimeSetFactor(GUI.GetPlayerID(), 1)";
+        Action = Action .. "; if not Framework.IsNetworkGame() then Game.GameTimeSetFactor(GUI.GetPlayerID(), 1) end";
         Action = Action .. "; XGUIEng.PopPage()";
         Action = Action .. "; ModuleInputOutputCore.Local.CallbackRequester(ModuleInputOutputCore.Local, false, GUI.GetPlayerID())"
         XGUIEng.SetActionFunction(RequesterDialog_No, Action);
@@ -402,7 +403,7 @@ function ModuleInputOutputCore.Local:OpenSelectionDialog(_Title, _Text, _Action,
         CustomGame.Knight = 0;
 
         local Action = "XGUIEng.ShowWidget(RequesterDialog, 0)"
-        Action = Action .. "; Game.GameTimeSetFactor(GUI.GetPlayerID(), 1)";
+        Action = Action .. "; if not Framework.IsNetworkGame() then Game.GameTimeSetFactor(GUI.GetPlayerID(), 1) end";
         Action = Action .. "; XGUIEng.PopPage()";
         Action = Action .. "; XGUIEng.PopPage()";
         Action = Action .. "; XGUIEng.PopPage()";
@@ -465,7 +466,9 @@ end
 
 function ModuleInputOutputCore_Local_InputBoxJob()
     Input.ChatMode();
-    Game.GameTimeSetFactor(GUI.GetPlayerID(), 0.0000001);
+    if not Framework.IsNetworkGame() then
+        Game.GameTimeSetFactor(GUI.GetPlayerID(), 0.0000001);
+    end
     XGUIEng.SetText("/InGame/Root/Normal/ChatInput/ChatInput", "");
     XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 1);
     XGUIEng.ShowWidget("/InGame/Root/Normal/ChatInput", 1);
@@ -489,24 +492,34 @@ function ModuleInputOutputCore.Local:PrepareInputVariable()
             XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 0);
         end
         local ChatMessage = XGUIEng.GetText("/InGame/Root/Normal/ChatInput/ChatInput");
+        if Swift.m_DevelopingShell then
+            Swift.m_ChatBoxInput = ChatMessage;
+            ModuleInputOutputCore.Local:LocalToGlobal(ChatMessage);
+        end
         g_Chat.JustClosed = 1;
-        ModuleInputOutputCore.Local:LocalToGlobal(ChatMessage);
-        Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
+        if not Framework.IsNetworkGame() then
+            Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
+        end
         Input.GameMode();
+        -- In multiplayer every entered command will be shown in the respective
+        -- chat log and as message on screen. So at least the persons talked to
+        -- will know, if a command is entered.
+        -- BUT debug shell should always be disabled in multiplayer!
+        if ChatMessage:len() > 0 and Framework.IsNetworkGame() then
+            GUI.SendChatMessage(ChatMessage, GUI.GetPlayerID(), g_Chat.CurrentMessageType, g_Chat.CurrentWhisperTarget);
+        end
     end
 
-    GUI_Chat.Abort = function()
+    if not Framework.IsNetworkGame() then
+        GUI_Chat.Abort = function()
+        end
     end
 end
 
 function ModuleInputOutputCore.Local:LocalToGlobal(_Text)
     _Text = (_Text == nil and "") or _Text;
-    API.SendScriptEvent(QSB.ScriptEvents.ChatClosed, _Text);
-    GUI.SendScriptCommand(string.format(
-        [[API.SendScriptEvent(QSB.ScriptEvents.ChatClosed, "%s", %d)]],
-        _Text,
-        GUI.GetPlayerID()
-    ));
+    API.SendScriptEvent(QSB.ScriptEvents.ChatClosed, _Text, GUI.GetPlayerID());
+    API.SendScriptEventToGlobal(QSB.ScriptEvents.ChatClosed, _Text, GUI.GetPlayerID());
     Swift:SetProcessDebugCommands(false);
 end
 
@@ -915,7 +928,9 @@ function QSB.TextWindow:Show()
         XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatLogSlider",1);
     end
     if self.Pause then
-        Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
+        if not Framework.IsNetworkGame() then
+            Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
+        end
     end
 end
 
@@ -943,7 +958,9 @@ function QSB.TextWindow:Prepare()
 
     function GUI_Chat.ToggleWhisperTargetUpdate()
         if self.Pause then
-            Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
+            if not Framework.IsNetworkGame() then
+                Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
+            end
         end
     end
 

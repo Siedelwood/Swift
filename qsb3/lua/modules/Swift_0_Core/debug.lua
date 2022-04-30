@@ -94,6 +94,9 @@ function Swift:InitalizeQuestTrace()
 end
 
 function Swift:InitalizeDebugHotkeys()
+    if Network.IsNATReady ~= nil and Framework.IsNetworkGame() then
+        return;
+    end
     if self.m_DevelopingCheats then
         KeyBindings_EnableDebugMode(1);
         KeyBindings_EnableDebugMode(2);
@@ -108,6 +111,9 @@ function Swift:InitalizeDebugHotkeys()
 end
 
 function Swift:InitalizeQsbDebugHotkeys()
+    if Framework.IsNetworkGame() then
+        return;
+    end
     Input.KeyBindDown(Keys.ModifierControl + Keys.ModifierShift + Keys.ModifierAlt + Keys.R, "Swift:ExecuteQsbDebugHotkey('RestartMap')", 30, false);
 end
 
@@ -121,34 +127,51 @@ function Swift:ExecuteQsbDebugHotkey(_Type)
 end
 
 function Swift:InitalizeQsbDebugShell()
-    GUI_Chat.Abort = function() end
+    if not Framework.IsNetworkGame() then
+        GUI_Chat.Abort = function()
+        end
+    end
 
     GUI_Chat.Confirm = function()
         local MotherWidget = "/InGame/Root/Normal/ChatInput";
         XGUIEng.ShowWidget(MotherWidget, 0);
-        Swift.m_ChatBoxInput = XGUIEng.GetText(MotherWidget.. "/ChatInput");
+        local ChatMessage = XGUIEng.GetText("/InGame/Root/Normal/ChatInput/ChatInput");
         g_Chat.JustClosed = 1;
-        Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
+        if not Framework.IsNetworkGame() then
+            Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
+        end
         Input.GameMode();
+        if ChatMessage:len() > 0 and Framework.IsNetworkGame() then
+            if Swift.m_DevelopingShell then
+                Swift.m_ChatBoxInput = ChatMessage;
+            end
+            GUI.SendChatMessage(ChatMessage, GUI.GetPlayerID(), g_Chat.CurrentMessageType, g_Chat.CurrentWhisperTarget);
+        end
     end
 
-    QSB_DEBUG_InputBoxJob = function()
-        -- Not allowed
-        if not Swift.m_DevelopingShell then
-            return true;
+    if not Framework.IsNetworkGame() then
+        QSB_DEBUG_InputBoxJob = function()
+            -- Not allowed
+            if not Swift.m_DevelopingShell then
+                return true;
+            end
+            if ModuleInputOutputCore then
+                return true;
+            end
+            -- Call cheap version
+            Swift.m_ProcessDebugCommands = true;
+            Swift:DisplayQsbDebugShell();
         end
-        if ModuleInputOutputCore then
-            return true;
-        end
-        -- Call cheap version
-        Swift.m_ProcessDebugCommands = true;
-        Swift:DisplayQsbDebugShell();
+        Input.KeyBindDown(Keys.ModifierShift + Keys.OemPipe, "Swift:OpenQsbDebugShell()", 30, false);
     end
-
-    Input.KeyBindDown(Keys.ModifierShift + Keys.OemPipe, "Swift:OpenQsbDebugShell()", 30, false);
 end
 
 function Swift:OpenQsbDebugShell()
+    -- Text input will only be evaluated in the original version of the game
+    -- and in Singleplayer History Edition.
+    if Network.IsNATReady ~= nil and Framework.IsNetworkGame() then
+        return;
+    end
     StartSimpleHiResJob('QSB_DEBUG_InputBoxJob');
 end
 
@@ -164,7 +187,9 @@ function Swift:DisplayQsbDebugShell()
     local MotherWidget = "/InGame/Root/Normal/ChatInput";
     if not self.m_DebugInputShown then
         Input.ChatMode();
-        Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
+        if not Framework.IsNetworkGame() then
+            Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
+        end
         XGUIEng.ShowWidget(MotherWidget, 1);
         XGUIEng.SetText(MotherWidget.. "/ChatInput", "");
         XGUIEng.SetFocus(MotherWidget.. "/ChatInput");

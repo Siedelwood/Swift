@@ -123,7 +123,6 @@ function ModuleCastleStore.Global.CastleStore:New(_PlayerID)
         self.UpdateCastleStoreInitalized = true;
         API.StartHiResJob(function()
             ModuleCastleStore.Global.CastleStore:UpdateStores()
-        
         end);
     end
     Logic.ExecuteInLuaLocalState([[

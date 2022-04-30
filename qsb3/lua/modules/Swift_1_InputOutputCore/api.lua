@@ -408,6 +408,11 @@ end
 -- API.ShowTextInput(true);
 --
 function API.ShowTextInput(_AllowDebug)
+    -- Text input will only be evaluated in the original version of the game
+    -- and in Singleplayer History Edition.
+    if API.IsHistoryEditionNetworkGame() then
+        return;
+    end
     if not GUI then
         Logic.ExecuteInLuaLocalState(string.format(
             [[API.ShowTextInput(%s)]],
