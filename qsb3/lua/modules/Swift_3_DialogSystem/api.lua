@@ -155,7 +155,7 @@ function API.AddDialogPages(_Dialog)
                 error("AF (" ..Name.. ", Page #" ..(#_Dialog+1).. "): Position and Target can not be used both at the same time!");
                 return;
             end
-            
+
             _Page.__Legit = true;
             _Page.GetSelected = function(self)
                 if self.MC then
@@ -163,7 +163,7 @@ function API.AddDialogPages(_Dialog)
                 end
                 return 0;
             end
-            
+
             if _Page.Rotation == nil then
                 if _Page.Target ~= nil then
                     local ID = GetID(_Page.Target);

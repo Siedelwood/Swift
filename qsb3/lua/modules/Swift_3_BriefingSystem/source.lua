@@ -173,42 +173,44 @@ end
 function ModuleBriefingSystem.Global:TransformAnimations(_PlayerID)
     if self.Briefing[_PlayerID].PageAnimations then
         for k, v in pairs(self.Briefing[_PlayerID].PageAnimations) do
-            local PageID = self:GetPageIDByName(_PlayerID, k);
-            self.Briefing[_PlayerID][PageID].Animations = {};
-            self.Briefing[_PlayerID][PageID].Animations.PurgeOld = v.PurgeOld == true;
-            for i= 1, #v, 1 do               
-                -- Relaive position
-                if #v[i] == 9 then
-                    table.insert(self.Briefing[_PlayerID][PageID].Animations, {
-                        Duration = v[i][9] or (2 * 60),
+            local PageID = self:GetPageIDByAttribute(_PlayerID, "AnimName", k);
+            if PageID ~= 0 then
+                self.Briefing[_PlayerID][PageID].Animations = {};
+                self.Briefing[_PlayerID][PageID].Animations.PurgeOld = v.PurgeOld == true;
+                for i= 1, #v, 1 do               
+                    -- Relaive position
+                    if #v[i] == 9 then
+                        table.insert(self.Briefing[_PlayerID][PageID].Animations, {
+                            Duration = v[i][9] or (2 * 60),
 
-                        Start = {
-                            Position = (type(v[i][1]) ~= "table" and {v[i][1],0}) or v[i][1],
-                            Rotation = v[i][2],
-                            Zoom     = v[i][3],
-                            Angle    = v[i][4],
-                        },
-                        End = {
-                            Position = (type(v[i][5]) ~= "table" and {v[i][5],0}) or v[i][5],
-                            Rotation = v[i][6],
-                            Zoom     = v[i][7],
-                            Angle    = v[i][8],
-                        },
-                    });
-                -- Vector
-                elseif #v[i] == 5 then
-                    table.insert(self.Briefing[_PlayerID][PageID].Animations, {
-                        Duration = v[i][5] or (2 * 60),
+                            Start = {
+                                Position = (type(v[i][1]) ~= "table" and {v[i][1],0}) or v[i][1],
+                                Rotation = v[i][2],
+                                Zoom     = v[i][3],
+                                Angle    = v[i][4],
+                            },
+                            End = {
+                                Position = (type(v[i][5]) ~= "table" and {v[i][5],0}) or v[i][5],
+                                Rotation = v[i][6],
+                                Zoom     = v[i][7],
+                                Angle    = v[i][8],
+                            },
+                        });
+                    -- Vector
+                    elseif #v[i] == 5 then
+                        table.insert(self.Briefing[_PlayerID][PageID].Animations, {
+                            Duration = v[i][5] or (2 * 60),
 
-                        Start = {
-                            Position = (type(v[i][1]) ~= "table" and {v[i][1],0}) or v[i][1],
-                            LookAt   = (type(v[i][2]) ~= "table" and {v[i][1],0}) or v[i][2],
-                        },
-                        End = {
-                            Position = (type(v[i][3]) ~= "table" and {v[i][5],0}) or v[i][3],
-                            LookAt   = (type(v[i][4]) ~= "table" and {v[i][1],0}) or v[i][4],
-                        },
-                    });
+                            Start = {
+                                Position = (type(v[i][1]) ~= "table" and {v[i][1],0}) or v[i][1],
+                                LookAt   = (type(v[i][2]) ~= "table" and {v[i][1],0}) or v[i][2],
+                            },
+                            End = {
+                                Position = (type(v[i][3]) ~= "table" and {v[i][5],0}) or v[i][3],
+                                LookAt   = (type(v[i][4]) ~= "table" and {v[i][1],0}) or v[i][4],
+                            },
+                        });
+                    end
                 end
             end
         end
@@ -326,16 +328,20 @@ end
 
 function ModuleBriefingSystem.Global:GetPageIDByName(_PlayerID, _Name)
     if type(_Name) == "string" then
-        if self.Briefing[_PlayerID] ~= nil then
-            for i= 1, #self.Briefing[_PlayerID], 1 do
-                if type(self.Briefing[_PlayerID][i]) == "table" and self.Briefing[_PlayerID][i].Name == _Name then
-                    return i;
-                end
-            end
-        end
-        return 0;
+        return self:GetPageIDByAttribute(_PlayerID, "Name", _Name);
     end
     return _Name;
+end
+
+function ModuleBriefingSystem.Global:GetPageIDByAttribute(_PlayerID, _Key, _Value)
+    if self.Briefing[_PlayerID] ~= nil then
+        for i= 1, #self.Briefing[_PlayerID], 1 do
+            if type(self.Briefing[_PlayerID][i]) == "table" and self.Briefing[_PlayerID][i][_Key] == _Value then
+                return i;
+            end
+        end
+    end
+    return 0;
 end
 
 function ModuleBriefingSystem.Global:CanStartBriefing(_PlayerID)
@@ -833,16 +839,20 @@ end
 
 function ModuleBriefingSystem.Local:GetPageIDByName(_PlayerID, _Name)
     if type(_Name) == "string" then
-        if self.Briefing[_PlayerID] ~= nil then
-            for i= 1, #self.Briefing[_PlayerID], 1 do
-                if type(self.Briefing[_PlayerID][i]) == "table" and self.Briefing[_PlayerID][i].Name == _Name then
-                    return i;
-                end
-            end
-        end
-        return 0;
+        return self:GetPageIDByAttribute(_PlayerID, "Name", _Name);
     end
     return _Name;
+end
+
+function ModuleBriefingSystem.Global:GetPageIDByAttribute(_PlayerID, _Key, _Value)
+    if self.Briefing[_PlayerID] ~= nil then
+        for i= 1, #self.Briefing[_PlayerID], 1 do
+            if type(self.Briefing[_PlayerID][i]) == "table" and self.Briefing[_PlayerID][i][_Key] == _Value then
+                return i;
+            end
+        end
+    end
+    return 0;
 end
 
 function ModuleBriefingSystem.Local:OverrideThroneRoomFunctions()

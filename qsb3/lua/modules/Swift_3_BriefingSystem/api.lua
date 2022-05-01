@@ -225,10 +225,11 @@ function API.AddBriefingPages(_Briefing)
 
             -- Simple camera position
             if _Page.Position then
-                Identifier = #_Briefing +1;
+                Identifier = "" ..(#_Briefing +1);
                 if _Page.Name then
                     Identifier = _Page.Name;
                 end
+                _Page.AnimName = Identifier;
 
                 local Angle = _Page.Angle;
                 if not Angle then

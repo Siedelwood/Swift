@@ -388,7 +388,7 @@ function ModuleDialogSystem.Local:DisplayPage(_PlayerID, _PageData)
             Camera.RTS_FollowEntity(0);
         end
         if _PageData.Position then
-            Camera.RTS_ScrollSetLookAt(_PageData.Position.X, _PageData.Position.Y);
+            Camera.RTS_SetLookAtPosition(_PageData.Position.X, _PageData.Position.Y);
         end
         if _PageData.Zoom then
             Camera.RTS_SetZoomFactorMin(_PageData.Zoom -0.00001);

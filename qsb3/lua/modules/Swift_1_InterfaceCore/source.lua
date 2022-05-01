@@ -87,6 +87,15 @@ QSB.PlayerNames = {};
 function ModuleInterfaceCore.Global:OnGameStart()
     self.HumanKnightType = Logic.GetEntityType(Logic.GetKnightID(QSB.HumanPlayerID));
     self.HumanPlayerID = QSB.HumanPlayerID;
+    self:SetupFacesForMultiplayer();
+end
+
+function ModuleInterfaceCore.Global:SetupFacesForMultiplayer()
+    if Framework.IsNetworkGame() then
+        for i= 1, 8 do
+            API.SetPlayerPortrait(i);
+        end
+    end
 end
 
 function ModuleInterfaceCore.Global:SetControllingPlayer(_OldPlayerID, _NewPlayerID, _NewStatisticsName)
@@ -612,15 +621,15 @@ end
 
 function ModuleInterfaceCore.Local:SetPlayerPortraitByPrimaryKnight(_PlayerID)
     local KnightID = Logic.GetKnightID(_PlayerID);
-    if KnightID == 0 then
-        return;
-    end
-    local KnightType = Logic.GetEntityType(KnightID);
-    local KnightTypeName = Logic.GetEntityTypeName(KnightType);
-    local HeadModelName = "H" .. string.sub(KnightTypeName, 2, 8) .. "_" .. string.sub(KnightTypeName, 9);
+    HeadModelName = "H_NPC_Generic_Trader";
+    if KnightID ~= 0 then
+        local KnightType = Logic.GetEntityType(KnightID);
+        local KnightTypeName = Logic.GetEntityTypeName(KnightType);
+        local HeadModelName = "H" .. string.sub(KnightTypeName, 2, 8) .. "_" .. string.sub(KnightTypeName, 9);
 
-    if not Models["Heads_" .. HeadModelName] then
-        HeadModelName = "H_NPC_Generic_Trader";
+        if not Models["Heads_" .. HeadModelName] then
+            HeadModelName = "H_NPC_Generic_Trader";
+        end
     end
     g_PlayerPortrait[_PlayerID] = HeadModelName;
 end
