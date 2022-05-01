@@ -36756,7 +36756,7 @@ B_Reward_Briefing.GetRewardTable = function(self, _Quest)
 end
 
 B_Reward_Briefing.CustomFunction = function(self, _Quest)
-    _G[self.Function](self, self.BriefingName, _Quest.ReceivingPlayer);
+    _G[self.Function](self.BriefingName, _Quest.ReceivingPlayer);
 end
 
 Swift:RegisterBehavior(B_Reward_Briefing);

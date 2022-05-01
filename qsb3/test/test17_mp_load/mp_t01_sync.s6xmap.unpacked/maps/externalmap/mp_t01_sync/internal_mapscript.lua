@@ -91,6 +91,111 @@ function Mission_OnQsbLoaded()
     TEST_COMMAND = API.RegisterScriptCommand("TestFunction", TestFunction);
     CreateTestIOs();
     CreateTestNPCs();
+    CreateTestBriefingQuests();
+    CreateTestDialogQuests();
+end
+
+-- -------------------------------------------------------------------------- --
+-- Briefing
+
+function CreateTestBriefingQuests()
+    for i= 1, 2 do
+        API.CreateQuest {
+            Name        = "BriefingQuest" ..i,
+            Receiver    = i,
+            Suggestion  = "Da ist so ein bärtiger Typ...",
+
+            Goal_NPC("NPC_Briefing" ..i),
+            Reward_Briefing("P" ..i.. "_Briefing1", "TestBriefing"),
+            Trigger_Time(5)
+        }
+    end
+end
+
+function TestBriefing(_Name, _PlayerID)
+    local Briefing = {
+        DisableFoW = true,
+        EnableSky = true,
+        DisableBoderPins = true,
+    };
+    local AP, ASP, AAN = API.AddBriefingPages(Briefing);
+    local HeroID = QSB.Npc.LastHeroEntityID;
+
+    ASP("NPC", "Was für ein wunderschöner Tag, um stundenlang zu beten, auf"..
+        "das mein Bart noch länger werde?", "NPC_Briefing" .._PlayerID, true);
+    AP {
+        Name  = "ChoicePage1",
+        Title = "",
+        Text  = "",
+        MC    = {
+            {"Viel Glück!", "Option1"},
+            {"Schon Haarwuchsmittel probiert?", "Option2"},
+        }
+    }
+
+    local Page = ASP("Held", "Tu, was du nicht lassen kannst.", HeroID, true);
+    Page.Name = "Option1";
+    ASP("NPC", "Allah wird mir Kraft geben!", "NPC_Briefing" .._PlayerID, true);
+    AP();
+    local Page = ASP("Held", "Ich kenne ein gutes Haarwuchsmittel", HeroID, true);
+    Page.Name = "Option2";
+    ASP("NPC", "Wirklich? Danke!", "NPC_Briefing" .._PlayerID, true);
+
+    API.StartBriefing(Briefing, _Name, _PlayerID);
+end
+
+-- -------------------------------------------------------------------------- --
+-- Dialog
+
+function CreateTestDialogQuests()
+    for i= 1, 2 do
+        API.CreateQuest {
+            Name        = "DialogQuest" ..i,
+            Receiver    = i,
+            Suggestion  = "Eine Nonne hat meine Stadt besucht.",
+
+            Goal_NPC("NPC_Dialog" ..i),
+            Reward_Dialog("P" ..i.. "_Dialog1", "TestDialog"),
+            Trigger_Time(5)
+        }
+    end
+end
+
+function TestDialog(_Name, _PlayerID)
+    local Dialog = {
+        DisableFoW = true,
+        EnableSky = true,
+        DisableBoderPins = true,
+    };
+    local AP, ASP, AAN = API.AddDialogPages(Dialog);
+    local HeroID = QSB.Npc.LastHeroEntityID;
+
+    ASP(6, "NPC_Dialog" .._PlayerID, "Gott hat mich erleuchtet. Ich werde".. 
+        " nicht mehr sündigen und die Kerzen in Frieden lassen.", true);
+    AP {
+        Sender       = _PlayerID,
+        Title        = "",
+        Text         = "",
+        Target       = HeroID,
+        DialogCamera = true,
+        MC           = {
+            {"Urgh! Mir wird schlecht.", "Option1"},
+            {"Hätte noch Reserven.", "Option2"},
+        }
+    }
+
+    local Page = ASP(_PlayerID, HeroID, "Ähm... ja. Schön für dich! Ich muss"..
+        " mal reiern gehen...", true);
+    Page.Name = "Option1";
+    ASP(6, "NPC_Dialog" .._PlayerID, "Ich hab ein Mittel gegen Übelkeit.", true);
+    AP();
+    local Page = ASP(_PlayerID, HeroID, "Nicht doch! Ich hab noch welche in"..
+        " meinem Keller vorrätig. Die müssen weg, bevor sie ablaufen", true);
+    Page.Name = "Option2";
+    ASP(6, "NPC_Dialog" .._PlayerID, "Der Herr stellt mich auf die Probe!"..
+        " Doch ich bleibe stark!", true);
+
+    API.StartDialog(Dialog, _Name, _PlayerID);
 end
 
 -- -------------------------------------------------------------------------- --
