@@ -68,6 +68,7 @@ function Swift:LoadCore()
         self:InstallBehaviorGlobal();
         self:OverrideQuestSystemGlobal();
         self:InitalizeCallbackGlobal();
+        self:OverrideOnMPGameStart();
         self:DisableLogicFestival();
         -- Fixme: Causes game freeze
         -- self:LogGlobalCFunctions();
@@ -96,7 +97,6 @@ function Swift:LoadCore()
     self:LoadExternFiles();
     self:LoadBehaviors();
     -- Random seed
-    self:CreateRandomSeed();
     -- Copy texture positions
     if self:IsLocalEnvironment() then
         StartSimpleJobEx(function()
@@ -153,20 +153,31 @@ end
 
 function Swift:CreateRandomSeed()
     local Seed = 0;
-    if Framework.IsNetworkGame() then
-        for i= 1, Framework.GetMapMaxPlayers(Network.GetCurrentMap()) do
-            if Logic.PlayerGetGameState(i) < 2 and Logic.PlayerGetIsHumanFlag(i) then
-                for s in Logic.GetPlayerName(i):gmatch(".") do
-                    Seed = Seed + s:byte();
-                end
+    local MapName = Framework.GetCurrentMapName();
+    local MapType = Framework.GetCurrentMapTypeAndCampaignName();
+    local SeedString = Framework.GetMapGUID(MapName, MapType);
+    for PlayerID = 1, 8 do
+        if Logic.PlayerGetIsHumanFlag(PlayerID) and Logic.PlayerGetGameState(PlayerID) ~= 0 then
+            if GUI.GetPlayerID() == PlayerID then
+                local PlayerName = Logic.GetPlayerName(PlayerID);
+                local DateText = Framework.GetSystemTimeDateString();
+                SeedString = SeedString .. PlayerName .. " " .. DateText;
             end
+            break;
         end
-    else
-        local DateText = Framework.GetSystemTimeDateString():sub(15, 23):gsub("'", "");
-        Seed = tonumber("1" ..DateText);
     end
-    math.randomseed(Seed);
-    return math.random(1, 100);
+    for s in SeedString:gmatch(".") do
+        Seed = Seed + s:byte();
+    end
+    Swift:DispatchScriptCommand(QSB.ScriptCommands.ProclaimateRandomSeed, Seed);
+end
+
+function Swift:OverrideOnMPGameStart()
+    GameCallback_OnMPGameStart_Orig_Swift = GameCallback_OnMPGameStart;
+    GameCallback_OnMPGameStart = function()
+        GameCallback_OnMPGameStart_Orig_Swift();
+        Logic.ExecuteInLuaLocalState("Swift:CreateRandomSeed()");
+    end
 end
 
 -- Quests
@@ -522,6 +533,7 @@ end
 
 function Swift:InitalizeScriptCommands()
     Swift:CreateScriptCommand("Cmd_SendScriptEvent", API.SendScriptEvent);
+    Swift:CreateScriptCommand("Cmd_ProclaimateRandomSeed", SCP.Core.ProclaimateRandomSeed);
     Swift:CreateScriptCommand("Cmd_RegisterLoadscreenHidden", SCP.Core.LoadscreenHidden);
     Swift:CreateScriptCommand("Cmd_UpdateCustomVariable", SCP.Core.UpdateCustomVariable);
     Swift:CreateScriptCommand("Cmd_UpdateTexturePosition", SCP.Core.UpdateTexturePosition);
@@ -556,6 +568,7 @@ function Swift:DispatchScriptCommand(_ID, ...)
     if not self:IsLocalEnvironment() then
         return;
     end
+    assert(_ID ~= nil);
     if self.m_ScriptCommandRegister[_ID] then
         local PlayerID = GUI.GetPlayerID();
         local NamePlayerID = 8;
@@ -563,6 +576,10 @@ function Swift:DispatchScriptCommand(_ID, ...)
         local Parameters = self:EncodeScriptCommandParameters(unpack(arg));
         GUI.SetPlayerName(NamePlayerID, Parameters);
         GUI.SetSoldierPaymentLevel(_ID);
+        info(string.format(
+            "Dispatching script command %s to global.",
+            self.m_ScriptCommandRegister[_ID]
+        ), true);
         GUI.SetPlayerName(NamePlayerID, PlayerName);
         GUI.SetSoldierPaymentLevel(PlayerSoldierPaymentLevel[PlayerID]);
     end
@@ -574,6 +591,10 @@ function Swift:ProcessScriptCommand(_PlayerID, _ID)
     end
     local PlayerName = Logic.GetPlayerName(8);
     local Parameters = self:DecodeScriptCommandParameters(PlayerName);
+    info(string.format(
+        "Processing script command %s in global.",
+        self.m_ScriptCommandRegister[_ID][1]
+    ), true);
     self.m_ScriptCommandRegister[_ID][2](unpack(Parameters));
 end
 

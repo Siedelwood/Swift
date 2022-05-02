@@ -2497,6 +2497,13 @@ function SCP.Core.LoadscreenHidden()
     Swift.m_LoadScreenHidden = true;
 end
 
+function SCP.Core.ProclaimateRandomSeed(_Seed)
+    math.randomseed(_Seed);
+    local void = math.random(1, 100);
+    Logic.ExecuteInLuaLocalState(string.format([[math.randomseed(%d); math.random(1, 100)]], _Seed));
+    info("Created seed: " .._Seed);
+end
+
 function SCP.Core.UpdateCustomVariable(_Name, Value)
     Swift:UpdateCustomVariable(_Name, Value);
 end

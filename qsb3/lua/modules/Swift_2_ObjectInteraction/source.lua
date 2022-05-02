@@ -445,9 +445,9 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
                 if HasSpace == false then
                     Disable = true
                 end
-                if type(IO[ScriptName].Player) == "table" then
+                if IO[ScriptName] and type(IO[ScriptName].Player) == "table" then
                     Disable = not table.contains(IO[ScriptName].Player, PlayerID);
-                elseif type(IO[ScriptName].Player) == "number" then
+                elseif IO[ScriptName] and type(IO[ScriptName].Player) == "number" then
                     Disable = IO[ScriptName].Player ~= PlayerID;
                 end
 
@@ -512,8 +512,8 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
         local CheckSettlement;
         if IO[ScriptName] and IO[ScriptName].IsUsed ~= true then
             local Key = "InteractiveObjectAvailable";
-            if (type(IO[ScriptName].Player) == "table" and not table.contains(IO[ScriptName].Player, PlayerID))
-            or (type(IO[ScriptName].Player) == "number" and IO[ScriptName].Player ~= PlayerID)
+            if (IO[ScriptName] and type(IO[ScriptName].Player) == "table" and not table.contains(IO[ScriptName].Player, PlayerID))
+            or (IO[ScriptName] and type(IO[ScriptName].Player) == "number" and IO[ScriptName].Player ~= PlayerID)
             or Logic.InteractiveObjectGetAvailability(ObjectID) == false then
                 Key = "InteractiveObjectNotAvailable";
             end
