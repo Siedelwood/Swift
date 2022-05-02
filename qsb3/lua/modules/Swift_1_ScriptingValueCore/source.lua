@@ -42,7 +42,7 @@ ModuleScriptingValue = {
 -- Global ------------------------------------------------------------------- --
 
 function ModuleScriptingValue.Global:OnGameStart()
-    if QSB.HistoryEdition == true then
+    if API.IsHistoryEdition() then
         ModuleScriptingValue.Shared.SV.Game = "HistoryEdition";
     end
     QSB.ScriptingValue = ModuleScriptingValue.Shared.SV[ModuleScriptingValue.Shared.SV.Game];
@@ -51,7 +51,7 @@ end
 -- Local -------------------------------------------------------------------- --
 
 function ModuleScriptingValue.Local:OnGameStart()
-    if QSB.HistoryEdition == true then
+    if API.IsHistoryEdition() then
         ModuleScriptingValue.Shared.SV.Game = "HistoryEdition";
     end
     QSB.ScriptingValue = ModuleScriptingValue.Shared.SV[ModuleScriptingValue.Shared.SV.Game];
