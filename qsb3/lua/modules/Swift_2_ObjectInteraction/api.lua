@@ -109,6 +109,12 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- <td>ja</td>
 -- </tr>
 -- <tr>
+-- <td>Player</td>
+-- <td>number|table</td>
+-- <td>Spieler, der/die das Objekt aktivieren kann/können.</td>
+-- <td>ja</td>
+-- </tr>
+-- <tr>
 -- <td>Waittime</td>
 -- <td>number</td>
 -- <td>Die Zeit, die ein Held benötigt, um das Objekt zu aktivieren.</td>

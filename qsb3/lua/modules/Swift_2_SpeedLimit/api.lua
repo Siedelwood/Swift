@@ -22,7 +22,6 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 -- @param[type=boolean] _Flag Speedbremse ist aktiv
 -- @within Anwenderfunktionen
--- @see API.SpeedLimitSet
 --
 function API.LockGameSpeed(_Flag)
     if GUI or Framework.IsNetworkGame() then

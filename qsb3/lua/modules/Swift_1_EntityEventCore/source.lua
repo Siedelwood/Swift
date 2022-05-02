@@ -202,13 +202,13 @@ function ModuleEntityEventCore.Global:CleanTaggedAndDeadEntities()
 end
 
 function ModuleEntityEventCore.Global:OverrideCallback()
-    GameCallback_SettlerSpawned_Orig_QSB_EntityCore = GameCallback_SettlerSpawned
+    GameCallback_SettlerSpawned_Orig_QSB_EntityCore = GameCallback_SettlerSpawned;
     GameCallback_SettlerSpawned = function(_PlayerID, _EntityID)
         GameCallback_SettlerSpawned_Orig_QSB_EntityCore(_PlayerID, _EntityID);
         ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(_EntityID);
     end
 
-    GameCallback_OnBuildingConstructionComplete_Orig_QSB_EntityCore = GameCallback_SettlerSpawned
+    GameCallback_OnBuildingConstructionComplete_Orig_QSB_EntityCore = GameCallback_OnBuildingConstructionComplete;
     GameCallback_OnBuildingConstructionComplete = function(_PlayerID, _EntityID)
         GameCallback_OnBuildingConstructionComplete_Orig_QSB_EntityCore(_PlayerID, _EntityID);
         ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(_EntityID);
