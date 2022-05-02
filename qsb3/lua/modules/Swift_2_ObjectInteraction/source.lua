@@ -427,6 +427,7 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
                 local ScriptName     = Logic.GetEntityName(ObjectID);
                 if IO_SlaveToMaster[ScriptName] then
                     MasterObjectID = GetID(IO_SlaveToMaster[ScriptName]);
+                    ScriptName = Logic.GetEntityName(MasterObjectID);
                 end
                 local EntityType = Logic.GetEntityType(ObjectID);
                 local X, Y = GUI.GetEntityInfoScreenPosition(MasterObjectID);
