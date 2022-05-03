@@ -42,6 +42,12 @@ function Mission_LocalOnQsbLoaded()
     Input.EnableDebugMode(1);
     Input.EnableDebugMode(2);
     Input.EnableDebugMode(3);
+
+    function LocalToGlobalLuaStateTableAccessRedirector(_Table, _Field)
+        Framework.WriteToLog(type(_Table).. ": " ..tostring(_Table));
+        Framework.WriteToLog(type(_Field).. ": " ..tostring(_Field));
+        return Logic.DONT_EVER_CALL_THIS_MANUALLY_GetTableVarFromGlobalLuaState(_Table, _Field)
+    end
 end
 
 function CallTestFunction()

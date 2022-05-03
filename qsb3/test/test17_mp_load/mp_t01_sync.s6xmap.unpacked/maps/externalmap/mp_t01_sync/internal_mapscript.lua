@@ -213,7 +213,7 @@ function CreateTestIOs()
                 API.Note("Player " .._PlayerID.. " has activated " .._Data.Name);
             end
         };
-        API.InteractiveObjectActivate(NPC1, 1, i);
+        -- API.InteractiveObjectActivate("IO" ..i, 0, i);
     end
 end
 

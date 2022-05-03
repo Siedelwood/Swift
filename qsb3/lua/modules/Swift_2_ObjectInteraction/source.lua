@@ -446,7 +446,7 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
                     Disable = true
                 end
                 if IO[ScriptName] and type(IO[ScriptName].Player) == "table" then
-                    Disable = not table.contains(IO[ScriptName].Player, PlayerID);
+                    Disable = not self:IsAvailableForGuiPlayer(ScriptName);
                 elseif IO[ScriptName] and type(IO[ScriptName].Player) == "number" then
                     Disable = IO[ScriptName].Player ~= PlayerID;
                 end
@@ -512,7 +512,7 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
         local CheckSettlement;
         if IO[ScriptName] and IO[ScriptName].IsUsed ~= true then
             local Key = "InteractiveObjectAvailable";
-            if (IO[ScriptName] and type(IO[ScriptName].Player) == "table" and not table.contains(IO[ScriptName].Player, PlayerID))
+            if (IO[ScriptName] and type(IO[ScriptName].Player) == "table" and not self:IsAvailableForGuiPlayer(ScriptName))
             or (IO[ScriptName] and type(IO[ScriptName].Player) == "number" and IO[ScriptName].Player ~= PlayerID)
             or Logic.InteractiveObjectGetAvailability(ObjectID) == false then
                 Key = "InteractiveObjectNotAvailable";
@@ -610,6 +610,19 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
             GUI_Interaction.DisplayQuestObjective_Orig_ModuleObjectInteraction(_QuestIndex, _MessageKey);
         end
     end
+end
+
+function ModuleObjectInteraction.Local:IsAvailableForGuiPlayer(_ScriptName)
+    local PlayerID = GUI.GetPlayerID();
+    if IO[_ScriptName] and type(IO[_ScriptName].Player) == "table" then
+        for i= 1, 8 do
+            if IO[_ScriptName].Player[i] and IO[_ScriptName].Player[i] == PlayerID then
+                return true;
+            end
+        end
+        return false;
+    end
+    return true;
 end
 
 function ModuleObjectInteraction.Local:OverrideReferenceTables()

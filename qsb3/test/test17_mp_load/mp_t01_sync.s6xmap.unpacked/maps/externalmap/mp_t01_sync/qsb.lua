@@ -68,6 +68,7 @@ function Swift:LoadCore()
         self:InstallBehaviorGlobal();
         self:OverrideQuestSystemGlobal();
         self:InitalizeCallbackGlobal();
+        self:OverrideOnMPGameStart();
         self:DisableLogicFestival();
         -- Fixme: Causes game freeze
         -- self:LogGlobalCFunctions();
@@ -96,7 +97,6 @@ function Swift:LoadCore()
     self:LoadExternFiles();
     self:LoadBehaviors();
     -- Random seed
-    self:CreateRandomSeed();
     -- Copy texture positions
     if self:IsLocalEnvironment() then
         StartSimpleJobEx(function()
@@ -153,20 +153,31 @@ end
 
 function Swift:CreateRandomSeed()
     local Seed = 0;
-    if Framework.IsNetworkGame() then
-        for i= 1, Framework.GetMapMaxPlayers(Network.GetCurrentMap()) do
-            if Logic.PlayerGetGameState(i) < 2 and Logic.PlayerGetIsHumanFlag(i) then
-                for s in Logic.GetPlayerName(i):gmatch(".") do
-                    Seed = Seed + s:byte();
-                end
+    local MapName = Framework.GetCurrentMapName();
+    local MapType = Framework.GetCurrentMapTypeAndCampaignName();
+    local SeedString = Framework.GetMapGUID(MapName, MapType);
+    for PlayerID = 1, 8 do
+        if Logic.PlayerGetIsHumanFlag(PlayerID) and Logic.PlayerGetGameState(PlayerID) ~= 0 then
+            if GUI.GetPlayerID() == PlayerID then
+                local PlayerName = Logic.GetPlayerName(PlayerID);
+                local DateText = Framework.GetSystemTimeDateString();
+                SeedString = SeedString .. PlayerName .. " " .. DateText;
             end
+            break;
         end
-    else
-        local DateText = Framework.GetSystemTimeDateString():sub(15, 23):gsub("'", "");
-        Seed = tonumber("1" ..DateText);
     end
-    math.randomseed(Seed);
-    return math.random(1, 100);
+    for s in SeedString:gmatch(".") do
+        Seed = Seed + s:byte();
+    end
+    Swift:DispatchScriptCommand(QSB.ScriptCommands.ProclaimateRandomSeed, Seed);
+end
+
+function Swift:OverrideOnMPGameStart()
+    GameCallback_OnMPGameStart_Orig_Swift = GameCallback_OnMPGameStart;
+    GameCallback_OnMPGameStart = function()
+        GameCallback_OnMPGameStart_Orig_Swift();
+        Logic.ExecuteInLuaLocalState("Swift:CreateRandomSeed()");
+    end
 end
 
 -- Quests
@@ -522,6 +533,7 @@ end
 
 function Swift:InitalizeScriptCommands()
     Swift:CreateScriptCommand("Cmd_SendScriptEvent", API.SendScriptEvent);
+    Swift:CreateScriptCommand("Cmd_ProclaimateRandomSeed", SCP.Core.ProclaimateRandomSeed);
     Swift:CreateScriptCommand("Cmd_RegisterLoadscreenHidden", SCP.Core.LoadscreenHidden);
     Swift:CreateScriptCommand("Cmd_UpdateCustomVariable", SCP.Core.UpdateCustomVariable);
     Swift:CreateScriptCommand("Cmd_UpdateTexturePosition", SCP.Core.UpdateTexturePosition);
@@ -556,13 +568,18 @@ function Swift:DispatchScriptCommand(_ID, ...)
     if not self:IsLocalEnvironment() then
         return;
     end
+    assert(_ID ~= nil);
     if self.m_ScriptCommandRegister[_ID] then
         local PlayerID = GUI.GetPlayerID();
         local NamePlayerID = 8;
-        local PlayerName = Logic.GetPlayerName(PlayerID);
+        local PlayerName = Logic.GetPlayerName(NamePlayerID);
         local Parameters = self:EncodeScriptCommandParameters(unpack(arg));
         GUI.SetPlayerName(NamePlayerID, Parameters);
         GUI.SetSoldierPaymentLevel(_ID);
+        info(string.format(
+            "Dispatching script command %s to global.",
+            self.m_ScriptCommandRegister[_ID]
+        ), true);
         GUI.SetPlayerName(NamePlayerID, PlayerName);
         GUI.SetSoldierPaymentLevel(PlayerSoldierPaymentLevel[PlayerID]);
     end
@@ -574,6 +591,10 @@ function Swift:ProcessScriptCommand(_PlayerID, _ID)
     end
     local PlayerName = Logic.GetPlayerName(8);
     local Parameters = self:DecodeScriptCommandParameters(PlayerName);
+    info(string.format(
+        "Processing script command %s in global.",
+        self.m_ScriptCommandRegister[_ID][1]
+    ), true);
     self.m_ScriptCommandRegister[_ID][2](unpack(Parameters));
 end
 
@@ -3344,6 +3365,13 @@ end
 
 function SCP.Core.LoadscreenHidden()
     Swift.m_LoadScreenHidden = true;
+end
+
+function SCP.Core.ProclaimateRandomSeed(_Seed)
+    math.randomseed(_Seed);
+    local void = math.random(1, 100);
+    Logic.ExecuteInLuaLocalState(string.format([[math.randomseed(%d); math.random(1, 100)]], _Seed));
+    info("Created seed: " .._Seed);
 end
 
 function SCP.Core.UpdateCustomVariable(_Name, Value)
@@ -13293,13 +13321,13 @@ function ModuleEntityEventCore.Global:CleanTaggedAndDeadEntities()
 end
 
 function ModuleEntityEventCore.Global:OverrideCallback()
-    GameCallback_SettlerSpawned_Orig_QSB_EntityCore = GameCallback_SettlerSpawned
+    GameCallback_SettlerSpawned_Orig_QSB_EntityCore = GameCallback_SettlerSpawned;
     GameCallback_SettlerSpawned = function(_PlayerID, _EntityID)
         GameCallback_SettlerSpawned_Orig_QSB_EntityCore(_PlayerID, _EntityID);
         ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(_EntityID);
     end
 
-    GameCallback_OnBuildingConstructionComplete_Orig_QSB_EntityCore = GameCallback_SettlerSpawned
+    GameCallback_OnBuildingConstructionComplete_Orig_QSB_EntityCore = GameCallback_OnBuildingConstructionComplete;
     GameCallback_OnBuildingConstructionComplete = function(_PlayerID, _EntityID)
         GameCallback_OnBuildingConstructionComplete_Orig_QSB_EntityCore(_PlayerID, _EntityID);
         ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(_EntityID);
@@ -14102,7 +14130,6 @@ end
 
 function ModuleInputOutputCore.Local:OpenDialog(_Title, _Text, _Action)
     if XGUIEng.IsWidgetShown(RequesterDialog) == 0 then
-        API.Note("show dialog")
         assert(type(_Title) == "string");
         assert(type(_Text) == "string");
 
@@ -14151,7 +14178,6 @@ function ModuleInputOutputCore.Local:OpenDialog(_Title, _Text, _Action)
             XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 1);
         end
     else
-        API.Note("enqeue dialog")
         self:DialogQueuePush("OpenDialog", {_Title, _Text, _Action});
     end
 end
@@ -15645,6 +15671,15 @@ QSB.PlayerNames = {};
 function ModuleInterfaceCore.Global:OnGameStart()
     self.HumanKnightType = Logic.GetEntityType(Logic.GetKnightID(QSB.HumanPlayerID));
     self.HumanPlayerID = QSB.HumanPlayerID;
+    self:SetupFacesForMultiplayer();
+end
+
+function ModuleInterfaceCore.Global:SetupFacesForMultiplayer()
+    if Framework.IsNetworkGame() then
+        for i= 1, 8 do
+            API.SetPlayerPortrait(i);
+        end
+    end
 end
 
 function ModuleInterfaceCore.Global:SetControllingPlayer(_OldPlayerID, _NewPlayerID, _NewStatisticsName)
@@ -16170,15 +16205,15 @@ end
 
 function ModuleInterfaceCore.Local:SetPlayerPortraitByPrimaryKnight(_PlayerID)
     local KnightID = Logic.GetKnightID(_PlayerID);
-    if KnightID == 0 then
-        return;
-    end
-    local KnightType = Logic.GetEntityType(KnightID);
-    local KnightTypeName = Logic.GetEntityTypeName(KnightType);
-    local HeadModelName = "H" .. string.sub(KnightTypeName, 2, 8) .. "_" .. string.sub(KnightTypeName, 9);
+    HeadModelName = "H_NPC_Generic_Trader";
+    if KnightID ~= 0 then
+        local KnightType = Logic.GetEntityType(KnightID);
+        local KnightTypeName = Logic.GetEntityTypeName(KnightType);
+        local HeadModelName = "H" .. string.sub(KnightTypeName, 2, 8) .. "_" .. string.sub(KnightTypeName, 9);
 
-    if not Models["Heads_" .. HeadModelName] then
-        HeadModelName = "H_NPC_Generic_Trader";
+        if not Models["Heads_" .. HeadModelName] then
+            HeadModelName = "H_NPC_Generic_Trader";
+        end
     end
     g_PlayerPortrait[_PlayerID] = HeadModelName;
 end
@@ -17517,7 +17552,7 @@ ModuleScriptingValue = {
 -- Global ------------------------------------------------------------------- --
 
 function ModuleScriptingValue.Global:OnGameStart()
-    if QSB.HistoryEdition == true then
+    if API.IsHistoryEdition() then
         ModuleScriptingValue.Shared.SV.Game = "HistoryEdition";
     end
     QSB.ScriptingValue = ModuleScriptingValue.Shared.SV[ModuleScriptingValue.Shared.SV.Game];
@@ -17526,7 +17561,7 @@ end
 -- Local -------------------------------------------------------------------- --
 
 function ModuleScriptingValue.Local:OnGameStart()
-    if QSB.HistoryEdition == true then
+    if API.IsHistoryEdition() then
         ModuleScriptingValue.Shared.SV.Game = "HistoryEdition";
     end
     QSB.ScriptingValue = ModuleScriptingValue.Shared.SV[ModuleScriptingValue.Shared.SV.Game];
@@ -19780,6 +19815,8 @@ You may use and modify this file unter the terms of the MIT licence.
 (See https://en.wikipedia.org/wiki/MIT_License)
 ]]
 
+SCP.CastleStore = {};
+
 ModuleCastleStore = {
     Properties = {
         Name = "ModuleCastleStore",
@@ -19883,6 +19920,13 @@ function ModuleCastleStore.Global:OnGameStart()
         self.BackupGoods[i] = {};
     end
     self:OverwriteGameFunctions();
+
+    API.RegisterScriptCommand("Cmd_CastleStoreAcceptAllGoods", SCP.CastleStore.AcceptAllGoods);
+    API.RegisterScriptCommand("Cmd_CastleStoreLockAllGoods", SCP.CastleStore.LockAllGoods);
+    API.RegisterScriptCommand("Cmd_CastleStoreRefuseAllGoods", SCP.CastleStore.RefuseAllGoods);
+    API.RegisterScriptCommand("Cmd_CastleStoreToggleGoodState", SCP.CastleStore.ToggleGoodState);
+    API.RegisterScriptCommand("Cmd_CastleStoreObjectPayStep1", SCP.CastleStore.ObjectPayStep1);
+    API.RegisterScriptCommand("Cmd_CastleStoreObjectPayStep3", SCP.CastleStore.ObjectPayStep3);
 end
 
 function ModuleCastleStore.Global.CastleStore:New(_PlayerID)
@@ -20461,63 +20505,27 @@ function ModuleCastleStore.Local.CastleStore:OnStorehouseTabClicked(_PlayerID)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
     QSB.CastleStorePlayerData[_PlayerID].StoreMode = 1;
     self:UpdateBehaviorTabs(_PlayerID);
-    GUI.SendScriptCommand([[
-        local Store = QSB.CastleStore:GetInstance(]] .._PlayerID.. [[);
-        for k, v in pairs(Store.Goods) do
-            Store:SetGoodAccepted(k, true);
-            Store:SetGoodLocked(k, false);
-        end
-    ]]);
+    API.SendScriptCommand(QSB.ScriptCommands.CastleStoreAcceptAllGoods, _PlayerID);
 end
 
 function ModuleCastleStore.Local.CastleStore:OnCityTabClicked(_PlayerID)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
     QSB.CastleStorePlayerData[_PlayerID].StoreMode = 2;
     self:UpdateBehaviorTabs(_PlayerID);
-    GUI.SendScriptCommand([[
-        local Store = QSB.CastleStore:GetInstance(]] .._PlayerID.. [[);
-        for k, v in pairs(Store.Goods) do
-            Store:SetGoodAccepted(k, true);
-            Store:SetGoodLocked(k, true);
-        end
-    ]]);
+    API.SendScriptCommand(QSB.ScriptCommands.CastleStoreLockAllGoods, _PlayerID);
 end
 
 function ModuleCastleStore.Local.CastleStore:OnMultiTabClicked(_PlayerID)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
     QSB.CastleStorePlayerData[_PlayerID].StoreMode = 3;
     self:UpdateBehaviorTabs(_PlayerID);
-    GUI.SendScriptCommand([[
-        local Store = QSB.CastleStore:GetInstance(]] .._PlayerID.. [[);
-        for k, v in pairs(Store.Goods) do
-            Store:SetGoodLocked(k, false);
-            Store:SetGoodAccepted(k, false);
-        end
-    ]]);
+    API.SendScriptCommand(QSB.ScriptCommands.CastleStoreRefuseAllGoods, _PlayerID);
 end
 
 function ModuleCastleStore.Local.CastleStore:GoodClicked(_PlayerID, _GoodType)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
     if self:HasCastleStore(_PlayerID) then
-        local CurrentWirgetID = XGUIEng.GetCurrentWidgetID();
-        GUI.SendScriptCommand([[
-            local Store = QSB.CastleStore:GetInstance(]] .._PlayerID.. [[);
-            local Accepted = Store:IsGoodAccepted(]] .._GoodType.. [[)
-            local Locked   = Store:IsGoodLocked(]] .._GoodType.. [[)
-            
-            if Accepted and not Locked then
-                Store:SetGoodLocked(]] .._GoodType.. [[, true);
-                Store:SetGoodAccepted(]] .._GoodType.. [[, true);
-            elseif Accepted and Locked then
-                Store:SetGoodLocked(]] .._GoodType.. [[, false);
-                Store:SetGoodAccepted(]] .._GoodType.. [[, false);
-            elseif not Accepted and not Locked then
-                Store:SetGoodAccepted(]] .._GoodType.. [[, true);
-            else
-                Store:SetGoodLocked(]] .._GoodType.. [[, false);
-                Store:SetGoodAccepted(]] .._GoodType.. [[, true);
-            end
-        ]]);
+        API.SendScriptCommand(QSB.ScriptCommands.CastleStoreToggleGoodState, _PlayerID, _GoodType);
     end
 end
 
@@ -20774,19 +20782,14 @@ function ModuleCastleStore.Local:OverwriteInteractiveObject()
                 GUI_Interaction.InteractiveObjectClicked_Orig_CastleStore();
                 return;
             end
-            GUI.SendScriptCommand(string.format("ModuleCastleStore.Global:InteractiveObjectPayStep1(%d, '%s')", PlayerID, ScriptName));
+            API.SendScriptCommand(QSB.ScriptCommands.CastleStoreObjectPayStep1, PlayerID, ScriptName);
         end
 
         -- Send additional click event
         local KnightIDs = {};
         Logic.GetKnights(PlayerID, KnightIDs);
         local KnightID = API.GetClosestToTarget(EntityID, KnightIDs);
-        GUI.SendScriptCommand(string.format(
-            [[API.SendScriptEvent(QSB.ScriptEvents.ObjectClicked, %d, %d, %d)]],
-            EntityID,
-            KnightID,
-            PlayerID
-        ));
+        API.SendScriptEventToGlobal(QSB.ScriptEvents.ObjectClicked, EntityID, KnightID, PlayerID);
         API.SendScriptEvent(QSB.ScriptEvents.ObjectClicked, EntityID, KnightID, PlayerID);
     end
 end
@@ -21159,8 +21162,8 @@ function ModuleCastleStore.Local:InteractiveObjectPayStep2(_PlayerID, _ScriptNam
     if _ScriptName == nil then
         return;
     end
-    GUI.ExecuteObjectInteraction(GetID(_ScriptName), _PlayerID)
-    GUI.SendScriptCommand(string.format("ModuleCastleStore.Global:InteractiveObjectPayStep3(%d, '%s')", _PlayerID, _ScriptName));
+    GUI.ExecuteObjectInteraction(GetID(_ScriptName), _PlayerID);
+    API.SendScriptCommand(QSB.ScriptCommands.CastleStoreObjectPayStep3, _PlayerID, _ScriptName);
 end
 
 -- -------------------------------------------------------------------------- --
@@ -21453,6 +21456,58 @@ function API.CastleStoreSetOutsourceBoundary(_PlayerID, _Good, _Limit)
     end
 end
 
+-- Local callbacks
+
+function SCP.CastleStore.AcceptAllGoods(_PlayerID)
+    local Store = QSB.CastleStore:GetInstance(_PlayerID);
+    for k, v in pairs(Store.Goods) do
+        Store:SetGoodAccepted(k, true);
+        Store:SetGoodLocked(k, false);
+    end
+end
+
+function SCP.CastleStore.LockAllGoods(_PlayerID)
+    local Store = QSB.CastleStore:GetInstance(_PlayerID);
+    for k, v in pairs(Store.Goods) do
+        Store:SetGoodAccepted(k, true);
+        Store:SetGoodLocked(k, true);
+    end
+end
+
+function SCP.CastleStore.RefuseAllGoods(_PlayerID)
+    local Store = QSB.CastleStore:GetInstance(_PlayerID);
+    for k, v in pairs(Store.Goods) do
+        Store:SetGoodAccepted(k, false);
+        Store:SetGoodLocked(k, false);
+    end
+end
+
+function SCP.CastleStore.ToggleGoodState(_PlayerID, _GoodType)
+    local Store = QSB.CastleStore:GetInstance(_PlayerID);
+    local Accepted = Store:IsGoodAccepted(_GoodType)
+    local Locked   = Store:IsGoodLocked(_GoodType)
+    if Accepted and not Locked then
+        Store:SetGoodLocked(_GoodType, true);
+        Store:SetGoodAccepted(_GoodType, true);
+    elseif Accepted and Locked then
+        Store:SetGoodLocked(_GoodType, false);
+        Store:SetGoodAccepted(_GoodType, false);
+    elseif not Accepted and not Locked then
+        Store:SetGoodAccepted(_GoodType, true);
+    else
+        Store:SetGoodLocked(_GoodType, false);
+        Store:SetGoodAccepted(_GoodType, true);
+    end
+end
+
+function SCP.CastleStore.ObjectPayStep1(_PlayerID, _ScriptName)
+    ModuleCastleStore.Global:InteractiveObjectPayStep1(_PlayerID, _ScriptName);
+end
+
+function SCP.CastleStore.ObjectPayStep3(_PlayerID, _ScriptName)
+    ModuleCastleStore.Global:InteractiveObjectPayStep1(_PlayerID, _ScriptName);
+end
+
 --[[
 Swift_2_ConstructionAndKnockdown/API
 
@@ -21476,9 +21531,7 @@ ModuleConstructionControl = {
         KnockdownConditionCounter = 0,
         KnockdownConditions = {},
     },
-    Local = {
-
-    },
+    Local = {},
 }
 
 -- Global ------------------------------------------------------------------- --
@@ -27849,6 +27902,7 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
                 local ScriptName     = Logic.GetEntityName(ObjectID);
                 if IO_SlaveToMaster[ScriptName] then
                     MasterObjectID = GetID(IO_SlaveToMaster[ScriptName]);
+                    ScriptName = Logic.GetEntityName(MasterObjectID);
                 end
                 local EntityType = Logic.GetEntityType(ObjectID);
                 local X, Y = GUI.GetEntityInfoScreenPosition(MasterObjectID);
@@ -27866,9 +27920,9 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
                 if HasSpace == false then
                     Disable = true
                 end
-                if type(IO[ScriptName].Player) == "table" then
-                    Disable = not table.contains(IO[ScriptName].Player, PlayerID);
-                elseif type(IO[ScriptName].Player) == "number" then
+                if IO[ScriptName] and type(IO[ScriptName].Player) == "table" then
+                    Disable = not self:IsAvailableForGuiPlayer(ScriptName);
+                elseif IO[ScriptName] and type(IO[ScriptName].Player) == "number" then
                     Disable = IO[ScriptName].Player ~= PlayerID;
                 end
 
@@ -27933,8 +27987,8 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
         local CheckSettlement;
         if IO[ScriptName] and IO[ScriptName].IsUsed ~= true then
             local Key = "InteractiveObjectAvailable";
-            if (type(IO[ScriptName].Player) == "table" and not table.contains(IO[ScriptName].Player, PlayerID))
-            or (type(IO[ScriptName].Player) == "number" and IO[ScriptName].Player ~= PlayerID)
+            if (IO[ScriptName] and type(IO[ScriptName].Player) == "table" and not self:IsAvailableForGuiPlayer(ScriptName))
+            or (IO[ScriptName] and type(IO[ScriptName].Player) == "number" and IO[ScriptName].Player ~= PlayerID)
             or Logic.InteractiveObjectGetAvailability(ObjectID) == false then
                 Key = "InteractiveObjectNotAvailable";
             end
@@ -28031,6 +28085,19 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
             GUI_Interaction.DisplayQuestObjective_Orig_ModuleObjectInteraction(_QuestIndex, _MessageKey);
         end
     end
+end
+
+function ModuleObjectInteraction.Local:IsAvailableForGuiPlayer(_ScriptName)
+    local PlayerID = GUI.GetPlayerID();
+    if IO[_ScriptName] and type(IO[_ScriptName].Player) == "table" then
+        for i= 1, 8 do
+            if IO[_ScriptName].Player[i] and IO[_ScriptName].Player[i] == PlayerID then
+                return true;
+            end
+        end
+        return false;
+    end
+    return true;
 end
 
 function ModuleObjectInteraction.Local:OverrideReferenceTables()
@@ -28151,6 +28218,12 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- <td>number</td>
 -- <td>Die minimale Entfernung zum Objekt, die ein Held benötigt um das
 -- objekt zu aktivieren.</td>
+-- <td>ja</td>
+-- </tr>
+-- <tr>
+-- <td>Player</td>
+-- <td>number|table</td>
+-- <td>Spieler, der/die das Objekt aktivieren kann/können.</td>
 -- <td>ja</td>
 -- </tr>
 -- <tr>
@@ -31049,7 +31122,6 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 -- @param[type=boolean] _Flag Speedbremse ist aktiv
 -- @within Anwenderfunktionen
--- @see API.SpeedLimitSet
 --
 function API.LockGameSpeed(_Flag)
     if GUI or Framework.IsNetworkGame() then
@@ -31270,9 +31342,6 @@ function ModuleMilitaryLimit.Local:OnGameStart()
     QSB.ScriptEvents.ProducedBattalion = API.RegisterScriptEvent("Event_ProducedBattalion");
     QSB.ScriptEvents.RefilledBattalion = API.RegisterScriptEvent("Event_RefilledBattalion");
 
-    if Framework.IsNetworkGame() then
-        return;
-    end
     self:OverrideUI();
 end
 
@@ -34370,10 +34439,10 @@ function B_Reward_VictoryWithParty:CustomFunction(_Quest)
         local pos = GetPosition(market)
         Logic.CreateEffect(EGL_Effects.FXFireworks01,pos.X,pos.Y,0);
         Logic.CreateEffect(EGL_Effects.FXFireworks02,pos.X,pos.Y,0);
-        
+
         local Generated = self:GenerateParty(pID);
         QSB.VictoryWithPartyEntities[pID] = Generated;
-        
+
         Logic.ExecuteInLuaLocalState(string.format(
             [[
             if IsExisting(%d) then
@@ -35079,42 +35148,44 @@ end
 function ModuleBriefingSystem.Global:TransformAnimations(_PlayerID)
     if self.Briefing[_PlayerID].PageAnimations then
         for k, v in pairs(self.Briefing[_PlayerID].PageAnimations) do
-            local PageID = self:GetPageIDByName(_PlayerID, k);
-            self.Briefing[_PlayerID][PageID].Animations = {};
-            self.Briefing[_PlayerID][PageID].Animations.PurgeOld = v.PurgeOld == true;
-            for i= 1, #v, 1 do               
-                -- Relaive position
-                if #v[i] == 9 then
-                    table.insert(self.Briefing[_PlayerID][PageID].Animations, {
-                        Duration = v[i][9] or (2 * 60),
+            local PageID = self:GetPageIDByAttribute(_PlayerID, "AnimName", k);
+            if PageID ~= 0 then
+                self.Briefing[_PlayerID][PageID].Animations = {};
+                self.Briefing[_PlayerID][PageID].Animations.PurgeOld = v.PurgeOld == true;
+                for i= 1, #v, 1 do               
+                    -- Relaive position
+                    if #v[i] == 9 then
+                        table.insert(self.Briefing[_PlayerID][PageID].Animations, {
+                            Duration = v[i][9] or (2 * 60),
 
-                        Start = {
-                            Position = (type(v[i][1]) ~= "table" and {v[i][1],0}) or v[i][1],
-                            Rotation = v[i][2],
-                            Zoom     = v[i][3],
-                            Angle    = v[i][4],
-                        },
-                        End = {
-                            Position = (type(v[i][5]) ~= "table" and {v[i][5],0}) or v[i][5],
-                            Rotation = v[i][6],
-                            Zoom     = v[i][7],
-                            Angle    = v[i][8],
-                        },
-                    });
-                -- Vector
-                elseif #v[i] == 5 then
-                    table.insert(self.Briefing[_PlayerID][PageID].Animations, {
-                        Duration = v[i][5] or (2 * 60),
+                            Start = {
+                                Position = (type(v[i][1]) ~= "table" and {v[i][1],0}) or v[i][1],
+                                Rotation = v[i][2],
+                                Zoom     = v[i][3],
+                                Angle    = v[i][4],
+                            },
+                            End = {
+                                Position = (type(v[i][5]) ~= "table" and {v[i][5],0}) or v[i][5],
+                                Rotation = v[i][6],
+                                Zoom     = v[i][7],
+                                Angle    = v[i][8],
+                            },
+                        });
+                    -- Vector
+                    elseif #v[i] == 5 then
+                        table.insert(self.Briefing[_PlayerID][PageID].Animations, {
+                            Duration = v[i][5] or (2 * 60),
 
-                        Start = {
-                            Position = (type(v[i][1]) ~= "table" and {v[i][1],0}) or v[i][1],
-                            LookAt   = (type(v[i][2]) ~= "table" and {v[i][1],0}) or v[i][2],
-                        },
-                        End = {
-                            Position = (type(v[i][3]) ~= "table" and {v[i][5],0}) or v[i][3],
-                            LookAt   = (type(v[i][4]) ~= "table" and {v[i][1],0}) or v[i][4],
-                        },
-                    });
+                            Start = {
+                                Position = (type(v[i][1]) ~= "table" and {v[i][1],0}) or v[i][1],
+                                LookAt   = (type(v[i][2]) ~= "table" and {v[i][1],0}) or v[i][2],
+                            },
+                            End = {
+                                Position = (type(v[i][3]) ~= "table" and {v[i][5],0}) or v[i][3],
+                                LookAt   = (type(v[i][4]) ~= "table" and {v[i][1],0}) or v[i][4],
+                            },
+                        });
+                    end
                 end
             end
         end
@@ -35232,16 +35303,20 @@ end
 
 function ModuleBriefingSystem.Global:GetPageIDByName(_PlayerID, _Name)
     if type(_Name) == "string" then
-        if self.Briefing[_PlayerID] ~= nil then
-            for i= 1, #self.Briefing[_PlayerID], 1 do
-                if type(self.Briefing[_PlayerID][i]) == "table" and self.Briefing[_PlayerID][i].Name == _Name then
-                    return i;
-                end
-            end
-        end
-        return 0;
+        return self:GetPageIDByAttribute(_PlayerID, "Name", _Name);
     end
     return _Name;
+end
+
+function ModuleBriefingSystem.Global:GetPageIDByAttribute(_PlayerID, _Key, _Value)
+    if self.Briefing[_PlayerID] ~= nil then
+        for i= 1, #self.Briefing[_PlayerID], 1 do
+            if type(self.Briefing[_PlayerID][i]) == "table" and self.Briefing[_PlayerID][i][_Key] == _Value then
+                return i;
+            end
+        end
+    end
+    return 0;
 end
 
 function ModuleBriefingSystem.Global:CanStartBriefing(_PlayerID)
@@ -35739,16 +35814,20 @@ end
 
 function ModuleBriefingSystem.Local:GetPageIDByName(_PlayerID, _Name)
     if type(_Name) == "string" then
-        if self.Briefing[_PlayerID] ~= nil then
-            for i= 1, #self.Briefing[_PlayerID], 1 do
-                if type(self.Briefing[_PlayerID][i]) == "table" and self.Briefing[_PlayerID][i].Name == _Name then
-                    return i;
-                end
-            end
-        end
-        return 0;
+        return self:GetPageIDByAttribute(_PlayerID, "Name", _Name);
     end
     return _Name;
+end
+
+function ModuleBriefingSystem.Global:GetPageIDByAttribute(_PlayerID, _Key, _Value)
+    if self.Briefing[_PlayerID] ~= nil then
+        for i= 1, #self.Briefing[_PlayerID], 1 do
+            if type(self.Briefing[_PlayerID][i]) == "table" and self.Briefing[_PlayerID][i][_Key] == _Value then
+                return i;
+            end
+        end
+    end
+    return 0;
 end
 
 function ModuleBriefingSystem.Local:OverrideThroneRoomFunctions()
@@ -36076,6 +36155,7 @@ function API.StartBriefing(_Briefing, _Name, _PlayerID)
     if not PlayerID and not Framework.IsNetworkGame() then
         PlayerID = QSB.HumanPlayerID;
     end
+    assert(_PlayerID ~= nil);
     if type(_Briefing) ~= "table" then
         local Name = "Briefing #" ..(ModuleBriefingSystem.Global.BriefingCounter +1);
         error("API.StartBriefing (" ..Name.. "): _Briefing must be a table!");
@@ -36153,10 +36233,11 @@ function API.AddBriefingPages(_Briefing)
 
             -- Simple camera position
             if _Page.Position then
-                Identifier = #_Briefing +1;
+                Identifier = "" ..(#_Briefing +1);
                 if _Page.Name then
                     Identifier = _Page.Name;
                 end
+                _Page.AnimName = Identifier;
 
                 local Angle = _Page.Angle;
                 if not Angle then
@@ -36753,10 +36834,6 @@ B_Reward_Briefing.GetReprisalTable = nil;
 
 B_Reward_Briefing.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} }
-end
-
-B_Reward_Briefing.CustomFunction = function(self, _Quest)
-    _G[self.Function](self.BriefingName, _Quest.ReceivingPlayer);
 end
 
 Swift:RegisterBehavior(B_Reward_Briefing);
@@ -37627,6 +37704,7 @@ function API.StartCutscene(_Cutscene, _Name, _PlayerID)
     if not PlayerID and not Framework.IsNetworkGame() then
         PlayerID = QSB.HumanPlayerID;
     end
+    assert(_PlayerID ~= nil);
     if type(_Cutscene) ~= "table" then
         local Name = "Cutscene #" ..(ModuleCutsceneSystem.Global.CutsceneCounter +1);
         error("API.StartCutscene (" ..Name.. "): _Cutscene must be a table!");
@@ -38339,7 +38417,7 @@ function ModuleDialogSystem.Local:DisplayPage(_PlayerID, _PageData)
             Camera.RTS_FollowEntity(0);
         end
         if _PageData.Position then
-            Camera.RTS_ScrollSetLookAt(_PageData.Position.X, _PageData.Position.Y);
+            Camera.RTS_SetLookAtPosition(_PageData.Position.X, _PageData.Position.Y);
         end
         if _PageData.Zoom then
             Camera.RTS_SetZoomFactorMin(_PageData.Zoom -0.00001);
@@ -38577,6 +38655,7 @@ function API.StartDialog(_Dialog, _Name, _PlayerID)
     if not PlayerID and not Framework.IsNetworkGame() then
         PlayerID = QSB.HumanPlayerID;
     end
+    assert(_PlayerID ~= nil);
     if type(_Dialog) ~= "table" then
         local Name = "Dialog #" ..(ModuleDialogSystem.Global.DialogCounter +1);
         error("API.StartDialog (" ..Name.. "): _Dialog must be a table!");
@@ -38636,7 +38715,7 @@ function API.AddDialogPages(_Dialog)
                 error("AF (" ..Name.. ", Page #" ..(#_Dialog+1).. "): Position and Target can not be used both at the same time!");
                 return;
             end
-            
+
             _Page.__Legit = true;
             _Page.GetSelected = function(self)
                 if self.MC then
@@ -38644,7 +38723,7 @@ function API.AddDialogPages(_Dialog)
                 end
                 return 0;
             end
-            
+
             if _Page.Rotation == nil then
                 if _Page.Target ~= nil then
                     local ID = GetID(_Page.Target);

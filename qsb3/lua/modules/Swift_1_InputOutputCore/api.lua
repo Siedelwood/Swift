@@ -362,6 +362,9 @@ end
 -- Die Länge des Textes ist nicht beschränkt. Überschreitet der Text die
 -- Größe des Fensters, wird automatisch eine Bildlaufleiste eingeblendet.
 --
+-- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden, wegen Konflikt
+-- mit dem Chat Options.
+--
 -- @param[type=string] _Caption Titel des Fenster
 -- @param[type=string] _content Inhalt des Fenster
 -- @within Anwenderfunktionen
@@ -381,6 +384,9 @@ end
 -- API.SimpleTextWindow("Überschrift", Text);
 --
 function API.SimpleTextWindow(_Caption, _Content)
+    if Framework.IsNetworkGame() then
+        return;
+    end
     _Caption = API.Localize(_Caption);
     _Content = API.Localize(_Content);
     if not GUI then
