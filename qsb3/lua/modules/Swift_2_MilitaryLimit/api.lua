@@ -14,8 +14,6 @@ You may use and modify this file unter the terms of the MIT licence.
 -- <b>Hinweis</b>: Wird nichts eingestellt, wird der Standard verwendet. Das
 -- Limit ist dann 25, 43, 61, 91 (je nach Ausbaustufe der Burg).
 --
--- <b>Hinweis</b>: Diese Funktionalität ist im Multiplayer nicht verfügbar.
---
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
 -- <li><a href="Swift_0_Core.api.html">(0) Core</a></li>

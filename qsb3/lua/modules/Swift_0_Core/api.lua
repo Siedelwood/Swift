@@ -668,7 +668,7 @@ end
 -- Liste der grundlegenden Script Events.
 --
 -- @field SaveGameLoaded     Ein Spielstand wird geladen.
--- @field EscapePressed      Escape wurde gedrückt. Funktioniert nicht in HE Multiplayer! (Parameter: PlayerID)
+-- @field EscapePressed      Escape wurde gedrückt. Mögliche Probleme in HE Multiplayer! (Parameter: PlayerID)
 -- @field QuestFailure       Ein Quest schlug fehl (Parameter: QuestID)
 -- @field QuestInterrupt     Ein Quest wurde unterbrochen (Parameter: QuestID)
 -- @field QuestReset         Ein Quest wurde zurückgesetzt (Parameter: QuestID)

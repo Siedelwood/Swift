@@ -11,8 +11,6 @@ You may use and modify this file unter the terms of the MIT licence.
 ---
 -- Modul für die Eingabe durch den Spieler und die Ausgabe von Texten.
 --
--- <b>Hinweis</b>: Diese Funktionalität ist im Multiplayer nicht verfügbar.
---
 -- Du kannst vordefinierte Farben in Textausgaben verwenden. Außerdem kannst
 -- du für Skriptnamen und Entitytypen Platzhalter zu definieren. Diese
 -- Platzhalter können auch lokalisiert werden.
