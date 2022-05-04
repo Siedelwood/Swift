@@ -105,9 +105,9 @@ function ModuleSelection.Global:OnGameStart()
     end
 end
 
-function ModuleSelection.Global:OnEvent(_ID, _Event, _PlayerID, _OldSelection, _NewSelection)
+function ModuleSelection.Global:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.SelectionChanged then
-        self.SelectedEntities[_PlayerID] = _NewSelection;
+        self.SelectedEntities[arg[1]] = arg[3];
     end
 end
 

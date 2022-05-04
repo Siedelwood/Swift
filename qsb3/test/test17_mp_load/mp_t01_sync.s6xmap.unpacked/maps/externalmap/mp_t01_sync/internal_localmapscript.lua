@@ -38,16 +38,21 @@ end
 -- --------------------------------
 -- Die QSB ist im lokalen Skript initialisiert.
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function Mission_LocalOnQsbLoaded()
+function Mission_MP_LocalOnQsbLoaded()
     Input.EnableDebugMode(1);
     Input.EnableDebugMode(2);
     Input.EnableDebugMode(3);
+    LogTable();
+end
 
-    function LocalToGlobalLuaStateTableAccessRedirector(_Table, _Field)
-        Framework.WriteToLog(type(_Table).. ": " ..tostring(_Table));
-        Framework.WriteToLog(type(_Field).. ": " ..tostring(_Field));
-        return Logic.DONT_EVER_CALL_THIS_MANUALLY_GetTableVarFromGlobalLuaState(_Table, _Field)
-    end
+function LogTable()
+    API.StartJob(function()
+        if Logic.GetTime() > 2 then
+            Framework.WriteToLog(table.tostring(QSB.ScriptCommands));
+            Framework.WriteToLog(table.tostring(Swift.m_ScriptCommandRegister));
+            return true;
+        end
+    end);
 end
 
 function CallTestFunction()

@@ -27,9 +27,9 @@ ModuleConstructionControl = {
 -- Global ------------------------------------------------------------------- --
 
 function ModuleConstructionControl.Global:OnGameStart()
-    self:OverrideCanPlayerPlaceBuilding();
-
     API.RegisterScriptCommand("Cmd_CheckCancelKnockdown", SCP.ConstructionAndKnockdown.CancelKnockdown);
+    
+    self:OverrideCanPlayerPlaceBuilding();
 end
 
 function ModuleConstructionControl.Global:OnEvent(_ID, _Event, ...)

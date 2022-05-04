@@ -38,6 +38,9 @@ function ModuleMilitaryLimit.Global:OnGameStart()
     QSB.ScriptEvents.ProducedBattalion = API.RegisterScriptEvent("Event_ProducedBattalion");
     QSB.ScriptEvents.RefilledBattalion = API.RegisterScriptEvent("Event_RefilledBattalion");
 
+    API.RegisterScriptCommand("Cmd_MilitaryLimitProduceUnits", SCP.MilitaryLimit.ProduceUnits);
+    API.RegisterScriptCommand("Cmd_MilitaryLimitRefillBattalion", SCP.MilitaryLimit.RefillBattalion);
+
     for i= 0, 8 do
         self.SoldierKillsCounter[i] = {};
     end
@@ -52,9 +55,6 @@ function ModuleMilitaryLimit.Global:OnGameStart()
     API.StartJob(function()
         ModuleMilitaryLimit.Global:UpdateSoldierLimits();
     end);
-
-    API.RegisterScriptCommand("Cmd_MilitaryLimitProduceUnits", SCP.MilitaryLimit.ProduceUnits);
-    API.RegisterScriptCommand("Cmd_MilitaryLimitRefillBattalion", SCP.MilitaryLimit.RefillBattalion);
 end
 
 function ModuleMilitaryLimit.Global:OnEvent(_ID, _Name, ...)
@@ -256,24 +256,16 @@ function ModuleMilitaryLimit.Local:OverrideUI()
         end
         if CanBuyBoolean == true then
             Sound.FXPlay2DSound("ui\\menu_click");
-            if EntityType == Entities.U_Thief then
-                API.SendScriptCommand(
-                    QSB.ScriptCommands.MilitaryLimitProduceUnits,
-                    PlayerID,
-                    BarrackID,
-                    EntityType,
-                    Costs
-                );
-            else
-                API.SendScriptCommand(
-                    QSB.ScriptCommands.MilitaryLimitProduceUnits,
-                    PlayerID,
-                    BarrackID,
-                    EntityType,
-                    Costs
-                );
+            if EntityType ~= Entities.U_Thief then
                 StartKnightVoiceForPermanentSpecialAbility(Entities.U_KnightChivalry);
             end
+            API.SendScriptCommand(
+                QSB.ScriptCommands.MilitaryLimitProduceUnits,
+                PlayerID,
+                BarrackID,
+                EntityType,
+                Costs
+            );
         else
             Message(CanNotBuyString);
         end

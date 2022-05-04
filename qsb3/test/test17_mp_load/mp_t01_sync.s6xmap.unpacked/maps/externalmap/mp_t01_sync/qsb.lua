@@ -14,7 +14,7 @@ SCP = SCP or {
     Core = {}
 };
 
-QSB.Version = "Version 3.0.0 BETA (1.1.0)";
+QSB.Version = "Version 3.0.0 BETA (1.1.2)";
 QSB.Language = "de";
 QSB.HumanPlayerID = 1;
 QSB.ScriptCommandSequence = 2;
@@ -1538,7 +1538,7 @@ end
 -- Liste der grundlegenden Script Events.
 --
 -- @field SaveGameLoaded     Ein Spielstand wird geladen.
--- @field EscapePressed      Escape wurde gedrückt. Funktioniert nicht in HE Multiplayer! (Parameter: PlayerID)
+-- @field EscapePressed      Escape wurde gedrückt. Mögliche Probleme in HE Multiplayer! (Parameter: PlayerID)
 -- @field QuestFailure       Ein Quest schlug fehl (Parameter: QuestID)
 -- @field QuestInterrupt     Ein Quest wurde unterbrochen (Parameter: QuestID)
 -- @field QuestReset         Ein Quest wurde zurückgesetzt (Parameter: QuestID)
@@ -14876,8 +14876,6 @@ You may use and modify this file unter the terms of the MIT licence.
 ---
 -- Modul für die Eingabe durch den Spieler und die Ausgabe von Texten.
 --
--- <b>Hinweis</b>: Diese Funktionalität ist im Multiplayer nicht verfügbar.
---
 -- Du kannst vordefinierte Farben in Textausgaben verwenden. Außerdem kannst
 -- du für Skriptnamen und Entitytypen Platzhalter zu definieren. Diese
 -- Platzhalter können auch lokalisiert werden.
@@ -15227,6 +15225,9 @@ end
 -- Die Länge des Textes ist nicht beschränkt. Überschreitet der Text die
 -- Größe des Fensters, wird automatisch eine Bildlaufleiste eingeblendet.
 --
+-- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden, wegen Konflikt
+-- mit dem Chat Options.
+--
 -- @param[type=string] _Caption Titel des Fenster
 -- @param[type=string] _content Inhalt des Fenster
 -- @within Anwenderfunktionen
@@ -15246,6 +15247,9 @@ end
 -- API.SimpleTextWindow("Überschrift", Text);
 --
 function API.SimpleTextWindow(_Caption, _Content)
+    if Framework.IsNetworkGame() then
+        return;
+    end
     _Caption = API.Localize(_Caption);
     _Content = API.Localize(_Content);
     if not GUI then
@@ -31388,24 +31392,16 @@ function ModuleMilitaryLimit.Local:OverrideUI()
         end
         if CanBuyBoolean == true then
             Sound.FXPlay2DSound("ui\\menu_click");
-            if EntityType == Entities.U_Thief then
-                API.SendScriptCommand(
-                    QSB.ScriptCommands.MilitaryLimitProduceUnits,
-                    PlayerID,
-                    BarrackID,
-                    EntityType,
-                    Costs
-                );
-            else
-                API.SendScriptCommand(
-                    QSB.ScriptCommands.MilitaryLimitProduceUnits,
-                    PlayerID,
-                    BarrackID,
-                    EntityType,
-                    Costs
-                );
+            if EntityType ~= Entities.U_Thief then
                 StartKnightVoiceForPermanentSpecialAbility(Entities.U_KnightChivalry);
             end
+            API.SendScriptCommand(
+                QSB.ScriptCommands.MilitaryLimitProduceUnits,
+                PlayerID,
+                BarrackID,
+                EntityType,
+                Costs
+            );
         else
             Message(CanNotBuyString);
         end
@@ -31481,8 +31477,6 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 -- <b>Hinweis</b>: Wird nichts eingestellt, wird der Standard verwendet. Das
 -- Limit ist dann 25, 43, 61, 91 (je nach Ausbaustufe der Burg).
---
--- <b>Hinweis</b>: Diese Funktionalität ist im Multiplayer nicht verfügbar.
 --
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
@@ -40849,6 +40843,9 @@ Swift:RegisterModule(ModuleQuestJournal);
 -- <b>Hinweis</b>: Der Button wird auch dann angezeigt, wenn es noch keine
 -- Zusatzinformationen für den Quest gibt.
 --
+-- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden, wegen Konflikt
+-- mit dem Chat Options.
+--
 -- @param[type=string]  _Quest Name des Quest
 -- @param[type=boolean] _Flag  Zusatzinfos aktivieren
 -- @within Anwenderfunktionen
@@ -40881,6 +40878,9 @@ end
 --
 -- <b>Hinweis</b>: Formatierungsbefehle sind deaktiviert.
 --
+-- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden, wegen Konflikt
+-- mit dem Chat Options.
+--
 -- @param[type=string] _Text  Text der Zusatzinfo
 -- @return[type=number] ID des neuen Eintrags
 -- @within Anwenderfunktionen
@@ -40901,6 +40901,9 @@ end
 -- Kopien eines Eintrags werden nicht berücksichtigt.
 --
 -- <b>Hinweis</b>: Formatierungsbefehle sind deaktiviert.
+--
+-- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden, wegen Konflikt
+-- mit dem Chat Options.
 --
 -- @param[type=number] _ID   ID des Eintrag
 -- @param              _Text Neuer Text
@@ -40931,6 +40934,9 @@ end
 -- rote Färbung hervorgehoben. Eigene Farben in einer Nachricht beeinträchtigen
 -- die rote hervorhebung.
 --
+-- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden, wegen Konflikt
+-- mit dem Chat Options.
+--
 -- @param[type=number]  _ID        ID des Eintrag
 -- @param[type=boolean] _Important Wichtig Markierung
 -- @within Anwenderfunktionen
@@ -40957,6 +40963,9 @@ end
 -- <b>Hinweis</b>: Ein Eintrag wird niemals wirklich gelöscht, sondern nur
 -- unsichtbar geschaltet.
 --
+-- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden, wegen Konflikt
+-- mit dem Chat Options.
+--
 -- @param[type=number] _ID ID des Eintrag
 -- @within Anwenderfunktionen
 --
@@ -40978,6 +40987,9 @@ end
 
 ---
 -- Stellt einen gelöschten Eintrag in den Zusatzinformationen wieder her.
+--
+-- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden, wegen Konflikt
+-- mit dem Chat Options.
 --
 -- @param[type=number] _ID ID des Eintrag
 -- @within Anwenderfunktionen
@@ -41001,6 +41013,9 @@ end
 ---
 -- Fügt einen Tagebucheintrag zu einem Quest hinzu.
 --
+-- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden, wegen Konflikt
+-- mit dem Chat Options.
+--
 -- @param[type=number]  _ID    ID des Eintrag
 -- @param[type=boolean] _Quest Name des Quest
 -- @within Anwenderfunktionen
@@ -41017,6 +41032,9 @@ end
 
 ---
 -- Entfernt einen Tagebucheintrag von einem Quest.
+--
+-- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden, wegen Konflikt
+-- mit dem Chat Options.
 --
 -- @param[type=number]  _ID    ID des Eintrag
 -- @param[type=boolean] _Quest Name des Quest

@@ -74,13 +74,12 @@ function Mission_FirstMapAction()
         Startup_StartGoods();
         Startup_Diplomacy();
     end
-    Mission_OnQsbLoaded();
 end
 
 -- -------------------------------------------------------------------------- --
 -- In dieser Funktion können eigene Funktionrn aufgerufen werden. Sie werden
 -- atomatisch dann gestartet, wenn die QSB vollständig geladen wurde.
-function Mission_OnQsbLoaded()
+function Mission_MP_OnQSBLoaded()
     -- Testmodus aktivieren
     -- (Auskommentieren, wenn nicht benötigt)
     API.ActivateDebugMode(true, false, true, true);
@@ -99,14 +98,14 @@ end
 -- Briefing
 
 function CreateTestBriefingQuests()
-    for i= 1, 2 do
+    for k,v in pairs(API.GetActivePlayers()) do
         API.CreateQuest {
-            Name        = "BriefingQuest" ..i,
-            Receiver    = i,
+            Name        = "BriefingQuest" ..v,
+            Receiver    = v,
             Suggestion  = "Da ist so ein bärtiger Typ...",
 
-            Goal_NPC("NPC_Briefing" ..i),
-            Reward_Briefing("P" ..i.. "_Briefing1", "TestBriefing"),
+            Goal_NPC("NPC_Briefing" ..v),
+            Reward_Briefing("P" ..v.. "_Briefing1", "TestBriefing"),
             Trigger_Time(5)
         }
     end
@@ -148,14 +147,14 @@ end
 -- Dialog
 
 function CreateTestDialogQuests()
-    for i= 1, 2 do
+    for k, v in pairs(API.GetActivePlayers()) do
         API.CreateQuest {
-            Name        = "DialogQuest" ..i,
-            Receiver    = i,
+            Name        = "DialogQuest" ..v,
+            Receiver    = v,
             Suggestion  = "Eine Nonne hat meine Stadt besucht.",
 
-            Goal_NPC("NPC_Dialog" ..i),
-            Reward_Dialog("P" ..i.. "_Dialog1", "TestDialog"),
+            Goal_NPC("NPC_Dialog" ..v),
+            Reward_Dialog("P" ..v.. "_Dialog1", "TestDialog"),
             Trigger_Time(5)
         }
     end
@@ -202,13 +201,13 @@ end
 -- IO
 
 function CreateTestIOs()
-    for i= 1, 2 do
+    for k,v in pairs(API.GetActivePlayers()) do
         API.SetupObject {
-            Name     = "IO" ..i,
+            Name     = "IO" ..v,
             Distance = 1500,
             Costs    = {Goods.G_Wood, 5},
             Reward   = {Goods.G_Gold, 1000},
-            Player   = i,
+            Player   = v,
             Callback = function(_Data, _KnightID, _PlayerID)
                 API.Note("Player " .._PlayerID.. " has activated " .._Data.Name);
             end
@@ -221,10 +220,10 @@ end
 -- NPC
 
 function CreateTestNPCs()
-    for i= 1, 2 do
+    for k,v in pairs(API.GetActivePlayers()) do
         MyNpc = API.NpcCompose {
-            Name              = "NPC" ..i,
-            Player            = i,
+            Name              = "NPC" ..v,
+            Player            = v,
             WrongPlayerAction = function(_Data, _PlayerID, _KnightID)
                 API.Note("Player ".._PlayerID.. " can not talk to " .._Data.Name);
             end,

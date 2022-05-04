@@ -87,13 +87,24 @@ QSB.PlayerNames = {};
 function ModuleInterfaceCore.Global:OnGameStart()
     self.HumanKnightType = Logic.GetEntityType(Logic.GetKnightID(QSB.HumanPlayerID));
     self.HumanPlayerID = QSB.HumanPlayerID;
-    self:SetupFacesForMultiplayer();
+
+    StartSimpleJobEx(function()
+        if Logic.GetTime() > 1 then
+            ModuleInterfaceCore.Global:OverridePlayerLost();
+            return true;
+        end
+    end);
 end
 
-function ModuleInterfaceCore.Global:SetupFacesForMultiplayer()
-    if Framework.IsNetworkGame() then
-        for i= 1, 8 do
-            API.SetPlayerPortrait(i);
+function ModuleInterfaceCore.Global:OverridePlayerLost()
+    GameCallback_PlayerLost = function(_PlayerID)
+        if _PlayerID == QSB.HumanPlayerID then
+            if not Framework.IsNetworkGame() then
+                QuestTemplate:TerminateEventsAndStuff()
+                if MissionCallback_Player1Lost then
+                    MissionCallback_Player1Lost()
+                end
+            end
         end
     end
 end
@@ -112,15 +123,6 @@ function ModuleInterfaceCore.Global:SetControllingPlayer(_OldPlayerID, _NewPlaye
     self.HumanKnightType = EntityType;
     self.HumanPlayerID = _NewPlayerID;
     QSB.HumanPlayerID = _NewPlayerID;
-
-    GameCallback_PlayerLost = function(_PlayerID)
-        if _PlayerID == QSB.HumanPlayerID then
-            QuestTemplate:TerminateEventsAndStuff()
-            if MissionCallback_Player1Lost then
-                MissionCallback_Player1Lost()
-            end
-        end
-    end
 
     Logic.ExecuteInLuaLocalState([[
         GUI.ClearSelection()
@@ -179,6 +181,7 @@ function ModuleInterfaceCore.Local:OnGameStart()
     self:OverrideStartFestival();
     self:OverrideStartTheatrePlay();
     self:OverrideUpgradeTurret();
+    self:SetupFacesForMultiplayer();
 
     -- Schnellspeichern generell verbieten
     API.AddBlockQuicksaveCondition(function()
@@ -194,6 +197,14 @@ function ModuleInterfaceCore.Local:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.SaveGameLoaded then
         self:UpdateHiddenWidgets();
         self:DisplaySaveButtons();
+    end
+end
+
+function ModuleInterfaceCore.Local:SetupFacesForMultiplayer()
+    if Framework.IsNetworkGame() then
+        for i= 1, 8 do
+            API.SetPlayerPortrait(i);
+        end
     end
 end
 
@@ -621,11 +632,11 @@ end
 
 function ModuleInterfaceCore.Local:SetPlayerPortraitByPrimaryKnight(_PlayerID)
     local KnightID = Logic.GetKnightID(_PlayerID);
-    HeadModelName = "H_NPC_Generic_Trader";
+    local HeadModelName = "H_NPC_Generic_Trader";
     if KnightID ~= 0 then
         local KnightType = Logic.GetEntityType(KnightID);
         local KnightTypeName = Logic.GetEntityTypeName(KnightType);
-        local HeadModelName = "H" .. string.sub(KnightTypeName, 2, 8) .. "_" .. string.sub(KnightTypeName, 9);
+        HeadModelName = "H" .. string.sub(KnightTypeName, 2, 8) .. "_" .. string.sub(KnightTypeName, 9);
 
         if not Models["Heads_" .. HeadModelName] then
             HeadModelName = "H_NPC_Generic_Trader";

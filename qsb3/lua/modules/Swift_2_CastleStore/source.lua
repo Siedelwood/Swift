@@ -109,17 +109,17 @@ QSB.CastleStorePlayerData = {};
 function ModuleCastleStore.Global:OnGameStart()
     QSB.CastleStore = self.CastleStore;
     
-    for i= 1, 8 do
-        self.BackupGoods[i] = {};
-    end
-    self:OverwriteGameFunctions();
-
     API.RegisterScriptCommand("Cmd_CastleStoreAcceptAllGoods", SCP.CastleStore.AcceptAllGoods);
     API.RegisterScriptCommand("Cmd_CastleStoreLockAllGoods", SCP.CastleStore.LockAllGoods);
     API.RegisterScriptCommand("Cmd_CastleStoreRefuseAllGoods", SCP.CastleStore.RefuseAllGoods);
     API.RegisterScriptCommand("Cmd_CastleStoreToggleGoodState", SCP.CastleStore.ToggleGoodState);
     API.RegisterScriptCommand("Cmd_CastleStoreObjectPayStep1", SCP.CastleStore.ObjectPayStep1);
     API.RegisterScriptCommand("Cmd_CastleStoreObjectPayStep3", SCP.CastleStore.ObjectPayStep3);
+    
+    for i= 1, 8 do
+        self.BackupGoods[i] = {};
+    end
+    self:OverwriteGameFunctions();
 end
 
 function ModuleCastleStore.Global.CastleStore:New(_PlayerID)

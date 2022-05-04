@@ -1,6 +1,6 @@
 --[[
     ***********************************************************************
-    Global Skript
+    Global Multiplayer Skript
 
     Kartenname: 
     Autor:      
@@ -18,7 +18,6 @@ function Mission_FirstMapAction()
         Startup_StartGoods();
         Startup_Diplomacy();
     end
-    Mission_OnQSBLoaded();
 end
 
 -- -------------------------------------------------------------------------- --
@@ -85,7 +84,7 @@ end
 -- -------------------------------------------------------------------------- --
 -- Diese Funktion wird nach Spielstart aufgerufen.
 
-function Mission_OnQSBLoaded()
+function Mission_MP_OnQSBLoaded()
     -- Testmodus aktivieren
     -- (Auskommentieren, wenn nicht benötigt)
     API.ActivateDebugMode(true, false, true, true);

@@ -14,7 +14,7 @@ SCP = SCP or {
     Core = {}
 };
 
-QSB.Version = "Version 3.0.0 BETA (1.1.1)";
+QSB.Version = "Version 3.0.0 BETA (1.1.2)";
 QSB.Language = "de";
 QSB.HumanPlayerID = 1;
 QSB.ScriptCommandSequence = 2;
@@ -533,6 +533,7 @@ end
 
 function Swift:InitalizeScriptCommands()
     Swift:CreateScriptCommand("Cmd_SendScriptEvent", API.SendScriptEvent);
+    Swift:CreateScriptCommand("Cmd_GlobalQsbLoaded", SCP.Core.GlobalQsbLoaded);
     Swift:CreateScriptCommand("Cmd_ProclaimateRandomSeed", SCP.Core.ProclaimateRandomSeed);
     Swift:CreateScriptCommand("Cmd_RegisterLoadscreenHidden", SCP.Core.LoadscreenHidden);
     Swift:CreateScriptCommand("Cmd_UpdateCustomVariable", SCP.Core.UpdateCustomVariable);
@@ -552,13 +553,13 @@ function Swift:CreateScriptCommand(_Name, _Function)
     self.m_ScriptCommandRegister[ID] = {Name, _Function};
     Logic.ExecuteInLuaLocalState(string.format(
         [[
-            Swift.m_ScriptCommandRegister[%d] = "%s"
-            QSB.ScriptCommands["%s"] = %d
+            local ID = %d
+            local Name = "%s"
+            Swift.m_ScriptCommandRegister[ID] = Name
+            QSB.ScriptCommands[Name] = ID
         ]],
         ID,
-        Name,
-        Name,
-        ID
+        Name
     ));
     QSB.ScriptCommands[Name] = ID;
     return ID;

@@ -757,6 +757,42 @@ function API.IsHistoryEditionNetworkGame()
     return API.IsHistoryEdition() and Framework.IsNetworkGame();
 end
 
+function API.GetPlayerSlotID(_PlayerID)
+    for i= 1, 8 do
+        if Network.IsNetworkSlotIDUsed(i) then
+            local CurrentPlayerID = Logic.GetSlotPlayerID(i);
+            if  Logic.PlayerGetIsHumanFlag(CurrentPlayerID)
+            and CurrentPlayerID == _PlayerID then
+                return i;
+            end
+        end
+    end
+    return -1;
+end
+
+function API.GetSlotPlayerID(_SlotID)
+    if Network.IsNetworkSlotIDUsed(_SlotID) then
+        local CurrentPlayerID = Logic.GetSlotPlayerID(_SlotID);
+        if Logic.PlayerGetIsHumanFlag(CurrentPlayerID)  then
+            return CurrentPlayerID;
+        end
+    end
+    return -1;
+end
+
+function API.GetActivePlayers()
+    local PlayerList = {};
+    for i= 1, 8 do
+        if Network.IsNetworkSlotIDUsed(i) then
+            local PlayerID = Logic.GetSlotPlayerID(i);
+            if Logic.PlayerGetIsHumanFlag(PlayerID) and Logic.PlayerGetGameState(PlayerID) ~= 0 then
+                table.insert(PlayerList, PlayerID);
+            end
+        end
+    end
+    return PlayerList;
+end
+
 ---
 -- Speichert den Wert der Custom Variable im globalen und lokalen Skript.
 --
@@ -2495,6 +2531,12 @@ end
 
 function SCP.Core.LoadscreenHidden()
     Swift.m_LoadScreenHidden = true;
+end
+
+function SCP.Core.GlobalQsbLoaded()
+    if Mission_MP_OnQSBLoaded and Framework.IsNetworkGame() then
+        Mission_MP_OnQSBLoaded();
+    end
 end
 
 function SCP.Core.ProclaimateRandomSeed(_Seed)
