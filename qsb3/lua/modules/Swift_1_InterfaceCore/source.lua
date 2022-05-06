@@ -181,7 +181,6 @@ function ModuleInterfaceCore.Local:OnGameStart()
     self:OverrideStartFestival();
     self:OverrideStartTheatrePlay();
     self:OverrideUpgradeTurret();
-    self:SetupFacesForMultiplayer();
 
     -- Schnellspeichern generell verbieten
     API.AddBlockQuicksaveCondition(function()
@@ -197,14 +196,6 @@ function ModuleInterfaceCore.Local:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.SaveGameLoaded then
         self:UpdateHiddenWidgets();
         self:DisplaySaveButtons();
-    end
-end
-
-function ModuleInterfaceCore.Local:SetupFacesForMultiplayer()
-    if Framework.IsNetworkGame() then
-        for i= 1, 8 do
-            API.SetPlayerPortrait(i);
-        end
     end
 end
 

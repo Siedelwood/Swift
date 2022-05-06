@@ -533,6 +533,7 @@ end
 
 function Swift:InitalizeScriptCommands()
     Swift:CreateScriptCommand("Cmd_SendScriptEvent", API.SendScriptEvent);
+    Swift:CreateScriptCommand("Cmd_GlobalQsbLoaded", SCP.Core.GlobalQsbLoaded);
     Swift:CreateScriptCommand("Cmd_ProclaimateRandomSeed", SCP.Core.ProclaimateRandomSeed);
     Swift:CreateScriptCommand("Cmd_RegisterLoadscreenHidden", SCP.Core.LoadscreenHidden);
     Swift:CreateScriptCommand("Cmd_UpdateCustomVariable", SCP.Core.UpdateCustomVariable);
@@ -552,13 +553,13 @@ function Swift:CreateScriptCommand(_Name, _Function)
     self.m_ScriptCommandRegister[ID] = {Name, _Function};
     Logic.ExecuteInLuaLocalState(string.format(
         [[
-            Swift.m_ScriptCommandRegister[%d] = "%s"
-            QSB.ScriptCommands["%s"] = %d
+            local ID = %d
+            local Name = "%s"
+            Swift.m_ScriptCommandRegister[ID] = Name
+            QSB.ScriptCommands[Name] = ID
         ]],
         ID,
-        Name,
-        Name,
-        ID
+        Name
     ));
     QSB.ScriptCommands[Name] = ID;
     return ID;
@@ -1625,6 +1626,70 @@ end
 --
 function API.IsHistoryEditionNetworkGame()
     return API.IsHistoryEdition() and Framework.IsNetworkGame();
+end
+
+---
+-- Gibt den Slot zurück, den der Spieler einnimmt. Hat der Spieler keinen
+-- Slot okkupiert oder ist nicht menschlich, wird -1 zurückgegeben.
+--
+-- <b>Hinweis</b>: Nur für Multiplayer ausgelegt! Nicht im Singleplayer nutzen!
+--
+-- @return[type=number] ID des Player
+-- @return[type=number] Slot ID des Player
+-- @within Base
+--
+function API.GetPlayerSlotID(_PlayerID)
+    for i= 1, 8 do
+        if Network.IsNetworkSlotIDUsed(i) then
+            local CurrentPlayerID = Logic.GetSlotPlayerID(i);
+            if  Logic.PlayerGetIsHumanFlag(CurrentPlayerID)
+            and CurrentPlayerID == _PlayerID then
+                return i;
+            end
+        end
+    end
+    return -1;
+end
+
+---
+-- Gibt den Spieler zurück, welcher den Slot okkupiert. Hat der Slot keinen
+-- Spieler oder ist der Spieler nicht menschlich, wird -1 zurückgegeben.
+--
+-- <b>Hinweis</b>: Nur für Multiplayer ausgelegt! Nicht im Singleplayer nutzen!
+--
+-- @return[type=number] Slot ID des Player
+-- @return[type=number] ID des Player
+-- @within Base
+--
+function API.GetSlotPlayerID(_SlotID)
+    if Network.IsNetworkSlotIDUsed(_SlotID) then
+        local CurrentPlayerID = Logic.GetSlotPlayerID(_SlotID);
+        if Logic.PlayerGetIsHumanFlag(CurrentPlayerID)  then
+            return CurrentPlayerID;
+        end
+    end
+    return -1;
+end
+
+---
+-- Gibt eine Liste aller Spieler im Spiel zurück.
+--
+-- <b>Hinweis</b>: Nur für Multiplayer ausgelegt! Nicht im Singleplayer nutzen!
+--
+-- @return[type=table] Liste der aktiven Spieler
+-- @within Base
+--
+function API.GetActivePlayers()
+    local PlayerList = {};
+    for i= 1, 8 do
+        if Network.IsNetworkSlotIDUsed(i) then
+            local PlayerID = Logic.GetSlotPlayerID(i);
+            if Logic.PlayerGetIsHumanFlag(PlayerID) and Logic.PlayerGetGameState(PlayerID) ~= 0 then
+                table.insert(PlayerList, PlayerID);
+            end
+        end
+    end
+    return PlayerList;
 end
 
 ---
@@ -3365,6 +3430,12 @@ end
 
 function SCP.Core.LoadscreenHidden()
     Swift.m_LoadScreenHidden = true;
+end
+
+function SCP.Core.GlobalQsbLoaded()
+    if Mission_MP_OnQSBLoaded and Framework.IsNetworkGame() then
+        Mission_MP_OnQSBLoaded();
+    end
 end
 
 function SCP.Core.ProclaimateRandomSeed(_Seed)
@@ -15675,13 +15746,24 @@ QSB.PlayerNames = {};
 function ModuleInterfaceCore.Global:OnGameStart()
     self.HumanKnightType = Logic.GetEntityType(Logic.GetKnightID(QSB.HumanPlayerID));
     self.HumanPlayerID = QSB.HumanPlayerID;
-    self:SetupFacesForMultiplayer();
+
+    StartSimpleJobEx(function()
+        if Logic.GetTime() > 1 then
+            ModuleInterfaceCore.Global:OverridePlayerLost();
+            return true;
+        end
+    end);
 end
 
-function ModuleInterfaceCore.Global:SetupFacesForMultiplayer()
-    if Framework.IsNetworkGame() then
-        for i= 1, 8 do
-            API.SetPlayerPortrait(i);
+function ModuleInterfaceCore.Global:OverridePlayerLost()
+    GameCallback_PlayerLost = function(_PlayerID)
+        if _PlayerID == QSB.HumanPlayerID then
+            if not Framework.IsNetworkGame() then
+                QuestTemplate:TerminateEventsAndStuff()
+                if MissionCallback_Player1Lost then
+                    MissionCallback_Player1Lost()
+                end
+            end
         end
     end
 end
@@ -15700,15 +15782,6 @@ function ModuleInterfaceCore.Global:SetControllingPlayer(_OldPlayerID, _NewPlaye
     self.HumanKnightType = EntityType;
     self.HumanPlayerID = _NewPlayerID;
     QSB.HumanPlayerID = _NewPlayerID;
-
-    GameCallback_PlayerLost = function(_PlayerID)
-        if _PlayerID == QSB.HumanPlayerID then
-            QuestTemplate:TerminateEventsAndStuff()
-            if MissionCallback_Player1Lost then
-                MissionCallback_Player1Lost()
-            end
-        end
-    end
 
     Logic.ExecuteInLuaLocalState([[
         GUI.ClearSelection()
@@ -16209,11 +16282,11 @@ end
 
 function ModuleInterfaceCore.Local:SetPlayerPortraitByPrimaryKnight(_PlayerID)
     local KnightID = Logic.GetKnightID(_PlayerID);
-    HeadModelName = "H_NPC_Generic_Trader";
+    local HeadModelName = "H_NPC_Generic_Trader";
     if KnightID ~= 0 then
         local KnightType = Logic.GetEntityType(KnightID);
         local KnightTypeName = Logic.GetEntityTypeName(KnightType);
-        local HeadModelName = "H" .. string.sub(KnightTypeName, 2, 8) .. "_" .. string.sub(KnightTypeName, 9);
+        HeadModelName = "H" .. string.sub(KnightTypeName, 2, 8) .. "_" .. string.sub(KnightTypeName, 9);
 
         if not Models["Heads_" .. HeadModelName] then
             HeadModelName = "H_NPC_Generic_Trader";
@@ -19920,17 +19993,17 @@ QSB.CastleStorePlayerData = {};
 function ModuleCastleStore.Global:OnGameStart()
     QSB.CastleStore = self.CastleStore;
     
-    for i= 1, 8 do
-        self.BackupGoods[i] = {};
-    end
-    self:OverwriteGameFunctions();
-
     API.RegisterScriptCommand("Cmd_CastleStoreAcceptAllGoods", SCP.CastleStore.AcceptAllGoods);
     API.RegisterScriptCommand("Cmd_CastleStoreLockAllGoods", SCP.CastleStore.LockAllGoods);
     API.RegisterScriptCommand("Cmd_CastleStoreRefuseAllGoods", SCP.CastleStore.RefuseAllGoods);
     API.RegisterScriptCommand("Cmd_CastleStoreToggleGoodState", SCP.CastleStore.ToggleGoodState);
     API.RegisterScriptCommand("Cmd_CastleStoreObjectPayStep1", SCP.CastleStore.ObjectPayStep1);
     API.RegisterScriptCommand("Cmd_CastleStoreObjectPayStep3", SCP.CastleStore.ObjectPayStep3);
+    
+    for i= 1, 8 do
+        self.BackupGoods[i] = {};
+    end
+    self:OverwriteGameFunctions();
 end
 
 function ModuleCastleStore.Global.CastleStore:New(_PlayerID)
@@ -21541,9 +21614,9 @@ ModuleConstructionControl = {
 -- Global ------------------------------------------------------------------- --
 
 function ModuleConstructionControl.Global:OnGameStart()
-    self:OverrideCanPlayerPlaceBuilding();
-
     API.RegisterScriptCommand("Cmd_CheckCancelKnockdown", SCP.ConstructionAndKnockdown.CancelKnockdown);
+    
+    self:OverrideCanPlayerPlaceBuilding();
 end
 
 function ModuleConstructionControl.Global:OnEvent(_ID, _Event, ...)
@@ -29555,9 +29628,9 @@ function ModuleSelection.Global:OnGameStart()
     end
 end
 
-function ModuleSelection.Global:OnEvent(_ID, _Event, _PlayerID, _OldSelection, _NewSelection)
+function ModuleSelection.Global:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.SelectionChanged then
-        self.SelectedEntities[_PlayerID] = _NewSelection;
+        self.SelectedEntities[arg[1]] = arg[3];
     end
 end
 
@@ -31174,6 +31247,9 @@ function ModuleMilitaryLimit.Global:OnGameStart()
     QSB.ScriptEvents.ProducedBattalion = API.RegisterScriptEvent("Event_ProducedBattalion");
     QSB.ScriptEvents.RefilledBattalion = API.RegisterScriptEvent("Event_RefilledBattalion");
 
+    API.RegisterScriptCommand("Cmd_MilitaryLimitProduceUnits", SCP.MilitaryLimit.ProduceUnits);
+    API.RegisterScriptCommand("Cmd_MilitaryLimitRefillBattalion", SCP.MilitaryLimit.RefillBattalion);
+
     for i= 0, 8 do
         self.SoldierKillsCounter[i] = {};
     end
@@ -31188,9 +31264,6 @@ function ModuleMilitaryLimit.Global:OnGameStart()
     API.StartJob(function()
         ModuleMilitaryLimit.Global:UpdateSoldierLimits();
     end);
-
-    API.RegisterScriptCommand("Cmd_MilitaryLimitProduceUnits", SCP.MilitaryLimit.ProduceUnits);
-    API.RegisterScriptCommand("Cmd_MilitaryLimitRefillBattalion", SCP.MilitaryLimit.RefillBattalion);
 end
 
 function ModuleMilitaryLimit.Global:OnEvent(_ID, _Name, ...)
@@ -41465,9 +41538,16 @@ if not MapEditor and not GUI then
         if ModuleKnightTitleRequirements then
             InitKnightTitleTables();
         end
-        if Mission_LocalOnQsbLoaded then
+        if Mission_LocalOnQsbLoaded and not Framework.IsNetworkGame() then
             Mission_LocalOnQsbLoaded();
         end
+        if Mission_MP_LocalOnQSBLoaded and Framework.IsNetworkGame() then
+            Mission_MP_LocalOnQSBLoaded();
+        end
+        StartSimpleJobEx(function()
+            Swift:DispatchScriptCommand(QSB.ScriptCommands.GlobalQsbLoaded);
+            return true;
+        end);
     ]]);
     
     API.Install();

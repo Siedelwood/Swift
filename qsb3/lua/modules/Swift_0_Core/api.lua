@@ -757,6 +757,16 @@ function API.IsHistoryEditionNetworkGame()
     return API.IsHistoryEdition() and Framework.IsNetworkGame();
 end
 
+---
+-- Gibt den Slot zurück, den der Spieler einnimmt. Hat der Spieler keinen
+-- Slot okkupiert oder ist nicht menschlich, wird -1 zurückgegeben.
+--
+-- <b>Hinweis</b>: Nur für Multiplayer ausgelegt! Nicht im Singleplayer nutzen!
+--
+-- @return[type=number] ID des Player
+-- @return[type=number] Slot ID des Player
+-- @within Base
+--
 function API.GetPlayerSlotID(_PlayerID)
     for i= 1, 8 do
         if Network.IsNetworkSlotIDUsed(i) then
@@ -770,6 +780,16 @@ function API.GetPlayerSlotID(_PlayerID)
     return -1;
 end
 
+---
+-- Gibt den Spieler zurück, welcher den Slot okkupiert. Hat der Slot keinen
+-- Spieler oder ist der Spieler nicht menschlich, wird -1 zurückgegeben.
+--
+-- <b>Hinweis</b>: Nur für Multiplayer ausgelegt! Nicht im Singleplayer nutzen!
+--
+-- @return[type=number] Slot ID des Player
+-- @return[type=number] ID des Player
+-- @within Base
+--
 function API.GetSlotPlayerID(_SlotID)
     if Network.IsNetworkSlotIDUsed(_SlotID) then
         local CurrentPlayerID = Logic.GetSlotPlayerID(_SlotID);
@@ -780,6 +800,14 @@ function API.GetSlotPlayerID(_SlotID)
     return -1;
 end
 
+---
+-- Gibt eine Liste aller Spieler im Spiel zurück.
+--
+-- <b>Hinweis</b>: Nur für Multiplayer ausgelegt! Nicht im Singleplayer nutzen!
+--
+-- @return[type=table] Liste der aktiven Spieler
+-- @within Base
+--
 function API.GetActivePlayers()
     local PlayerList = {};
     for i= 1, 8 do
@@ -1248,71 +1276,6 @@ MakeInvulnerable = function(_Entity)
 end
 
 ---
--- Rotiert ein Entity, sodass es zum Ziel schaut.
---
--- @param _Entity      Entity (Skriptname oder ID)
--- @param _Target      Ziel (Skriptname, ID oder Position)
--- @param[type=number] _Offset Winkel Offset
--- @within Entity
--- @usage API.LookAt("Hakim", "Alandra")
---
-function API.LookAt(_Entity, _Target, _Offset)
-    _Offset = _Offset or 0;
-    local ID1 = GetID(_Entity);
-    if ID1 == 0 then
-        return;
-    end
-    local x1,y1,z1 = Logic.EntityGetPos(ID1);
-    local ID2;
-    local x2, y2, z2;
-    if type(_Target) == "table" then
-        x2 = _Target.X;
-        y2 = _Target.Y;
-        z2 = _Target.Z;
-    else
-        ID2 = GetID(_Target);
-        if ID2 == 0 then
-            return;
-        end
-        x2,y2,z2 = Logic.EntityGetPos(ID2);
-    end
-
-    if not API.IsValidPosition({X= x1, Y= y1, Z= z1}) then
-        return;
-    end
-    if not API.IsValidPosition({X= x2, Y= y2, Z= z2}) then
-        return;
-    end
-    Angle = math.deg(math.atan2((y2 - y1), (x2 - x1))) + _Offset;
-    if Angle < 0 then
-        Angle = Angle + 360;
-    end
-
-    if Logic.IsLeader(ID1) == 1 then
-        local Soldiers = {Logic.GetSoldiersAttachedToLeader(ID1)};
-        for i= 2, Soldiers[1]+1 do
-            Logic.SetOrientation(Soldiers[i], Angle);
-        end
-    end
-    Logic.SetOrientation(ID1, Angle);
-end
-LookAt = API.LookAt;
-
----
--- Lässt zwei Entities sich gegenseitig anschauen.
---
--- @param _entity         Entity (Skriptname oder ID)
--- @param _entityToLookAt Ziel (Skriptname oder ID)
--- @within Entity
--- @usage API.Confront("Hakim", "Alandra")
---
-function API.Confront(_entity, _entityToLookAt)
-    API.LookAt(_entity, _entityToLookAt);
-    API.LookAt(_entityToLookAt, _entity);
-end
-ConfrontEntities = API.LookAt;
-
----
 -- Sendet einen Handelskarren zu dem Spieler. Startet der Karren von einem
 -- Gebäude, wird immer die Position des Eingangs genommen.
 --
@@ -1584,47 +1547,6 @@ end
 SetTask = API.SetEntityTaskList;
 
 ---
--- Gibt die Ausrichtung des Entity zurück.
---
--- @param               _Entity  Entity (Scriptname oder ID)
--- @return[type=number] Ausrichtung in Grad
--- @within Entity
---
-function API.GetEntityOrientation(_Entity)
-    local EntityID = GetID(_Entity);
-    if EntityID > 0 then
-        return API.Round(Logic.GetEntityOrientation(EntityID));
-    end
-    error("API.GetEntityOrientation: _Entity (" ..tostring(_Entity).. ") does not exist!");
-    return 0;
-end
-GetOrientation = API.GetEntityOrientation;
-
----
--- Setzt die Ausrichtung des Entity.
---
--- @param               _Entity  Entity (Scriptname oder ID)
--- @param[type=number] _Orientation Neue Ausrichtung
--- @within Entity
---
-function API.SetEntityOrientation(_Entity, _Orientation)
-    if GUI then
-        return;
-    end
-    local EntityID = GetID(_Entity);
-    if EntityID > 0 then
-        if type(_Orientation) ~= "number" then
-            error("API.SetEntityOrientation: _Orientation is wrong!");
-            return
-        end
-        Logic.SetOrientation(EntityID, API.Round(_Orientation));
-    else
-        error("API.SetEntityOrientation: _Entity (" ..tostring(_Entity).. ") does not exist!");
-    end
-end
-SetOrientation = API.SetEntityOrientation;
-
----
 -- Gibt die Menge an Rohstoffen des Entity zurück. Optional kann
 -- eine neue Menge gesetzt werden.
 --
@@ -1768,6 +1690,78 @@ function API.CreateEntityName(_EntityID)
 end
 GiveEntityName = API.CreateEntityName;
 
+-- Mögliche (zufällige) Siedler, getrennt in männlich und weiblich.
+QSB.PossibleSettlerTypes = {
+    Male = {
+        Entities.U_BannerMaker,
+        Entities.U_Baker,
+        Entities.U_Barkeeper,
+        Entities.U_Blacksmith,
+        Entities.U_Butcher,
+        Entities.U_BowArmourer,
+        Entities.U_BowMaker,
+        Entities.U_CandleMaker,
+        Entities.U_Carpenter,
+        Entities.U_DairyWorker,
+        Entities.U_Pharmacist,
+        Entities.U_Tanner,
+        Entities.U_SmokeHouseWorker,
+        Entities.U_Soapmaker,
+        Entities.U_SwordSmith,
+        Entities.U_Weaver,
+    },
+    Female = {
+        Entities.U_BathWorker,
+        Entities.U_SpouseS01,
+        Entities.U_SpouseS02,
+        Entities.U_SpouseS03,
+        Entities.U_SpouseF01,
+        Entities.U_SpouseF02,
+        Entities.U_SpouseF03,
+    }
+}
+
+---
+-- Wählt aus einer festen Liste von Typen einen zufälligen Siedler-Typ aus.
+-- Es werden nur Stadtsiedler zurückgegeben. Sie können männlich oder
+-- weiblich sein.
+--
+-- @return[type=number] Zufälliger Typ
+-- @within Anwenderfunktionen
+-- @local
+--
+function API.GetRandomSettlerType()
+    local Gender = (math.random(1, 2) == 1 and "Male") or "Female";
+    local Type   = math.random(1, #QSB.PossibleSettlerTypes[Gender]);
+    return QSB.PossibleSettlerTypes[Gender][Type];
+end
+
+---
+-- Wählt aus einer Liste von Typen einen zufälligen männlichen Siedler aus. Es
+-- werden nur Stadtsiedler zurückgegeben.
+--
+-- @return[type=number] Zufälliger Typ
+-- @within Anwenderfunktionen
+-- @local
+--
+function API.GetRandomMaleSettlerType()
+    local Type = math.random(1, #QSB.PossibleSettlerTypes.Male);
+    return QSB.PossibleSettlerTypes.Male[Type];
+end
+
+---
+-- Wählt aus einer Liste von Typen einen zufälligen weiblichen Siedler aus. Es
+-- werden nur Stadtsiedler zurückgegeben.
+--
+-- @return[type=number] Zufälliger Typ
+-- @within Anwenderfunktionen
+-- @local
+--
+function API.GetRandomFemaleSettlerType()
+    local Type = math.random(1, #QSB.PossibleSettlerTypes.Female);
+    return QSB.PossibleSettlerTypes.Female[Type];
+end
+
 -- Group
 
 ---
@@ -1826,7 +1820,7 @@ function API.GetGroupLeader(_Entity)
         error("API.GetGroupLeader: _Entity (" ..tostring(_Entity).. ") does not exist!");
         return 0;
     end
-    if Logic.IsEntityInCategory(EntityID, EntityCategories.Soldier) == 0 then 
+    if Logic.IsEntityInCategory(EntityID, EntityCategories.Soldier) == 0 then
         return 0;
     end
     return Logic.SoldierGetLeaderEntityID(EntityID);
@@ -1950,7 +1944,113 @@ function API.InteractiveObjectDeactivate(_ScriptName)
 end
 InteractiveObjectDeactivate = API.InteractiveObjectDeactivate;
 
--- Position
+-- Position And Orientation
+
+---
+-- Gibt die Ausrichtung des Entity zurück.
+--
+-- @param               _Entity  Entity (Scriptname oder ID)
+-- @return[type=number] Ausrichtung in Grad
+-- @within Entity
+--
+function API.GetEntityOrientation(_Entity)
+    local EntityID = GetID(_Entity);
+    if EntityID > 0 then
+        return API.Round(Logic.GetEntityOrientation(EntityID));
+    end
+    error("API.GetEntityOrientation: _Entity (" ..tostring(_Entity).. ") does not exist!");
+    return 0;
+end
+GetOrientation = API.GetEntityOrientation;
+
+---
+-- Setzt die Ausrichtung des Entity.
+--
+-- @param               _Entity  Entity (Scriptname oder ID)
+-- @param[type=number] _Orientation Neue Ausrichtung
+-- @within Entity
+--
+function API.SetEntityOrientation(_Entity, _Orientation)
+    if GUI then
+        return;
+    end
+    local EntityID = GetID(_Entity);
+    if EntityID > 0 then
+        if type(_Orientation) ~= "number" then
+            error("API.SetEntityOrientation: _Orientation is wrong!");
+            return
+        end
+        Logic.SetOrientation(EntityID, API.Round(_Orientation));
+    else
+        error("API.SetEntityOrientation: _Entity (" ..tostring(_Entity).. ") does not exist!");
+    end
+end
+SetOrientation = API.SetEntityOrientation;
+
+---
+-- Rotiert ein Entity, sodass es zum Ziel schaut.
+--
+-- @param _Entity      Entity (Skriptname oder ID)
+-- @param _Target      Ziel (Skriptname, ID oder Position)
+-- @param[type=number] _Offset Winkel Offset
+-- @within Entity
+-- @usage API.LookAt("Hakim", "Alandra")
+--
+function API.LookAt(_Entity, _Target, _Offset)
+    _Offset = _Offset or 0;
+    local ID1 = GetID(_Entity);
+    if ID1 == 0 then
+        return;
+    end
+    local x1,y1,z1 = Logic.EntityGetPos(ID1);
+    local ID2;
+    local x2, y2, z2;
+    if type(_Target) == "table" then
+        x2 = _Target.X;
+        y2 = _Target.Y;
+        z2 = _Target.Z;
+    else
+        ID2 = GetID(_Target);
+        if ID2 == 0 then
+            return;
+        end
+        x2,y2,z2 = Logic.EntityGetPos(ID2);
+    end
+
+    if not API.IsValidPosition({X= x1, Y= y1, Z= z1}) then
+        return;
+    end
+    if not API.IsValidPosition({X= x2, Y= y2, Z= z2}) then
+        return;
+    end
+    Angle = math.deg(math.atan2((y2 - y1), (x2 - x1))) + _Offset;
+    if Angle < 0 then
+        Angle = Angle + 360;
+    end
+
+    if Logic.IsLeader(ID1) == 1 then
+        local Soldiers = {Logic.GetSoldiersAttachedToLeader(ID1)};
+        for i= 2, Soldiers[1]+1 do
+            Logic.SetOrientation(Soldiers[i], Angle);
+        end
+    end
+    Logic.SetOrientation(ID1, Angle);
+end
+LookAt = API.LookAt;
+
+---
+-- Lässt zwei Entities sich gegenseitig anschauen.
+--
+-- @param _entity         Entity (Skriptname oder ID)
+-- @param _entityToLookAt Ziel (Skriptname oder ID)
+-- @within Entity
+-- @usage API.Confront("Hakim", "Alandra")
+--
+function API.Confront(_entity, _entityToLookAt)
+    API.LookAt(_entity, _entityToLookAt);
+    API.LookAt(_entityToLookAt, _entity);
+end
+ConfrontEntities = API.LookAt;
 
 ---
 -- Bestimmt die Distanz zwischen zwei Punkten. Es können Entity-IDs,

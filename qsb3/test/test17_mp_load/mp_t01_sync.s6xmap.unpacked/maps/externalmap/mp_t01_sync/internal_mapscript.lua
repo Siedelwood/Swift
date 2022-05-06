@@ -101,8 +101,9 @@ function CreateTestBriefingQuests()
     for k,v in pairs(API.GetActivePlayers()) do
         API.CreateQuest {
             Name        = "BriefingQuest" ..v,
+            Sender      = v,
             Receiver    = v,
-            Suggestion  = "Da ist so ein bärtiger Typ...",
+            Suggestion  = "Da ist so ein bärtiger Typ... (Player " ..v.. ")",
 
             Goal_NPC("NPC_Briefing" ..v),
             Reward_Briefing("P" ..v.. "_Briefing1", "TestBriefing"),
@@ -150,8 +151,9 @@ function CreateTestDialogQuests()
     for k, v in pairs(API.GetActivePlayers()) do
         API.CreateQuest {
             Name        = "DialogQuest" ..v,
+            Sender      = v,
             Receiver    = v,
-            Suggestion  = "Eine Nonne hat meine Stadt besucht.",
+            Suggestion  = "Eine Nonne hat meine Stadt besucht. (Player " ..v.. ")",
 
             Goal_NPC("NPC_Dialog" ..v),
             Reward_Dialog("P" ..v.. "_Dialog1", "TestDialog"),
@@ -212,7 +214,6 @@ function CreateTestIOs()
                 API.Note("Player " .._PlayerID.. " has activated " .._Data.Name);
             end
         };
-        -- API.InteractiveObjectActivate("IO" ..i, 0, i);
     end
 end
 
