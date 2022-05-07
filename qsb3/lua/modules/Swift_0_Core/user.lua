@@ -84,6 +84,7 @@ function Swift:ExecuteEscapeCallback()
     -- Global
     Swift:DispatchScriptCommand(
         QSB.ScriptCommands.SendScriptEvent,
+        0,
         QSB.ScriptEvents.EscapePressed,
         GUI.GetPlayerID()
     )

@@ -384,11 +384,14 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
         GUI_Interaction.InteractiveObjectClicked_Orig_ModuleObjectInteraction();
 
         -- Send additional click event
-        local KnightIDs = {};
-        Logic.GetKnights(PlayerID, KnightIDs);
-        local KnightID = API.GetClosestToTarget(EntityID, KnightIDs);
-        API.SendScriptEventToGlobal(QSB.ScriptEvents.ObjectClicked, ScriptName, KnightID, PlayerID);
-        API.SendScriptEvent(QSB.ScriptEvents.ObjectClicked, ScriptName, KnightID, PlayerID);
+        -- This is supposed to be used in singleplayer only!
+        if not Framework.IsNetworkGame() then
+            local KnightIDs = {};
+            Logic.GetKnights(PlayerID, KnightIDs);
+            local KnightID = API.GetClosestToTarget(EntityID, KnightIDs);
+            API.SendScriptEventToGlobal(QSB.ScriptEvents.ObjectClicked, ScriptName, KnightID, PlayerID);
+            API.SendScriptEvent(QSB.ScriptEvents.ObjectClicked, ScriptName, KnightID, PlayerID);
+        end
     end
 
     GUI_Interaction.InteractiveObjectUpdate = function()

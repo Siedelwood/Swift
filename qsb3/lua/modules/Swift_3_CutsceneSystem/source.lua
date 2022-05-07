@@ -61,7 +61,10 @@ function ModuleCutsceneSystem.Global:OnEvent(_ID, _Event, ...)
     elseif _ID == QSB.ScriptEvents.CutsceneFlightEnded then
         self:EndCutsceneFlight(arg[1], arg[2]);
     elseif _ID == QSB.ScriptEvents.CutsceneSkipButtonPressed then
-        -- Nothing to do?
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.SendScriptEvent(QSB.ScriptEvents.CutsceneSkipButtonPressed, %d)]],
+            arg[1]
+        ));
     end
 end
 
@@ -287,14 +290,21 @@ function ModuleCutsceneSystem.Local:PropagateCutsceneEnded(_PlayerID)
     if not self.Cutscene[_PlayerID] then
         return;
     end
-    API.SendScriptEventToGlobal(QSB.ScriptEvents.CutsceneEnded, _PlayerID);
+    Swift:DispatchScriptCommand(
+        QSB.ScriptCommands.SendScriptEvent,
+        0,
+        QSB.ScriptEvents.CutsceneEnded,
+        _PlayerID
+    );
 end
 
 function ModuleCutsceneSystem.Local:FlightStarted(_Duration)
     local PlayerID = GUI.GetPlayerID();
     if self.Cutscene[PlayerID] then
         local PageID = self.Cutscene[PlayerID].CurrentPage;
-        API.SendScriptEventToGlobal(
+        Swift:DispatchScriptCommand(
+            QSB.ScriptCommands.SendScriptEvent,
+            0,
             QSB.ScriptEvents.CutsceneFlightStarted,
             PlayerID,
             PageID,
@@ -317,7 +327,9 @@ function ModuleCutsceneSystem.Local:FlightFinished()
     local PlayerID = GUI.GetPlayerID();
     if self.Cutscene[PlayerID] then
         local PageID = self.Cutscene[PlayerID].CurrentPage;
-        API.SendScriptEventToGlobal(
+        Swift:DispatchScriptCommand(
+            QSB.ScriptCommands.SendScriptEvent,
+            0,
             QSB.ScriptEvents.CutsceneFlightEnded,
             PlayerID,
             PageID
@@ -524,11 +536,9 @@ function ModuleCutsceneSystem.Local:OverrideThroneRoomFunctions()
     GameCallback_Camera_SkipButtonPressed = function(_PlayerID)
         GameCallback_Camera_SkipButtonPressed_Orig_ModuleCutsceneSystem(_PlayerID);
         if _PlayerID == GUI.GetPlayerID() then
-            API.SendScriptEventToGlobal(
-                QSB.ScriptEvents.CutsceneSkipButtonPressed,
-                GUI.GetPlayerID()
-            );
-            API.SendScriptEvent(
+            Swift:DispatchScriptCommand(
+                QSB.ScriptCommands.SendScriptEvent,
+                0,
                 QSB.ScriptEvents.CutsceneSkipButtonPressed,
                 GUI.GetPlayerID()
             );

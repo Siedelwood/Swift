@@ -1072,7 +1072,7 @@ function API.SendScriptCommand(_NameOrID, ...)
         end
     end
     assert(type(ID) == "number");
-    Swift:DispatchScriptCommand(ID, unpack(arg));
+    Swift:DispatchScriptCommand(ID, 0, unpack(arg));
 end
 
 -- Event
@@ -1119,6 +1119,7 @@ end
 function API.SendScriptEventToGlobal(_EventID, ...)
     Swift:DispatchScriptCommand(
         QSB.ScriptCommands.SendScriptEvent,
+        GUI.GetPlayerID(),
         _EventID,
         unpack(arg)
     );
@@ -2634,12 +2635,17 @@ function SCP.Core.LoadscreenHidden()
 end
 
 function SCP.Core.GlobalQsbLoaded()
-    if Mission_MP_OnQSBLoaded and Framework.IsNetworkGame() then
-        Mission_MP_OnQSBLoaded();
+    if Mission_MP_OnQsbLoaded and not Swift.m_MP_FMA_Loaded and Framework.IsNetworkGame() then
+        Swift.m_MP_FMA_Loaded = true;
+        Mission_MP_OnQsbLoaded();
     end
 end
 
 function SCP.Core.ProclaimateRandomSeed(_Seed)
+    if not Swift.m_MP_Seed_Set then
+        return;
+    end
+    Swift.m_MP_Seed_Set = true;
     math.randomseed(_Seed);
     local void = math.random(1, 100);
     Logic.ExecuteInLuaLocalState(string.format([[math.randomseed(%d); math.random(1, 100)]], _Seed));

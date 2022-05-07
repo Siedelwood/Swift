@@ -35,15 +35,14 @@ if not MapEditor and not GUI then
         if Mission_LocalOnQsbLoaded and not Framework.IsNetworkGame() then
             Mission_LocalOnQsbLoaded();
         end
-        if Mission_MP_LocalOnQSBLoaded and Framework.IsNetworkGame() then
-            Mission_MP_LocalOnQSBLoaded();
+        if Mission_MP_LocalOnQsbLoaded and Framework.IsNetworkGame() then
+            Mission_MP_LocalOnQsbLoaded();
         end
         StartSimpleJobEx(function()
-            Swift:DispatchScriptCommand(QSB.ScriptCommands.GlobalQsbLoaded);
+            Swift:DispatchScriptCommand(QSB.ScriptCommands.GlobalQsbLoaded, GUI.GetPlayerID());
             return true;
         end);
     ]]);
-    
     API.Install();
     if ModuleKnightTitleRequirements then
         InitKnightTitleTables();

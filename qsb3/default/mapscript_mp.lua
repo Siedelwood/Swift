@@ -84,7 +84,7 @@ end
 -- -------------------------------------------------------------------------- --
 -- Diese Funktion wird nach Spielstart aufgerufen.
 
-function Mission_MP_OnQSBLoaded()
+function Mission_MP_OnQsbLoaded()
     -- Testmodus aktivieren
     -- (Auskommentieren, wenn nicht benötigt)
     API.ActivateDebugMode(true, false, true, true);

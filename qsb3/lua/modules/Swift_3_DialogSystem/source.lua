@@ -78,6 +78,10 @@ function ModuleDialogSystem.Global:OnEvent(_ID, _Event, ...)
             end
         end
     elseif _ID == QSB.ScriptEvents.DialogOptionSelected then
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.SendScriptEvent(QSB.ScriptEvents.DialogOptionSelected, %d, %d)]],
+            arg[1], arg[2]
+        ));
         ModuleDialogSystem.Global:OnOptionSelected(arg[1], arg[2]);
     end
 end
@@ -505,7 +509,9 @@ function ModuleDialogSystem.Local:OnOptionSelected(_PlayerID)
 
     local Selected = XGUIEng.ListBoxGetSelectedIndex(Widget .. "/ListBox")+1;
     local AnswerID = self.Dialog[_PlayerID].MCSelectionOptionsMap[Selected];
-    API.SendScriptEventToGlobal(
+    Swift:DispatchScriptCommand(
+        QSB.ScriptCommands.SendScriptEvent,
+        0,
         QSB.ScriptEvents.DialogOptionSelected,
         _PlayerID,
         AnswerID

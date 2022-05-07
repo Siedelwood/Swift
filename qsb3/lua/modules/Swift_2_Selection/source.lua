@@ -337,6 +337,8 @@ function ModuleSelection.Local:OnSelectionCanged(_Source)
     self.SelectedEntities[PlayerID] = SelectedEntities;
     local NewSelectionString = Swift:ConvertTableToString(self.SelectedEntities[PlayerID] or {});
 
+    -- This event is only send on the local machine. Only the local player
+    -- can select units, so the event musn't be send to other players!
     API.SendScriptEvent(
         QSB.ScriptEvents.SelectionChanged,
         PlayerID,

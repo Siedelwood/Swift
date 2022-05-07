@@ -155,7 +155,7 @@ function ModuleLifestockBreeding.Global:CountSheepsNearby(_PastureID)
     local Sheeps1  = {Logic.GetPlayerEntitiesInArea(PlayerID, Entities.A_X_Sheep01, x, y, AreaSize, 16)};
     local Sheeps2  = {Logic.GetPlayerEntitiesInArea(PlayerID, Entities.A_X_Sheep02, x, y, AreaSize, 16)};
     table.remove(Sheeps1, 1);
-    table.remove(Sheeps1, 1);
+    table.remove(Sheeps2, 1);
     return #Sheeps1 + #Sheeps2;
 end
 

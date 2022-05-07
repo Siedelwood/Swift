@@ -979,11 +979,14 @@ function ModuleCastleStore.Local:OverwriteInteractiveObject()
         end
 
         -- Send additional click event
-        local KnightIDs = {};
-        Logic.GetKnights(PlayerID, KnightIDs);
-        local KnightID = API.GetClosestToTarget(EntityID, KnightIDs);
-        API.SendScriptEventToGlobal(QSB.ScriptEvents.ObjectClicked, EntityID, KnightID, PlayerID);
-        API.SendScriptEvent(QSB.ScriptEvents.ObjectClicked, EntityID, KnightID, PlayerID);
+        -- This event is supposed to be used in singleplayer only.
+        if not Framework.IsNetworkGame() then
+            local KnightIDs = {};
+            Logic.GetKnights(PlayerID, KnightIDs);
+            local KnightID = API.GetClosestToTarget(EntityID, KnightIDs);
+            API.SendScriptEventToGlobal(QSB.ScriptEvents.ObjectClicked, EntityID, KnightID, PlayerID);
+            API.SendScriptEvent(QSB.ScriptEvents.ObjectClicked, EntityID, KnightID, PlayerID);
+        end
     end
 end
 

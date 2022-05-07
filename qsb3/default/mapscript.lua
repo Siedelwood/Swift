@@ -18,7 +18,7 @@ function Mission_FirstMapAction()
         Startup_StartGoods();
         Startup_Diplomacy();
     end
-    Mission_OnQSBLoaded();
+    Mission_OnQsbLoaded();
 end
 
 -- -------------------------------------------------------------------------- --
@@ -85,7 +85,7 @@ end
 -- -------------------------------------------------------------------------- --
 -- Diese Funktion wird nach Spielstart aufgerufen.
 
-function Mission_OnQSBLoaded()
+function Mission_OnQsbLoaded()
     -- Testmodus aktivieren
     -- (Auskommentieren, wenn nicht benötigt)
     API.ActivateDebugMode(true, false, true, true);

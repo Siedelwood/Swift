@@ -662,7 +662,15 @@ function ModuleBriefingSystem.Local:OnOptionSelected(_PlayerID)
 
     local Selected = XGUIEng.ListBoxGetSelectedIndex(Widget .. "/ListBox")+1;
     local AnswerID = self.Briefing[_PlayerID].MCSelectionOptionsMap[Selected];
-    API.SendScriptEventToGlobal(QSB.ScriptEvents.BriefingOptionSelected, _PlayerID, AnswerID);
+
+    API.SendScriptEvent(QSB.ScriptEvents.BriefingOptionSelected, _PlayerID, AnswerID);
+    Swift:DispatchScriptCommand(
+        QSB.ScriptCommands.SendScriptEvent,
+        0,
+        QSB.ScriptEvents.BriefingOptionSelected,
+        _PlayerID,
+        AnswerID
+    );
 end
 
 function ModuleBriefingSystem.Local:ThroneRoomCameraControl(_PlayerID, _Page)
@@ -860,7 +868,13 @@ function ModuleBriefingSystem.Local:OverrideThroneRoomFunctions()
     GameCallback_Camera_ThroneRoomLeftClick = function(_PlayerID)
         GameCallback_Camera_ThroneRoomLeftClick_Orig_ModuleBriefingSystem(_PlayerID);
         if _PlayerID == GUI.GetPlayerID() then
-            API.SendScriptEventToGlobal(QSB.ScriptEvents.BriefingLeftClick, _PlayerID);
+            -- Must trigger in global script for all players.
+            Swift:DispatchScriptCommand(
+                QSB.ScriptCommands.SendScriptEvent,
+                0,
+                QSB.ScriptEvents.BriefingLeftClick,
+                _PlayerID
+            );
             API.SendScriptEvent(QSB.ScriptEvents.BriefingLeftClick, _PlayerID);
         end
     end
@@ -869,7 +883,13 @@ function ModuleBriefingSystem.Local:OverrideThroneRoomFunctions()
     GameCallback_Camera_SkipButtonPressed = function(_PlayerID)
         GameCallback_Camera_SkipButtonPressed_Orig_ModuleBriefingSystem(_PlayerID);
         if _PlayerID == GUI.GetPlayerID() then
-            API.SendScriptEventToGlobal(QSB.ScriptEvents.BriefingSkipButtonPressed, _PlayerID);
+            -- Must trigger in global script for all players.
+            Swift:DispatchScriptCommand(
+                QSB.ScriptCommands.SendScriptEvent,
+                0,
+                QSB.ScriptEvents.BriefingSkipButtonPressed,
+                _PlayerID
+            );
             API.SendScriptEvent(QSB.ScriptEvents.BriefingSkipButtonPressed, _PlayerID);
         end
     end

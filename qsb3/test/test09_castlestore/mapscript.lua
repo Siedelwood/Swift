@@ -79,6 +79,11 @@ function Mission_FirstMapAction()
     API.ActivateDebugMode(true, false, true, true);
     API.CastleStoreCreate(1);
 
+    SetDiplomacyState(1, 2, 2);
+    local SHID = Logic.GetStoreHouse(2);
+    AddOffer(SHID, 3, Goods.G_Sheep);
+    AddOffer(SHID, 3, Goods.G_Cow);
+
     -- StartSimpleJobEx(function()
     --     if Logic.GetTime() > 5 then
     --         API.CreateQuest {

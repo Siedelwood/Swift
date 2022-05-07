@@ -53,23 +53,30 @@ function ModuleTradingCore.Global:OnGameStart()
     self:OverwriteBasePricesAndRefreshRates();
 end
 
-function ModuleTradingCore.Global:OnEvent(_ID, _Event, _TraderType, _OfferID, _Good, _P1, _P2, _Amount, _Price)
+function ModuleTradingCore.Global:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.GoodsPurchased then
-        if not API.IsHistoryEditionNetworkGame() then
-            self:PerformFakeTrade(_TraderType, _OfferID, _Good, _P1, _P2, _Amount, _Price);
-        end
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.SendScriptEvent(QSB.ScriptEvents.GoodsPurchased, %d, %d, %d, %d, %d, %d, %d)]],
+            arg[1], arg[2], arg[3], arg[4], arg[5], arg[6], arg[7]
+        ))
+        self:PerformFakeTrade(arg[1], arg[2], arg[3], arg[4], arg[5], arg[6], arg[7]);
+    elseif _ID == QSB.ScriptEvents.GoodsSold then
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.SendScriptEvent(QSB.ScriptEvents.GoodsSold, g_Trade.GoodType, PlayerID, TargetID, g_Trade.GoodAmount, Price)]],
+            arg[1], arg[2], arg[3], arg[4], arg[5]
+        ))
     end
 end
 
-function ModuleTradingCore.Global:SendEventGoodsPurchased(_TraderType, _OfferID, _Good, _P1, _P2, _Amount, _Price)
-    API.SendScriptEvent(QSB.ScriptEvents.GoodsPurchased, _TraderType, _OfferID, _Good, _P1, _P2, _Amount, _Price);
-end
-
-function ModuleTradingCore.Global:SendEventGoodsSold(_Good, _P1, _P2, _Amount, _Price)
-    API.SendScriptEvent(QSB.ScriptEvents.GoodsSold, _Good, _P1, _P2, _Amount, _Price);
-end
-
 function ModuleTradingCore.Global:OverwriteBasePricesAndRefreshRates()
+    -- HACK: Allow salt and dye to be sold to AI players.
+    for i= 1, 8 do
+        if Logic.GetStoreHouse(i) ~= 0 then
+            Logic.AddGoodToStock(Logic.GetStoreHouse(i), Goods.G_Salt, 0, true, true);
+            Logic.AddGoodToStock(Logic.GetStoreHouse(i), Goods.G_Dye, 0, true, true);
+        end
+    end
+
     MerchantSystem.BasePrices[Entities.U_CatapultCart] = MerchantSystem.BasePrices[Entities.U_CatapultCart] or 1000;
     MerchantSystem.BasePrices[Entities.U_BatteringRamCart] = MerchantSystem.BasePrices[Entities.U_BatteringRamCart] or 450;
     MerchantSystem.BasePrices[Entities.U_SiegeTowerCart] = MerchantSystem.BasePrices[Entities.U_SiegeTowerCart] or 600;
@@ -106,6 +113,15 @@ function ModuleTradingCore.Global:PerformFakeTrade(_TraderType, _OfferID, _Good,
     if _TraderType == 0 then
         if Logic.GetGoodCategoryForGoodType(_Good) ~= GoodCategories.GC_Animal then
             API.SendCart(StoreHouse2, _P1, _Good, _Amount, nil, false);
+        else
+            StartSimpleJobEx(function(_Time, _SHID, _Good, _PlayerID)
+                if Logic.GetTime() > _Time+5 then
+                    return true;
+                end
+                local x,y = Logic.GetBuildingApproachPosition(_SHID);
+                local Type = (_Good ~= Goods.G_Cow and Entities.A_X_Sheep01) or Entities.A_X_Cow01;
+                Logic.CreateEntityOnUnblockedLand(Type, x, y, 0, _PlayerID);
+            end, Logic.GetTime(), StoreHouse2, _Good, _P1);
         end
     elseif _TraderType == 1 then
         local x,y = Logic.GetBuildingApproachPosition(StoreHouse2);
@@ -116,7 +132,7 @@ function ModuleTradingCore.Global:PerformFakeTrade(_TraderType, _OfferID, _Good,
         Logic.HireEntertainer(_Good, _P1, x, y);
     end
     API.SendCart(StoreHouse1, _P2, Goods.G_Gold, _Price, nil, false);
-    AddGood(Goods.G_Gold, _P1, (-1) * _Price);
+    AddGood(Goods.G_Gold, (-1) * _Price, _P1);
 
     -- Alter offer amount
     local NewAmount = 0;
@@ -253,6 +269,8 @@ end
 function ModuleTradingCore.Local:OnGameStart()
     QSB.ScriptEvents.GoodsSold = API.RegisterScriptEvent("Event_GoodsSold");
     QSB.ScriptEvents.GoodsPurchased = API.RegisterScriptEvent("Event_GoodsPurchased");
+
+    g_Merchant.BuyFromPlayer = {};
 
     if API.IsHistoryEditionNetworkGame() then
         return;
@@ -428,28 +446,20 @@ function ModuleTradingCore.Local:OverrideMerchantPurchaseOfferClicked()
                 return;
             end
             if Price <= GoldAmountInCastle then
-                if Logic.GetGoodCategoryForGoodType(GoodType) == GoodCategories.GC_Animal then
-                    local AnimalType = Entities.A_X_Sheep01;
-                    if GoodType == Goods.G_Cow then
-                        AnimalType = Entities.A_X_Cow01;
-                    end
-                    for i=1,5 do
-                        GUI.CreateEntityAtBuilding(BuildingID, AnimalType, 0);
-                    end
-                end
                 BuyLock.Locked = true;
                 GUI.ChangeMerchantOffer(BuildingID, PlayerID, OfferIndex, Price);
-                -- if API.IsHistoryEditionNetworkGame() then
-                --    GUI.BuyMerchantOffer(BuildingID, PlayerID, OfferIndex);
-                -- end
                 Sound.FXPlay2DSound("ui\\menu_click");
                 if ModuleTradingCore.Local.ShowKnightTraderAbility then
                     StartKnightVoiceForPermanentSpecialAbility(Entities.U_KnightTrading);
                 end
 
-                API.SendScriptEvent(QSB.ScriptEvents.GoodsPurchased, TraderType, OfferIndex, GoodType, PlayerID, TraderPlayerID, OfferGoodAmount, Price);
-                
-                API.SendScriptEventToGlobal(
+                -- Manually log in local state
+                g_Merchant.BuyFromPlayer[TraderPlayerID] = g_Merchant.BuyFromPlayer[TraderPlayerID] or {};
+                g_Merchant.BuyFromPlayer[TraderPlayerID][GoodType] = (g_Merchant.BuyFromPlayer[TraderPlayerID][GoodType] or 0) +1;
+
+                Swift:DispatchScriptCommand(
+                    QSB.ScriptCommands.SendScriptEvent,
+                    0,
                     QSB.ScriptEvents.GoodsPurchased,
                     TraderType,
                     OfferIndex,
@@ -524,7 +534,7 @@ function ModuleTradingCore.Local:OverrideMerchantSellGoodsClicked()
 
         -- Special sales conditions
         local CanBeSold = true;
-        if not ModuleTradingCore.Local.Lambda.SaleAllowed[TargetID] then
+        if ModuleTradingCore.Local.Lambda.SaleAllowed[TargetID] then
             CanBeSold = ModuleTradingCore.Local.Lambda.SaleAllowed[TargetID](PlayerID, TargetID, g_Trade.GoodType, g_Trade.GoodAmount, Price);
         else
             CanBeSold = ModuleTradingCore.Local.Lambda.SaleAllowed.Default(PlayerID, TargetID, g_Trade.GoodType, g_Trade.GoodAmount, Price);
@@ -538,21 +548,19 @@ function ModuleTradingCore.Local:OverrideMerchantSellGoodsClicked()
         GUI.StartTradeGoodGathering(PlayerID, TargetID, g_Trade.GoodType, g_Trade.GoodAmount, Price);
         GUI_FeedbackSpeech.Add("SpeechOnly_CartsSent", g_FeedbackSpeech.Categories.CartsUnderway, nil, nil);
         StartKnightVoiceForPermanentSpecialAbility(Entities.U_KnightTrading);
-        
+
         if Price ~= 0 then
             if g_Trade.SellToPlayers[TargetID] == nil then
                 g_Trade.SellToPlayers[TargetID] = {};
             end
-    
             if g_Trade.SellToPlayers[TargetID][g_Trade.GoodType] == nil then
                 g_Trade.SellToPlayers[TargetID][g_Trade.GoodType] = g_Trade.GoodAmount;
             else
                 g_Trade.SellToPlayers[TargetID][g_Trade.GoodType] = g_Trade.SellToPlayers[TargetID][g_Trade.GoodType] + g_Trade.GoodAmount;
             end
-
-            API.SendScriptEvent(QSB.ScriptEvents.GoodsSold, g_Trade.GoodType, PlayerID, TargetID, g_Trade.GoodAmount, Price);
-            
-            API.SendScriptEventToGlobal(
+            Swift:DispatchScriptCommand(
+                QSB.ScriptCommands.SendScriptEvent,
+                0,
                 QSB.ScriptEvents.GoodsSold,
                 g_Trade.GoodType,
                 PlayerID,
@@ -609,7 +617,10 @@ function ModuleTradingCore.Local:OverrideMerchantComputePurchasePrice()
         end
         
         -- Invoke price inflation
-        local OfferCount = Logic.GetOfferCount(BuildingID, OfferID, PlayerID, TraderType);
+        local OfferCount = 0; -- Logic.GetOfferCount(BuildingID, OfferID, PlayerID, TraderType);
+        if g_Merchant.BuyFromPlayer[TraderPlayerID] and g_Merchant.BuyFromPlayer[TraderPlayerID][Type] then
+            OfferCount = g_Merchant.BuyFromPlayer[TraderPlayerID][Type];
+        end
         local FinalPrice;
         if ModuleTradingCore.Local.Lambda.PurchaseInflation[TraderPlayerID] then
             FinalPrice = ModuleTradingCore.Local.Lambda.PurchaseInflation[TraderPlayerID](OfferCount, Price, PlayerID, TraderPlayerID);

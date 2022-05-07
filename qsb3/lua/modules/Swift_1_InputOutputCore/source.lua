@@ -66,7 +66,16 @@ function ModuleInputOutputCore.Global:OnGameStart()
 end
 
 function ModuleInputOutputCore.Global:OnEvent(_ID, _Event, ...)
+    -- This event is synchronized in multiplayer! HAS to be because it alters
+    -- quest data.
+    -- FIXME: Input behavior is still not usable in MP!
     if _ID == QSB.ScriptEvents.ChatClosed then
+        -- Send event back to all players local script
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.SendScriptEvent(QSB.ScriptEvents.ChatClosed, "%s", %d)]],
+            arg[1], arg[2]
+        ));
+        -- Alter quest data
         for i= 1, Quests[0], 1 do
             if Quests[i].State == QuestState.Active and QSB.GoalInputDialogQuest == Quests[i].Identifier then
                 for j= 1, #Quests[i].Objectives, 1 do
@@ -477,10 +486,9 @@ function ModuleInputOutputCore_Local_InputBoxJob()
 end
 
 function ModuleInputOutputCore.Local:PrepareInputVariable()
-    GUI.SendScriptCommand(string.format(
-        "API.SendScriptEvent(QSB.ScriptEvents.ChatOpened, %d)",
-        GUI.GetPlayerID()
-    ));
+    -- FIXME: Must this be syncronized? Who has opened the chat is totaly
+    -- uninteresting in the global script i.m.o
+    API.SendScriptEventToGlobal(QSB.ScriptEvents.ChatOpened, GUI.GetPlayerID());
     API.SendScriptEvent(QSB.ScriptEvents.ChatOpened, GUI.GetPlayerID());
 
     GUI_Chat.Abort_Orig_ModuleInputOutputCore = GUI_Chat.Abort_Orig_ModuleInputOutputCore or GUI_Chat.Abort;
@@ -518,9 +526,14 @@ end
 
 function ModuleInputOutputCore.Local:LocalToGlobal(_Text)
     _Text = (_Text == nil and "") or _Text;
-    API.SendScriptEvent(QSB.ScriptEvents.ChatClosed, _Text, GUI.GetPlayerID());
-    API.SendScriptEventToGlobal(QSB.ScriptEvents.ChatClosed, _Text, GUI.GetPlayerID());
-    Swift:SetProcessDebugCommands(false);
+    Swift:DispatchScriptCommand(
+        QSB.ScriptCommands.SendScriptEvent,
+        0,
+        QSB.ScriptEvents.ChatClosed,
+        (_Text or "<ES>"),
+        GUI.GetPlayerID()
+    );
+    Swift:SetProcessDebugCommands(true);
 end
 
 -- Shared ------------------------------------------------------------------- --

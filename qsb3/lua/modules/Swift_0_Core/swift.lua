@@ -14,7 +14,7 @@ SCP = SCP or {
     Core = {}
 };
 
-QSB.Version = "Version 3.0.0 BETA (1.1.2)";
+QSB.Version = "Version 3.0.0 BETA (1.1.3)";
 QSB.Language = "de";
 QSB.HumanPlayerID = 1;
 QSB.ScriptCommandSequence = 2;
@@ -103,7 +103,13 @@ function Swift:LoadCore()
             if Logic.GetTime() > 1 then
                 for k, v in pairs(g_TexturePositions) do
                     for kk, vv in pairs(v) do
-                        Swift:DispatchScriptCommand(QSB.ScriptCommands.UpdateTexturePosition, k, kk, vv);
+                        Swift:DispatchScriptCommand(
+                            QSB.ScriptCommands.UpdateTexturePosition,
+                            GUI.GetPlayerID(),
+                            k,
+                            kk,
+                            vv
+                        );
                     end
                 end
                 return true;
@@ -162,14 +168,14 @@ function Swift:CreateRandomSeed()
                 local PlayerName = Logic.GetPlayerName(PlayerID);
                 local DateText = Framework.GetSystemTimeDateString();
                 SeedString = SeedString .. PlayerName .. " " .. DateText;
+                for s in SeedString:gmatch(".") do
+                    Seed = Seed + s:byte();
+                end
+                Swift:DispatchScriptCommand(QSB.ScriptCommands.ProclaimateRandomSeed, 0, Seed);
             end
             break;
         end
     end
-    for s in SeedString:gmatch(".") do
-        Seed = Seed + s:byte();
-    end
-    Swift:DispatchScriptCommand(QSB.ScriptCommands.ProclaimateRandomSeed, Seed);
 end
 
 function Swift:OverrideOnMPGameStart()
@@ -592,6 +598,10 @@ function Swift:ProcessScriptCommand(_PlayerID, _ID)
     end
     local PlayerName = Logic.GetPlayerName(8);
     local Parameters = self:DecodeScriptCommandParameters(PlayerName);
+    local PlayerID = table.remove(Parameters, 1);
+    if PlayerID ~= 0 and PlayerID ~= _PlayerID then
+        return;
+    end
     info(string.format(
         "Processing script command %s in global.",
         self.m_ScriptCommandRegister[_ID][1]
@@ -606,6 +616,9 @@ function Swift:EncodeScriptCommandParameters(...)
         if type(Parameter) == "string" then
             Parameter = string.replaceAll(Parameter, '#', "<HT>");
             Parameter = string.replaceAll(Parameter, '"', "<QT>");
+            if Parameter:len() == 0 then
+                Parameter = "<ES>";
+            end
         elseif type(Parameter) == "table" then
             Parameter = "{" ..table.concat(Parameter, ",") .."}";
         end
@@ -623,7 +636,8 @@ function Swift:DecodeScriptCommandParameters(_Query)
         local Value = v;
         Value = string.replaceAll(Value, "<HT>", '#');
         Value = string.replaceAll(Value, "<QT>", '"');
-        if Value == "" or Value == nil then
+        Value = string.replaceAll(Value, "<ES>", '');
+        if Value == nil then
             Value = nil;
         elseif Value == "true" or Value == "false" then
             Value = Value == "true";
@@ -739,7 +753,7 @@ function Swift:SetCustomVariable(_Name, _Value)
         Value = [["]] ..Value.. [["]];
     end
     if GUI then
-        Swift:DispatchScriptCommand(QSB.ScriptCommands.UpdateCustomVariable, _Name, Value);
+        Swift:DispatchScriptCommand(QSB.ScriptCommands.UpdateCustomVariable, 0, _Name, Value);
     else
         Logic.ExecuteInLuaLocalState(string.format(
             [[Swift:UpdateCustomVariable("%s", %s)]],
@@ -852,7 +866,7 @@ end
 
 function Swift_EventJob_WaitForLoadScreenHidden()
     if XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 0 then
-        Swift:DispatchScriptCommand(QSB.ScriptCommands.RegisterLoadscreenHidden);
+        Swift:DispatchScriptCommand(QSB.ScriptCommands.RegisterLoadscreenHidden, GUI.GetPlayerID());
         Swift.m_LoadScreenHidden = true;
         return true;
     end
@@ -862,7 +876,7 @@ function Swift_EventJob_PostTexturesToGlobal()
     if Logic.GetTime() > 1 then
         for k, v in pairs(g_TexturePositions) do
             for kk, vv in pairs(v) do
-                Swift:DispatchScriptCommand(QSB.ScriptCommands.UpdateTexturePosition, k, kk, v);
+                Swift:DispatchScriptCommand(QSB.ScriptCommands.UpdateTexturePosition, GUI.GetPlayerID(), k, kk, v);
             end
         end
         return true;

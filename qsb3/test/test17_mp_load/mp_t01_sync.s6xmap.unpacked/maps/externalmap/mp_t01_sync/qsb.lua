@@ -103,7 +103,13 @@ function Swift:LoadCore()
             if Logic.GetTime() > 1 then
                 for k, v in pairs(g_TexturePositions) do
                     for kk, vv in pairs(v) do
-                        Swift:DispatchScriptCommand(QSB.ScriptCommands.UpdateTexturePosition, k, kk, vv);
+                        Swift:DispatchScriptCommand(
+                            QSB.ScriptCommands.UpdateTexturePosition,
+                            GUI.GetPlayerID(),
+                            k,
+                            kk,
+                            vv
+                        );
                     end
                 end
                 return true;
@@ -162,14 +168,14 @@ function Swift:CreateRandomSeed()
                 local PlayerName = Logic.GetPlayerName(PlayerID);
                 local DateText = Framework.GetSystemTimeDateString();
                 SeedString = SeedString .. PlayerName .. " " .. DateText;
+                for s in SeedString:gmatch(".") do
+                    Seed = Seed + s:byte();
+                end
+                Swift:DispatchScriptCommand(QSB.ScriptCommands.ProclaimateRandomSeed, 0, Seed);
             end
             break;
         end
     end
-    for s in SeedString:gmatch(".") do
-        Seed = Seed + s:byte();
-    end
-    Swift:DispatchScriptCommand(QSB.ScriptCommands.ProclaimateRandomSeed, Seed);
 end
 
 function Swift:OverrideOnMPGameStart()
@@ -592,6 +598,10 @@ function Swift:ProcessScriptCommand(_PlayerID, _ID)
     end
     local PlayerName = Logic.GetPlayerName(8);
     local Parameters = self:DecodeScriptCommandParameters(PlayerName);
+    local PlayerID = table.remove(Parameters, 1);
+    if PlayerID ~= 0 and PlayerID ~= _PlayerID then
+        return;
+    end
     info(string.format(
         "Processing script command %s in global.",
         self.m_ScriptCommandRegister[_ID][1]
@@ -606,6 +616,9 @@ function Swift:EncodeScriptCommandParameters(...)
         if type(Parameter) == "string" then
             Parameter = string.replaceAll(Parameter, '#', "<HT>");
             Parameter = string.replaceAll(Parameter, '"', "<QT>");
+            if Parameter:len() == 0 then
+                Parameter = "<ES>";
+            end
         elseif type(Parameter) == "table" then
             Parameter = "{" ..table.concat(Parameter, ",") .."}";
         end
@@ -623,7 +636,8 @@ function Swift:DecodeScriptCommandParameters(_Query)
         local Value = v;
         Value = string.replaceAll(Value, "<HT>", '#');
         Value = string.replaceAll(Value, "<QT>", '"');
-        if Value == "" or Value == nil then
+        Value = string.replaceAll(Value, "<ES>", '');
+        if Value == nil then
             Value = nil;
         elseif Value == "true" or Value == "false" then
             Value = Value == "true";
@@ -739,7 +753,7 @@ function Swift:SetCustomVariable(_Name, _Value)
         Value = [["]] ..Value.. [["]];
     end
     if GUI then
-        Swift:DispatchScriptCommand(QSB.ScriptCommands.UpdateCustomVariable, _Name, Value);
+        Swift:DispatchScriptCommand(QSB.ScriptCommands.UpdateCustomVariable, 0, _Name, Value);
     else
         Logic.ExecuteInLuaLocalState(string.format(
             [[Swift:UpdateCustomVariable("%s", %s)]],
@@ -852,7 +866,7 @@ end
 
 function Swift_EventJob_WaitForLoadScreenHidden()
     if XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 0 then
-        Swift:DispatchScriptCommand(QSB.ScriptCommands.RegisterLoadscreenHidden);
+        Swift:DispatchScriptCommand(QSB.ScriptCommands.RegisterLoadscreenHidden, GUI.GetPlayerID());
         Swift.m_LoadScreenHidden = true;
         return true;
     end
@@ -862,7 +876,7 @@ function Swift_EventJob_PostTexturesToGlobal()
     if Logic.GetTime() > 1 then
         for k, v in pairs(g_TexturePositions) do
             for kk, vv in pairs(v) do
-                Swift:DispatchScriptCommand(QSB.ScriptCommands.UpdateTexturePosition, k, kk, v);
+                Swift:DispatchScriptCommand(QSB.ScriptCommands.UpdateTexturePosition, GUI.GetPlayerID(), k, kk, v);
             end
         end
         return true;
@@ -1943,7 +1957,7 @@ function API.SendScriptCommand(_NameOrID, ...)
         end
     end
     assert(type(ID) == "number");
-    Swift:DispatchScriptCommand(ID, unpack(arg));
+    Swift:DispatchScriptCommand(ID, 0, unpack(arg));
 end
 
 -- Event
@@ -1990,6 +2004,7 @@ end
 function API.SendScriptEventToGlobal(_EventID, ...)
     Swift:DispatchScriptCommand(
         QSB.ScriptCommands.SendScriptEvent,
+        GUI.GetPlayerID(),
         _EventID,
         unpack(arg)
     );
@@ -2145,71 +2160,6 @@ end
 MakeInvulnerable = function(_Entity)
     API.SetEntityVulnerableFlag(_Entity, true);
 end
-
----
--- Rotiert ein Entity, sodass es zum Ziel schaut.
---
--- @param _Entity      Entity (Skriptname oder ID)
--- @param _Target      Ziel (Skriptname, ID oder Position)
--- @param[type=number] _Offset Winkel Offset
--- @within Entity
--- @usage API.LookAt("Hakim", "Alandra")
---
-function API.LookAt(_Entity, _Target, _Offset)
-    _Offset = _Offset or 0;
-    local ID1 = GetID(_Entity);
-    if ID1 == 0 then
-        return;
-    end
-    local x1,y1,z1 = Logic.EntityGetPos(ID1);
-    local ID2;
-    local x2, y2, z2;
-    if type(_Target) == "table" then
-        x2 = _Target.X;
-        y2 = _Target.Y;
-        z2 = _Target.Z;
-    else
-        ID2 = GetID(_Target);
-        if ID2 == 0 then
-            return;
-        end
-        x2,y2,z2 = Logic.EntityGetPos(ID2);
-    end
-
-    if not API.IsValidPosition({X= x1, Y= y1, Z= z1}) then
-        return;
-    end
-    if not API.IsValidPosition({X= x2, Y= y2, Z= z2}) then
-        return;
-    end
-    Angle = math.deg(math.atan2((y2 - y1), (x2 - x1))) + _Offset;
-    if Angle < 0 then
-        Angle = Angle + 360;
-    end
-
-    if Logic.IsLeader(ID1) == 1 then
-        local Soldiers = {Logic.GetSoldiersAttachedToLeader(ID1)};
-        for i= 2, Soldiers[1]+1 do
-            Logic.SetOrientation(Soldiers[i], Angle);
-        end
-    end
-    Logic.SetOrientation(ID1, Angle);
-end
-LookAt = API.LookAt;
-
----
--- Lässt zwei Entities sich gegenseitig anschauen.
---
--- @param _entity         Entity (Skriptname oder ID)
--- @param _entityToLookAt Ziel (Skriptname oder ID)
--- @within Entity
--- @usage API.Confront("Hakim", "Alandra")
---
-function API.Confront(_entity, _entityToLookAt)
-    API.LookAt(_entity, _entityToLookAt);
-    API.LookAt(_entityToLookAt, _entity);
-end
-ConfrontEntities = API.LookAt;
 
 ---
 -- Sendet einen Handelskarren zu dem Spieler. Startet der Karren von einem
@@ -2483,47 +2433,6 @@ end
 SetTask = API.SetEntityTaskList;
 
 ---
--- Gibt die Ausrichtung des Entity zurück.
---
--- @param               _Entity  Entity (Scriptname oder ID)
--- @return[type=number] Ausrichtung in Grad
--- @within Entity
---
-function API.GetEntityOrientation(_Entity)
-    local EntityID = GetID(_Entity);
-    if EntityID > 0 then
-        return API.Round(Logic.GetEntityOrientation(EntityID));
-    end
-    error("API.GetEntityOrientation: _Entity (" ..tostring(_Entity).. ") does not exist!");
-    return 0;
-end
-GetOrientation = API.GetEntityOrientation;
-
----
--- Setzt die Ausrichtung des Entity.
---
--- @param               _Entity  Entity (Scriptname oder ID)
--- @param[type=number] _Orientation Neue Ausrichtung
--- @within Entity
---
-function API.SetEntityOrientation(_Entity, _Orientation)
-    if GUI then
-        return;
-    end
-    local EntityID = GetID(_Entity);
-    if EntityID > 0 then
-        if type(_Orientation) ~= "number" then
-            error("API.SetEntityOrientation: _Orientation is wrong!");
-            return
-        end
-        Logic.SetOrientation(EntityID, API.Round(_Orientation));
-    else
-        error("API.SetEntityOrientation: _Entity (" ..tostring(_Entity).. ") does not exist!");
-    end
-end
-SetOrientation = API.SetEntityOrientation;
-
----
 -- Gibt die Menge an Rohstoffen des Entity zurück. Optional kann
 -- eine neue Menge gesetzt werden.
 --
@@ -2667,6 +2576,78 @@ function API.CreateEntityName(_EntityID)
 end
 GiveEntityName = API.CreateEntityName;
 
+-- Mögliche (zufällige) Siedler, getrennt in männlich und weiblich.
+QSB.PossibleSettlerTypes = {
+    Male = {
+        Entities.U_BannerMaker,
+        Entities.U_Baker,
+        Entities.U_Barkeeper,
+        Entities.U_Blacksmith,
+        Entities.U_Butcher,
+        Entities.U_BowArmourer,
+        Entities.U_BowMaker,
+        Entities.U_CandleMaker,
+        Entities.U_Carpenter,
+        Entities.U_DairyWorker,
+        Entities.U_Pharmacist,
+        Entities.U_Tanner,
+        Entities.U_SmokeHouseWorker,
+        Entities.U_Soapmaker,
+        Entities.U_SwordSmith,
+        Entities.U_Weaver,
+    },
+    Female = {
+        Entities.U_BathWorker,
+        Entities.U_SpouseS01,
+        Entities.U_SpouseS02,
+        Entities.U_SpouseS03,
+        Entities.U_SpouseF01,
+        Entities.U_SpouseF02,
+        Entities.U_SpouseF03,
+    }
+}
+
+---
+-- Wählt aus einer festen Liste von Typen einen zufälligen Siedler-Typ aus.
+-- Es werden nur Stadtsiedler zurückgegeben. Sie können männlich oder
+-- weiblich sein.
+--
+-- @return[type=number] Zufälliger Typ
+-- @within Anwenderfunktionen
+-- @local
+--
+function API.GetRandomSettlerType()
+    local Gender = (math.random(1, 2) == 1 and "Male") or "Female";
+    local Type   = math.random(1, #QSB.PossibleSettlerTypes[Gender]);
+    return QSB.PossibleSettlerTypes[Gender][Type];
+end
+
+---
+-- Wählt aus einer Liste von Typen einen zufälligen männlichen Siedler aus. Es
+-- werden nur Stadtsiedler zurückgegeben.
+--
+-- @return[type=number] Zufälliger Typ
+-- @within Anwenderfunktionen
+-- @local
+--
+function API.GetRandomMaleSettlerType()
+    local Type = math.random(1, #QSB.PossibleSettlerTypes.Male);
+    return QSB.PossibleSettlerTypes.Male[Type];
+end
+
+---
+-- Wählt aus einer Liste von Typen einen zufälligen weiblichen Siedler aus. Es
+-- werden nur Stadtsiedler zurückgegeben.
+--
+-- @return[type=number] Zufälliger Typ
+-- @within Anwenderfunktionen
+-- @local
+--
+function API.GetRandomFemaleSettlerType()
+    local Type = math.random(1, #QSB.PossibleSettlerTypes.Female);
+    return QSB.PossibleSettlerTypes.Female[Type];
+end
+
 -- Group
 
 ---
@@ -2725,7 +2706,7 @@ function API.GetGroupLeader(_Entity)
         error("API.GetGroupLeader: _Entity (" ..tostring(_Entity).. ") does not exist!");
         return 0;
     end
-    if Logic.IsEntityInCategory(EntityID, EntityCategories.Soldier) == 0 then 
+    if Logic.IsEntityInCategory(EntityID, EntityCategories.Soldier) == 0 then
         return 0;
     end
     return Logic.SoldierGetLeaderEntityID(EntityID);
@@ -2849,7 +2830,113 @@ function API.InteractiveObjectDeactivate(_ScriptName)
 end
 InteractiveObjectDeactivate = API.InteractiveObjectDeactivate;
 
--- Position
+-- Position And Orientation
+
+---
+-- Gibt die Ausrichtung des Entity zurück.
+--
+-- @param               _Entity  Entity (Scriptname oder ID)
+-- @return[type=number] Ausrichtung in Grad
+-- @within Entity
+--
+function API.GetEntityOrientation(_Entity)
+    local EntityID = GetID(_Entity);
+    if EntityID > 0 then
+        return API.Round(Logic.GetEntityOrientation(EntityID));
+    end
+    error("API.GetEntityOrientation: _Entity (" ..tostring(_Entity).. ") does not exist!");
+    return 0;
+end
+GetOrientation = API.GetEntityOrientation;
+
+---
+-- Setzt die Ausrichtung des Entity.
+--
+-- @param               _Entity  Entity (Scriptname oder ID)
+-- @param[type=number] _Orientation Neue Ausrichtung
+-- @within Entity
+--
+function API.SetEntityOrientation(_Entity, _Orientation)
+    if GUI then
+        return;
+    end
+    local EntityID = GetID(_Entity);
+    if EntityID > 0 then
+        if type(_Orientation) ~= "number" then
+            error("API.SetEntityOrientation: _Orientation is wrong!");
+            return
+        end
+        Logic.SetOrientation(EntityID, API.Round(_Orientation));
+    else
+        error("API.SetEntityOrientation: _Entity (" ..tostring(_Entity).. ") does not exist!");
+    end
+end
+SetOrientation = API.SetEntityOrientation;
+
+---
+-- Rotiert ein Entity, sodass es zum Ziel schaut.
+--
+-- @param _Entity      Entity (Skriptname oder ID)
+-- @param _Target      Ziel (Skriptname, ID oder Position)
+-- @param[type=number] _Offset Winkel Offset
+-- @within Entity
+-- @usage API.LookAt("Hakim", "Alandra")
+--
+function API.LookAt(_Entity, _Target, _Offset)
+    _Offset = _Offset or 0;
+    local ID1 = GetID(_Entity);
+    if ID1 == 0 then
+        return;
+    end
+    local x1,y1,z1 = Logic.EntityGetPos(ID1);
+    local ID2;
+    local x2, y2, z2;
+    if type(_Target) == "table" then
+        x2 = _Target.X;
+        y2 = _Target.Y;
+        z2 = _Target.Z;
+    else
+        ID2 = GetID(_Target);
+        if ID2 == 0 then
+            return;
+        end
+        x2,y2,z2 = Logic.EntityGetPos(ID2);
+    end
+
+    if not API.IsValidPosition({X= x1, Y= y1, Z= z1}) then
+        return;
+    end
+    if not API.IsValidPosition({X= x2, Y= y2, Z= z2}) then
+        return;
+    end
+    Angle = math.deg(math.atan2((y2 - y1), (x2 - x1))) + _Offset;
+    if Angle < 0 then
+        Angle = Angle + 360;
+    end
+
+    if Logic.IsLeader(ID1) == 1 then
+        local Soldiers = {Logic.GetSoldiersAttachedToLeader(ID1)};
+        for i= 2, Soldiers[1]+1 do
+            Logic.SetOrientation(Soldiers[i], Angle);
+        end
+    end
+    Logic.SetOrientation(ID1, Angle);
+end
+LookAt = API.LookAt;
+
+---
+-- Lässt zwei Entities sich gegenseitig anschauen.
+--
+-- @param _entity         Entity (Skriptname oder ID)
+-- @param _entityToLookAt Ziel (Skriptname oder ID)
+-- @within Entity
+-- @usage API.Confront("Hakim", "Alandra")
+--
+function API.Confront(_entity, _entityToLookAt)
+    API.LookAt(_entity, _entityToLookAt);
+    API.LookAt(_entityToLookAt, _entity);
+end
+ConfrontEntities = API.LookAt;
 
 ---
 -- Bestimmt die Distanz zwischen zwei Punkten. Es können Entity-IDs,
@@ -3433,12 +3520,17 @@ function SCP.Core.LoadscreenHidden()
 end
 
 function SCP.Core.GlobalQsbLoaded()
-    if Mission_MP_OnQSBLoaded and Framework.IsNetworkGame() then
-        Mission_MP_OnQSBLoaded();
+    if Mission_MP_OnQsbLoaded and not Swift.m_MP_FMA_Loaded and Framework.IsNetworkGame() then
+        Swift.m_MP_FMA_Loaded = true;
+        Mission_MP_OnQsbLoaded();
     end
 end
 
 function SCP.Core.ProclaimateRandomSeed(_Seed)
+    if not Swift.m_MP_Seed_Set then
+        return;
+    end
+    Swift.m_MP_Seed_Set = true;
     math.randomseed(_Seed);
     local void = math.random(1, 100);
     Logic.ExecuteInLuaLocalState(string.format([[math.randomseed(%d); math.random(1, 100)]], _Seed));
@@ -12506,6 +12598,7 @@ function Swift:ExecuteEscapeCallback()
     -- Global
     Swift:DispatchScriptCommand(
         QSB.ScriptCommands.SendScriptEvent,
+        0,
         QSB.ScriptEvents.EscapePressed,
         GUI.GetPlayerID()
     )
@@ -13968,7 +14061,16 @@ function ModuleInputOutputCore.Global:OnGameStart()
 end
 
 function ModuleInputOutputCore.Global:OnEvent(_ID, _Event, ...)
+    -- This event is synchronized in multiplayer! HAS to be because it alters
+    -- quest data.
+    -- FIXME: Input behavior is still not usable in MP!
     if _ID == QSB.ScriptEvents.ChatClosed then
+        -- Send event back to all players local script
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.SendScriptEvent(QSB.ScriptEvents.ChatClosed, "%s", %d)]],
+            arg[1], arg[2]
+        ));
+        -- Alter quest data
         for i= 1, Quests[0], 1 do
             if Quests[i].State == QuestState.Active and QSB.GoalInputDialogQuest == Quests[i].Identifier then
                 for j= 1, #Quests[i].Objectives, 1 do
@@ -14379,10 +14481,9 @@ function ModuleInputOutputCore_Local_InputBoxJob()
 end
 
 function ModuleInputOutputCore.Local:PrepareInputVariable()
-    GUI.SendScriptCommand(string.format(
-        "API.SendScriptEvent(QSB.ScriptEvents.ChatOpened, %d)",
-        GUI.GetPlayerID()
-    ));
+    -- FIXME: Must this be syncronized? Who has opened the chat is totaly
+    -- uninteresting in the global script i.m.o
+    API.SendScriptEventToGlobal(QSB.ScriptEvents.ChatOpened, GUI.GetPlayerID());
     API.SendScriptEvent(QSB.ScriptEvents.ChatOpened, GUI.GetPlayerID());
 
     GUI_Chat.Abort_Orig_ModuleInputOutputCore = GUI_Chat.Abort_Orig_ModuleInputOutputCore or GUI_Chat.Abort;
@@ -14420,9 +14521,14 @@ end
 
 function ModuleInputOutputCore.Local:LocalToGlobal(_Text)
     _Text = (_Text == nil and "") or _Text;
-    API.SendScriptEvent(QSB.ScriptEvents.ChatClosed, _Text, GUI.GetPlayerID());
-    API.SendScriptEventToGlobal(QSB.ScriptEvents.ChatClosed, _Text, GUI.GetPlayerID());
-    Swift:SetProcessDebugCommands(false);
+    Swift:DispatchScriptCommand(
+        QSB.ScriptCommands.SendScriptEvent,
+        0,
+        QSB.ScriptEvents.ChatClosed,
+        (_Text or "<ES>"),
+        GUI.GetPlayerID()
+    );
+    Swift:SetProcessDebugCommands(true);
 end
 
 -- Shared ------------------------------------------------------------------- --
@@ -18513,23 +18619,30 @@ function ModuleTradingCore.Global:OnGameStart()
     self:OverwriteBasePricesAndRefreshRates();
 end
 
-function ModuleTradingCore.Global:OnEvent(_ID, _Event, _TraderType, _OfferID, _Good, _P1, _P2, _Amount, _Price)
+function ModuleTradingCore.Global:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.GoodsPurchased then
-        if not API.IsHistoryEditionNetworkGame() then
-            self:PerformFakeTrade(_TraderType, _OfferID, _Good, _P1, _P2, _Amount, _Price);
-        end
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.SendScriptEvent(QSB.ScriptEvents.GoodsPurchased, %d, %d, %d, %d, %d, %d, %d)]],
+            arg[1], arg[2], arg[3], arg[4], arg[5], arg[6], arg[7]
+        ))
+        self:PerformFakeTrade(arg[1], arg[2], arg[3], arg[4], arg[5], arg[6], arg[7]);
+    elseif _ID == QSB.ScriptEvents.GoodsSold then
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.SendScriptEvent(QSB.ScriptEvents.GoodsSold, g_Trade.GoodType, PlayerID, TargetID, g_Trade.GoodAmount, Price)]],
+            arg[1], arg[2], arg[3], arg[4], arg[5]
+        ))
     end
 end
 
-function ModuleTradingCore.Global:SendEventGoodsPurchased(_TraderType, _OfferID, _Good, _P1, _P2, _Amount, _Price)
-    API.SendScriptEvent(QSB.ScriptEvents.GoodsPurchased, _TraderType, _OfferID, _Good, _P1, _P2, _Amount, _Price);
-end
-
-function ModuleTradingCore.Global:SendEventGoodsSold(_Good, _P1, _P2, _Amount, _Price)
-    API.SendScriptEvent(QSB.ScriptEvents.GoodsSold, _Good, _P1, _P2, _Amount, _Price);
-end
-
 function ModuleTradingCore.Global:OverwriteBasePricesAndRefreshRates()
+    -- HACK: Allow salt and dye to be sold to AI players.
+    for i= 1, 8 do
+        if Logic.GetStoreHouse(i) ~= 0 then
+            Logic.AddGoodToStock(Logic.GetStoreHouse(i), Goods.G_Salt, 0, true, true);
+            Logic.AddGoodToStock(Logic.GetStoreHouse(i), Goods.G_Dye, 0, true, true);
+        end
+    end
+
     MerchantSystem.BasePrices[Entities.U_CatapultCart] = MerchantSystem.BasePrices[Entities.U_CatapultCart] or 1000;
     MerchantSystem.BasePrices[Entities.U_BatteringRamCart] = MerchantSystem.BasePrices[Entities.U_BatteringRamCart] or 450;
     MerchantSystem.BasePrices[Entities.U_SiegeTowerCart] = MerchantSystem.BasePrices[Entities.U_SiegeTowerCart] or 600;
@@ -18566,6 +18679,15 @@ function ModuleTradingCore.Global:PerformFakeTrade(_TraderType, _OfferID, _Good,
     if _TraderType == 0 then
         if Logic.GetGoodCategoryForGoodType(_Good) ~= GoodCategories.GC_Animal then
             API.SendCart(StoreHouse2, _P1, _Good, _Amount, nil, false);
+        else
+            StartSimpleJobEx(function(_Time, _SHID, _Good, _PlayerID)
+                if Logic.GetTime() > _Time+5 then
+                    return true;
+                end
+                local x,y = Logic.GetBuildingApproachPosition(_SHID);
+                local Type = (_Good ~= Goods.G_Cow and Entities.A_X_Sheep01) or Entities.A_X_Cow01;
+                Logic.CreateEntityOnUnblockedLand(Type, x, y, 0, _PlayerID);
+            end, Logic.GetTime(), StoreHouse2, _Good, _P1);
         end
     elseif _TraderType == 1 then
         local x,y = Logic.GetBuildingApproachPosition(StoreHouse2);
@@ -18576,7 +18698,7 @@ function ModuleTradingCore.Global:PerformFakeTrade(_TraderType, _OfferID, _Good,
         Logic.HireEntertainer(_Good, _P1, x, y);
     end
     API.SendCart(StoreHouse1, _P2, Goods.G_Gold, _Price, nil, false);
-    AddGood(Goods.G_Gold, _P1, (-1) * _Price);
+    AddGood(Goods.G_Gold, (-1) * _Price, _P1);
 
     -- Alter offer amount
     local NewAmount = 0;
@@ -18713,6 +18835,8 @@ end
 function ModuleTradingCore.Local:OnGameStart()
     QSB.ScriptEvents.GoodsSold = API.RegisterScriptEvent("Event_GoodsSold");
     QSB.ScriptEvents.GoodsPurchased = API.RegisterScriptEvent("Event_GoodsPurchased");
+
+    g_Merchant.BuyFromPlayer = {};
 
     if API.IsHistoryEditionNetworkGame() then
         return;
@@ -18888,28 +19012,20 @@ function ModuleTradingCore.Local:OverrideMerchantPurchaseOfferClicked()
                 return;
             end
             if Price <= GoldAmountInCastle then
-                if Logic.GetGoodCategoryForGoodType(GoodType) == GoodCategories.GC_Animal then
-                    local AnimalType = Entities.A_X_Sheep01;
-                    if GoodType == Goods.G_Cow then
-                        AnimalType = Entities.A_X_Cow01;
-                    end
-                    for i=1,5 do
-                        GUI.CreateEntityAtBuilding(BuildingID, AnimalType, 0);
-                    end
-                end
                 BuyLock.Locked = true;
                 GUI.ChangeMerchantOffer(BuildingID, PlayerID, OfferIndex, Price);
-                -- if API.IsHistoryEditionNetworkGame() then
-                --    GUI.BuyMerchantOffer(BuildingID, PlayerID, OfferIndex);
-                -- end
                 Sound.FXPlay2DSound("ui\\menu_click");
                 if ModuleTradingCore.Local.ShowKnightTraderAbility then
                     StartKnightVoiceForPermanentSpecialAbility(Entities.U_KnightTrading);
                 end
 
-                API.SendScriptEvent(QSB.ScriptEvents.GoodsPurchased, TraderType, OfferIndex, GoodType, PlayerID, TraderPlayerID, OfferGoodAmount, Price);
-                
-                API.SendScriptEventToGlobal(
+                -- Manually log in local state
+                g_Merchant.BuyFromPlayer[TraderPlayerID] = g_Merchant.BuyFromPlayer[TraderPlayerID] or {};
+                g_Merchant.BuyFromPlayer[TraderPlayerID][GoodType] = (g_Merchant.BuyFromPlayer[TraderPlayerID][GoodType] or 0) +1;
+
+                Swift:DispatchScriptCommand(
+                    QSB.ScriptCommands.SendScriptEvent,
+                    0,
                     QSB.ScriptEvents.GoodsPurchased,
                     TraderType,
                     OfferIndex,
@@ -18984,7 +19100,7 @@ function ModuleTradingCore.Local:OverrideMerchantSellGoodsClicked()
 
         -- Special sales conditions
         local CanBeSold = true;
-        if not ModuleTradingCore.Local.Lambda.SaleAllowed[TargetID] then
+        if ModuleTradingCore.Local.Lambda.SaleAllowed[TargetID] then
             CanBeSold = ModuleTradingCore.Local.Lambda.SaleAllowed[TargetID](PlayerID, TargetID, g_Trade.GoodType, g_Trade.GoodAmount, Price);
         else
             CanBeSold = ModuleTradingCore.Local.Lambda.SaleAllowed.Default(PlayerID, TargetID, g_Trade.GoodType, g_Trade.GoodAmount, Price);
@@ -18998,21 +19114,19 @@ function ModuleTradingCore.Local:OverrideMerchantSellGoodsClicked()
         GUI.StartTradeGoodGathering(PlayerID, TargetID, g_Trade.GoodType, g_Trade.GoodAmount, Price);
         GUI_FeedbackSpeech.Add("SpeechOnly_CartsSent", g_FeedbackSpeech.Categories.CartsUnderway, nil, nil);
         StartKnightVoiceForPermanentSpecialAbility(Entities.U_KnightTrading);
-        
+
         if Price ~= 0 then
             if g_Trade.SellToPlayers[TargetID] == nil then
                 g_Trade.SellToPlayers[TargetID] = {};
             end
-    
             if g_Trade.SellToPlayers[TargetID][g_Trade.GoodType] == nil then
                 g_Trade.SellToPlayers[TargetID][g_Trade.GoodType] = g_Trade.GoodAmount;
             else
                 g_Trade.SellToPlayers[TargetID][g_Trade.GoodType] = g_Trade.SellToPlayers[TargetID][g_Trade.GoodType] + g_Trade.GoodAmount;
             end
-
-            API.SendScriptEvent(QSB.ScriptEvents.GoodsSold, g_Trade.GoodType, PlayerID, TargetID, g_Trade.GoodAmount, Price);
-            
-            API.SendScriptEventToGlobal(
+            Swift:DispatchScriptCommand(
+                QSB.ScriptCommands.SendScriptEvent,
+                0,
                 QSB.ScriptEvents.GoodsSold,
                 g_Trade.GoodType,
                 PlayerID,
@@ -19069,7 +19183,10 @@ function ModuleTradingCore.Local:OverrideMerchantComputePurchasePrice()
         end
         
         -- Invoke price inflation
-        local OfferCount = Logic.GetOfferCount(BuildingID, OfferID, PlayerID, TraderType);
+        local OfferCount = 0; -- Logic.GetOfferCount(BuildingID, OfferID, PlayerID, TraderType);
+        if g_Merchant.BuyFromPlayer[TraderPlayerID] and g_Merchant.BuyFromPlayer[TraderPlayerID][Type] then
+            OfferCount = g_Merchant.BuyFromPlayer[TraderPlayerID][Type];
+        end
         local FinalPrice;
         if ModuleTradingCore.Local.Lambda.PurchaseInflation[TraderPlayerID] then
             FinalPrice = ModuleTradingCore.Local.Lambda.PurchaseInflation[TraderPlayerID](OfferCount, Price, PlayerID, TraderPlayerID);
@@ -20863,11 +20980,14 @@ function ModuleCastleStore.Local:OverwriteInteractiveObject()
         end
 
         -- Send additional click event
-        local KnightIDs = {};
-        Logic.GetKnights(PlayerID, KnightIDs);
-        local KnightID = API.GetClosestToTarget(EntityID, KnightIDs);
-        API.SendScriptEventToGlobal(QSB.ScriptEvents.ObjectClicked, EntityID, KnightID, PlayerID);
-        API.SendScriptEvent(QSB.ScriptEvents.ObjectClicked, EntityID, KnightID, PlayerID);
+        -- This event is supposed to be used in singleplayer only.
+        if not Framework.IsNetworkGame() then
+            local KnightIDs = {};
+            Logic.GetKnights(PlayerID, KnightIDs);
+            local KnightID = API.GetClosestToTarget(EntityID, KnightIDs);
+            API.SendScriptEventToGlobal(QSB.ScriptEvents.ObjectClicked, EntityID, KnightID, PlayerID);
+            API.SendScriptEvent(QSB.ScriptEvents.ObjectClicked, EntityID, KnightID, PlayerID);
+        end
     end
 end
 
@@ -25706,7 +25826,7 @@ function ModuleLifestockBreeding.Global:CountSheepsNearby(_PastureID)
     local Sheeps1  = {Logic.GetPlayerEntitiesInArea(PlayerID, Entities.A_X_Sheep01, x, y, AreaSize, 16)};
     local Sheeps2  = {Logic.GetPlayerEntitiesInArea(PlayerID, Entities.A_X_Sheep02, x, y, AreaSize, 16)};
     table.remove(Sheeps1, 1);
-    table.remove(Sheeps1, 1);
+    table.remove(Sheeps2, 1);
     return #Sheeps1 + #Sheeps2;
 end
 
@@ -27936,11 +28056,14 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
         GUI_Interaction.InteractiveObjectClicked_Orig_ModuleObjectInteraction();
 
         -- Send additional click event
-        local KnightIDs = {};
-        Logic.GetKnights(PlayerID, KnightIDs);
-        local KnightID = API.GetClosestToTarget(EntityID, KnightIDs);
-        API.SendScriptEventToGlobal(QSB.ScriptEvents.ObjectClicked, ScriptName, KnightID, PlayerID);
-        API.SendScriptEvent(QSB.ScriptEvents.ObjectClicked, ScriptName, KnightID, PlayerID);
+        -- This is supposed to be used in singleplayer only!
+        if not Framework.IsNetworkGame() then
+            local KnightIDs = {};
+            Logic.GetKnights(PlayerID, KnightIDs);
+            local KnightID = API.GetClosestToTarget(EntityID, KnightIDs);
+            API.SendScriptEventToGlobal(QSB.ScriptEvents.ObjectClicked, ScriptName, KnightID, PlayerID);
+            API.SendScriptEvent(QSB.ScriptEvents.ObjectClicked, ScriptName, KnightID, PlayerID);
+        end
     end
 
     GUI_Interaction.InteractiveObjectUpdate = function()
@@ -29860,6 +29983,8 @@ function ModuleSelection.Local:OnSelectionCanged(_Source)
     self.SelectedEntities[PlayerID] = SelectedEntities;
     local NewSelectionString = Swift:ConvertTableToString(self.SelectedEntities[PlayerID] or {});
 
+    -- This event is only send on the local machine. Only the local player
+    -- can select units, so the event musn't be send to other players!
     API.SendScriptEvent(
         QSB.ScriptEvents.SelectionChanged,
         PlayerID,
@@ -35704,7 +35829,15 @@ function ModuleBriefingSystem.Local:OnOptionSelected(_PlayerID)
 
     local Selected = XGUIEng.ListBoxGetSelectedIndex(Widget .. "/ListBox")+1;
     local AnswerID = self.Briefing[_PlayerID].MCSelectionOptionsMap[Selected];
-    API.SendScriptEventToGlobal(QSB.ScriptEvents.BriefingOptionSelected, _PlayerID, AnswerID);
+
+    API.SendScriptEvent(QSB.ScriptEvents.BriefingOptionSelected, _PlayerID, AnswerID);
+    Swift:DispatchScriptCommand(
+        QSB.ScriptCommands.SendScriptEvent,
+        0,
+        QSB.ScriptEvents.BriefingOptionSelected,
+        _PlayerID,
+        AnswerID
+    );
 end
 
 function ModuleBriefingSystem.Local:ThroneRoomCameraControl(_PlayerID, _Page)
@@ -35902,7 +36035,13 @@ function ModuleBriefingSystem.Local:OverrideThroneRoomFunctions()
     GameCallback_Camera_ThroneRoomLeftClick = function(_PlayerID)
         GameCallback_Camera_ThroneRoomLeftClick_Orig_ModuleBriefingSystem(_PlayerID);
         if _PlayerID == GUI.GetPlayerID() then
-            API.SendScriptEventToGlobal(QSB.ScriptEvents.BriefingLeftClick, _PlayerID);
+            -- Must trigger in global script for all players.
+            Swift:DispatchScriptCommand(
+                QSB.ScriptCommands.SendScriptEvent,
+                0,
+                QSB.ScriptEvents.BriefingLeftClick,
+                _PlayerID
+            );
             API.SendScriptEvent(QSB.ScriptEvents.BriefingLeftClick, _PlayerID);
         end
     end
@@ -35911,7 +36050,13 @@ function ModuleBriefingSystem.Local:OverrideThroneRoomFunctions()
     GameCallback_Camera_SkipButtonPressed = function(_PlayerID)
         GameCallback_Camera_SkipButtonPressed_Orig_ModuleBriefingSystem(_PlayerID);
         if _PlayerID == GUI.GetPlayerID() then
-            API.SendScriptEventToGlobal(QSB.ScriptEvents.BriefingSkipButtonPressed, _PlayerID);
+            -- Must trigger in global script for all players.
+            Swift:DispatchScriptCommand(
+                QSB.ScriptCommands.SendScriptEvent,
+                0,
+                QSB.ScriptEvents.BriefingSkipButtonPressed,
+                _PlayerID
+            );
             API.SendScriptEvent(QSB.ScriptEvents.BriefingSkipButtonPressed, _PlayerID);
         end
     end
@@ -36288,7 +36433,13 @@ function API.AddBriefingPages(_Briefing)
 
         _Briefing.Length = (_Briefing.Length or 0) +1;
         if type(_Page) == "table" then
-            local Identifier;
+            local Identifier = "Page" ..(#_Briefing +1);
+            if _Page.Name then
+                Identifier = _Page.Name;
+            else
+                _Page.Name = Identifier;
+            end
+            _Page.AnimName = Identifier;
 
             _Page.__Legit = true;
             _Page.GetSelected = function(self)
@@ -36300,12 +36451,6 @@ function API.AddBriefingPages(_Briefing)
 
             -- Simple camera position
             if _Page.Position then
-                Identifier = "" ..(#_Briefing +1);
-                if _Page.Name then
-                    Identifier = _Page.Name;
-                end
-                _Page.AnimName = Identifier;
-
                 local Angle = _Page.Angle;
                 if not Angle then
                     Angle = QSB.Briefing.CAMERA_ANGLEDEFAULT;
@@ -36444,7 +36589,7 @@ function API.AddBriefingPages(_Briefing)
         local NoSkipping = false;
 
         -- Set page parameters
-        Name = "Page" .. (#_Briefing);
+        Name = table.remove(arg, 1);
         Title = table.remove(arg, 1);
         Text = table.remove(arg, 1);
         if #arg > 0 then
@@ -36680,6 +36825,11 @@ end
 -- <td><b>Beschreibung</b></td>
 -- </tr>
 -- <tr>
+-- <td>Name</td>
+-- <td>string</td>
+-- <td>Der interne Name der Page.</td>
+-- </tr>
+-- <tr>
 -- <td>Title</td>
 -- <td>string|table</td>
 -- <td>Der angezeigte Titel der Seite. Es können auch Text Keys oder
@@ -36726,13 +36876,13 @@ end
 -- -- man die Leerstellen mit nil auffüllen.
 --
 -- -- Fernsicht
--- ASP("Title", "Some important text.", "HQ", false);
+-- ASP("Page1", "Title", "Some important text.", "HQ", false);
 -- -- Nahsicht
--- ASP("Title", "Some important text.", "Marcus", true);
+-- ASP("Page1", "Title", "Some important text.", "Marcus", true);
 -- -- Aktion ausführen
--- ASP("Title", "Some important text.", "Marcus", true, MyFunction);
+-- ASP("Page1", "Title", "Some important text.", "Marcus", true, MyFunction);
 -- -- Überspringen erlauben/verbieten
--- ASP("Title", "Some important text.", "HQ", nil, nil, true);
+-- ASP("Page1", "Title", "Some important text.", "HQ", nil, nil, true);
 --
 function ASP(...)
     assert(false);
@@ -37046,7 +37196,10 @@ function ModuleCutsceneSystem.Global:OnEvent(_ID, _Event, ...)
     elseif _ID == QSB.ScriptEvents.CutsceneFlightEnded then
         self:EndCutsceneFlight(arg[1], arg[2]);
     elseif _ID == QSB.ScriptEvents.CutsceneSkipButtonPressed then
-        -- Nothing to do?
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.SendScriptEvent(QSB.ScriptEvents.CutsceneSkipButtonPressed, %d)]],
+            arg[1]
+        ));
     end
 end
 
@@ -37272,14 +37425,21 @@ function ModuleCutsceneSystem.Local:PropagateCutsceneEnded(_PlayerID)
     if not self.Cutscene[_PlayerID] then
         return;
     end
-    API.SendScriptEventToGlobal(QSB.ScriptEvents.CutsceneEnded, _PlayerID);
+    Swift:DispatchScriptCommand(
+        QSB.ScriptCommands.SendScriptEvent,
+        0,
+        QSB.ScriptEvents.CutsceneEnded,
+        _PlayerID
+    );
 end
 
 function ModuleCutsceneSystem.Local:FlightStarted(_Duration)
     local PlayerID = GUI.GetPlayerID();
     if self.Cutscene[PlayerID] then
         local PageID = self.Cutscene[PlayerID].CurrentPage;
-        API.SendScriptEventToGlobal(
+        Swift:DispatchScriptCommand(
+            QSB.ScriptCommands.SendScriptEvent,
+            0,
             QSB.ScriptEvents.CutsceneFlightStarted,
             PlayerID,
             PageID,
@@ -37302,7 +37462,9 @@ function ModuleCutsceneSystem.Local:FlightFinished()
     local PlayerID = GUI.GetPlayerID();
     if self.Cutscene[PlayerID] then
         local PageID = self.Cutscene[PlayerID].CurrentPage;
-        API.SendScriptEventToGlobal(
+        Swift:DispatchScriptCommand(
+            QSB.ScriptCommands.SendScriptEvent,
+            0,
             QSB.ScriptEvents.CutsceneFlightEnded,
             PlayerID,
             PageID
@@ -37509,11 +37671,9 @@ function ModuleCutsceneSystem.Local:OverrideThroneRoomFunctions()
     GameCallback_Camera_SkipButtonPressed = function(_PlayerID)
         GameCallback_Camera_SkipButtonPressed_Orig_ModuleCutsceneSystem(_PlayerID);
         if _PlayerID == GUI.GetPlayerID() then
-            API.SendScriptEventToGlobal(
-                QSB.ScriptEvents.CutsceneSkipButtonPressed,
-                GUI.GetPlayerID()
-            );
-            API.SendScriptEvent(
+            Swift:DispatchScriptCommand(
+                QSB.ScriptCommands.SendScriptEvent,
+                0,
                 QSB.ScriptEvents.CutsceneSkipButtonPressed,
                 GUI.GetPlayerID()
             );
@@ -38174,6 +38334,10 @@ function ModuleDialogSystem.Global:OnEvent(_ID, _Event, ...)
             end
         end
     elseif _ID == QSB.ScriptEvents.DialogOptionSelected then
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.SendScriptEvent(QSB.ScriptEvents.DialogOptionSelected, %d, %d)]],
+            arg[1], arg[2]
+        ));
         ModuleDialogSystem.Global:OnOptionSelected(arg[1], arg[2]);
     end
 end
@@ -38601,7 +38765,9 @@ function ModuleDialogSystem.Local:OnOptionSelected(_PlayerID)
 
     local Selected = XGUIEng.ListBoxGetSelectedIndex(Widget .. "/ListBox")+1;
     local AnswerID = self.Dialog[_PlayerID].MCSelectionOptionsMap[Selected];
-    API.SendScriptEventToGlobal(
+    Swift:DispatchScriptCommand(
+        QSB.ScriptCommands.SendScriptEvent,
+        0,
         QSB.ScriptEvents.DialogOptionSelected,
         _PlayerID,
         AnswerID
@@ -41541,15 +41707,14 @@ if not MapEditor and not GUI then
         if Mission_LocalOnQsbLoaded and not Framework.IsNetworkGame() then
             Mission_LocalOnQsbLoaded();
         end
-        if Mission_MP_LocalOnQSBLoaded and Framework.IsNetworkGame() then
-            Mission_MP_LocalOnQSBLoaded();
+        if Mission_MP_LocalOnQsbLoaded and Framework.IsNetworkGame() then
+            Mission_MP_LocalOnQsbLoaded();
         end
         StartSimpleJobEx(function()
-            Swift:DispatchScriptCommand(QSB.ScriptCommands.GlobalQsbLoaded);
+            Swift:DispatchScriptCommand(QSB.ScriptCommands.GlobalQsbLoaded, GUI.GetPlayerID());
             return true;
         end);
     ]]);
-    
     API.Install();
     if ModuleKnightTitleRequirements then
         InitKnightTitleTables();
