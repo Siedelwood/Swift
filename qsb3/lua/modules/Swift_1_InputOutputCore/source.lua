@@ -530,7 +530,7 @@ function ModuleInputOutputCore.Local:LocalToGlobal(_Text)
         QSB.ScriptCommands.SendScriptEvent,
         0,
         QSB.ScriptEvents.ChatClosed,
-        (_Text or "<ES>"),
+        (_Text or "<<<ES>>>"),
         GUI.GetPlayerID()
     );
     Swift:SetProcessDebugCommands(true);

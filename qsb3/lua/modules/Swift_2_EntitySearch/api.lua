@@ -47,7 +47,8 @@ You may use and modify this file unter the terms of the MIT licence.
 -- <ul>
 -- <li>NOT (_Predicate) - Negiert das Ergebnis des Prädikat.</li>
 -- <li>ALL (...) - Alle Prädikate müssen wahr sein.</li>
--- <li>ANY (...) - Mindestes ein Prädikat mus wahr sein</li>
+-- <li>ANY (...) - Mindestes ein Prädikat muss wahr sein</li>
+-- <li>XOR (...) - Exklusiv 1 aus allen Predikaten muss wahr sein.</li>
 -- </ul>
 --
 -- @see API.CommenceEntitySearch
@@ -60,6 +61,9 @@ QSB.Search = QSB.Search or {};
 -- Findet <u>alle</u> Entities.
 --
 -- Die Suche kann optional auf einen Spieler beschränkt werden.
+--
+-- <b>Hinweis</b>: Im Multiplayer kann diese Funktion nur in synchron
+-- ausgeführtem Code benutzt werden, da es sonst zu Desyncs komm.
 --
 -- @param[type=number] _PlayerID (Optional) ID des Besitzers
 -- @return[type=table] Liste mit Ergebnissen
@@ -83,6 +87,9 @@ end
 
 ---
 -- Findet alle Entities in einem Gebiet.
+--
+-- <b>Hinweis</b>: Im Multiplayer kann diese Funktion nur in synchron
+-- ausgeführtem Code benutzt werden, da es sonst zu Desyncs komm.
 --
 -- @param[type=number] _Area     Größe des Suchgebiet
 -- @param              _Position Mittelpunkt (EntityID, Skriptname oder Table)
@@ -119,6 +126,9 @@ end
 ---
 -- Findet alle Entities in einem Territorium.
 --
+-- <b>Hinweis</b>: Im Multiplayer kann diese Funktion nur in synchron
+-- ausgeführtem Code benutzt werden, da es sonst zu Desyncs komm.
+--
 -- @param[type=number] _Territory Territorium für die Suche
 -- @param[type=number] _PlayerID  (Optional) ID des Besitzers
 -- @param[type=number] _Type      (Optional) Typ des Entity
@@ -153,6 +163,9 @@ end
 -- Einfluss auf die Dauer der Suche. Während Abfragen auf den Besitzer oder
 -- den Typ schnell gehen, dauern Gebietssuchen lange! Es ist daher klug, zuerst
 -- Kriterien auszuschließen, die schnell bestimmt werden!
+--
+-- <b>Hinweis</b>: Im Multiplayer kann diese Funktion nur in synchron
+-- ausgeführtem Code benutzt werden, da es sonst zu Desyncs komm.
 --
 -- @param[type=table] ... Liste mit Suchprädikaten
 -- @return[type=table] Liste mit Ergebnissen

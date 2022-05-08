@@ -24,12 +24,25 @@ ModuleEntitySearch = {
 -- Global ------------------------------------------------------------------- --
 
 function ModuleEntitySearch.Global:OnGameStart()
+    QSB.ScriptEvents.TriggerEntityTrigger = API.RegisterScriptEvent("Event_TriggerEntityTrigger");
     API.RegisterScriptCommand("Cmd_TriggerEntityTrigger", SCP.EntitySearch.TriggerEntityTrigger);
+end
+
+function ModuleEntitySearch.Global:OnEvent(_ID, _Event, ...)
+    if _ID == QSB.ScriptEvents.TriggerEntityTrigger then
+        self:TriggerEntityTrigger();
+    end
+end
+
+function ModuleEntitySearch.Global:TriggerEntityTrigger()
+    local ID = Logic.CreateEntity(Entities.XD_ScriptEntity, 5, 5, 0, 0);
+    Logic.DestroyEntity(ID);
 end
 
 -- Local -------------------------------------------------------------------- --
 
 function ModuleEntitySearch.Local:OnGameStart()
+    QSB.ScriptEvents.TriggerEntityTrigger = API.RegisterScriptEvent("Event_TriggerEntityTrigger");
 end
 
 -- Shared ------------------------------------------------------------------- --
@@ -38,7 +51,11 @@ function ModuleEntitySearch.Shared:IterateEntities(...)
     if not GUI then
         SCP.EntitySearch.TriggerEntityTrigger();
     else
-        API.SendScriptCommand(QSB.ScriptCommands.TriggerEntityTrigger);
+        Swift:DispatchScriptCommand(
+            QSB.ScriptCommands.SendScriptEvent,
+            GUI.GetPlayerID(),
+            QSB.ScriptCommands.TriggerEntityTrigger
+        );
     end
 
     -- Speichert die Predikate für spätere Prüfung.
@@ -52,8 +69,8 @@ function ModuleEntitySearch.Shared:IterateEntities(...)
 
     -- Iteriert über alle Entities und wendet Predikate an.
     local ResultList = {};
-    for i= 65536, ModuleEntityEventCore.Shared:GetHighestEntity() do
-        local ID = ModuleEntityEventCore.Shared:GetReplacementID(i) or i;
+    for i= 65536, ModuleEntityEventCore.Shared.HighestEntityID do
+        local ID = ModuleEntityEventCore.Shared.ReplacementEntityID[i] or i;
         local Select = true;
         if IsExisting(ID) then
             for j= 1, #Predicates do
@@ -74,80 +91,93 @@ end
 
 QSB.Search = {};
 
-NOT = function(_ID, _Predicate)
-    local Predicate = table.copy(_Predicate);
-    local Function = table.remove(Predicate, 1);
-    return not Function(_ID, unpack(Predicate));
+QSB.Search.Custom = function(_ID, _Function, ...)
+    return _Function(_ID, unpack(arg));
 end
 
-ALL = function(_ID, ...)
-    local Predicates = table.copy(arg);
-    for i= 1, #Predicates do
-        local Predicate = table.remove(Predicates[i], 1);
-        if not Predicate(_ID, unpack(Predicates[i])) then
-            return false;
-        end
-    end
-    return true;
-end
-
-ANY = function(_ID, ...)
-    local Predicates = table.copy(arg);
-    for i= 1, #Predicates do
-        local Predicate = table.remove(Predicates[i], 1);
-        if Predicate(_ID, unpack(Predicates[i])) then
+QSB.Search.OfID = function(_ID, ...)
+    for i= 1, #arg do
+        if _ID == arg[i] then
             return true;
         end
     end
     return false;
 end
 
-QSB.Search.Custom = function(_ID, _Function, ...)
-    return _Function(_ID, unpack(arg));
-end
-
-QSB.Search.OfID = function(_ID, _EntityID)
-    return _ID == _EntityID;
-end
-
-QSB.Search.OfPlayer = function(_ID, _PlayerID)
-    return Logic.EntityGetPlayer(_ID) == _PlayerID;
-end
-
-QSB.Search.OfName = function(_ID, _ScriptName)
-    return Logic.GetEntityName(_ID) == _ScriptName;
-end
-
-QSB.Search.OfNamePrefix = function(_ID, _Prefix)
-    local ScriptName = Logic.GetEntityName(_ID);
-    if ScriptName and ScriptName ~= "" then
-        return ScriptName:find("^" .._Prefix) ~= nil;
+QSB.Search.OfPlayer = function(_ID, ...)
+    for i= 1, #arg do
+        if Logic.EntityGetPlayer(_ID) == arg[i] then
+            return true;
+        end
     end
     return false;
 end
 
-QSB.Search.OfNameSuffix = function(_ID, _Sufix)
-    local ScriptName = Logic.GetEntityName(_ID);
-    if ScriptName and ScriptName ~= "" then
-        return ScriptName:find(_Sufix .. "$") ~= nil;
+QSB.Search.OfName = function(_ID, ...)
+    for i= 1, #arg do
+        if Logic.GetEntityName(_ID) == arg[i] then
+            return true;
+        end
     end
     return false;
 end
 
-QSB.Search.OfType = function(_ID, _Type)
-    return Logic.GetEntityType(_ID) == _Type;
+QSB.Search.OfNamePrefix = function(_ID, ...)
+    -- FIXME: Bad benchmark!
+    local ScriptName = Logic.GetEntityName(_ID);
+    for i= 1, #arg do
+        if ScriptName and ScriptName ~= "" then
+            if ScriptName:find("^" ..arg[i]) ~= nil then
+                return true;
+            end
+        end
+    end
+    return false;
 end
 
-QSB.Search.OfCategory = function(_ID, _Category)
-    return Logic.IsEntityInCategory(_ID, _Category) == 1;
+QSB.Search.OfNameSuffix = function(_ID, ...)
+    -- FIXME: Bad benchmark!
+    local ScriptName = Logic.GetEntityName(_ID);
+    for i= 1, #arg do
+        if ScriptName and ScriptName ~= "" then
+            if ScriptName:find(arg[i] .. "$") ~= nil then
+                return true;
+            end
+        end
+    end
+    return false;
+end
+
+QSB.Search.OfType = function(_ID, ...)
+    for i= 1, #arg do
+        if Logic.GetEntityType(_ID) == arg[i] then
+            return true;
+        end
+    end
+    return false;
+end
+
+QSB.Search.OfCategory = function(_ID, ...)
+    for i= 1, #arg do
+        if Logic.IsEntityInCategory(_ID, arg[i]) == 1 then
+            return true;
+        end
+    end
+    return false;
 end
 
 QSB.Search.InArea = function(_ID, _X, _Y, _AreaSize)
+    -- FIXME: Bad benchmark!
     return API.GetDistance(_ID, {X= _X, Y= _Y}) <= _AreaSize;
 end
 
-QSB.Search.InTerritory = function(_ID, _Territory)
-    return GetTerritoryUnderEntity(_ID) == _Territory;
+QSB.Search.InTerritory = function(_ID, ...)
+    for i= 1, #arg do
+        if GetTerritoryUnderEntity(_ID) == arg[i] then
+            return true;
+        end
+    end
+    return false;
 end
 
 -- -------------------------------------------------------------------------- --

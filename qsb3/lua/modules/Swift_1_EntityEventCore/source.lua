@@ -195,8 +195,8 @@ function ModuleEntityEventCore.Global:CleanTaggedAndDeadEntities()
 
     -- unregister dead entities if not already unregistered
     for k,v in pairs(self.RegisteredEntities) do
-        if not IsExisting(v) then
-            self:UnregisterEntityAndTriggerEvent(v);
+        if not IsExisting(k) then
+            self:UnregisterEntityAndTriggerEvent(k);
         end
     end
 end

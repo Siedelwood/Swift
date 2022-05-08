@@ -132,11 +132,12 @@ GameCallback_QSB_OnEventReceived = function(_EventID, ...)
 end
 
 function SearchWithPredicateTest()
-    return API.CommenceEntitySearch(
+    local Result = API.CommenceEntitySearch(
         {QSB.Search.OfPlayer, 1},
         {ANY,
          {QSB.Search.OfCategory, EntityCategories.CityBuilding},
          {QSB.Search.OfCategory, EntityCategories.OuterRimBuilding}},
         {QSB.Search.InTerritory, 1}
     )
+    return Result;
 end
