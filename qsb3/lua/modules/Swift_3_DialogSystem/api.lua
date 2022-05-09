@@ -147,12 +147,30 @@ function API.AddDialogPages(_Dialog)
         local ID = ModuleDialogSystem.Global:GetPageIDByName(_PlayerID, _NameOrID);
         return ModuleDialogSystem.Global.Dialog[_PlayerID][ID];
     end
+    _Dialog.NextPageID = function(self)
+        return "Page" ..(#self +1);
+    end
+    _Dialog.LastPageID = function(self)
+        if #self > 0 and type(self[#self]) == "table" and self[#self].Name then
+            return self[#self].Name;
+        end
+        return "Page" ..(#self);
+    end
 
     local AP = function(_Page)
         if type(_Page) == "table" then
+            local Identifier = _Dialog:NextPageID();
+            if _Page.Name then
+                Identifier = _Page.Name;
+            else
+                _Page.Name = Identifier;
+            end
+
             if _Page.Position and _Page.Target then
                 local Name = "Dialog #" ..(ModuleDialogSystem.Global.DialogCounter +1);
-                error("AF (" ..Name.. ", Page #" ..(#_Dialog+1).. "): Position and Target can not be used both at the same time!");
+                error("AP (" ..Name.. ", Page '" .._Page.Name.. "'): "..
+                      "Position and Target can not be used both at the "..
+                      "same time!");
                 return;
             end
 

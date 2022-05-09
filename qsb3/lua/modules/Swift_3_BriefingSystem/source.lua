@@ -173,7 +173,7 @@ end
 function ModuleBriefingSystem.Global:TransformAnimations(_PlayerID)
     if self.Briefing[_PlayerID].PageAnimations then
         for k, v in pairs(self.Briefing[_PlayerID].PageAnimations) do
-            local PageID = self:GetPageIDByAttribute(_PlayerID, "AnimName", k);
+            local PageID = self:GetPageIDByName(_PlayerID, k);
             if PageID ~= 0 then
                 self.Briefing[_PlayerID][PageID].Animations = {};
                 self.Briefing[_PlayerID][PageID].Animations.PurgeOld = v.PurgeOld == true;
@@ -328,20 +328,16 @@ end
 
 function ModuleBriefingSystem.Global:GetPageIDByName(_PlayerID, _Name)
     if type(_Name) == "string" then
-        return self:GetPageIDByAttribute(_PlayerID, "Name", _Name);
-    end
-    return _Name;
-end
-
-function ModuleBriefingSystem.Global:GetPageIDByAttribute(_PlayerID, _Key, _Value)
-    if self.Briefing[_PlayerID] ~= nil then
-        for i= 1, #self.Briefing[_PlayerID], 1 do
-            if type(self.Briefing[_PlayerID][i]) == "table" and self.Briefing[_PlayerID][i][_Key] == _Value then
-                return i;
+        if self.Briefing[_PlayerID] ~= nil then
+            for i= 1, #self.Briefing[_PlayerID], 1 do
+                if type(self.Briefing[_PlayerID][i]) == "table" and self.Briefing[_PlayerID][i].Name == _Name then
+                    return i;
+                end
             end
         end
+        return 0;
     end
-    return 0;
+    return _Name;
 end
 
 function ModuleBriefingSystem.Global:CanStartBriefing(_PlayerID)
@@ -847,20 +843,16 @@ end
 
 function ModuleBriefingSystem.Local:GetPageIDByName(_PlayerID, _Name)
     if type(_Name) == "string" then
-        return self:GetPageIDByAttribute(_PlayerID, "Name", _Name);
-    end
-    return _Name;
-end
-
-function ModuleBriefingSystem.Global:GetPageIDByAttribute(_PlayerID, _Key, _Value)
-    if self.Briefing[_PlayerID] ~= nil then
-        for i= 1, #self.Briefing[_PlayerID], 1 do
-            if type(self.Briefing[_PlayerID][i]) == "table" and self.Briefing[_PlayerID][i][_Key] == _Value then
-                return i;
+        if self.Briefing[_PlayerID] ~= nil then
+            for i= 1, #self.Briefing[_PlayerID], 1 do
+                if type(self.Briefing[_PlayerID][i]) == "table" and self.Briefing[_PlayerID][i].Name == _Name then
+                    return i;
+                end
             end
         end
+        return 0;
     end
-    return 0;
+    return _Name;
 end
 
 function ModuleBriefingSystem.Local:OverrideThroneRoomFunctions()

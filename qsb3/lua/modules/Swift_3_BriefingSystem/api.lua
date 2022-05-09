@@ -207,19 +207,27 @@ function API.AddBriefingPages(_Briefing)
         local ID = ModuleBriefingSystem.Global:GetPageIDByName(_Briefing.PlayerID, _NameOrID);
         return ModuleBriefingSystem.Global.Briefing[_Briefing.PlayerID][ID];
     end
+    _Briefing.NextPageID = function(self)
+        return "Page" ..(#self +1);
+    end
+    _Briefing.LastPageID = function(self)
+        if #self > 0 and type(self[#self]) == "table" and self[#self].Name then
+            return self[#self].Name;
+        end
+        return "Page" ..(#self);
+    end
 
     local AP = function(_Page)
         _Briefing.PageAnimations = _Briefing.PageAnimations or {};
 
         _Briefing.Length = (_Briefing.Length or 0) +1;
         if type(_Page) == "table" then
-            local Identifier = "Page" ..(#_Briefing +1);
+            local Identifier = _Briefing:NextPageID();
             if _Page.Name then
                 Identifier = _Page.Name;
             else
                 _Page.Name = Identifier;
             end
-            _Page.AnimName = Identifier;
 
             _Page.__Legit = true;
             _Page.GetSelected = function(self)
