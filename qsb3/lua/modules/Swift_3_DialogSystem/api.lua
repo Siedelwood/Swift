@@ -147,19 +147,10 @@ function API.AddDialogPages(_Dialog)
         local ID = ModuleDialogSystem.Global:GetPageIDByName(_PlayerID, _NameOrID);
         return ModuleDialogSystem.Global.Dialog[_PlayerID][ID];
     end
-    _Dialog.NextPageID = function(self)
-        return "Page" ..(#self +1);
-    end
-    _Dialog.LastPageID = function(self)
-        if #self > 0 and type(self[#self]) == "table" and self[#self].Name then
-            return self[#self].Name;
-        end
-        return "Page" ..(#self);
-    end
 
     local AP = function(_Page)
         if type(_Page) == "table" then
-            local Identifier = _Dialog:NextPageID();
+            local Identifier = "Page" ..(#_Dialog +1);
             if _Page.Name then
                 Identifier = _Page.Name;
             else
@@ -209,6 +200,9 @@ function API.AddDialogPages(_Dialog)
     end
 
     local ASP = function(...)
+        if type(arg[2]) ~= "number" then
+            Name = table.remove(arg, 1);
+        end
         local Sender   = table.remove(arg, 1);
         local Position = table.remove(arg, 1);
         local Text     = table.remove(arg, 1);
@@ -218,6 +212,7 @@ function API.AddDialogPages(_Dialog)
             Action = table.remove(arg, 1);
         end
         return AP {
+            Name   = Name,
             Text   = Text,
             Sender = Sender,
             Target = Position,
@@ -366,16 +361,19 @@ end
 -- <a href="#API.AddPages">API.AddDialogPages</a> erzeugt und an
 -- den Dialog gebunden.
 --
+-- @param[type=string]   _Name         (Optional) Name der Seite
+-- @param[type=string]   _Text         Text der Seite
 -- @param[type=number]   _Sender       Spieler (-1 für kein Portrait)
 -- @param[type=string]   _Position     Position der Kamera
--- @param[type=string]   _Text         Text der Seite
 -- @param[type=boolean]  _DialogCamera Nahsicht an/aus
 -- @param[type=function] _Action       (Optional) Callback-Funktion
 -- @return[type=table] Referenz auf die Seite
 -- @within Dialog
--- 
+--
 -- @usage -- Beispiel ohne Page Name
--- ASP(1, "hans", "Ich gehe in die weitel Welt hinein.", true);
+-- ASP("Ich gehe in die weitel Welt hinein.", 1, "hans", true);
+-- -- Beispiel mit Page Name
+-- ASP("Page1", "Ich gehe in die weitel Welt hinein.", 1, "hans", true);
 --
 function ASP(_Data)
     assert(false);

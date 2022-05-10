@@ -207,22 +207,13 @@ function API.AddBriefingPages(_Briefing)
         local ID = ModuleBriefingSystem.Global:GetPageIDByName(_Briefing.PlayerID, _NameOrID);
         return ModuleBriefingSystem.Global.Briefing[_Briefing.PlayerID][ID];
     end
-    _Briefing.NextPageID = function(self)
-        return "Page" ..(#self +1);
-    end
-    _Briefing.LastPageID = function(self)
-        if #self > 0 and type(self[#self]) == "table" and self[#self].Name then
-            return self[#self].Name;
-        end
-        return "Page" ..(#self);
-    end
 
     local AP = function(_Page)
         _Briefing.PageAnimations = _Briefing.PageAnimations or {};
 
         _Briefing.Length = (_Briefing.Length or 0) +1;
         if type(_Page) == "table" then
-            local Identifier = _Briefing:NextPageID();
+            local Identifier = "Page" ..(#_Briefing +1);
             if _Page.Name then
                 Identifier = _Page.Name;
             else
@@ -377,14 +368,17 @@ function API.AddBriefingPages(_Briefing)
         local NoSkipping = false;
 
         -- Set page parameters
-        Name = table.remove(arg, 1);
+        if (#arg == 3 and type(arg[1]) == "string")
+        or (#arg >= 4 and type(arg[4]) ~= "boolean") then
+            Name = table.remove(arg, 1);
+        end
         Title = table.remove(arg, 1);
         Text = table.remove(arg, 1);
         if #arg > 0 then
-            Position = table.remove(arg, 1);
+            DialogCam = table.remove(arg, 1) == true;
         end
         if #arg > 0 then
-            DialogCam = table.remove(arg, 1) == true;
+            Position = table.remove(arg, 1);
         end
         if #arg > 0 then
             Action = table.remove(arg, 1);
@@ -664,13 +658,15 @@ end
 -- -- man die Leerstellen mit nil auffüllen.
 --
 -- -- Fernsicht
--- ASP("Page1", "Title", "Some important text.", "HQ", false);
+-- ASP("Title", "Some important text.", false, "HQ");
+-- -- Page Name
+-- ASP("Page1", "Title", "Some important text.", false, "HQ");
 -- -- Nahsicht
--- ASP("Page1", "Title", "Some important text.", "Marcus", true);
+-- ASP("Title", "Some important text.", true, "Marcus");
 -- -- Aktion ausführen
--- ASP("Page1", "Title", "Some important text.", "Marcus", true, MyFunction);
+-- ASP("Title", "Some important text.", true, "Marcus", MyFunction);
 -- -- Überspringen erlauben/verbieten
--- ASP("Page1", "Title", "Some important text.", "HQ", nil, nil, true);
+-- ASP("Title", "Some important text.", true, "HQ", nil, true);
 --
 function ASP(...)
     assert(false);
