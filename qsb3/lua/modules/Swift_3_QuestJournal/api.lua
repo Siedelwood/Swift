@@ -23,10 +23,6 @@
 -- <b>Hinweis</b>: Der Button wird auch dann angezeigt, wenn es noch keine
 -- Zusatzinformationen für den Quest gibt.
 --
--- <h4>Multiplayer</h4>
--- Kann nicht im Multiplayer verwendet werden, wegen Konflikt
--- mit dem Chat Options.
---
 -- @param[type=string]  _Quest Name des Quest
 -- @param[type=boolean] _Flag  Zusatzinfos aktivieren
 -- @within Anwenderfunktionen
@@ -59,10 +55,6 @@ end
 --
 -- <b>Hinweis</b>: Formatierungsbefehle sind deaktiviert.
 --
--- <h4>Multiplayer</h4>
--- Kann nicht im Multiplayer verwendet werden, wegen Konflikt
--- mit dem Chat Options.
---
 -- @param[type=string] _Text  Text der Zusatzinfo
 -- @return[type=number] ID des neuen Eintrags
 -- @within Anwenderfunktionen
@@ -83,10 +75,6 @@ end
 -- Kopien eines Eintrags werden nicht berücksichtigt.
 --
 -- <b>Hinweis</b>: Formatierungsbefehle sind deaktiviert.
---
--- <h4>Multiplayer</h4>
--- Kann nicht im Multiplayer verwendet werden, wegen Konflikt
--- mit dem Chat Options.
 --
 -- @param[type=number] _ID   ID des Eintrag
 -- @param              _Text Neuer Text
@@ -117,10 +105,6 @@ end
 -- rote Färbung hervorgehoben. Eigene Farben in einer Nachricht beeinträchtigen
 -- die rote hervorhebung.
 --
--- <h4>Multiplayer</h4>
--- Kann nicht im Multiplayer verwendet werden, wegen Konflikt
--- mit dem Chat Options.
---
 -- @param[type=number]  _ID        ID des Eintrag
 -- @param[type=boolean] _Important Wichtig Markierung
 -- @within Anwenderfunktionen
@@ -147,10 +131,6 @@ end
 -- <b>Hinweis</b>: Ein Eintrag wird niemals wirklich gelöscht, sondern nur
 -- unsichtbar geschaltet.
 --
--- <h4>Multiplayer</h4>
--- Kann nicht im Multiplayer verwendet werden, wegen Konflikt
--- mit dem Chat Options.
---
 -- @param[type=number] _ID ID des Eintrag
 -- @within Anwenderfunktionen
 --
@@ -172,10 +152,6 @@ end
 
 ---
 -- Stellt einen gelöschten Eintrag in den Zusatzinformationen wieder her.
---
--- <h4>Multiplayer</h4>
--- Kann nicht im Multiplayer verwendet werden, wegen Konflikt
--- mit dem Chat Options.
 --
 -- @param[type=number] _ID ID des Eintrag
 -- @within Anwenderfunktionen
@@ -199,10 +175,6 @@ end
 ---
 -- Fügt einen Tagebucheintrag zu einem Quest hinzu.
 --
--- <h4>Multiplayer</h4>
--- Kann nicht im Multiplayer verwendet werden, wegen Konflikt
--- mit dem Chat Options.
---
 -- @param[type=number]  _ID    ID des Eintrag
 -- @param[type=boolean] _Quest Name des Quest
 -- @within Anwenderfunktionen
@@ -219,10 +191,6 @@ end
 
 ---
 -- Entfernt einen Tagebucheintrag von einem Quest.
---
--- <h4>Multiplayer</h4>
--- Kann nicht im Multiplayer verwendet werden, wegen Konflikt
--- mit dem Chat Options.
 --
 -- @param[type=number]  _ID    ID des Eintrag
 -- @param[type=boolean] _Quest Name des Quest

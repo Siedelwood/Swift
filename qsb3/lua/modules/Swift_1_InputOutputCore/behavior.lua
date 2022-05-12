@@ -24,7 +24,7 @@ You may use and modify this file unter the terms of the MIT licence.
 -- müssen also immer mit Ja oder Nein beantwortbar sein oder auf Okay und
 -- Abbrechen passen.
 --
--- <h4>Multiplayer</h4>
+-- <h5>Multiplayer</h5>
 -- Nicht für Multiplayer geeignet.
 --
 -- @param _Text   Fenstertext
@@ -138,7 +138,7 @@ Swift:RegisterBehavior(B_Goal_Decide);
 -- erste Eingabe annehmen, die getätigt wird. Dabei ist es egal, ob der Input
 -- durch sie selbst oder extern aktiviert wurde.
 --
--- <h4>Multiplayer</h4>
+-- <h5>Multiplayer</h5>
 -- Nicht für Multiplayer geeignet.
 --
 -- @param _Passwords Liste der Passwörter

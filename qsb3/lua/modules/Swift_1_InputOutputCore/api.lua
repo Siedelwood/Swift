@@ -360,11 +360,13 @@ end
 -- Die Länge des Textes ist nicht beschränkt. Überschreitet der Text die
 -- Größe des Fensters, wird automatisch eine Bildlaufleiste eingeblendet.
 --
--- <h4>Multiplayer</h4>
--- Nicht für Multiplayer geeignet.
+-- <h5>Multiplayer</h5>
+-- Im Multiplayer muss zwingend der Spieler angegeben werden, für den das
+-- Fenster angezeigt werden soll.
 --
--- @param[type=string] _Caption Titel des Fenster
--- @param[type=string] _content Inhalt des Fenster
+-- @param[type=string] _Caption  Titel des Fenster
+-- @param[type=string] _Content  Inhalt des Fenster
+-- @param[type=number] _PlayerID Spieler, der das Fenster sieht
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -381,19 +383,24 @@ end
 --              " dolor sit amet.";
 -- API.SimpleTextWindow("Überschrift", Text);
 --
-function API.SimpleTextWindow(_Caption, _Content)
-    if Framework.IsNetworkGame() then
-        return;
-    end
+function API.SimpleTextWindow(_Caption, _Content, _PlayerID)
+    _PlayerID = _PlayerID or 1;
     _Caption = API.Localize(_Caption);
     _Content = API.Localize(_Content);
     if not GUI then
-        Logic.ExecuteInLuaLocalState(
-            string.format([[API.SimpleTextWindow("%s", "%s")]], _Caption, _Content)
-        );
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.SimpleTextWindow("%s", "%s", %d)]],
+            _Caption,
+            _Content,
+            _PlayerID
+        ));
         return;
     end
-    QSB.TextWindow:New(_Caption, _Content):Show();
+    ModuleInputOutputCore.Local:ShowTextWindow {
+        PlayerID = _PlayerID,
+        Caption  = _Caption,
+        Content  = _Content,
+    };
 end
 
 ---

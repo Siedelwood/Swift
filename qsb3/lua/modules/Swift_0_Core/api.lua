@@ -761,7 +761,7 @@ end
 -- Gibt den Slot zurück, den der Spieler einnimmt. Hat der Spieler keinen
 -- Slot okkupiert oder ist nicht menschlich, wird -1 zurückgegeben.
 --
--- <h4>Multiplayer</h4>
+-- <h5>Multiplayer</h5>
 -- Nur für Multiplayer ausgelegt! Nicht im Singleplayer nutzen!
 --
 -- @return[type=number] ID des Player
@@ -785,7 +785,7 @@ end
 -- Gibt den Spieler zurück, welcher den Slot okkupiert. Hat der Slot keinen
 -- Spieler oder ist der Spieler nicht menschlich, wird -1 zurückgegeben.
 --
--- <h4>Multiplayer</h4>
+-- <h5>Multiplayer</h5>
 -- Nur für Multiplayer ausgelegt! Nicht im Singleplayer nutzen!
 --
 -- @return[type=number] Slot ID des Player
@@ -805,7 +805,7 @@ end
 ---
 -- Gibt eine Liste aller Spieler im Spiel zurück.
 --
--- <h4>Multiplayer</h4>
+-- <h5>Multiplayer</h5>
 -- Nur für Multiplayer ausgelegt! Nicht im Singleplayer nutzen!
 --
 -- @return[type=table] Liste der aktiven Spieler
@@ -1119,7 +1119,7 @@ end
 -- Sendet das Script Event mit der übergebenen ID und überträgt optional
 -- Parameter.
 --
--- <h4>Multiplayer</h4>
+-- <h5>Multiplayer</h5>
 -- Im Multiplayer kann diese Funktion nicht benutzt werden, um Script Events
 -- synchron oder asynchron aus dem lokalen im globalen Skript auszuführen.
 --

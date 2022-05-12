@@ -43,6 +43,21 @@ function Mission_LocalOnQsbLoaded()
     VanillaBenchmark = {};
 end
 
+function ShowTestWindow()
+    ModuleInputOutputCore.Local:ShowTextWindow {
+        PlayerID = 1,
+        Caption  = "Wounderful",
+        Content  = "It just work's!",
+        Pause    = true,
+        Button   = {
+            Text   = "Foo",
+            Action = function()
+                API.Note("It realy does!");
+            end
+        }
+    };
+end
+
 function CallTestFunction()
     API.SendScriptCommand(QSB.ScriptCommands.TestFunction, 123, "abc");
 end

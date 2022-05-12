@@ -11,7 +11,7 @@ You may use and modify this file unter the terms of the MIT licence.
 ---
 -- Dieses Modul bietet grundlegende Funktionen zur Steuerung des Interface.
 --
--- <h4>Multiplayer</h4>
+-- <h5>Multiplayer</h5>
 -- Diese Funktionen müssen in Multiplayer Maps synchron aufgerufen werden.
 -- Entweder zu Spielbeginn oder durch Jobs oder durch Events.
 --
@@ -174,7 +174,7 @@ GetPlayerName = API.GetPlayerName;
 --
 -- Die neue ID muss einen Primärritter haben.
 --
--- <h4>Multiplayer</h4>
+-- <h5>Multiplayer</h5>
 -- Nicht für Multiplayer geeignet.
 --
 -- @param[type=number] _OldPlayerID Alte ID des menschlichen Spielers

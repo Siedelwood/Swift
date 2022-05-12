@@ -18,6 +18,12 @@ ModuleInputOutputCore = {
     Global = {};
     Local  = {
         CheatsDisabled = false,
+        Chat = {
+            Data = {},
+            History = {},
+            Visible = {},
+            Widgets = {}
+        },
         Requester = {
             ActionFunction = nil,
             ActionRequester = nil,
@@ -96,8 +102,16 @@ function ModuleInputOutputCore.Local:OnGameStart()
     QSB.ScriptEvents.ChatOpened = API.RegisterScriptEvent("Event_ChatOpened");
     QSB.ScriptEvents.ChatClosed = API.RegisterScriptEvent("Event_ChatClosed");
 
+    for i= 1, 8 do
+        self.Chat.Data[i] = {};
+        self.Chat.History[i] = {};
+        self.Chat.Visible[i] = false;
+        self.Chat.Widgets[i] = {};
+    end
+
     self:OverrideQuicksave();
     self:OverrideCheats();
+    self:OverrideChatLog();
     self:DialogOverwriteOriginal();
     self:DialogAltF4Hotkey();
     -- Some kind of wierd timing problem...
@@ -141,11 +155,258 @@ function ModuleInputOutputCore.Local:OnEvent(_ID, _Event, ...)
     end
 end
 
+-- -------------------------------------------------------------------------- --
+
+function ModuleInputOutputCore.Local:ShowTextWindow(_Data)
+    _Data.PlayerID = _Data.PlayerID or 1;
+    _Data.Button = _Data.Button or {};
+    local PlayerID = GUI.GetPlayerID();
+    if _Data.PlayerID ~= PlayerID then
+        return;
+    end
+    self.Chat.Data[PlayerID] = _Data;
+    self:CloseTextWindow(PlayerID);
+    self:AlterChatLog();
+
+    XGUIEng.SetText("/InGame/Root/Normal/ChatOptions/ChatLog", _Data.Content);
+    XGUIEng.SetText("/InGame/Root/Normal/MessageLog/Name","{center}" .._Data.Caption);
+    if _Data.DisableClose then
+        XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/Exit",0);
+    end
+    if _Data.Pause then
+        if not Framework.IsNetworkGame() then
+            Game.GameTimeSetFactor(GUI.GetPlayerID(), 0.0000001);
+            XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 1);
+        end
+    end
+    self:ShouldShowSlider(_Data.Content);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions",1);
+end
+
+function ModuleInputOutputCore.Local:CloseTextWindow(_PlayerID)
+    assert(_PlayerID ~= nil);
+    local PlayerID = GUI.GetPlayerID();
+    if _PlayerID ~= PlayerID then
+        return;
+    end
+    GUI_Chat.CloseChatMenu();
+end
+
+function ModuleInputOutputCore.Local:AlterChatLog()
+    local PlayerID = GUI.GetPlayerID();
+    if self.Chat.Visible[PlayerID] then
+        return;
+    end
+    self.Chat.Visible[PlayerID] = true;
+    self.Chat.History[PlayerID] = table.copy(g_Chat.ChatHistory);
+    g_Chat.ChatHistory = {};
+    self:AlterChatLogDisplay();
+end
+
+function ModuleInputOutputCore.Local:RestoreChatLog()
+    local PlayerID = GUI.GetPlayerID();
+    if not self.Chat.Visible[PlayerID] then
+        return;
+    end
+    self.Chat.Visible[PlayerID] = false;
+    g_Chat.ChatHistory = {};
+    for i= 1, #self.Chat.History[PlayerID] do
+        GUI_Chat.ChatlogAddMessage(self.Chat.History[PlayerID][i]);
+    end
+    self:RestoreChatLogDisplay();
+    self.Chat.History[PlayerID] = {};
+    self.Chat.Widgets[PlayerID] = {};
+    self.Chat.Data[PlayerID] = {};
+end
+
+function ModuleInputOutputCore.Local:UpdateToggleWhisperTarget()
+    local PlayerID = GUI.GetPlayerID();
+    local MotherWidget = "/InGame/Root/Normal/ChatOptions/";
+    if not self.Chat.Data[PlayerID] or not self.Chat.Data[PlayerID].Button.Action then
+        XGUIEng.ShowWidget(MotherWidget.. "ToggleWhisperTarget",0);
+        return;
+    end
+    local ButtonText = self.Chat.Data[PlayerID].Button.Text;
+    XGUIEng.SetText(MotherWidget.. "ToggleWhisperTarget","{center}" ..ButtonText);
+end
+
+function ModuleInputOutputCore.Local:ShouldShowSlider(_Text)
+    local stringlen = string.len(_Text);
+    local iterator  = 1;
+    local carreturn = 0;
+    while (true)
+    do
+        local s,e = string.find(_Text, "{cr}", iterator);
+        if not e then
+            break;
+        end
+        if e-iterator <= 58 then
+            stringlen = stringlen + 58-(e-iterator);
+        end
+        iterator = e+1;
+    end
+    if (stringlen + (carreturn*55)) > 1000 then
+        XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatLogSlider",1);
+    end
+end
+
+function ModuleInputOutputCore.Local:OverrideChatLog()
+    GUI_Chat.ChatlogAddMessage_Orig_InputOutputCore = GUI_Chat.ChatlogAddMessage;
+    GUI_Chat.ChatlogAddMessage = function(_Message)
+        local PlayerID = GUI.GetPlayerID();
+        if not ModuleInputOutputCore.Local.Chat.Visible[PlayerID] then
+            GUI_Chat.ChatlogAddMessage_Orig_InputOutputCore(_Message);
+            return;
+        end
+        table.insert(ModuleInputOutputCore.Local.Chat.History[PlayerID], _Message);
+    end
+
+    GUI_Chat.DisplayChatLog_Orig_InputOutputCore = GUI_Chat.DisplayChatLog;
+    GUI_Chat.DisplayChatLog = function()
+        local PlayerID = GUI.GetPlayerID();
+        if not ModuleInputOutputCore.Local.Chat.Visible[PlayerID] then
+            GUI_Chat.DisplayChatLog_Orig_InputOutputCore();
+        end
+    end
+
+    GUI_Chat.CloseChatMenu_Orig_InputOutputCore = GUI_Chat.CloseChatMenu;
+    GUI_Chat.CloseChatMenu = function()
+        local PlayerID = GUI.GetPlayerID();
+        if not ModuleInputOutputCore.Local.Chat.Visible[PlayerID] then
+            GUI_Chat.CloseChatMenu_Orig_InputOutputCore();
+            return;
+        end
+        if ModuleInputOutputCore.Local.Chat.Data[PlayerID].Pause then
+            if not Framework.IsNetworkGame() then
+                Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
+                XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 0);
+            end
+        end
+        ModuleInputOutputCore.Local:RestoreChatLog();
+        XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions",0);
+    end
+
+    GUI_Chat.ToggleWhisperTargetUpdate_Orig_InputOutputCore = GUI_Chat.ToggleWhisperTargetUpdate;
+    GUI_Chat.ToggleWhisperTargetUpdate = function()
+        local PlayerID = GUI.GetPlayerID();
+        if not ModuleInputOutputCore.Local.Chat.Visible[PlayerID] then
+            GUI_Chat.ToggleWhisperTargetUpdate_Orig_InputOutputCore();
+            return;
+        end
+        ModuleInputOutputCore.Local:UpdateToggleWhisperTarget();
+    end
+
+    GUI_Chat.CheckboxMessageTypeWhisperUpdate_Orig_InputOutputCore = GUI_Chat.CheckboxMessageTypeWhisperUpdate;
+    GUI_Chat.CheckboxMessageTypeWhisperUpdate = function()
+        local PlayerID = GUI.GetPlayerID();
+        if not ModuleInputOutputCore.Local.Chat.Visible[PlayerID] then
+            GUI_Chat.CheckboxMessageTypeWhisperUpdate_Orig_InputOutputCore();
+            return;
+        end
+    end
+
+    GUI_Chat.ToggleWhisperTarget_Orig_InputOutputCore = GUI_Chat.ToggleWhisperTarget;
+    GUI_Chat.ToggleWhisperTarget = function()
+        local PlayerID = GUI.GetPlayerID();
+        if not ModuleInputOutputCore.Local.Chat.Visible[PlayerID] then
+            GUI_Chat.ToggleWhisperTarget_Orig_InputOutputCore();
+            return;
+        end
+        if ModuleInputOutputCore.Local.Chat.Data[PlayerID].Button.Action then
+            local Data = ModuleInputOutputCore.Local.Chat.Data[PlayerID];
+            ModuleInputOutputCore.Local.Chat.Data[PlayerID].Button.Action(Data);
+        end
+    end
+end
+
+function ModuleInputOutputCore.Local:AlterChatLogDisplay()
+    local PlayerID = GUI.GetPlayerID();
+
+    local w,h,x,y;
+    local Widget;
+    local MotherWidget = "/InGame/Root/Normal/ChatOptions/";
+    x,y = XGUIEng.GetWidgetLocalPosition(MotherWidget.. "ToggleWhisperTarget");
+    w,h = XGUIEng.GetWidgetSize(MotherWidget.. "ToggleWhisperTarget");
+    self.Chat.Widgets[PlayerID]["ToggleWhisperTarget"] = {X= x, Y= y, W= w, H= h};
+    Widget = self.Chat.Widgets[PlayerID]["ToggleWhisperTarget"];
+
+    x,y = XGUIEng.GetWidgetLocalPosition(MotherWidget.. "ChatLog");
+    w,h = XGUIEng.GetWidgetSize(MotherWidget.. "ChatLog");
+    self.Chat.Widgets[PlayerID]["ChatLog"] = {X= x, Y= y, W= w, H= h};
+    Widget = self.Chat.Widgets[PlayerID]["ChatLog"];
+
+    x,y = XGUIEng.GetWidgetLocalPosition(MotherWidget.. "ChatLogSlider");
+    w,h = XGUIEng.GetWidgetSize(MotherWidget.. "ChatLogSlider");
+    self.Chat.Widgets[PlayerID]["ChatLogSlider"] = {X= x, Y= y, W= w, H= h};
+    Widget = self.Chat.Widgets[PlayerID]["ChatLogSlider"];
+
+    XGUIEng.ShowWidget(MotherWidget.. "ChatModeAllPlayers",0);
+    XGUIEng.ShowWidget(MotherWidget.. "ChatModeTeam",0);
+    XGUIEng.ShowWidget(MotherWidget.. "ChatModeWhisper",0);
+    XGUIEng.ShowWidget(MotherWidget.. "ChatChooseModeCaption",0);
+    XGUIEng.ShowWidget(MotherWidget.. "Background/TitleBig",1);
+    XGUIEng.ShowWidget(MotherWidget.. "Background/TitleBig/Info",0);
+    XGUIEng.ShowWidget(MotherWidget.. "ChatLogCaption",0);
+    XGUIEng.ShowWidget(MotherWidget.. "BGChoose",0);
+    XGUIEng.ShowWidget(MotherWidget.. "BGChatLog",0);
+    XGUIEng.ShowWidget(MotherWidget.. "ChatLogSlider",0);
+
+    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog",1);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/BG",0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/Close",0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/Slider",0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/Text",0);
+    XGUIEng.SetText("/InGame/Root/Normal/MessageLog/Name","{center}Test");
+    XGUIEng.SetWidgetLocalPosition("/InGame/Root/Normal/MessageLog",15,90);
+    XGUIEng.SetWidgetLocalPosition("/InGame/Root/Normal/MessageLog/Name",0,0);
+    XGUIEng.SetTextColor("/InGame/Root/Normal/MessageLog/Name",51,51,121,255);
+
+    XGUIEng.SetWidgetSize(MotherWidget.. "ChatLogSlider",46,600);
+    XGUIEng.SetWidgetLocalPosition(MotherWidget.. "ChatLogSlider",780,130);
+    XGUIEng.SetWidgetSize(MotherWidget.. "Background/DialogBG/1 (2)/2",150,400);
+    XGUIEng.SetWidgetPositionAndSize(MotherWidget.. "Background/DialogBG/1 (2)/3",400,500,350,400);
+    XGUIEng.SetWidgetLocalPosition(MotherWidget.. "ToggleWhisperTarget",280,760);
+    XGUIEng.SetWidgetLocalPosition(MotherWidget.. "ChatLog",140,150);
+    XGUIEng.SetWidgetSize(MotherWidget.. "ChatLog",640,560);
+end
+
+function ModuleInputOutputCore.Local:RestoreChatLogDisplay()
+    local PlayerID = GUI.GetPlayerID();
+
+    local Widget;
+    local MotherWidget = "/InGame/Root/Normal/ChatOptions/";
+    Widget = self.Chat.Widgets[PlayerID]["ToggleWhisperTarget"];
+    XGUIEng.SetWidgetLocalPosition(MotherWidget.. "ToggleWhisperTarget", Widget.X, Widget.Y);
+    XGUIEng.SetWidgetSize(MotherWidget.. "ToggleWhisperTarget", Widget.W, Widget.H);
+    Widget = self.Chat.Widgets[PlayerID]["ChatLog"];
+    XGUIEng.SetWidgetLocalPosition(MotherWidget.. "ChatLog", Widget.X, Widget.Y);
+    XGUIEng.SetWidgetSize(MotherWidget.. "ChatLog", Widget.W, Widget.H);
+    Widget = self.Chat.Widgets[PlayerID]["ChatLogSlider"];
+    XGUIEng.SetWidgetLocalPosition(MotherWidget.. "ChatLogSlider", Widget.X, Widget.Y);
+    XGUIEng.SetWidgetSize(MotherWidget.. "ChatLogSlider", Widget.W, Widget.H);
+
+    XGUIEng.ShowWidget(MotherWidget.. "ChatModeAllPlayers",1);
+    XGUIEng.ShowWidget(MotherWidget.. "ChatModeTeam",1);
+    XGUIEng.ShowWidget(MotherWidget.. "ChatModeWhisper",1);
+    XGUIEng.ShowWidget(MotherWidget.. "ChatChooseModeCaption",1);
+    XGUIEng.ShowWidget(MotherWidget.. "Background/TitleBig",1);
+    XGUIEng.ShowWidget(MotherWidget.. "Background/TitleBig/Info",1);
+    XGUIEng.ShowWidget(MotherWidget.. "ChatLogCaption",1);
+    XGUIEng.ShowWidget(MotherWidget.. "BGChoose",1);
+    XGUIEng.ShowWidget(MotherWidget.. "BGChatLog",1);
+    XGUIEng.ShowWidget(MotherWidget.. "ChatLogSlider",1);
+    XGUIEng.ShowWidget(MotherWidget.. "ToggleWhisperTarget",1);
+
+    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog",0);
+end
+
+-- -------------------------------------------------------------------------- --
+
 function ModuleInputOutputCore.Local:OverrideQuicksave()
     API.AddBlockQuicksaveCondition(function()
         return ModuleInputOutputCore.Local.DialogWindowShown;
     end);
-    
+
     KeyBindings_SaveGame = function()
         if not Swift:CanDoQuicksave() then
             return;
@@ -703,340 +964,6 @@ function ModuleInputOutputCore.Shared:CommandTokenizer(_Input)
     end
 
     return Commands;
-end
-
--- TextWindow class ------------------------------------------------------------
-
-QSB.TextWindow = {
-    Shown       = false,
-    Caption     = "",
-    Text        = "",
-    ButtonText  = "",
-    Picture     = nil,
-    Action      = nil,
-    Pause       = true,
-    Callback    = function() end,
-};
-
----
--- Erzeugt ein Textfenster, dass einen beliebig großen Text anzeigen kann.
--- Optional kann ein Button genutzt werden, der eine Aktion ausführt, wenn
--- er gedrückt wird.
---
--- Parameterliste:
--- <table>
--- <tr>
--- <th>Index</th>
--- <th>Beschreibung</th>
--- </tr>
--- <tr>
--- <td>1</td>
--- <td>Titel des Fensters</td>
--- </tr>
--- <tr>
--- <td>2</td>
--- <td>Text des Fensters</td>
--- </tr>
--- <tr>
--- <td>3</td>
--- <td>Aktion nach dem Schließen</td>
--- </tr>
--- <tr>
--- <td>4</td>
--- <td>Beschriftung des Buttons</td>
--- </tr>
--- <tr>
--- <td>5</td>
--- <td>Callback des Buttons</td>
--- </tr>
--- </table>
---
--- @param ... Parameterliste
--- @return[type=table] Instanz des konfigurierten Fensters
--- @within QSB.TextWindow
--- @local
---
--- @usage
--- local MyWindow = TextWindow:New("Fenster", "Das ist ein Text");
---
-function QSB.TextWindow:New(...)
-    assert(self == QSB.TextWindow, "Can not be used from instance!")
-    local window      = table.copy(self);
-    window.Caption    = arg[1] or window.Caption;
-    window.Text       = arg[2] or window.Text;
-    window.Action     = arg[3];
-    window.ButtonText = arg[4] or window.ButtonText;
-    window.Callback   = arg[5] or window.Callback;
-    return window;
-end
-
----
--- Fügt einen beliebigen Parameter hinzu. Parameter müssen immer als
--- Schlüssel-Wert-Paare angegeben werden und dürfen vorhandene Pare nicht
--- überschreiben.
---
--- @param[type=string] _Key   Schlüssel
--- @param              _Value Wert
--- @return self
--- @within QSB.TextWindow
--- @local
---
--- @usage
--- MyWindow:AddParameter("Name", "Horst");
---
-function QSB.TextWindow:AddParamater(_Key, _Value)
-    assert(self ~= QSB.TextWindow, "Can not be used in static context!");
-    assert(self[_Key] ~= nil, "Key '" .._Key.. "' already exists!");
-    self[_Key] = _Value;
-    return self;
-end
-
----
--- Setzt die Überschrift des TextWindow.
---
--- @param[type=string] _Flag Spiel pausieren
--- @return self
--- @within QSB.TextWindow
--- @local
---
--- @usage
--- MyWindow:SetPause(false);
---
-function QSB.TextWindow:SetPause(_Flag)
-    assert(self ~= QSB.TextWindow, "Can not be used in static context!");
-    self.Pause = _Flag == true;
-    return self;
-end
-
----
--- Setzt die Überschrift des TextWindow.
---
--- @param[type=string] _Text Titel des Textfenster
--- @return self
--- @within QSB.TextWindow
--- @local
---
--- @usage
--- MyWindow:SetCaption("Das ist der Titel");
---
-function QSB.TextWindow:SetCaption(_Text)
-    assert(self ~= QSB.TextWindow, "Can not be used in static context!");
-    assert(type(_Text) == "string");
-    self.Caption = API.Localize(_Text);
-    return self;
-end
-
----
--- Setzt den Inhalt des TextWindow.
---
--- @param[type=string] _Text Inhalt des Textfenster
--- @return self
--- @within QSB.TextWindow
--- @local
---
--- @usage
--- MyWindow:SetCaption("Das ist der Text. Er ist sehr informativ!");
---
-function QSB.TextWindow:SetContent(_Text)
-    assert(self ~= QSB.TextWindow, "Can not be used in static context!");
-    assert(type(_Text) == "string");
-    self.Text = API.Localize(_Text);
-    return self;
-end
-
----
--- Setzt die Close Action des TextWindow. Die Funktion wird beim schließen
--- des Fensters ausgeführt.
---
--- @param[type=function] _Function Close Callback
--- @return self
--- @within QSB.TextWindow
--- @local
---
--- @usage
--- local MyAction = function(_Window)
---     -- Something is done here!
--- end
--- MyWindow:SetAction(MyAction);
---
-function QSB.TextWindow:SetAction(_Function)
-    assert(self ~= QSB.TextWindow, "Can not be used in static context!");
-    assert(nil or type(_Function) == "function");
-    self.Callback = _Function;
-    return self;
-end
-
----
--- Setzt einen Aktionsbutton im TextWindow.
---
--- Der Button muss mit einer Funktion versehen werden. Sobald der Button
--- betätigt wird, wird die Funktion ausgeführt.
---
--- @param[type=string]   _Text     Beschriftung des Buttons
--- @param[type=function] _Callback Aktion des Buttons
--- @return self
--- @within QSB.TextWindow
--- @local
---
--- @usage
--- local MyButtonAction = function(_Window)
---     -- Something is done here!
--- end
--- MyWindow:SetAction("Button Text", MyButtonAction);
---
-function QSB.TextWindow:SetButton(_Text, _Callback)
-    assert(self ~= QSB.TextWindow, "Can not be used in static context!");
-    if _Text then
-        _Text = API.Localize(_Text);
-        assert(type(_Text) == "string");
-        assert(type(_Callback) == "function");
-    end
-    self.ButtonText = _Text;
-    self.Action     = _Callback;
-    return self;
-end
-
----
--- Zeigt ein erzeigtes Fenster an.
---
--- @within QSB.TextWindow
--- @local
---
--- @usage
--- MyWindow:Show();
---
-function QSB.TextWindow:Show()
-    assert(self ~= QSB.TextWindow, "Can not be used in static context!");
-    QSB.TextWindow.Shown = true;
-    self.Shown = true;
-    self:Prepare();
-
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions",1);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ToggleWhisperTarget",1);
-    if not self.Action then
-        XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ToggleWhisperTarget",0);
-    end
-    XGUIEng.SetText("/InGame/Root/Normal/MessageLog/Name","{center}"..self.Caption);
-    XGUIEng.SetText("/InGame/Root/Normal/ChatOptions/ToggleWhisperTarget","{center}"..self.ButtonText);
-    GUI_Chat.ClearMessageLog();
-    GUI_Chat.ChatlogAddMessage(self.Text);
-
-    local stringlen = string.len(self.Text);
-    local iterator  = 1;
-    local carreturn = 0;
-    while (true)
-    do
-        local s,e = string.find(self.Text, "{cr}", iterator);
-        if not e then
-            break;
-        end
-        if e-iterator <= 58 then
-            stringlen = stringlen + 58-(e-iterator);
-        end
-        iterator = e+1;
-    end
-    if (stringlen + (carreturn*55)) > 1000 then
-        XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatLogSlider",1);
-    end
-    if self.Pause then
-        if not Framework.IsNetworkGame() then
-            Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
-        end
-    end
-end
-
----
--- Initialisiert das TextWindow, bevor es angezeigt wird.
---
--- @within QSB.TextWindow
--- @local
---
-function QSB.TextWindow:Prepare()
-    function GUI_Chat.CloseChatMenu()
-        QSB.TextWindow.Shown = false;
-        self.Shown = false;
-        if self.Callback then
-            self:Callback();
-        end
-        XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions",0);
-        XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog",0);
-        XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/BG",1);
-        XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/Close",1);
-        XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/Slider",1);
-        XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/Text",1);
-        Game.GameTimeReset(GUI.GetPlayerID());
-    end
-
-    function GUI_Chat.ToggleWhisperTargetUpdate()
-        if self.Pause then
-            if not Framework.IsNetworkGame() then
-                Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
-            end
-        end
-    end
-
-    function GUI_Chat.CheckboxMessageTypeWhisperUpdate()
-        XGUIEng.SetText("/InGame/Root/Normal/ChatOptions/TextCheckbox","{center}"..self.Caption);
-    end
-
-    function GUI_Chat.ToggleWhisperTarget()
-        if self.Action then
-            self.Action(self);
-        end
-    end
-
-    function GUI_Chat.ClearMessageLog()
-        g_Chat.ChatHistory = {}
-    end
-
-    function GUI_Chat.ChatlogAddMessage(_Message)
-        table.insert(g_Chat.ChatHistory, _Message)
-        local ChatlogMessage = ""
-        for i,v in ipairs(g_Chat.ChatHistory) do
-            ChatlogMessage = ChatlogMessage .. v .. "{cr}"
-        end
-        XGUIEng.SetText("/InGame/Root/Normal/ChatOptions/ChatLog", ChatlogMessage)
-    end
-
-    if type(self.Caption) == "table" then
-        self.Caption = API.ConvertPlaceholders(API.Localize(self.Caption));
-    end
-    if type(self.ButtonText) == "table" then
-        self.ButtonText = API.ConvertPlaceholders(API.Localize(self.ButtonText));
-    end
-    if type(self.Text) == "table" then
-        self.Text = API.ConvertPlaceholders(API.Localize(self.Text));
-    end
-
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatModeAllPlayers",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatModeTeam",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatModeWhisper",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatChooseModeCaption",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/Background/TitleBig",1);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/Background/TitleBig/Info",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatLogCaption",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/BGChoose",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/BGChatLog",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatLogSlider",0);
-
-    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog",1);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/BG",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/Close",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/Slider",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/Text",0);
-
-    XGUIEng.DisableButton("/InGame/Root/Normal/ChatOptions/ToggleWhisperTarget",0);
-
-    XGUIEng.SetWidgetLocalPosition("/InGame/Root/Normal/MessageLog",0,95);
-    XGUIEng.SetWidgetLocalPosition("/InGame/Root/Normal/MessageLog/Name",0,0);
-    XGUIEng.SetTextColor("/InGame/Root/Normal/MessageLog/Name",51,51,121,255);
-    XGUIEng.SetWidgetLocalPosition("/InGame/Root/Normal/ChatOptions/ChatLog",140,150);
-    XGUIEng.SetWidgetSize("/InGame/Root/Normal/ChatOptions/Background/DialogBG/1 (2)/2",150,400);
-    XGUIEng.SetWidgetPositionAndSize("/InGame/Root/Normal/ChatOptions/Background/DialogBG/1 (2)/3",400,500,350,400);
-    XGUIEng.SetWidgetSize("/InGame/Root/Normal/ChatOptions/ChatLog",640,580);
-    XGUIEng.SetWidgetSize("/InGame/Root/Normal/ChatOptions/ChatLogSlider",46,660);
-    XGUIEng.SetWidgetLocalPosition("/InGame/Root/Normal/ChatOptions/ChatLogSlider",780,130);
-    XGUIEng.SetWidgetLocalPosition("/InGame/Root/Normal/ChatOptions/ToggleWhisperTarget",110,760);
 end
 
 -- -------------------------------------------------------------------------- --

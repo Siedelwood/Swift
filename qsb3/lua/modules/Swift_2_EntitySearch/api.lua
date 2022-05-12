@@ -62,7 +62,7 @@ QSB.Search = QSB.Search or {};
 --
 -- Die Suche kann optional auf einen Spieler beschränkt werden.
 --
--- <h4>Multiplayer</h4>
+-- <h5>Multiplayer</h5>
 -- Im Multiplayer kann diese Funktion nur in synchron
 -- ausgeführtem Code benutzt werden, da es sonst zu Desyncs komm.
 --
@@ -89,7 +89,7 @@ end
 ---
 -- Findet alle Entities in einem Gebiet.
 --
--- <h4>Multiplayer</h4>
+-- <h5>Multiplayer</h5>
 -- Im Multiplayer kann diese Funktion nur in synchron
 -- ausgeführtem Code benutzt werden, da es sonst zu Desyncs komm.
 --
@@ -128,7 +128,7 @@ end
 ---
 -- Findet alle Entities in einem Territorium.
 --
--- <h4>Multiplayer</h4>
+-- <h5>Multiplayer</h5>
 -- Im Multiplayer kann diese Funktion nur in synchron
 -- ausgeführtem Code benutzt werden, da es sonst zu Desyncs komm.
 --
@@ -167,7 +167,7 @@ end
 -- den Typ schnell gehen, dauern Gebietssuchen lange! Es ist daher klug, zuerst
 -- Kriterien auszuschließen, die schnell bestimmt werden!
 --
--- <h4>Multiplayer</h4>
+-- <h5>Multiplayer</h5>
 -- Im Multiplayer kann diese Funktion nur in synchron
 -- ausgeführtem Code benutzt werden, da es sonst zu Desyncs komm.
 --
