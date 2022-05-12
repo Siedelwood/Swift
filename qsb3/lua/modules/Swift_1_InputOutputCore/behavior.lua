@@ -24,7 +24,8 @@ You may use and modify this file unter the terms of the MIT licence.
 -- müssen also immer mit Ja oder Nein beantwortbar sein oder auf Okay und
 -- Abbrechen passen.
 --
--- <b>Hinweis</b>: Dieses Behavior kann nicht im Multiplayer verwendet werden.
+-- <h4>Multiplayer</h4>
+-- Nicht für Multiplayer geeignet.
 --
 -- @param _Text   Fenstertext
 -- @param _Title  Fenstertitel
@@ -137,7 +138,8 @@ Swift:RegisterBehavior(B_Goal_Decide);
 -- erste Eingabe annehmen, die getätigt wird. Dabei ist es egal, ob der Input
 -- durch sie selbst oder extern aktiviert wurde.
 --
--- <b>Hinweis</b>: Dieses Behavior kann nicht im Multiplayer verwendet werden.
+-- <h4>Multiplayer</h4>
+-- Nicht für Multiplayer geeignet.
 --
 -- @param _Passwords Liste der Passwörter
 -- @param _Trials    Anzahl versuche (0 für unendlich)

@@ -23,7 +23,8 @@
 -- <b>Hinweis</b>: Der Button wird auch dann angezeigt, wenn es noch keine
 -- Zusatzinformationen für den Quest gibt.
 --
--- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden, wegen Konflikt
+-- <h4>Multiplayer</h4>
+-- Kann nicht im Multiplayer verwendet werden, wegen Konflikt
 -- mit dem Chat Options.
 --
 -- @param[type=string]  _Quest Name des Quest
@@ -58,7 +59,8 @@ end
 --
 -- <b>Hinweis</b>: Formatierungsbefehle sind deaktiviert.
 --
--- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden, wegen Konflikt
+-- <h4>Multiplayer</h4>
+-- Kann nicht im Multiplayer verwendet werden, wegen Konflikt
 -- mit dem Chat Options.
 --
 -- @param[type=string] _Text  Text der Zusatzinfo
@@ -82,7 +84,8 @@ end
 --
 -- <b>Hinweis</b>: Formatierungsbefehle sind deaktiviert.
 --
--- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden, wegen Konflikt
+-- <h4>Multiplayer</h4>
+-- Kann nicht im Multiplayer verwendet werden, wegen Konflikt
 -- mit dem Chat Options.
 --
 -- @param[type=number] _ID   ID des Eintrag
@@ -114,7 +117,8 @@ end
 -- rote Färbung hervorgehoben. Eigene Farben in einer Nachricht beeinträchtigen
 -- die rote hervorhebung.
 --
--- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden, wegen Konflikt
+-- <h4>Multiplayer</h4>
+-- Kann nicht im Multiplayer verwendet werden, wegen Konflikt
 -- mit dem Chat Options.
 --
 -- @param[type=number]  _ID        ID des Eintrag
@@ -143,7 +147,8 @@ end
 -- <b>Hinweis</b>: Ein Eintrag wird niemals wirklich gelöscht, sondern nur
 -- unsichtbar geschaltet.
 --
--- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden, wegen Konflikt
+-- <h4>Multiplayer</h4>
+-- Kann nicht im Multiplayer verwendet werden, wegen Konflikt
 -- mit dem Chat Options.
 --
 -- @param[type=number] _ID ID des Eintrag
@@ -168,7 +173,8 @@ end
 ---
 -- Stellt einen gelöschten Eintrag in den Zusatzinformationen wieder her.
 --
--- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden, wegen Konflikt
+-- <h4>Multiplayer</h4>
+-- Kann nicht im Multiplayer verwendet werden, wegen Konflikt
 -- mit dem Chat Options.
 --
 -- @param[type=number] _ID ID des Eintrag
@@ -193,7 +199,8 @@ end
 ---
 -- Fügt einen Tagebucheintrag zu einem Quest hinzu.
 --
--- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden, wegen Konflikt
+-- <h4>Multiplayer</h4>
+-- Kann nicht im Multiplayer verwendet werden, wegen Konflikt
 -- mit dem Chat Options.
 --
 -- @param[type=number]  _ID    ID des Eintrag
@@ -213,7 +220,8 @@ end
 ---
 -- Entfernt einen Tagebucheintrag von einem Quest.
 --
--- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden, wegen Konflikt
+-- <h4>Multiplayer</h4>
+-- Kann nicht im Multiplayer verwendet werden, wegen Konflikt
 -- mit dem Chat Options.
 --
 -- @param[type=number]  _ID    ID des Eintrag

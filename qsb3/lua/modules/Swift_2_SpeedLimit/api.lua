@@ -11,8 +11,6 @@ You may use and modify this file unter the terms of the MIT licence.
 ---
 -- Dieses Modul erlaubt die maximale Beschleunigung des Spiels zu steuern.
 --
--- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden!
---
 -- @within Modulbeschreibung
 -- @set sort=true
 --

@@ -62,7 +62,8 @@ QSB.Search = QSB.Search or {};
 --
 -- Die Suche kann optional auf einen Spieler beschränkt werden.
 --
--- <b>Hinweis</b>: Im Multiplayer kann diese Funktion nur in synchron
+-- <h4>Multiplayer</h4>
+-- Im Multiplayer kann diese Funktion nur in synchron
 -- ausgeführtem Code benutzt werden, da es sonst zu Desyncs komm.
 --
 -- @param[type=number] _PlayerID (Optional) ID des Besitzers
@@ -88,7 +89,8 @@ end
 ---
 -- Findet alle Entities in einem Gebiet.
 --
--- <b>Hinweis</b>: Im Multiplayer kann diese Funktion nur in synchron
+-- <h4>Multiplayer</h4>
+-- Im Multiplayer kann diese Funktion nur in synchron
 -- ausgeführtem Code benutzt werden, da es sonst zu Desyncs komm.
 --
 -- @param[type=number] _Area     Größe des Suchgebiet
@@ -126,7 +128,8 @@ end
 ---
 -- Findet alle Entities in einem Territorium.
 --
--- <b>Hinweis</b>: Im Multiplayer kann diese Funktion nur in synchron
+-- <h4>Multiplayer</h4>
+-- Im Multiplayer kann diese Funktion nur in synchron
 -- ausgeführtem Code benutzt werden, da es sonst zu Desyncs komm.
 --
 -- @param[type=number] _Territory Territorium für die Suche
@@ -164,7 +167,8 @@ end
 -- den Typ schnell gehen, dauern Gebietssuchen lange! Es ist daher klug, zuerst
 -- Kriterien auszuschließen, die schnell bestimmt werden!
 --
--- <b>Hinweis</b>: Im Multiplayer kann diese Funktion nur in synchron
+-- <h4>Multiplayer</h4>
+-- Im Multiplayer kann diese Funktion nur in synchron
 -- ausgeführtem Code benutzt werden, da es sonst zu Desyncs komm.
 --
 -- @param[type=table] ... Liste mit Suchprädikaten

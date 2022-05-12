@@ -11,9 +11,6 @@ You may use and modify this file unter the terms of the MIT licence.
 ---
 -- Dieses Modul ermöglicht das Ändern des Wetters.
 --
--- <b>Hinweis</b>: Diese Funktionen können nicht in Multiplayer Maps benutzt
--- werden, wenn sie mit der History Edition spielbar sein sollen.
---
 -- Es können nun relativ einfach Wetterevents und Wetteranimationen kombiniert
 -- gestartet werden.
 -- 

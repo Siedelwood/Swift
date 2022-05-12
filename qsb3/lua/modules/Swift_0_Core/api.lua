@@ -668,7 +668,7 @@ end
 -- Liste der grundlegenden Script Events.
 --
 -- @field SaveGameLoaded     Ein Spielstand wird geladen.
--- @field EscapePressed      Escape wurde gedrückt. Mögliche Probleme in HE Multiplayer! (Parameter: PlayerID)
+-- @field EscapePressed      Escape wurde gedrückt. (Parameter: PlayerID)
 -- @field QuestFailure       Ein Quest schlug fehl (Parameter: QuestID)
 -- @field QuestInterrupt     Ein Quest wurde unterbrochen (Parameter: QuestID)
 -- @field QuestReset         Ein Quest wurde zurückgesetzt (Parameter: QuestID)
@@ -761,7 +761,8 @@ end
 -- Gibt den Slot zurück, den der Spieler einnimmt. Hat der Spieler keinen
 -- Slot okkupiert oder ist nicht menschlich, wird -1 zurückgegeben.
 --
--- <b>Hinweis</b>: Nur für Multiplayer ausgelegt! Nicht im Singleplayer nutzen!
+-- <h4>Multiplayer</h4>
+-- Nur für Multiplayer ausgelegt! Nicht im Singleplayer nutzen!
 --
 -- @return[type=number] ID des Player
 -- @return[type=number] Slot ID des Player
@@ -784,7 +785,8 @@ end
 -- Gibt den Spieler zurück, welcher den Slot okkupiert. Hat der Slot keinen
 -- Spieler oder ist der Spieler nicht menschlich, wird -1 zurückgegeben.
 --
--- <b>Hinweis</b>: Nur für Multiplayer ausgelegt! Nicht im Singleplayer nutzen!
+-- <h4>Multiplayer</h4>
+-- Nur für Multiplayer ausgelegt! Nicht im Singleplayer nutzen!
 --
 -- @return[type=number] Slot ID des Player
 -- @return[type=number] ID des Player
@@ -803,7 +805,8 @@ end
 ---
 -- Gibt eine Liste aller Spieler im Spiel zurück.
 --
--- <b>Hinweis</b>: Nur für Multiplayer ausgelegt! Nicht im Singleplayer nutzen!
+-- <h4>Multiplayer</h4>
+-- Nur für Multiplayer ausgelegt! Nicht im Singleplayer nutzen!
 --
 -- @return[type=table] Liste der aktiven Spieler
 -- @within Base

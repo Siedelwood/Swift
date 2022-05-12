@@ -1544,7 +1544,8 @@ Swift:RegisterBehavior(B_Reward_MoveToPosition);
 --
 -- Wenn nach dem Sieg weiter gespielt wird, wird das Fest gelöscht.
 --
--- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden!
+-- <h4>Multiplayer</h4>
+-- Nicht für Multiplayer geeignet.
 --
 -- @within Reward
 --

@@ -360,8 +360,8 @@ end
 -- Die Länge des Textes ist nicht beschränkt. Überschreitet der Text die
 -- Größe des Fensters, wird automatisch eine Bildlaufleiste eingeblendet.
 --
--- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden, wegen Konflikt
--- mit dem Chat Options.
+-- <h4>Multiplayer</h4>
+-- Nicht für Multiplayer geeignet.
 --
 -- @param[type=string] _Caption Titel des Fenster
 -- @param[type=string] _content Inhalt des Fenster

@@ -11,8 +11,6 @@ You may use and modify this file unter the terms of the MIT licence.
 ---
 -- Die Optionen für selektierte Einheiten kann individualisiert werden.
 --
--- <b>Hinweis</b>: Diese Funktionalität ist im Multiplayer nicht verfügbar.
---
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
 -- <li><a href="Swift_1_InterfaceCore.api.html">(0) Core</a></li>
