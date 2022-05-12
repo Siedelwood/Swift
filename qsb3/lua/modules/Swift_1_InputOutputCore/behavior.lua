@@ -77,7 +77,7 @@ function B_Goal_Decide:CustomFunction(_Quest)
             Logic.ExecuteInLuaLocalState(string.format(
                 [[
                     local Action = function(_Yes)
-                        API.SendScriptCommand(QSB.ScriptCommands.SetDecisionResult, GUI.GetPlayerID(), _Yes == true);
+                        API.BroadcastScriptCommand(QSB.ScriptCommands.SetDecisionResult, GUI.GetPlayerID(), _Yes == true);
                     end
                     API.DialogRequestBox("%s", "%s", Action, %s)
                 ]],

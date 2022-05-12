@@ -259,7 +259,7 @@ function ModuleMilitaryLimit.Local:OverrideUI()
             if EntityType ~= Entities.U_Thief then
                 StartKnightVoiceForPermanentSpecialAbility(Entities.U_KnightChivalry);
             end
-            API.SendScriptCommand(
+            API.BroadcastScriptCommand(
                 QSB.ScriptCommands.MilitaryLimitProduceUnits,
                 PlayerID,
                 BarrackID,
@@ -300,7 +300,7 @@ function ModuleMilitaryLimit.Local:OverrideUI()
                     ModuleMilitaryLimit.Local.SelectionBackup = Selection;
                     GUI.ClearSelection();
 
-                    API.SendScriptCommand(
+                    API.BroadcastScriptCommand(
                         QSB.ScriptCommands.MilitaryLimitRefillBattalion,
                         PlayerID,
                         BarracksID,

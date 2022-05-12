@@ -698,27 +698,27 @@ function ModuleCastleStore.Local.CastleStore:OnStorehouseTabClicked(_PlayerID)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
     QSB.CastleStorePlayerData[_PlayerID].StoreMode = 1;
     self:UpdateBehaviorTabs(_PlayerID);
-    API.SendScriptCommand(QSB.ScriptCommands.CastleStoreAcceptAllGoods, _PlayerID);
+    API.BroadcastScriptCommand(QSB.ScriptCommands.CastleStoreAcceptAllGoods, _PlayerID);
 end
 
 function ModuleCastleStore.Local.CastleStore:OnCityTabClicked(_PlayerID)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
     QSB.CastleStorePlayerData[_PlayerID].StoreMode = 2;
     self:UpdateBehaviorTabs(_PlayerID);
-    API.SendScriptCommand(QSB.ScriptCommands.CastleStoreLockAllGoods, _PlayerID);
+    API.BroadcastScriptCommand(QSB.ScriptCommands.CastleStoreLockAllGoods, _PlayerID);
 end
 
 function ModuleCastleStore.Local.CastleStore:OnMultiTabClicked(_PlayerID)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
     QSB.CastleStorePlayerData[_PlayerID].StoreMode = 3;
     self:UpdateBehaviorTabs(_PlayerID);
-    API.SendScriptCommand(QSB.ScriptCommands.CastleStoreRefuseAllGoods, _PlayerID);
+    API.BroadcastScriptCommand(QSB.ScriptCommands.CastleStoreRefuseAllGoods, _PlayerID);
 end
 
 function ModuleCastleStore.Local.CastleStore:GoodClicked(_PlayerID, _GoodType)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
     if self:HasCastleStore(_PlayerID) then
-        API.SendScriptCommand(QSB.ScriptCommands.CastleStoreToggleGoodState, _PlayerID, _GoodType);
+        API.BroadcastScriptCommand(QSB.ScriptCommands.CastleStoreToggleGoodState, _PlayerID, _GoodType);
     end
 end
 
@@ -975,7 +975,7 @@ function ModuleCastleStore.Local:OverwriteInteractiveObject()
                 GUI_Interaction.InteractiveObjectClicked_Orig_CastleStore();
                 return;
             end
-            API.SendScriptCommand(QSB.ScriptCommands.CastleStoreObjectPayStep1, PlayerID, ScriptName);
+            API.BroadcastScriptCommand(QSB.ScriptCommands.CastleStoreObjectPayStep1, PlayerID, ScriptName);
         end
 
         -- Send additional click event
@@ -1359,7 +1359,7 @@ function ModuleCastleStore.Local:InteractiveObjectPayStep2(_PlayerID, _ScriptNam
         return;
     end
     GUI.ExecuteObjectInteraction(GetID(_ScriptName), _PlayerID);
-    API.SendScriptCommand(QSB.ScriptCommands.CastleStoreObjectPayStep3, _PlayerID, _ScriptName);
+    API.BroadcastScriptCommand(QSB.ScriptCommands.CastleStoreObjectPayStep3, _PlayerID, _ScriptName);
 end
 
 -- -------------------------------------------------------------------------- --

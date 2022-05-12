@@ -457,9 +457,7 @@ function ModuleTradingCore.Local:OverrideMerchantPurchaseOfferClicked()
                 g_Merchant.BuyFromPlayer[TraderPlayerID] = g_Merchant.BuyFromPlayer[TraderPlayerID] or {};
                 g_Merchant.BuyFromPlayer[TraderPlayerID][GoodType] = (g_Merchant.BuyFromPlayer[TraderPlayerID][GoodType] or 0) +1;
 
-                Swift:DispatchScriptCommand(
-                    QSB.ScriptCommands.SendScriptEvent,
-                    0,
+                API.BroadcastScriptEventToGlobal(
                     QSB.ScriptEvents.GoodsPurchased,
                     TraderType,
                     OfferIndex,
@@ -558,9 +556,7 @@ function ModuleTradingCore.Local:OverrideMerchantSellGoodsClicked()
             else
                 g_Trade.SellToPlayers[TargetID][g_Trade.GoodType] = g_Trade.SellToPlayers[TargetID][g_Trade.GoodType] + g_Trade.GoodAmount;
             end
-            Swift:DispatchScriptCommand(
-                QSB.ScriptCommands.SendScriptEvent,
-                0,
+            API.BroadcastScriptEventToGlobal(
                 QSB.ScriptEvents.GoodsSold,
                 g_Trade.GoodType,
                 PlayerID,

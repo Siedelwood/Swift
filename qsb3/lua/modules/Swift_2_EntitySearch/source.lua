@@ -51,11 +51,8 @@ function ModuleEntitySearch.Shared:IterateEntities(...)
     if not GUI then
         SCP.EntitySearch.TriggerEntityTrigger();
     else
-        Swift:DispatchScriptCommand(
-            QSB.ScriptCommands.SendScriptEvent,
-            GUI.GetPlayerID(),
-            QSB.ScriptCommands.TriggerEntityTrigger
-        );
+        -- Job is synchronous so do not broadcast the command
+        API.SendScriptCommand(QSB.ScriptCommands.TriggerEntityTrigger);
     end
 
     -- Speichert die Predikate für spätere Prüfung.

@@ -770,6 +770,22 @@ function Swift:DispatchScriptEvent(_ID, ...)
     end
 end
 
+function Swift:IsAllowedEventParameter(_Parameter)
+    if type(_Parameter) == "function" or type(_Parameter) == "thread" or type(_Parameter) == "userdata" then
+        return false;
+    elseif type(_Parameter) == "table" then
+        for k, v in pairs(_Parameter) do
+            if type(k) ~= "number" and k ~= "n" then
+                return false;
+            end
+            if type(v) == "function" or type(v) == "thread" or type(v) == "userdata" then
+                return false;
+            end
+        end
+    end
+    return true;
+end
+
 -- AI
 
 function Swift:DisableLogicFestival()

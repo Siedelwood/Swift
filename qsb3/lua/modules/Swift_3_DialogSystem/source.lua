@@ -509,9 +509,7 @@ function ModuleDialogSystem.Local:OnOptionSelected(_PlayerID)
 
     local Selected = XGUIEng.ListBoxGetSelectedIndex(Widget .. "/ListBox")+1;
     local AnswerID = self.Dialog[_PlayerID].MCSelectionOptionsMap[Selected];
-    Swift:DispatchScriptCommand(
-        QSB.ScriptCommands.SendScriptEvent,
-        0,
+    API.BroadcastScriptEventToGlobal(
         QSB.ScriptEvents.DialogOptionSelected,
         _PlayerID,
         AnswerID

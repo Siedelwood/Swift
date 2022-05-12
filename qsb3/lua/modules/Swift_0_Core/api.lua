@@ -1057,9 +1057,27 @@ function API.IsDebugShellActive()
 end
 
 -- Command
+-- The commands will not appear in the doc to not confuse the users. If they
+-- want to synchronize things in their maps they can use the event system.
 
 function API.RegisterScriptCommand(_Name, _Function)
     return Swift:CreateScriptCommand(_Name, _Function);
+end
+
+function API.BroadcastScriptCommand(_NameOrID, ...)
+    local ID = _NameOrID;
+    if type(ID) == "string" then
+        for i= 1, #self.m_ScriptCommandRegister, 1 do
+            if self.m_ScriptCommandRegister[i][1] == _NameOrID then
+                ID = i;
+            end
+        end
+    end
+    assert(type(ID) == "number");
+    if not GUI then
+        return;
+    end
+    Swift:DispatchScriptCommand(ID, 0, unpack(arg));
 end
 
 function API.SendScriptCommand(_NameOrID, ...)
@@ -1072,6 +1090,9 @@ function API.SendScriptCommand(_NameOrID, ...)
         end
     end
     assert(type(ID) == "number");
+    if not GUI then
+        return;
+    end
     Swift:DispatchScriptCommand(ID, 0, unpack(arg));
 end
 
@@ -1095,28 +1116,82 @@ end
 -- Sendet das Script Event mit der übergebenen ID und überträgt optional
 -- Parameter.
 --
+-- <h4>Multiplayer</h4>
+-- Im Multiplayer kann diese Funktion nicht benutzt werden, um Script Events
+-- synchron oder asynchron aus dem lokalen im globalen Skript auszuführen.
+--
 -- @param[type=number] _EventID ID des Event
--- @param              ... Optionale Parameter (nil, string, number, boolean)
+-- @param              ... Optionale Parameter (nil, string, number, boolean, (array) table)
 -- @within Event
 --
 -- @usage
 -- API.SendScriptEvent(SomeEventID, Param1, Param2, ...);
 --
 function API.SendScriptEvent(_EventID, ...)
+    -- Becase I don't want the user to fuck around with parameters.
+    for k, v in pairs(arg) do
+        if not Swift:IsAllowedEventParameter(v) then
+            error("API.SendScriptEvent: Parameter " ..k.. " has non appropriate type! (" ..type(v).. ")");
+            return;
+        end
+    end
     Swift:DispatchScriptEvent(_EventID, unpack(arg));
 end
 
 ---
 -- Triggerd ein Script Event im globalen Skript aus dem lokalen Skript.
 --
+-- Das Event wird synchron für alle Spieler gesendet.
+--
 -- @param[type=number] _EventID ID des Event
--- @param              ... Optionale Parameter (nil, string, number, boolean)
+-- @param              ... Optionale Parameter (nil, string, number, boolean, (array) table)
+-- @within Event
+--
+-- @usage
+-- API.SendScriptEventToGlobal(SomeEventID, Param1, Param2, ...);
+--
+function API.BroadcastScriptEventToGlobal(_EventID, ...)
+    if not GUI then
+        return;
+    end
+    -- Becase I don't want the user to fuck around with parameters.
+    for k, v in pairs(arg) do
+        if not Swift:IsAllowedEventParameter(v) then
+            error("API.BroadcastScriptEventToGlobal: Parameter " ..k.. " has non appropriate type! (" ..type(v).. ")");
+            return;
+        end
+    end
+    Swift:DispatchScriptCommand(
+        QSB.ScriptCommands.SendScriptEvent,
+        0,
+        _EventID,
+        unpack(arg)
+    );
+end
+
+---
+-- Triggerd ein Script Event im globalen Skript aus dem lokalen Skript.
+--
+-- Das Event wird asynchron für den kontrollierenden Spieler gesendet.
+--
+-- @param[type=number] _EventID ID des Event
+-- @param              ... Optionale Parameter (nil, string, number, boolean, (array) table)
 -- @within Event
 --
 -- @usage
 -- API.SendScriptEventToGlobal(SomeEventID, Param1, Param2, ...);
 --
 function API.SendScriptEventToGlobal(_EventID, ...)
+    if not GUI then
+        return;
+    end
+    -- Becase I don't want the user to fuck around with parameters.
+    for k, v in pairs(arg) do
+        if not Swift:IsAllowedEventParameter(v) then
+            error("API.SendScriptEventToGlobal: Parameter " ..k.. " has non appropriate type! (" ..type(v).. ")");
+            return;
+        end
+    end
     Swift:DispatchScriptCommand(
         QSB.ScriptCommands.SendScriptEvent,
         GUI.GetPlayerID(),

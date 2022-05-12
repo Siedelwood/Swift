@@ -217,7 +217,7 @@ function ModuleSelection.Local:OverwriteMilitaryCommands()
             local eType = Logic.GetEntityType(LeaderID);
             GUI.SendCommandStationaryDefend(LeaderID);
             if eType == Entities.U_Trebuchet then
-                API.SendScriptCommand(
+                API.BroadcastScriptCommand(
                     QSB.ScriptCommands.SelectionSetTaskList,
                     LeaderID,
                     TaskLists.TL_NPC_IDLE
@@ -256,7 +256,7 @@ function ModuleSelection.Local:OverwriteMilitaryErect()
         for i=1, #SelectedEntities, 1 do
             local EntityType = Logic.GetEntityType(SelectedEntities[i]);
             if EntityType == Entities.U_SiegeEngineCart then
-                API.SendScriptCommand(
+                API.BroadcastScriptCommand(
                     QSB.ScriptCommands.ErectTrebuchet,
                     SelectedEntities[i]
                 );
@@ -302,7 +302,7 @@ function ModuleSelection.Local:OverwriteMilitaryDisamble()
         for i=1, #SelectedEntities, 1 do
             local EntityType = Logic.GetEntityType(SelectedEntities[i]);
             if EntityType == Entities.U_Trebuchet then
-                API.SendScriptCommand(
+                API.BroadcastScriptCommand(
                     QSB.ScriptCommands.DisambleTrebuchet,
                     SelectedEntities[i]
                 );
@@ -456,7 +456,7 @@ function ModuleSelection.Local:OverwriteMilitaryDismount()
             if ModuleSelection.Local.MilitaryRelease then
                 Sound.FXPlay2DSound( "ui\\menu_click");
                 local Soldiers = {Logic.GetSoldiersAttachedToLeader(Selected)};
-                API.SendScriptCommand(QSB.ScriptCommands.SelectionDestroyEntity, Soldiers[#Soldiers]);
+                API.BroadcastScriptCommand(QSB.ScriptCommands.SelectionDestroyEntity, Soldiers[#Soldiers]);
                 return;
             end
         end
@@ -467,7 +467,7 @@ function ModuleSelection.Local:OverwriteMilitaryDismount()
         or Type == Entities.U_MilitarySiegeTower then
             if ModuleSelection.Local.SiegeEngineRelease and Guardian == 0 then
                 Sound.FXPlay2DSound( "ui\\menu_click");
-                API.SendScriptCommand(QSB.ScriptCommands.SelectionDestroyEntity, Selected);
+                API.BroadcastScriptCommand(QSB.ScriptCommands.SelectionDestroyEntity, Selected);
             else
                 GUI_Military.DismountClicked_Orig_ModuleSelection();
             end
@@ -536,7 +536,7 @@ function ModuleSelection.Local:OverwriteThiefDeliver()
         if ThiefID == nil or Logic.GetEntityType(ThiefID) ~= Entities.U_Thief then
             return;
         end
-        API.SendScriptCommand(QSB.ScriptCommands.SelectionDestroyEntity, ThiefID);
+        API.BroadcastScriptCommand(QSB.ScriptCommands.SelectionDestroyEntity, ThiefID);
     end
 
     GUI_Thief.ThiefDeliverMouseOver_Orig_ModuleSelection = GUI_Thief.ThiefDeliverMouseOver;

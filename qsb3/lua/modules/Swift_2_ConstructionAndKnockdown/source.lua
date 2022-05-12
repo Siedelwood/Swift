@@ -114,7 +114,7 @@ function ModuleConstructionControl.Local:OverrideDeleteEntityStateBuilding()
     GameCallback_GUI_DeleteEntityStateBuilding = function(_BuildingID, _State)
         GameCallback_GUI_DeleteEntityStateBuilding_Orig_ConstructionControl(_BuildingID, _State);
 
-        API.SendScriptCommand(QSB.ScriptCommands.CheckCancelKnockdown, GUI.GetPlayerID(), _BuildingID, _State);
+        API.BroadcastScriptCommand(QSB.ScriptCommands.CheckCancelKnockdown, GUI.GetPlayerID(), _BuildingID, _State);
     end
 end
 

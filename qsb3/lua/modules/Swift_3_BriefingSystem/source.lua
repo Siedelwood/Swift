@@ -660,9 +660,7 @@ function ModuleBriefingSystem.Local:OnOptionSelected(_PlayerID)
     local AnswerID = self.Briefing[_PlayerID].MCSelectionOptionsMap[Selected];
 
     API.SendScriptEvent(QSB.ScriptEvents.BriefingOptionSelected, _PlayerID, AnswerID);
-    Swift:DispatchScriptCommand(
-        QSB.ScriptCommands.SendScriptEvent,
-        0,
+    API.BroadcastScriptEventToGlobal(
         QSB.ScriptEvents.BriefingOptionSelected,
         _PlayerID,
         AnswerID
@@ -861,9 +859,7 @@ function ModuleBriefingSystem.Local:OverrideThroneRoomFunctions()
         GameCallback_Camera_ThroneRoomLeftClick_Orig_ModuleBriefingSystem(_PlayerID);
         if _PlayerID == GUI.GetPlayerID() then
             -- Must trigger in global script for all players.
-            Swift:DispatchScriptCommand(
-                QSB.ScriptCommands.SendScriptEvent,
-                0,
+            API.BroadcastScriptEventToGlobal(
                 QSB.ScriptEvents.BriefingLeftClick,
                 _PlayerID
             );
@@ -876,9 +872,7 @@ function ModuleBriefingSystem.Local:OverrideThroneRoomFunctions()
         GameCallback_Camera_SkipButtonPressed_Orig_ModuleBriefingSystem(_PlayerID);
         if _PlayerID == GUI.GetPlayerID() then
             -- Must trigger in global script for all players.
-            Swift:DispatchScriptCommand(
-                QSB.ScriptCommands.SendScriptEvent,
-                0,
+            API.BroadcastScriptEventToGlobal(
                 QSB.ScriptEvents.BriefingSkipButtonPressed,
                 _PlayerID
             );

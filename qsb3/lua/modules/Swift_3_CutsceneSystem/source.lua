@@ -290,9 +290,7 @@ function ModuleCutsceneSystem.Local:PropagateCutsceneEnded(_PlayerID)
     if not self.Cutscene[_PlayerID] then
         return;
     end
-    Swift:DispatchScriptCommand(
-        QSB.ScriptCommands.SendScriptEvent,
-        0,
+    API.BroadcastScriptEventToGlobal(
         QSB.ScriptEvents.CutsceneEnded,
         _PlayerID
     );
@@ -302,9 +300,7 @@ function ModuleCutsceneSystem.Local:FlightStarted(_Duration)
     local PlayerID = GUI.GetPlayerID();
     if self.Cutscene[PlayerID] then
         local PageID = self.Cutscene[PlayerID].CurrentPage;
-        Swift:DispatchScriptCommand(
-            QSB.ScriptCommands.SendScriptEvent,
-            0,
+        API.BroadcastScriptEventToGlobal(
             QSB.ScriptEvents.CutsceneFlightStarted,
             PlayerID,
             PageID,
@@ -327,9 +323,7 @@ function ModuleCutsceneSystem.Local:FlightFinished()
     local PlayerID = GUI.GetPlayerID();
     if self.Cutscene[PlayerID] then
         local PageID = self.Cutscene[PlayerID].CurrentPage;
-        Swift:DispatchScriptCommand(
-            QSB.ScriptCommands.SendScriptEvent,
-            0,
+        API.BroadcastScriptEventToGlobal(
             QSB.ScriptEvents.CutsceneFlightEnded,
             PlayerID,
             PageID
@@ -536,9 +530,7 @@ function ModuleCutsceneSystem.Local:OverrideThroneRoomFunctions()
     GameCallback_Camera_SkipButtonPressed = function(_PlayerID)
         GameCallback_Camera_SkipButtonPressed_Orig_ModuleCutsceneSystem(_PlayerID);
         if _PlayerID == GUI.GetPlayerID() then
-            Swift:DispatchScriptCommand(
-                QSB.ScriptCommands.SendScriptEvent,
-                0,
+            API.BroadcastScriptEventToGlobal(
                 QSB.ScriptEvents.CutsceneSkipButtonPressed,
                 GUI.GetPlayerID()
             );

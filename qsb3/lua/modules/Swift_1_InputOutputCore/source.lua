@@ -526,9 +526,7 @@ end
 
 function ModuleInputOutputCore.Local:LocalToGlobal(_Text)
     _Text = (_Text == nil and "") or _Text;
-    Swift:DispatchScriptCommand(
-        QSB.ScriptCommands.SendScriptEvent,
-        0,
+    API.BroadcastScriptEventToGlobal(
         QSB.ScriptEvents.ChatClosed,
         (_Text or "<<<ES>>>"),
         GUI.GetPlayerID()
