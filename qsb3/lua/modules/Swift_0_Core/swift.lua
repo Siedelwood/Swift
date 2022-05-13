@@ -14,7 +14,7 @@ SCP = SCP or {
     Core = {}
 };
 
-QSB.Version = "Version 3.0.0 BETA (1.1.3)";
+QSB.Version = "Version 3.0.0 BETA (1.1.5)";
 QSB.Language = "de";
 QSB.HumanPlayerID = 1;
 QSB.ScriptCommandSequence = 2;
@@ -171,7 +171,11 @@ function Swift:CreateRandomSeed()
                 for s in SeedString:gmatch(".") do
                     Seed = Seed + s:byte();
                 end
-                Swift:DispatchScriptCommand(QSB.ScriptCommands.ProclaimateRandomSeed, 0, Seed);
+                if Framework.IsNetworkGame() then
+                    Swift:DispatchScriptCommand(QSB.ScriptCommands.ProclaimateRandomSeed, 0, Seed);
+                else
+                    GUI.SendScriptCommand("SCP.Core.ProclaimateRandomSeed(" ..Seed.. ")");
+                end
             end
             break;
         end

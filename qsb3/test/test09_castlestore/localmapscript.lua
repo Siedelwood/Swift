@@ -58,6 +58,38 @@ function ShowTestWindow()
     };
 end
 
+function SearchWithPredicateTest()
+    API.BeginBenchmark("SearchPredicate");
+    local Result = API.CommenceEntitySearch(
+        {QSB.Search.OfPlayer, 1},
+        {QSB.Search.InTerritory, 1},
+        {ANY,
+         {QSB.Search.OfCategory, EntityCategories.CityBuilding},
+         {QSB.Search.OfCategory, EntityCategories.OuterRimBuilding}}
+    )
+    API.StopBenchmark("SearchPredicate");
+    return Result;
+end
+
+function SearchVanillaTest()
+    API.BeginBenchmark("SearchTraditional");
+    local Result = {};
+    local City = {Logic.GetPlayerEntitiesInCategory(1, EntityCategories.CityBuilding)};
+    for i= 1, #City do
+        if GetTerritoryUnderEntity(City[i]) == 1 then
+            table.insert(Result, City[i]);
+        end
+    end
+    local Outer = {Logic.GetPlayerEntitiesInCategory(1, EntityCategories.OuterRimBuilding)};
+    for i= 1, #Outer do
+        if GetTerritoryUnderEntity(Outer[i]) == 1 then
+            table.insert(Result, Outer[i]);
+        end
+    end
+    API.StopBenchmark("SearchTraditional");
+    return Result;
+end
+
 function CallTestFunction()
     API.SendScriptCommand(QSB.ScriptCommands.TestFunction, 123, "abc");
 end

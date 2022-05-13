@@ -132,6 +132,7 @@ GameCallback_QSB_OnEventReceived = function(_EventID, ...)
 end
 
 function SearchWithPredicateTest()
+    API.BeginBenchmark("SearchBenchmark");
     local Result = API.CommenceEntitySearch(
         {QSB.Search.OfPlayer, 1},
         {ANY,
@@ -139,5 +140,6 @@ function SearchWithPredicateTest()
          {QSB.Search.OfCategory, EntityCategories.OuterRimBuilding}},
         {QSB.Search.InTerritory, 1}
     )
+    API.StopBenchmark("SearchBenchmark");
     return Result;
 end

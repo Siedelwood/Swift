@@ -442,48 +442,47 @@ function ModuleEntityEventCore.Global:GetAllEntitiesOfType(_Type)
 end
 
 function ModuleEntityEventCore.Global:CheckOnNonTrackableEntities()
-    -- -- Buildings
+    local Step = Logic.GetCurrentTurn() % 10;
+    -- Buildings
     for i= 1, 8 do
         local Buildings = {Logic.GetPlayerEntitiesInCategory(i, EntityCategories.AttackableBuilding)};
-        for j= 1, #Buildings do
+        for j= 10-Step, #Buildings, 10 do
             self:RegisterEntityAndTriggerEvent(Buildings[j]);
         end
-        local Walls = {Logic.GetPlayerEntitiesInCategory(i, EntityCategories.AttackableBuilding)};
-        for j= 1, #Walls do
+        local PalisadeSegment = {Logic.GetPlayerEntitiesInCategory(i, EntityCategories.PalisadeSegment)};
+        for j= 10-Step, #PalisadeSegment, 10 do
+            self:RegisterEntityAndTriggerEvent(PalisadeSegment[j]);
+        end
+        local Walls = {Logic.GetPlayerEntitiesInCategory(i, EntityCategories.Wall)};
+        for j= 10-Step, #Walls, 10 do
             self:RegisterEntityAndTriggerEvent(Walls[j]);
         end
     end
-    -- -- Ambiend and Resources
+    -- Ambiend
     for i= 1, #self.SharedAnimalTypes do
-        if Logic.GetCurrentTurn() % 10 == i and Entities[self.SharedAnimalTypes[i]] then
-            local FoundEntities = Logic.GetEntitiesOfType(Entities[self.SharedAnimalTypes[i]]);
-            for j= 1, #FoundEntities do
-                self:RegisterEntityAndTriggerEvent(FoundEntities[j]);
-            end
+        local FoundEntities = Logic.GetEntitiesOfType(Entities[self.SharedAnimalTypes[i]]);
+        for j= 10-Step, #FoundEntities, 10 do
+            self:RegisterEntityAndTriggerEvent(FoundEntities[j]);
         end
     end
+    -- Resources
     for i= 1, #self.SharedResourceTypes do
-        if Logic.GetCurrentTurn() % 10 == i and Entities[self.SharedAnimalTypes[i]] then
-            local FoundEntities = Logic.GetEntitiesOfType(Entities[self.SharedResourceTypes[i]]);
-            for j= 1, #FoundEntities do
-                self:RegisterEntityAndTriggerEvent(FoundEntities[j]);
-            end
+        local FoundEntities = Logic.GetEntitiesOfType(Entities[self.SharedResourceTypes[i]]);
+        for j= 10-Step, #FoundEntities, 10 do
+            self:RegisterEntityAndTriggerEvent(FoundEntities[j]);
         end
     end
+    -- Climate specific
+    local TypesToSearch = {};
     for k, v in pairs(Entities) do
-        local TypesToSearch = {};
         if string.find(k, "^A_" ..self.ClimateShort.. "_") or string.find(k, "^R_" ..self.ClimateShort.. "_") then
-            if Entities[k] then
-                table.insert(TypesToSearch, v);
-            end
+            TypesToSearch[#TypesToSearch+1] = v;
         end
-        for i= 1, #TypesToSearch do
-            if Logic.GetCurrentTurn() % 10 == i then
-                local FoundEntities = Logic.GetEntitiesOfType(TypesToSearch[i]);
-                for j= 1, #FoundEntities do
-                    self:RegisterEntityAndTriggerEvent(FoundEntities[j]);
-                end
-            end
+    end
+    for i= 10-Step, #TypesToSearch, 10 do
+        local FoundEntities = Logic.GetEntitiesOfType(TypesToSearch[i]);
+        for j= 1, #FoundEntities do
+            self:RegisterEntityAndTriggerEvent(FoundEntities[j]);
         end
     end
 end

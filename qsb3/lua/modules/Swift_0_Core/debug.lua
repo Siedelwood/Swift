@@ -8,6 +8,7 @@ You may use and modify this file unter the terms of the MIT licence.
 (See https://en.wikipedia.org/wiki/MIT_License)
 ]]
 
+Swift.m_Benchmarks           = {};
 Swift.m_CheckAtRun           = false;
 Swift.m_TraceQuests          = false;
 Swift.m_DevelopingCheats     = false;
@@ -224,6 +225,24 @@ function Swift:ConfirmQsbDebugShell()
                 GUI.SendScriptCommand(self.m_ChatBoxInput.sub(self.m_ChatBoxInput, 4), false);
             end
         end
+    end
+end
+
+function Swift:BeginBenchmark(_Identifier)
+    self.m_Benchmarks[_Identifier] = XGUIEng.GetSystemTime() * 1000;
+end
+
+function Swift:StopBenchmark(_Identifier)
+    if self.m_Benchmarks[_Identifier] then
+        local StartTime = self.m_Benchmarks[_Identifier];
+        local EndTime = XGUIEng.GetSystemTime() * 1000;
+        local ElapsedTime = EndTime - StartTime;
+        self.m_Benchmarks[_Identifier] = nil;
+        Framework.WriteToLog(string.format(
+            "Benchmark '%s': Execution took %f ms to complete",
+            _Identifier,
+            ElapsedTime
+        ));
     end
 end
 

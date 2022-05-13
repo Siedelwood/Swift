@@ -1059,6 +1059,59 @@ function API.IsDebugShellActive()
     return Swift.m_DevelopingShell == true;
 end
 
+---
+-- Beginnt einen überwachten Zeitraum.
+--
+-- @param[type=string] Name des Benchmark
+-- @within Debug
+-- @see API.StopBenchmark
+--
+function API.BeginBenchmark(_Identifier)
+    if not GUI then
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.BeginBenchmark("%s")]],
+            _Identifier
+        ));
+        return;
+    end
+    Swift:BeginBenchmark(_Identifier);
+end
+
+---
+-- Beendet einen überwachten Zeitraum und schreibt die Dauer ins Log.
+--
+-- <b>Exkurs</b>: Wenn die Ausführungsdauer für einen Prozess gemessen wird,
+-- nennt man dies Benchmarking. Dabei wird geschaut, wie lange die Ausführung
+-- des Prozesses dauert.
+--
+-- Dabei gilt, dass man möglichst kleine Werte erziehlen will. Die Zeiten werden
+-- in milisekunden (ms) gemessen.
+--
+-- @param[type=string] Name des Benchmark
+-- @within Debug
+--
+-- @usage
+-- API.BeginBenchmark("HowMuchIsTheFish")
+-- local j= 0
+-- for i= 1, 1000000 do
+--     j = j +1
+-- end
+-- API.StopBenchmark("HowMuchIsTheFish")
+--
+-- -- Ausgabe im Log:
+-- Benchmark 'HowMuchIsTheFish': Execution took 0.015 ms to complete
+--
+function API.StopBenchmark(_Identifier)
+    if not GUI then
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.StopBenchmark("%s")]],
+            _Identifier
+        ));
+        return;
+    end
+    Swift:StopBenchmark(_Identifier);
+end
+
 -- Command
 -- The commands will not appear in the doc to not confuse the users. If they
 -- want to synchronize things in their maps they can use the event system.
@@ -1131,13 +1184,6 @@ end
 -- API.SendScriptEvent(SomeEventID, Param1, Param2, ...);
 --
 function API.SendScriptEvent(_EventID, ...)
-    -- Becase I don't want the user to fuck around with parameters.
-    for k, v in pairs(arg) do
-        if not Swift:IsAllowedEventParameter(v) then
-            error("API.SendScriptEvent: Parameter " ..k.. " has non appropriate type! (" ..type(v).. ")");
-            return;
-        end
-    end
     Swift:DispatchScriptEvent(_EventID, unpack(arg));
 end
 
@@ -2713,6 +2759,11 @@ function SCP.Core.LoadscreenHidden()
 end
 
 function SCP.Core.GlobalQsbLoaded()
+    Logic.ExecuteInLuaLocalState([[
+        if Mission_MP_LocalOnQsbLoaded and Framework.IsNetworkGame() then
+            Mission_MP_LocalOnQsbLoaded();
+        end
+    ]]);
     if Mission_MP_OnQsbLoaded and not Swift.m_MP_FMA_Loaded and Framework.IsNetworkGame() then
         Swift.m_MP_FMA_Loaded = true;
         Mission_MP_OnQsbLoaded();

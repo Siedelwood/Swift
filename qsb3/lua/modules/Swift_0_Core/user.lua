@@ -68,10 +68,9 @@ function Swift:RestoreAfterLoad()
     if self:IsLocalEnvironment() then
         self:LocalRestoreDebugAfterLoad();
         self:SetEscapeKeyTrigger();
+        self:CreateRandomSeed();
         -- self:LogLocalCFunctions();
     end
-    -- Set new random seed
-    self:CreateRandomSeed();
 end
 
 -- Escape Callback

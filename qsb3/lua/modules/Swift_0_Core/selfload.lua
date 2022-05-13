@@ -32,16 +32,22 @@ if not MapEditor and not GUI then
         if ModuleKnightTitleRequirements then
             InitKnightTitleTables();
         end
-        if Mission_LocalOnQsbLoaded and not Framework.IsNetworkGame() then
-            Mission_LocalOnQsbLoaded();
-        end
-        if Mission_MP_LocalOnQsbLoaded and Framework.IsNetworkGame() then
-            Mission_MP_LocalOnQsbLoaded();
-        end
-        StartSimpleJobEx(function()
-            Swift:DispatchScriptCommand(QSB.ScriptCommands.GlobalQsbLoaded, GUI.GetPlayerID());
-            return true;
-        end);
+        
+        -- Call directly for singleplayer
+        if not Framework.IsNetworkGame() then
+            Swift:CreateRandomSeed();
+            if Mission_LocalOnQsbLoaded then
+                Mission_LocalOnQsbLoaded();
+            end
+
+        -- Send asynchron command to player in multiplayer
+        else
+            StartSimpleJobEx(function()
+                Swift:CreateRandomSeed();
+                Swift:DispatchScriptCommand(QSB.ScriptCommands.GlobalQsbLoaded, GUI.GetPlayerID());
+                return true;
+            end);
+        end        
     ]]);
     API.Install();
     if ModuleKnightTitleRequirements then
