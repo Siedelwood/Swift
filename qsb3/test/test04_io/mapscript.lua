@@ -180,7 +180,7 @@ function CreateTestNPCs()
 end
 
 function CreateTestObject()
-    CreateObject {
+    API.SetupObject {
         Name     = "IO1",
         Distance = 1000,
         Text     = "Bockwurst",
@@ -195,7 +195,7 @@ function CreateTestObject()
 end
 
 function CreateTestObject2()
-    CreateObject {
+    API.SetupObject {
         Name     = "IO1",
         Distance = 1000,
         Text     = "Bockwurst",

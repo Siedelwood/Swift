@@ -442,33 +442,34 @@ function ModuleEntityEventCore.Global:GetAllEntitiesOfType(_Type)
 end
 
 function ModuleEntityEventCore.Global:CheckOnNonTrackableEntities()
-    local Step = Logic.GetCurrentTurn() % 10;
+    local Step = 10;
+    local TurnMod = Logic.GetCurrentTurn() % Step;
     -- Buildings
     for i= 1, 8 do
         local Buildings = {Logic.GetPlayerEntitiesInCategory(i, EntityCategories.AttackableBuilding)};
-        for j= 10-Step, #Buildings, 10 do
+        for j= Step-TurnMod, #Buildings, Step do
             self:RegisterEntityAndTriggerEvent(Buildings[j]);
         end
         local PalisadeSegment = {Logic.GetPlayerEntitiesInCategory(i, EntityCategories.PalisadeSegment)};
-        for j= 10-Step, #PalisadeSegment, 10 do
+        for j= Step-TurnMod, #PalisadeSegment, Step do
             self:RegisterEntityAndTriggerEvent(PalisadeSegment[j]);
         end
         local Walls = {Logic.GetPlayerEntitiesInCategory(i, EntityCategories.Wall)};
-        for j= 10-Step, #Walls, 10 do
+        for j= Step-TurnMod, #Walls, Step do
             self:RegisterEntityAndTriggerEvent(Walls[j]);
         end
     end
     -- Ambiend
     for i= 1, #self.SharedAnimalTypes do
         local FoundEntities = Logic.GetEntitiesOfType(Entities[self.SharedAnimalTypes[i]]);
-        for j= 10-Step, #FoundEntities, 10 do
+        for j= Step-TurnMod, #FoundEntities, Step do
             self:RegisterEntityAndTriggerEvent(FoundEntities[j]);
         end
     end
     -- Resources
     for i= 1, #self.SharedResourceTypes do
         local FoundEntities = Logic.GetEntitiesOfType(Entities[self.SharedResourceTypes[i]]);
-        for j= 10-Step, #FoundEntities, 10 do
+        for j= Step-TurnMod, #FoundEntities, Step do
             self:RegisterEntityAndTriggerEvent(FoundEntities[j]);
         end
     end
@@ -479,7 +480,7 @@ function ModuleEntityEventCore.Global:CheckOnNonTrackableEntities()
             TypesToSearch[#TypesToSearch+1] = v;
         end
     end
-    for i= 10-Step, #TypesToSearch, 10 do
+    for i= Step-TurnMod, #TypesToSearch, Step do
         local FoundEntities = Logic.GetEntitiesOfType(TypesToSearch[i]);
         for j= 1, #FoundEntities do
             self:RegisterEntityAndTriggerEvent(FoundEntities[j]);

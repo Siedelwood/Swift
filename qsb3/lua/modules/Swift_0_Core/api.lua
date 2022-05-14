@@ -391,7 +391,8 @@ function API.OverrideTable()
     end
 
     ---
-    -- Gibt die Anzahl an Elementen in einer Table zurück.
+    -- Gibt die Größe des Listenteils der Table zurück, ohne bei der ersten
+    -- Lücke abzubrechen.
     -- @param[type=table] t Quelle
     -- @return[type=number] Anzahl Elemente
     -- @within table
@@ -416,7 +417,7 @@ function API.OverrideTable()
         local c = 0;
         for k, v in pairs(t) do
             -- Ignore n if set
-            if k ~= "n" or (k == "n" and type(k) ~= "number") then
+            if k ~= "n" or (k == "n" and type(v) ~= "number") then
                 c = c +1;
             end
         end

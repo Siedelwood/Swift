@@ -66,12 +66,19 @@ function ModuleObjectInteraction.Global:OnObjectInteraction(_ScriptName, _Knight
     end
     if IO[_ScriptName] then
         IO[_ScriptName].IsUsed = true;
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[
+                local ScriptName = "%s"
+                if IO[ScriptName] then
+                    IO[ScriptName].IsUsed = true
+                end
+            ]],
+            _ScriptName
+        ));
         if IO[_ScriptName].Action then
             IO[_ScriptName]:Action(_PlayerID, _KnightID);
         end
     end
-    -- Avoid reference bug
-    Logic.ExecuteInLuaLocalState("ModuleObjectInteraction.Local:OverrideReferenceTables()");
 end
 
 function ModuleObjectInteraction.Global:CreateObject(_Description)
@@ -82,7 +89,7 @@ function ModuleObjectInteraction.Global:CreateObject(_Description)
     self:DestroyObject(_Description.Name);
 
     local TypeName = Logic.GetEntityTypeName(Logic.GetEntityType(ID));
-    if not TypeName:find("^I_X_") then
+    if TypeName and not TypeName:find("^I_X_") then
         self:CreateSlaveObject(_Description);
     end
 
@@ -90,9 +97,12 @@ function ModuleObjectInteraction.Global:CreateObject(_Description)
     _Description.IsUsed = false;
     _Description.Player = _Description.Player or {1, 2, 3, 4, 5, 6, 7, 8};
     IO[_Description.Name] = _Description;
+    Logic.ExecuteInLuaLocalState(string.format(
+        [[IO["%s"] = %s]],
+        _Description.Name,
+        table.tostring(IO[_Description.Name])
+    ));
     self:SetupObject(_Description);
-    -- Avoid reference bug
-    Logic.ExecuteInLuaLocalState("ModuleObjectInteraction.Local:OverrideReferenceTables()");
     return _Description;
 end
 
@@ -102,18 +112,24 @@ function ModuleObjectInteraction.Global:DestroyObject(_ScriptName)
     end
     if IO[_ScriptName].Slave then
         IO_SlaveToMaster[IO[_ScriptName].Slave] = nil;
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[IO_SlaveToMaster["%s"] = nil]],
+            IO[_ScriptName].Slave
+        ));
         IO_SlaveState[IO[_ScriptName].Slave] = nil;
         DestroyEntity(IO[_ScriptName].Slave);
     end
     self:SetObjectState(_ScriptName, 2);
     API.SendScriptEvent(QSB.ScriptEvents.ObjectDelete, _ScriptName);
     Logic.ExecuteInLuaLocalState(string.format(
-        [[API.SendScriptEvent(QSB.ScriptEvents.ObjectDelete, "%s")]],
+        [[
+            API.SendScriptEvent(QSB.ScriptEvents.ObjectDelete, "%s")
+            IO["%s"] = nil
+        ]],
+        _ScriptName,
         _ScriptName
     ));
     IO[_ScriptName] = nil;
-    -- Avoid reference bug
-    Logic.ExecuteInLuaLocalState("ModuleObjectInteraction.Local:OverrideReferenceTables()");
 end
 
 function ModuleObjectInteraction.Global:CreateSlaveObject(_Object)
@@ -135,6 +151,11 @@ function ModuleObjectInteraction.Global:CreateSlaveObject(_Object)
         Logic.SetModel(SlaveID, Models.Effects_E_Mosquitos);
         Logic.SetEntityName(SlaveID, Name);
         IO_SlaveToMaster[Name] = _Object.Name;
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[IO_SlaveToMaster["%s"] = "%s"]],
+            Name,
+            _Object.Name
+        ));
         _Object.Slave = Name;
     end
     IO_SlaveState[Name] = 1;
@@ -147,7 +168,7 @@ function ModuleObjectInteraction.Global:SetupObject(_Object)
     Logic.InteractiveObjectClearRewards(ID);
     Logic.InteractiveObjectSetInteractionDistance(ID, _Object.Distance);
     Logic.InteractiveObjectSetTimeToOpen(ID, _Object.Waittime);
-    
+
     local RewardResourceCart = _Object.RewardResourceCartType or Entities.U_ResourceMerchant;
     Logic.InteractiveObjectSetRewardResourceCartType(ID, RewardResourceCart);
     local RewardGoldCart = _Object.RewardGoldCartType or Entities.U_GoldCart;
@@ -156,7 +177,7 @@ function ModuleObjectInteraction.Global:SetupObject(_Object)
     Logic.InteractiveObjectSetCostResourceCartType(ID, CostResourceCart);
     local CostGoldCart = _Object.CostGoldCartType or Entities.U_GoldCart;
     Logic.InteractiveObjectSetCostGoldCartType(ID, CostGoldCart);
-    
+
     if _Object.Reward then
         Logic.InteractiveObjectAddRewards(ID, _Object.Reward[1], _Object.Reward[2]);
     end
@@ -198,8 +219,21 @@ function ModuleObjectInteraction.Global:SetObjectState(_ScriptName, _State, ...)
 end
 
 function ModuleObjectInteraction.Global:CreateDefaultObjectNames()
-    IO_UserDefindedNames["D_X_ChestClosed"]             = {de = "Schatztruhe", en = "Treasure Chest", fr = "Coffre au trésor"};
-    IO_UserDefindedNames["D_X_ChestOpenEmpty"]          = {de = "Leere Truhe", en = "Empty Chest", fr = "Coffre vide"};
+    IO_UserDefindedNames["D_X_ChestClosed"]    = {
+        de = "Schatztruhe",
+        en = "Treasure Chest",
+        fr = "Coffre au trésor"
+    };
+    IO_UserDefindedNames["D_X_ChestOpenEmpty"] = {
+        de = "Leere Truhe",
+        en = "Empty Chest",
+        fr = "Coffre vide"
+    };
+
+    Logic.ExecuteInLuaLocalState(string.format(
+        [[IO_UserDefindedNames = %s]],
+        table.tostring(IO_UserDefindedNames)
+    ));
 end
 
 function ModuleObjectInteraction.Global:OverrideObjectInteraction()
@@ -295,6 +329,10 @@ function ModuleObjectInteraction.Global:StartObjectDestructionController()
             info("slave " ..SlaveName.. " of master " ..MasterName.. " has been deleted!");
             info("try to create new slave...");
             IO_SlaveToMaster[SlaveName] = nil;
+            Logic.ExecuteInLuaLocalState(string.format(
+                [[IO_SlaveToMaster["%s"] = nil]],
+                SlaveName
+            ));
             local SlaveID = ModuleObjectInteraction.Global:CreateSlaveObject(Object);
             if not IsExisting(SlaveID) then
                 error("failed to create slave!");
@@ -317,13 +355,17 @@ function ModuleObjectInteraction.Global:StartObjectConditionController()
                 if IO[k].Condition then
                     local IsFulfulled = v:Condition();
                     IO[k].IsFullfilled = IsFulfulled;
-                    -- Avoid reference bug
-                    Logic.ExecuteInLuaLocalState(string.format(
-                        [[IO["%s"].Condition = %s]],
-                        k,
-                        tostring(IsFulfulled)
-                    ))
                 end
+                Logic.ExecuteInLuaLocalState(string.format(
+                    [[
+                        local ScriptName = "%s"
+                        if IO[ScriptName] then
+                            IO[ScriptName].IsFullfilled = %s
+                        end
+                    ]],
+                    k,
+                    tostring(IO[k].IsFullfilled)
+                ))
             end
         end
     end);
@@ -337,7 +379,10 @@ function ModuleObjectInteraction.Local:OnGameStart()
     QSB.ScriptEvents.ObjectReset = API.RegisterScriptEvent("Event_ObjectReset");
     QSB.ScriptEvents.ObjectDelete = API.RegisterScriptEvent("Event_ObjectDelete");
 
-    self:OverrideReferenceTables();
+    IO = {};
+    IO_UserDefindedNames = {};
+    IO_SlaveToMaster = {};
+
     self:OverrideGameFunctions();
 end
 
@@ -373,9 +418,9 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
                 return;
             end
             if type(IO[ScriptName].Costs) == "table" and #IO[ScriptName].Costs ~= 0 then
-                local CathedralID = Logic.GetCathedral(PlayerID);
-                local CastleID    = Logic.GetHeadquarters(PlayerID);
-                if CathedralID == nil or CathedralID == 0 or CastleID == nil or CastleID == 0 then
+                local StoreHouseID = Logic.GetStoreHouse(PlayerID);
+                local CastleID     = Logic.GetHeadquarters(PlayerID);
+                if StoreHouseID == nil or StoreHouseID == 0 or CastleID == nil or CastleID == 0 then
                     API.Note("DEBUG: Player needs special buildings when using activation costs!");
                     return;
                 end
@@ -398,7 +443,7 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
         if g_Interaction.ActiveObjects == nil then
             return;
         end
-        
+
         local PlayerID = GUI.GetPlayerID();
         for i = 1, #g_Interaction.ActiveObjects do
             local ObjectID = g_Interaction.ActiveObjects[i];
@@ -596,7 +641,7 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
                         ObjectName = "Debug: ObjectName missing for " .. ObjectTypeName;
                     end
                 end
-                table.insert(ObjectList, API.ConvertPlaceholders(ObjectName));
+                table.insert(ObjectList, API.Localize(API.ConvertPlaceholders(ObjectName)));
             end
             for i = 1, 4 do
                 local String = ObjectList[i];
@@ -626,12 +671,6 @@ function ModuleObjectInteraction.Local:IsAvailableForGuiPlayer(_ScriptName)
         return false;
     end
     return true;
-end
-
-function ModuleObjectInteraction.Local:OverrideReferenceTables()
-    IO = Logic.CreateReferenceToTableInGlobaLuaState("IO");
-    IO_UserDefindedNames = Logic.CreateReferenceToTableInGlobaLuaState("IO_UserDefindedNames");
-    IO_SlaveToMaster = Logic.CreateReferenceToTableInGlobaLuaState("IO_SlaveToMaster");
 end
 
 -- -------------------------------------------------------------------------- --

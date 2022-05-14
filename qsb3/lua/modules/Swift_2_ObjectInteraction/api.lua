@@ -269,9 +269,17 @@ function API.InteractiveObjectActivate(_ScriptName, _State, _PlayerID)
         local SlaveName = (IO[_ScriptName].Slave or _ScriptName);
         if IO[_ScriptName].Slave then
             IO_SlaveState[SlaveName] = 1;
+            Logic.ExecuteInLuaLocalState(string.format(
+                [[IO_SlaveState["%s"] = 1]],
+                SlaveName
+            ));
         end
         ModuleObjectInteraction.Global:SetObjectState(SlaveName, _State, _PlayerID);
         IO[_ScriptName].IsActive = true;
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[IO["%s"].IsActive = true]],
+            _ScriptName
+        ));
     else
         ModuleObjectInteraction.Global:SetObjectState(_ScriptName, _State, _PlayerID);
     end
@@ -296,9 +304,17 @@ function API.InteractiveObjectDeactivate(_ScriptName, _PlayerID)
         local SlaveName = (IO[_ScriptName].Slave or _ScriptName);
         if IO[_ScriptName].Slave then
             IO_SlaveState[SlaveName] = 0;
+            Logic.ExecuteInLuaLocalState(string.format(
+                [[IO_SlaveState["%s"] = 0]],
+                SlaveName
+            ));
         end
         ModuleObjectInteraction.Global:SetObjectState(SlaveName, 2, _PlayerID);
         IO[_ScriptName].IsActive = false;
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[IO["%s"].IsActive = false]],
+            _ScriptName
+        ));
     else
         ModuleObjectInteraction.Global:SetObjectState(_ScriptName, 2, _PlayerID);
     end
@@ -323,7 +339,12 @@ function API.SetObjectCustomName(_Key, _Text)
     if GUI then
         return;
     end
-    IO_UserDefindedNames[_Key] = API.Localize(_Text);
+    IO_UserDefindedNames[_Key] = _Text;
+    Logic.ExecuteInLuaLocalState(string.format(
+        [[IO_UserDefindedNames["%s"] = %s]],
+        _Key,
+        table.tostring(IO_UserDefindedNames)
+    ));
 end
 API.InteractiveObjectSetName = API.SetObjectCustomName;
 AddCustomIOName = API.SetObjectCustomName;
