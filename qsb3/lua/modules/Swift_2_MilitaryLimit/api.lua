@@ -30,7 +30,7 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 -- @field ProducedThief     Ein Dieb wird rekrutiert (Parameter: EntityID, CastleID, CostsTable)
 -- @field ProducedBattalion Ein Battalion wird rekrutiert (Parameter: EntityID, BarrackID, CostsTable)
--- @field RefilledBattalion Ein Battalion wird aufgefüllt (Parameter: EntityID, BarrackID, CostsTable)
+-- @field RefilledBattalion Ein Battalion wird aufgefüllt (Parameter: EntityID, BarrackID, SoldiersBefore, SoldiersAfter, CostsTable)
 --
 -- @within Event
 --

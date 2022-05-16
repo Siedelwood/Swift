@@ -21,6 +21,8 @@ ModuleMilitaryLimit = {
     };
     Local = {
         SelectionBackup = {},
+        RecruitLocked = {},
+        RefillLocked = {},
     },
     -- This is a shared structure but the values are asynchronous!
     Shared = {
@@ -167,7 +169,7 @@ function ModuleMilitaryLimit.Global:RefillBattalion(_PlayerID, _BarrackID, _Lead
     ));
     self:SubFromPlayerGoods(_PlayerID, _BarrackID, _Costs);
 
-    API.SendScriptEvent(QSB.ScriptEvents.RefilledBattalion, ID, _BarrackID, _Costs);
+    API.SendScriptEvent(QSB.ScriptEvents.RefilledBattalion, ID, _BarrackID, LeaderSoldiers, LeaderSoldiers+1, _Costs);
     Logic.ExecuteInLuaLocalState(string.format(
         [[API.SendScriptEvent(QSB.ScriptEvents.RefilledBattalion, %d, %d, %d, %d, %s)]],
         ID,
@@ -213,6 +215,23 @@ function ModuleMilitaryLimit.Local:OnGameStart()
     self:OverrideUI();
 end
 
+function ModuleMilitaryLimit.Local:OnEvent(_ID, _Name, ...)
+    local PlayerID = GUI.GetPlayerID();
+    if _ID == QSB.ScriptEvents.ProducedBattalion then
+        if PlayerID == Logic.EntityGetPlayer(arg[1]) then
+            self.RecruitLocked[PlayerID] = false;
+        end
+    elseif _ID == QSB.ScriptEvents.ProducedThief then
+        if PlayerID == Logic.EntityGetPlayer(arg[1]) then
+            self.RecruitLocked[PlayerID] = false;
+        end
+    elseif _ID == QSB.ScriptEvents.RefilledBattalion then
+        if PlayerID == Logic.EntityGetPlayer(arg[1]) then
+            self.RefillLocked[PlayerID] = false;
+        end
+    end
+end
+
 function ModuleMilitaryLimit.Local:OverrideUI()
     function GUI_CityOverview.LimitUpdate()
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
@@ -255,6 +274,7 @@ function ModuleMilitaryLimit.Local:OverrideUI()
             CanNotBuyString = XGUIEng.GetStringTableText("Feedback_TextLines/TextLine_SoldierLimitReached");
         end
         if CanBuyBoolean == true then
+            ModuleMilitaryLimit.Local.RecruitLocked[PlayerID] = true;
             Sound.FXPlay2DSound("ui\\menu_click");
             if EntityType ~= Entities.U_Thief then
                 StartKnightVoiceForPermanentSpecialAbility(Entities.U_KnightChivalry);
@@ -269,6 +289,52 @@ function ModuleMilitaryLimit.Local:OverrideUI()
         else
             Message(CanNotBuyString);
         end
+    end
+
+    function GUI_BuildingButtons.BuyBattalionUpdate()
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local PlayerID = GUI.GetPlayerID();
+        local BarrackID = GUI.GetSelectedEntity();
+        local BarrackEntityType = Logic.GetEntityType(BarrackID);
+        if BarrackEntityType == Entities.B_BarracksArchers then
+            SetIcon(CurrentWidgetID, g_TexturePositions.Entities[Entities.U_MilitaryBow]);
+        elseif Logic.IsEntityInCategory(BarrackID, EntityCategories.Headquarters) == 1 then
+            SetIcon(CurrentWidgetID, g_TexturePositions.Entities[Entities.U_Thief]);
+        else
+            SetIcon(CurrentWidgetID, g_TexturePositions.Entities[Entities.U_MilitarySword]);
+        end
+
+        local Visible = true;
+        if  BarrackEntityType ~= Entities.B_Barracks
+        and BarrackEntityType ~= Entities.B_BarracksArchers
+        and Logic.IsEntityInCategory(BarrackID, EntityCategories.Headquarters) == 0 then
+            Visible = false;
+        end
+        if Logic.IsConstructionComplete(BarrackID) == 0 then
+            Visible = false;
+        end
+
+        local Available = true;
+        if Logic.IsEntityInCategory(BarrackID, EntityCategories.Headquarters) == 1 then
+            local PlayerID = GUI.GetPlayerID();
+            local TechnologyState = Logic.TechnologyGetState(PlayerID, Technologies.R_Thieves);
+            if EnableRights == true then
+                if TechnologyState == TechnologyStates.Locked then
+                    Visible = false;
+                end
+                if TechnologyState ~= TechnologyStates.Researched then
+                    Available = false;
+                end
+            end
+        end
+        if Available then
+            if ModuleMilitaryLimit.Local.RecruitLocked[PlayerID] then
+                Available = false;
+            end
+        end
+
+        XGUIEng.ShowWidget(CurrentWidgetID, (Visible and 1) or 0);
+        XGUIEng.DisableButton(CurrentWidgetID, (Available and 0) or 1);
     end
 
     function GUI_Military.RefillClicked()
@@ -298,6 +364,7 @@ function ModuleMilitaryLimit.Local:OverrideUI()
                     -- local Selection = {GUI.GetSelectedEntities()};
                     local Selection = table.copy(g_MultiSelection.EntityList);
                     ModuleMilitaryLimit.Local.SelectionBackup = Selection;
+                    ModuleMilitaryLimit.Local.RefillLocked[PlayerID] = true;
                     GUI.ClearSelection();
 
                     API.BroadcastScriptCommand(
@@ -305,9 +372,35 @@ function ModuleMilitaryLimit.Local:OverrideUI()
                         PlayerID,
                         BarracksID,
                         LeaderID,
-                        table.concat(Costs, ",")
+                        Costs
                     );
                 end
+            end
+        end
+    end
+
+    function GUI_Military.RefillUpdate()
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local PlayerID = GUI.GetPlayerID();
+        local LeaderID = GUI.GetSelectedEntity();
+        local SelectedEntities = {GUI.GetSelectedEntities()};
+        if LeaderID == nil
+        or Logic.IsEntityInCategory(LeaderID, EntityCategories.Leader) == 0 
+        or #SelectedEntities > 1 then
+            XGUIEng.ShowWidget(CurrentWidgetID, 0);
+            return;
+        end
+        local RefillerID = Logic.GetRefillerID(LeaderID);
+        local MaxSoldiers = Logic.LeaderGetMaxNumberOfSoldiers(LeaderID);
+        local CurrentSoldiers = Logic.GetSoldiersAttachedToLeader(LeaderID);
+        if RefillerID == 0
+        or CurrentSoldiers == MaxSoldiers then
+            XGUIEng.DisableButton(CurrentWidgetID, 1);
+        else
+            if ModuleMilitaryLimit.Local.RefillLocked[PlayerID] then
+                XGUIEng.DisableButton(CurrentWidgetID, 1);
+            else
+                XGUIEng.DisableButton(CurrentWidgetID, 0);
             end
         end
     end
