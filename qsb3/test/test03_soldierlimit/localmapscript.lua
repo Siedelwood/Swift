@@ -41,3 +41,13 @@ end
 function Mission_LocalOnQsbLoaded()
 end
 
+
+function ActivateTestSetting()
+    Display.BeginEnvironmentParameterSet(nil, 0.0, 1.0)
+	SunnySettingsID = Display.AddEnvironmentSettings("ThroneRoom.xml")
+	GUI.SendScriptCommand(string.format(
+        [[Logic.AddWeatherElement(1, 40, 1, %d, 0, 30)]],
+        SunnySettingsID
+    ));
+    Display.EndEnvironmentParameterSet()
+end

@@ -626,11 +626,21 @@ function Swift:DispatchScriptCommand(_ID, ...)
         local PlayerName = Logic.GetPlayerName(NamePlayerID);
         local Parameters = self:EncodeScriptCommandParameters(unpack(arg));
         GUI.SetPlayerName(NamePlayerID, Parameters);
-        GUI.SetSoldierPaymentLevel(_ID);
+
+        if Framework.IsNetworkGame() and self:IsHistoryEdition() then
+            GUI.SetSoldierPaymentLevel(_ID);
+        else
+            GUI.SendScriptCommand(string.format(
+                [[Swift:ProcessScriptCommand(%d, %d)]],
+                GUI.GetPlayerID(),
+                _ID
+            ));
+        end
         info(string.format(
             "Dispatching script command %s to global.",
             self.m_ScriptCommandRegister[_ID]
         ), true);
+
         GUI.SetPlayerName(NamePlayerID, PlayerName);
         GUI.SetSoldierPaymentLevel(PlayerSoldierPaymentLevel[PlayerID]);
     end
