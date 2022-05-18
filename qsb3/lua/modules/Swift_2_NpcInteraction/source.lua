@@ -1,7 +1,7 @@
 --[[
 Swift_2_NpcInteraction/Source
 
-Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
 This file is part of Swift. Swift is created by totalwarANGEL.
 You may use and modify this file unter the terms of the MIT licence.
@@ -14,6 +14,7 @@ ModuleNpcInteraction = {
     },
 
     Global = {
+        Interactions = {},
         NPC = {},
     };
     Local  = {};
@@ -52,6 +53,13 @@ function ModuleNpcInteraction.Global:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.NpcInteraction then
         QSB.Npc.LastNpcEntityID = arg[1];
         QSB.Npc.LastHeroEntityID = arg[2];
+        self.Interactions[arg[1]] = self.Interactions[arg[1]] or {};
+        if self.Interactions[arg[1]][arg[2]] then
+            if Logic.GetCurrentTurn() <= self.Interactions[arg[1]][arg[2]] + 5 then
+                return;
+            end
+        end
+        self.Interactions[arg[1]][arg[2]] = Logic.GetCurrentTurn();
         self:PerformNpcInteraction(arg[3]);
     end
 end
@@ -61,7 +69,7 @@ function ModuleNpcInteraction.Global:CreateNpc(_Data)
         Name              = _Data.Name,
         Active            = true,
         Type              = _Data.Type or 1,
-        Player            = _Data.Player or 1,
+        Player            = _Data.Player or {1, 2, 3, 4, 5, 6, 7, 8},
         WrongPlayerAction = _Data.WrongPlayerAction,
         Hero              = _Data.Hero,
         WrongHeroAction   = _Data.WrongHeroAction,
@@ -111,7 +119,7 @@ function ModuleNpcInteraction.Global:PerformNpcInteraction(_PlayerID)
         self:RotateActorsToEachother(_PlayerID);
         self:AdjustHeroTalkingDistance(Data.Distance);
 
-        if not self:InteractionIsAppropriatePlayer(ScriptName, _PlayerID) then
+        if not self:InteractionIsAppropriatePlayer(ScriptName, _PlayerID, QSB.Npc.LastHeroEntityID) then
             return;
         end
         Data.TalkedTo = QSB.Npc.LastHeroEntityID;
@@ -121,10 +129,10 @@ function ModuleNpcInteraction.Global:PerformNpcInteraction(_PlayerID)
         end
 
         if Data.Condition == nil
-        or Data:Condition() then
+        or Data:Condition(_PlayerID, QSB.Npc.LastHeroEntityID) then
             Data.Active = false;
             if Data.Callback then
-                Data:Callback();
+                Data:Callback(_PlayerID, QSB.Npc.LastHeroEntityID);
             end
         else
             Data.TalkedTo = 0;
@@ -134,22 +142,23 @@ function ModuleNpcInteraction.Global:PerformNpcInteraction(_PlayerID)
     end
 end
 
-function ModuleNpcInteraction.Global:InteractionIsAppropriatePlayer(_ScriptName, _PlayerID)
+function ModuleNpcInteraction.Global:InteractionIsAppropriatePlayer(_ScriptName, _PlayerID, _HeroID)
     local Appropriate = true;
     if self.NPC[_ScriptName] then
         local Data = self.NPC[_ScriptName];
         if Data.Player ~= nil then
             if type(Data.Player) == "table" then
                 Appropriate = table.contains(Data.Player, _PlayerID);
+            else
+                Appropriate = Data.Player == _PlayerID;
             end
-            Appropriate = Data.Player == _PlayerID;
 
             if not Appropriate then
                 local LastTime = (Data.WrongHeroTick or 0) +1;
                 local CurrentTime = Logic.GetTime();
                 if Data.WrongPlayerAction and LastTime < CurrentTime then
                     self.NPC[_ScriptName].LastWongPlayerTick = CurrentTime;
-                    Data:WrongPlayerAction();
+                    Data:WrongPlayerAction(_PlayerID);
                 end
             end
         end
@@ -172,7 +181,7 @@ function ModuleNpcInteraction.Global:InteractionIsAppropriateHero(_ScriptName)
                 local CurrentTime = Logic.GetTime();
                 if Data.WrongHeroAction and LastTime < CurrentTime then
                     self.NPC[_ScriptName].WrongHeroTick = CurrentTime;
-                    Data:WrongHeroAction();
+                    Data:WrongHeroAction(QSB.Npc.LastHeroEntityID);
                 end
             end
         end

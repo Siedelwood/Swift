@@ -1,12 +1,14 @@
 --[[
 Swift_2_CastleStore/Source
 
-Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
 This file is part of Swift. Swift is created by totalwarANGEL.
 You may use and modify this file unter the terms of the MIT licence.
 (See https://en.wikipedia.org/wiki/MIT_License)
 ]]
+
+SCP.CastleStore = {};
 
 ModuleCastleStore = {
     Properties = {
@@ -107,6 +109,13 @@ QSB.CastleStorePlayerData = {};
 function ModuleCastleStore.Global:OnGameStart()
     QSB.CastleStore = self.CastleStore;
     
+    API.RegisterScriptCommand("Cmd_CastleStoreAcceptAllGoods", SCP.CastleStore.AcceptAllGoods);
+    API.RegisterScriptCommand("Cmd_CastleStoreLockAllGoods", SCP.CastleStore.LockAllGoods);
+    API.RegisterScriptCommand("Cmd_CastleStoreRefuseAllGoods", SCP.CastleStore.RefuseAllGoods);
+    API.RegisterScriptCommand("Cmd_CastleStoreToggleGoodState", SCP.CastleStore.ToggleGoodState);
+    API.RegisterScriptCommand("Cmd_CastleStoreObjectPayStep1", SCP.CastleStore.ObjectPayStep1);
+    API.RegisterScriptCommand("Cmd_CastleStoreObjectPayStep3", SCP.CastleStore.ObjectPayStep3);
+    
     for i= 1, 8 do
         self.BackupGoods[i] = {};
     end
@@ -123,7 +132,6 @@ function ModuleCastleStore.Global.CastleStore:New(_PlayerID)
         self.UpdateCastleStoreInitalized = true;
         API.StartHiResJob(function()
             ModuleCastleStore.Global.CastleStore:UpdateStores()
-        
         end);
     end
     Logic.ExecuteInLuaLocalState([[
@@ -690,63 +698,27 @@ function ModuleCastleStore.Local.CastleStore:OnStorehouseTabClicked(_PlayerID)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
     QSB.CastleStorePlayerData[_PlayerID].StoreMode = 1;
     self:UpdateBehaviorTabs(_PlayerID);
-    GUI.SendScriptCommand([[
-        local Store = QSB.CastleStore:GetInstance(]] .._PlayerID.. [[);
-        for k, v in pairs(Store.Goods) do
-            Store:SetGoodAccepted(k, true);
-            Store:SetGoodLocked(k, false);
-        end
-    ]]);
+    API.BroadcastScriptCommand(QSB.ScriptCommands.CastleStoreAcceptAllGoods, _PlayerID);
 end
 
 function ModuleCastleStore.Local.CastleStore:OnCityTabClicked(_PlayerID)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
     QSB.CastleStorePlayerData[_PlayerID].StoreMode = 2;
     self:UpdateBehaviorTabs(_PlayerID);
-    GUI.SendScriptCommand([[
-        local Store = QSB.CastleStore:GetInstance(]] .._PlayerID.. [[);
-        for k, v in pairs(Store.Goods) do
-            Store:SetGoodAccepted(k, true);
-            Store:SetGoodLocked(k, true);
-        end
-    ]]);
+    API.BroadcastScriptCommand(QSB.ScriptCommands.CastleStoreLockAllGoods, _PlayerID);
 end
 
 function ModuleCastleStore.Local.CastleStore:OnMultiTabClicked(_PlayerID)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
     QSB.CastleStorePlayerData[_PlayerID].StoreMode = 3;
     self:UpdateBehaviorTabs(_PlayerID);
-    GUI.SendScriptCommand([[
-        local Store = QSB.CastleStore:GetInstance(]] .._PlayerID.. [[);
-        for k, v in pairs(Store.Goods) do
-            Store:SetGoodLocked(k, false);
-            Store:SetGoodAccepted(k, false);
-        end
-    ]]);
+    API.BroadcastScriptCommand(QSB.ScriptCommands.CastleStoreRefuseAllGoods, _PlayerID);
 end
 
 function ModuleCastleStore.Local.CastleStore:GoodClicked(_PlayerID, _GoodType)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
     if self:HasCastleStore(_PlayerID) then
-        local CurrentWirgetID = XGUIEng.GetCurrentWidgetID();
-        GUI.SendScriptCommand([[
-            local Store = QSB.CastleStore:GetInstance(]] .._PlayerID.. [[);
-            local Accepted = Store:IsGoodAccepted(]] .._GoodType.. [[)
-            local Locked   = Store:IsGoodLocked(]] .._GoodType.. [[)
-            
-            if Accepted and not Locked then
-                Store:SetGoodLocked(]] .._GoodType.. [[, true);
-                Store:SetGoodAccepted(]] .._GoodType.. [[, true);
-            elseif Accepted and Locked then
-                Store:SetGoodLocked(]] .._GoodType.. [[, false);
-                Store:SetGoodAccepted(]] .._GoodType.. [[, false);
-            elseif not Accepted and not Locked then
-                Store:SetGoodAccepted(]] .._GoodType.. [[, true);
-            else
-                Store:SetGoodLocked(]] .._GoodType.. [[, false);
-                Store:SetGoodAccepted(]] .._GoodType.. [[, true);
-            end
-        ]]);
+        API.BroadcastScriptCommand(QSB.ScriptCommands.CastleStoreToggleGoodState, _PlayerID, _GoodType);
     end
 end
 
@@ -1003,20 +975,18 @@ function ModuleCastleStore.Local:OverwriteInteractiveObject()
                 GUI_Interaction.InteractiveObjectClicked_Orig_CastleStore();
                 return;
             end
-            GUI.SendScriptCommand(string.format("ModuleCastleStore.Global:InteractiveObjectPayStep1(%d, '%s')", PlayerID, ScriptName));
+            API.BroadcastScriptCommand(QSB.ScriptCommands.CastleStoreObjectPayStep1, PlayerID, ScriptName);
         end
 
         -- Send additional click event
-        local KnightIDs = {};
-        Logic.GetKnights(PlayerID, KnightIDs);
-        local KnightID = API.GetClosestToTarget(EntityID, KnightIDs);
-        GUI.SendScriptCommand(string.format(
-            [[API.SendScriptEvent(QSB.ScriptEvents.ObjectClicked, %d, %d, %d)]],
-            EntityID,
-            KnightID,
-            PlayerID
-        ));
-        API.SendScriptEvent(QSB.ScriptEvents.ObjectClicked, EntityID, KnightID, PlayerID);
+        -- This event is supposed to be used in singleplayer only.
+        if not Framework.IsNetworkGame() then
+            local KnightIDs = {};
+            Logic.GetKnights(PlayerID, KnightIDs);
+            local KnightID = API.GetClosestToTarget(EntityID, KnightIDs);
+            API.SendScriptEventToGlobal(QSB.ScriptEvents.ObjectClicked, EntityID, KnightID, PlayerID);
+            API.SendScriptEvent(QSB.ScriptEvents.ObjectClicked, EntityID, KnightID, PlayerID);
+        end
     end
 end
 
@@ -1388,8 +1358,8 @@ function ModuleCastleStore.Local:InteractiveObjectPayStep2(_PlayerID, _ScriptNam
     if _ScriptName == nil then
         return;
     end
-    GUI.ExecuteObjectInteraction(GetID(_ScriptName), _PlayerID)
-    GUI.SendScriptCommand(string.format("ModuleCastleStore.Global:InteractiveObjectPayStep3(%d, '%s')", _PlayerID, _ScriptName));
+    GUI.ExecuteObjectInteraction(GetID(_ScriptName), _PlayerID);
+    API.BroadcastScriptCommand(QSB.ScriptCommands.CastleStoreObjectPayStep3, _PlayerID, _ScriptName);
 end
 
 -- -------------------------------------------------------------------------- --

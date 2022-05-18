@@ -1,7 +1,7 @@
 --[[
 Swift_1_DisplayCore/Source
 
-Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
 This file is part of Swift. Swift is created by totalwarANGEL.
 You may use and modify this file unter the terms of the MIT licence.
@@ -249,7 +249,7 @@ function ModuleDisplayCore.Local:InterfaceActivateColoredBackground(_R, _G, _B, 
     XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 1);
     XGUIEng.SetMaterialColor("/InGame/Root/Normal/PauseScreen", 0, _R, _G, _B, _A);
 
-    GUI.SendScriptCommand(string.format("API.SendScriptEvent(QSB.ScriptEvents.BlackScreenShown, %d)", GUI.GetPlayerID()));
+    API.SendScriptEventToGlobal( QSB.ScriptEvents.BlackScreenShown, GUI.GetPlayerID());
     API.SendScriptEvent(QSB.ScriptEvents.BlackScreenShown, GUI.GetPlayerID());
 end
 
@@ -263,7 +263,7 @@ function ModuleDisplayCore.Local:InterfaceDeactivateColoredBackground()
     XGUIEng.SetMaterialColor("/InGame/Root/Normal/PauseScreen", 0, 40, 40, 40, 180);
     XGUIEng.PopPage();
 
-    GUI.SendScriptCommand(string.format("API.SendScriptEvent(QSB.ScriptEvents.BlackScreenHidden, %d)", GUI.GetPlayerID()));
+    API.SendScriptEventToGlobal( QSB.ScriptEvents.BlackScreenHidden, GUI.GetPlayerID());
     API.SendScriptEvent(QSB.ScriptEvents.BlackScreenHidden, GUI.GetPlayerID());
 end
 
@@ -281,11 +281,11 @@ function ModuleDisplayCore.Local:InterfaceDeactivateBorderScroll(_PositionID)
     Camera.RTS_SetZoomFactorMax(0.5001);
     Camera.RTS_SetZoomFactorMin(0.4999);
 
-    GUI.SendScriptCommand(string.format(
-        "API.SendScriptEvent(QSB.ScriptEvents.BorderScrollLocked, %d, %d)",
+    API.SendScriptEventToGlobal(
+        QSB.ScriptEvents.BorderScrollLocked,
         GUI.GetPlayerID(),
         (_PositionID or 0)
-    ));
+    );
     API.SendScriptEvent(QSB.ScriptEvents.BorderScrollLocked, GUI.GetPlayerID(), _PositionID);
 end
 
@@ -301,10 +301,7 @@ function ModuleDisplayCore.Local:InterfaceActivateBorderScroll()
     Camera.RTS_SetZoomFactorMax(0.5001);
     Camera.RTS_SetZoomFactorMin(0.0999);
 
-    GUI.SendScriptCommand(string.format(
-        "API.SendScriptEvent(QSB.ScriptEvents.BorderScrollReset, %d)",
-        GUI.GetPlayerID()
-    ));
+    API.SendScriptEventToGlobal(QSB.ScriptEvents.BorderScrollReset, GUI.GetPlayerID());
     API.SendScriptEvent(QSB.ScriptEvents.BorderScrollReset, GUI.GetPlayerID());
 end
 
@@ -357,10 +354,7 @@ function ModuleDisplayCore.Local:InterfaceDeactivateNormalInterface()
         XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Tradepost", 0);
     end
 
-    GUI.SendScriptCommand(string.format(
-        "API.SendScriptEvent(QSB.ScriptEvents.GameInterfaceHidden, %d)",
-        GUI.GetPlayerID()
-    ));
+    API.SendScriptEventToGlobal(QSB.ScriptEvents.GameInterfaceHidden, GUI.GetPlayerID());
     API.SendScriptEvent(QSB.ScriptEvents.GameInterfaceHidden, GUI.GetPlayerID());
 end
 
@@ -413,10 +407,7 @@ function ModuleDisplayCore.Local:InterfaceActivateNormalInterface()
         XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Tradepost", 1);
     end
 
-    GUI.SendScriptCommand(string.format(
-        "API.SendScriptEvent(QSB.ScriptEvents.GameInterfaceShown, %d)",
-        GUI.GetPlayerID()
-    ));
+    API.SendScriptEventToGlobal(QSB.ScriptEvents.GameInterfaceShown, GUI.GetPlayerID());
     API.SendScriptEvent(QSB.ScriptEvents.GameInterfaceShown, GUI.GetPlayerID());
 end
 

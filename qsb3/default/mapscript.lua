@@ -8,7 +8,7 @@
     ***********************************************************************     
 ]]
 
--- Diese Funktion nicht verändern!!
+-- Diese Funktion nicht löschen!!
 function Mission_FirstMapAction()
     Script.Load("maps/externalmap/" ..Framework.GetCurrentMapName().. "/questsystembehavior.lua");
 
@@ -83,8 +83,8 @@ function Mission_LoadFiles()
 end
 
 -- -------------------------------------------------------------------------- --
--- In dieser Funktion können eigene Funktionrn aufgerufen werden. Sie werden
--- atomatisch dann gestartet, wenn die QSB vollständig geladen wurde.
+-- Diese Funktion wird nach Spielstart aufgerufen.
+
 function Mission_OnQsbLoaded()
     -- Testmodus aktivieren
     -- (Auskommentieren, wenn nicht benötigt)

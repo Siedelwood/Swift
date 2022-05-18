@@ -233,8 +233,8 @@
 --     KnightTitleRequirements[KnightTitles.Earl] = {}
 --     KnightTitleRequirements[KnightTitles.Earl].Settlers = 50
 --     KnightTitleRequirements[KnightTitles.Earl].Headquarters = 2
---     KnightTitleRequirements[KnightTitles.Earl].Products = {
---         {GoodCategories.GC_Entertainment, 18},
+--     KnightTitleRequirements[KnightTitles.Earl].Goods = {
+--         {Goods.G_Beer, 18},
 --     }
 --
 --     -- Marquess ----------------------------------------------------------------
@@ -480,8 +480,8 @@ InitKnightTitleTables = function()
     KnightTitleRequirements[KnightTitles.Earl] = {}
     KnightTitleRequirements[KnightTitles.Earl].Settlers = 50
     KnightTitleRequirements[KnightTitles.Earl].Headquarters = 2
-    KnightTitleRequirements[KnightTitles.Earl].Products = {
-        {GoodCategories.GC_Entertainment, 18},
+    KnightTitleRequirements[KnightTitles.Earl].Goods = {
+        {Goods.G_Beer, 18},
     }
 
     -- Marquess ----------------------------------------------------------------

@@ -1,7 +1,7 @@
 --[[
 Swift_0_Core/Swift
 
-Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
 This file is part of Swift. Swift is created by totalwarANGEL.
 You may use and modify this file unter the terms of the MIT licence.
@@ -10,10 +10,15 @@ You may use and modify this file unter the terms of the MIT licence.
 
 API = API or {};
 QSB = QSB or {};
+SCP = SCP or {
+    Core = {}
+};
 
-QSB.Version = "Version 3.0.0 BETA (1.0.6)";
+QSB.Version = "Version 3.0.0 BETA (1.1.5)";
 QSB.Language = "de";
 QSB.HumanPlayerID = 1;
+QSB.ScriptCommandSequence = 2;
+QSB.ScriptCommands = {};
 QSB.ScriptEvents = {};
 QSB.CustomVariable = {};
 
@@ -41,10 +46,11 @@ Swift = {
     m_BehaviorRegister          = {};
     m_ScriptEventRegister       = {};
     m_ScriptEventListener       = {};
+    m_ScriptCommandRegister     = {};
+    m_AIProperties              = {};
     m_Language                  = "de";
     m_Environment               = "global";
     m_ProcessDebugCommands      = false;
-    m_HistoryEdition            = false;
     m_NoQuicksaveConditions     = {};
     m_LogLevel                  = 2;
     m_FileLogLevel              = 3;
@@ -57,12 +63,14 @@ function Swift:LoadCore()
     self:DetectLanguage();
 
     if self:IsGlobalEnvironment() then
-        self:DetectHistoryEdition();
         self:InitalizeDebugModeGlobal();
+        self:InitalizeScriptCommands();
         self:InitalizeEventsGlobal();
+        self:InitalizeAIVariables();
         self:InstallBehaviorGlobal();
         self:OverrideQuestSystemGlobal();
         self:InitalizeCallbackGlobal();
+        self:OverrideOnMPGameStart();
         self:DisableLogicFestival();
         -- Fixme: Causes game freeze
         -- self:LogGlobalCFunctions();
@@ -78,7 +86,9 @@ function Swift:LoadCore()
         -- Fixme: Causes game freeze
         -- self:LogLocalCFunctions();
 
-        -- Human player ID makes only sense in singleplayer context
+        -- Saving human player ID makes only sense in singleplayer context
+        -- cause in multiplayer there would be more than one.
+        -- FIXME Find sufficient solution for this!
         if not Framework.IsNetworkGame() then
             local HumanID = GUI.GetPlayerID();
             GUI.SendScriptCommand("QSB.HumanPlayerID = " ..HumanID);
@@ -89,17 +99,23 @@ function Swift:LoadCore()
     self:LoadExternFiles();
     self:LoadBehaviors();
     -- Random seed
-    local Value = Framework.GetSystemTimeDateString():sub(15, 23):gsub("'", "");
-    math.randomseed(tonumber("1" ..Value));
-    math.random(1, 100);
     -- Copy texture positions
     if self:IsLocalEnvironment() then
         StartSimpleJobEx(function()
-            GUI.SendScriptCommand(string.format(
-                [[g_TexturePositions = %s]],
-                table.tostring(g_TexturePositions)
-            ));
-            return true;
+            if Logic.GetTime() > 1 then
+                for k, v in pairs(g_TexturePositions) do
+                    for kk, vv in pairs(v) do
+                        Swift:DispatchScriptCommand(
+                            QSB.ScriptCommands.UpdateTexturePosition,
+                            GUI.GetPlayerID(),
+                            k,
+                            kk,
+                            vv
+                        );
+                    end
+                end
+                return true;
+            end
         end);
     end
 end
@@ -139,6 +155,81 @@ function Swift:IsModuleRegistered(_Name)
     for k, v in pairs(self.m_ModuleRegister) do
         return v.Properties and v.Properties.Name == _Name;
     end
+end
+
+-- Random Seed
+
+function Swift:CreateRandomSeed()
+    local Seed = 0;
+    local MapName = Framework.GetCurrentMapName();
+    local MapType = Framework.GetCurrentMapTypeAndCampaignName();
+    local SeedString = Framework.GetMapGUID(MapName, MapType);
+    for PlayerID = 1, 8 do
+        if Logic.PlayerGetIsHumanFlag(PlayerID) and Logic.PlayerGetGameState(PlayerID) ~= 0 then
+            if GUI.GetPlayerID() == PlayerID then
+                local PlayerName = Logic.GetPlayerName(PlayerID);
+                local DateText = Framework.GetSystemTimeDateString();
+                SeedString = SeedString .. PlayerName .. " " .. DateText;
+                for s in SeedString:gmatch(".") do
+                    Seed = Seed + s:byte();
+                end
+                if Framework.IsNetworkGame() then
+                    Swift:DispatchScriptCommand(QSB.ScriptCommands.ProclaimateRandomSeed, 0, Seed);
+                else
+                    GUI.SendScriptCommand("SCP.Core.ProclaimateRandomSeed(" ..Seed.. ")");
+                end
+            end
+            break;
+        end
+    end
+end
+
+function Swift:OverrideOnMPGameStart()
+    GameCallback_OnMPGameStart_Orig_Swift = GameCallback_OnMPGameStart;
+    GameCallback_OnMPGameStart = function()
+        GameCallback_OnMPGameStart_Orig_Swift();
+        Logic.ExecuteInLuaLocalState("Swift:CreateRandomSeed()");
+    end
+end
+
+-- Predicate Connectors
+
+NOT = function(_ID, _Predicate)
+    local Predicate = table.copy(_Predicate);
+    local Function = table.remove(Predicate, 1);
+    return not Function(_ID, unpack(Predicate));
+end
+
+XOR = function(_ID, ...)
+    local Predicates = table.copy(arg);
+    local Truths = 0;
+    for i= 1, #Predicates do
+        local Predicate = table.remove(Predicates[i], 1);
+        Truths = Truths + ((Predicate(_ID, unpack(Predicates[i])) and 1) or 0);
+    end
+    return Truths == 1;
+end
+
+ALL = function(_ID, ...)
+    local Predicates = table.copy(arg);
+    for i= 1, #Predicates do
+        local Predicate = table.remove(Predicates[i], 1);
+        if not Predicate(_ID, unpack(Predicates[i])) then
+            return false;
+        end
+    end
+    return true;
+end
+
+ANY = function(_ID, ...)
+    local Predicates = table.copy(arg);
+    for i= 1, #Predicates do
+        local Predicate = table.remove(Predicates[i], 1);
+        if Predicate(_ID, unpack(Predicates[i])) then
+            return true;
+        end
+    end
+    return false;
 end
 
 -- Quests
@@ -316,21 +407,8 @@ end
 
 -- History Edition
 
-function Swift:DetectHistoryEdition()
-    if self:IsLocalEnvironment() then
-        return true;
-    end
-    local EntityID = Logic.CreateEntity(Entities.U_NPC_Amma_NE, 100, 100, 0, 8);
-    MakeInvulnerable(EntityID);
-    if Logic.GetEntityScriptingValue(EntityID, -68) == 8 then
-        Logic.ExecuteInLuaLocalState("Swift.m_HistoryEdition = true");
-        self.m_HistoryEdition = true;
-    end
-    DestroyEntity(EntityID);
-end
-
 function Swift:IsHistoryEdition()
-    return self.m_HistoryEdition == true;
+    return Network.IsNATReady ~= nil;
 end
 
 function Swift:OverrideDoQuicksave()
@@ -503,6 +581,140 @@ function Swift:ConvertTableToString(_Table)
     return String;
 end
 
+-- Local Script Command
+
+function Swift:InitalizeScriptCommands()
+    Swift:CreateScriptCommand("Cmd_SendScriptEvent", API.SendScriptEvent);
+    Swift:CreateScriptCommand("Cmd_GlobalQsbLoaded", SCP.Core.GlobalQsbLoaded);
+    Swift:CreateScriptCommand("Cmd_ProclaimateRandomSeed", SCP.Core.ProclaimateRandomSeed);
+    Swift:CreateScriptCommand("Cmd_RegisterLoadscreenHidden", SCP.Core.LoadscreenHidden);
+    Swift:CreateScriptCommand("Cmd_UpdateCustomVariable", SCP.Core.UpdateCustomVariable);
+    Swift:CreateScriptCommand("Cmd_UpdateTexturePosition", SCP.Core.UpdateTexturePosition);
+end
+
+function Swift:CreateScriptCommand(_Name, _Function)
+    if not self:IsGlobalEnvironment() then
+        return 0;
+    end
+    QSB.ScriptCommandSequence = QSB.ScriptCommandSequence +1;
+    local ID = QSB.ScriptCommandSequence;
+    local Name = _Name;
+    if string.find(_Name, "^Cmd_") then
+        Name = string.sub(_Name, 5);
+    end
+    self.m_ScriptCommandRegister[ID] = {Name, _Function};
+    Logic.ExecuteInLuaLocalState(string.format(
+        [[
+            local ID = %d
+            local Name = "%s"
+            Swift.m_ScriptCommandRegister[ID] = Name
+            QSB.ScriptCommands[Name] = ID
+        ]],
+        ID,
+        Name
+    ));
+    QSB.ScriptCommands[Name] = ID;
+    return ID;
+end
+
+function Swift:DispatchScriptCommand(_ID, ...)
+    if not self:IsLocalEnvironment() then
+        return;
+    end
+    assert(_ID ~= nil);
+    if self.m_ScriptCommandRegister[_ID] then
+        local PlayerID = GUI.GetPlayerID();
+        local NamePlayerID = 8;
+        local PlayerName = Logic.GetPlayerName(NamePlayerID);
+        local Parameters = self:EncodeScriptCommandParameters(unpack(arg));
+        GUI.SetPlayerName(NamePlayerID, Parameters);
+
+        if Framework.IsNetworkGame() and self:IsHistoryEdition() then
+            GUI.SetSoldierPaymentLevel(_ID);
+        else
+            GUI.SendScriptCommand(string.format(
+                [[Swift:ProcessScriptCommand(%d, %d)]],
+                GUI.GetPlayerID(),
+                _ID
+            ));
+        end
+        info(string.format(
+            "Dispatching script command %s to global.",
+            self.m_ScriptCommandRegister[_ID]
+        ), true);
+
+        GUI.SetPlayerName(NamePlayerID, PlayerName);
+        GUI.SetSoldierPaymentLevel(PlayerSoldierPaymentLevel[PlayerID]);
+    end
+end
+
+function Swift:ProcessScriptCommand(_PlayerID, _ID)
+    if not self.m_ScriptCommandRegister[_ID] then
+        return;
+    end
+    local PlayerName = Logic.GetPlayerName(8);
+    local Parameters = self:DecodeScriptCommandParameters(PlayerName);
+    local PlayerID = table.remove(Parameters, 1);
+    if PlayerID ~= 0 and PlayerID ~= _PlayerID then
+        return;
+    end
+    info(string.format(
+        "Processing script command %s in global.",
+        self.m_ScriptCommandRegister[_ID][1]
+    ), true);
+    self.m_ScriptCommandRegister[_ID][2](unpack(Parameters));
+end
+
+function Swift:EncodeScriptCommandParameters(...)
+    local Query = "";
+    for i= 1, #arg do
+        local Parameter = arg[i];
+        if type(Parameter) == "string" then
+            Parameter = string.replaceAll(Parameter, '#', "<<<HT>>>");
+            Parameter = string.replaceAll(Parameter, '"', "<<<QT>>>");
+            if Parameter:len() == 0 then
+                Parameter = "<<<ES>>>";
+            end
+        -- FIXME This covers only array tables!
+        -- (But we shouldn't encourage passing objects anyway!)
+        elseif type(Parameter) == "table" then
+            Parameter = "{" ..table.concat(Parameter, ",") .."}";
+        end
+        if string.len(Query) > 0 then
+            Query = Query .. "#";
+        end
+        Query = Query .. Parameter;
+    end
+    return Query;
+end
+
+function Swift:DecodeScriptCommandParameters(_Query)
+    local Parameters = {};
+    for k, v in pairs(string.slice(_Query, "#")) do
+        local Value = v;
+        Value = string.replaceAll(Value, "<<<HT>>>", '#');
+        Value = string.replaceAll(Value, "<<<QT>>>", '"');
+        Value = string.replaceAll(Value, "<<<ES>>>", '');
+        if Value == nil then
+            Value = nil;
+        elseif Value == "true" or Value == "false" then
+            Value = Value == "true";
+        elseif string.indexOf(Value, "{") == 1 then
+            -- FIXME This covers only array tables!
+            -- (But we shouldn't encourage passing objects anyway!)
+            local ValueTable = string.slice(string.sub(Value, 2, string.len(Value)-1), ",");
+            Value = {};
+            for i= 1, #ValueTable do
+                Value[i] = (tonumber(ValueTable[i]) ~= nil and tonumber(ValueTable[i]) or ValueTable);
+            end
+        elseif tonumber(Value) ~= nil then
+            Value = tonumber(Value);
+        end
+        table.insert(Parameters, Value);
+    end
+    return Parameters;
+end
+
 -- Script Events
 
 function Swift:InitalizeEventsGlobal()
@@ -574,13 +786,37 @@ function Swift:DispatchScriptEvent(_ID, ...)
     end
 end
 
+function Swift:IsAllowedEventParameter(_Parameter)
+    if type(_Parameter) == "function" or type(_Parameter) == "thread" or type(_Parameter) == "userdata" then
+        return false;
+    elseif type(_Parameter) == "table" then
+        for k, v in pairs(_Parameter) do
+            if type(k) ~= "number" and k ~= "n" then
+                return false;
+            end
+            if type(v) == "function" or type(v) == "thread" or type(v) == "userdata" then
+                return false;
+            end
+        end
+    end
+    return true;
+end
+
 -- AI
+
+function Swift:InitalizeAIVariables()
+    for i= 1, 8 do
+        self.m_AIProperties[i] = {};
+    end
+end
 
 function Swift:DisableLogicFestival()
     Swift.Logic_StartFestival = Logic.StartFestival;
     Logic.StartFestival = function(_PlayerID, _Type)
         if Logic.PlayerGetIsHumanFlag(_PlayerID) ~= true then
-            return;
+            if Swift.m_AIProperties[_PlayerID].ForbidFestival == true then
+                return;
+            end
         end
         Swift.Logic_StartFestival(_PlayerID, _Type);
     end
@@ -598,11 +834,14 @@ function Swift:SetCustomVariable(_Name, _Value)
     if type(_Value) ~= "number" then
         Value = [["]] ..Value.. [["]];
     end
-    local Execution = string.format([[Swift:UpdateCustomVariable("%s", %s)]], _Name, Value);
     if GUI then
-        GUI.SendScriptCommand(Execution);
+        Swift:DispatchScriptCommand(QSB.ScriptCommands.UpdateCustomVariable, 0, _Name, Value);
     else
-        Logic.ExecuteInLuaLocalState(Execution);
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[Swift:UpdateCustomVariable("%s", %s)]],
+            _Name,
+            Value
+        ));
     end
 end
 
@@ -709,8 +948,19 @@ end
 
 function Swift_EventJob_WaitForLoadScreenHidden()
     if XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 0 then
-        GUI.SendScriptCommand("Swift.m_LoadScreenHidden = true");
+        Swift:DispatchScriptCommand(QSB.ScriptCommands.RegisterLoadscreenHidden, GUI.GetPlayerID());
         Swift.m_LoadScreenHidden = true;
+        return true;
+    end
+end
+
+function Swift_EventJob_PostTexturesToGlobal()
+    if Logic.GetTime() > 1 then
+        for k, v in pairs(g_TexturePositions) do
+            for kk, vv in pairs(v) do
+                Swift:DispatchScriptCommand(QSB.ScriptCommands.UpdateTexturePosition, GUI.GetPlayerID(), k, kk, v);
+            end
+        end
         return true;
     end
 end

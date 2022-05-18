@@ -1,7 +1,7 @@
 --[[
 Swift_3_BriefingSystem/API
 
-Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
 This file is part of Swift. Swift is created by totalwarANGEL.
 You may use and modify this file unter the terms of the MIT licence.
@@ -147,6 +147,7 @@ function API.StartBriefing(_Briefing, _Name, _PlayerID)
     if not PlayerID and not Framework.IsNetworkGame() then
         PlayerID = QSB.HumanPlayerID;
     end
+    assert(_PlayerID ~= nil);
     if type(_Briefing) ~= "table" then
         local Name = "Briefing #" ..(ModuleBriefingSystem.Global.BriefingCounter +1);
         error("API.StartBriefing (" ..Name.. "): _Briefing must be a table!");
@@ -165,6 +166,20 @@ function API.StartBriefing(_Briefing, _Name, _PlayerID)
         end
     end
     ModuleBriefingSystem.Global:StartBriefing(_Name, PlayerID, _Briefing);
+end
+
+---
+-- Prüft ob für den Spieler gerade ein Briefing aktiv ist.
+--
+-- @param[type=number] _PlayerID ID des Spielers
+-- @return[type=boolean] Briefing ist aktiv
+-- @within Anwenderfunktionen
+--
+function API.IsBriefingActive(_PlayerID)
+    if Swift:IsGlobalEnvironment() then
+        return ModuleBriefingSystem.Global:GetCurrentBriefing(_PlayerID) ~= nil;
+    end
+    return ModuleBriefingSystem.Local:GetCurrentBriefing(_PlayerID) ~= nil;
 end
 
 ---
@@ -198,7 +213,12 @@ function API.AddBriefingPages(_Briefing)
 
         _Briefing.Length = (_Briefing.Length or 0) +1;
         if type(_Page) == "table" then
-            local Identifier;
+            local Identifier = "Page" ..(#_Briefing +1);
+            if _Page.Name then
+                Identifier = _Page.Name;
+            else
+                _Page.Name = Identifier;
+            end
 
             _Page.__Legit = true;
             _Page.GetSelected = function(self)
@@ -210,11 +230,6 @@ function API.AddBriefingPages(_Briefing)
 
             -- Simple camera position
             if _Page.Position then
-                Identifier = #_Briefing +1;
-                if _Page.Name then
-                    Identifier = _Page.Name;
-                end
-
                 local Angle = _Page.Angle;
                 if not Angle then
                     Angle = QSB.Briefing.CAMERA_ANGLEDEFAULT;
@@ -297,13 +312,13 @@ function API.AddBriefingPages(_Briefing)
         if type(_Identifier) == "string" then
             PageID = nil;
             for i= 1, #_Briefing do
-                if _Briefing[i].Name == _Identifier then
+                if type(_Briefing[i]) == "table" and _Briefing[i].Name == _Identifier then
                     PageID = i;
                 end
             end
         end
         if not PageID then
-            error("AA (Briefing System): Can not find name or ID '".. tostring(_Identifier).. "'!");
+            error("AAN (Briefing System): Can not find name or ID '".. tostring(_Identifier).. "'!");
             return;
         end
         if not _Briefing.PageAnimations[_Identifier] then
@@ -353,14 +368,17 @@ function API.AddBriefingPages(_Briefing)
         local NoSkipping = false;
 
         -- Set page parameters
-        Name = "Page" .. (#_Briefing);
+        if (#arg == 3 and type(arg[1]) == "string")
+        or (#arg >= 4 and type(arg[4]) ~= "boolean") then
+            Name = table.remove(arg, 1);
+        end
         Title = table.remove(arg, 1);
         Text = table.remove(arg, 1);
         if #arg > 0 then
-            Position = table.remove(arg, 1);
+            DialogCam = table.remove(arg, 1) == true;
         end
         if #arg > 0 then
-            DialogCam = table.remove(arg, 1) == true;
+            Position = table.remove(arg, 1);
         end
         if #arg > 0 then
             Action = table.remove(arg, 1);
@@ -589,6 +607,11 @@ end
 -- <td><b>Beschreibung</b></td>
 -- </tr>
 -- <tr>
+-- <td>Name</td>
+-- <td>string</td>
+-- <td>Der interne Name der Page.</td>
+-- </tr>
+-- <tr>
 -- <td>Title</td>
 -- <td>string|table</td>
 -- <td>Der angezeigte Titel der Seite. Es können auch Text Keys oder
@@ -635,13 +658,15 @@ end
 -- -- man die Leerstellen mit nil auffüllen.
 --
 -- -- Fernsicht
--- ASP("Title", "Some important text.", "HQ", false);
+-- ASP("Title", "Some important text.", false, "HQ");
+-- -- Page Name
+-- ASP("Page1", "Title", "Some important text.", false, "HQ");
 -- -- Nahsicht
--- ASP("Title", "Some important text.", "Marcus", true);
+-- ASP("Title", "Some important text.", true, "Marcus");
 -- -- Aktion ausführen
--- ASP("Title", "Some important text.", "Marcus", true, MyFunction);
+-- ASP("Title", "Some important text.", true, "Marcus", MyFunction);
 -- -- Überspringen erlauben/verbieten
--- ASP("Title", "Some important text.", "HQ", nil, nil, true);
+-- ASP("Title", "Some important text.", true, "HQ", nil, true);
 --
 function ASP(...)
     assert(false);

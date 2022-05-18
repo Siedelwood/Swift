@@ -1,7 +1,7 @@
 --[[
 Swift_3_BriefingSystem/Source
 
-Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
 This file is part of Swift. Swift is created by totalwarANGEL.
 You may use and modify this file unter the terms of the MIT licence.
@@ -75,10 +75,15 @@ function ModuleBriefingSystem.Global:OnEvent(_ID, _Event, ...)
             table.tostring(arg[2])
         ));
     elseif _ID == QSB.ScriptEvents.BriefingPageShown then
+        local Page = self.Briefing[arg[1]][arg[2]];
+        if type(Page) == "table" then
+            Page = table.tostring(Page);
+        end
         Logic.ExecuteInLuaLocalState(string.format(
-            [[API.SendScriptEvent(QSB.ScriptEvents.BriefingPageShown, %d, %d)]],
+            [[API.SendScriptEvent(QSB.ScriptEvents.BriefingPageShown, %d, %d, %s)]],
             arg[1],
-            arg[2]
+            arg[2],
+            Page
         ));
     elseif _ID == QSB.ScriptEvents.BriefingOptionSelected then
         self:OnOptionSelected(arg[1], arg[2]);
@@ -102,7 +107,7 @@ function ModuleBriefingSystem.Global:BriefingExecutionController()
         if self.Briefing[i] and not self.Briefing[i].DisplayIngameCutscene then
             local PageID = self.Briefing[i].CurrentPage;
             local Page = self.Briefing[i][PageID];
-            if Page.Duration > 0 then
+            if Page and Page.Duration > 0 then
                 if (Page.Started + Page.Duration) < Logic.GetTime() then
                     self:NextPage(i);
                 end
@@ -169,41 +174,43 @@ function ModuleBriefingSystem.Global:TransformAnimations(_PlayerID)
     if self.Briefing[_PlayerID].PageAnimations then
         for k, v in pairs(self.Briefing[_PlayerID].PageAnimations) do
             local PageID = self:GetPageIDByName(_PlayerID, k);
-            self.Briefing[_PlayerID][PageID].Animations = {};
-            self.Briefing[_PlayerID][PageID].Animations.PurgeOld = v.PurgeOld == true;
-            for i= 1, #v, 1 do               
-                -- Relaive position
-                if #v[i] == 9 then
-                    table.insert(self.Briefing[_PlayerID][PageID].Animations, {
-                        Duration = v[i][9] or (2 * 60),
+            if PageID ~= 0 then
+                self.Briefing[_PlayerID][PageID].Animations = {};
+                self.Briefing[_PlayerID][PageID].Animations.PurgeOld = v.PurgeOld == true;
+                for i= 1, #v, 1 do               
+                    -- Relaive position
+                    if #v[i] == 9 then
+                        table.insert(self.Briefing[_PlayerID][PageID].Animations, {
+                            Duration = v[i][9] or (2 * 60),
 
-                        Start = {
-                            Position = (type(v[i][1]) ~= "table" and {v[i][1],0}) or v[i][1],
-                            Rotation = v[i][2],
-                            Zoom     = v[i][3],
-                            Angle    = v[i][4],
-                        },
-                        End = {
-                            Position = (type(v[i][5]) ~= "table" and {v[i][5],0}) or v[i][5],
-                            Rotation = v[i][6],
-                            Zoom     = v[i][7],
-                            Angle    = v[i][8],
-                        },
-                    });
-                -- Vector
-                elseif #v[i] == 5 then
-                    table.insert(self.Briefing[_PlayerID][PageID].Animations, {
-                        Duration = v[i][5] or (2 * 60),
+                            Start = {
+                                Position = (type(v[i][1]) ~= "table" and {v[i][1],0}) or v[i][1],
+                                Rotation = v[i][2],
+                                Zoom     = v[i][3],
+                                Angle    = v[i][4],
+                            },
+                            End = {
+                                Position = (type(v[i][5]) ~= "table" and {v[i][5],0}) or v[i][5],
+                                Rotation = v[i][6],
+                                Zoom     = v[i][7],
+                                Angle    = v[i][8],
+                            },
+                        });
+                    -- Vector
+                    elseif #v[i] == 5 then
+                        table.insert(self.Briefing[_PlayerID][PageID].Animations, {
+                            Duration = v[i][5] or (2 * 60),
 
-                        Start = {
-                            Position = (type(v[i][1]) ~= "table" and {v[i][1],0}) or v[i][1],
-                            LookAt   = (type(v[i][2]) ~= "table" and {v[i][1],0}) or v[i][2],
-                        },
-                        End = {
-                            Position = (type(v[i][3]) ~= "table" and {v[i][5],0}) or v[i][3],
-                            LookAt   = (type(v[i][4]) ~= "table" and {v[i][1],0}) or v[i][4],
-                        },
-                    });
+                            Start = {
+                                Position = (type(v[i][1]) ~= "table" and {v[i][1],0}) or v[i][1],
+                                LookAt   = (type(v[i][2]) ~= "table" and {v[i][1],0}) or v[i][2],
+                            },
+                            End = {
+                                Position = (type(v[i][3]) ~= "table" and {v[i][5],0}) or v[i][3],
+                                LookAt   = (type(v[i][4]) ~= "table" and {v[i][1],0}) or v[i][4],
+                            },
+                        });
+                    end
                 end
             end
         end
@@ -264,7 +271,8 @@ function ModuleBriefingSystem.Global:DisplayPage(_PlayerID, _PageID)
     API.SendScriptEvent(
         QSB.ScriptEvents.BriefingPageShown,
         _PlayerID,
-        _PageID
+        _PageID,
+        self.Briefing[_PlayerID][_PageID]
     );
 end
 
@@ -322,7 +330,7 @@ function ModuleBriefingSystem.Global:GetPageIDByName(_PlayerID, _Name)
     if type(_Name) == "string" then
         if self.Briefing[_PlayerID] ~= nil then
             for i= 1, #self.Briefing[_PlayerID], 1 do
-                if self.Briefing[_PlayerID][i].Name == _Name then
+                if type(self.Briefing[_PlayerID][i]) == "table" and self.Briefing[_PlayerID][i].Name == _Name then
                     return i;
                 end
             end
@@ -359,7 +367,7 @@ function ModuleBriefingSystem.Local:OnEvent(_ID, _Event, ...)
     elseif _ID == QSB.ScriptEvents.BriefingEnded then
         self:EndBriefing(arg[1], arg[2]);
     elseif _ID == QSB.ScriptEvents.BriefingPageShown then
-        self:DisplayPage(arg[1], arg[2]);
+        self:DisplayPage(arg[1], arg[2], arg[3]);
     elseif _ID == QSB.ScriptEvents.BriefingSkipButtonPressed then
         self:SkipButtonPressed(arg[1]);
     end
@@ -397,10 +405,11 @@ function ModuleBriefingSystem.Local:EndBriefing(_PlayerID, _Briefing)
     Display.SetRenderSky(0);
 end
 
-function ModuleBriefingSystem.Local:DisplayPage(_PlayerID, _PageID)
+function ModuleBriefingSystem.Local:DisplayPage(_PlayerID, _PageID, _PageData)
     if GUI.GetPlayerID() ~= _PlayerID then
         return;
     end
+    self.Briefing[_PlayerID][_PageID] = _PageData;
     self.Briefing[_PlayerID].AnimationQueue = self.Briefing[_PlayerID].AnimationQueue or {};
     self.Briefing[_PlayerID].CurrentPage = _PageID;
     if type(self.Briefing[_PlayerID][_PageID]) == "table" then
@@ -649,11 +658,13 @@ function ModuleBriefingSystem.Local:OnOptionSelected(_PlayerID)
 
     local Selected = XGUIEng.ListBoxGetSelectedIndex(Widget .. "/ListBox")+1;
     local AnswerID = self.Briefing[_PlayerID].MCSelectionOptionsMap[Selected];
-    GUI.SendScriptCommand(string.format(
-        [[API.SendScriptEvent(QSB.ScriptEvents.BriefingOptionSelected, %d, %d)]],
+
+    API.SendScriptEvent(QSB.ScriptEvents.BriefingOptionSelected, _PlayerID, AnswerID);
+    API.BroadcastScriptEventToGlobal(
+        QSB.ScriptEvents.BriefingOptionSelected,
         _PlayerID,
         AnswerID
-    ));
+    );
 end
 
 function ModuleBriefingSystem.Local:ThroneRoomCameraControl(_PlayerID, _Page)
@@ -788,9 +799,9 @@ end
 
 function ModuleBriefingSystem.Local:ConvertPosition(_Table)
     local x, y, z;
-    if _Table and _Table.X then
-        x = _Table.X; y = _Table.Y; z = _Table.Z;
-    elseif _Table and not _Table.X then
+    if _Table and _Table[3] then
+        x = _Table[1]; y = _Table[2]; z = _Table[3];
+    elseif _Table and not _Table[3] then
         x, y, z = Logic.EntityGetPos(GetID(_Table[1]));
         z = z + (_Table[2] or 0);
     end
@@ -832,7 +843,7 @@ function ModuleBriefingSystem.Local:GetPageIDByName(_PlayerID, _Name)
     if type(_Name) == "string" then
         if self.Briefing[_PlayerID] ~= nil then
             for i= 1, #self.Briefing[_PlayerID], 1 do
-                if self.Briefing[_PlayerID][i].Name == _Name then
+                if type(self.Briefing[_PlayerID][i]) == "table" and self.Briefing[_PlayerID][i].Name == _Name then
                     return i;
                 end
             end
@@ -847,14 +858,12 @@ function ModuleBriefingSystem.Local:OverrideThroneRoomFunctions()
     GameCallback_Camera_ThroneRoomLeftClick = function(_PlayerID)
         GameCallback_Camera_ThroneRoomLeftClick_Orig_ModuleBriefingSystem(_PlayerID);
         if _PlayerID == GUI.GetPlayerID() then
-            GUI.SendScriptCommand(string.format(
-                [[API.SendScriptEvent(QSB.ScriptEvents.BriefingLeftClick, %d)]],
-                GUI.GetPlayerID()
-            ));
-            API.SendScriptEvent(
+            -- Must trigger in global script for all players.
+            API.BroadcastScriptEventToGlobal(
                 QSB.ScriptEvents.BriefingLeftClick,
-                GUI.GetPlayerID()
+                _PlayerID
             );
+            API.SendScriptEvent(QSB.ScriptEvents.BriefingLeftClick, _PlayerID);
         end
     end
 
@@ -862,14 +871,12 @@ function ModuleBriefingSystem.Local:OverrideThroneRoomFunctions()
     GameCallback_Camera_SkipButtonPressed = function(_PlayerID)
         GameCallback_Camera_SkipButtonPressed_Orig_ModuleBriefingSystem(_PlayerID);
         if _PlayerID == GUI.GetPlayerID() then
-            GUI.SendScriptCommand(string.format(
-                [[API.SendScriptEvent(QSB.ScriptEvents.BriefingSkipButtonPressed, %d)]],
-                GUI.GetPlayerID()
-            ));
-            API.SendScriptEvent(
+            -- Must trigger in global script for all players.
+            API.BroadcastScriptEventToGlobal(
                 QSB.ScriptEvents.BriefingSkipButtonPressed,
-                GUI.GetPlayerID()
+                _PlayerID
             );
+            API.SendScriptEvent(QSB.ScriptEvents.BriefingSkipButtonPressed, _PlayerID);
         end
     end
 

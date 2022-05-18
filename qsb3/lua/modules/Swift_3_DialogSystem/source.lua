@@ -1,7 +1,7 @@
 --[[
 Swift_3_DialogSystem/Source
 
-Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
 This file is part of Swift. Swift is created by totalwarANGEL.
 You may use and modify this file unter the terms of the MIT licence.
@@ -44,10 +44,12 @@ QSB.Dialog = {
 -- Global ------------------------------------------------------------------- --
 
 function ModuleDialogSystem.Global:OnGameStart()
+    QSB.ScriptEvents.DialogOptionSelected = API.RegisterScriptEvent("Event_DialogOptionSelected");
+
     for i= 1, 8 do
         self.DialogQueue[i] = {};
     end
-    
+
     -- Quests can not be decided while a dialog is active. This must be done to
     -- prevent flickering when a quest ends. Dialog quests themselves must run!
     API.AddDisableDecisionCondition(function(_PlayerID, _Quest)
@@ -64,17 +66,23 @@ function ModuleDialogSystem.Global:OnGameStart()
     end);
 end
 
-function ModuleDialogSystem.Global:OnEvent(_ID, _Event, _PlayerID)
+function ModuleDialogSystem.Global:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.EscapePressed then
-        if self.Dialog[_PlayerID] ~= nil then
-            if Logic.GetTime() - self.Dialog[_PlayerID].PageStartedTime >= 2 then
-                local PageID = self.Dialog[_PlayerID].CurrentPage;
-                local Page = self.Dialog[_PlayerID][PageID];
-                if not self.Dialog[_PlayerID].DisableSkipping and not Page.DisableSkipping and not Page.MC then
-                    self:NextPage(_PlayerID);
+        if self.Dialog[arg[1]] ~= nil then
+            if Logic.GetTime() - self.Dialog[arg[1]].PageStartedTime >= 2 then
+                local PageID = self.Dialog[arg[1]].CurrentPage;
+                local Page = self.Dialog[arg[1]][PageID];
+                if not self.Dialog[arg[1]].DisableSkipping and not Page.DisableSkipping and not Page.MC then
+                    self:NextPage(arg[1]);
                 end
             end
         end
+    elseif _ID == QSB.ScriptEvents.DialogOptionSelected then
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.SendScriptEvent(QSB.ScriptEvents.DialogOptionSelected, %d, %d)]],
+            arg[1], arg[2]
+        ));
+        ModuleDialogSystem.Global:OnOptionSelected(arg[1], arg[2]);
     end
 end
 
@@ -249,7 +257,7 @@ function ModuleDialogSystem.Global:GetPageIDByName(_PlayerID, _Name)
     if type(_Name) == "string" then
         if self.Dialog[_PlayerID] ~= nil then
             for i= 1, #self.Dialog[_PlayerID], 1 do
-                if self.Dialog[_PlayerID][i].Name == _Name then
+                if type(self.Dialog[_PlayerID][i]) == "table" and self.Dialog[_PlayerID][i].Name == _Name then
                     return i;
                 end
             end
@@ -270,6 +278,8 @@ end
 -- Local -------------------------------------------------------------------- --
 
 function ModuleDialogSystem.Local:OnGameStart()
+    QSB.ScriptEvents.DialogOptionSelected = API.RegisterScriptEvent("Event_DialogOptionSelected");
+
     API.StartHiResJob(function()
         for i= 1, 8 do
             ModuleDialogSystem.Local:Update(i);
@@ -382,7 +392,7 @@ function ModuleDialogSystem.Local:DisplayPage(_PlayerID, _PageData)
             Camera.RTS_FollowEntity(0);
         end
         if _PageData.Position then
-            Camera.RTS_ScrollSetLookAt(_PageData.Position.X, _PageData.Position.Y);
+            Camera.RTS_SetLookAtPosition(_PageData.Position.X, _PageData.Position.Y);
         end
         if _PageData.Zoom then
             Camera.RTS_SetZoomFactorMin(_PageData.Zoom -0.00001);
@@ -499,11 +509,11 @@ function ModuleDialogSystem.Local:OnOptionSelected(_PlayerID)
 
     local Selected = XGUIEng.ListBoxGetSelectedIndex(Widget .. "/ListBox")+1;
     local AnswerID = self.Dialog[_PlayerID].MCSelectionOptionsMap[Selected];
-    GUI.SendScriptCommand(string.format(
-        "ModuleDialogSystem.Global:OnOptionSelected(%d, %d)",
+    API.BroadcastScriptEventToGlobal(
+        QSB.ScriptEvents.DialogOptionSelected,
         _PlayerID,
         AnswerID
-    ))
+    );
 end
 
 function ModuleDialogSystem.Local:Update(_PlayerID)

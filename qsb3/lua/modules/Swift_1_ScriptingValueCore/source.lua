@@ -1,7 +1,7 @@
 --[[
 Swift_1_ScriptingValueCore/Source
 
-Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
 This file is part of Swift. Swift is created by totalwarANGEL.
 You may use and modify this file unter the terms of the MIT licence.
@@ -42,7 +42,7 @@ ModuleScriptingValue = {
 -- Global ------------------------------------------------------------------- --
 
 function ModuleScriptingValue.Global:OnGameStart()
-    if QSB.HistoryEdition == true then
+    if API.IsHistoryEdition() then
         ModuleScriptingValue.Shared.SV.Game = "HistoryEdition";
     end
     QSB.ScriptingValue = ModuleScriptingValue.Shared.SV[ModuleScriptingValue.Shared.SV.Game];
@@ -51,7 +51,7 @@ end
 -- Local -------------------------------------------------------------------- --
 
 function ModuleScriptingValue.Local:OnGameStart()
-    if QSB.HistoryEdition == true then
+    if API.IsHistoryEdition() then
         ModuleScriptingValue.Shared.SV.Game = "HistoryEdition";
     end
     QSB.ScriptingValue = ModuleScriptingValue.Shared.SV[ModuleScriptingValue.Shared.SV.Game];

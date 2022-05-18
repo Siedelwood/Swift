@@ -1,12 +1,14 @@
 --[[
 Swift_2_SelectioN/Source
 
-Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
 This file is part of Swift. Swift is created by totalwarANGEL.
 You may use and modify this file unter the terms of the MIT licence.
 (See https://en.wikipedia.org/wiki/MIT_License)
 ]]
+
+SCP.Selection = {};
 
 ModuleSelection = {
     Properties = {
@@ -93,14 +95,19 @@ ModuleSelection = {
 function ModuleSelection.Global:OnGameStart()
     QSB.ScriptEvents.SelectionChanged = API.RegisterScriptEvent("Event_SelectionChanged");
 
+    API.RegisterScriptCommand("Cmd_SelectionDestroyEntity", SCP.Selection.DestroyEntity);
+    API.RegisterScriptCommand("Cmd_SelectionSetTaskList", SCP.Selection.SetTaskList);
+    API.RegisterScriptCommand("Cmd_SelectionErectTrebuchet", SCP.Selection.ErectTrebuchet);
+    API.RegisterScriptCommand("Cmd_SelectionDisambleTrebuchet", SCP.Selection.DisambleTrebuchet);
+
     for i= 1, 8 do
         self.SelectedEntities[i] = {};
     end
 end
 
-function ModuleSelection.Global:OnEvent(_ID, _Event, _PlayerID, _OldSelection, _NewSelection)
+function ModuleSelection.Global:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.SelectionChanged then
-        self.SelectedEntities[_PlayerID] = _NewSelection or {};
+        self.SelectedEntities[arg[1]] = arg[3];
     end
 end
 
@@ -210,10 +217,11 @@ function ModuleSelection.Local:OverwriteMilitaryCommands()
             local eType = Logic.GetEntityType(LeaderID);
             GUI.SendCommandStationaryDefend(LeaderID);
             if eType == Entities.U_Trebuchet then
-                GUI.SendScriptCommand(string.format(
-                    [[Logic.SetTaskList(%d, TaskLists.TL_NPC_IDLE)]],
-                    LeaderID
-                ));
+                API.BroadcastScriptCommand(
+                    QSB.ScriptCommands.SelectionSetTaskList,
+                    LeaderID,
+                    TaskLists.TL_NPC_IDLE
+                );
             end
         end
     end
@@ -248,10 +256,10 @@ function ModuleSelection.Local:OverwriteMilitaryErect()
         for i=1, #SelectedEntities, 1 do
             local EntityType = Logic.GetEntityType(SelectedEntities[i]);
             if EntityType == Entities.U_SiegeEngineCart then
-                GUI.SendScriptCommand(string.format(
-                    [[ModuleSelection.Global:MilitaryErectTrebuchet(%d)]],
+                API.BroadcastScriptCommand(
+                    QSB.ScriptCommands.ErectTrebuchet,
                     SelectedEntities[i]
-                ));
+                );
             end
         end
     end
@@ -294,10 +302,10 @@ function ModuleSelection.Local:OverwriteMilitaryDisamble()
         for i=1, #SelectedEntities, 1 do
             local EntityType = Logic.GetEntityType(SelectedEntities[i]);
             if EntityType == Entities.U_Trebuchet then
-                GUI.SendScriptCommand(string.format(
-                    [[ModuleSelection.Global:MilitaryDisambleTrebuchet(%d)]],
+                API.BroadcastScriptCommand(
+                    QSB.ScriptCommands.DisambleTrebuchet,
                     SelectedEntities[i]
-                ));
+                );
             end
         end
     end
@@ -329,13 +337,20 @@ function ModuleSelection.Local:OnSelectionCanged(_Source)
     self.SelectedEntities[PlayerID] = SelectedEntities;
     local NewSelectionString = Swift:ConvertTableToString(self.SelectedEntities[PlayerID] or {});
 
-    API.SendScriptEvent(QSB.ScriptEvents.SelectionChanged, PlayerID, OldSelection, SelectedEntities);
-    GUI.SendScriptCommand(string.format(
-        [[API.SendScriptEvent(QSB.ScriptEvents.SelectionChanged, %d, %s, %s)]],
+    -- This event is only send on the local machine. Only the local player
+    -- can select units, so the event musn't be send to other players!
+    API.SendScriptEvent(
+        QSB.ScriptEvents.SelectionChanged,
         PlayerID,
-        OldSelectionString,
-        NewSelectionString
-    ));
+        OldSelection[PlayerID],
+        SelectedEntities
+    );
+    API.SendScriptEventToGlobal(
+        QSB.ScriptEvents.SelectionChanged,
+        PlayerID,
+        OldSelection[PlayerID],
+        SelectedEntities
+    );
 
     if EntityID ~= nil then
         if EntityType == Entities.U_SiegeEngineCart then
@@ -441,10 +456,7 @@ function ModuleSelection.Local:OverwriteMilitaryDismount()
             if ModuleSelection.Local.MilitaryRelease then
                 Sound.FXPlay2DSound( "ui\\menu_click");
                 local Soldiers = {Logic.GetSoldiersAttachedToLeader(Selected)};
-                GUI.SendScriptCommand(string.format(
-                    [[DestroyEntity(%d)]],
-                    Soldiers[#Soldiers]
-                ));
+                API.BroadcastScriptCommand(QSB.ScriptCommands.SelectionDestroyEntity, Soldiers[#Soldiers]);
                 return;
             end
         end
@@ -455,10 +467,7 @@ function ModuleSelection.Local:OverwriteMilitaryDismount()
         or Type == Entities.U_MilitarySiegeTower then
             if ModuleSelection.Local.SiegeEngineRelease and Guardian == 0 then
                 Sound.FXPlay2DSound( "ui\\menu_click");
-                GUI.SendScriptCommand(string.format(
-                    [[DestroyEntity(%d)]],
-                    Selected
-                ));
+                API.BroadcastScriptCommand(QSB.ScriptCommands.SelectionDestroyEntity, Selected);
             else
                 GUI_Military.DismountClicked_Orig_ModuleSelection();
             end
@@ -527,7 +536,7 @@ function ModuleSelection.Local:OverwriteThiefDeliver()
         if ThiefID == nil or Logic.GetEntityType(ThiefID) ~= Entities.U_Thief then
             return;
         end
-        GUI.SendScriptCommand(string.format([[DestroyEntity(%d)]], ThiefID));
+        API.BroadcastScriptCommand(QSB.ScriptCommands.SelectionDestroyEntity, ThiefID);
     end
 
     GUI_Thief.ThiefDeliverMouseOver_Orig_ModuleSelection = GUI_Thief.ThiefDeliverMouseOver;

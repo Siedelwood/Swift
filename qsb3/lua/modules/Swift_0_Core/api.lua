@@ -1,7 +1,7 @@
 --[[
 Swift_0_Core/API
 
-Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
 This file is part of Swift. Swift is created by totalwarANGEL.
 You may use and modify this file unter the terms of the MIT licence.
@@ -391,7 +391,8 @@ function API.OverrideTable()
     end
 
     ---
-    -- Gibt die Anzahl an Elementen in einer Table zurück.
+    -- Gibt die Größe des Listenteils der Table zurück, ohne bei der ersten
+    -- Lücke abzubrechen.
     -- @param[type=table] t Quelle
     -- @return[type=number] Anzahl Elemente
     -- @within table
@@ -416,7 +417,7 @@ function API.OverrideTable()
         local c = 0;
         for k, v in pairs(t) do
             -- Ignore n if set
-            if k ~= "n" or (k == "n" and type(k) ~= "number") then
+            if k ~= "n" or (k == "n" and type(v) ~= "number") then
                 c = c +1;
             end
         end
@@ -611,11 +612,13 @@ function API.OverrideString()
     --
     string.slice = function(self, _sep)
         _sep = _sep or "%s";
-        local t = {};
-        for str in string.gmatch(self, "([^".._sep.."]+)") do
-            table.insert(t, str)
-         end
-        return t;
+        if self then
+            local t = {};
+            for str in string.gmatch(self, "([^".._sep.."]+)") do
+                table.insert(t, str);
+            end
+            return t;
+        end
     end
 
     ---
@@ -666,7 +669,7 @@ end
 -- Liste der grundlegenden Script Events.
 --
 -- @field SaveGameLoaded     Ein Spielstand wird geladen.
--- @field EscapePressed      Escape wurde gedrückt. Funktioniert nicht in HE Multiplayer! (Parameter: PlayerID)
+-- @field EscapePressed      Escape wurde gedrückt. (Parameter: PlayerID)
 -- @field QuestFailure       Ein Quest schlug fehl (Parameter: QuestID)
 -- @field QuestInterrupt     Ein Quest wurde unterbrochen (Parameter: QuestID)
 -- @field QuestReset         Ein Quest wurde zurückgesetzt (Parameter: QuestID)
@@ -680,10 +683,10 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 
 -- Script Event Callback --
 
--- The callback is put into a never called local function because LDOC can't
+-- The callback is put into a never called local function because LDoc can't
 -- process the callback when it self is declared local. For ... reasons we do
--- not want to use the -a switch on LDOC so that seems to be the only solution.
--- Creators should never give a funktion this name. But I don't think that
+-- not want to use the -a switch on LDoc so that seems to be the only solution.
+-- Creators should never give a function this name. But I don't think that
 -- will be very likley to happen. ;)
 local function ThisWillForeverBeLostToTheVoidBecauseNoOneComesUpWithThat()
     ---
@@ -753,6 +756,73 @@ end
 --
 function API.IsHistoryEditionNetworkGame()
     return API.IsHistoryEdition() and Framework.IsNetworkGame();
+end
+
+---
+-- Gibt den Slot zurück, den der Spieler einnimmt. Hat der Spieler keinen
+-- Slot okkupiert oder ist nicht menschlich, wird -1 zurückgegeben.
+--
+-- <h5>Multiplayer</h5>
+-- Nur für Multiplayer ausgelegt! Nicht im Singleplayer nutzen!
+--
+-- @return[type=number] ID des Player
+-- @return[type=number] Slot ID des Player
+-- @within Base
+--
+function API.GetPlayerSlotID(_PlayerID)
+    for i= 1, 8 do
+        if Network.IsNetworkSlotIDUsed(i) then
+            local CurrentPlayerID = Logic.GetSlotPlayerID(i);
+            if  Logic.PlayerGetIsHumanFlag(CurrentPlayerID)
+            and CurrentPlayerID == _PlayerID then
+                return i;
+            end
+        end
+    end
+    return -1;
+end
+
+---
+-- Gibt den Spieler zurück, welcher den Slot okkupiert. Hat der Slot keinen
+-- Spieler oder ist der Spieler nicht menschlich, wird -1 zurückgegeben.
+--
+-- <h5>Multiplayer</h5>
+-- Nur für Multiplayer ausgelegt! Nicht im Singleplayer nutzen!
+--
+-- @return[type=number] Slot ID des Player
+-- @return[type=number] ID des Player
+-- @within Base
+--
+function API.GetSlotPlayerID(_SlotID)
+    if Network.IsNetworkSlotIDUsed(_SlotID) then
+        local CurrentPlayerID = Logic.GetSlotPlayerID(_SlotID);
+        if Logic.PlayerGetIsHumanFlag(CurrentPlayerID)  then
+            return CurrentPlayerID;
+        end
+    end
+    return -1;
+end
+
+---
+-- Gibt eine Liste aller Spieler im Spiel zurück.
+--
+-- <h5>Multiplayer</h5>
+-- Nur für Multiplayer ausgelegt! Nicht im Singleplayer nutzen!
+--
+-- @return[type=table] Liste der aktiven Spieler
+-- @within Base
+--
+function API.GetActivePlayers()
+    local PlayerList = {};
+    for i= 1, 8 do
+        if Network.IsNetworkSlotIDUsed(i) then
+            local PlayerID = Logic.GetSlotPlayerID(i);
+            if Logic.PlayerGetIsHumanFlag(PlayerID) and Logic.PlayerGetGameState(PlayerID) ~= 0 then
+                table.insert(PlayerList, PlayerID);
+            end
+        end
+    end
+    return PlayerList;
 end
 
 ---
@@ -990,6 +1060,99 @@ function API.IsDebugShellActive()
     return Swift.m_DevelopingShell == true;
 end
 
+---
+-- Beginnt einen überwachten Zeitraum.
+--
+-- @param[type=string] Name des Benchmark
+-- @within Debug
+-- @see API.StopBenchmark
+--
+function API.BeginBenchmark(_Identifier)
+    if not GUI then
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.BeginBenchmark("%s")]],
+            _Identifier
+        ));
+        return;
+    end
+    Swift:BeginBenchmark(_Identifier);
+end
+
+---
+-- Beendet einen überwachten Zeitraum und schreibt die Dauer ins Log.
+--
+-- <b>Exkurs</b>: Wenn die Ausführungsdauer für einen Prozess gemessen wird,
+-- nennt man dies Benchmarking. Dabei wird geschaut, wie lange die Ausführung
+-- des Prozesses dauert.
+--
+-- Dabei gilt, dass man möglichst kleine Werte erziehlen will. Die Zeiten werden
+-- in milisekunden (ms) gemessen.
+--
+-- @param[type=string] Name des Benchmark
+-- @within Debug
+--
+-- @usage
+-- API.BeginBenchmark("HowMuchIsTheFish")
+-- local j= 0
+-- for i= 1, 1000000 do
+--     j = j +1
+-- end
+-- API.StopBenchmark("HowMuchIsTheFish")
+--
+-- -- Ausgabe im Log:
+-- Benchmark 'HowMuchIsTheFish': Execution took 0.015 ms to complete
+--
+function API.StopBenchmark(_Identifier)
+    if not GUI then
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.StopBenchmark("%s")]],
+            _Identifier
+        ));
+        return;
+    end
+    Swift:StopBenchmark(_Identifier);
+end
+
+-- Command
+-- The commands will not appear in the doc to not confuse the users. If they
+-- want to synchronize things in their maps they can use the event system.
+
+function API.RegisterScriptCommand(_Name, _Function)
+    return Swift:CreateScriptCommand(_Name, _Function);
+end
+
+function API.BroadcastScriptCommand(_NameOrID, ...)
+    local ID = _NameOrID;
+    if type(ID) == "string" then
+        for i= 1, #self.m_ScriptCommandRegister, 1 do
+            if self.m_ScriptCommandRegister[i][1] == _NameOrID then
+                ID = i;
+            end
+        end
+    end
+    assert(type(ID) == "number");
+    if not GUI then
+        return;
+    end
+    Swift:DispatchScriptCommand(ID, 0, unpack(arg));
+end
+
+function API.SendScriptCommand(_NameOrID, ...)
+    local ID = _NameOrID;
+    if type(ID) == "string" then
+        for i= 1, #self.m_ScriptCommandRegister, 1 do
+            if self.m_ScriptCommandRegister[i][1] == _NameOrID then
+                ID = i;
+            end
+        end
+    end
+    assert(type(ID) == "number");
+    if not GUI then
+        return;
+    end
+    Swift:DispatchScriptCommand(ID, 0, unpack(arg));
+end
+
 -- Event
 
 ---
@@ -1010,8 +1173,12 @@ end
 -- Sendet das Script Event mit der übergebenen ID und überträgt optional
 -- Parameter.
 --
+-- <h5>Multiplayer</h5>
+-- Im Multiplayer kann diese Funktion nicht benutzt werden, um Script Events
+-- synchron oder asynchron aus dem lokalen im globalen Skript auszuführen.
+--
 -- @param[type=number] _EventID ID des Event
--- @param              ... Optionale Parameter
+-- @param              ... Optionale Parameter (nil, string, number, boolean, (array) table)
 -- @within Event
 --
 -- @usage
@@ -1019,6 +1186,68 @@ end
 --
 function API.SendScriptEvent(_EventID, ...)
     Swift:DispatchScriptEvent(_EventID, unpack(arg));
+end
+
+---
+-- Triggerd ein Script Event im globalen Skript aus dem lokalen Skript.
+--
+-- Das Event wird synchron für alle Spieler gesendet.
+--
+-- @param[type=number] _EventID ID des Event
+-- @param              ... Optionale Parameter (nil, string, number, boolean, (array) table)
+-- @within Event
+--
+-- @usage
+-- API.SendScriptEventToGlobal(SomeEventID, Param1, Param2, ...);
+--
+function API.BroadcastScriptEventToGlobal(_EventID, ...)
+    if not GUI then
+        return;
+    end
+    -- Becase I don't want the user to fuck around with parameters.
+    for k, v in pairs(arg) do
+        if not Swift:IsAllowedEventParameter(v) then
+            error("API.BroadcastScriptEventToGlobal: Parameter " ..k.. " has non appropriate type! (" ..type(v).. ")");
+            return;
+        end
+    end
+    Swift:DispatchScriptCommand(
+        QSB.ScriptCommands.SendScriptEvent,
+        0,
+        _EventID,
+        unpack(arg)
+    );
+end
+
+---
+-- Triggerd ein Script Event im globalen Skript aus dem lokalen Skript.
+--
+-- Das Event wird asynchron für den kontrollierenden Spieler gesendet.
+--
+-- @param[type=number] _EventID ID des Event
+-- @param              ... Optionale Parameter (nil, string, number, boolean, (array) table)
+-- @within Event
+--
+-- @usage
+-- API.SendScriptEventToGlobal(SomeEventID, Param1, Param2, ...);
+--
+function API.SendScriptEventToGlobal(_EventID, ...)
+    if not GUI then
+        return;
+    end
+    -- Becase I don't want the user to fuck around with parameters.
+    for k, v in pairs(arg) do
+        if not Swift:IsAllowedEventParameter(v) then
+            error("API.SendScriptEventToGlobal: Parameter " ..k.. " has non appropriate type! (" ..type(v).. ")");
+            return;
+        end
+    end
+    Swift:DispatchScriptCommand(
+        QSB.ScriptCommands.SendScriptEvent,
+        GUI.GetPlayerID(),
+        _EventID,
+        unpack(arg)
+    );
 end
 
 ---
@@ -1173,80 +1402,16 @@ MakeInvulnerable = function(_Entity)
 end
 
 ---
--- Rotiert ein Entity, sodass es zum Ziel schaut.
---
--- @param _Entity      Entity (Skriptname oder ID)
--- @param _Target      Ziel (Skriptname, ID oder Position)
--- @param[type=number] _Offset Winkel Offset
--- @within Entity
--- @usage API.LookAt("Hakim", "Alandra")
---
-function API.LookAt(_Entity, _Target, _Offset)
-    _Offset = _Offset or 0;
-    local ID1 = GetID(_Entity);
-    if ID1 == 0 then
-        return;
-    end
-    local x1,y1,z1 = Logic.EntityGetPos(ID1);
-    local ID2;
-    local x2, y2, z2;
-    if type(_Target) == "table" then
-        x2 = _Target.X;
-        y2 = _Target.Y;
-        z2 = _Target.Z;
-    else
-        ID2 = GetID(_Target);
-        if ID2 == 0 then
-            return;
-        end
-        x2,y2,z2 = Logic.EntityGetPos(ID2);
-    end
-
-    if not API.IsValidPosition({X= x1, Y= y1, Z= z1}) then
-        return;
-    end
-    if not API.IsValidPosition({X= x2, Y= y2, Z= z2}) then
-        return;
-    end
-    Angle = math.deg(math.atan2((y2 - y1), (x2 - x1))) + _Offset;
-    if Angle < 0 then
-        Angle = Angle + 360;
-    end
-
-    if Logic.IsLeader(ID1) == 1 then
-        local Soldiers = {Logic.GetSoldiersAttachedToLeader(ID1)};
-        for i= 2, Soldiers[1]+1 do
-            Logic.SetOrientation(Soldiers[i], Angle);
-        end
-    end
-    Logic.SetOrientation(ID1, Angle);
-end
-LookAt = API.LookAt;
-
----
--- Lässt zwei Entities sich gegenseitig anschauen.
---
--- @param _entity         Entity (Skriptname oder ID)
--- @param _entityToLookAt Ziel (Skriptname oder ID)
--- @within Entity
--- @usage API.Confront("Hakim", "Alandra")
---
-function API.Confront(_entity, _entityToLookAt)
-    API.LookAt(_entity, _entityToLookAt);
-    API.LookAt(_entityToLookAt, _entity);
-end
-ConfrontEntities = API.LookAt;
-
----
 -- Sendet einen Handelskarren zu dem Spieler. Startet der Karren von einem
 -- Gebäude, wird immer die Position des Eingangs genommen.
 --
--- @param _position                        Position (Skriptname oder Positionstable)
--- @param[type=number] _player             Zielspieler
--- @param[type=number] _good               Warentyp
--- @param[type=number] _amount             Warenmenge
--- @param[type=number] _cartOverlay        (optional) Overlay für Goldkarren
--- @param[type=boolean] _ignoreReservation (optional) Marktplatzreservation ignorieren
+-- @param _Position                        Position (Skriptname oder Entity-ID)
+-- @param[type=number] _PlayerID           Zielspieler
+-- @param[type=number] _GoodType           Warentyp
+-- @param[type=number] _Amount             Warenmenge
+-- @param[type=number] _CartOverlay        (optional) Overlay für Goldkarren
+-- @param[type=boolean] _IgnoreReservation (optional) Marktplatzreservation ignorieren
+-- @param[type=boolean] _Overtake          (optional) Mit Position austauschen
 -- @return[type=number] Entity-ID des erzeugten Wagens
 -- @within Entity
 -- @usage -- API-Call
@@ -1254,62 +1419,66 @@ ConfrontEntities = API.LookAt;
 -- -- Legacy-Call mit ID-Speicherung
 -- local ID = SendCart("Position_1", 5, Goods.G_Wool, 5)
 --
-function API.SendCart(_position, _player, _good, _amount, _cartOverlay, _ignoreReservation)
-    local eID = GetID(_position);
-    if not IsExisting(eID) then
+function API.SendCart(_Position, _PlayerID, _GoodType, _Amount, _CartOverlay, _IgnoreReservation, _Overtake)
+    local OriginalID = GetID(_Position);
+    if not IsExisting(OriginalID) then
         return;
     end
     local ID;
-    local x,y,z = Logic.EntityGetPos(eID);
-    local resCat = Logic.GetGoodCategoryForGoodType(_good);
-    local orientation = Logic.GetEntityOrientation(eID);
-    if Logic.IsBuilding(eID) == 1 then
-        x,y = Logic.GetBuildingApproachPosition(eID);
-        orientation = Logic.GetEntityOrientation(eID)-90;
+    local x,y,z = Logic.EntityGetPos(OriginalID);
+    local ResourceCategory = Logic.GetGoodCategoryForGoodType(_GoodType);
+    local Orientation = Logic.GetEntityOrientation(OriginalID);
+    local ScriptName = Logic.GetEntityName(OriginalID);
+    if Logic.IsBuilding(OriginalID) == 1 then
+        x,y = Logic.GetBuildingApproachPosition(OriginalID);
+        Orientation = Logic.GetEntityOrientation(OriginalID)-90;
     end
 
     -- Macht Waren lagerbar im Lagerhaus
-    if resCat == GoodCategories.GC_Resource or _good == Goods.G_None then
-        local TypeName = Logic.GetGoodTypeName(_good);
-        local Category = Logic.GetGoodCategoryForGoodType(_good);
-        local SHID = Logic.GetStoreHouse(_player);
-        local HQID = Logic.GetHeadquarters(_player);
-        if SHID ~= 0 and Logic.GetIndexOnInStockByGoodType(SHID, _good) == -1 then
-            local CreateSlot = true;
-            if _good ~= Goods.G_Gold or (_good == Goods.G_Gold and HQID == 0) then
+    if ResourceCategory == GoodCategories.GC_Resource or _GoodType == Goods.G_None then
+        local TypeName = Logic.GetGoodTypeName(_GoodType);
+        local SHID = Logic.GetStoreHouse(_PlayerID);
+        local HQID = Logic.GetHeadquarters(_PlayerID);
+        if SHID ~= 0 and Logic.GetIndexOnInStockByGoodType(SHID, _GoodType) == -1 then
+            if _GoodType ~= Goods.G_Gold or (_GoodType == Goods.G_Gold and HQID == 0) then
                 info(
                     "API.SendCart: creating stock for " ..TypeName.. " in" ..
-                    "storehouse of player " .._player.. "."
+                    "storehouse of player " .._PlayerID.. "."
                 );
-                Logic.AddGoodToStock(SHID, _good, 0, true, true);
+                Logic.AddGoodToStock(SHID, _GoodType, 0, true, true);
             end
         end
     end
 
     info("API.SendCart: Creating cart ("..
-        tostring(_position) ..","..
-        tostring(_player) ..","..
-        Logic.GetGoodTypeName(_good) ..","..
-        tostring(_amount) ..","..
-        tostring(_cartOverlay) ..","..
-        tostring(_ignoreReservation) ..
+        tostring(_Position) ..","..
+        tostring(_PlayerID) ..","..
+        Logic.GetGoodTypeName(_GoodType) ..","..
+        tostring(_Amount) ..","..
+        tostring(_CartOverlay) ..","..
+        tostring(_IgnoreReservation) ..
     ")");
 
-    if resCat == GoodCategories.GC_Resource then
-        ID = Logic.CreateEntityOnUnblockedLand(Entities.U_ResourceMerchant, x, y,orientation,_player)
-    elseif _good == Goods.G_Medicine then
-        ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Medicus, x, y,orientation,_player)
-    elseif _good == Goods.G_Gold or _good == Goods.G_None or _good == Goods.G_Information then
-        if _cartOverlay then
-            ID = Logic.CreateEntityOnUnblockedLand(_cartOverlay, x, y,orientation,_player)
+    if ResourceCategory == GoodCategories.GC_Resource then
+        ID = Logic.CreateEntityOnUnblockedLand(Entities.U_ResourceMerchant, x, y, Orientation, _PlayerID);
+    elseif _GoodType == Goods.G_Medicine then
+        ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Medicus, x, y, Orientation,_PlayerID);
+    elseif _GoodType == Goods.G_Gold or _GoodType == Goods.G_None or _GoodType == Goods.G_Information then
+        if _CartOverlay then
+            ID = Logic.CreateEntityOnUnblockedLand(_CartOverlay, x, y, Orientation, _PlayerID);
         else
-            ID = Logic.CreateEntityOnUnblockedLand(Entities.U_GoldCart, x, y,orientation,_player)
+            ID = Logic.CreateEntityOnUnblockedLand(Entities.U_GoldCart, x, y, Orientation, _PlayerID);
         end
     else
-        ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Marketer, x, y,orientation,_player)
+        ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Marketer, x, y, Orientation, _PlayerID);
     end
     info("API.SendCart: Executing hire merchant...");
-    Logic.HireMerchant( ID, _player, _good, _amount, _player, _ignoreReservation)
+    Logic.HireMerchant(ID, _PlayerID, _GoodType, _Amount, _PlayerID, _IgnoreReservation);
+    if _Overtake and Logic.IsBuilding(OriginalID) == 0 then
+        info("API.SendCart: Cart replaced original.");
+        Logic.SetEntityName(ID, ScriptName);
+        DestroyEntity(OriginalID);
+    end
     info("API.SendCart: Cart has been send successfully.");
     return ID
 end
@@ -1504,47 +1673,6 @@ end
 SetTask = API.SetEntityTaskList;
 
 ---
--- Gibt die Ausrichtung des Entity zurück.
---
--- @param               _Entity  Entity (Scriptname oder ID)
--- @return[type=number] Ausrichtung in Grad
--- @within Entity
---
-function API.GetEntityOrientation(_Entity)
-    local EntityID = GetID(_Entity);
-    if EntityID > 0 then
-        return API.Round(Logic.GetEntityOrientation(EntityID));
-    end
-    error("API.GetEntityOrientation: _Entity (" ..tostring(_Entity).. ") does not exist!");
-    return 0;
-end
-GetOrientation = API.GetEntityOrientation;
-
----
--- Setzt die Ausrichtung des Entity.
---
--- @param               _Entity  Entity (Scriptname oder ID)
--- @param[type=number] _Orientation Neue Ausrichtung
--- @within Entity
---
-function API.SetEntityOrientation(_Entity, _Orientation)
-    if GUI then
-        return;
-    end
-    local EntityID = GetID(_Entity);
-    if EntityID > 0 then
-        if type(_Orientation) ~= "number" then
-            error("API.SetEntityOrientation: _Orientation is wrong!");
-            return
-        end
-        Logic.SetOrientation(EntityID, API.Round(_Orientation));
-    else
-        error("API.SetEntityOrientation: _Entity (" ..tostring(_Entity).. ") does not exist!");
-    end
-end
-SetOrientation = API.SetEntityOrientation;
-
----
 -- Gibt die Menge an Rohstoffen des Entity zurück. Optional kann
 -- eine neue Menge gesetzt werden.
 --
@@ -1688,6 +1816,78 @@ function API.CreateEntityName(_EntityID)
 end
 GiveEntityName = API.CreateEntityName;
 
+-- Mögliche (zufällige) Siedler, getrennt in männlich und weiblich.
+QSB.PossibleSettlerTypes = {
+    Male = {
+        Entities.U_BannerMaker,
+        Entities.U_Baker,
+        Entities.U_Barkeeper,
+        Entities.U_Blacksmith,
+        Entities.U_Butcher,
+        Entities.U_BowArmourer,
+        Entities.U_BowMaker,
+        Entities.U_CandleMaker,
+        Entities.U_Carpenter,
+        Entities.U_DairyWorker,
+        Entities.U_Pharmacist,
+        Entities.U_Tanner,
+        Entities.U_SmokeHouseWorker,
+        Entities.U_Soapmaker,
+        Entities.U_SwordSmith,
+        Entities.U_Weaver,
+    },
+    Female = {
+        Entities.U_BathWorker,
+        Entities.U_SpouseS01,
+        Entities.U_SpouseS02,
+        Entities.U_SpouseS03,
+        Entities.U_SpouseF01,
+        Entities.U_SpouseF02,
+        Entities.U_SpouseF03,
+    }
+}
+
+---
+-- Wählt aus einer festen Liste von Typen einen zufälligen Siedler-Typ aus.
+-- Es werden nur Stadtsiedler zurückgegeben. Sie können männlich oder
+-- weiblich sein.
+--
+-- @return[type=number] Zufälliger Typ
+-- @within Anwenderfunktionen
+-- @local
+--
+function API.GetRandomSettlerType()
+    local Gender = (math.random(1, 2) == 1 and "Male") or "Female";
+    local Type   = math.random(1, #QSB.PossibleSettlerTypes[Gender]);
+    return QSB.PossibleSettlerTypes[Gender][Type];
+end
+
+---
+-- Wählt aus einer Liste von Typen einen zufälligen männlichen Siedler aus. Es
+-- werden nur Stadtsiedler zurückgegeben.
+--
+-- @return[type=number] Zufälliger Typ
+-- @within Anwenderfunktionen
+-- @local
+--
+function API.GetRandomMaleSettlerType()
+    local Type = math.random(1, #QSB.PossibleSettlerTypes.Male);
+    return QSB.PossibleSettlerTypes.Male[Type];
+end
+
+---
+-- Wählt aus einer Liste von Typen einen zufälligen weiblichen Siedler aus. Es
+-- werden nur Stadtsiedler zurückgegeben.
+--
+-- @return[type=number] Zufälliger Typ
+-- @within Anwenderfunktionen
+-- @local
+--
+function API.GetRandomFemaleSettlerType()
+    local Type = math.random(1, #QSB.PossibleSettlerTypes.Female);
+    return QSB.PossibleSettlerTypes.Female[Type];
+end
+
 -- Group
 
 ---
@@ -1746,7 +1946,7 @@ function API.GetGroupLeader(_Entity)
         error("API.GetGroupLeader: _Entity (" ..tostring(_Entity).. ") does not exist!");
         return 0;
     end
-    if Logic.IsEntityInCategory(EntityID, EntityCategories.Soldier) == 0 then 
+    if Logic.IsEntityInCategory(EntityID, EntityCategories.Soldier) == 0 then
         return 0;
     end
     return Logic.SoldierGetLeaderEntityID(EntityID);
@@ -1870,7 +2070,113 @@ function API.InteractiveObjectDeactivate(_ScriptName)
 end
 InteractiveObjectDeactivate = API.InteractiveObjectDeactivate;
 
--- Position
+-- Position And Orientation
+
+---
+-- Gibt die Ausrichtung des Entity zurück.
+--
+-- @param               _Entity  Entity (Scriptname oder ID)
+-- @return[type=number] Ausrichtung in Grad
+-- @within Entity
+--
+function API.GetEntityOrientation(_Entity)
+    local EntityID = GetID(_Entity);
+    if EntityID > 0 then
+        return API.Round(Logic.GetEntityOrientation(EntityID));
+    end
+    error("API.GetEntityOrientation: _Entity (" ..tostring(_Entity).. ") does not exist!");
+    return 0;
+end
+GetOrientation = API.GetEntityOrientation;
+
+---
+-- Setzt die Ausrichtung des Entity.
+--
+-- @param               _Entity  Entity (Scriptname oder ID)
+-- @param[type=number] _Orientation Neue Ausrichtung
+-- @within Entity
+--
+function API.SetEntityOrientation(_Entity, _Orientation)
+    if GUI then
+        return;
+    end
+    local EntityID = GetID(_Entity);
+    if EntityID > 0 then
+        if type(_Orientation) ~= "number" then
+            error("API.SetEntityOrientation: _Orientation is wrong!");
+            return
+        end
+        Logic.SetOrientation(EntityID, API.Round(_Orientation));
+    else
+        error("API.SetEntityOrientation: _Entity (" ..tostring(_Entity).. ") does not exist!");
+    end
+end
+SetOrientation = API.SetEntityOrientation;
+
+---
+-- Rotiert ein Entity, sodass es zum Ziel schaut.
+--
+-- @param _Entity      Entity (Skriptname oder ID)
+-- @param _Target      Ziel (Skriptname, ID oder Position)
+-- @param[type=number] _Offset Winkel Offset
+-- @within Entity
+-- @usage API.LookAt("Hakim", "Alandra")
+--
+function API.LookAt(_Entity, _Target, _Offset)
+    _Offset = _Offset or 0;
+    local ID1 = GetID(_Entity);
+    if ID1 == 0 then
+        return;
+    end
+    local x1,y1,z1 = Logic.EntityGetPos(ID1);
+    local ID2;
+    local x2, y2, z2;
+    if type(_Target) == "table" then
+        x2 = _Target.X;
+        y2 = _Target.Y;
+        z2 = _Target.Z;
+    else
+        ID2 = GetID(_Target);
+        if ID2 == 0 then
+            return;
+        end
+        x2,y2,z2 = Logic.EntityGetPos(ID2);
+    end
+
+    if not API.IsValidPosition({X= x1, Y= y1, Z= z1}) then
+        return;
+    end
+    if not API.IsValidPosition({X= x2, Y= y2, Z= z2}) then
+        return;
+    end
+    Angle = math.deg(math.atan2((y2 - y1), (x2 - x1))) + _Offset;
+    if Angle < 0 then
+        Angle = Angle + 360;
+    end
+
+    if Logic.IsLeader(ID1) == 1 then
+        local Soldiers = {Logic.GetSoldiersAttachedToLeader(ID1)};
+        for i= 2, Soldiers[1]+1 do
+            Logic.SetOrientation(Soldiers[i], Angle);
+        end
+    end
+    Logic.SetOrientation(ID1, Angle);
+end
+LookAt = API.LookAt;
+
+---
+-- Lässt zwei Entities sich gegenseitig anschauen.
+--
+-- @param _entity         Entity (Skriptname oder ID)
+-- @param _entityToLookAt Ziel (Skriptname oder ID)
+-- @within Entity
+-- @usage API.Confront("Hakim", "Alandra")
+--
+function API.Confront(_entity, _entityToLookAt)
+    API.LookAt(_entity, _entityToLookAt);
+    API.LookAt(_entityToLookAt, _entity);
+end
+ConfrontEntities = API.LookAt;
 
 ---
 -- Bestimmt die Distanz zwischen zwei Punkten. Es können Entity-IDs,
@@ -2445,5 +2751,66 @@ function API.WinQuest(_QuestName, _NoMessage)
         Quest:Success();
         -- Note: Event is send in QuestTemplate:Success()!
     end
+end
+
+-- AI
+
+---
+-- Aktiviert Feste für den angegebenen KI-Spieler.
+--
+-- @param[type=number]  _PlayerID ID der KI
+-- @within AI
+--
+function API.AllowFestival(_PlayerID)
+    Swift.m_AIProperties[_PlayerID].ForbidFestival = true;
+end
+
+---
+-- Deaktiviert Feste für den angegebenen KI-Spieler.
+--
+-- @param[type=number]  _PlayerID ID der KI
+-- @within AI
+--
+function API.ForbidFestival(_PlayerID)
+    Swift.m_AIProperties[_PlayerID].ForbidFestival = false;
+end
+
+-- Local callbacks
+
+function SCP.Core.LoadscreenHidden()
+    Swift.m_LoadScreenHidden = true;
+end
+
+function SCP.Core.GlobalQsbLoaded()
+    Logic.ExecuteInLuaLocalState([[
+        if Mission_MP_LocalOnQsbLoaded and Framework.IsNetworkGame() then
+            Mission_MP_LocalOnQsbLoaded();
+        end
+    ]]);
+    if Mission_MP_OnQsbLoaded and not Swift.m_MP_FMA_Loaded and Framework.IsNetworkGame() then
+        Swift.m_MP_FMA_Loaded = true;
+        Mission_MP_OnQsbLoaded();
+    end
+end
+
+function SCP.Core.ProclaimateRandomSeed(_Seed)
+    if not Swift.m_MP_Seed_Set then
+        return;
+    end
+    Swift.m_MP_Seed_Set = true;
+    math.randomseed(_Seed);
+    local void = math.random(1, 100);
+    Logic.ExecuteInLuaLocalState(string.format([[math.randomseed(%d); math.random(1, 100)]], _Seed));
+    info("Created seed: " .._Seed);
+end
+
+function SCP.Core.UpdateCustomVariable(_Name, Value)
+    Swift:UpdateCustomVariable(_Name, Value);
+end
+
+function SCP.Core.UpdateTexturePosition(_Category, _Key, _Value)
+    g_TexturePositions = g_TexturePositions or {};
+    g_TexturePositions[_Category] = g_TexturePositions[_Category] or {};
+    g_TexturePositions[_Category][_Key] = _Value;
 end
 

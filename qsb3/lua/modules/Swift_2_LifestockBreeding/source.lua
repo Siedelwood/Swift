@@ -1,7 +1,7 @@
 --[[
 Swift_2_LifestockBreeding/Source
 
-Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
 This file is part of Swift. Swift is created by totalwarANGEL.
 You may use and modify this file unter the terms of the MIT licence.
@@ -155,7 +155,7 @@ function ModuleLifestockBreeding.Global:CountSheepsNearby(_PastureID)
     local Sheeps1  = {Logic.GetPlayerEntitiesInArea(PlayerID, Entities.A_X_Sheep01, x, y, AreaSize, 16)};
     local Sheeps2  = {Logic.GetPlayerEntitiesInArea(PlayerID, Entities.A_X_Sheep02, x, y, AreaSize, 16)};
     table.remove(Sheeps1, 1);
-    table.remove(Sheeps1, 1);
+    table.remove(Sheeps2, 1);
     return #Sheeps1 + #Sheeps2;
 end
 
@@ -273,7 +273,8 @@ function ModuleLifestockBreeding.Local:ToggleBreedingState(_BarrackID)
 end
 
 function ModuleLifestockBreeding.Local:OverwriteBuySiegeEngine()
-    GUI_BuildingButtons.BuySiegeEngineCartMouseOver = function(_EntityType,_TechnologyType)
+    GUI_BuildingButtons.BuySiegeEngineCartMouseOver_Orig_Stockbreeding = GUI_BuildingButtons.BuySiegeEngineCartMouseOver;
+    GUI_BuildingButtons.BuySiegeEngineCartMouseOver = function(_EntityType, _TechnologyType)
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
         local BarrackID = GUI.GetSelectedEntity();
         local BuildingEntityType = Logic.GetEntityType(BarrackID);
@@ -281,6 +282,7 @@ function ModuleLifestockBreeding.Local:OverwriteBuySiegeEngine()
         if  BuildingEntityType ~= Entities.B_SiegeEngineWorkshop
         and BuildingEntityType ~= Entities.B_CattlePasture
         and BuildingEntityType ~= Entities.B_SheepPasture then
+            GUI_BuildingButtons.BuySiegeEngineCartMouseOver_Orig_Stockbreeding(_EntityType, _TechnologyType);
             return;
         end
 
@@ -307,7 +309,7 @@ function ModuleLifestockBreeding.Local:OverwriteBuySiegeEngine()
                 false
             );
         else
-            GUI_Tooltip.TooltipBuy(Costs,nil,nil,_TechnologyType);
+            GUI_BuildingButtons.BuySiegeEngineCartMouseOver_Orig_Stockbreeding(_EntityType, _TechnologyType);
         end
     end
 
@@ -326,6 +328,7 @@ function ModuleLifestockBreeding.Local:OverwriteBuySiegeEngine()
 
     -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+    GUI_BuildingButtons.BuySiegeEngineCartUpdate_Orig_Stockbreeding = GUI_BuildingButtons.BuySiegeEngineCartUpdate;
     GUI_BuildingButtons.BuySiegeEngineCartUpdate = function(_Technology)
         local PlayerID = GUI.GetPlayerID();
         local KnightTitle = Logic.GetKnightTitle(PlayerID);
@@ -379,7 +382,7 @@ function ModuleLifestockBreeding.Local:OverwriteBuySiegeEngine()
                 XGUIEng.ShowWidget(CurrentWidgetID, 0);
             end
         else
-            XGUIEng.ShowWidget(CurrentWidgetID,0);
+            GUI_BuildingButtons.BuySiegeEngineCartUpdate_Orig_Stockbreeding(_Technology);
             return;
         end
 

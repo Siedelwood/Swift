@@ -1,7 +1,7 @@
 --[[
 Swift_2_InterfaceCore/API
 
-Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
 This file is part of Swift. Swift is created by totalwarANGEL.
 You may use and modify this file unter the terms of the MIT licence.
@@ -11,8 +11,9 @@ You may use and modify this file unter the terms of the MIT licence.
 ---
 -- Dieses Modul bietet grundlegende Funktionen zur Steuerung des Interface.
 --
--- <b>Hinweis</b>: Diese Funktionen müssen in Multiplayer Maps synchron
--- aufgerufen werden. Entweder zu Spielbeginn oder durch Jobs.
+-- <h5>Multiplayer</h5>
+-- Diese Funktionen müssen in Multiplayer Maps synchron aufgerufen werden.
+-- Entweder zu Spielbeginn oder durch Jobs oder durch Events.
 --
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
@@ -171,8 +172,10 @@ GetPlayerName = API.GetPlayerName;
 ---
 -- Wechselt die Spieler ID des menschlichen Spielers.
 --
--- Die neue ID muss einen Primärritter haben. Diese Funktion kann nicht im
--- Multiplayer Mode verwendet werden.
+-- Die neue ID muss einen Primärritter haben.
+--
+-- <h5>Multiplayer</h5>
+-- Nicht für Multiplayer geeignet.
 --
 -- @param[type=number] _OldPlayerID Alte ID des menschlichen Spielers
 -- @param[type=number] _NewPlayerID Neue ID des menschlichen Spielers
@@ -180,6 +183,9 @@ GetPlayerName = API.GetPlayerName;
 -- @within Anwenderfunktionen
 --
 function API.SetControllingPlayer(_OldPlayerID, _NewPlayerID, _NewStatisticsName)
+    if Framework.IsNetworkGame() then
+        return;
+    end
     ModuleInterfaceCore.Global:SetControllingPlayer(_OldPlayerID, _NewPlayerID, _NewStatisticsName);
 end
 
@@ -528,15 +534,13 @@ end
 function API.HideKnightButton(_Flag)
     if not GUI then
         Logic.ExecuteInLuaLocalState("API.HideKnightButton(" ..tostring(_Flag).. ")");
+        Logic.SetEntitySelectableFlag("..KnightID..", (_Flag and 0) or 1);
         return;
     end
 
     local KnightID = Logic.GetKnightID(GUI.GetPlayerID());
     if _Flag then
-        GUI.SendScriptCommand("Logic.SetEntitySelectableFlag("..KnightID..", 0)");
         GUI.DeselectEntity(KnightID);
-    else
-        GUI.SendScriptCommand("Logic.SetEntitySelectableFlag("..KnightID..", 1)");
     end
 
     ModuleInterfaceCore.Local:DisplayInterfaceButton(
@@ -591,5 +595,111 @@ function API.HideBuildMenu(_Flag)
         "/InGame/Root/Normal/AlignBottomRight/BuildMenu",
         _Flag
     );
+end
+
+---
+-- Fügt einen allgemeinen Gebäudeschalter hinzu.
+--
+-- Einem Gebäude können maximal 6 Buttons zugewiesen werden! Auf diese Weise
+-- hinzugefügte Buttons sind prinzipiell immer sichtbar, abhängig von ihrer
+-- Update-Funktion.
+--
+-- @param[type=function] _Action  Funktion beim Klicken
+-- @param[type=function] _Tooltip Funktion für den Tooltip
+-- @param[type=function] _Update  Funktion für das Update
+-- @return[type=number] ID des Bindung
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- SpecialButtonID = API.AddBuildingButton(
+--     -- Aktion
+--     function(_WidgetID, _BuildingID)
+--         GUI.AddNote("Hier passiert etwas!");
+--     end,
+--     -- Tooltip
+--     function(_WidgetID, _BuildingID)
+--         API.SetTooltipCosts("Beschreibung", "Das ist die Beschreibung!");
+--     end,
+--     -- Update
+--     function(_WidgetID, _BuildingID)
+--         SetIcon(_WidgetID, {1, 1});
+--     end
+-- );
+--
+function API.AddBuildingButton(_Action, _Tooltip, _Update)
+    return ModuleInterfaceCore.Local:AddButtonBinding(0, _Action, _Tooltip, _Update);
+end
+
+---
+-- Fügt einen Gebäudeschalter für den Entity-Typ hinzu.
+--
+-- Einem Gebäude können maximal 6 Buttons zugewiesen werden! Wenn ein Typ einen
+-- Button zugewiesen bekommt, werden alle mit API.AddBuildingButton gesetzten
+-- Buttons für den Typ ignoriert.
+--
+-- @param[type=number]   _Type    Typ des Gebäudes
+-- @param[type=function] _Action  Funktion beim Klicken
+-- @param[type=function] _Tooltip Funktion für den Tooltip
+-- @param[type=function] _Update  Funktion für das Update
+-- @return[type=number] ID des Bindung
+-- @within Anwenderfunktionen
+-- @see API.AddBuildingButton
+--
+function API.AddBuildingButtonByType(_Type, _Action, _Tooltip, _Update)
+    return ModuleInterfaceCore.Local:AddButtonBinding(_Type, _Action, _Tooltip, _Update);
+end
+
+---
+-- Fügt einen Gebäudeschalter für das Entity hinzu.
+--
+-- Einem Gebäude können maximal 6 Buttons zugewiesen werden! Wenn ein Entity
+-- einen Button zugewiesen bekommt, werden alle mit API.AddBuildingButton oder
+-- API.AddBuildingButtonByType gesetzten Buttons für das Entity ignoriert.
+--
+-- @param[type=function] _ScriptName Scriptname des Entity
+-- @param[type=function] _Action     Funktion beim Klicken
+-- @param[type=function] _Tooltip    Funktion für den Tooltip
+-- @param[type=function] _Update     Funktion für das Update
+-- @return[type=number] ID des Bindung
+-- @within Anwenderfunktionen
+-- @see API.AddBuildingButton
+--
+function API.AddBuildingButtonByEntity(_ScriptName, _Action, _Tooltip, _Update)
+    return ModuleInterfaceCore.Local:AddButtonBinding(_ScriptName, _Action, _Tooltip, _Update);
+end
+
+---
+-- Entfernt einen allgemeinen Gebäudeschalter.
+--
+-- @param[type=number] _ID ID des Bindung
+-- @within Anwenderfunktionen
+-- @usage API.DropBuildingButton(SpecialButtonID);
+--
+function API.DropBuildingButton(_ID)
+    return ModuleInterfaceCore.Local:RemoveButtonBinding(0, _ID);
+end
+
+---
+-- Entfernt einen Gebäudeschalter vom Gebäudetypen.
+--
+-- @param[type=number] _Type Typ des Gebäudes
+-- @param[type=number] _ID   ID des Bindung
+-- @within Anwenderfunktionen
+-- @usage API.DropBuildingButtonFromType(Entities.B_Bakery, SpecialButtonID);
+--
+function API.DropBuildingButtonFromType(_Type, _ID)
+    return ModuleInterfaceCore.Local:RemoveButtonBinding(_Type, _ID);
+end
+
+---
+-- Entfernt einen Gebäudeschalter vom benannten Gebäude.
+--
+-- @param[type=string] _ScriptName Skriptname des Entity
+-- @param[type=number] _ID         ID des Bindung
+-- @within Anwenderfunktionen
+-- @usage API.DropBuildingButtonFromEntity("Bakery", SpecialButtonID);
+--
+function API.DropBuildingButtonFromEntity(_ScriptName, _ID)
+    return ModuleInterfaceCore.Local:RemoveButtonBinding(_ScriptName, _ID);
 end
 

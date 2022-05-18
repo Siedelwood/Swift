@@ -1,7 +1,7 @@
 --[[
 Swift_2_InputOutputCore/API
 
-Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
 This file is part of Swift. Swift is created by totalwarANGEL.
 You may use and modify this file unter the terms of the MIT licence.
@@ -10,8 +10,6 @@ You may use and modify this file unter the terms of the MIT licence.
 
 ---
 -- Modul für die Eingabe durch den Spieler und die Ausgabe von Texten.
---
--- <b>Hinweis</b>: Diese Funktionalität ist im Multiplayer nicht verfügbar.
 --
 -- Du kannst vordefinierte Farben in Textausgaben verwenden. Außerdem kannst
 -- du für Skriptnamen und Entitytypen Platzhalter zu definieren. Diese
@@ -158,24 +156,25 @@ GUI_ClearNotes = API.ClearNotes;
 -- <table border="1">
 -- <tr><th><b>Platzhalter</b></th><th><b>Farbe</b></th><th><b>RGBA</b></th></tr>
 --
--- <tr><td>red</td>     <td>Rot</td>          <td>255,80,80,255</td></tr>
--- <tr><td>blue</td>    <td>Blau</td>         <td>104,104,232,255</td></tr>
--- <tr><td>yellow</td>  <td>Gelp</td>         <td>255,255,80,255</td></tr>
--- <tr><td>green</td>   <td>Grün</td>         <td>80,180,0,255</td></tr>
--- <tr><td>white</td>   <td>Weiß</td>         <td>255,255,255,255</td></tr>
--- <tr><td>black</td>   <td>Schwarz</td>      <td>0,0,0,255</td></tr>
--- <tr><td>grey</td>    <td>Grau</td>         <td>140,140,140,255</td></tr>
--- <tr><td>azure</td>   <td>Azurblau</td>     <td>255,176,30,255</td></tr>
--- <tr><td>orange</td>  <td>Orange</td>       <td>255,176,30,255</td></tr>
--- <tr><td>amber</td>   <td>Bernstein</td>    <td>224,197,117,255</td></tr>
--- <tr><td>violet</td>  <td>Violett</td>      <td>180,100,190,255</td></tr>
--- <tr><td>pink</td>    <td>Rosa</td>         <td>255,170,200,255</td></tr>
--- <tr><td>scarlet</td> <td>Scharlachrot</td> <td>190,0,0,255</td></tr>
--- <tr><td>magenta</td> <td>Magenta</td>      <td>190,0,89,255</td></tr>
--- <tr><td>olive</td>   <td>Olivgrün</td>     <td>74,120,0,255</td></tr>
--- <tr><td>sky</td>     <td>Himmelsblau</td>  <td>145,170,210,255</td></tr>
--- <tr><td>tooltip</td> <td>Tooltip-Blau</td> <td>51,51,120,255</td></tr>
--- <tr><td>lucid</td>   <td>Transparent</td>  <td>0,0,0,0</td></tr>
+-- <tr><td>red</td>     <td>Rot</td>           <td>255,80,80,255</td></tr>
+-- <tr><td>blue</td>    <td>Blau</td>          <td>104,104,232,255</td></tr>
+-- <tr><td>yellow</td>  <td>Gelp</td>          <td>255,255,80,255</td></tr>
+-- <tr><td>green</td>   <td>Grün</td>          <td>80,180,0,255</td></tr>
+-- <tr><td>white</td>   <td>Weiß</td>          <td>255,255,255,255</td></tr>
+-- <tr><td>black</td>   <td>Schwarz</td>       <td>0,0,0,255</td></tr>
+-- <tr><td>grey</td>    <td>Grau</td>          <td>140,140,140,255</td></tr>
+-- <tr><td>azure</td>   <td>Azurblau</td>      <td>255,176,30,255</td></tr>
+-- <tr><td>orange</td>  <td>Orange</td>        <td>255,176,30,255</td></tr>
+-- <tr><td>amber</td>   <td>Bernstein</td>     <td>224,197,117,255</td></tr>
+-- <tr><td>violet</td>  <td>Violett</td>       <td>180,100,190,255</td></tr>
+-- <tr><td>pink</td>    <td>Rosa</td>          <td>255,170,200,255</td></tr>
+-- <tr><td>scarlet</td> <td>Scharlachrot</td>  <td>190,0,0,255</td></tr>
+-- <tr><td>magenta</td> <td>Magenta</td>       <td>190,0,89,255</td></tr>
+-- <tr><td>olive</td>   <td>Olivgrün</td>      <td>74,120,0,255</td></tr>
+-- <tr><td>sky</td>     <td>Himmelsblau</td>   <td>145,170,210,255</td></tr>
+-- <tr><td>tooltip</td> <td>Tooltip-Blau</td>  <td>51,51,120,255</td></tr>
+-- <tr><td>lucid</td>   <td>Transparent</td>   <td>0,0,0,0</td></tr>
+-- <tr><td>none</td>    <td>Standardfarbe</td> <td>(Abhängig vom Widget)</td></tr>
 -- </table>
 --
 -- @param[type=string] _Message Text
@@ -261,9 +260,7 @@ end
 -- Öffnet einen Info-Dialog. Sollte bereits ein Dialog zu sehen sein, wird
 -- der Dialog der Dialogwarteschlange hinzugefügt.
 --
--- <b>Hinweis</b>: Aus dem globalen Skript aufgerufen muss der Name der Action
--- als String angegeben werden. Es wird dann eine Funktion im lokalen Skript
--- als Aktion aufgerufen.
+-- <b>Hinweis</b>: Kann nicht aus dem globalen Skript heraus benutzt werden.
 --
 -- @param[type=string]   _Title  Titel des Dialog
 -- @param[type=string]   _Text   Text des Dialog
@@ -275,24 +272,14 @@ end
 --
 function API.DialogInfoBox(_Title, _Text, _Action)
     if not GUI then
-        if _Action and type(_Action) ~= "string" then
-            return;
-        end
-
-        local Title = (type(_Title) == "table" and table.tostring(_Title)) or ("\"" .._Title.. "\"");
-        local Text  = (type(_Text) == "table" and table.tostring(_Text)) or ("\"" .._Text.. "\"");
-
-        Logic.ExecuteInLuaLocalState(string.format(
-            [[ModuleInputOutputCore.Local:OpenDialog(%s, %s, %s)]],
-            Title,
-            Text,
-            tostring(_Action)
-        ));
         return;
     end
-
-    _Title = API.Localize(_Title);
-    _Text  = API.Localize(_Text);
+    if type(_Title) == "table" then
+        _Title = API.Localize(_Title);
+    end
+    if type(_Text) == "table" then
+        _Text  = API.Localize(_Text);
+    end
     return ModuleInputOutputCore.Local:OpenDialog(_Title, _Text, _Action);
 end
 
@@ -304,9 +291,7 @@ end
 -- Das Callback bekommt eine Boolean übergeben, sobald der Spieler die
 -- Entscheidung getroffen hat.
 --
--- <b>Hinweis</b>: Aus dem globalen Skript aufgerufen muss der Name der Action
--- als String angegeben werden. Es wird dann eine Funktion im lokalen Skript
--- als Aktion aufgerufen.
+-- <b>Hinweis</b>: Kann nicht aus dem globalen Skript heraus benutzt werden.
 --
 -- @param[type=string]   _Title    Titel des Dialog
 -- @param[type=string]   _Text     Text des Dialog
@@ -315,31 +300,21 @@ end
 -- @within Anwenderfunktionen
 --
 -- @usage
--- function YesNoAction(_yes)
---     if _yes then GUI.AddNote("Ja wurde gedrückt"); end
+-- function YesNoAction(_Yes, _PlayerID)
+--     if _Yes then GUI.AddNote("Ja wurde gedrückt"); end
 -- end
 -- API.DialogRequestBox("Frage", "Möchtest du das wirklich tun?", YesNoAction, false);
 --
 function API.DialogRequestBox(_Title, _Text, _Action, _OkCancel)
     if not GUI then
-        if _Action and type(_Action) ~= "string" then
-            return;
-        end
-
-        local Title = (type(_Title) == "table" and table.tostring(_Title)) or ("\"" .._Title.. "\"");
-        local Text  = (type(_Text) == "table" and table.tostring(_Text)) or ("\"" .._Text.. "\"");
-
-        Logic.ExecuteInLuaLocalState(string.format(
-            [[ModuleInputOutputCore.Local:OpenRequesterDialog(%s, %s, %s, %s)]],
-            Title,
-            Text,
-            tostring(_Action),
-            tostring(_OkCancel == true)
-        ));
         return;
     end
-    _Title = API.Localize(_Title);
-    _Text = API.Localize(_Text);
+    if type(_Title) == "table" then
+        _Title = API.Localize(_Title);
+    end
+    if type(_Text) == "table" then
+        _Text  = API.Localize(_Text);
+    end
     return ModuleInputOutputCore.Local:OpenRequesterDialog(_Title, _Text, _Action, _OkCancel);
 end
 
@@ -350,9 +325,7 @@ end
 -- In diesem Dialog wählt der Spieler eine Option aus einer Liste von Optionen
 -- aus. Anschließend erhält das Callback den Index der selektierten Option.
 --
--- <b>Hinweis</b>: Aus dem globalen Skript aufgerufen muss der Name der Action
--- als String angegeben werden. Es wird dann eine Funktion im lokalen Skript
--- als Aktion aufgerufen.
+-- <b>Hinweis</b>: Kann nicht aus dem globalen Skript heraus benutzt werden.
 --
 -- @param[type=string]   _Title  Titel des Dialog
 -- @param[type=string]   _Text   Text des Dialog
@@ -361,32 +334,22 @@ end
 -- @within Anwenderfunktionen
 --
 -- @usage
--- function OptionsAction(_idx)
---     GUI.AddNote(_idx.. " wurde ausgewählt!");
+-- function OptionsAction(_Idx, _PlayerID)
+--     GUI.AddNote(_Idx.. " wurde ausgewählt!");
 -- end
 -- local List = {"Option A", "Option B", "Option C"};
 -- API.DialogSelectBox("Auswahl", "Wähle etwas aus!", OptionsAction, List);
 --
 function API.DialogSelectBox(_Title, _Text, _Action, _List)
     if not GUI then
-        if _Action and type(_Action) ~= "string" then
-            return;
-        end
-
-        local Title = (type(_Title) == "table" and table.tostring(_Title)) or ("\"" .._Title.. "\"");
-        local Text  = (type(_Text) == "table" and table.tostring(_Text)) or ("\"" .._Text.. "\"");
-
-        Logic.ExecuteInLuaLocalState(string.format(
-            [[ModuleInputOutputCore.Local:OpenSelectionDialog(%s, %s, %s, %s)]],
-            Title,
-            Text,
-            tostring(_Action),
-            table.tostring(_List)
-        ));
         return;
     end
-    _Title = API.Localize(_Title);
-    _Text = API.Localize(_Text);
+    if type(_Title) == "table" then
+        _Title = API.Localize(_Title);
+    end
+    if type(_Text) == "table" then
+        _Text  = API.Localize(_Text);
+    end
     _Text = _Text .. "{cr}";
     ModuleInputOutputCore.Local:OpenSelectionDialog(_Title, _Text, _Action, _List);
 end
@@ -397,8 +360,13 @@ end
 -- Die Länge des Textes ist nicht beschränkt. Überschreitet der Text die
 -- Größe des Fensters, wird automatisch eine Bildlaufleiste eingeblendet.
 --
--- @param[type=string] _Caption Titel des Fenster
--- @param[type=string] _content Inhalt des Fenster
+-- <h5>Multiplayer</h5>
+-- Im Multiplayer muss zwingend der Spieler angegeben werden, für den das
+-- Fenster angezeigt werden soll.
+--
+-- @param[type=string] _Caption  Titel des Fenster
+-- @param[type=string] _Content  Inhalt des Fenster
+-- @param[type=number] _PlayerID Spieler, der das Fenster sieht
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -415,16 +383,24 @@ end
 --              " dolor sit amet.";
 -- API.SimpleTextWindow("Überschrift", Text);
 --
-function API.SimpleTextWindow(_Caption, _Content)
+function API.SimpleTextWindow(_Caption, _Content, _PlayerID)
+    _PlayerID = _PlayerID or 1;
     _Caption = API.Localize(_Caption);
     _Content = API.Localize(_Content);
     if not GUI then
-        Logic.ExecuteInLuaLocalState(
-            string.format([[API.SimpleTextWindow("%s", "%s")]], _Caption, _Content)
-        );
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.SimpleTextWindow("%s", "%s", %d)]],
+            _Caption,
+            _Content,
+            _PlayerID
+        ));
         return;
     end
-    QSB.TextWindow:New(_Caption, _Content):Show();
+    ModuleInputOutputCore.Local:ShowTextWindow {
+        PlayerID = _PlayerID,
+        Caption  = _Caption,
+        Content  = _Content,
+    };
 end
 
 ---
@@ -443,6 +419,11 @@ end
 -- API.ShowTextInput(true);
 --
 function API.ShowTextInput(_AllowDebug)
+    -- Text input will only be evaluated in the original version of the game
+    -- and in Singleplayer History Edition.
+    if API.IsHistoryEditionNetworkGame() then
+        return;
+    end
     if not GUI then
         Logic.ExecuteInLuaLocalState(string.format(
             [[API.ShowTextInput(%s)]],
@@ -470,5 +451,11 @@ function API.DisableCheats()
     end
     ModuleInputOutputCore.Local.CheatsDisabled = true;
     ModuleInputOutputCore.Local:OverrideCheats();
+end
+
+-- Local callbacks
+
+function SCP.InputOutputCore.SetDecisionResult(_PlayerID, _Yes)
+    QSB.DecisionWindowResult = _Yes == true;
 end
 

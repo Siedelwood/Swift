@@ -1,7 +1,7 @@
 --[[
 Swift_2_Selection/API
 
-Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
 This file is part of Swift. Swift is created by totalwarANGEL.
 You may use and modify this file unter the terms of the MIT licence.
@@ -10,8 +10,6 @@ You may use and modify this file unter the terms of the MIT licence.
 
 ---
 -- Die Optionen für selektierte Einheiten kann individualisiert werden.
---
--- <b>Hinweis</b>: Diese Funktionalität ist im Multiplayer nicht verfügbar.
 --
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
@@ -155,4 +153,22 @@ function API.GetSelectedEntities(_PlayerID)
     return SelectedEntities;
 end
 GetSelectedEntities = API.GetSelectedEntities;
+
+-- Local callbacks
+
+function SCP.Selection.DestroyEntity(_Entity)
+    DestroyEntity(_Entity);
+end
+
+function SCP.Selection.SetTaskList(_Entity)
+    Logic.SetTaskList(_Entity, TaskLists.TL_NPC_IDLE);
+end
+
+function SCP.Selection.ErectTrebuchet(_Entity)
+    ModuleSelection.Global:MilitaryErectTrebuchet(_Entity);
+end
+
+function SCP.Selection.DisambleTrebuchet(_Entity)
+    ModuleSelection.Global:MilitaryDisambleTrebuchet(_Entity);
+end
 

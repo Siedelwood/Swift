@@ -1,7 +1,7 @@
 --[[
 Swift_2_MilitaryLimit/API
 
-Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
 This file is part of Swift. Swift is created by totalwarANGEL.
 You may use and modify this file unter the terms of the MIT licence.
@@ -13,8 +13,6 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 -- <b>Hinweis</b>: Wird nichts eingestellt, wird der Standard verwendet. Das
 -- Limit ist dann 25, 43, 61, 91 (je nach Ausbaustufe der Burg).
---
--- <b>Hinweis</b>: Diese Funktionalität ist im Multiplayer nicht verfügbar.
 --
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
@@ -32,7 +30,7 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 -- @field ProducedThief     Ein Dieb wird rekrutiert (Parameter: EntityID, CastleID, CostsTable)
 -- @field ProducedBattalion Ein Battalion wird rekrutiert (Parameter: EntityID, BarrackID, CostsTable)
--- @field RefilledBattalion Ein Battalion wird aufgefüllt (Parameter: EntityID, BarrackID, CostsTable)
+-- @field RefilledBattalion Ein Battalion wird aufgefüllt (Parameter: EntityID, BarrackID, SoldiersBefore, SoldiersAfter, CostsTable)
 --
 -- @within Event
 --
@@ -71,5 +69,15 @@ function API.SetPlayerSoldierLimit(_PlayerID, _Function)
         return;
     end
     ModuleMilitaryLimit.Global:SetLimitsForPlayer(_PlayerID, _Function);
+end
+
+-- Local callbacks
+
+function SCP.MilitaryLimit.ProduceUnits(_PlayerID, _BarrackID, _EntityType, _Costs)
+    ModuleMilitaryLimit.Global:ProduceUnit(_PlayerID, _BarrackID, _EntityType, _Costs);
+end
+
+function SCP.MilitaryLimit.RefillBattalion(_PlayerID, _BarracksID, _LeaderID, _Costs)
+    ModuleMilitaryLimit.Global:RefillBattalion(_PlayerID, _BarracksID, _LeaderID, _Costs);
 end
 

@@ -1,7 +1,7 @@
 --[[
 Swift_0_Core/Selfload
 
-Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
 This file is part of Swift. Swift is created by totalwarANGEL.
 You may use and modify this file unter the terms of the MIT licence.
@@ -32,11 +32,23 @@ if not MapEditor and not GUI then
         if ModuleKnightTitleRequirements then
             InitKnightTitleTables();
         end
-        if Mission_LocalOnQsbLoaded then
-            Mission_LocalOnQsbLoaded();
-        end
+        
+        -- Call directly for singleplayer
+        if not Framework.IsNetworkGame() then
+            Swift:CreateRandomSeed();
+            if Mission_LocalOnQsbLoaded then
+                Mission_LocalOnQsbLoaded();
+            end
+
+        -- Send asynchron command to player in multiplayer
+        else
+            StartSimpleJobEx(function()
+                Swift:CreateRandomSeed();
+                Swift:DispatchScriptCommand(QSB.ScriptCommands.GlobalQsbLoaded, GUI.GetPlayerID());
+                return true;
+            end);
+        end        
     ]]);
-    
     API.Install();
     if ModuleKnightTitleRequirements then
         InitKnightTitleTables();

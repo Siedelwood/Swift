@@ -1,7 +1,7 @@
 --[[
 Swift_2_WeatherManipulation/API
 
-Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
 This file is part of Swift. Swift is created by totalwarANGEL.
 You may use and modify this file unter the terms of the MIT licence.
@@ -10,9 +10,6 @@ You may use and modify this file unter the terms of the MIT licence.
 
 ---
 -- Dieses Modul ermöglicht das Ändern des Wetters.
---
--- <b>Hinweis</b>: Diese Funktionen können nicht in Multiplayer Maps benutzt
--- werden, wenn sie mit der History Edition spielbar sein sollen.
 --
 -- Es können nun relativ einfach Wetterevents und Wetteranimationen kombiniert
 -- gestartet werden.

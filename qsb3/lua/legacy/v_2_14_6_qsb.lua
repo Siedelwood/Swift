@@ -15100,6 +15100,7 @@ function BundleQuestGeneration.Global:QuestCreateNewQuest(_Data)
     Quest.IconOverride = _Data.IconOverwrite;
     Quest.SkipFunction = _Data.Skip;
     Quest.QuestNotes = true;
+    Quest.Arguments = (_Data.Arguments ~= nil and API.InstanceTable(_Data.Arguments)) or {};
     return _Data.Name, Quests[0];
 end
 
@@ -16482,411 +16483,816 @@ end
 
 Core:RegisterBundle("BundleCheats");
 
--- -------------------------------------------------------------------------- --
--- ########################################################################## --
--- #  Symfonia BundleConstructionControl                                    # --
--- ########################################################################## --
--- -------------------------------------------------------------------------- --
-
----
--- Mit diesem Bundle kann der Bau von Gebäudetypen oder Gebäudekategorien
--- unterbunden werden. Verbote können für bestimmte Bereiche (kreisförmige
--- Gebiete um ein Zentrum) oder ganze Territorien vereinbart werden.
---
--- @within Modulbeschreibung
--- @set sort=true
---
-BundleConstructionControl = {};
-
-API = API or {};
-QSB = QSB or {};
-
--- -------------------------------------------------------------------------- --
--- User-Space                                                                 --
--- -------------------------------------------------------------------------- --
-
----
--- Untersagt den Bau des Typs im Territorium.
---
--- @param[type=number] _type      Entitytyp
--- @param[type=number] _territory Territorium
--- @within Anwenderfunktionen
---
--- @usage API.BanTypeAtTerritory(Entities.B_Bakery, 1);
---
-function API.BanTypeAtTerritory(_type, _territory)
-    if GUI then
-        return;
-    end
-    local Territories = {Logic.GetTerritories()};
-    if type(_territory) == "string" then
-        _territory = GetTerritoryIDByName(_territory);
-    end
-    if _territory == 0 or #Territories-1 < _territory then
-        error("API.BanTypeAtTerritory: Territory does not exist!");
-        return;
-    end
-    if GetNameOfKeyInTable(Entities, _type) == nil then
-        error("API.BanTypeAtTerritory: Entity type is invalid!");
-        return;
-    end
-
-    BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type] = BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type] or {};
-    if not Inside(_territory, BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type]) then
-        info("API.BanTypeAtTerritory: Banning type " ..Logic.GetEntityTypeName(_type).. " from territory " ..tostring(_territory)..".");
-        table.insert(BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type], _territory);
-    end
-end
-
----
--- Untersagt den Bau der Kategorie im Territorium.
---
--- @param[type=number] _eCat      Entitykategorie
--- @param[type=number] _territory Territorium
--- @within Anwenderfunktionen
---
--- @usage API.BanCategoryAtTerritory(EntityCategories.AttackableBuilding, 2);
---
-function API.BanCategoryAtTerritory(_eCat, _territory)
-    if GUI then
-        return;
-    end
-    local Territories = {Logic.GetTerritories()};
-    if type(_territory) == "string" then
-        _territory = GetTerritoryIDByName(_territory);
-    end
-    if _territory == 0 or #Territories-1 < _territory then
-        error("API.BanCategoryAtTerritory: Territory does not exist!");
-        return;
-    end
-    if GetNameOfKeyInTable(EntityCategories, _eCat) == nil then
-        error("API.BanCategoryAtTerritory: Entity category is invalid!");
-        return;
-    end
-
-    BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat] = BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat] or {};
-    if not Inside(_territory, BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat]) then
-        info("API.BanTypeAtTerritory: Banning category " ..Logic.GetEntityCategoryName(_eCat).. " from territory " ..tostring(_territory)..".");
-        table.insert(BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat], _territory);
-    end
-end
-
----
--- Untersagt den Bau des Typs im Gebiet.
---
--- @param[type=number] _type   Entitytyp
--- @param[type=string] _center Gebietszentrum
--- @param[type=number] _area   Gebietsgröße
--- @within Anwenderfunktionen
---
--- @usage API.BanTypeInArea(Entities.B_Bakery, "groundZero", 4000);
---
-function API.BanTypeInArea(_type, _center, _area)
-    if GUI then
-        return;
-    end
-    if type(_center) ~= "string" or not IsExisting(_center) then
-        error("API.BanTypeInArea: _center must be the name of an existing entity!");
-        return;
-    end
-    if type(_area) ~= "number" or _area < 1 then
-        error("API.BanTypeInArea: _area must be a positive number!");
-        return;
-    end
-    if GetNameOfKeyInTable(Entities, _type) == nil then
-        error("API.BanTypeInArea: Entity type is invalid!");
-        return;
-    end
-
-    BundleConstructionControl.Global.Data.AreaBlockEntities[_center] = BundleConstructionControl.Global.Data.AreaBlockEntities[_center] or {};
-    if not Inside(_type, BundleConstructionControl.Global.Data.AreaBlockEntities[_center], true) then
-        info("API.BanTypeAtTerritory: Banning type " ..Logic.GetEntityTypeName(_type).. " from area " ..tostring(_center).." (" ..tostring(_area)..").");
-        table.insert(BundleConstructionControl.Global.Data.AreaBlockEntities[_center], {_type, math.floor(_area)});
-    end
-end
-
----
--- Untersagt den Bau der Kategorie im Gebiet.
---
--- @param[type=number] _eCat   Entitytyp
--- @param[type=string] _center Gebietszentrum
--- @param[type=number] _area   Gebietsgröße
--- @within Anwenderfunktionen
---
--- @usage API.BanTypeInArea(EntityCategories.CityBuilding, "groundZero", 4000);
---
-function API.BanCategoryInArea(_eCat, _center, _area)
-    if GUI then
-        return;
-    end
-    if type(_center) ~= "string" or not IsExisting(_center) then
-        error("API.BanCategoryInArea: _center must be the name of an existing entity!");
-        return;
-    end
-    if type(_area) ~= "number" or _area < 1 then
-        error("API.BanCategoryInArea: _area must be a positive number!");
-        return;
-    end
-    if GetNameOfKeyInTable(EntityCategories, _eCat) == nil then
-        error("API.BanCategoryInArea: Entity category is invalid!");
-        return;
-    end
-
-    BundleConstructionControl.Global.Data.AreaBlockCategories[_center] = BundleConstructionControl.Global.Data.AreaBlockCategories[_center] or {};
-    if not Inside(_eCat, BundleConstructionControl.Global.Data.AreaBlockCategories[_center], true) then
-        info("API.BanTypeAtTerritory: Banning category " ..Logic.GetEntityCategoryName(_eCat).. " from area " ..tostring(_center).." (" ..tostring(_area)..").");
-        table.insert(BundleConstructionControl.Global.Data.AreaBlockCategories[_center], {_eCat, _area});
-    end
-end
-
----
--- Gibt einen Typ zum Bau im Territorium wieder frei.
---
--- @param[type=number] _type      Entitytyp
--- @param[type=number] _territory Territorium
--- @within Anwenderfunktionen
---
--- @usage API.UnbanTypeAtTerritory(Entities.B_Bakery, 1);
---
-function API.UnbanTypeAtTerritory(_type, _territory)
-    if GUI then
-        return;
-    end
-    local Territories = {Logic.GetTerritories()};
-    if type(_territory) == "string" then
-        _territory = GetTerritoryIDByName(_territory);
-    end
-    if _territory == 0 or #Territories-1 < _territory then
-        error("API.UnbanTypeAtTerritory: Territory does not exist!");
-        return;
-    end
-    if GetNameOfKeyInTable(Entities, _type) == nil then
-        error("API.UnbanTypeAtTerritory: Entity type is invalid!");
-        return;
-    end
-
-    if not BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type] then
-        return;
-    end
-    for i= #BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type], 1, -1 do
-        if BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type][i] == _territory then
-            info("API.BanTypeAtTerritory: Unbanning type " ..Logic.GetEntityTypeName(_type).. " from territory " ..tostring(_territory)..".");
-            table.remove(BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type], i);
-            break;
-        end
-    end
-end
-
----
--- Gibt eine Kategorie zum Bau im Territorium wieder frei.
---
--- @param[type=number] _eCat      Entitykategorie
--- @param[type=number] _territory Territorium
--- @within Anwenderfunktionen
---
--- @usage API.UnbanCategoryAtTerritory(EntityCategories.AttackableBuilding, 1);
---
-function API.UnbanCategoryAtTerritory(_eCat, _territory)
-    if GUI then
-        return;
-    end
-    local Territories = {Logic.GetTerritories()};
-    if type(_territory) == "string" then
-        _territory = GetTerritoryIDByName(_territory);
-    end
-    if _territory == 0 or #Territories-1 < _territory then
-        error("API.UnbanCategoryAtTerritory: Territory does not exist!");
-        return;
-    end
-    if GetNameOfKeyInTable(EntityCategories, _eCat) == nil then
-        error("API.UnbanCategoryAtTerritory: Entity category is invalid!");
-        return;
-    end
-
-    if not BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat] then
-        return;
-    end
-    for i= #BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat], 1, -1 do
-        if BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat][i] == _territory then
-            info("API.BanTypeAtTerritory: Unbanning category " ..Logic.GetEntityCategoryName(_eCat).. " from territory " ..tostring(_territory)..".");
-            table.remove(BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat], i);
-            break;
-        end
-    end
-end
-
----
--- Gibt einen Typ zum Bau im Gebiet wieder frei.
---
--- @param[type=number] _type   Entitytyp
--- @param[type=string] _center Gebiet
--- @within Anwenderfunktionen
---
--- @usage API.UnbanTypeInArea(Entities.B_Bakery, "groundZero");
---
-function API.UnbanTypeInArea(_type, _center)
-    if GUI then
-        return;
-    end
-    if type(_center) ~= "string" or not IsExisting(_center) then
-        error("API.UnbanTypeInArea: _center must be the name of an existing entity!");
-        return;
-    end
-    if GetNameOfKeyInTable(Entities, _type) == nil then
-        error("API.UnbanTypeInArea: Entity type is invalid!");
-        return;
-    end
-
-    if not BundleConstructionControl.Global.Data.AreaBlockEntities[_center] then
-        return;
-    end
-    for i= #BundleConstructionControl.Global.Data.AreaBlockEntities[_center], 1, -1 do
-        if BundleConstructionControl.Global.Data.AreaBlockEntities[_center][i][1] == _type then
-            info("API.BanTypeAtTerritory: Unbanning type " ..Logic.GetEntityTypeName(_type).. " in area " ..tostring(_center)..".");
-            table.remove(BundleConstructionControl.Global.Data.AreaBlockEntities[_center], i);
-            break;
-        end
-    end
-end
-
----
--- Gibt eine Kategorie zum Bau im Gebiet wieder frei.
---
--- @param[type=number] _eCat   Entitykategorie
--- @param[type=string] _center Gebiet
--- @within Anwenderfunktionen
---
--- @usage API.UnbanCategoryInArea(EntityCategories.CityBuilding, "groundZero");
---
-function API.UnbanCategoryInArea(_eCat, _center)
-    if GUI then
-        return;
-    end
-    if type(_center) ~= "string" or not IsExisting(_center) then
-        error("API.UnbanCategoryInArea: _center must be the name of an existing entity!");
-        return;
-    end
-    if GetNameOfKeyInTable(EntityCategories, _eCat) == nil then
-        error("API.UnbanCategoryInArea: Entity category is invalid!");
-        return;
-    end
-
-    if not BundleConstructionControl.Global.Data.AreaBlockCategories[_center] then
-        return;
-    end
-    for i= #BundleConstructionControl.Global.Data.AreaBlockCategories[_center], 1, -1 do
-        if BundleConstructionControl.Global.Data.AreaBlockCategories[_center][i][1] == _eCat then
-            info("API.BanTypeAtTerritory: Unbanning category " ..Logic.GetEntityCategoryName(_eCat).. " from territory " ..tostring(_center)..".");
-            table.remove(BundleConstructionControl.Global.Data.AreaBlockCategories[_center], i);
-            break;
-        end
-    end
-end
-
--- -------------------------------------------------------------------------- --
--- Application-Space                                                          --
--- -------------------------------------------------------------------------- --
-
-BundleConstructionControl = {
-    Global = {
-        Data = {
-            TerritoryBlockCategories = {},
-            TerritoryBlockEntities = {},
-            AreaBlockCategories = {},
-            AreaBlockEntities = {},
-        }
-    },
-}
-
--- Global Script ---------------------------------------------------------------
-
----
--- Initalisiert das Bundle im globalen Skript.
---
--- @within Internal
--- @local
---
-function BundleConstructionControl.Global:Install()
-    Core:AppendFunction(
-        "GameCallback_CanPlayerPlaceBuilding",
-        BundleConstructionControl.Global.CanPlayerPlaceBuilding
-    );
-end
-
----
--- Verhindert den Bau von Entities in Gebieten und Territorien.
---
--- @param[type=number] _PlayerID Spieler
--- @param[type=number] _Type     Gebäudetyp
--- @param[type=number] _x        X-Position
--- @param[type=number] _y        Y-Position
--- @within Internal
--- @local
---
-function BundleConstructionControl.Global.CanPlayerPlaceBuilding(_PlayerID, _Type, _x, _y)
-    -- Auf Territorium ---------------------------------------------
-
-    -- Prüfe Kategorien
-    for k,v in pairs(BundleConstructionControl.Global.Data.TerritoryBlockCategories) do
-        if v then
-            for key, val in pairs(v) do
-                if val and Logic.GetTerritoryAtPosition(_x, _y) == val then
-                    if Logic.IsEntityTypeInCategory(_Type, k) == 1 then
-                        return false;
-                    end
-                end
-            end
-        end
-    end
-
-    -- Prüfe Typen
-    for k,v in pairs(BundleConstructionControl.Global.Data.TerritoryBlockEntities) do
-        if v then
-            for key,val in pairs(v) do
-                if val and Logic.GetTerritoryAtPosition(_x, _y) == val then
-                    if _Type == k then
-                        return false;
-                    end
-                end
-            end
-        end
-    end
-
-    -- In einem Gebiet ---------------------------------------------
-
-    -- Prüfe Kategorien
-    for k, v in pairs(BundleConstructionControl.Global.Data.AreaBlockCategories) do
-        if v then
-            for key, val in pairs(v) do
-                if Logic.IsEntityTypeInCategory(_Type, val[1]) == 1 then
-                    if GetDistance(k, {X= _x, Y= _y}) < val[2] then
-                        return false;
-                    end
-                end
-            end
-        end
-    end
-
-    -- Prüfe Typen
-    for k, v in pairs(BundleConstructionControl.Global.Data.AreaBlockEntities) do
-        if v then
-            for key, val in pairs(v) do
-                if _Type == val[1] then
-                    if GetDistance(k, {X= _x, Y= _y}) < val[2] then
-                        return false;
-                    end
-                end
-            end
-        end
-    end
-
-    return true;
-end
-
--- -------------------------------------------------------------------------- --
-
-Core:RegisterBundle("BundleConstructionControl");
-
+-- -------------------------------------------------------------------------- --
+
+-- ########################################################################## --
+
+-- #  Symfonia BundleConstructionControl                                    # --
+
+-- ########################################################################## --
+
+-- -------------------------------------------------------------------------- --
+
+
+
+---
+
+-- Mit diesem Bundle kann der Bau von Gebäudetypen oder Gebäudekategorien
+
+-- unterbunden werden. Verbote können für bestimmte Bereiche (kreisförmige
+
+-- Gebiete um ein Zentrum) oder ganze Territorien vereinbart werden.
+
+--
+
+-- @within Modulbeschreibung
+
+-- @set sort=true
+
+--
+
+BundleConstructionControl = {};
+
+
+
+API = API or {};
+
+QSB = QSB or {};
+
+
+
+-- -------------------------------------------------------------------------- --
+
+-- User-Space                                                                 --
+
+-- -------------------------------------------------------------------------- --
+
+
+
+---
+
+-- Untersagt den Bau des Typs im Territorium.
+
+--
+
+-- @param[type=number] _type      Entitytyp
+
+-- @param[type=number] _territory Territorium
+
+-- @within Anwenderfunktionen
+
+--
+
+-- @usage API.BanTypeAtTerritory(Entities.B_Bakery, 1);
+
+--
+
+function API.BanTypeAtTerritory(_type, _territory)
+
+    if GUI then
+
+        return;
+
+    end
+
+    local Territories = {Logic.GetTerritories()};
+
+    if type(_territory) == "string" then
+
+        _territory = GetTerritoryIDByName(_territory);
+
+    end
+
+    if _territory == 0 or #Territories-1 < _territory then
+
+        error("API.BanTypeAtTerritory: Territory does not exist!");
+
+        return;
+
+    end
+
+    if GetNameOfKeyInTable(Entities, _type) == nil then
+
+        error("API.BanTypeAtTerritory: Entity type is invalid!");
+
+        return;
+
+    end
+
+
+
+    BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type] = BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type] or {};
+
+    if not Inside(_territory, BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type]) then
+
+        info("API.BanTypeAtTerritory: Banning type " ..Logic.GetEntityTypeName(_type).. " from territory " ..tostring(_territory)..".");
+
+        table.insert(BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type], _territory);
+
+    end
+
+end
+
+
+
+---
+
+-- Untersagt den Bau der Kategorie im Territorium.
+
+--
+
+-- @param[type=number] _eCat      Entitykategorie
+
+-- @param[type=number] _territory Territorium
+
+-- @within Anwenderfunktionen
+
+--
+
+-- @usage API.BanCategoryAtTerritory(EntityCategories.AttackableBuilding, 2);
+
+--
+
+function API.BanCategoryAtTerritory(_eCat, _territory)
+
+    if GUI then
+
+        return;
+
+    end
+
+    local Territories = {Logic.GetTerritories()};
+
+    if type(_territory) == "string" then
+
+        _territory = GetTerritoryIDByName(_territory);
+
+    end
+
+    if _territory == 0 or #Territories-1 < _territory then
+
+        error("API.BanCategoryAtTerritory: Territory does not exist!");
+
+        return;
+
+    end
+
+    if GetNameOfKeyInTable(EntityCategories, _eCat) == nil then
+
+        error("API.BanCategoryAtTerritory: Entity category is invalid!");
+
+        return;
+
+    end
+
+
+
+    BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat] = BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat] or {};
+
+    if not Inside(_territory, BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat]) then
+
+        info("API.BanTypeAtTerritory: Banning category " ..Logic.GetEntityCategoryName(_eCat).. " from territory " ..tostring(_territory)..".");
+
+        table.insert(BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat], _territory);
+
+    end
+
+end
+
+
+
+---
+
+-- Untersagt den Bau des Typs im Gebiet.
+
+--
+
+-- @param[type=number] _type   Entitytyp
+
+-- @param[type=string] _center Gebietszentrum
+
+-- @param[type=number] _area   Gebietsgröße
+
+-- @within Anwenderfunktionen
+
+--
+
+-- @usage API.BanTypeInArea(Entities.B_Bakery, "groundZero", 4000);
+
+--
+
+function API.BanTypeInArea(_type, _center, _area)
+
+    if GUI then
+
+        return;
+
+    end
+
+    if type(_center) ~= "string" or not IsExisting(_center) then
+
+        error("API.BanTypeInArea: _center must be the name of an existing entity!");
+
+        return;
+
+    end
+
+    if type(_area) ~= "number" or _area < 1 then
+
+        error("API.BanTypeInArea: _area must be a positive number!");
+
+        return;
+
+    end
+
+    if GetNameOfKeyInTable(Entities, _type) == nil then
+
+        error("API.BanTypeInArea: Entity type is invalid!");
+
+        return;
+
+    end
+
+
+
+    BundleConstructionControl.Global.Data.AreaBlockEntities[_center] = BundleConstructionControl.Global.Data.AreaBlockEntities[_center] or {};
+
+    if not Inside(_type, BundleConstructionControl.Global.Data.AreaBlockEntities[_center], true) then
+
+        info("API.BanTypeAtTerritory: Banning type " ..Logic.GetEntityTypeName(_type).. " from area " ..tostring(_center).." (" ..tostring(_area)..").");
+
+        table.insert(BundleConstructionControl.Global.Data.AreaBlockEntities[_center], {_type, math.floor(_area)});
+
+    end
+
+end
+
+
+
+---
+
+-- Untersagt den Bau der Kategorie im Gebiet.
+
+--
+
+-- @param[type=number] _eCat   Entitytyp
+
+-- @param[type=string] _center Gebietszentrum
+
+-- @param[type=number] _area   Gebietsgröße
+
+-- @within Anwenderfunktionen
+
+--
+
+-- @usage API.BanTypeInArea(EntityCategories.CityBuilding, "groundZero", 4000);
+
+--
+
+function API.BanCategoryInArea(_eCat, _center, _area)
+
+    if GUI then
+
+        return;
+
+    end
+
+    if type(_center) ~= "string" or not IsExisting(_center) then
+
+        error("API.BanCategoryInArea: _center must be the name of an existing entity!");
+
+        return;
+
+    end
+
+    if type(_area) ~= "number" or _area < 1 then
+
+        error("API.BanCategoryInArea: _area must be a positive number!");
+
+        return;
+
+    end
+
+    if GetNameOfKeyInTable(EntityCategories, _eCat) == nil then
+
+        error("API.BanCategoryInArea: Entity category is invalid!");
+
+        return;
+
+    end
+
+
+
+    BundleConstructionControl.Global.Data.AreaBlockCategories[_center] = BundleConstructionControl.Global.Data.AreaBlockCategories[_center] or {};
+
+    if not Inside(_eCat, BundleConstructionControl.Global.Data.AreaBlockCategories[_center], true) then
+
+        info("API.BanTypeAtTerritory: Banning category " ..Logic.GetEntityCategoryName(_eCat).. " from area " ..tostring(_center).." (" ..tostring(_area)..").");
+
+        table.insert(BundleConstructionControl.Global.Data.AreaBlockCategories[_center], {_eCat, _area});
+
+    end
+
+end
+
+
+
+---
+
+-- Gibt einen Typ zum Bau im Territorium wieder frei.
+
+--
+
+-- @param[type=number] _type      Entitytyp
+
+-- @param[type=number] _territory Territorium
+
+-- @within Anwenderfunktionen
+
+--
+
+-- @usage API.UnbanTypeAtTerritory(Entities.B_Bakery, 1);
+
+--
+
+function API.UnbanTypeAtTerritory(_type, _territory)
+
+    if GUI then
+
+        return;
+
+    end
+
+    local Territories = {Logic.GetTerritories()};
+
+    if type(_territory) == "string" then
+
+        _territory = GetTerritoryIDByName(_territory);
+
+    end
+
+    if _territory == 0 or #Territories-1 < _territory then
+
+        error("API.UnbanTypeAtTerritory: Territory does not exist!");
+
+        return;
+
+    end
+
+    if GetNameOfKeyInTable(Entities, _type) == nil then
+
+        error("API.UnbanTypeAtTerritory: Entity type is invalid!");
+
+        return;
+
+    end
+
+
+
+    if not BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type] then
+
+        return;
+
+    end
+
+    for i= #BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type], 1, -1 do
+
+        if BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type][i] == _territory then
+
+            info("API.BanTypeAtTerritory: Unbanning type " ..Logic.GetEntityTypeName(_type).. " from territory " ..tostring(_territory)..".");
+
+            table.remove(BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type], i);
+
+            break;
+
+        end
+
+    end
+
+end
+
+
+
+---
+
+-- Gibt eine Kategorie zum Bau im Territorium wieder frei.
+
+--
+
+-- @param[type=number] _eCat      Entitykategorie
+
+-- @param[type=number] _territory Territorium
+
+-- @within Anwenderfunktionen
+
+--
+
+-- @usage API.UnbanCategoryAtTerritory(EntityCategories.AttackableBuilding, 1);
+
+--
+
+function API.UnbanCategoryAtTerritory(_eCat, _territory)
+
+    if GUI then
+
+        return;
+
+    end
+
+    local Territories = {Logic.GetTerritories()};
+
+    if type(_territory) == "string" then
+
+        _territory = GetTerritoryIDByName(_territory);
+
+    end
+
+    if _territory == 0 or #Territories-1 < _territory then
+
+        error("API.UnbanCategoryAtTerritory: Territory does not exist!");
+
+        return;
+
+    end
+
+    if GetNameOfKeyInTable(EntityCategories, _eCat) == nil then
+
+        error("API.UnbanCategoryAtTerritory: Entity category is invalid!");
+
+        return;
+
+    end
+
+
+
+    if not BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat] then
+
+        return;
+
+    end
+
+    for i= #BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat], 1, -1 do
+
+        if BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat][i] == _territory then
+
+            info("API.BanTypeAtTerritory: Unbanning category " ..Logic.GetEntityCategoryName(_eCat).. " from territory " ..tostring(_territory)..".");
+
+            table.remove(BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat], i);
+
+            break;
+
+        end
+
+    end
+
+end
+
+
+
+---
+
+-- Gibt einen Typ zum Bau im Gebiet wieder frei.
+
+--
+
+-- @param[type=number] _type   Entitytyp
+
+-- @param[type=string] _center Gebiet
+
+-- @within Anwenderfunktionen
+
+--
+
+-- @usage API.UnbanTypeInArea(Entities.B_Bakery, "groundZero");
+
+--
+
+function API.UnbanTypeInArea(_type, _center)
+
+    if GUI then
+
+        return;
+
+    end
+
+    if type(_center) ~= "string" or not IsExisting(_center) then
+
+        error("API.UnbanTypeInArea: _center must be the name of an existing entity!");
+
+        return;
+
+    end
+
+    if GetNameOfKeyInTable(Entities, _type) == nil then
+
+        error("API.UnbanTypeInArea: Entity type is invalid!");
+
+        return;
+
+    end
+
+
+
+    if not BundleConstructionControl.Global.Data.AreaBlockEntities[_center] then
+
+        return;
+
+    end
+
+    for i= #BundleConstructionControl.Global.Data.AreaBlockEntities[_center], 1, -1 do
+
+        if BundleConstructionControl.Global.Data.AreaBlockEntities[_center][i][1] == _type then
+
+            info("API.BanTypeAtTerritory: Unbanning type " ..Logic.GetEntityTypeName(_type).. " in area " ..tostring(_center)..".");
+
+            table.remove(BundleConstructionControl.Global.Data.AreaBlockEntities[_center], i);
+
+            break;
+
+        end
+
+    end
+
+end
+
+
+
+---
+
+-- Gibt eine Kategorie zum Bau im Gebiet wieder frei.
+
+--
+
+-- @param[type=number] _eCat   Entitykategorie
+
+-- @param[type=string] _center Gebiet
+
+-- @within Anwenderfunktionen
+
+--
+
+-- @usage API.UnbanCategoryInArea(EntityCategories.CityBuilding, "groundZero");
+
+--
+
+function API.UnbanCategoryInArea(_eCat, _center)
+
+    if GUI then
+
+        return;
+
+    end
+
+    if type(_center) ~= "string" or not IsExisting(_center) then
+
+        error("API.UnbanCategoryInArea: _center must be the name of an existing entity!");
+
+        return;
+
+    end
+
+    if GetNameOfKeyInTable(EntityCategories, _eCat) == nil then
+
+        error("API.UnbanCategoryInArea: Entity category is invalid!");
+
+        return;
+
+    end
+
+
+
+    if not BundleConstructionControl.Global.Data.AreaBlockCategories[_center] then
+
+        return;
+
+    end
+
+    for i= #BundleConstructionControl.Global.Data.AreaBlockCategories[_center], 1, -1 do
+
+        if BundleConstructionControl.Global.Data.AreaBlockCategories[_center][i][1] == _eCat then
+
+            info("API.BanTypeAtTerritory: Unbanning category " ..Logic.GetEntityCategoryName(_eCat).. " from territory " ..tostring(_center)..".");
+
+            table.remove(BundleConstructionControl.Global.Data.AreaBlockCategories[_center], i);
+
+            break;
+
+        end
+
+    end
+
+end
+
+
+
+-- -------------------------------------------------------------------------- --
+
+-- Application-Space                                                          --
+
+-- -------------------------------------------------------------------------- --
+
+
+
+BundleConstructionControl = {
+
+    Global = {
+
+        Data = {
+
+            TerritoryBlockCategories = {},
+
+            TerritoryBlockEntities = {},
+
+            AreaBlockCategories = {},
+
+            AreaBlockEntities = {},
+
+        }
+
+    },
+
+}
+
+
+
+-- Global Script ---------------------------------------------------------------
+
+
+
+---
+
+-- Initalisiert das Bundle im globalen Skript.
+
+--
+
+-- @within Internal
+
+-- @local
+
+--
+
+function BundleConstructionControl.Global:Install()
+
+    Core:AppendFunction(
+
+        "GameCallback_CanPlayerPlaceBuilding",
+
+        BundleConstructionControl.Global.CanPlayerPlaceBuilding
+
+    );
+
+end
+
+
+
+---
+
+-- Verhindert den Bau von Entities in Gebieten und Territorien.
+
+--
+
+-- @param[type=number] _PlayerID Spieler
+
+-- @param[type=number] _Type     Gebäudetyp
+
+-- @param[type=number] _x        X-Position
+
+-- @param[type=number] _y        Y-Position
+
+-- @within Internal
+
+-- @local
+
+--
+
+function BundleConstructionControl.Global.CanPlayerPlaceBuilding(_PlayerID, _Type, _x, _y)
+
+    -- Auf Territorium ---------------------------------------------
+
+
+
+    -- Prüfe Kategorien
+
+    for k,v in pairs(BundleConstructionControl.Global.Data.TerritoryBlockCategories) do
+
+        if v then
+
+            for key, val in pairs(v) do
+
+                if val and Logic.GetTerritoryAtPosition(_x, _y) == val then
+
+                    if Logic.IsEntityTypeInCategory(_Type, k) == 1 then
+
+                        return false;
+
+                    end
+
+                end
+
+            end
+
+        end
+
+    end
+
+
+
+    -- Prüfe Typen
+
+    for k,v in pairs(BundleConstructionControl.Global.Data.TerritoryBlockEntities) do
+
+        if v then
+
+            for key,val in pairs(v) do
+
+                if val and Logic.GetTerritoryAtPosition(_x, _y) == val then
+
+                    if _Type == k then
+
+                        return false;
+
+                    end
+
+                end
+
+            end
+
+        end
+
+    end
+
+
+
+    -- In einem Gebiet ---------------------------------------------
+
+
+
+    -- Prüfe Kategorien
+
+    for k, v in pairs(BundleConstructionControl.Global.Data.AreaBlockCategories) do
+
+        if v then
+
+            for key, val in pairs(v) do
+
+                if Logic.IsEntityTypeInCategory(_Type, val[1]) == 1 then
+
+                    if GetDistance(k, {X= _x, Y= _y}) < val[2] then
+
+                        return false;
+
+                    end
+
+                end
+
+            end
+
+        end
+
+    end
+
+
+
+    -- Prüfe Typen
+
+    for k, v in pairs(BundleConstructionControl.Global.Data.AreaBlockEntities) do
+
+        if v then
+
+            for key, val in pairs(v) do
+
+                if _Type == val[1] then
+
+                    if GetDistance(k, {X= _x, Y= _y}) < val[2] then
+
+                        return false;
+
+                    end
+
+                end
+
+            end
+
+        end
+
+    end
+
+
+
+    return true;
+
+end
+
+
+
+-- -------------------------------------------------------------------------- --
+
+
+
+Core:RegisterBundle("BundleConstructionControl");
+
+
+
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
 -- #  Symfonia BundleDestructionControl                                     # --
@@ -25175,323 +25581,640 @@ InitKnightTitleTables = function()
     CreateTechnologyKnightTitleTable()
 end
 
--- -------------------------------------------------------------------------- --
--- ########################################################################## --
--- #  Symfonia BundleMinimapMarker                                          # --
--- ########################################################################## --
--- -------------------------------------------------------------------------- --
-
----
--- Ermöglocht das Anlegen von Markierungen auf der Minimap.
---
--- Mögliche Typen von Markierungen:
--- <ul>
--- <li>Signal: Eine flüchtige Markierung, die nach wenigen Sekunden wieder
--- verschwindet.</li>
--- <li>Marker: Eine statische Markierung, die dauerhaft verbleibt.</li>
--- <li>Pulse: Eine pulsierende Markierung, die dauerhaft verbleibt.</li>
--- </ul>
---
--- Die Farbe eines Markers kann auf 2 verschiedene Weisen bestimmt werden.
--- <ol>
--- <li>Durch die Spielerfarbe des "Besitzers" der Markierung.
--- <pre> API.CreateMinimapSignal(1, GetPosition("pos"));</pre>
--- </li>
--- <li>Durch Übergabe einer vordefinierten Farbe oder einer Farbtabelle
--- <pre>
--- API.CreateMinimapSignal(MarkerColor.Red, GetPosition("pos"));
--- API.CreateMinimapSignal({180, 180, 180}, GetPosition("pos"));</pre>
--- </li>
--- </ol>
---
--- Durchsichtige Marker sind nicht vorgesehen!
---
--- @within Modulbeschreibung
--- @set sort=true
---
-BundleMinimapMarker = {};
-
-API = API or {};
-QSB = QSB or {};
-
----
--- Vordefinierte Farben für Minimap Marker.
--- @field Blue Königsblau
--- @field Red Blutrot
--- @field Yellow Sonnengelb
--- @field Green Blattgrün
---
--- @usage API.CreateMinimapSignal(MarkerColor.Red, GetPosition("pos"));
---
-MarkerColor = {
-    Blue    = { 17,   7, 216},
-    Red     = {216,   7,   7},
-    Yellow  = { 25, 185,   8},
-    Green   = { 16, 194, 220},
-}
-
--- -------------------------------------------------------------------------- --
--- User-Space                                                                 --
--- -------------------------------------------------------------------------- --
-
----
--- Erstellt eine flüchtige Markierung auf der Minimap.
---
--- <b>Hinweis</b>: Die Farbe richtet sich nach der Spielerfarbe!
---
--- <b>Alias</b>: CreateMinimapSignal
---
--- @param _PlayerID PlayerID oder Farbtabelle (Spielernummer oder Farbtabelle)
--- @param _Position Position des Markers (Skriptname, ID oder Position)
--- @return[type=number] ID des Markers
--- @within Anwenderfunktionen
---
--- @usage API.CreateMinimapSignal(1, GetPosition("pos"));
---
-function API.CreateMinimapSignal(_PlayerID, _Position)
-    if GUI then
-        return;
-    end
-
-    local Position = _Position;
-    if type(_Position) ~= "table" then
-        Position = GetPosition(_Position);
-    end
-
-    if type(Position) ~= "table" or (not Position.X or not Position.X) then
-        log("API.CreateMinimapSignal: Position is invalid!", LEVEL_ERROR);
-        return;
-    end
-    return BundleMinimapMarker.Global:CreateMinimapMarker(_PlayerID, Position.X, Position.Y, 7);
-end
-CreateMinimapSignal = API.CreateMinimapSignal;
-
----
--- Erstellt eine statische Markierung auf der Minimap.
---
--- <b>Hinweis</b>: Die Farbe richtet sich nach der Spielerfarbe!
---
--- <b>Alias</b>: CreateMinimapMarker
---
--- @param _PlayerID PlayerID oder Farbtabelle (Spielernummer oder Farbtabelle)
--- @param _Position Position des Markers (Skriptname, ID oder Position)
--- @return[type=number] ID des Markers
--- @within Anwenderfunktionen
---
--- @usage API.CreateMinimapMarker(1, GetPosition("pos"));
---
-function API.CreateMinimapMarker(_PlayerID, _Position)
-    if GUI then
-        return;
-    end
-
-    local Position = _Position;
-    if type(_Position) ~= "table" then
-        Position = GetPosition(_Position);
-    end
-
-    if type(Position) ~= "table" or (not Position.X or not Position.X) then
-        log("API.CreateMinimapMarker: Position is invalid!", LEVEL_ERROR);
-        return;
-    end
-    return BundleMinimapMarker.Global:CreateMinimapMarker(_PlayerID, Position.X, Position.Y, 6);
-end
-CreateMinimapMarker = API.CreateMinimapMarker;
-
----
--- Erstellt eine pulsierende Markierung auf der Minimap.
---
--- <b>Hinweis</b>: Die Farbe richtet sich nach der Spielerfarbe!
---
--- <b>Alias</b>: CreateMinimapPulse
---
--- @param _PlayerID PlayerID oder Farbtabelle (Spielernummer oder Farbtabelle)
--- @param _Position Position des Markers (Skriptname, ID oder Position)
--- @return[type=number] ID des Markers
--- @within Anwenderfunktionen
---
--- @usage API.CreateMinimapPulse(1, GetPosition("pos"));
---
-function API.CreateMinimapPulse(_PlayerID, _Position)
-    if GUI then
-        return;
-    end
-
-    local Position = _Position;
-    if type(_Position) ~= "table" then
-        Position = GetPosition(_Position);
-    end
-    
-    if type(Position) ~= "table" or (not Position.X or not Position.X) then
-        log("API.CreateMinimapPulse: Position is invalid!", LEVEL_ERROR);
-        return;
-    end
-    return BundleMinimapMarker.Global:CreateMinimapMarker(_PlayerID, Position.X, Position.Y, 1);
-end
-CreateMinimapPulse = API.CreateMinimapPulse;
-
----
--- Zerstört eine Markierung auf der Minimap.
---
--- <b>Alias</b>: DestroyMinimapSignal
---
--- @param[type=number] _ID ID des Markers
--- @within Anwenderfunktionen
---
--- @usage API.DestroyMinimapSignal(SomeMarkerID);
---
-function API.DestroyMinimapSignal(_ID)
-    if GUI then
-        return;
-    end
-    if type(_ID) ~= "number" then
-        log("API.DestroyMinimapSignal: _ID must be a number!", LEVEL_ERROR);
-        return;
-    end
-    BundleMinimapMarker.Global:DestroyMinimapMarker(_ID);
-end
-DestroyMinimapMarker = API.DestroyMinimapSignal;
-
--- -------------------------------------------------------------------------- --
--- Application-Space                                                          --
--- -------------------------------------------------------------------------- --
-
-BundleMinimapMarker = {
-    Global = {
-        Data = {
-            MarkerCounter = 1000000,
-            CreatedMinimapMarkers = {},
-        },
-    },
-    Local = {
-        Data = {},
-    }
-};
-
--- Global Script ---------------------------------------------------------------
-
----
--- Initialisiert das Bundle im globalen Skript.
--- @within Internal
--- @local
---
-function BundleMinimapMarker.Global:Install()
-    API.AddSaveGameAction(self.OnSaveGameLoaded);
-end
-
----
--- Erstellt eine neue Markierung auf der Minimap.
--- 
--- @param[type=number] _PlayerID ID des Besitzers
--- @param[type=number] _X X-Koordinate des Markers
--- @param[type=number] _Y Y-Koordinate des Makers
--- @param[type=number] _Type Typ des Markers
--- @return[type=number] ID des Markers
--- @within Internal
--- @local
---
-function BundleMinimapMarker.Global:CreateMinimapMarker(_PlayerID, _X, _Y, _Type)
-    self.Data.MarkerCounter = self.Data.MarkerCounter +1;
-    -- Flüchtige Markierungen werden nicht gespeichert!
-    self.Data.CreatedMinimapMarkers[self.Data.MarkerCounter] = {
-        _PlayerID, _X, _Y, _Type
-    };
-    info("BundleMinimapMarker: Create minimap marker (X= " .._X.. ", Y= " .._Y.. ", " .._Type.. ")");
-    self:ShowMinimapMarker(self.Data.MarkerCounter);
-    return self.Data.MarkerCounter;
-end
-
----
--- Zerstort eine Markierung auf der Minimap.
--- 
--- @param[type=number] _ID ID des Markers
--- @within Internal
--- @local
---
-function BundleMinimapMarker.Global:DestroyMinimapMarker(_ID)
-    self.Data.CreatedMinimapMarkers[_ID] = nil;
-    info("BundleMinimapMarker: Destroy minimap marker " .._ID);
-    Logic.ExecuteInLuaLocalState([[GUI.DestroyMinimapSignal(]] .._ID.. [[)]]);
-end
-
----
--- Zeigt eine erstellte Markierung auf der Minimap an.
--- 
--- @param[type=number] _ID ID des Markers
--- @within Internal
--- @local
---
-function BundleMinimapMarker.Global:ShowMinimapMarker(_ID)
-    if not self.Data.CreatedMinimapMarkers[_ID] then
-        return;
-    end
-    local Marker = self.Data.CreatedMinimapMarkers[_ID];
-
-    local ColorOrPlayerID = Marker[1];
-    if type(ColorOrPlayerID) == "table" then
-        ColorOrPlayerID = API.ConvertTableToString(ColorOrPlayerID);
-    end
-
-    info("BundleMinimapMarker: Restoring minimap marker " .._ID);
-    Logic.ExecuteInLuaLocalState([[
-        BundleMinimapMarker.Local:ShowMinimapMarker(
-            ]] .._ID.. [[,]] ..ColorOrPlayerID.. [[,]] ..Marker[2].. [[,]] ..Marker[3].. [[, ]] ..Marker[4].. [[
-        )
-    ]]);
-end
-
----
--- Stellt Markierungen auf der Minimap wieder her, wenn ein Spielstand
--- geladen wird.
--- 
--- @within Internal
--- @local
---
-function BundleMinimapMarker.Global.OnSaveGameLoaded()
-    for k, v in pairs(BundleMinimapMarker.Global.Data.CreatedMinimapMarkers) do
-        if v and v[4] ~= 7 then
-            BundleMinimapMarker.Global:ShowMinimapMarker(k);
-        end
-    end
-end
-
--- Local Script ------------------------------------------------------------- --
-
----
--- Initialisiert das Bundle im globalen Skript.
--- @within Internal
--- @local
---
-function BundleMinimapMarker.Local:Install()
-end
-
----
--- Initialisiert das Bundle im globalen Skript.
---
--- @param[type=number] _PlayerID ID des Besitzers
--- @param[type=number] _X X-Koordinate des Markers
--- @param[type=number] _Y Y-Koordinate des Makers
--- @param[type=number] _Type Typ des Markers
--- @return[type=number] ID des Markers
--- @within Internal
--- @local
---
-function BundleMinimapMarker.Local:ShowMinimapMarker(_ID, _PlayerID, _X, _Y, _Type)
-    local R, G, B;
-    if type(_PlayerID) == "number" then
-        R, G, B = GUI.GetPlayerColor(_PlayerID);
-    else
-        R = _PlayerID[1];
-        G = _PlayerID[2];
-        B = _PlayerID[3];
-    end
-    GUI.CreateMinimapSignalRGBA(_ID, _X, _Y, R, G, B, 255, _Type);
-end
-
--- -------------------------------------------------------------------------- --
-
-Core:RegisterBundle("BundleMinimapMarker");
-
+-- -------------------------------------------------------------------------- --
+
+-- ########################################################################## --
+
+-- #  Symfonia BundleMinimapMarker                                          # --
+
+-- ########################################################################## --
+
+-- -------------------------------------------------------------------------- --
+
+
+
+---
+
+-- Ermöglocht das Anlegen von Markierungen auf der Minimap.
+
+--
+
+-- Mögliche Typen von Markierungen:
+
+-- <ul>
+
+-- <li>Signal: Eine flüchtige Markierung, die nach wenigen Sekunden wieder
+
+-- verschwindet.</li>
+
+-- <li>Marker: Eine statische Markierung, die dauerhaft verbleibt.</li>
+
+-- <li>Pulse: Eine pulsierende Markierung, die dauerhaft verbleibt.</li>
+
+-- </ul>
+
+--
+
+-- Die Farbe eines Markers kann auf 2 verschiedene Weisen bestimmt werden.
+
+-- <ol>
+
+-- <li>Durch die Spielerfarbe des "Besitzers" der Markierung.
+
+-- <pre> API.CreateMinimapSignal(1, GetPosition("pos"));</pre>
+
+-- </li>
+
+-- <li>Durch Übergabe einer vordefinierten Farbe oder einer Farbtabelle
+
+-- <pre>
+
+-- API.CreateMinimapSignal(MarkerColor.Red, GetPosition("pos"));
+
+-- API.CreateMinimapSignal({180, 180, 180}, GetPosition("pos"));</pre>
+
+-- </li>
+
+-- </ol>
+
+--
+
+-- Durchsichtige Marker sind nicht vorgesehen!
+
+--
+
+-- @within Modulbeschreibung
+
+-- @set sort=true
+
+--
+
+BundleMinimapMarker = {};
+
+
+
+API = API or {};
+
+QSB = QSB or {};
+
+
+
+---
+
+-- Vordefinierte Farben für Minimap Marker.
+
+-- @field Blue Königsblau
+
+-- @field Red Blutrot
+
+-- @field Yellow Sonnengelb
+
+-- @field Green Blattgrün
+
+--
+
+-- @usage API.CreateMinimapSignal(MarkerColor.Red, GetPosition("pos"));
+
+--
+
+MarkerColor = {
+
+    Blue    = { 17,   7, 216},
+
+    Red     = {216,   7,   7},
+
+    Yellow  = { 25, 185,   8},
+
+    Green   = { 16, 194, 220},
+
+}
+
+
+
+-- -------------------------------------------------------------------------- --
+
+-- User-Space                                                                 --
+
+-- -------------------------------------------------------------------------- --
+
+
+
+---
+
+-- Erstellt eine flüchtige Markierung auf der Minimap.
+
+--
+
+-- <b>Hinweis</b>: Die Farbe richtet sich nach der Spielerfarbe!
+
+--
+
+-- <b>Alias</b>: CreateMinimapSignal
+
+--
+
+-- @param _PlayerID PlayerID oder Farbtabelle (Spielernummer oder Farbtabelle)
+
+-- @param _Position Position des Markers (Skriptname, ID oder Position)
+
+-- @return[type=number] ID des Markers
+
+-- @within Anwenderfunktionen
+
+--
+
+-- @usage API.CreateMinimapSignal(1, GetPosition("pos"));
+
+--
+
+function API.CreateMinimapSignal(_PlayerID, _Position)
+
+    if GUI then
+
+        return;
+
+    end
+
+
+
+    local Position = _Position;
+
+    if type(_Position) ~= "table" then
+
+        Position = GetPosition(_Position);
+
+    end
+
+
+
+    if type(Position) ~= "table" or (not Position.X or not Position.X) then
+
+        log("API.CreateMinimapSignal: Position is invalid!", LEVEL_ERROR);
+
+        return;
+
+    end
+
+    return BundleMinimapMarker.Global:CreateMinimapMarker(_PlayerID, Position.X, Position.Y, 7);
+
+end
+
+CreateMinimapSignal = API.CreateMinimapSignal;
+
+
+
+---
+
+-- Erstellt eine statische Markierung auf der Minimap.
+
+--
+
+-- <b>Hinweis</b>: Die Farbe richtet sich nach der Spielerfarbe!
+
+--
+
+-- <b>Alias</b>: CreateMinimapMarker
+
+--
+
+-- @param _PlayerID PlayerID oder Farbtabelle (Spielernummer oder Farbtabelle)
+
+-- @param _Position Position des Markers (Skriptname, ID oder Position)
+
+-- @return[type=number] ID des Markers
+
+-- @within Anwenderfunktionen
+
+--
+
+-- @usage API.CreateMinimapMarker(1, GetPosition("pos"));
+
+--
+
+function API.CreateMinimapMarker(_PlayerID, _Position)
+
+    if GUI then
+
+        return;
+
+    end
+
+
+
+    local Position = _Position;
+
+    if type(_Position) ~= "table" then
+
+        Position = GetPosition(_Position);
+
+    end
+
+
+
+    if type(Position) ~= "table" or (not Position.X or not Position.X) then
+
+        log("API.CreateMinimapMarker: Position is invalid!", LEVEL_ERROR);
+
+        return;
+
+    end
+
+    return BundleMinimapMarker.Global:CreateMinimapMarker(_PlayerID, Position.X, Position.Y, 6);
+
+end
+
+CreateMinimapMarker = API.CreateMinimapMarker;
+
+
+
+---
+
+-- Erstellt eine pulsierende Markierung auf der Minimap.
+
+--
+
+-- <b>Hinweis</b>: Die Farbe richtet sich nach der Spielerfarbe!
+
+--
+
+-- <b>Alias</b>: CreateMinimapPulse
+
+--
+
+-- @param _PlayerID PlayerID oder Farbtabelle (Spielernummer oder Farbtabelle)
+
+-- @param _Position Position des Markers (Skriptname, ID oder Position)
+
+-- @return[type=number] ID des Markers
+
+-- @within Anwenderfunktionen
+
+--
+
+-- @usage API.CreateMinimapPulse(1, GetPosition("pos"));
+
+--
+
+function API.CreateMinimapPulse(_PlayerID, _Position)
+
+    if GUI then
+
+        return;
+
+    end
+
+
+
+    local Position = _Position;
+
+    if type(_Position) ~= "table" then
+
+        Position = GetPosition(_Position);
+
+    end
+
+    
+
+    if type(Position) ~= "table" or (not Position.X or not Position.X) then
+
+        log("API.CreateMinimapPulse: Position is invalid!", LEVEL_ERROR);
+
+        return;
+
+    end
+
+    return BundleMinimapMarker.Global:CreateMinimapMarker(_PlayerID, Position.X, Position.Y, 1);
+
+end
+
+CreateMinimapPulse = API.CreateMinimapPulse;
+
+
+
+---
+
+-- Zerstört eine Markierung auf der Minimap.
+
+--
+
+-- <b>Alias</b>: DestroyMinimapSignal
+
+--
+
+-- @param[type=number] _ID ID des Markers
+
+-- @within Anwenderfunktionen
+
+--
+
+-- @usage API.DestroyMinimapSignal(SomeMarkerID);
+
+--
+
+function API.DestroyMinimapSignal(_ID)
+
+    if GUI then
+
+        return;
+
+    end
+
+    if type(_ID) ~= "number" then
+
+        log("API.DestroyMinimapSignal: _ID must be a number!", LEVEL_ERROR);
+
+        return;
+
+    end
+
+    BundleMinimapMarker.Global:DestroyMinimapMarker(_ID);
+
+end
+
+DestroyMinimapMarker = API.DestroyMinimapSignal;
+
+
+
+-- -------------------------------------------------------------------------- --
+
+-- Application-Space                                                          --
+
+-- -------------------------------------------------------------------------- --
+
+
+
+BundleMinimapMarker = {
+
+    Global = {
+
+        Data = {
+
+            MarkerCounter = 1000000,
+
+            CreatedMinimapMarkers = {},
+
+        },
+
+    },
+
+    Local = {
+
+        Data = {},
+
+    }
+
+};
+
+
+
+-- Global Script ---------------------------------------------------------------
+
+
+
+---
+
+-- Initialisiert das Bundle im globalen Skript.
+
+-- @within Internal
+
+-- @local
+
+--
+
+function BundleMinimapMarker.Global:Install()
+
+    API.AddSaveGameAction(self.OnSaveGameLoaded);
+
+end
+
+
+
+---
+
+-- Erstellt eine neue Markierung auf der Minimap.
+
+-- 
+
+-- @param[type=number] _PlayerID ID des Besitzers
+
+-- @param[type=number] _X X-Koordinate des Markers
+
+-- @param[type=number] _Y Y-Koordinate des Makers
+
+-- @param[type=number] _Type Typ des Markers
+
+-- @return[type=number] ID des Markers
+
+-- @within Internal
+
+-- @local
+
+--
+
+function BundleMinimapMarker.Global:CreateMinimapMarker(_PlayerID, _X, _Y, _Type)
+
+    self.Data.MarkerCounter = self.Data.MarkerCounter +1;
+
+    -- Flüchtige Markierungen werden nicht gespeichert!
+
+    self.Data.CreatedMinimapMarkers[self.Data.MarkerCounter] = {
+
+        _PlayerID, _X, _Y, _Type
+
+    };
+
+    info("BundleMinimapMarker: Create minimap marker (X= " .._X.. ", Y= " .._Y.. ", " .._Type.. ")");
+
+    self:ShowMinimapMarker(self.Data.MarkerCounter);
+
+    return self.Data.MarkerCounter;
+
+end
+
+
+
+---
+
+-- Zerstort eine Markierung auf der Minimap.
+
+-- 
+
+-- @param[type=number] _ID ID des Markers
+
+-- @within Internal
+
+-- @local
+
+--
+
+function BundleMinimapMarker.Global:DestroyMinimapMarker(_ID)
+
+    self.Data.CreatedMinimapMarkers[_ID] = nil;
+
+    info("BundleMinimapMarker: Destroy minimap marker " .._ID);
+
+    Logic.ExecuteInLuaLocalState([[GUI.DestroyMinimapSignal(]] .._ID.. [[)]]);
+
+end
+
+
+
+---
+
+-- Zeigt eine erstellte Markierung auf der Minimap an.
+
+-- 
+
+-- @param[type=number] _ID ID des Markers
+
+-- @within Internal
+
+-- @local
+
+--
+
+function BundleMinimapMarker.Global:ShowMinimapMarker(_ID)
+
+    if not self.Data.CreatedMinimapMarkers[_ID] then
+
+        return;
+
+    end
+
+    local Marker = self.Data.CreatedMinimapMarkers[_ID];
+
+
+
+    local ColorOrPlayerID = Marker[1];
+
+    if type(ColorOrPlayerID) == "table" then
+
+        ColorOrPlayerID = API.ConvertTableToString(ColorOrPlayerID);
+
+    end
+
+
+
+    info("BundleMinimapMarker: Restoring minimap marker " .._ID);
+
+    Logic.ExecuteInLuaLocalState([[
+
+        BundleMinimapMarker.Local:ShowMinimapMarker(
+
+            ]] .._ID.. [[,]] ..ColorOrPlayerID.. [[,]] ..Marker[2].. [[,]] ..Marker[3].. [[, ]] ..Marker[4].. [[
+
+        )
+
+    ]]);
+
+end
+
+
+
+---
+
+-- Stellt Markierungen auf der Minimap wieder her, wenn ein Spielstand
+
+-- geladen wird.
+
+-- 
+
+-- @within Internal
+
+-- @local
+
+--
+
+function BundleMinimapMarker.Global.OnSaveGameLoaded()
+
+    for k, v in pairs(BundleMinimapMarker.Global.Data.CreatedMinimapMarkers) do
+
+        if v and v[4] ~= 7 then
+
+            BundleMinimapMarker.Global:ShowMinimapMarker(k);
+
+        end
+
+    end
+
+end
+
+
+
+-- Local Script ------------------------------------------------------------- --
+
+
+
+---
+
+-- Initialisiert das Bundle im globalen Skript.
+
+-- @within Internal
+
+-- @local
+
+--
+
+function BundleMinimapMarker.Local:Install()
+
+end
+
+
+
+---
+
+-- Initialisiert das Bundle im globalen Skript.
+
+--
+
+-- @param[type=number] _PlayerID ID des Besitzers
+
+-- @param[type=number] _X X-Koordinate des Markers
+
+-- @param[type=number] _Y Y-Koordinate des Makers
+
+-- @param[type=number] _Type Typ des Markers
+
+-- @return[type=number] ID des Markers
+
+-- @within Internal
+
+-- @local
+
+--
+
+function BundleMinimapMarker.Local:ShowMinimapMarker(_ID, _PlayerID, _X, _Y, _Type)
+
+    local R, G, B;
+
+    if type(_PlayerID) == "number" then
+
+        R, G, B = GUI.GetPlayerColor(_PlayerID);
+
+    else
+
+        R = _PlayerID[1];
+
+        G = _PlayerID[2];
+
+        B = _PlayerID[3];
+
+    end
+
+    GUI.CreateMinimapSignalRGBA(_ID, _X, _Y, R, G, B, 255, _Type);
+
+end
+
+
+
+-- -------------------------------------------------------------------------- --
+
+
+
+Core:RegisterBundle("BundleMinimapMarker");
+
+
+
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
 -- #  Symfonia BundleNonPlayerCharacter                                     # --

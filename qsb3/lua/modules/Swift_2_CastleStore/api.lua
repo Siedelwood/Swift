@@ -1,7 +1,7 @@
 --[[
 Swift_2_CastleStore/API
 
-Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
 This file is part of Swift. Swift is created by totalwarANGEL.
 You may use and modify this file unter the terms of the MIT licence.
@@ -282,5 +282,57 @@ function API.CastleStoreSetOutsourceBoundary(_PlayerID, _Good, _Limit)
     if Store then
         Store:SetUperLimitInStorehouseForGoodType(_Good, _Limit)
     end
+end
+
+-- Local callbacks
+
+function SCP.CastleStore.AcceptAllGoods(_PlayerID)
+    local Store = QSB.CastleStore:GetInstance(_PlayerID);
+    for k, v in pairs(Store.Goods) do
+        Store:SetGoodAccepted(k, true);
+        Store:SetGoodLocked(k, false);
+    end
+end
+
+function SCP.CastleStore.LockAllGoods(_PlayerID)
+    local Store = QSB.CastleStore:GetInstance(_PlayerID);
+    for k, v in pairs(Store.Goods) do
+        Store:SetGoodAccepted(k, true);
+        Store:SetGoodLocked(k, true);
+    end
+end
+
+function SCP.CastleStore.RefuseAllGoods(_PlayerID)
+    local Store = QSB.CastleStore:GetInstance(_PlayerID);
+    for k, v in pairs(Store.Goods) do
+        Store:SetGoodAccepted(k, false);
+        Store:SetGoodLocked(k, false);
+    end
+end
+
+function SCP.CastleStore.ToggleGoodState(_PlayerID, _GoodType)
+    local Store = QSB.CastleStore:GetInstance(_PlayerID);
+    local Accepted = Store:IsGoodAccepted(_GoodType)
+    local Locked   = Store:IsGoodLocked(_GoodType)
+    if Accepted and not Locked then
+        Store:SetGoodLocked(_GoodType, true);
+        Store:SetGoodAccepted(_GoodType, true);
+    elseif Accepted and Locked then
+        Store:SetGoodLocked(_GoodType, false);
+        Store:SetGoodAccepted(_GoodType, false);
+    elseif not Accepted and not Locked then
+        Store:SetGoodAccepted(_GoodType, true);
+    else
+        Store:SetGoodLocked(_GoodType, false);
+        Store:SetGoodAccepted(_GoodType, true);
+    end
+end
+
+function SCP.CastleStore.ObjectPayStep1(_PlayerID, _ScriptName)
+    ModuleCastleStore.Global:InteractiveObjectPayStep1(_PlayerID, _ScriptName);
+end
+
+function SCP.CastleStore.ObjectPayStep3(_PlayerID, _ScriptName)
+    ModuleCastleStore.Global:InteractiveObjectPayStep1(_PlayerID, _ScriptName);
 end
 

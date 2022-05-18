@@ -1,7 +1,7 @@
 --[[
 Swift_2_EntitySearch/API
 
-Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
 This file is part of Swift. Swift is created by totalwarANGEL.
 You may use and modify this file unter the terms of the MIT licence.
@@ -47,7 +47,8 @@ You may use and modify this file unter the terms of the MIT licence.
 -- <ul>
 -- <li>NOT (_Predicate) - Negiert das Ergebnis des Prädikat.</li>
 -- <li>ALL (...) - Alle Prädikate müssen wahr sein.</li>
--- <li>ANY (...) - Mindestes ein Prädikat mus wahr sein</li>
+-- <li>ANY (...) - Mindestes ein Prädikat muss wahr sein</li>
+-- <li>XOR (...) - Exklusiv 1 aus allen Predikaten muss wahr sein.</li>
 -- </ul>
 --
 -- @see API.CommenceEntitySearch
@@ -60,6 +61,10 @@ QSB.Search = QSB.Search or {};
 -- Findet <u>alle</u> Entities.
 --
 -- Die Suche kann optional auf einen Spieler beschränkt werden.
+--
+-- <h5>Multiplayer</h5>
+-- Im Multiplayer kann diese Funktion nur in synchron
+-- ausgeführtem Code benutzt werden, da es sonst zu Desyncs komm.
 --
 -- @param[type=number] _PlayerID (Optional) ID des Besitzers
 -- @return[type=table] Liste mit Ergebnissen
@@ -83,6 +88,10 @@ end
 
 ---
 -- Findet alle Entities in einem Gebiet.
+--
+-- <h5>Multiplayer</h5>
+-- Im Multiplayer kann diese Funktion nur in synchron
+-- ausgeführtem Code benutzt werden, da es sonst zu Desyncs komm.
 --
 -- @param[type=number] _Area     Größe des Suchgebiet
 -- @param              _Position Mittelpunkt (EntityID, Skriptname oder Table)
@@ -119,6 +128,10 @@ end
 ---
 -- Findet alle Entities in einem Territorium.
 --
+-- <h5>Multiplayer</h5>
+-- Im Multiplayer kann diese Funktion nur in synchron
+-- ausgeführtem Code benutzt werden, da es sonst zu Desyncs komm.
+--
 -- @param[type=number] _Territory Territorium für die Suche
 -- @param[type=number] _PlayerID  (Optional) ID des Besitzers
 -- @param[type=number] _Type      (Optional) Typ des Entity
@@ -154,6 +167,10 @@ end
 -- den Typ schnell gehen, dauern Gebietssuchen lange! Es ist daher klug, zuerst
 -- Kriterien auszuschließen, die schnell bestimmt werden!
 --
+-- <h5>Multiplayer</h5>
+-- Im Multiplayer kann diese Funktion nur in synchron
+-- ausgeführtem Code benutzt werden, da es sonst zu Desyncs komm.
+--
 -- @param[type=table] ... Liste mit Suchprädikaten
 -- @return[type=table] Liste mit Ergebnissen
 -- @within Anwenderfunktionen
@@ -177,5 +194,15 @@ end
 --
 function API.CommenceEntitySearch(...)
     return ModuleEntitySearch.Shared:IterateEntities(arg);
+end
+
+-- Local callbacks
+
+-- FIX: Die höchste ID vom Trigger ermitteln und speichern lassen. Das ist
+-- nötig, da die Abfrage über alle Spawner möglicher Weise noch nicht durch
+-- ist, wenn der Aufruf ausgeführt wird und somit Entities verpasst werden.
+function SCP.EntitySearch.TriggerEntityTrigger()
+    local ID = Logic.CreateEntity(Entities.XD_ScriptEntity, 5, 5, 0, 0);
+    Logic.DestroyEntity(ID);
 end
 

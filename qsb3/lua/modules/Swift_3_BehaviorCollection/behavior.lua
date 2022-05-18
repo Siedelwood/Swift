@@ -1,7 +1,7 @@
 --[[
 Swift_3_BehaviorCollection/Behavior
 
-Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
 This file is part of Swift. Swift is created by totalwarANGEL.
 You may use and modify this file unter the terms of the MIT licence.
@@ -1544,6 +1544,9 @@ Swift:RegisterBehavior(B_Reward_MoveToPosition);
 --
 -- Wenn nach dem Sieg weiter gespielt wird, wird das Fest gelöscht.
 --
+-- <h5>Multiplayer</h5>
+-- Nicht für Multiplayer geeignet.
+--
 -- @within Reward
 --
 function Reward_VictoryWithParty()
@@ -1553,8 +1556,8 @@ end
 B_Reward_VictoryWithParty = {
     Name = "Reward_VictoryWithParty",
     Description = {
-        en = "Reward: The player wins the game with an animated festival on the market. Continue playing deleates the festival.",
-        de = "Lohn: Der Spieler gewinnt das Spiel mit einer animierten Siegesfeier. Bei weiterspielen wird das Fest gelöscht.",
+        en = "Reward: (Singleplayer) The player wins the game with an animated festival on the market. Continue playing deleates the festival.",
+        de = "Lohn: (Einzelspieler) Der Spieler gewinnt das Spiel mit einer animierten Siegesfeier. Bei weiterspielen wird das Fest gelöscht.",
     },
     Parameter = {}
 };
@@ -1567,6 +1570,10 @@ function B_Reward_VictoryWithParty:AddParameter(_Index, _Parameter)
 end
 
 function B_Reward_VictoryWithParty:CustomFunction(_Quest)
+    if Framework.IsNetworkGame() then
+        error(_Quest.Identifier.. ": " ..self.Name.. ": Can not be used in multiplayer!");
+        return;
+    end
     Victory(g_VictoryAndDefeatType.VictoryMissionComplete);
     local pID = _Quest.ReceivingPlayer;
 
@@ -1575,10 +1582,10 @@ function B_Reward_VictoryWithParty:CustomFunction(_Quest)
         local pos = GetPosition(market)
         Logic.CreateEffect(EGL_Effects.FXFireworks01,pos.X,pos.Y,0);
         Logic.CreateEffect(EGL_Effects.FXFireworks02,pos.X,pos.Y,0);
-        
+
         local Generated = self:GenerateParty(pID);
         QSB.VictoryWithPartyEntities[pID] = Generated;
-        
+
         Logic.ExecuteInLuaLocalState(string.format(
             [[
             if IsExisting(%d) then

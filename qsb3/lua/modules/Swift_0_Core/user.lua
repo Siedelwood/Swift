@@ -1,7 +1,7 @@
 --[[
 Swift_0_Core/User
 
-Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
 This file is part of Swift. Swift is created by totalwarANGEL.
 You may use and modify this file unter the terms of the MIT licence.
@@ -13,6 +13,7 @@ QSB.RefillAmounts = {};
 function Swift:InitalizeCallbackGlobal()
     self:OverrideSaveLoadedCallback();
     self:OverwriteGeologistRefill();
+    self:OverrideSoldierPayment();
 end
 
 function Swift:InitalizeCallbackLocal()
@@ -67,12 +68,9 @@ function Swift:RestoreAfterLoad()
     if self:IsLocalEnvironment() then
         self:LocalRestoreDebugAfterLoad();
         self:SetEscapeKeyTrigger();
+        self:CreateRandomSeed();
         -- self:LogLocalCFunctions();
     end
-    -- Set new random seed
-    local Value = Framework.GetSystemTimeDateString():sub(15, 23):gsub("'", "");
-    math.randomseed(tonumber("1" ..Value));
-    math.random(1, 100);
 end
 
 -- Escape Callback
@@ -82,16 +80,13 @@ function Swift:SetEscapeKeyTrigger()
 end
 
 function Swift:ExecuteEscapeCallback()
-    -- Local
-    GUI.SendScriptCommand(string.format(
-        [[Swift:DispatchScriptEvent(QSB.ScriptEvents.EscapePressed, %d)]],
-        GUI.GetPlayerID()
-    ), true);
     -- Global
-    GUI.SendScriptCommand(string.format(
-        [[Swift:DispatchScriptEvent(QSB.ScriptEvents.EscapePressed, %d)]],
+    API.BroadcastScriptEventToGlobal(
+        QSB.ScriptEvents.EscapePressed,
         GUI.GetPlayerID()
-    ), false);
+    )
+    -- Local
+    Swift:DispatchScriptEvent(QSB.ScriptEvents.EscapePressed, GUI.GetPlayerID());
 end
 
 -- Geologist Refill Callback
@@ -114,6 +109,18 @@ function Swift:OverwriteGeologistRefill()
                 end
             end
         end
+    end
+end
+
+-- Soldier Payment Callback
+
+function Swift:OverrideSoldierPayment()
+    GameCallback_SetSoldierPaymentLevel_Orig = GameCallback_SetSoldierPaymentLevel;
+    GameCallback_SetSoldierPaymentLevel = function(_PlayerID, _Level)
+        if _Level <= 2 then
+            return GameCallback_SetSoldierPaymentLevel_Orig(_PlayerID, _Level);
+        end
+        Swift:ProcessScriptCommand(_PlayerID, _Level);
     end
 end
 

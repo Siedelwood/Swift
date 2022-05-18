@@ -1,7 +1,7 @@
 --[[
 Swift_3_BriefingSystem/Behavior
 
-Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
 This file is part of Swift. Swift is created by totalwarANGEL.
 You may use and modify this file unter the terms of the MIT licence.
@@ -36,6 +36,7 @@ B_Reprisal_Briefing = {
         de = "Lohn: Ruft die Funktion auf und startet das enthaltene Briefing.",
     },
     Parameter = {
+        { ParameterType.Default, en = "Briefing name",     de = "Name des Briefing" },
         { ParameterType.Default, en = "Briefing function", de = "Funktion mit Briefing" },
     },
 }
@@ -53,7 +54,7 @@ function B_Reprisal_Briefing:AddParameter(_Index, _Parameter)
 end
 
 function B_Reprisal_Briefing:CustomFunction(_Quest)
-    _G[self.Function](self, self.BriefingName, _Quest.ReceivingPlayer);
+    _G[self.Function](self.BriefingName, _Quest.ReceivingPlayer);
 end
 
 function B_Reprisal_Briefing:Debug(_Quest)
@@ -95,10 +96,6 @@ B_Reward_Briefing.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-B_Reward_Briefing.CustomFunction = function(self, _Quest)
-    _G[self.Function](self, self.BriefingName, _Quest.ReceivingPlayer);
-end
-
 Swift:RegisterBehavior(B_Reward_Briefing);
 
 -- -------------------------------------------------------------------------- --
@@ -121,7 +118,7 @@ B_Trigger_Briefing = {
         de = "Ausloeser: Prüft, ob ein Briefing beendet ist und startet dann den Quest.",
     },
     Parameter = {
-        { ParameterType.Default, en = "Briefing name",   de = "Name des Briefing" },
+        { ParameterType.Default, en = "Briefing name", de = "Name des Briefing" },
         { ParameterType.Number,  en = "Wait time",     de = "Wartezeit" },
     },
 }

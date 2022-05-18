@@ -103,9 +103,9 @@ function BriefingAnimationTest1(_Name, _PlayerID)
     }
     local AP, ASP, AAN = API.AddBriefingPages(Briefing);
 
-    local Page = ASP("Page 1", "This is page 1! Here we initalize the first animation.");
-    Page.Name = "Page1";
-    AAN("Page1", "pos4", -60, 2000, 35, "pos4", -30, 2000, 25, 30);
+    ASP("SpecialNamedPage1", "Page 1", "This is page 1! Here we initalize the first animation.");
+    AAN("SpecialNamedPage1", true);
+    AAN("SpecialNamedPage1", "pos2", -60, 2000, 35, "pos2", -30, 2000, 25, 30);
 
     AP{
         Title    = "Page 2",
@@ -114,12 +114,12 @@ function BriefingAnimationTest1(_Name, _PlayerID)
     }
 
     AP{
-        Name     = "Page3",
+        Name     = "SpecialNamedPage3",
         Title    = "Page 3",
         Text     = "This is page 3! Here the animation is purged and a new is started.",
     }
-    AAN("Page3", true);
-    AAN("Page3", "pos2", -45, 6000, 35, "pos2", -45, 3000, 35, 30);
+    AAN("SpecialNamedPage3", true);
+    AAN("SpecialNamedPage3", "pos2", -45, 6000, 35, "pos2", -45, 3000, 35, 30);
 
     -- Position is not needed because there is a animation.
     ASP("Page 4", "This is page 4!");
@@ -143,13 +143,13 @@ function BriefingAnimationTest2(_Name, _PlayerID)
         SkippingAllowed = true,
         DisableReturn = false,
     }
-    local AP, ASP, AA = API.AddBriefingPages(Briefing);
+    local AP, ASP, AAN = API.AddBriefingPages(Briefing);
 
     -- Animations are created automatically because a position is given.
-    ASP("Page 1", "This is a briefing with default animation.", "pos2", true);
-    ASP("Page 2", "It works just as you are used to it.", "pos2");
-    ASP("Page 3", "No fancy camera magic and everything in one line.", "pos4", true);
-    ASP("Page 4", "Text is displayed until the player skips the page.", "pos4");
+    ASP("Page 1", "This is a briefing with default animation.", true, "pos2");
+    ASP("Page 2", "It works just as you are used to it.", false, "pos2");
+    ASP("Page 3", "No fancy camera magic and everything in one line.", true, "pos4");
+    ASP("Page 4", "Text is displayed until the player skips the page.", false, "pos4");
 
     Briefing.Starting = function(_Data)
     end

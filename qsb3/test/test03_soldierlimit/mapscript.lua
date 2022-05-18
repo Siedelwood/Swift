@@ -97,6 +97,15 @@ function GameCallback_QSB_OnEventReceived(_ID, ...)
     end
 end
 
+function BenchmarkTest()
+    API.BeginBenchmark("HowMuchIsTheFish")
+    local j= 0
+    for i= 1, 1000000 do
+        j = j +1
+    end
+    API.StopBenchmark("HowMuchIsTheFish")
+end
+
 function ChangePlayerSoldierLimit()
     API.SetPlayerSoldierLimit(1, function(_PlayerID)
         return 601;

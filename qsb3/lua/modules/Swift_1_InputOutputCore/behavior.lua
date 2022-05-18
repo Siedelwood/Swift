@@ -1,7 +1,7 @@
 --[[
 Swift_2_InputOutputCore/Behavior
 
-Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
 This file is part of Swift. Swift is created by totalwarANGEL.
 You may use and modify this file unter the terms of the MIT licence.
@@ -24,7 +24,8 @@ You may use and modify this file unter the terms of the MIT licence.
 -- müssen also immer mit Ja oder Nein beantwortbar sein oder auf Okay und
 -- Abbrechen passen.
 --
--- <b>Hinweis</b>: Dieses Behavior kann nicht im Multiplayer verwendet werden.
+-- <h5>Multiplayer</h5>
+-- Nicht für Multiplayer geeignet.
 --
 -- @param _Text   Fenstertext
 -- @param _Title  Fenstertitel
@@ -72,10 +73,12 @@ function B_Goal_Decide:CustomFunction(_Quest)
             local buttons = (self.Buttons and "true") or "nil"
             QSB.GoalDecideDialogDisplayed = true;
             
+            -- FIXME This will not work in multiplayer when more than one
+            -- instances of this behavior are active!
             Logic.ExecuteInLuaLocalState(string.format(
                 [[
                     local Action = function(_Yes)
-                        GUI.SendScriptCommand("QSB.DecisionWindowResult = " ..tostring(_Yes == true).. " == true")
+                        API.BroadcastScriptCommand(QSB.ScriptCommands.SetDecisionResult, GUI.GetPlayerID(), _Yes == true);
                     end
                     API.DialogRequestBox("%s", "%s", Action, %s)
                 ]],
@@ -135,7 +138,8 @@ Swift:RegisterBehavior(B_Goal_Decide);
 -- erste Eingabe annehmen, die getätigt wird. Dabei ist es egal, ob der Input
 -- durch sie selbst oder extern aktiviert wurde.
 --
--- <b>Hinweis</b>: Dieses Behavior kann nicht im Multiplayer verwendet werden.
+-- <h5>Multiplayer</h5>
+-- Nicht für Multiplayer geeignet.
 --
 -- @param _Passwords Liste der Passwörter
 -- @param _Trials    Anzahl versuche (0 für unendlich)

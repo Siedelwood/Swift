@@ -1,7 +1,7 @@
 --[[
 Swift_3_DialogSystem/API
 
-Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
 This file is part of Swift. Swift is created by totalwarANGEL.
 You may use and modify this file unter the terms of the MIT licence.
@@ -95,6 +95,7 @@ function API.StartDialog(_Dialog, _Name, _PlayerID)
     if not PlayerID and not Framework.IsNetworkGame() then
         PlayerID = QSB.HumanPlayerID;
     end
+    assert(_PlayerID ~= nil);
     if type(_Dialog) ~= "table" then
         local Name = "Dialog #" ..(ModuleDialogSystem.Global.DialogCounter +1);
         error("API.StartDialog (" ..Name.. "): _Dialog must be a table!");
@@ -113,6 +114,20 @@ function API.StartDialog(_Dialog, _Name, _PlayerID)
         end
     end
     ModuleDialogSystem.Global:StartDialog(_Name, PlayerID, _Dialog);
+end
+
+---
+-- Prüft ob für den Spieler gerade ein Dialog aktiv ist.
+--
+-- @param[type=number] _PlayerID ID des Spielers
+-- @return[type=boolean] Dialog ist aktiv
+-- @within Anwenderfunktionen
+--
+function API.IsDialogActive(_PlayerID)
+    if Swift:IsGlobalEnvironment() then
+        return ModuleDialogSystem.Global:GetCurrentDialog(_PlayerID) ~= nil;
+    end
+    return ModuleDialogSystem.Local:GetCurrentDialog(_PlayerID) ~= nil;
 end
 
 ---
@@ -135,12 +150,21 @@ function API.AddDialogPages(_Dialog)
 
     local AP = function(_Page)
         if type(_Page) == "table" then
+            local Identifier = "Page" ..(#_Dialog +1);
+            if _Page.Name then
+                Identifier = _Page.Name;
+            else
+                _Page.Name = Identifier;
+            end
+
             if _Page.Position and _Page.Target then
                 local Name = "Dialog #" ..(ModuleDialogSystem.Global.DialogCounter +1);
-                error("AF (" ..Name.. ", Page #" ..(#_Dialog+1).. "): Position and Target can not be used both at the same time!");
+                error("AP (" ..Name.. ", Page '" .._Page.Name.. "'): "..
+                      "Position and Target can not be used both at the "..
+                      "same time!");
                 return;
             end
-            
+
             _Page.__Legit = true;
             _Page.GetSelected = function(self)
                 if self.MC then
@@ -148,7 +172,7 @@ function API.AddDialogPages(_Dialog)
                 end
                 return 0;
             end
-            
+
             if _Page.Rotation == nil then
                 if _Page.Target ~= nil then
                     local ID = GetID(_Page.Target);
@@ -176,6 +200,9 @@ function API.AddDialogPages(_Dialog)
     end
 
     local ASP = function(...)
+        if type(arg[2]) ~= "number" then
+            Name = table.remove(arg, 1);
+        end
         local Sender   = table.remove(arg, 1);
         local Position = table.remove(arg, 1);
         local Text     = table.remove(arg, 1);
@@ -185,6 +212,7 @@ function API.AddDialogPages(_Dialog)
             Action = table.remove(arg, 1);
         end
         return AP {
+            Name   = Name,
             Text   = Text,
             Sender = Sender,
             Target = Position,
@@ -333,16 +361,19 @@ end
 -- <a href="#API.AddPages">API.AddDialogPages</a> erzeugt und an
 -- den Dialog gebunden.
 --
+-- @param[type=string]   _Name         (Optional) Name der Seite
+-- @param[type=string]   _Text         Text der Seite
 -- @param[type=number]   _Sender       Spieler (-1 für kein Portrait)
 -- @param[type=string]   _Position     Position der Kamera
--- @param[type=string]   _Text         Text der Seite
 -- @param[type=boolean]  _DialogCamera Nahsicht an/aus
 -- @param[type=function] _Action       (Optional) Callback-Funktion
 -- @return[type=table] Referenz auf die Seite
 -- @within Dialog
--- 
+--
 -- @usage -- Beispiel ohne Page Name
--- ASP(1, "hans", "Ich gehe in die weitel Welt hinein.", true);
+-- ASP("Ich gehe in die weitel Welt hinein.", 1, "hans", true);
+-- -- Beispiel mit Page Name
+-- ASP("Page1", "Ich gehe in die weitel Welt hinein.", 1, "hans", true);
 --
 function ASP(_Data)
     assert(false);

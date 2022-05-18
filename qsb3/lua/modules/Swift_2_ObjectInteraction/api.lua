@@ -1,7 +1,7 @@
 --[[
 Swift_2_ObjectInteraction/API
 
-Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
 This file is part of Swift. Swift is created by totalwarANGEL.
 You may use and modify this file unter the terms of the MIT licence.
@@ -106,6 +106,12 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- <td>number</td>
 -- <td>Die minimale Entfernung zum Objekt, die ein Held benötigt um das
 -- objekt zu aktivieren.</td>
+-- <td>ja</td>
+-- </tr>
+-- <tr>
+-- <td>Player</td>
+-- <td>number|table</td>
+-- <td>Spieler, der/die das Objekt aktivieren kann/können.</td>
 -- <td>ja</td>
 -- </tr>
 -- <tr>
@@ -263,11 +269,19 @@ function API.InteractiveObjectActivate(_ScriptName, _State, _PlayerID)
         local SlaveName = (IO[_ScriptName].Slave or _ScriptName);
         if IO[_ScriptName].Slave then
             IO_SlaveState[SlaveName] = 1;
+            Logic.ExecuteInLuaLocalState(string.format(
+                [[IO_SlaveState["%s"] = 1]],
+                SlaveName
+            ));
         end
-        ModuleObjectInteraction.Global:SetObjectAvailability(SlaveName, _State, _PlayerID);
+        ModuleObjectInteraction.Global:SetObjectState(SlaveName, _State, _PlayerID);
         IO[_ScriptName].IsActive = true;
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[IO["%s"].IsActive = true]],
+            _ScriptName
+        ));
     else
-        ModuleObjectInteraction.Global:SetObjectAvailability(_ScriptName, _State, _PlayerID);
+        ModuleObjectInteraction.Global:SetObjectState(_ScriptName, _State, _PlayerID);
     end
 end
 InteractiveObjectActivate = API.InteractiveObjectActivate;
@@ -290,11 +304,19 @@ function API.InteractiveObjectDeactivate(_ScriptName, _PlayerID)
         local SlaveName = (IO[_ScriptName].Slave or _ScriptName);
         if IO[_ScriptName].Slave then
             IO_SlaveState[SlaveName] = 0;
+            Logic.ExecuteInLuaLocalState(string.format(
+                [[IO_SlaveState["%s"] = 0]],
+                SlaveName
+            ));
         end
-        ModuleObjectInteraction.Global:SetObjectAvailability(SlaveName, 2, _PlayerID);
+        ModuleObjectInteraction.Global:SetObjectState(SlaveName, 2, _PlayerID);
         IO[_ScriptName].IsActive = false;
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[IO["%s"].IsActive = false]],
+            _ScriptName
+        ));
     else
-        ModuleObjectInteraction.Global:SetObjectAvailability(_ScriptName, 2, _PlayerID);
+        ModuleObjectInteraction.Global:SetObjectState(_ScriptName, 2, _PlayerID);
     end
 end
 InteractiveObjectDeactivate = API.InteractiveObjectDeactivate;
@@ -317,7 +339,12 @@ function API.SetObjectCustomName(_Key, _Text)
     if GUI then
         return;
     end
-    IO_UserDefindedNames[_Key] = API.Localize(_Text);
+    IO_UserDefindedNames[_Key] = _Text;
+    Logic.ExecuteInLuaLocalState(string.format(
+        [[IO_UserDefindedNames["%s"] = %s]],
+        _Key,
+        table.tostring(IO_UserDefindedNames)
+    ));
 end
 API.InteractiveObjectSetName = API.SetObjectCustomName;
 AddCustomIOName = API.SetObjectCustomName;

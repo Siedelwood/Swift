@@ -79,6 +79,11 @@ function Mission_FirstMapAction()
     API.ActivateDebugMode(true, false, true, true);
     API.CastleStoreCreate(1);
 
+    SetDiplomacyState(1, 2, 2);
+    local SHID = Logic.GetStoreHouse(2);
+    AddOffer(SHID, 3, Goods.G_Sheep);
+    AddOffer(SHID, 3, Goods.G_Cow);
+
     -- StartSimpleJobEx(function()
     --     if Logic.GetTime() > 5 then
     --         API.CreateQuest {
@@ -87,12 +92,27 @@ function Mission_FirstMapAction()
     --             Receiver = 1,
     --             Suggestion = "Deliver this shit!",
                 
-    --             Goal_Deliver("G_Dye", 50),
+    --             Goal_Deliver("G_Wood", 200),
     --             Trigger_Time(6)
     --         }
     --         return true;
     --     end
     -- end);
+
+    TEST_COMMAND = API.RegisterScriptCommand("TestFunction", TestFunction);
+end
+
+function TestFunction(_PlayerID, _Number, _String)
+    local Text = "TestFunction :: PlayerID: " .._PlayerID.. " Param1: " .._Number.. " Param2: " .._String;
+    API.Note(Text);
+end
+
+function CallTestFunction()
+    Logic.ExecuteInLuaLocalState("CallTestFunction()");
+end
+
+function CallTestFunction2()
+    Logic.ExecuteInLuaLocalState("CallTestFunction2()");
 end
 
 GameCallback_QSB_OnEventReceived = function(_EventID, ...)
@@ -112,11 +132,14 @@ GameCallback_QSB_OnEventReceived = function(_EventID, ...)
 end
 
 function SearchWithPredicateTest()
-    return API.CommenceEntitySearch(
+    API.BeginBenchmark("SearchBenchmark");
+    local Result = API.CommenceEntitySearch(
         {QSB.Search.OfPlayer, 1},
         {ANY,
          {QSB.Search.OfCategory, EntityCategories.CityBuilding},
          {QSB.Search.OfCategory, EntityCategories.OuterRimBuilding}},
         {QSB.Search.InTerritory, 1}
     )
+    API.StopBenchmark("SearchBenchmark");
+    return Result;
 end

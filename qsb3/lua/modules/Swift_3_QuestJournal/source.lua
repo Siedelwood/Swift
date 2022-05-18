@@ -160,9 +160,7 @@ end
 function ModuleQuestJournal.Local:DisplayQuestJournal(_QuestName, _PlayerID, _Info)
     if _Info and GUI.GetPlayerID() == _PlayerID then
         local Title = API.Localize(ModuleQuestJournal.Shared.Text.Title);
-        QSB.TextWindow:New(Title, API.ConvertPlaceholders(_Info))
-            :SetPause(false)
-            :Show();
+        API.SimpleTextWindow(Title, API.ConvertPlaceholders(_Info), _PlayerID);
     end
 end
 
@@ -189,8 +187,7 @@ function ModuleQuestJournal.Local:IsShowingJournalButton(_ID)
         return false;
     end
     local Quest = Quests[_ID];
-    if  type(Quest) == "table"
-    and Quest.QuestNotes then
+    if type(Quest) == "table" and Quest.QuestNotes then
         return true;
     end
     return false;
@@ -202,11 +199,7 @@ function ModuleQuestJournal.Local:OverrideTutorialNext()
         if g_Interaction.CurrentMessageQuestIndex then
             local QuestID = g_Interaction.CurrentMessageQuestIndex;
             local Quest = Quests[QuestID];
-            GUI.SendScriptCommand(string.format(
-                [[API.SendScriptEvent(QSB.ScriptEvents.QuestJournalDisplayed, "%s", %d, nil)]],
-                Quest.Identifier,
-                GUI.GetPlayerID()
-            ));
+            API.SendScriptEventToGlobal(QSB.ScriptEvents.QuestJournalDisplayed, Quest.Identifier, GUI.GetPlayerID());
         end
     end
 end

@@ -1,7 +1,7 @@
 --[[
 Swift_1_EntityEventCore/Source
 
-Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
 This file is part of Swift. Swift is created by totalwarANGEL.
 You may use and modify this file unter the terms of the MIT licence.
@@ -195,20 +195,20 @@ function ModuleEntityEventCore.Global:CleanTaggedAndDeadEntities()
 
     -- unregister dead entities if not already unregistered
     for k,v in pairs(self.RegisteredEntities) do
-        if not IsExisting(v) then
-            self:UnregisterEntityAndTriggerEvent(v);
+        if not IsExisting(k) then
+            self:UnregisterEntityAndTriggerEvent(k);
         end
     end
 end
 
 function ModuleEntityEventCore.Global:OverrideCallback()
-    GameCallback_SettlerSpawned_Orig_QSB_EntityCore = GameCallback_SettlerSpawned
+    GameCallback_SettlerSpawned_Orig_QSB_EntityCore = GameCallback_SettlerSpawned;
     GameCallback_SettlerSpawned = function(_PlayerID, _EntityID)
         GameCallback_SettlerSpawned_Orig_QSB_EntityCore(_PlayerID, _EntityID);
         ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(_EntityID);
     end
 
-    GameCallback_OnBuildingConstructionComplete_Orig_QSB_EntityCore = GameCallback_SettlerSpawned
+    GameCallback_OnBuildingConstructionComplete_Orig_QSB_EntityCore = GameCallback_OnBuildingConstructionComplete;
     GameCallback_OnBuildingConstructionComplete = function(_PlayerID, _EntityID)
         GameCallback_OnBuildingConstructionComplete_Orig_QSB_EntityCore(_PlayerID, _EntityID);
         ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(_EntityID);
@@ -442,48 +442,48 @@ function ModuleEntityEventCore.Global:GetAllEntitiesOfType(_Type)
 end
 
 function ModuleEntityEventCore.Global:CheckOnNonTrackableEntities()
-    -- -- Buildings
+    local Step = 10;
+    local TurnMod = Logic.GetCurrentTurn() % Step;
+    -- Buildings
     for i= 1, 8 do
         local Buildings = {Logic.GetPlayerEntitiesInCategory(i, EntityCategories.AttackableBuilding)};
-        for j= 1, #Buildings do
+        for j= Step-TurnMod, #Buildings, Step do
             self:RegisterEntityAndTriggerEvent(Buildings[j]);
         end
-        local Walls = {Logic.GetPlayerEntitiesInCategory(i, EntityCategories.AttackableBuilding)};
-        for j= 1, #Walls do
+        local PalisadeSegment = {Logic.GetPlayerEntitiesInCategory(i, EntityCategories.PalisadeSegment)};
+        for j= Step-TurnMod, #PalisadeSegment, Step do
+            self:RegisterEntityAndTriggerEvent(PalisadeSegment[j]);
+        end
+        local Walls = {Logic.GetPlayerEntitiesInCategory(i, EntityCategories.Wall)};
+        for j= Step-TurnMod, #Walls, Step do
             self:RegisterEntityAndTriggerEvent(Walls[j]);
         end
     end
-    -- -- Ambiend and Resources
+    -- Ambiend
     for i= 1, #self.SharedAnimalTypes do
-        if Logic.GetCurrentTurn() % 10 == i and Entities[self.SharedAnimalTypes[i]] then
-            local FoundEntities = Logic.GetEntitiesOfType(Entities[self.SharedAnimalTypes[i]]);
-            for j= 1, #FoundEntities do
-                self:RegisterEntityAndTriggerEvent(FoundEntities[j]);
-            end
+        local FoundEntities = Logic.GetEntitiesOfType(Entities[self.SharedAnimalTypes[i]]);
+        for j= Step-TurnMod, #FoundEntities, Step do
+            self:RegisterEntityAndTriggerEvent(FoundEntities[j]);
         end
     end
+    -- Resources
     for i= 1, #self.SharedResourceTypes do
-        if Logic.GetCurrentTurn() % 10 == i and Entities[self.SharedAnimalTypes[i]] then
-            local FoundEntities = Logic.GetEntitiesOfType(Entities[self.SharedResourceTypes[i]]);
-            for j= 1, #FoundEntities do
-                self:RegisterEntityAndTriggerEvent(FoundEntities[j]);
-            end
+        local FoundEntities = Logic.GetEntitiesOfType(Entities[self.SharedResourceTypes[i]]);
+        for j= Step-TurnMod, #FoundEntities, Step do
+            self:RegisterEntityAndTriggerEvent(FoundEntities[j]);
         end
     end
+    -- Climate specific
+    local TypesToSearch = {};
     for k, v in pairs(Entities) do
-        local TypesToSearch = {};
         if string.find(k, "^A_" ..self.ClimateShort.. "_") or string.find(k, "^R_" ..self.ClimateShort.. "_") then
-            if Entities[k] then
-                table.insert(TypesToSearch, v);
-            end
+            TypesToSearch[#TypesToSearch+1] = v;
         end
-        for i= 1, #TypesToSearch do
-            if Logic.GetCurrentTurn() % 10 == i then
-                local FoundEntities = Logic.GetEntitiesOfType(TypesToSearch[i]);
-                for j= 1, #FoundEntities do
-                    self:RegisterEntityAndTriggerEvent(FoundEntities[j]);
-                end
-            end
+    end
+    for i= Step-TurnMod, #TypesToSearch, Step do
+        local FoundEntities = Logic.GetEntitiesOfType(TypesToSearch[i]);
+        for j= 1, #FoundEntities do
+            self:RegisterEntityAndTriggerEvent(FoundEntities[j]);
         end
     end
 end
@@ -557,15 +557,15 @@ function ModuleEntityEventCore.Local:StartTriggers()
     GameCallback_Feedback_EntityHurt = function(_HurtPlayerID, _HurtEntityID, _HurtingPlayerID, _HurtingEntityID, _DamageReceived, _DamageDealt)
         GameCallback_Feedback_EntityHurt_Orig_QSB_EntityCore(_HurtPlayerID, _HurtEntityID, _HurtingPlayerID, _HurtingEntityID, _DamageReceived, _DamageDealt);
 
-        GUI.SendScriptCommand(string.format(
-            "API.SendScriptEvent(QSB.ScriptEvents.EntityHurt, %d, %d, %d, %d, %d, %d)",
+        API.SendScriptEventToGlobal(
+            QSB.ScriptEvents.EntityHurt,
             _HurtEntityID,
             _HurtPlayerID,
             _HurtingEntityID,
             _HurtingPlayerID,
             _DamageDealt,
             _DamageReceived
-        ));
+        );
         API.SendScriptEvent(QSB.ScriptEvents.EntityHurt, _HurtEntityID, _HurtPlayerID, _HurtingEntityID, _HurtingPlayerID, _DamageDealt, _DamageReceived);
     end
 
@@ -573,12 +573,12 @@ function ModuleEntityEventCore.Local:StartTriggers()
     GameCallback_Feedback_MineAmountChanged = function(_MineID, _GoodType, _TerritoryID, _PlayerID, _Amount)
         GameCallback_Feedback_MineAmountChanged_Orig_QSB_EntityCore(_MineID, _GoodType, _TerritoryID, _PlayerID, _Amount);
 
-        GUI.SendScriptCommand(string.format(
-            "API.SendScriptEvent(QSB.ScriptEvents.EntityResourceChanged, %d, %d, %d)",
+        API.SendScriptEventToGlobal(
+            QSB.ScriptEvents.EntityResourceChanged,
             _MineID,
             _GoodType,
             _Amount
-        ));
+        );
         API.SendScriptEvent(QSB.ScriptEvents.EntityResourceChanged, _MineID, _GoodType, _Amount);
     end
 end

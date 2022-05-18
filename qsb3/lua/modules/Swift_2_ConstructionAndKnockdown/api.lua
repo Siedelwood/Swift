@@ -1,7 +1,7 @@
 --[[
 Swift_2_ConstructionAndKnockdown/API
 
-Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
 This file is part of Swift. Swift is created by totalwarANGEL.
 You may use and modify this file unter the terms of the MIT licence.
@@ -480,5 +480,11 @@ function API.GetPermitKnockdownCategoryInArea(_PlayerID, _AreaCenter, _AreaSize,
         end
         return true;
     end
+end
+
+-- Local callbacks
+
+function SCP.ConstructionAndKnockdown.CancelKnockdown(_BuildingID, _State)
+    ModuleConstructionControl.Global:CheckCancelBuildingKnockdown(_BuildingID, _State)
 end
 

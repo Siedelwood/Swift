@@ -1,7 +1,7 @@
 --[[
 Swift_3_CutsceneSystem/API
 
-Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
 This file is part of Swift. Swift is created by totalwarANGEL.
 You may use and modify this file unter the terms of the MIT licence.
@@ -113,6 +113,7 @@ function API.StartCutscene(_Cutscene, _Name, _PlayerID)
     if not PlayerID and not Framework.IsNetworkGame() then
         PlayerID = QSB.HumanPlayerID;
     end
+    assert(_PlayerID ~= nil);
     if type(_Cutscene) ~= "table" then
         local Name = "Cutscene #" ..(ModuleCutsceneSystem.Global.CutsceneCounter +1);
         error("API.StartCutscene (" ..Name.. "): _Cutscene must be a table!");
@@ -131,6 +132,20 @@ function API.StartCutscene(_Cutscene, _Name, _PlayerID)
         end
     end
     ModuleCutsceneSystem.Global:StartCutscene(_Name, PlayerID, _Cutscene);
+end
+
+---
+-- Prüft ob für den Spieler gerade eine Cutscene aktiv ist.
+--
+-- @param[type=number] _PlayerID ID des Spielers
+-- @return[type=boolean] Cutscene ist aktiv
+-- @within Anwenderfunktionen
+--
+function API.IsCutsceneActive(_PlayerID)
+    if Swift:IsGlobalEnvironment() then
+        return ModuleCutsceneSystem.Global:GetCurrentCutscene(_PlayerID) ~= nil;
+    end
+    return ModuleCutsceneSystem.Local:GetCurrentCutscene(_PlayerID) ~= nil;
 end
 
 ---

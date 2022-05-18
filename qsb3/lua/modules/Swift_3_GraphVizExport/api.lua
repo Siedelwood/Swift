@@ -1,7 +1,7 @@
 --[[
 Swift_3_GraphVizExport/API
 
-Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
 This file is part of Swift. Swift is created by totalwarANGEL.
 You may use and modify this file unter the terms of the MIT licence.
@@ -15,7 +15,7 @@ You may use and modify this file unter the terms of the MIT licence.
 -- Notation heißt DOT. Um daraus ein Diagramm zu generieren, musst du
 -- GraphViz installieren.
 --
--- <h4>Installation von GraphViz</h4>
+-- <h5>Installation von GraphViz</h5>
 -- Befolge folgende Schritte, um GraphViz zu installieren:
 -- <ol>
 -- <li>
@@ -43,7 +43,7 @@ You may use and modify this file unter the terms of the MIT licence.
 -- </li>
 -- </ol>
 --
--- <h4>Diagramm mit GraphViz erzeugen</h4>
+-- <h5>Diagramm mit GraphViz erzeugen</h5>
 -- <ol>
 -- <li>
 -- Lasse zu einen beliebigen Zeitpunkt die Quests umwandeln.<br/>Siehe dazu

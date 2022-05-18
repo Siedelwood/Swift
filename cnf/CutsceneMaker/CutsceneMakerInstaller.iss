@@ -1,5 +1,5 @@
 ; Symfonia Installer Script
-; Dieses Skript erzeugt den Installer für den Cutscene Maker.
+; Dieses Skript erzeugt den Installer fï¿½r den Cutscene Maker.
 
 #define MyAppName "CutsceneMakerInstaller"
 #define MyAppVersion "1.0"
@@ -15,7 +15,7 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={pf}\Siedelwood\CutsceneMaker
+DefaultDirName={userappdata}\Siedelwood\CutsceneMaker
 DefaultGroupName=Siedelwood
 OutputDir=E:\Repositories\symfonia\cnf\CutsceneMaker
 OutputBaseFilename=CutsceneMakerInstaller
@@ -29,7 +29,7 @@ DisableDirPage=no
 Name: "german"; MessagesFile: "compiler:Languages\German.isl"
 
 [CustomMessages]
-AppAddPath=Programm zur PATH-Variable hinzufügen (empfohlen)
+AppAddPath=Programm zur PATH-Variable hinzufï¿½gen (empfohlen)
 
 [Files]
 Source: "E:\Repositories\symfonia\bin\CutsceneMaker.exe"; DestDir: "{app}"; Flags: ignoreversion

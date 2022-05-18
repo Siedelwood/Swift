@@ -1,12 +1,14 @@
 --[[
 Swift_2_ConstructionAndKnockdown/API
 
-Copyright (C) 2021 totalwarANGEL - All Rights Reserved.
+Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
 This file is part of Swift. Swift is created by totalwarANGEL.
 You may use and modify this file unter the terms of the MIT licence.
 (See https://en.wikipedia.org/wiki/MIT_License)
 ]]
+
+SCP.ConstructionAndKnockdown = {};
 
 ModuleConstructionControl = {
     Properties = {
@@ -19,14 +21,14 @@ ModuleConstructionControl = {
         KnockdownConditionCounter = 0,
         KnockdownConditions = {},
     },
-    Local = {
-
-    },
+    Local = {},
 }
 
 -- Global ------------------------------------------------------------------- --
 
 function ModuleConstructionControl.Global:OnGameStart()
+    API.RegisterScriptCommand("Cmd_CheckCancelKnockdown", SCP.ConstructionAndKnockdown.CancelKnockdown);
+    
     self:OverrideCanPlayerPlaceBuilding();
 end
 
@@ -67,8 +69,8 @@ function ModuleConstructionControl.Global:OnEntityCreated(_EntityID)
     end
 end
 
-function ModuleConstructionControl.Global:CheckCancelBuildingKnockdown(_BuildingID, _State)
-    if _State == 1 and not self:CheckKnockdownConditions(_BuildingID) then
+function ModuleConstructionControl.Global:CheckCancelBuildingKnockdown(_PlayerID, _BuildingID, _State)
+    if Logic.EntityGetPlayer(_BuildingID) == _PlayerID and _State == 1 and not self:CheckKnockdownConditions(_BuildingID) then
         Logic.ExecuteInLuaLocalState(string.format([[GUI.CancelBuildingKnockDown(%d)]], _BuildingID));
     end
 end
@@ -111,11 +113,8 @@ function ModuleConstructionControl.Local:OverrideDeleteEntityStateBuilding()
     GameCallback_GUI_DeleteEntityStateBuilding_Orig_ConstructionControl = GameCallback_GUI_DeleteEntityStateBuilding;
     GameCallback_GUI_DeleteEntityStateBuilding = function(_BuildingID, _State)
         GameCallback_GUI_DeleteEntityStateBuilding_Orig_ConstructionControl(_BuildingID, _State);
-        GUI.SendScriptCommand(string.format(
-            [[ModuleConstructionControl.Global:CheckCancelBuildingKnockdown(%d, %d)]],
-            _BuildingID,
-            _State
-        ))
+
+        API.BroadcastScriptCommand(QSB.ScriptCommands.CheckCancelKnockdown, GUI.GetPlayerID(), _BuildingID, _State);
     end
 end
 
