@@ -47,6 +47,7 @@ Swift = {
     m_ScriptEventRegister       = {};
     m_ScriptEventListener       = {};
     m_ScriptCommandRegister     = {};
+    m_AIProperties              = {};
     m_Language                  = "de";
     m_Environment               = "global";
     m_ProcessDebugCommands      = false;
@@ -65,6 +66,7 @@ function Swift:LoadCore()
         self:InitalizeDebugModeGlobal();
         self:InitalizeScriptCommands();
         self:InitalizeEventsGlobal();
+        self:InitalizeAIVariables();
         self:InstallBehaviorGlobal();
         self:OverrideQuestSystemGlobal();
         self:InitalizeCallbackGlobal();
@@ -802,11 +804,19 @@ end
 
 -- AI
 
+function Swift:InitalizeAIVariables()
+    for i= 1, 8 do
+        self.m_AIProperties[i] = {};
+    end
+end
+
 function Swift:DisableLogicFestival()
     Swift.Logic_StartFestival = Logic.StartFestival;
     Logic.StartFestival = function(_PlayerID, _Type)
         if Logic.PlayerGetIsHumanFlag(_PlayerID) ~= true then
-            return;
+            if Swift.m_AIProperties[_PlayerID].ForbidFestival == true then
+                return;
+            end
         end
         Swift.Logic_StartFestival(_PlayerID, _Type);
     end

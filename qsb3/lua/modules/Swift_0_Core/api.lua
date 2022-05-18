@@ -2753,6 +2753,28 @@ function API.WinQuest(_QuestName, _NoMessage)
     end
 end
 
+-- AI
+
+---
+-- Aktiviert Feste für den angegebenen KI-Spieler.
+--
+-- @param[type=number]  _PlayerID ID der KI
+-- @within AI
+--
+function API.AllowFestival(_PlayerID)
+    Swift.m_AIProperties[_PlayerID].ForbidFestival = true;
+end
+
+---
+-- Deaktiviert Feste für den angegebenen KI-Spieler.
+--
+-- @param[type=number]  _PlayerID ID der KI
+-- @within AI
+--
+function API.ForbidFestival(_PlayerID)
+    Swift.m_AIProperties[_PlayerID].ForbidFestival = false;
+end
+
 -- Local callbacks
 
 function SCP.Core.LoadscreenHidden()
