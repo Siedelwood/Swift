@@ -1063,7 +1063,7 @@ end
 ---
 -- Beginnt einen überwachten Zeitraum.
 --
--- @param[type=string] Name des Benchmark
+-- @param[type=string] _Identifier Name des Benchmark
 -- @within Debug
 -- @see API.StopBenchmark
 --
@@ -1088,7 +1088,7 @@ end
 -- Dabei gilt, dass man möglichst kleine Werte erziehlen will. Die Zeiten werden
 -- in milisekunden (ms) gemessen.
 --
--- @param[type=string] Name des Benchmark
+-- @param[type=string] _Identifier Name des Benchmark
 -- @within Debug
 --
 -- @usage
@@ -1111,6 +1111,47 @@ function API.StopBenchmark(_Identifier)
         return;
     end
     Swift:StopBenchmark(_Identifier);
+end
+
+---
+-- Setzt, ab wann Log-Nachrichten angezeigt bzw. ins Log geschrieben werden.
+--
+-- Mögliche Level:
+-- <table border=1>
+-- <tr>
+-- <td><b>Name</b></td>
+-- <td><b>Beschreibung</b></td>
+-- </tr>
+-- <tr>
+-- <td>LOG_LEVEL_ALL</td>
+-- <td>Alle Stufen ausgeben (Debug, Info, Warning, Error)</td>
+-- </tr>
+-- <tr>
+-- <td>LOG_LEVEL_INFO</td>
+-- <td>Erst ab Stufe Info ausgeben (Info, Warning, Error)</td>
+-- </tr>
+-- <tr>
+-- <td>LOG_LEVEL_WARNING</td>
+-- <td>Erst ab Stufe Warning ausgeben (Warning, Error)</td>
+-- </tr>
+-- <tr>
+-- <td>LOG_LEVEL_ERROR</td>
+-- <td>Erst ab Stufe Error ausgeben (Error)</td>
+-- </tr>
+-- <tr>
+-- <td>LOG_LEVEL_OFF</td>
+-- <td>Keine Meldungen ausgeben</td>
+-- </tr>
+-- </table>
+--
+-- @param[type=number] _ScreenLogLevel Level für Bildschirmausgabe
+-- @param[type=number] _FileLogLevel   Level für Dateiausgaabe
+-- @within Debug
+--
+-- @usage API.SetLogLevel(LOG_LEVEL_ERROR, LOG_LEVEL_WARNING);
+--
+function API.SetLogLevel(_ScreenLogLevel, _FileLogLevel)
+    Swift:SetLogLevel(_ScreenLogLevel, _FileLogLevel);
 end
 
 -- Command
@@ -2762,7 +2803,7 @@ end
 -- @within AI
 --
 function API.AllowFestival(_PlayerID)
-    Swift.m_AIProperties[_PlayerID].ForbidFestival = true;
+    Swift.m_AIProperties[_PlayerID].ForbidFestival = false;
 end
 
 ---
@@ -2772,7 +2813,7 @@ end
 -- @within AI
 --
 function API.ForbidFestival(_PlayerID)
-    Swift.m_AIProperties[_PlayerID].ForbidFestival = false;
+    Swift.m_AIProperties[_PlayerID].ForbidFestival = true;
 end
 
 -- Local callbacks
