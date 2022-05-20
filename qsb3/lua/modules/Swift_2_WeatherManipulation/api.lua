@@ -13,7 +13,7 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 -- Es können nun relativ einfach Wetterevents und Wetteranimationen kombiniert
 -- gestartet werden.
--- 
+--
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
 -- <li><a href="Swift_1_JobsCore.api.html">(1) Jobs Core</a></li>

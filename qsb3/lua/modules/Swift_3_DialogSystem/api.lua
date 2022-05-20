@@ -349,7 +349,7 @@ end
 --     }
 -- }
 --
-function AP(_Data)
+function AP(_Page)
     assert(false);
 end
 
@@ -375,7 +375,7 @@ end
 -- -- Beispiel mit Page Name
 -- ASP("Page1", "Ich gehe in die weitel Welt hinein.", 1, "hans", true);
 --
-function ASP(_Data)
+function ASP(...)
     assert(false);
 end
 

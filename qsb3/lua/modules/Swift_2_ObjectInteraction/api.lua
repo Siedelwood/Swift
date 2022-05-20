@@ -255,7 +255,7 @@ ResetObject = API.ResetObject;
 -- einen Helden benutzen muss. Wird der Parameter weggelassen, muss immer ein
 -- Held das Objekt aktivieren.
 --
--- @param[type=string] _EntityName Skriptname des Objektes
+-- @param[type=string] _ScriptName Skriptname des Objektes
 -- @param[type=number] _State      State des Objektes
 -- @param[type=number] _PlayerID   (Optional) Spieler-ID
 -- @within Anwenderfunktionen
@@ -292,7 +292,7 @@ InteractiveObjectActivate = API.InteractiveObjectActivate;
 --
 -- Optional kann das Objekt nur für einen bestimmten Spieler deaktiviert werden.
 --
--- @param[type=string] _EntityName Scriptname des Objektes
+-- @param[type=string] _ScriptName Scriptname des Objektes
 -- @param[type=number] _PlayerID   (Optional) Spieler-ID
 -- @within Anwenderfunktionen
 --

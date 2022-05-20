@@ -144,7 +144,7 @@ function ModuleWeatherManipulation.Local:IsEventActive()
     return self.ActiveEvent ~= nil;
 end
 
---------------------------------------------------------------------------------
+-- -------------------------------------------------------------------------- --
 
 WeatherEvent = {
     GFX = "ne_winter_sequence.xml",

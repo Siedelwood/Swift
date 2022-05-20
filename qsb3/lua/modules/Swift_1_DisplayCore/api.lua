@@ -145,8 +145,8 @@ end
 ---
 -- Propagiert den Beginn des cinematischen Events und bindet es an den Spieler.
 --
--- @param[type=string] Bezeichner
--- @param[type=number] ID des Spielers
+-- @param[type=string] _Name     Bezeichner
+-- @param[type=number] _PlayerID ID des Spielers
 -- @within Anwenderfunktionen
 --
 function API.StartCinematicEvent(_Name, _PlayerID)
@@ -160,7 +160,7 @@ end
 ---
 -- Propagiert das Ende des cinematischen Events.
 --
--- @param[type=string] Bezeichner
+-- @param[type=string] _Name Bezeichner
 -- @within Anwenderfunktionen
 --
 function API.FinishCinematicEvent(_Name, _PlayerID)
@@ -175,7 +175,7 @@ end
 ---
 -- Gibt den Status des cinematischen Event zurück.
 --
--- @param[type=string] Bezeichner
+-- @param[type=string] _Name Bezeichner
 -- @return[type=number] Event Status
 -- @within Anwenderfunktionen
 --
@@ -192,7 +192,7 @@ end
 ---
 -- Gibt den Spieler zurück, an den das cinematische Event gebunden ist.
 --
--- @param[type=string] Bezeichner
+-- @param[type=string] _Name Bezeichner
 -- @return[type=number] ID des Spielers
 -- @within Anwenderfunktionen
 --
@@ -206,7 +206,7 @@ end
 ---
 -- Prüft ob gerade ein cinematisches Event für den Spieler aktiv ist.
 --
--- @param[type=number] ID des Spielers
+-- @param[type=number] _PlayerID ID des Spielers
 -- @return[type=boolean] Event aktiv
 -- @within Anwenderfunktionen
 --

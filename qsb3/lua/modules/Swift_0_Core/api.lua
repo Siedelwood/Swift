@@ -585,6 +585,7 @@ function API.OverrideString()
 
     ---
     -- Gibt true zurück, wenn der Teil-String enthalten ist.
+    -- @param[type=string] self String
     -- @param[type=string] s Pattern
     -- @return[type=boolean] Pattern vorhanden
     -- @within string
@@ -595,6 +596,7 @@ function API.OverrideString()
 
     ---
     -- Gibt die Position des Teil-String im String zurück.
+    -- @param[type=string] self String
     -- @param[type=string] s Pattern
     -- @return[type=number] Startindex
     -- @return[type=number] Endindex
@@ -606,6 +608,7 @@ function API.OverrideString()
 
     ---
     -- Zerlegt einen String anhand des Seperators.
+    -- @param[type=string] self String
     -- @param[type=string] _sep Seperator
     -- @return[type=table] Liste der Teilstrings
     -- @within string
@@ -623,6 +626,7 @@ function API.OverrideString()
 
     ---
     -- Für mehrere Werte zu einem String zusammen.
+    -- @param[type=string] self String
     -- @param ... Werteliste
     -- @return[type=string] Stringkombinat
     -- @within string
@@ -642,6 +646,7 @@ function API.OverrideString()
 
     ---
     -- Ersetzt das erste Vorkommens des Musters im String.
+    -- @param[type=string] self String
     -- @param[type=string] p Muster
     -- @param[type=string] r Ersatz
     -- @return[type=string] Neuer String
@@ -653,6 +658,7 @@ function API.OverrideString()
 
     ---
     -- Ersetzt alle Vorkommen des Musters im String.
+    -- @param[type=string] self String
     -- @param[type=string] p Muster
     -- @param[type=string] r Ersatz
     -- @return[type=string] Neuer String
