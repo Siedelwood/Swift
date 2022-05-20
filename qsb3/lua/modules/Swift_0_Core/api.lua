@@ -826,6 +826,25 @@ function API.GetActivePlayers()
 end
 
 ---
+-- Gibt alle Spieler zurück, auf die gerade gewartet wird.
+--
+-- <h5>Multiplayer</h5>
+-- Nur für Multiplayer ausgelegt! Nicht im Singleplayer nutzen!
+--
+-- @return[type=table] Liste der aktiven Spieler
+-- @within Base
+--
+function API.GetDelayedPlayers()
+    local PlayerList = {};
+    for k, v in pairs(API.GetActivePlayers()) do
+        if Network.IsWaitingForNetworkSlotID(API.GetPlayerSlotID(v)) then
+            table.insert(PlayerList, v);
+        end
+    end
+    return PlayerList;
+end
+
+---
 -- Speichert den Wert der Custom Variable im globalen und lokalen Skript.
 --
 -- Des weiteren wird in beiden Umgebungen ein Event ausgelöst, wenn der Wert
