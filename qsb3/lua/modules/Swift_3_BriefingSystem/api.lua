@@ -369,7 +369,7 @@ function API.AddBriefingPages(_Briefing)
 
         -- Set page parameters
         if (#arg == 3 and type(arg[1]) == "string")
-        or (#arg >= 4 and type(arg[4]) ~= "boolean") then
+        or (#arg >= 4 and type(arg[4]) == "boolean") then
             Name = table.remove(arg, 1);
         end
         Title = table.remove(arg, 1);
@@ -624,15 +624,15 @@ end
 -- lokalisierte Tables übergeben werden.</td>
 -- </tr>
 -- <tr>
--- <td>Position</td>
--- <td>string</td>
--- <td>(Optional) Skriptname des Entity zu das die Kamera springt.</td>
--- </tr>
--- <tr>
 -- <td>DialogCamera</td>
 -- <td>boolean</td>
 -- <td>(Optional) Die Kamera geht in Nahsicht und stellt Charaktere dar. Wird
 -- sie weggelassen, wird die Fernsicht verwendet.</td>
+-- </tr>
+-- <tr>
+-- <td>Position</td>
+-- <td>string</td>
+-- <td>(Optional) Skriptname des Entity zu das die Kamera springt.</td>
 -- </tr>
 -- <tr>
 -- <td>Action</td>

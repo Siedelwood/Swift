@@ -14,7 +14,7 @@ SCP = SCP or {
     Core = {}
 };
 
-QSB.Version = "Version 3.0.0 BETA (1.1.2)";
+QSB.Version = "Version 3.0.0 BETA (1.1.5)";
 QSB.Language = "de";
 QSB.HumanPlayerID = 1;
 QSB.ScriptCommandSequence = 2;
@@ -47,6 +47,7 @@ Swift = {
     m_ScriptEventRegister       = {};
     m_ScriptEventListener       = {};
     m_ScriptCommandRegister     = {};
+    m_AIProperties              = {};
     m_Language                  = "de";
     m_Environment               = "global";
     m_ProcessDebugCommands      = false;
@@ -65,6 +66,7 @@ function Swift:LoadCore()
         self:InitalizeDebugModeGlobal();
         self:InitalizeScriptCommands();
         self:InitalizeEventsGlobal();
+        self:InitalizeAIVariables();
         self:InstallBehaviorGlobal();
         self:OverrideQuestSystemGlobal();
         self:InitalizeCallbackGlobal();
@@ -171,7 +173,11 @@ function Swift:CreateRandomSeed()
                 for s in SeedString:gmatch(".") do
                     Seed = Seed + s:byte();
                 end
-                Swift:DispatchScriptCommand(QSB.ScriptCommands.ProclaimateRandomSeed, 0, Seed);
+                if Framework.IsNetworkGame() then
+                    Swift:DispatchScriptCommand(QSB.ScriptCommands.ProclaimateRandomSeed, 0, Seed);
+                else
+                    GUI.SendScriptCommand("SCP.Core.ProclaimateRandomSeed(" ..Seed.. ")");
+                end
             end
             break;
         end
@@ -179,11 +185,49 @@ function Swift:CreateRandomSeed()
 end
 
 function Swift:OverrideOnMPGameStart()
-    GameCallback_OnMPGameStart_Orig_Swift = GameCallback_OnMPGameStart;
     GameCallback_OnMPGameStart = function()
-        GameCallback_OnMPGameStart_Orig_Swift();
-        Logic.ExecuteInLuaLocalState("Swift:CreateRandomSeed()");
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_TURN, NIL, "VictoryConditionHandler", 1)
     end
+end
+
+-- Predicate Connectors
+
+NOT = function(_ID, _Predicate)
+    local Predicate = table.copy(_Predicate);
+    local Function = table.remove(Predicate, 1);
+    return not Function(_ID, unpack(Predicate));
+end
+
+XOR = function(_ID, ...)
+    local Predicates = table.copy(arg);
+    local Truths = 0;
+    for i= 1, #Predicates do
+        local Predicate = table.remove(Predicates[i], 1);
+        Truths = Truths + ((Predicate(_ID, unpack(Predicates[i])) and 1) or 0);
+    end
+    return Truths == 1;
+end
+
+ALL = function(_ID, ...)
+    local Predicates = table.copy(arg);
+    for i= 1, #Predicates do
+        local Predicate = table.remove(Predicates[i], 1);
+        if not Predicate(_ID, unpack(Predicates[i])) then
+            return false;
+        end
+    end
+    return true;
+end
+
+ANY = function(_ID, ...)
+    local Predicates = table.copy(arg);
+    for i= 1, #Predicates do
+        local Predicate = table.remove(Predicates[i], 1);
+        if Predicate(_ID, unpack(Predicates[i])) then
+            return true;
+        end
+    end
+    return false;
 end
 
 -- Quests
@@ -582,11 +626,21 @@ function Swift:DispatchScriptCommand(_ID, ...)
         local PlayerName = Logic.GetPlayerName(NamePlayerID);
         local Parameters = self:EncodeScriptCommandParameters(unpack(arg));
         GUI.SetPlayerName(NamePlayerID, Parameters);
-        GUI.SetSoldierPaymentLevel(_ID);
-        info(string.format(
+
+        if Framework.IsNetworkGame() and self:IsHistoryEdition() then
+            GUI.SetSoldierPaymentLevel(_ID);
+        else
+            GUI.SendScriptCommand(string.format(
+                [[Swift:ProcessScriptCommand(%d, %d)]],
+                GUI.GetPlayerID(),
+                _ID
+            ));
+        end
+        debug(string.format(
             "Dispatching script command %s to global.",
             self.m_ScriptCommandRegister[_ID]
         ), true);
+
         GUI.SetPlayerName(NamePlayerID, PlayerName);
         GUI.SetSoldierPaymentLevel(PlayerSoldierPaymentLevel[PlayerID]);
     end
@@ -602,7 +656,7 @@ function Swift:ProcessScriptCommand(_PlayerID, _ID)
     if PlayerID ~= 0 and PlayerID ~= _PlayerID then
         return;
     end
-    info(string.format(
+    debug(string.format(
         "Processing script command %s in global.",
         self.m_ScriptCommandRegister[_ID][1]
     ), true);
@@ -614,11 +668,13 @@ function Swift:EncodeScriptCommandParameters(...)
     for i= 1, #arg do
         local Parameter = arg[i];
         if type(Parameter) == "string" then
-            Parameter = string.replaceAll(Parameter, '#', "<HT>");
-            Parameter = string.replaceAll(Parameter, '"', "<QT>");
+            Parameter = string.replaceAll(Parameter, '#', "<<<HT>>>");
+            Parameter = string.replaceAll(Parameter, '"', "<<<QT>>>");
             if Parameter:len() == 0 then
-                Parameter = "<ES>";
+                Parameter = "<<<ES>>>";
             end
+        -- FIXME This covers only array tables!
+        -- (But we shouldn't encourage passing objects anyway!)
         elseif type(Parameter) == "table" then
             Parameter = "{" ..table.concat(Parameter, ",") .."}";
         end
@@ -634,9 +690,9 @@ function Swift:DecodeScriptCommandParameters(_Query)
     local Parameters = {};
     for k, v in pairs(string.slice(_Query, "#")) do
         local Value = v;
-        Value = string.replaceAll(Value, "<HT>", '#');
-        Value = string.replaceAll(Value, "<QT>", '"');
-        Value = string.replaceAll(Value, "<ES>", '');
+        Value = string.replaceAll(Value, "<<<HT>>>", '#');
+        Value = string.replaceAll(Value, "<<<QT>>>", '"');
+        Value = string.replaceAll(Value, "<<<ES>>>", '');
         if Value == nil then
             Value = nil;
         elseif Value == "true" or Value == "false" then
@@ -689,7 +745,7 @@ function Swift:CreateScriptEvent(_Name, _Function)
         end
     end
     local ID = #self.m_ScriptEventRegister+1;
-    info(string.format("Create script event %s", _Name), true);
+    debug(string.format("Create script event %s", _Name), true);
     self.m_ScriptEventRegister[ID] = {_Name, _Function};
     return ID;
 end
@@ -705,7 +761,7 @@ function Swift:DispatchScriptEvent(_ID, ...)
             Env = "Global";
         end
         if self.m_ModuleRegister[i][Env] and self.m_ModuleRegister[i][Env].OnEvent then
-            info(string.format(
+            debug(string.format(
                 "Dispatching %s script event %s to Module %s",
                 Env:lower(),
                 self.m_ScriptEventRegister[_ID][1],
@@ -728,13 +784,37 @@ function Swift:DispatchScriptEvent(_ID, ...)
     end
 end
 
+function Swift:IsAllowedEventParameter(_Parameter)
+    if type(_Parameter) == "function" or type(_Parameter) == "thread" or type(_Parameter) == "userdata" then
+        return false;
+    elseif type(_Parameter) == "table" then
+        for k, v in pairs(_Parameter) do
+            if type(k) ~= "number" and k ~= "n" then
+                return false;
+            end
+            if type(v) == "function" or type(v) == "thread" or type(v) == "userdata" then
+                return false;
+            end
+        end
+    end
+    return true;
+end
+
 -- AI
+
+function Swift:InitalizeAIVariables()
+    for i= 1, 8 do
+        self.m_AIProperties[i] = {};
+    end
+end
 
 function Swift:DisableLogicFestival()
     Swift.Logic_StartFestival = Logic.StartFestival;
     Logic.StartFestival = function(_PlayerID, _Type)
         if Logic.PlayerGetIsHumanFlag(_PlayerID) ~= true then
-            return;
+            if Swift.m_AIProperties[_PlayerID].ForbidFestival == true then
+                return;
+            end
         end
         Swift.Logic_StartFestival(_PlayerID, _Type);
     end
@@ -1276,7 +1356,8 @@ function API.OverrideTable()
     end
 
     ---
-    -- Gibt die Anzahl an Elementen in einer Table zurück.
+    -- Gibt die Größe des Listenteils der Table zurück, ohne bei der ersten
+    -- Lücke abzubrechen.
     -- @param[type=table] t Quelle
     -- @return[type=number] Anzahl Elemente
     -- @within table
@@ -1301,7 +1382,7 @@ function API.OverrideTable()
         local c = 0;
         for k, v in pairs(t) do
             -- Ignore n if set
-            if k ~= "n" or (k == "n" and type(k) ~= "number") then
+            if k ~= "n" or (k == "n" and type(v) ~= "number") then
                 c = c +1;
             end
         end
@@ -1469,6 +1550,7 @@ function API.OverrideString()
 
     ---
     -- Gibt true zurück, wenn der Teil-String enthalten ist.
+    -- @param[type=string] self String
     -- @param[type=string] s Pattern
     -- @return[type=boolean] Pattern vorhanden
     -- @within string
@@ -1479,6 +1561,7 @@ function API.OverrideString()
 
     ---
     -- Gibt die Position des Teil-String im String zurück.
+    -- @param[type=string] self String
     -- @param[type=string] s Pattern
     -- @return[type=number] Startindex
     -- @return[type=number] Endindex
@@ -1490,6 +1573,7 @@ function API.OverrideString()
 
     ---
     -- Zerlegt einen String anhand des Seperators.
+    -- @param[type=string] self String
     -- @param[type=string] _sep Seperator
     -- @return[type=table] Liste der Teilstrings
     -- @within string
@@ -1507,6 +1591,7 @@ function API.OverrideString()
 
     ---
     -- Für mehrere Werte zu einem String zusammen.
+    -- @param[type=string] self String
     -- @param ... Werteliste
     -- @return[type=string] Stringkombinat
     -- @within string
@@ -1526,6 +1611,7 @@ function API.OverrideString()
 
     ---
     -- Ersetzt das erste Vorkommens des Musters im String.
+    -- @param[type=string] self String
     -- @param[type=string] p Muster
     -- @param[type=string] r Ersatz
     -- @return[type=string] Neuer String
@@ -1537,6 +1623,7 @@ function API.OverrideString()
 
     ---
     -- Ersetzt alle Vorkommen des Musters im String.
+    -- @param[type=string] self String
     -- @param[type=string] p Muster
     -- @param[type=string] r Ersatz
     -- @return[type=string] Neuer String
@@ -1553,7 +1640,7 @@ end
 -- Liste der grundlegenden Script Events.
 --
 -- @field SaveGameLoaded     Ein Spielstand wird geladen.
--- @field EscapePressed      Escape wurde gedrückt. Mögliche Probleme in HE Multiplayer! (Parameter: PlayerID)
+-- @field EscapePressed      Escape wurde gedrückt. (Parameter: PlayerID)
 -- @field QuestFailure       Ein Quest schlug fehl (Parameter: QuestID)
 -- @field QuestInterrupt     Ein Quest wurde unterbrochen (Parameter: QuestID)
 -- @field QuestReset         Ein Quest wurde zurückgesetzt (Parameter: QuestID)
@@ -1646,7 +1733,8 @@ end
 -- Gibt den Slot zurück, den der Spieler einnimmt. Hat der Spieler keinen
 -- Slot okkupiert oder ist nicht menschlich, wird -1 zurückgegeben.
 --
--- <b>Hinweis</b>: Nur für Multiplayer ausgelegt! Nicht im Singleplayer nutzen!
+-- <h5>Multiplayer</h5>
+-- Nur für Multiplayer ausgelegt! Nicht im Singleplayer nutzen!
 --
 -- @return[type=number] ID des Player
 -- @return[type=number] Slot ID des Player
@@ -1669,7 +1757,8 @@ end
 -- Gibt den Spieler zurück, welcher den Slot okkupiert. Hat der Slot keinen
 -- Spieler oder ist der Spieler nicht menschlich, wird -1 zurückgegeben.
 --
--- <b>Hinweis</b>: Nur für Multiplayer ausgelegt! Nicht im Singleplayer nutzen!
+-- <h5>Multiplayer</h5>
+-- Nur für Multiplayer ausgelegt! Nicht im Singleplayer nutzen!
 --
 -- @return[type=number] Slot ID des Player
 -- @return[type=number] ID des Player
@@ -1688,7 +1777,8 @@ end
 ---
 -- Gibt eine Liste aller Spieler im Spiel zurück.
 --
--- <b>Hinweis</b>: Nur für Multiplayer ausgelegt! Nicht im Singleplayer nutzen!
+-- <h5>Multiplayer</h5>
+-- Nur für Multiplayer ausgelegt! Nicht im Singleplayer nutzen!
 --
 -- @return[type=table] Liste der aktiven Spieler
 -- @within Base
@@ -1701,6 +1791,25 @@ function API.GetActivePlayers()
             if Logic.PlayerGetIsHumanFlag(PlayerID) and Logic.PlayerGetGameState(PlayerID) ~= 0 then
                 table.insert(PlayerList, PlayerID);
             end
+        end
+    end
+    return PlayerList;
+end
+
+---
+-- Gibt alle Spieler zurück, auf die gerade gewartet wird.
+--
+-- <h5>Multiplayer</h5>
+-- Nur für Multiplayer ausgelegt! Nicht im Singleplayer nutzen!
+--
+-- @return[type=table] Liste der aktiven Spieler
+-- @within Base
+--
+function API.GetDelayedPlayers()
+    local PlayerList = {};
+    for k, v in pairs(API.GetActivePlayers()) do
+        if Network.IsWaitingForNetworkSlotID(API.GetPlayerSlotID(v)) then
+            table.insert(PlayerList, v);
         end
     end
     return PlayerList;
@@ -1941,10 +2050,122 @@ function API.IsDebugShellActive()
     return Swift.m_DevelopingShell == true;
 end
 
+---
+-- Beginnt einen überwachten Zeitraum.
+--
+-- @param[type=string] _Identifier Name des Benchmark
+-- @within Debug
+-- @see API.StopBenchmark
+--
+function API.BeginBenchmark(_Identifier)
+    if not GUI then
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.BeginBenchmark("%s")]],
+            _Identifier
+        ));
+        return;
+    end
+    Swift:BeginBenchmark(_Identifier);
+end
+
+---
+-- Beendet einen überwachten Zeitraum und schreibt die Dauer ins Log.
+--
+-- <b>Exkurs</b>: Wenn die Ausführungsdauer für einen Prozess gemessen wird,
+-- nennt man dies Benchmarking. Dabei wird geschaut, wie lange die Ausführung
+-- des Prozesses dauert.
+--
+-- Dabei gilt, dass man möglichst kleine Werte erziehlen will. Die Zeiten werden
+-- in milisekunden (ms) gemessen.
+--
+-- @param[type=string] _Identifier Name des Benchmark
+-- @within Debug
+--
+-- @usage
+-- API.BeginBenchmark("HowMuchIsTheFish")
+-- local j= 0
+-- for i= 1, 1000000 do
+--     j = j +1
+-- end
+-- API.StopBenchmark("HowMuchIsTheFish")
+--
+-- -- Ausgabe im Log:
+-- Benchmark 'HowMuchIsTheFish': Execution took 0.015 ms to complete
+--
+function API.StopBenchmark(_Identifier)
+    if not GUI then
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.StopBenchmark("%s")]],
+            _Identifier
+        ));
+        return;
+    end
+    Swift:StopBenchmark(_Identifier);
+end
+
+---
+-- Setzt, ab wann Log-Nachrichten angezeigt bzw. ins Log geschrieben werden.
+--
+-- Mögliche Level:
+-- <table border=1>
+-- <tr>
+-- <td><b>Name</b></td>
+-- <td><b>Beschreibung</b></td>
+-- </tr>
+-- <tr>
+-- <td>LOG_LEVEL_ALL</td>
+-- <td>Alle Stufen ausgeben (Debug, Info, Warning, Error)</td>
+-- </tr>
+-- <tr>
+-- <td>LOG_LEVEL_INFO</td>
+-- <td>Erst ab Stufe Info ausgeben (Info, Warning, Error)</td>
+-- </tr>
+-- <tr>
+-- <td>LOG_LEVEL_WARNING</td>
+-- <td>Erst ab Stufe Warning ausgeben (Warning, Error)</td>
+-- </tr>
+-- <tr>
+-- <td>LOG_LEVEL_ERROR</td>
+-- <td>Erst ab Stufe Error ausgeben (Error)</td>
+-- </tr>
+-- <tr>
+-- <td>LOG_LEVEL_OFF</td>
+-- <td>Keine Meldungen ausgeben</td>
+-- </tr>
+-- </table>
+--
+-- @param[type=number] _ScreenLogLevel Level für Bildschirmausgabe
+-- @param[type=number] _FileLogLevel   Level für Dateiausgaabe
+-- @within Debug
+--
+-- @usage API.SetLogLevel(LOG_LEVEL_ERROR, LOG_LEVEL_WARNING);
+--
+function API.SetLogLevel(_ScreenLogLevel, _FileLogLevel)
+    Swift:SetLogLevel(_ScreenLogLevel, _FileLogLevel);
+end
+
 -- Command
+-- The commands will not appear in the doc to not confuse the users. If they
+-- want to synchronize things in their maps they can use the event system.
 
 function API.RegisterScriptCommand(_Name, _Function)
     return Swift:CreateScriptCommand(_Name, _Function);
+end
+
+function API.BroadcastScriptCommand(_NameOrID, ...)
+    local ID = _NameOrID;
+    if type(ID) == "string" then
+        for i= 1, #self.m_ScriptCommandRegister, 1 do
+            if self.m_ScriptCommandRegister[i][1] == _NameOrID then
+                ID = i;
+            end
+        end
+    end
+    assert(type(ID) == "number");
+    if not GUI then
+        return;
+    end
+    Swift:DispatchScriptCommand(ID, 0, unpack(arg));
 end
 
 function API.SendScriptCommand(_NameOrID, ...)
@@ -1957,6 +2178,9 @@ function API.SendScriptCommand(_NameOrID, ...)
         end
     end
     assert(type(ID) == "number");
+    if not GUI then
+        return;
+    end
     Swift:DispatchScriptCommand(ID, 0, unpack(arg));
 end
 
@@ -1980,8 +2204,12 @@ end
 -- Sendet das Script Event mit der übergebenen ID und überträgt optional
 -- Parameter.
 --
+-- <h5>Multiplayer</h5>
+-- Im Multiplayer kann diese Funktion nicht benutzt werden, um Script Events
+-- synchron oder asynchron aus dem lokalen im globalen Skript auszuführen.
+--
 -- @param[type=number] _EventID ID des Event
--- @param              ... Optionale Parameter (nil, string, number, boolean)
+-- @param              ... Optionale Parameter (nil, string, number, boolean, (array) table)
 -- @within Event
 --
 -- @usage
@@ -1994,14 +2222,57 @@ end
 ---
 -- Triggerd ein Script Event im globalen Skript aus dem lokalen Skript.
 --
+-- Das Event wird synchron für alle Spieler gesendet.
+--
 -- @param[type=number] _EventID ID des Event
--- @param              ... Optionale Parameter (nil, string, number, boolean)
+-- @param              ... Optionale Parameter (nil, string, number, boolean, (array) table)
+-- @within Event
+--
+-- @usage
+-- API.SendScriptEventToGlobal(SomeEventID, Param1, Param2, ...);
+--
+function API.BroadcastScriptEventToGlobal(_EventID, ...)
+    if not GUI then
+        return;
+    end
+    -- Becase I don't want the user to fuck around with parameters.
+    for k, v in pairs(arg) do
+        if not Swift:IsAllowedEventParameter(v) then
+            error("API.BroadcastScriptEventToGlobal: Parameter " ..k.. " has non appropriate type! (" ..type(v).. ")");
+            return;
+        end
+    end
+    Swift:DispatchScriptCommand(
+        QSB.ScriptCommands.SendScriptEvent,
+        0,
+        _EventID,
+        unpack(arg)
+    );
+end
+
+---
+-- Triggerd ein Script Event im globalen Skript aus dem lokalen Skript.
+--
+-- Das Event wird asynchron für den kontrollierenden Spieler gesendet.
+--
+-- @param[type=number] _EventID ID des Event
+-- @param              ... Optionale Parameter (nil, string, number, boolean, (array) table)
 -- @within Event
 --
 -- @usage
 -- API.SendScriptEventToGlobal(SomeEventID, Param1, Param2, ...);
 --
 function API.SendScriptEventToGlobal(_EventID, ...)
+    if not GUI then
+        return;
+    end
+    -- Becase I don't want the user to fuck around with parameters.
+    for k, v in pairs(arg) do
+        if not Swift:IsAllowedEventParameter(v) then
+            error("API.SendScriptEventToGlobal: Parameter " ..k.. " has non appropriate type! (" ..type(v).. ")");
+            return;
+        end
+    end
     Swift:DispatchScriptCommand(
         QSB.ScriptCommands.SendScriptEvent,
         GUI.GetPlayerID(),
@@ -3513,6 +3784,28 @@ function API.WinQuest(_QuestName, _NoMessage)
     end
 end
 
+-- AI
+
+---
+-- Aktiviert Feste für den angegebenen KI-Spieler.
+--
+-- @param[type=number]  _PlayerID ID der KI
+-- @within AI
+--
+function API.AllowFestival(_PlayerID)
+    Swift.m_AIProperties[_PlayerID].ForbidFestival = false;
+end
+
+---
+-- Deaktiviert Feste für den angegebenen KI-Spieler.
+--
+-- @param[type=number]  _PlayerID ID der KI
+-- @within AI
+--
+function API.ForbidFestival(_PlayerID)
+    Swift.m_AIProperties[_PlayerID].ForbidFestival = true;
+end
+
 -- Local callbacks
 
 function SCP.Core.LoadscreenHidden()
@@ -3520,6 +3813,11 @@ function SCP.Core.LoadscreenHidden()
 end
 
 function SCP.Core.GlobalQsbLoaded()
+    Logic.ExecuteInLuaLocalState([[
+        if Mission_MP_LocalOnQsbLoaded and Framework.IsNetworkGame() then
+            Mission_MP_LocalOnQsbLoaded();
+        end
+    ]]);
     if Mission_MP_OnQsbLoaded and not Swift.m_MP_FMA_Loaded and Framework.IsNetworkGame() then
         Swift.m_MP_FMA_Loaded = true;
         Mission_MP_OnQsbLoaded();
@@ -3557,6 +3855,7 @@ You may use and modify this file unter the terms of the MIT licence.
 (See https://en.wikipedia.org/wiki/MIT_License)
 ]]
 
+Swift.m_Benchmarks           = {};
 Swift.m_CheckAtRun           = false;
 Swift.m_TraceQuests          = false;
 Swift.m_DevelopingCheats     = false;
@@ -3773,6 +4072,24 @@ function Swift:ConfirmQsbDebugShell()
                 GUI.SendScriptCommand(self.m_ChatBoxInput.sub(self.m_ChatBoxInput, 4), false);
             end
         end
+    end
+end
+
+function Swift:BeginBenchmark(_Identifier)
+    self.m_Benchmarks[_Identifier] = XGUIEng.GetSystemTime() * 1000;
+end
+
+function Swift:StopBenchmark(_Identifier)
+    if self.m_Benchmarks[_Identifier] then
+        local StartTime = self.m_Benchmarks[_Identifier];
+        local EndTime = XGUIEng.GetSystemTime() * 1000;
+        local ElapsedTime = EndTime - StartTime;
+        self.m_Benchmarks[_Identifier] = nil;
+        Framework.WriteToLog(string.format(
+            "Benchmark '%s': Execution took %f ms to complete",
+            _Identifier,
+            ElapsedTime
+        ));
     end
 end
 
@@ -12582,10 +12899,9 @@ function Swift:RestoreAfterLoad()
     if self:IsLocalEnvironment() then
         self:LocalRestoreDebugAfterLoad();
         self:SetEscapeKeyTrigger();
+        self:CreateRandomSeed();
         -- self:LogLocalCFunctions();
     end
-    -- Set new random seed
-    self:CreateRandomSeed();
 end
 
 -- Escape Callback
@@ -12596,9 +12912,7 @@ end
 
 function Swift:ExecuteEscapeCallback()
     -- Global
-    Swift:DispatchScriptCommand(
-        QSB.ScriptCommands.SendScriptEvent,
-        0,
+    API.BroadcastScriptEventToGlobal(
         QSB.ScriptEvents.EscapePressed,
         GUI.GetPlayerID()
     )
@@ -13205,8 +13519,8 @@ end
 ---
 -- Propagiert den Beginn des cinematischen Events und bindet es an den Spieler.
 --
--- @param[type=string] Bezeichner
--- @param[type=number] ID des Spielers
+-- @param[type=string] _Name     Bezeichner
+-- @param[type=number] _PlayerID ID des Spielers
 -- @within Anwenderfunktionen
 --
 function API.StartCinematicEvent(_Name, _PlayerID)
@@ -13220,7 +13534,7 @@ end
 ---
 -- Propagiert das Ende des cinematischen Events.
 --
--- @param[type=string] Bezeichner
+-- @param[type=string] _Name Bezeichner
 -- @within Anwenderfunktionen
 --
 function API.FinishCinematicEvent(_Name, _PlayerID)
@@ -13235,7 +13549,7 @@ end
 ---
 -- Gibt den Status des cinematischen Event zurück.
 --
--- @param[type=string] Bezeichner
+-- @param[type=string] _Name Bezeichner
 -- @return[type=number] Event Status
 -- @within Anwenderfunktionen
 --
@@ -13252,7 +13566,7 @@ end
 ---
 -- Gibt den Spieler zurück, an den das cinematische Event gebunden ist.
 --
--- @param[type=string] Bezeichner
+-- @param[type=string] _Name Bezeichner
 -- @return[type=number] ID des Spielers
 -- @within Anwenderfunktionen
 --
@@ -13266,7 +13580,7 @@ end
 ---
 -- Prüft ob gerade ein cinematisches Event für den Spieler aktiv ist.
 --
--- @param[type=number] ID des Spielers
+-- @param[type=number] _PlayerID ID des Spielers
 -- @return[type=boolean] Event aktiv
 -- @within Anwenderfunktionen
 --
@@ -13478,8 +13792,8 @@ function ModuleEntityEventCore.Global:CleanTaggedAndDeadEntities()
 
     -- unregister dead entities if not already unregistered
     for k,v in pairs(self.RegisteredEntities) do
-        if not IsExisting(v) then
-            self:UnregisterEntityAndTriggerEvent(v);
+        if not IsExisting(k) then
+            self:UnregisterEntityAndTriggerEvent(k);
         end
     end
 end
@@ -13725,48 +14039,48 @@ function ModuleEntityEventCore.Global:GetAllEntitiesOfType(_Type)
 end
 
 function ModuleEntityEventCore.Global:CheckOnNonTrackableEntities()
-    -- -- Buildings
+    local Step = 10;
+    local TurnMod = Logic.GetCurrentTurn() % Step;
+    -- Buildings
     for i= 1, 8 do
         local Buildings = {Logic.GetPlayerEntitiesInCategory(i, EntityCategories.AttackableBuilding)};
-        for j= 1, #Buildings do
+        for j= Step-TurnMod, #Buildings, Step do
             self:RegisterEntityAndTriggerEvent(Buildings[j]);
         end
-        local Walls = {Logic.GetPlayerEntitiesInCategory(i, EntityCategories.AttackableBuilding)};
-        for j= 1, #Walls do
+        local PalisadeSegment = {Logic.GetPlayerEntitiesInCategory(i, EntityCategories.PalisadeSegment)};
+        for j= Step-TurnMod, #PalisadeSegment, Step do
+            self:RegisterEntityAndTriggerEvent(PalisadeSegment[j]);
+        end
+        local Walls = {Logic.GetPlayerEntitiesInCategory(i, EntityCategories.Wall)};
+        for j= Step-TurnMod, #Walls, Step do
             self:RegisterEntityAndTriggerEvent(Walls[j]);
         end
     end
-    -- -- Ambiend and Resources
+    -- Ambiend
     for i= 1, #self.SharedAnimalTypes do
-        if Logic.GetCurrentTurn() % 10 == i and Entities[self.SharedAnimalTypes[i]] then
-            local FoundEntities = Logic.GetEntitiesOfType(Entities[self.SharedAnimalTypes[i]]);
-            for j= 1, #FoundEntities do
-                self:RegisterEntityAndTriggerEvent(FoundEntities[j]);
-            end
+        local FoundEntities = Logic.GetEntitiesOfType(Entities[self.SharedAnimalTypes[i]]);
+        for j= Step-TurnMod, #FoundEntities, Step do
+            self:RegisterEntityAndTriggerEvent(FoundEntities[j]);
         end
     end
+    -- Resources
     for i= 1, #self.SharedResourceTypes do
-        if Logic.GetCurrentTurn() % 10 == i and Entities[self.SharedAnimalTypes[i]] then
-            local FoundEntities = Logic.GetEntitiesOfType(Entities[self.SharedResourceTypes[i]]);
-            for j= 1, #FoundEntities do
-                self:RegisterEntityAndTriggerEvent(FoundEntities[j]);
-            end
+        local FoundEntities = Logic.GetEntitiesOfType(Entities[self.SharedResourceTypes[i]]);
+        for j= Step-TurnMod, #FoundEntities, Step do
+            self:RegisterEntityAndTriggerEvent(FoundEntities[j]);
         end
     end
+    -- Climate specific
+    local TypesToSearch = {};
     for k, v in pairs(Entities) do
-        local TypesToSearch = {};
         if string.find(k, "^A_" ..self.ClimateShort.. "_") or string.find(k, "^R_" ..self.ClimateShort.. "_") then
-            if Entities[k] then
-                table.insert(TypesToSearch, v);
-            end
+            TypesToSearch[#TypesToSearch+1] = v;
         end
-        for i= 1, #TypesToSearch do
-            if Logic.GetCurrentTurn() % 10 == i then
-                local FoundEntities = Logic.GetEntitiesOfType(TypesToSearch[i]);
-                for j= 1, #FoundEntities do
-                    self:RegisterEntityAndTriggerEvent(FoundEntities[j]);
-                end
-            end
+    end
+    for i= Step-TurnMod, #TypesToSearch, Step do
+        local FoundEntities = Logic.GetEntitiesOfType(TypesToSearch[i]);
+        for j= 1, #FoundEntities do
+            self:RegisterEntityAndTriggerEvent(FoundEntities[j]);
         end
     end
 end
@@ -14013,6 +14327,12 @@ ModuleInputOutputCore = {
     Global = {};
     Local  = {
         CheatsDisabled = false,
+        Chat = {
+            Data = {},
+            History = {},
+            Visible = {},
+            Widgets = {}
+        },
         Requester = {
             ActionFunction = nil,
             ActionRequester = nil,
@@ -14091,8 +14411,16 @@ function ModuleInputOutputCore.Local:OnGameStart()
     QSB.ScriptEvents.ChatOpened = API.RegisterScriptEvent("Event_ChatOpened");
     QSB.ScriptEvents.ChatClosed = API.RegisterScriptEvent("Event_ChatClosed");
 
+    for i= 1, 8 do
+        self.Chat.Data[i] = {};
+        self.Chat.History[i] = {};
+        self.Chat.Visible[i] = false;
+        self.Chat.Widgets[i] = {};
+    end
+
     self:OverrideQuicksave();
     self:OverrideCheats();
+    self:OverrideChatLog();
     self:DialogOverwriteOriginal();
     self:DialogAltF4Hotkey();
     -- Some kind of wierd timing problem...
@@ -14136,11 +14464,258 @@ function ModuleInputOutputCore.Local:OnEvent(_ID, _Event, ...)
     end
 end
 
+-- -------------------------------------------------------------------------- --
+
+function ModuleInputOutputCore.Local:ShowTextWindow(_Data)
+    _Data.PlayerID = _Data.PlayerID or 1;
+    _Data.Button = _Data.Button or {};
+    local PlayerID = GUI.GetPlayerID();
+    if _Data.PlayerID ~= PlayerID then
+        return;
+    end
+    self.Chat.Data[PlayerID] = _Data;
+    self:CloseTextWindow(PlayerID);
+    self:AlterChatLog();
+
+    XGUIEng.SetText("/InGame/Root/Normal/ChatOptions/ChatLog", _Data.Content);
+    XGUIEng.SetText("/InGame/Root/Normal/MessageLog/Name","{center}" .._Data.Caption);
+    if _Data.DisableClose then
+        XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/Exit",0);
+    end
+    if _Data.Pause then
+        if not Framework.IsNetworkGame() then
+            Game.GameTimeSetFactor(GUI.GetPlayerID(), 0.0000001);
+            XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 1);
+        end
+    end
+    self:ShouldShowSlider(_Data.Content);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions",1);
+end
+
+function ModuleInputOutputCore.Local:CloseTextWindow(_PlayerID)
+    assert(_PlayerID ~= nil);
+    local PlayerID = GUI.GetPlayerID();
+    if _PlayerID ~= PlayerID then
+        return;
+    end
+    GUI_Chat.CloseChatMenu();
+end
+
+function ModuleInputOutputCore.Local:AlterChatLog()
+    local PlayerID = GUI.GetPlayerID();
+    if self.Chat.Visible[PlayerID] then
+        return;
+    end
+    self.Chat.Visible[PlayerID] = true;
+    self.Chat.History[PlayerID] = table.copy(g_Chat.ChatHistory);
+    g_Chat.ChatHistory = {};
+    self:AlterChatLogDisplay();
+end
+
+function ModuleInputOutputCore.Local:RestoreChatLog()
+    local PlayerID = GUI.GetPlayerID();
+    if not self.Chat.Visible[PlayerID] then
+        return;
+    end
+    self.Chat.Visible[PlayerID] = false;
+    g_Chat.ChatHistory = {};
+    for i= 1, #self.Chat.History[PlayerID] do
+        GUI_Chat.ChatlogAddMessage(self.Chat.History[PlayerID][i]);
+    end
+    self:RestoreChatLogDisplay();
+    self.Chat.History[PlayerID] = {};
+    self.Chat.Widgets[PlayerID] = {};
+    self.Chat.Data[PlayerID] = {};
+end
+
+function ModuleInputOutputCore.Local:UpdateToggleWhisperTarget()
+    local PlayerID = GUI.GetPlayerID();
+    local MotherWidget = "/InGame/Root/Normal/ChatOptions/";
+    if not self.Chat.Data[PlayerID] or not self.Chat.Data[PlayerID].Button.Action then
+        XGUIEng.ShowWidget(MotherWidget.. "ToggleWhisperTarget",0);
+        return;
+    end
+    local ButtonText = self.Chat.Data[PlayerID].Button.Text;
+    XGUIEng.SetText(MotherWidget.. "ToggleWhisperTarget","{center}" ..ButtonText);
+end
+
+function ModuleInputOutputCore.Local:ShouldShowSlider(_Text)
+    local stringlen = string.len(_Text);
+    local iterator  = 1;
+    local carreturn = 0;
+    while (true)
+    do
+        local s,e = string.find(_Text, "{cr}", iterator);
+        if not e then
+            break;
+        end
+        if e-iterator <= 58 then
+            stringlen = stringlen + 58-(e-iterator);
+        end
+        iterator = e+1;
+    end
+    if (stringlen + (carreturn*55)) > 1000 then
+        XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatLogSlider",1);
+    end
+end
+
+function ModuleInputOutputCore.Local:OverrideChatLog()
+    GUI_Chat.ChatlogAddMessage_Orig_InputOutputCore = GUI_Chat.ChatlogAddMessage;
+    GUI_Chat.ChatlogAddMessage = function(_Message)
+        local PlayerID = GUI.GetPlayerID();
+        if not ModuleInputOutputCore.Local.Chat.Visible[PlayerID] then
+            GUI_Chat.ChatlogAddMessage_Orig_InputOutputCore(_Message);
+            return;
+        end
+        table.insert(ModuleInputOutputCore.Local.Chat.History[PlayerID], _Message);
+    end
+
+    GUI_Chat.DisplayChatLog_Orig_InputOutputCore = GUI_Chat.DisplayChatLog;
+    GUI_Chat.DisplayChatLog = function()
+        local PlayerID = GUI.GetPlayerID();
+        if not ModuleInputOutputCore.Local.Chat.Visible[PlayerID] then
+            GUI_Chat.DisplayChatLog_Orig_InputOutputCore();
+        end
+    end
+
+    GUI_Chat.CloseChatMenu_Orig_InputOutputCore = GUI_Chat.CloseChatMenu;
+    GUI_Chat.CloseChatMenu = function()
+        local PlayerID = GUI.GetPlayerID();
+        if not ModuleInputOutputCore.Local.Chat.Visible[PlayerID] then
+            GUI_Chat.CloseChatMenu_Orig_InputOutputCore();
+            return;
+        end
+        if ModuleInputOutputCore.Local.Chat.Data[PlayerID].Pause then
+            if not Framework.IsNetworkGame() then
+                Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
+                XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 0);
+            end
+        end
+        ModuleInputOutputCore.Local:RestoreChatLog();
+        XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions",0);
+    end
+
+    GUI_Chat.ToggleWhisperTargetUpdate_Orig_InputOutputCore = GUI_Chat.ToggleWhisperTargetUpdate;
+    GUI_Chat.ToggleWhisperTargetUpdate = function()
+        local PlayerID = GUI.GetPlayerID();
+        if not ModuleInputOutputCore.Local.Chat.Visible[PlayerID] then
+            GUI_Chat.ToggleWhisperTargetUpdate_Orig_InputOutputCore();
+            return;
+        end
+        ModuleInputOutputCore.Local:UpdateToggleWhisperTarget();
+    end
+
+    GUI_Chat.CheckboxMessageTypeWhisperUpdate_Orig_InputOutputCore = GUI_Chat.CheckboxMessageTypeWhisperUpdate;
+    GUI_Chat.CheckboxMessageTypeWhisperUpdate = function()
+        local PlayerID = GUI.GetPlayerID();
+        if not ModuleInputOutputCore.Local.Chat.Visible[PlayerID] then
+            GUI_Chat.CheckboxMessageTypeWhisperUpdate_Orig_InputOutputCore();
+            return;
+        end
+    end
+
+    GUI_Chat.ToggleWhisperTarget_Orig_InputOutputCore = GUI_Chat.ToggleWhisperTarget;
+    GUI_Chat.ToggleWhisperTarget = function()
+        local PlayerID = GUI.GetPlayerID();
+        if not ModuleInputOutputCore.Local.Chat.Visible[PlayerID] then
+            GUI_Chat.ToggleWhisperTarget_Orig_InputOutputCore();
+            return;
+        end
+        if ModuleInputOutputCore.Local.Chat.Data[PlayerID].Button.Action then
+            local Data = ModuleInputOutputCore.Local.Chat.Data[PlayerID];
+            ModuleInputOutputCore.Local.Chat.Data[PlayerID].Button.Action(Data);
+        end
+    end
+end
+
+function ModuleInputOutputCore.Local:AlterChatLogDisplay()
+    local PlayerID = GUI.GetPlayerID();
+
+    local w,h,x,y;
+    local Widget;
+    local MotherWidget = "/InGame/Root/Normal/ChatOptions/";
+    x,y = XGUIEng.GetWidgetLocalPosition(MotherWidget.. "ToggleWhisperTarget");
+    w,h = XGUIEng.GetWidgetSize(MotherWidget.. "ToggleWhisperTarget");
+    self.Chat.Widgets[PlayerID]["ToggleWhisperTarget"] = {X= x, Y= y, W= w, H= h};
+    Widget = self.Chat.Widgets[PlayerID]["ToggleWhisperTarget"];
+
+    x,y = XGUIEng.GetWidgetLocalPosition(MotherWidget.. "ChatLog");
+    w,h = XGUIEng.GetWidgetSize(MotherWidget.. "ChatLog");
+    self.Chat.Widgets[PlayerID]["ChatLog"] = {X= x, Y= y, W= w, H= h};
+    Widget = self.Chat.Widgets[PlayerID]["ChatLog"];
+
+    x,y = XGUIEng.GetWidgetLocalPosition(MotherWidget.. "ChatLogSlider");
+    w,h = XGUIEng.GetWidgetSize(MotherWidget.. "ChatLogSlider");
+    self.Chat.Widgets[PlayerID]["ChatLogSlider"] = {X= x, Y= y, W= w, H= h};
+    Widget = self.Chat.Widgets[PlayerID]["ChatLogSlider"];
+
+    XGUIEng.ShowWidget(MotherWidget.. "ChatModeAllPlayers",0);
+    XGUIEng.ShowWidget(MotherWidget.. "ChatModeTeam",0);
+    XGUIEng.ShowWidget(MotherWidget.. "ChatModeWhisper",0);
+    XGUIEng.ShowWidget(MotherWidget.. "ChatChooseModeCaption",0);
+    XGUIEng.ShowWidget(MotherWidget.. "Background/TitleBig",1);
+    XGUIEng.ShowWidget(MotherWidget.. "Background/TitleBig/Info",0);
+    XGUIEng.ShowWidget(MotherWidget.. "ChatLogCaption",0);
+    XGUIEng.ShowWidget(MotherWidget.. "BGChoose",0);
+    XGUIEng.ShowWidget(MotherWidget.. "BGChatLog",0);
+    XGUIEng.ShowWidget(MotherWidget.. "ChatLogSlider",0);
+
+    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog",1);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/BG",0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/Close",0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/Slider",0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/Text",0);
+    XGUIEng.SetText("/InGame/Root/Normal/MessageLog/Name","{center}Test");
+    XGUIEng.SetWidgetLocalPosition("/InGame/Root/Normal/MessageLog",15,90);
+    XGUIEng.SetWidgetLocalPosition("/InGame/Root/Normal/MessageLog/Name",0,0);
+    XGUIEng.SetTextColor("/InGame/Root/Normal/MessageLog/Name",51,51,121,255);
+
+    XGUIEng.SetWidgetSize(MotherWidget.. "ChatLogSlider",46,600);
+    XGUIEng.SetWidgetLocalPosition(MotherWidget.. "ChatLogSlider",780,130);
+    XGUIEng.SetWidgetSize(MotherWidget.. "Background/DialogBG/1 (2)/2",150,400);
+    XGUIEng.SetWidgetPositionAndSize(MotherWidget.. "Background/DialogBG/1 (2)/3",400,500,350,400);
+    XGUIEng.SetWidgetLocalPosition(MotherWidget.. "ToggleWhisperTarget",280,760);
+    XGUIEng.SetWidgetLocalPosition(MotherWidget.. "ChatLog",140,150);
+    XGUIEng.SetWidgetSize(MotherWidget.. "ChatLog",640,560);
+end
+
+function ModuleInputOutputCore.Local:RestoreChatLogDisplay()
+    local PlayerID = GUI.GetPlayerID();
+
+    local Widget;
+    local MotherWidget = "/InGame/Root/Normal/ChatOptions/";
+    Widget = self.Chat.Widgets[PlayerID]["ToggleWhisperTarget"];
+    XGUIEng.SetWidgetLocalPosition(MotherWidget.. "ToggleWhisperTarget", Widget.X, Widget.Y);
+    XGUIEng.SetWidgetSize(MotherWidget.. "ToggleWhisperTarget", Widget.W, Widget.H);
+    Widget = self.Chat.Widgets[PlayerID]["ChatLog"];
+    XGUIEng.SetWidgetLocalPosition(MotherWidget.. "ChatLog", Widget.X, Widget.Y);
+    XGUIEng.SetWidgetSize(MotherWidget.. "ChatLog", Widget.W, Widget.H);
+    Widget = self.Chat.Widgets[PlayerID]["ChatLogSlider"];
+    XGUIEng.SetWidgetLocalPosition(MotherWidget.. "ChatLogSlider", Widget.X, Widget.Y);
+    XGUIEng.SetWidgetSize(MotherWidget.. "ChatLogSlider", Widget.W, Widget.H);
+
+    XGUIEng.ShowWidget(MotherWidget.. "ChatModeAllPlayers",1);
+    XGUIEng.ShowWidget(MotherWidget.. "ChatModeTeam",1);
+    XGUIEng.ShowWidget(MotherWidget.. "ChatModeWhisper",1);
+    XGUIEng.ShowWidget(MotherWidget.. "ChatChooseModeCaption",1);
+    XGUIEng.ShowWidget(MotherWidget.. "Background/TitleBig",1);
+    XGUIEng.ShowWidget(MotherWidget.. "Background/TitleBig/Info",1);
+    XGUIEng.ShowWidget(MotherWidget.. "ChatLogCaption",1);
+    XGUIEng.ShowWidget(MotherWidget.. "BGChoose",1);
+    XGUIEng.ShowWidget(MotherWidget.. "BGChatLog",1);
+    XGUIEng.ShowWidget(MotherWidget.. "ChatLogSlider",1);
+    XGUIEng.ShowWidget(MotherWidget.. "ToggleWhisperTarget",1);
+
+    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog",0);
+end
+
+-- -------------------------------------------------------------------------- --
+
 function ModuleInputOutputCore.Local:OverrideQuicksave()
     API.AddBlockQuicksaveCondition(function()
         return ModuleInputOutputCore.Local.DialogWindowShown;
     end);
-    
+
     KeyBindings_SaveGame = function()
         if not Swift:CanDoQuicksave() then
             return;
@@ -14521,11 +15096,9 @@ end
 
 function ModuleInputOutputCore.Local:LocalToGlobal(_Text)
     _Text = (_Text == nil and "") or _Text;
-    Swift:DispatchScriptCommand(
-        QSB.ScriptCommands.SendScriptEvent,
-        0,
+    API.BroadcastScriptEventToGlobal(
         QSB.ScriptEvents.ChatClosed,
-        (_Text or "<ES>"),
+        (_Text or "<<<ES>>>"),
         GUI.GetPlayerID()
     );
     Swift:SetProcessDebugCommands(true);
@@ -14700,340 +15273,6 @@ function ModuleInputOutputCore.Shared:CommandTokenizer(_Input)
     end
 
     return Commands;
-end
-
--- TextWindow class ------------------------------------------------------------
-
-QSB.TextWindow = {
-    Shown       = false,
-    Caption     = "",
-    Text        = "",
-    ButtonText  = "",
-    Picture     = nil,
-    Action      = nil,
-    Pause       = true,
-    Callback    = function() end,
-};
-
----
--- Erzeugt ein Textfenster, dass einen beliebig großen Text anzeigen kann.
--- Optional kann ein Button genutzt werden, der eine Aktion ausführt, wenn
--- er gedrückt wird.
---
--- Parameterliste:
--- <table>
--- <tr>
--- <th>Index</th>
--- <th>Beschreibung</th>
--- </tr>
--- <tr>
--- <td>1</td>
--- <td>Titel des Fensters</td>
--- </tr>
--- <tr>
--- <td>2</td>
--- <td>Text des Fensters</td>
--- </tr>
--- <tr>
--- <td>3</td>
--- <td>Aktion nach dem Schließen</td>
--- </tr>
--- <tr>
--- <td>4</td>
--- <td>Beschriftung des Buttons</td>
--- </tr>
--- <tr>
--- <td>5</td>
--- <td>Callback des Buttons</td>
--- </tr>
--- </table>
---
--- @param ... Parameterliste
--- @return[type=table] Instanz des konfigurierten Fensters
--- @within QSB.TextWindow
--- @local
---
--- @usage
--- local MyWindow = TextWindow:New("Fenster", "Das ist ein Text");
---
-function QSB.TextWindow:New(...)
-    assert(self == QSB.TextWindow, "Can not be used from instance!")
-    local window      = table.copy(self);
-    window.Caption    = arg[1] or window.Caption;
-    window.Text       = arg[2] or window.Text;
-    window.Action     = arg[3];
-    window.ButtonText = arg[4] or window.ButtonText;
-    window.Callback   = arg[5] or window.Callback;
-    return window;
-end
-
----
--- Fügt einen beliebigen Parameter hinzu. Parameter müssen immer als
--- Schlüssel-Wert-Paare angegeben werden und dürfen vorhandene Pare nicht
--- überschreiben.
---
--- @param[type=string] _Key   Schlüssel
--- @param              _Value Wert
--- @return self
--- @within QSB.TextWindow
--- @local
---
--- @usage
--- MyWindow:AddParameter("Name", "Horst");
---
-function QSB.TextWindow:AddParamater(_Key, _Value)
-    assert(self ~= QSB.TextWindow, "Can not be used in static context!");
-    assert(self[_Key] ~= nil, "Key '" .._Key.. "' already exists!");
-    self[_Key] = _Value;
-    return self;
-end
-
----
--- Setzt die Überschrift des TextWindow.
---
--- @param[type=string] _Flag Spiel pausieren
--- @return self
--- @within QSB.TextWindow
--- @local
---
--- @usage
--- MyWindow:SetPause(false);
---
-function QSB.TextWindow:SetPause(_Flag)
-    assert(self ~= QSB.TextWindow, "Can not be used in static context!");
-    self.Pause = _Flag == true;
-    return self;
-end
-
----
--- Setzt die Überschrift des TextWindow.
---
--- @param[type=string] _Text Titel des Textfenster
--- @return self
--- @within QSB.TextWindow
--- @local
---
--- @usage
--- MyWindow:SetCaption("Das ist der Titel");
---
-function QSB.TextWindow:SetCaption(_Text)
-    assert(self ~= QSB.TextWindow, "Can not be used in static context!");
-    assert(type(_Text) == "string");
-    self.Caption = API.Localize(_Text);
-    return self;
-end
-
----
--- Setzt den Inhalt des TextWindow.
---
--- @param[type=string] _Text Inhalt des Textfenster
--- @return self
--- @within QSB.TextWindow
--- @local
---
--- @usage
--- MyWindow:SetCaption("Das ist der Text. Er ist sehr informativ!");
---
-function QSB.TextWindow:SetContent(_Text)
-    assert(self ~= QSB.TextWindow, "Can not be used in static context!");
-    assert(type(_Text) == "string");
-    self.Text = API.Localize(_Text);
-    return self;
-end
-
----
--- Setzt die Close Action des TextWindow. Die Funktion wird beim schließen
--- des Fensters ausgeführt.
---
--- @param[type=function] _Function Close Callback
--- @return self
--- @within QSB.TextWindow
--- @local
---
--- @usage
--- local MyAction = function(_Window)
---     -- Something is done here!
--- end
--- MyWindow:SetAction(MyAction);
---
-function QSB.TextWindow:SetAction(_Function)
-    assert(self ~= QSB.TextWindow, "Can not be used in static context!");
-    assert(nil or type(_Function) == "function");
-    self.Callback = _Function;
-    return self;
-end
-
----
--- Setzt einen Aktionsbutton im TextWindow.
---
--- Der Button muss mit einer Funktion versehen werden. Sobald der Button
--- betätigt wird, wird die Funktion ausgeführt.
---
--- @param[type=string]   _Text     Beschriftung des Buttons
--- @param[type=function] _Callback Aktion des Buttons
--- @return self
--- @within QSB.TextWindow
--- @local
---
--- @usage
--- local MyButtonAction = function(_Window)
---     -- Something is done here!
--- end
--- MyWindow:SetAction("Button Text", MyButtonAction);
---
-function QSB.TextWindow:SetButton(_Text, _Callback)
-    assert(self ~= QSB.TextWindow, "Can not be used in static context!");
-    if _Text then
-        _Text = API.Localize(_Text);
-        assert(type(_Text) == "string");
-        assert(type(_Callback) == "function");
-    end
-    self.ButtonText = _Text;
-    self.Action     = _Callback;
-    return self;
-end
-
----
--- Zeigt ein erzeigtes Fenster an.
---
--- @within QSB.TextWindow
--- @local
---
--- @usage
--- MyWindow:Show();
---
-function QSB.TextWindow:Show()
-    assert(self ~= QSB.TextWindow, "Can not be used in static context!");
-    QSB.TextWindow.Shown = true;
-    self.Shown = true;
-    self:Prepare();
-
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions",1);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ToggleWhisperTarget",1);
-    if not self.Action then
-        XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ToggleWhisperTarget",0);
-    end
-    XGUIEng.SetText("/InGame/Root/Normal/MessageLog/Name","{center}"..self.Caption);
-    XGUIEng.SetText("/InGame/Root/Normal/ChatOptions/ToggleWhisperTarget","{center}"..self.ButtonText);
-    GUI_Chat.ClearMessageLog();
-    GUI_Chat.ChatlogAddMessage(self.Text);
-
-    local stringlen = string.len(self.Text);
-    local iterator  = 1;
-    local carreturn = 0;
-    while (true)
-    do
-        local s,e = string.find(self.Text, "{cr}", iterator);
-        if not e then
-            break;
-        end
-        if e-iterator <= 58 then
-            stringlen = stringlen + 58-(e-iterator);
-        end
-        iterator = e+1;
-    end
-    if (stringlen + (carreturn*55)) > 1000 then
-        XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatLogSlider",1);
-    end
-    if self.Pause then
-        if not Framework.IsNetworkGame() then
-            Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
-        end
-    end
-end
-
----
--- Initialisiert das TextWindow, bevor es angezeigt wird.
---
--- @within QSB.TextWindow
--- @local
---
-function QSB.TextWindow:Prepare()
-    function GUI_Chat.CloseChatMenu()
-        QSB.TextWindow.Shown = false;
-        self.Shown = false;
-        if self.Callback then
-            self:Callback();
-        end
-        XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions",0);
-        XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog",0);
-        XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/BG",1);
-        XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/Close",1);
-        XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/Slider",1);
-        XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/Text",1);
-        Game.GameTimeReset(GUI.GetPlayerID());
-    end
-
-    function GUI_Chat.ToggleWhisperTargetUpdate()
-        if self.Pause then
-            if not Framework.IsNetworkGame() then
-                Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
-            end
-        end
-    end
-
-    function GUI_Chat.CheckboxMessageTypeWhisperUpdate()
-        XGUIEng.SetText("/InGame/Root/Normal/ChatOptions/TextCheckbox","{center}"..self.Caption);
-    end
-
-    function GUI_Chat.ToggleWhisperTarget()
-        if self.Action then
-            self.Action(self);
-        end
-    end
-
-    function GUI_Chat.ClearMessageLog()
-        g_Chat.ChatHistory = {}
-    end
-
-    function GUI_Chat.ChatlogAddMessage(_Message)
-        table.insert(g_Chat.ChatHistory, _Message)
-        local ChatlogMessage = ""
-        for i,v in ipairs(g_Chat.ChatHistory) do
-            ChatlogMessage = ChatlogMessage .. v .. "{cr}"
-        end
-        XGUIEng.SetText("/InGame/Root/Normal/ChatOptions/ChatLog", ChatlogMessage)
-    end
-
-    if type(self.Caption) == "table" then
-        self.Caption = API.ConvertPlaceholders(API.Localize(self.Caption));
-    end
-    if type(self.ButtonText) == "table" then
-        self.ButtonText = API.ConvertPlaceholders(API.Localize(self.ButtonText));
-    end
-    if type(self.Text) == "table" then
-        self.Text = API.ConvertPlaceholders(API.Localize(self.Text));
-    end
-
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatModeAllPlayers",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatModeTeam",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatModeWhisper",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatChooseModeCaption",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/Background/TitleBig",1);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/Background/TitleBig/Info",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatLogCaption",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/BGChoose",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/BGChatLog",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatLogSlider",0);
-
-    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog",1);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/BG",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/Close",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/Slider",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/Text",0);
-
-    XGUIEng.DisableButton("/InGame/Root/Normal/ChatOptions/ToggleWhisperTarget",0);
-
-    XGUIEng.SetWidgetLocalPosition("/InGame/Root/Normal/MessageLog",0,95);
-    XGUIEng.SetWidgetLocalPosition("/InGame/Root/Normal/MessageLog/Name",0,0);
-    XGUIEng.SetTextColor("/InGame/Root/Normal/MessageLog/Name",51,51,121,255);
-    XGUIEng.SetWidgetLocalPosition("/InGame/Root/Normal/ChatOptions/ChatLog",140,150);
-    XGUIEng.SetWidgetSize("/InGame/Root/Normal/ChatOptions/Background/DialogBG/1 (2)/2",150,400);
-    XGUIEng.SetWidgetPositionAndSize("/InGame/Root/Normal/ChatOptions/Background/DialogBG/1 (2)/3",400,500,350,400);
-    XGUIEng.SetWidgetSize("/InGame/Root/Normal/ChatOptions/ChatLog",640,580);
-    XGUIEng.SetWidgetSize("/InGame/Root/Normal/ChatOptions/ChatLogSlider",46,660);
-    XGUIEng.SetWidgetLocalPosition("/InGame/Root/Normal/ChatOptions/ChatLogSlider",780,130);
-    XGUIEng.SetWidgetLocalPosition("/InGame/Root/Normal/ChatOptions/ToggleWhisperTarget",110,760);
 end
 
 -- -------------------------------------------------------------------------- --
@@ -15287,18 +15526,6 @@ function API.AddEntityTypePlaceholder(_Type, _Replacement)
 end
 
 ---
--- Das Dialog Modul ermöglicht es Dialogfenster anzuzeigen.
---
--- <b>Vorausgesetzte Module:</b>
--- <ul>
--- <li><a href="Swift_0_Core.api.html">(1) Core</a></li>
--- </ul>
---
--- @within Beschreibung
--- @set sort=true
---
-
----
 -- Öffnet einen Info-Dialog. Sollte bereits ein Dialog zu sehen sein, wird
 -- der Dialog der Dialogwarteschlange hinzugefügt.
 --
@@ -15402,11 +15629,13 @@ end
 -- Die Länge des Textes ist nicht beschränkt. Überschreitet der Text die
 -- Größe des Fensters, wird automatisch eine Bildlaufleiste eingeblendet.
 --
--- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden, wegen Konflikt
--- mit dem Chat Options.
+-- <h5>Multiplayer</h5>
+-- Im Multiplayer muss zwingend der Spieler angegeben werden, für den das
+-- Fenster angezeigt werden soll.
 --
--- @param[type=string] _Caption Titel des Fenster
--- @param[type=string] _content Inhalt des Fenster
+-- @param[type=string] _Caption  Titel des Fenster
+-- @param[type=string] _Content  Inhalt des Fenster
+-- @param[type=number] _PlayerID Spieler, der das Fenster sieht
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -15423,19 +15652,24 @@ end
 --              " dolor sit amet.";
 -- API.SimpleTextWindow("Überschrift", Text);
 --
-function API.SimpleTextWindow(_Caption, _Content)
-    if Framework.IsNetworkGame() then
-        return;
-    end
+function API.SimpleTextWindow(_Caption, _Content, _PlayerID)
+    _PlayerID = _PlayerID or 1;
     _Caption = API.Localize(_Caption);
     _Content = API.Localize(_Content);
     if not GUI then
-        Logic.ExecuteInLuaLocalState(
-            string.format([[API.SimpleTextWindow("%s", "%s")]], _Caption, _Content)
-        );
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.SimpleTextWindow("%s", "%s", %d)]],
+            _Caption,
+            _Content,
+            _PlayerID
+        ));
         return;
     end
-    QSB.TextWindow:New(_Caption, _Content):Show();
+    ModuleInputOutputCore.Local:ShowTextWindow {
+        PlayerID = _PlayerID,
+        Caption  = _Caption,
+        Content  = _Content,
+    };
 end
 
 ---
@@ -15520,7 +15754,8 @@ You may use and modify this file unter the terms of the MIT licence.
 -- müssen also immer mit Ja oder Nein beantwortbar sein oder auf Okay und
 -- Abbrechen passen.
 --
--- <b>Hinweis</b>: Dieses Behavior kann nicht im Multiplayer verwendet werden.
+-- <h5>Multiplayer</h5>
+-- Nicht für Multiplayer geeignet.
 --
 -- @param _Text   Fenstertext
 -- @param _Title  Fenstertitel
@@ -15573,7 +15808,7 @@ function B_Goal_Decide:CustomFunction(_Quest)
             Logic.ExecuteInLuaLocalState(string.format(
                 [[
                     local Action = function(_Yes)
-                        API.SendScriptCommand(QSB.ScriptCommands.SetDecisionResult, GUI.GetPlayerID(), _Yes == true);
+                        API.BroadcastScriptCommand(QSB.ScriptCommands.SetDecisionResult, GUI.GetPlayerID(), _Yes == true);
                     end
                     API.DialogRequestBox("%s", "%s", Action, %s)
                 ]],
@@ -15633,7 +15868,8 @@ Swift:RegisterBehavior(B_Goal_Decide);
 -- erste Eingabe annehmen, die getätigt wird. Dabei ist es egal, ob der Input
 -- durch sie selbst oder extern aktiviert wurde.
 --
--- <b>Hinweis</b>: Dieses Behavior kann nicht im Multiplayer verwendet werden.
+-- <h5>Multiplayer</h5>
+-- Nicht für Multiplayer geeignet.
 --
 -- @param _Passwords Liste der Passwörter
 -- @param _Trials    Anzahl versuche (0 für unendlich)
@@ -16665,8 +16901,9 @@ You may use and modify this file unter the terms of the MIT licence.
 ---
 -- Dieses Modul bietet grundlegende Funktionen zur Steuerung des Interface.
 --
--- <b>Hinweis</b>: Diese Funktionen müssen in Multiplayer Maps synchron
--- aufgerufen werden. Entweder zu Spielbeginn oder durch Jobs.
+-- <h5>Multiplayer</h5>
+-- Diese Funktionen müssen in Multiplayer Maps synchron aufgerufen werden.
+-- Entweder zu Spielbeginn oder durch Jobs oder durch Events.
 --
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
@@ -16825,8 +17062,10 @@ GetPlayerName = API.GetPlayerName;
 ---
 -- Wechselt die Spieler ID des menschlichen Spielers.
 --
--- Die neue ID muss einen Primärritter haben. Diese Funktion kann nicht im
--- Multiplayer Mode verwendet werden.
+-- Die neue ID muss einen Primärritter haben.
+--
+-- <h5>Multiplayer</h5>
+-- Nicht für Multiplayer geeignet.
 --
 -- @param[type=number] _OldPlayerID Alte ID des menschlichen Spielers
 -- @param[type=number] _NewPlayerID Neue ID des menschlichen Spielers
@@ -18094,7 +18333,7 @@ IsVisible = API.IsEntityVisible;
 -- @param[type=boolean] _Visible (Optional) Sichtbarkeit ändern
 -- @within Anwenderfunktionen
 --
-function API.SetEntityVisible(_Entity, _Visble)
+function API.SetEntityVisible(_Entity, _Visible)
     if GUI then
         return;
     end
@@ -18103,7 +18342,7 @@ function API.SetEntityVisible(_Entity, _Visble)
         error("API.SetEntityVisible: _Entity (" ..tostring(_Entity).. ") does not exist!");
         return;
     end
-    Logic.SetVisible(EntityID, _Visble == true);
+    Logic.SetVisible(EntityID, _Visible == true);
 end
 SetVisible = API.SetEntityVisible;
 
@@ -19023,9 +19262,7 @@ function ModuleTradingCore.Local:OverrideMerchantPurchaseOfferClicked()
                 g_Merchant.BuyFromPlayer[TraderPlayerID] = g_Merchant.BuyFromPlayer[TraderPlayerID] or {};
                 g_Merchant.BuyFromPlayer[TraderPlayerID][GoodType] = (g_Merchant.BuyFromPlayer[TraderPlayerID][GoodType] or 0) +1;
 
-                Swift:DispatchScriptCommand(
-                    QSB.ScriptCommands.SendScriptEvent,
-                    0,
+                API.BroadcastScriptEventToGlobal(
                     QSB.ScriptEvents.GoodsPurchased,
                     TraderType,
                     OfferIndex,
@@ -19124,9 +19361,7 @@ function ModuleTradingCore.Local:OverrideMerchantSellGoodsClicked()
             else
                 g_Trade.SellToPlayers[TargetID][g_Trade.GoodType] = g_Trade.SellToPlayers[TargetID][g_Trade.GoodType] + g_Trade.GoodAmount;
             end
-            Swift:DispatchScriptCommand(
-                QSB.ScriptCommands.SendScriptEvent,
-                0,
+            API.BroadcastScriptEventToGlobal(
                 QSB.ScriptEvents.GoodsSold,
                 g_Trade.GoodType,
                 PlayerID,
@@ -20699,27 +20934,27 @@ function ModuleCastleStore.Local.CastleStore:OnStorehouseTabClicked(_PlayerID)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
     QSB.CastleStorePlayerData[_PlayerID].StoreMode = 1;
     self:UpdateBehaviorTabs(_PlayerID);
-    API.SendScriptCommand(QSB.ScriptCommands.CastleStoreAcceptAllGoods, _PlayerID);
+    API.BroadcastScriptCommand(QSB.ScriptCommands.CastleStoreAcceptAllGoods, _PlayerID);
 end
 
 function ModuleCastleStore.Local.CastleStore:OnCityTabClicked(_PlayerID)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
     QSB.CastleStorePlayerData[_PlayerID].StoreMode = 2;
     self:UpdateBehaviorTabs(_PlayerID);
-    API.SendScriptCommand(QSB.ScriptCommands.CastleStoreLockAllGoods, _PlayerID);
+    API.BroadcastScriptCommand(QSB.ScriptCommands.CastleStoreLockAllGoods, _PlayerID);
 end
 
 function ModuleCastleStore.Local.CastleStore:OnMultiTabClicked(_PlayerID)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
     QSB.CastleStorePlayerData[_PlayerID].StoreMode = 3;
     self:UpdateBehaviorTabs(_PlayerID);
-    API.SendScriptCommand(QSB.ScriptCommands.CastleStoreRefuseAllGoods, _PlayerID);
+    API.BroadcastScriptCommand(QSB.ScriptCommands.CastleStoreRefuseAllGoods, _PlayerID);
 end
 
 function ModuleCastleStore.Local.CastleStore:GoodClicked(_PlayerID, _GoodType)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
     if self:HasCastleStore(_PlayerID) then
-        API.SendScriptCommand(QSB.ScriptCommands.CastleStoreToggleGoodState, _PlayerID, _GoodType);
+        API.BroadcastScriptCommand(QSB.ScriptCommands.CastleStoreToggleGoodState, _PlayerID, _GoodType);
     end
 end
 
@@ -20976,7 +21211,7 @@ function ModuleCastleStore.Local:OverwriteInteractiveObject()
                 GUI_Interaction.InteractiveObjectClicked_Orig_CastleStore();
                 return;
             end
-            API.SendScriptCommand(QSB.ScriptCommands.CastleStoreObjectPayStep1, PlayerID, ScriptName);
+            API.BroadcastScriptCommand(QSB.ScriptCommands.CastleStoreObjectPayStep1, PlayerID, ScriptName);
         end
 
         -- Send additional click event
@@ -21360,7 +21595,7 @@ function ModuleCastleStore.Local:InteractiveObjectPayStep2(_PlayerID, _ScriptNam
         return;
     end
     GUI.ExecuteObjectInteraction(GetID(_ScriptName), _PlayerID);
-    API.SendScriptCommand(QSB.ScriptCommands.CastleStoreObjectPayStep3, _PlayerID, _ScriptName);
+    API.BroadcastScriptCommand(QSB.ScriptCommands.CastleStoreObjectPayStep3, _PlayerID, _ScriptName);
 end
 
 -- -------------------------------------------------------------------------- --
@@ -21821,7 +22056,7 @@ function ModuleConstructionControl.Local:OverrideDeleteEntityStateBuilding()
     GameCallback_GUI_DeleteEntityStateBuilding = function(_BuildingID, _State)
         GameCallback_GUI_DeleteEntityStateBuilding_Orig_ConstructionControl(_BuildingID, _State);
 
-        API.SendScriptCommand(QSB.ScriptCommands.CheckCancelKnockdown, GUI.GetPlayerID(), _BuildingID, _State);
+        API.BroadcastScriptCommand(QSB.ScriptCommands.CheckCancelKnockdown, GUI.GetPlayerID(), _BuildingID, _State);
     end
 end
 
@@ -22144,10 +22379,10 @@ end
 -- @return[type=function] Bedingungsfunktion
 -- @within Anwenderfunktionen
 --
-function API.GetForbidKnockdownTypeAtTerritory(_PlayerID, _Territory, _Type)
+function API.GetForbidKnockdownTypeAtTerritory(_PlayerID, _Territory, _EntityType)
     return function(_EntityID)
         if Logic.EntityGetPlayer(_EntityID) == _PlayerID then
-            if Logic.GetEntityType(_EntityID) == _Type then
+            if Logic.GetEntityType(_EntityID) == _EntityType then
                 return GetTerritoryUnderEntity(_EntityID) ~= _Territory;
             end
         end
@@ -22166,10 +22401,10 @@ end
 -- @return[type=function] Bedingungsfunktion
 -- @within Anwenderfunktionen
 --
-function API.GetPermitKnockdownTypeAtTerritory(_PlayerID, _Territory, _Type)
+function API.GetPermitKnockdownTypeAtTerritory(_PlayerID, _Territory, _EntityType)
     return function(_EntityID)
         if Logic.EntityGetPlayer(_EntityID) == _PlayerID then
-            if Logic.GetEntityType(_EntityID) == _Type then
+            if Logic.GetEntityType(_EntityID) == _EntityType then
                 return GetTerritoryUnderEntity(_EntityID) == _Territory;
             end
         end
@@ -22233,10 +22468,10 @@ end
 -- @return[type=function] Bedingungsfunktion
 -- @within Anwenderfunktionen
 --
-function API.GetForbidKnockdownTypeInArea(_PlayerID, _AreaCenter, _AreaSize, _Type)
+function API.GetForbidKnockdownTypeInArea(_PlayerID, _AreaCenter, _AreaSize, _EntityType)
     return function(_EntityID)
         if Logic.EntityGetPlayer(_EntityID) == _PlayerID then
-            if Logic.GetEntityType(_EntityID) == _Type then
+            if Logic.GetEntityType(_EntityID) == _EntityType then
                 return API.GetDistance(_EntityID, _AreaCenter) > _AreaSize;
             end
         end
@@ -22256,10 +22491,10 @@ end
 -- @return[type=function] Bedingungsfunktion
 -- @within Anwenderfunktionen
 --
-function API.GetPermitKnockdownTypeInArea(_PlayerID, _AreaCenter, _AreaSize, _Type)
+function API.GetPermitKnockdownTypeInArea(_PlayerID, _AreaCenter, _AreaSize, _EntityType)
     return function(_EntityID)
         if Logic.EntityGetPlayer(_EntityID) == _PlayerID then
-            if Logic.GetEntityType(_EntityID) == _Type then
+            if Logic.GetEntityType(_EntityID) == _EntityType then
                 return API.GetDistance(_EntityID, _AreaCenter) <= _AreaSize;
             end
         end
@@ -23042,12 +23277,25 @@ ModuleEntitySearch = {
 -- Global ------------------------------------------------------------------- --
 
 function ModuleEntitySearch.Global:OnGameStart()
+    QSB.ScriptEvents.TriggerEntityTrigger = API.RegisterScriptEvent("Event_TriggerEntityTrigger");
     API.RegisterScriptCommand("Cmd_TriggerEntityTrigger", SCP.EntitySearch.TriggerEntityTrigger);
+end
+
+function ModuleEntitySearch.Global:OnEvent(_ID, _Event, ...)
+    if _ID == QSB.ScriptEvents.TriggerEntityTrigger then
+        self:TriggerEntityTrigger();
+    end
+end
+
+function ModuleEntitySearch.Global:TriggerEntityTrigger()
+    local ID = Logic.CreateEntity(Entities.XD_ScriptEntity, 5, 5, 0, 0);
+    Logic.DestroyEntity(ID);
 end
 
 -- Local -------------------------------------------------------------------- --
 
 function ModuleEntitySearch.Local:OnGameStart()
+    QSB.ScriptEvents.TriggerEntityTrigger = API.RegisterScriptEvent("Event_TriggerEntityTrigger");
 end
 
 -- Shared ------------------------------------------------------------------- --
@@ -23056,6 +23304,7 @@ function ModuleEntitySearch.Shared:IterateEntities(...)
     if not GUI then
         SCP.EntitySearch.TriggerEntityTrigger();
     else
+        -- Job is synchronous so do not broadcast the command
         API.SendScriptCommand(QSB.ScriptCommands.TriggerEntityTrigger);
     end
 
@@ -23070,8 +23319,8 @@ function ModuleEntitySearch.Shared:IterateEntities(...)
 
     -- Iteriert über alle Entities und wendet Predikate an.
     local ResultList = {};
-    for i= 65536, ModuleEntityEventCore.Shared:GetHighestEntity() do
-        local ID = ModuleEntityEventCore.Shared:GetReplacementID(i) or i;
+    for i= 65536, ModuleEntityEventCore.Shared.HighestEntityID do
+        local ID = ModuleEntityEventCore.Shared.ReplacementEntityID[i] or i;
         local Select = true;
         if IsExisting(ID) then
             for j= 1, #Predicates do
@@ -23092,80 +23341,93 @@ end
 
 QSB.Search = {};
 
-NOT = function(_ID, _Predicate)
-    local Predicate = table.copy(_Predicate);
-    local Function = table.remove(Predicate, 1);
-    return not Function(_ID, unpack(Predicate));
+QSB.Search.Custom = function(_ID, _Function, ...)
+    return _Function(_ID, unpack(arg));
 end
 
-ALL = function(_ID, ...)
-    local Predicates = table.copy(arg);
-    for i= 1, #Predicates do
-        local Predicate = table.remove(Predicates[i], 1);
-        if not Predicate(_ID, unpack(Predicates[i])) then
-            return false;
-        end
-    end
-    return true;
-end
-
-ANY = function(_ID, ...)
-    local Predicates = table.copy(arg);
-    for i= 1, #Predicates do
-        local Predicate = table.remove(Predicates[i], 1);
-        if Predicate(_ID, unpack(Predicates[i])) then
+QSB.Search.OfID = function(_ID, ...)
+    for i= 1, #arg do
+        if _ID == arg[i] then
             return true;
         end
     end
     return false;
 end
 
-QSB.Search.Custom = function(_ID, _Function, ...)
-    return _Function(_ID, unpack(arg));
-end
-
-QSB.Search.OfID = function(_ID, _EntityID)
-    return _ID == _EntityID;
-end
-
-QSB.Search.OfPlayer = function(_ID, _PlayerID)
-    return Logic.EntityGetPlayer(_ID) == _PlayerID;
-end
-
-QSB.Search.OfName = function(_ID, _ScriptName)
-    return Logic.GetEntityName(_ID) == _ScriptName;
-end
-
-QSB.Search.OfNamePrefix = function(_ID, _Prefix)
-    local ScriptName = Logic.GetEntityName(_ID);
-    if ScriptName and ScriptName ~= "" then
-        return ScriptName:find("^" .._Prefix) ~= nil;
+QSB.Search.OfPlayer = function(_ID, ...)
+    for i= 1, #arg do
+        if Logic.EntityGetPlayer(_ID) == arg[i] then
+            return true;
+        end
     end
     return false;
 end
 
-QSB.Search.OfNameSuffix = function(_ID, _Sufix)
-    local ScriptName = Logic.GetEntityName(_ID);
-    if ScriptName and ScriptName ~= "" then
-        return ScriptName:find(_Sufix .. "$") ~= nil;
+QSB.Search.OfName = function(_ID, ...)
+    for i= 1, #arg do
+        if Logic.GetEntityName(_ID) == arg[i] then
+            return true;
+        end
     end
     return false;
 end
 
-QSB.Search.OfType = function(_ID, _Type)
-    return Logic.GetEntityType(_ID) == _Type;
+QSB.Search.OfNamePrefix = function(_ID, ...)
+    -- FIXME: Bad benchmark!
+    local ScriptName = Logic.GetEntityName(_ID);
+    for i= 1, #arg do
+        if ScriptName and ScriptName ~= "" then
+            if ScriptName:find("^" ..arg[i]) ~= nil then
+                return true;
+            end
+        end
+    end
+    return false;
 end
 
-QSB.Search.OfCategory = function(_ID, _Category)
-    return Logic.IsEntityInCategory(_ID, _Category) == 1;
+QSB.Search.OfNameSuffix = function(_ID, ...)
+    -- FIXME: Bad benchmark!
+    local ScriptName = Logic.GetEntityName(_ID);
+    for i= 1, #arg do
+        if ScriptName and ScriptName ~= "" then
+            if ScriptName:find(arg[i] .. "$") ~= nil then
+                return true;
+            end
+        end
+    end
+    return false;
+end
+
+QSB.Search.OfType = function(_ID, ...)
+    for i= 1, #arg do
+        if Logic.GetEntityType(_ID) == arg[i] then
+            return true;
+        end
+    end
+    return false;
+end
+
+QSB.Search.OfCategory = function(_ID, ...)
+    for i= 1, #arg do
+        if Logic.IsEntityInCategory(_ID, arg[i]) == 1 then
+            return true;
+        end
+    end
+    return false;
 end
 
 QSB.Search.InArea = function(_ID, _X, _Y, _AreaSize)
+    -- FIXME: Bad benchmark!
     return API.GetDistance(_ID, {X= _X, Y= _Y}) <= _AreaSize;
 end
 
-QSB.Search.InTerritory = function(_ID, _Territory)
-    return GetTerritoryUnderEntity(_ID) == _Territory;
+QSB.Search.InTerritory = function(_ID, ...)
+    for i= 1, #arg do
+        if GetTerritoryUnderEntity(_ID) == arg[i] then
+            return true;
+        end
+    end
+    return false;
 end
 
 -- -------------------------------------------------------------------------- --
@@ -23221,7 +23483,8 @@ You may use and modify this file unter the terms of the MIT licence.
 -- <ul>
 -- <li>NOT (_Predicate) - Negiert das Ergebnis des Prädikat.</li>
 -- <li>ALL (...) - Alle Prädikate müssen wahr sein.</li>
--- <li>ANY (...) - Mindestes ein Prädikat mus wahr sein</li>
+-- <li>ANY (...) - Mindestes ein Prädikat muss wahr sein</li>
+-- <li>XOR (...) - Exklusiv 1 aus allen Predikaten muss wahr sein.</li>
 -- </ul>
 --
 -- @see API.CommenceEntitySearch
@@ -23234,6 +23497,10 @@ QSB.Search = QSB.Search or {};
 -- Findet <u>alle</u> Entities.
 --
 -- Die Suche kann optional auf einen Spieler beschränkt werden.
+--
+-- <h5>Multiplayer</h5>
+-- Im Multiplayer kann diese Funktion nur in synchron
+-- ausgeführtem Code benutzt werden, da es sonst zu Desyncs komm.
 --
 -- @param[type=number] _PlayerID (Optional) ID des Besitzers
 -- @return[type=table] Liste mit Ergebnissen
@@ -23257,6 +23524,10 @@ end
 
 ---
 -- Findet alle Entities in einem Gebiet.
+--
+-- <h5>Multiplayer</h5>
+-- Im Multiplayer kann diese Funktion nur in synchron
+-- ausgeführtem Code benutzt werden, da es sonst zu Desyncs komm.
 --
 -- @param[type=number] _Area     Größe des Suchgebiet
 -- @param              _Position Mittelpunkt (EntityID, Skriptname oder Table)
@@ -23293,6 +23564,10 @@ end
 ---
 -- Findet alle Entities in einem Territorium.
 --
+-- <h5>Multiplayer</h5>
+-- Im Multiplayer kann diese Funktion nur in synchron
+-- ausgeführtem Code benutzt werden, da es sonst zu Desyncs komm.
+--
 -- @param[type=number] _Territory Territorium für die Suche
 -- @param[type=number] _PlayerID  (Optional) ID des Besitzers
 -- @param[type=number] _Type      (Optional) Typ des Entity
@@ -23327,6 +23602,10 @@ end
 -- Einfluss auf die Dauer der Suche. Während Abfragen auf den Besitzer oder
 -- den Typ schnell gehen, dauern Gebietssuchen lange! Es ist daher klug, zuerst
 -- Kriterien auszuschließen, die schnell bestimmt werden!
+--
+-- <h5>Multiplayer</h5>
+-- Im Multiplayer kann diese Funktion nur in synchron
+-- ausgeführtem Code benutzt werden, da es sonst zu Desyncs komm.
 --
 -- @param[type=table] ... Liste mit Suchprädikaten
 -- @return[type=table] Liste mit Ergebnissen
@@ -27738,12 +28017,19 @@ function ModuleObjectInteraction.Global:OnObjectInteraction(_ScriptName, _Knight
     end
     if IO[_ScriptName] then
         IO[_ScriptName].IsUsed = true;
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[
+                local ScriptName = "%s"
+                if IO[ScriptName] then
+                    IO[ScriptName].IsUsed = true
+                end
+            ]],
+            _ScriptName
+        ));
         if IO[_ScriptName].Action then
             IO[_ScriptName]:Action(_PlayerID, _KnightID);
         end
     end
-    -- Avoid reference bug
-    Logic.ExecuteInLuaLocalState("ModuleObjectInteraction.Local:OverrideReferenceTables()");
 end
 
 function ModuleObjectInteraction.Global:CreateObject(_Description)
@@ -27754,7 +28040,7 @@ function ModuleObjectInteraction.Global:CreateObject(_Description)
     self:DestroyObject(_Description.Name);
 
     local TypeName = Logic.GetEntityTypeName(Logic.GetEntityType(ID));
-    if not TypeName:find("^I_X_") then
+    if TypeName and not TypeName:find("^I_X_") then
         self:CreateSlaveObject(_Description);
     end
 
@@ -27762,9 +28048,12 @@ function ModuleObjectInteraction.Global:CreateObject(_Description)
     _Description.IsUsed = false;
     _Description.Player = _Description.Player or {1, 2, 3, 4, 5, 6, 7, 8};
     IO[_Description.Name] = _Description;
+    Logic.ExecuteInLuaLocalState(string.format(
+        [[IO["%s"] = %s]],
+        _Description.Name,
+        table.tostring(IO[_Description.Name])
+    ));
     self:SetupObject(_Description);
-    -- Avoid reference bug
-    Logic.ExecuteInLuaLocalState("ModuleObjectInteraction.Local:OverrideReferenceTables()");
     return _Description;
 end
 
@@ -27774,18 +28063,24 @@ function ModuleObjectInteraction.Global:DestroyObject(_ScriptName)
     end
     if IO[_ScriptName].Slave then
         IO_SlaveToMaster[IO[_ScriptName].Slave] = nil;
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[IO_SlaveToMaster["%s"] = nil]],
+            IO[_ScriptName].Slave
+        ));
         IO_SlaveState[IO[_ScriptName].Slave] = nil;
         DestroyEntity(IO[_ScriptName].Slave);
     end
     self:SetObjectState(_ScriptName, 2);
     API.SendScriptEvent(QSB.ScriptEvents.ObjectDelete, _ScriptName);
     Logic.ExecuteInLuaLocalState(string.format(
-        [[API.SendScriptEvent(QSB.ScriptEvents.ObjectDelete, "%s")]],
+        [[
+            API.SendScriptEvent(QSB.ScriptEvents.ObjectDelete, "%s")
+            IO["%s"] = nil
+        ]],
+        _ScriptName,
         _ScriptName
     ));
     IO[_ScriptName] = nil;
-    -- Avoid reference bug
-    Logic.ExecuteInLuaLocalState("ModuleObjectInteraction.Local:OverrideReferenceTables()");
 end
 
 function ModuleObjectInteraction.Global:CreateSlaveObject(_Object)
@@ -27807,6 +28102,11 @@ function ModuleObjectInteraction.Global:CreateSlaveObject(_Object)
         Logic.SetModel(SlaveID, Models.Effects_E_Mosquitos);
         Logic.SetEntityName(SlaveID, Name);
         IO_SlaveToMaster[Name] = _Object.Name;
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[IO_SlaveToMaster["%s"] = "%s"]],
+            Name,
+            _Object.Name
+        ));
         _Object.Slave = Name;
     end
     IO_SlaveState[Name] = 1;
@@ -27819,7 +28119,7 @@ function ModuleObjectInteraction.Global:SetupObject(_Object)
     Logic.InteractiveObjectClearRewards(ID);
     Logic.InteractiveObjectSetInteractionDistance(ID, _Object.Distance);
     Logic.InteractiveObjectSetTimeToOpen(ID, _Object.Waittime);
-    
+
     local RewardResourceCart = _Object.RewardResourceCartType or Entities.U_ResourceMerchant;
     Logic.InteractiveObjectSetRewardResourceCartType(ID, RewardResourceCart);
     local RewardGoldCart = _Object.RewardGoldCartType or Entities.U_GoldCart;
@@ -27828,7 +28128,7 @@ function ModuleObjectInteraction.Global:SetupObject(_Object)
     Logic.InteractiveObjectSetCostResourceCartType(ID, CostResourceCart);
     local CostGoldCart = _Object.CostGoldCartType or Entities.U_GoldCart;
     Logic.InteractiveObjectSetCostGoldCartType(ID, CostGoldCart);
-    
+
     if _Object.Reward then
         Logic.InteractiveObjectAddRewards(ID, _Object.Reward[1], _Object.Reward[2]);
     end
@@ -27870,8 +28170,21 @@ function ModuleObjectInteraction.Global:SetObjectState(_ScriptName, _State, ...)
 end
 
 function ModuleObjectInteraction.Global:CreateDefaultObjectNames()
-    IO_UserDefindedNames["D_X_ChestClosed"]             = {de = "Schatztruhe", en = "Treasure Chest", fr = "Coffre au trésor"};
-    IO_UserDefindedNames["D_X_ChestOpenEmpty"]          = {de = "Leere Truhe", en = "Empty Chest", fr = "Coffre vide"};
+    IO_UserDefindedNames["D_X_ChestClosed"]    = {
+        de = "Schatztruhe",
+        en = "Treasure Chest",
+        fr = "Coffre au trésor"
+    };
+    IO_UserDefindedNames["D_X_ChestOpenEmpty"] = {
+        de = "Leere Truhe",
+        en = "Empty Chest",
+        fr = "Coffre vide"
+    };
+
+    Logic.ExecuteInLuaLocalState(string.format(
+        [[IO_UserDefindedNames = %s]],
+        table.tostring(IO_UserDefindedNames)
+    ));
 end
 
 function ModuleObjectInteraction.Global:OverrideObjectInteraction()
@@ -27967,6 +28280,10 @@ function ModuleObjectInteraction.Global:StartObjectDestructionController()
             info("slave " ..SlaveName.. " of master " ..MasterName.. " has been deleted!");
             info("try to create new slave...");
             IO_SlaveToMaster[SlaveName] = nil;
+            Logic.ExecuteInLuaLocalState(string.format(
+                [[IO_SlaveToMaster["%s"] = nil]],
+                SlaveName
+            ));
             local SlaveID = ModuleObjectInteraction.Global:CreateSlaveObject(Object);
             if not IsExisting(SlaveID) then
                 error("failed to create slave!");
@@ -27989,13 +28306,17 @@ function ModuleObjectInteraction.Global:StartObjectConditionController()
                 if IO[k].Condition then
                     local IsFulfulled = v:Condition();
                     IO[k].IsFullfilled = IsFulfulled;
-                    -- Avoid reference bug
-                    Logic.ExecuteInLuaLocalState(string.format(
-                        [[IO["%s"].Condition = %s]],
-                        k,
-                        tostring(IsFulfulled)
-                    ))
                 end
+                Logic.ExecuteInLuaLocalState(string.format(
+                    [[
+                        local ScriptName = "%s"
+                        if IO[ScriptName] then
+                            IO[ScriptName].IsFullfilled = %s
+                        end
+                    ]],
+                    k,
+                    tostring(IO[k].IsFullfilled)
+                ))
             end
         end
     end);
@@ -28009,7 +28330,10 @@ function ModuleObjectInteraction.Local:OnGameStart()
     QSB.ScriptEvents.ObjectReset = API.RegisterScriptEvent("Event_ObjectReset");
     QSB.ScriptEvents.ObjectDelete = API.RegisterScriptEvent("Event_ObjectDelete");
 
-    self:OverrideReferenceTables();
+    IO = {};
+    IO_UserDefindedNames = {};
+    IO_SlaveToMaster = {};
+
     self:OverrideGameFunctions();
 end
 
@@ -28045,9 +28369,9 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
                 return;
             end
             if type(IO[ScriptName].Costs) == "table" and #IO[ScriptName].Costs ~= 0 then
-                local CathedralID = Logic.GetCathedral(PlayerID);
-                local CastleID    = Logic.GetHeadquarters(PlayerID);
-                if CathedralID == nil or CathedralID == 0 or CastleID == nil or CastleID == 0 then
+                local StoreHouseID = Logic.GetStoreHouse(PlayerID);
+                local CastleID     = Logic.GetHeadquarters(PlayerID);
+                if StoreHouseID == nil or StoreHouseID == 0 or CastleID == nil or CastleID == 0 then
                     API.Note("DEBUG: Player needs special buildings when using activation costs!");
                     return;
                 end
@@ -28070,7 +28394,7 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
         if g_Interaction.ActiveObjects == nil then
             return;
         end
-        
+
         local PlayerID = GUI.GetPlayerID();
         for i = 1, #g_Interaction.ActiveObjects do
             local ObjectID = g_Interaction.ActiveObjects[i];
@@ -28268,7 +28592,7 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
                         ObjectName = "Debug: ObjectName missing for " .. ObjectTypeName;
                     end
                 end
-                table.insert(ObjectList, API.ConvertPlaceholders(ObjectName));
+                table.insert(ObjectList, API.Localize(API.ConvertPlaceholders(ObjectName)));
             end
             for i = 1, 4 do
                 local String = ObjectList[i];
@@ -28298,12 +28622,6 @@ function ModuleObjectInteraction.Local:IsAvailableForGuiPlayer(_ScriptName)
         return false;
     end
     return true;
-end
-
-function ModuleObjectInteraction.Local:OverrideReferenceTables()
-    IO = Logic.CreateReferenceToTableInGlobaLuaState("IO");
-    IO_UserDefindedNames = Logic.CreateReferenceToTableInGlobaLuaState("IO_UserDefindedNames");
-    IO_SlaveToMaster = Logic.CreateReferenceToTableInGlobaLuaState("IO_SlaveToMaster");
 end
 
 -- -------------------------------------------------------------------------- --
@@ -28567,7 +28885,7 @@ ResetObject = API.ResetObject;
 -- einen Helden benutzen muss. Wird der Parameter weggelassen, muss immer ein
 -- Held das Objekt aktivieren.
 --
--- @param[type=string] _EntityName Skriptname des Objektes
+-- @param[type=string] _ScriptName Skriptname des Objektes
 -- @param[type=number] _State      State des Objektes
 -- @param[type=number] _PlayerID   (Optional) Spieler-ID
 -- @within Anwenderfunktionen
@@ -28581,9 +28899,17 @@ function API.InteractiveObjectActivate(_ScriptName, _State, _PlayerID)
         local SlaveName = (IO[_ScriptName].Slave or _ScriptName);
         if IO[_ScriptName].Slave then
             IO_SlaveState[SlaveName] = 1;
+            Logic.ExecuteInLuaLocalState(string.format(
+                [[IO_SlaveState["%s"] = 1]],
+                SlaveName
+            ));
         end
         ModuleObjectInteraction.Global:SetObjectState(SlaveName, _State, _PlayerID);
         IO[_ScriptName].IsActive = true;
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[IO["%s"].IsActive = true]],
+            _ScriptName
+        ));
     else
         ModuleObjectInteraction.Global:SetObjectState(_ScriptName, _State, _PlayerID);
     end
@@ -28596,7 +28922,7 @@ InteractiveObjectActivate = API.InteractiveObjectActivate;
 --
 -- Optional kann das Objekt nur für einen bestimmten Spieler deaktiviert werden.
 --
--- @param[type=string] _EntityName Scriptname des Objektes
+-- @param[type=string] _ScriptName Scriptname des Objektes
 -- @param[type=number] _PlayerID   (Optional) Spieler-ID
 -- @within Anwenderfunktionen
 --
@@ -28608,9 +28934,17 @@ function API.InteractiveObjectDeactivate(_ScriptName, _PlayerID)
         local SlaveName = (IO[_ScriptName].Slave or _ScriptName);
         if IO[_ScriptName].Slave then
             IO_SlaveState[SlaveName] = 0;
+            Logic.ExecuteInLuaLocalState(string.format(
+                [[IO_SlaveState["%s"] = 0]],
+                SlaveName
+            ));
         end
         ModuleObjectInteraction.Global:SetObjectState(SlaveName, 2, _PlayerID);
         IO[_ScriptName].IsActive = false;
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[IO["%s"].IsActive = false]],
+            _ScriptName
+        ));
     else
         ModuleObjectInteraction.Global:SetObjectState(_ScriptName, 2, _PlayerID);
     end
@@ -28635,7 +28969,12 @@ function API.SetObjectCustomName(_Key, _Text)
     if GUI then
         return;
     end
-    IO_UserDefindedNames[_Key] = API.Localize(_Text);
+    IO_UserDefindedNames[_Key] = _Text;
+    Logic.ExecuteInLuaLocalState(string.format(
+        [[IO_UserDefindedNames["%s"] = %s]],
+        _Key,
+        table.tostring(IO_UserDefindedNames)
+    ));
 end
 API.InteractiveObjectSetName = API.SetObjectCustomName;
 AddCustomIOName = API.SetObjectCustomName;
@@ -29863,7 +30202,7 @@ function ModuleSelection.Local:OverwriteMilitaryCommands()
             local eType = Logic.GetEntityType(LeaderID);
             GUI.SendCommandStationaryDefend(LeaderID);
             if eType == Entities.U_Trebuchet then
-                API.SendScriptCommand(
+                API.BroadcastScriptCommand(
                     QSB.ScriptCommands.SelectionSetTaskList,
                     LeaderID,
                     TaskLists.TL_NPC_IDLE
@@ -29902,7 +30241,7 @@ function ModuleSelection.Local:OverwriteMilitaryErect()
         for i=1, #SelectedEntities, 1 do
             local EntityType = Logic.GetEntityType(SelectedEntities[i]);
             if EntityType == Entities.U_SiegeEngineCart then
-                API.SendScriptCommand(
+                API.BroadcastScriptCommand(
                     QSB.ScriptCommands.ErectTrebuchet,
                     SelectedEntities[i]
                 );
@@ -29948,7 +30287,7 @@ function ModuleSelection.Local:OverwriteMilitaryDisamble()
         for i=1, #SelectedEntities, 1 do
             local EntityType = Logic.GetEntityType(SelectedEntities[i]);
             if EntityType == Entities.U_Trebuchet then
-                API.SendScriptCommand(
+                API.BroadcastScriptCommand(
                     QSB.ScriptCommands.DisambleTrebuchet,
                     SelectedEntities[i]
                 );
@@ -30102,7 +30441,7 @@ function ModuleSelection.Local:OverwriteMilitaryDismount()
             if ModuleSelection.Local.MilitaryRelease then
                 Sound.FXPlay2DSound( "ui\\menu_click");
                 local Soldiers = {Logic.GetSoldiersAttachedToLeader(Selected)};
-                API.SendScriptCommand(QSB.ScriptCommands.SelectionDestroyEntity, Soldiers[#Soldiers]);
+                API.BroadcastScriptCommand(QSB.ScriptCommands.SelectionDestroyEntity, Soldiers[#Soldiers]);
                 return;
             end
         end
@@ -30113,7 +30452,7 @@ function ModuleSelection.Local:OverwriteMilitaryDismount()
         or Type == Entities.U_MilitarySiegeTower then
             if ModuleSelection.Local.SiegeEngineRelease and Guardian == 0 then
                 Sound.FXPlay2DSound( "ui\\menu_click");
-                API.SendScriptCommand(QSB.ScriptCommands.SelectionDestroyEntity, Selected);
+                API.BroadcastScriptCommand(QSB.ScriptCommands.SelectionDestroyEntity, Selected);
             else
                 GUI_Military.DismountClicked_Orig_ModuleSelection();
             end
@@ -30182,7 +30521,7 @@ function ModuleSelection.Local:OverwriteThiefDeliver()
         if ThiefID == nil or Logic.GetEntityType(ThiefID) ~= Entities.U_Thief then
             return;
         end
-        API.SendScriptCommand(QSB.ScriptCommands.SelectionDestroyEntity, ThiefID);
+        API.BroadcastScriptCommand(QSB.ScriptCommands.SelectionDestroyEntity, ThiefID);
     end
 
     GUI_Thief.ThiefDeliverMouseOver_Orig_ModuleSelection = GUI_Thief.ThiefDeliverMouseOver;
@@ -30402,8 +30741,6 @@ You may use and modify this file unter the terms of the MIT licence.
 
 ---
 -- Die Optionen für selektierte Einheiten kann individualisiert werden.
---
--- <b>Hinweis</b>: Diese Funktionalität ist im Multiplayer nicht verfügbar.
 --
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
@@ -31313,8 +31650,6 @@ You may use and modify this file unter the terms of the MIT licence.
 ---
 -- Dieses Modul erlaubt die maximale Beschleunigung des Spiels zu steuern.
 --
--- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden!
---
 -- @within Modulbeschreibung
 -- @set sort=true
 --
@@ -31355,6 +31690,8 @@ ModuleMilitaryLimit = {
     };
     Local = {
         SelectionBackup = {},
+        RecruitLocked = {},
+        RefillLocked = {},
     },
     -- This is a shared structure but the values are asynchronous!
     Shared = {
@@ -31501,7 +31838,7 @@ function ModuleMilitaryLimit.Global:RefillBattalion(_PlayerID, _BarrackID, _Lead
     ));
     self:SubFromPlayerGoods(_PlayerID, _BarrackID, _Costs);
 
-    API.SendScriptEvent(QSB.ScriptEvents.RefilledBattalion, ID, _BarrackID, _Costs);
+    API.SendScriptEvent(QSB.ScriptEvents.RefilledBattalion, ID, _BarrackID, LeaderSoldiers, LeaderSoldiers+1, _Costs);
     Logic.ExecuteInLuaLocalState(string.format(
         [[API.SendScriptEvent(QSB.ScriptEvents.RefilledBattalion, %d, %d, %d, %d, %s)]],
         ID,
@@ -31547,6 +31884,23 @@ function ModuleMilitaryLimit.Local:OnGameStart()
     self:OverrideUI();
 end
 
+function ModuleMilitaryLimit.Local:OnEvent(_ID, _Name, ...)
+    local PlayerID = GUI.GetPlayerID();
+    if _ID == QSB.ScriptEvents.ProducedBattalion then
+        if PlayerID == Logic.EntityGetPlayer(arg[1]) then
+            self.RecruitLocked[PlayerID] = false;
+        end
+    elseif _ID == QSB.ScriptEvents.ProducedThief then
+        if PlayerID == Logic.EntityGetPlayer(arg[1]) then
+            self.RecruitLocked[PlayerID] = false;
+        end
+    elseif _ID == QSB.ScriptEvents.RefilledBattalion then
+        if PlayerID == Logic.EntityGetPlayer(arg[1]) then
+            self.RefillLocked[PlayerID] = false;
+        end
+    end
+end
+
 function ModuleMilitaryLimit.Local:OverrideUI()
     function GUI_CityOverview.LimitUpdate()
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
@@ -31589,11 +31943,12 @@ function ModuleMilitaryLimit.Local:OverrideUI()
             CanNotBuyString = XGUIEng.GetStringTableText("Feedback_TextLines/TextLine_SoldierLimitReached");
         end
         if CanBuyBoolean == true then
+            ModuleMilitaryLimit.Local.RecruitLocked[PlayerID] = true;
             Sound.FXPlay2DSound("ui\\menu_click");
             if EntityType ~= Entities.U_Thief then
                 StartKnightVoiceForPermanentSpecialAbility(Entities.U_KnightChivalry);
             end
-            API.SendScriptCommand(
+            API.BroadcastScriptCommand(
                 QSB.ScriptCommands.MilitaryLimitProduceUnits,
                 PlayerID,
                 BarrackID,
@@ -31603,6 +31958,52 @@ function ModuleMilitaryLimit.Local:OverrideUI()
         else
             Message(CanNotBuyString);
         end
+    end
+
+    function GUI_BuildingButtons.BuyBattalionUpdate()
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local PlayerID = GUI.GetPlayerID();
+        local BarrackID = GUI.GetSelectedEntity();
+        local BarrackEntityType = Logic.GetEntityType(BarrackID);
+        if BarrackEntityType == Entities.B_BarracksArchers then
+            SetIcon(CurrentWidgetID, g_TexturePositions.Entities[Entities.U_MilitaryBow]);
+        elseif Logic.IsEntityInCategory(BarrackID, EntityCategories.Headquarters) == 1 then
+            SetIcon(CurrentWidgetID, g_TexturePositions.Entities[Entities.U_Thief]);
+        else
+            SetIcon(CurrentWidgetID, g_TexturePositions.Entities[Entities.U_MilitarySword]);
+        end
+
+        local Visible = true;
+        if  BarrackEntityType ~= Entities.B_Barracks
+        and BarrackEntityType ~= Entities.B_BarracksArchers
+        and Logic.IsEntityInCategory(BarrackID, EntityCategories.Headquarters) == 0 then
+            Visible = false;
+        end
+        if Logic.IsConstructionComplete(BarrackID) == 0 then
+            Visible = false;
+        end
+
+        local Available = true;
+        if Logic.IsEntityInCategory(BarrackID, EntityCategories.Headquarters) == 1 then
+            local PlayerID = GUI.GetPlayerID();
+            local TechnologyState = Logic.TechnologyGetState(PlayerID, Technologies.R_Thieves);
+            if EnableRights == true then
+                if TechnologyState == TechnologyStates.Locked then
+                    Visible = false;
+                end
+                if TechnologyState ~= TechnologyStates.Researched then
+                    Available = false;
+                end
+            end
+        end
+        if Available then
+            if ModuleMilitaryLimit.Local.RecruitLocked[PlayerID] then
+                Available = false;
+            end
+        end
+
+        XGUIEng.ShowWidget(CurrentWidgetID, (Visible and 1) or 0);
+        XGUIEng.DisableButton(CurrentWidgetID, (Available and 0) or 1);
     end
 
     function GUI_Military.RefillClicked()
@@ -31632,16 +32033,43 @@ function ModuleMilitaryLimit.Local:OverrideUI()
                     -- local Selection = {GUI.GetSelectedEntities()};
                     local Selection = table.copy(g_MultiSelection.EntityList);
                     ModuleMilitaryLimit.Local.SelectionBackup = Selection;
+                    ModuleMilitaryLimit.Local.RefillLocked[PlayerID] = true;
                     GUI.ClearSelection();
 
-                    API.SendScriptCommand(
+                    API.BroadcastScriptCommand(
                         QSB.ScriptCommands.MilitaryLimitRefillBattalion,
                         PlayerID,
                         BarracksID,
                         LeaderID,
-                        table.concat(Costs, ",")
+                        Costs
                     );
                 end
+            end
+        end
+    end
+
+    function GUI_Military.RefillUpdate()
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local PlayerID = GUI.GetPlayerID();
+        local LeaderID = GUI.GetSelectedEntity();
+        local SelectedEntities = {GUI.GetSelectedEntities()};
+        if LeaderID == nil
+        or Logic.IsEntityInCategory(LeaderID, EntityCategories.Leader) == 0 
+        or #SelectedEntities > 1 then
+            XGUIEng.ShowWidget(CurrentWidgetID, 0);
+            return;
+        end
+        local RefillerID = Logic.GetRefillerID(LeaderID);
+        local MaxSoldiers = Logic.LeaderGetMaxNumberOfSoldiers(LeaderID);
+        local CurrentSoldiers = Logic.GetSoldiersAttachedToLeader(LeaderID);
+        if RefillerID == 0
+        or CurrentSoldiers == MaxSoldiers then
+            XGUIEng.DisableButton(CurrentWidgetID, 1);
+        else
+            if ModuleMilitaryLimit.Local.RefillLocked[PlayerID] then
+                XGUIEng.DisableButton(CurrentWidgetID, 1);
+            else
+                XGUIEng.DisableButton(CurrentWidgetID, 0);
             end
         end
     end
@@ -31692,7 +32120,7 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 -- @field ProducedThief     Ein Dieb wird rekrutiert (Parameter: EntityID, CastleID, CostsTable)
 -- @field ProducedBattalion Ein Battalion wird rekrutiert (Parameter: EntityID, BarrackID, CostsTable)
--- @field RefilledBattalion Ein Battalion wird aufgefüllt (Parameter: EntityID, BarrackID, CostsTable)
+-- @field RefilledBattalion Ein Battalion wird aufgefüllt (Parameter: EntityID, BarrackID, SoldiersBefore, SoldiersAfter, CostsTable)
 --
 -- @within Event
 --
@@ -32365,7 +32793,7 @@ function ModuleWeatherManipulation.Local:IsEventActive()
     return self.ActiveEvent ~= nil;
 end
 
---------------------------------------------------------------------------------
+-- -------------------------------------------------------------------------- --
 
 WeatherEvent = {
     GFX = "ne_winter_sequence.xml",
@@ -32457,12 +32885,9 @@ You may use and modify this file unter the terms of the MIT licence.
 ---
 -- Dieses Modul ermöglicht das Ändern des Wetters.
 --
--- <b>Hinweis</b>: Diese Funktionen können nicht in Multiplayer Maps benutzt
--- werden, wenn sie mit der History Edition spielbar sein sollen.
---
 -- Es können nun relativ einfach Wetterevents und Wetteranimationen kombiniert
 -- gestartet werden.
--- 
+--
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
 -- <li><a href="Swift_1_JobsCore.api.html">(1) Jobs Core</a></li>
@@ -33032,7 +33457,7 @@ You may use and modify this file unter the terms of the MIT licence.
 (See https://en.wikipedia.org/wiki/MIT_License)
 ]]
 
----
+--
 -- Dieses Modul fügt neue Behavior für den Editor hinzu.
 --
 -- <b>Vorausgesetzte Module:</b>
@@ -34594,7 +35019,8 @@ Swift:RegisterBehavior(B_Reward_MoveToPosition);
 --
 -- Wenn nach dem Sieg weiter gespielt wird, wird das Fest gelöscht.
 --
--- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden!
+-- <h5>Multiplayer</h5>
+-- Nicht für Multiplayer geeignet.
 --
 -- @within Reward
 --
@@ -35274,7 +35700,7 @@ function ModuleBriefingSystem.Global:BriefingExecutionController()
         if self.Briefing[i] and not self.Briefing[i].DisplayIngameCutscene then
             local PageID = self.Briefing[i].CurrentPage;
             local Page = self.Briefing[i][PageID];
-            if Page.Duration > 0 then
+            if Page and Page.Duration > 0 then
                 if (Page.Started + Page.Duration) < Logic.GetTime() then
                     self:NextPage(i);
                 end
@@ -35340,7 +35766,7 @@ end
 function ModuleBriefingSystem.Global:TransformAnimations(_PlayerID)
     if self.Briefing[_PlayerID].PageAnimations then
         for k, v in pairs(self.Briefing[_PlayerID].PageAnimations) do
-            local PageID = self:GetPageIDByAttribute(_PlayerID, "AnimName", k);
+            local PageID = self:GetPageIDByName(_PlayerID, k);
             if PageID ~= 0 then
                 self.Briefing[_PlayerID][PageID].Animations = {};
                 self.Briefing[_PlayerID][PageID].Animations.PurgeOld = v.PurgeOld == true;
@@ -35495,20 +35921,16 @@ end
 
 function ModuleBriefingSystem.Global:GetPageIDByName(_PlayerID, _Name)
     if type(_Name) == "string" then
-        return self:GetPageIDByAttribute(_PlayerID, "Name", _Name);
-    end
-    return _Name;
-end
-
-function ModuleBriefingSystem.Global:GetPageIDByAttribute(_PlayerID, _Key, _Value)
-    if self.Briefing[_PlayerID] ~= nil then
-        for i= 1, #self.Briefing[_PlayerID], 1 do
-            if type(self.Briefing[_PlayerID][i]) == "table" and self.Briefing[_PlayerID][i][_Key] == _Value then
-                return i;
+        if self.Briefing[_PlayerID] ~= nil then
+            for i= 1, #self.Briefing[_PlayerID], 1 do
+                if type(self.Briefing[_PlayerID][i]) == "table" and self.Briefing[_PlayerID][i].Name == _Name then
+                    return i;
+                end
             end
         end
+        return 0;
     end
-    return 0;
+    return _Name;
 end
 
 function ModuleBriefingSystem.Global:CanStartBriefing(_PlayerID)
@@ -35831,9 +36253,7 @@ function ModuleBriefingSystem.Local:OnOptionSelected(_PlayerID)
     local AnswerID = self.Briefing[_PlayerID].MCSelectionOptionsMap[Selected];
 
     API.SendScriptEvent(QSB.ScriptEvents.BriefingOptionSelected, _PlayerID, AnswerID);
-    Swift:DispatchScriptCommand(
-        QSB.ScriptCommands.SendScriptEvent,
-        0,
+    API.BroadcastScriptEventToGlobal(
         QSB.ScriptEvents.BriefingOptionSelected,
         _PlayerID,
         AnswerID
@@ -36014,20 +36434,16 @@ end
 
 function ModuleBriefingSystem.Local:GetPageIDByName(_PlayerID, _Name)
     if type(_Name) == "string" then
-        return self:GetPageIDByAttribute(_PlayerID, "Name", _Name);
-    end
-    return _Name;
-end
-
-function ModuleBriefingSystem.Global:GetPageIDByAttribute(_PlayerID, _Key, _Value)
-    if self.Briefing[_PlayerID] ~= nil then
-        for i= 1, #self.Briefing[_PlayerID], 1 do
-            if type(self.Briefing[_PlayerID][i]) == "table" and self.Briefing[_PlayerID][i][_Key] == _Value then
-                return i;
+        if self.Briefing[_PlayerID] ~= nil then
+            for i= 1, #self.Briefing[_PlayerID], 1 do
+                if type(self.Briefing[_PlayerID][i]) == "table" and self.Briefing[_PlayerID][i].Name == _Name then
+                    return i;
+                end
             end
         end
+        return 0;
     end
-    return 0;
+    return _Name;
 end
 
 function ModuleBriefingSystem.Local:OverrideThroneRoomFunctions()
@@ -36036,9 +36452,7 @@ function ModuleBriefingSystem.Local:OverrideThroneRoomFunctions()
         GameCallback_Camera_ThroneRoomLeftClick_Orig_ModuleBriefingSystem(_PlayerID);
         if _PlayerID == GUI.GetPlayerID() then
             -- Must trigger in global script for all players.
-            Swift:DispatchScriptCommand(
-                QSB.ScriptCommands.SendScriptEvent,
-                0,
+            API.BroadcastScriptEventToGlobal(
                 QSB.ScriptEvents.BriefingLeftClick,
                 _PlayerID
             );
@@ -36051,9 +36465,7 @@ function ModuleBriefingSystem.Local:OverrideThroneRoomFunctions()
         GameCallback_Camera_SkipButtonPressed_Orig_ModuleBriefingSystem(_PlayerID);
         if _PlayerID == GUI.GetPlayerID() then
             -- Must trigger in global script for all players.
-            Swift:DispatchScriptCommand(
-                QSB.ScriptCommands.SendScriptEvent,
-                0,
+            API.BroadcastScriptEventToGlobal(
                 QSB.ScriptEvents.BriefingSkipButtonPressed,
                 _PlayerID
             );
@@ -36439,7 +36851,6 @@ function API.AddBriefingPages(_Briefing)
             else
                 _Page.Name = Identifier;
             end
-            _Page.AnimName = Identifier;
 
             _Page.__Legit = true;
             _Page.GetSelected = function(self)
@@ -36589,14 +37000,17 @@ function API.AddBriefingPages(_Briefing)
         local NoSkipping = false;
 
         -- Set page parameters
-        Name = table.remove(arg, 1);
+        if (#arg == 3 and type(arg[1]) == "string")
+        or (#arg >= 4 and type(arg[4]) == "boolean") then
+            Name = table.remove(arg, 1);
+        end
         Title = table.remove(arg, 1);
         Text = table.remove(arg, 1);
         if #arg > 0 then
-            Position = table.remove(arg, 1);
+            DialogCam = table.remove(arg, 1) == true;
         end
         if #arg > 0 then
-            DialogCam = table.remove(arg, 1) == true;
+            Position = table.remove(arg, 1);
         end
         if #arg > 0 then
             Action = table.remove(arg, 1);
@@ -36842,15 +37256,15 @@ end
 -- lokalisierte Tables übergeben werden.</td>
 -- </tr>
 -- <tr>
--- <td>Position</td>
--- <td>string</td>
--- <td>(Optional) Skriptname des Entity zu das die Kamera springt.</td>
--- </tr>
--- <tr>
 -- <td>DialogCamera</td>
 -- <td>boolean</td>
 -- <td>(Optional) Die Kamera geht in Nahsicht und stellt Charaktere dar. Wird
 -- sie weggelassen, wird die Fernsicht verwendet.</td>
+-- </tr>
+-- <tr>
+-- <td>Position</td>
+-- <td>string</td>
+-- <td>(Optional) Skriptname des Entity zu das die Kamera springt.</td>
 -- </tr>
 -- <tr>
 -- <td>Action</td>
@@ -36876,13 +37290,15 @@ end
 -- -- man die Leerstellen mit nil auffüllen.
 --
 -- -- Fernsicht
--- ASP("Page1", "Title", "Some important text.", "HQ", false);
+-- ASP("Title", "Some important text.", false, "HQ");
+-- -- Page Name
+-- ASP("Page1", "Title", "Some important text.", false, "HQ");
 -- -- Nahsicht
--- ASP("Page1", "Title", "Some important text.", "Marcus", true);
+-- ASP("Title", "Some important text.", true, "Marcus");
 -- -- Aktion ausführen
--- ASP("Page1", "Title", "Some important text.", "Marcus", true, MyFunction);
+-- ASP("Title", "Some important text.", true, "Marcus", MyFunction);
 -- -- Überspringen erlauben/verbieten
--- ASP("Page1", "Title", "Some important text.", "HQ", nil, nil, true);
+-- ASP("Title", "Some important text.", true, "HQ", nil, true);
 --
 function ASP(...)
     assert(false);
@@ -37425,9 +37841,7 @@ function ModuleCutsceneSystem.Local:PropagateCutsceneEnded(_PlayerID)
     if not self.Cutscene[_PlayerID] then
         return;
     end
-    Swift:DispatchScriptCommand(
-        QSB.ScriptCommands.SendScriptEvent,
-        0,
+    API.BroadcastScriptEventToGlobal(
         QSB.ScriptEvents.CutsceneEnded,
         _PlayerID
     );
@@ -37437,9 +37851,7 @@ function ModuleCutsceneSystem.Local:FlightStarted(_Duration)
     local PlayerID = GUI.GetPlayerID();
     if self.Cutscene[PlayerID] then
         local PageID = self.Cutscene[PlayerID].CurrentPage;
-        Swift:DispatchScriptCommand(
-            QSB.ScriptCommands.SendScriptEvent,
-            0,
+        API.BroadcastScriptEventToGlobal(
             QSB.ScriptEvents.CutsceneFlightStarted,
             PlayerID,
             PageID,
@@ -37462,9 +37874,7 @@ function ModuleCutsceneSystem.Local:FlightFinished()
     local PlayerID = GUI.GetPlayerID();
     if self.Cutscene[PlayerID] then
         local PageID = self.Cutscene[PlayerID].CurrentPage;
-        Swift:DispatchScriptCommand(
-            QSB.ScriptCommands.SendScriptEvent,
-            0,
+        API.BroadcastScriptEventToGlobal(
             QSB.ScriptEvents.CutsceneFlightEnded,
             PlayerID,
             PageID
@@ -37671,9 +38081,7 @@ function ModuleCutsceneSystem.Local:OverrideThroneRoomFunctions()
     GameCallback_Camera_SkipButtonPressed = function(_PlayerID)
         GameCallback_Camera_SkipButtonPressed_Orig_ModuleCutsceneSystem(_PlayerID);
         if _PlayerID == GUI.GetPlayerID() then
-            Swift:DispatchScriptCommand(
-                QSB.ScriptCommands.SendScriptEvent,
-                0,
+            API.BroadcastScriptEventToGlobal(
                 QSB.ScriptEvents.CutsceneSkipButtonPressed,
                 GUI.GetPlayerID()
             );
@@ -38765,9 +39173,7 @@ function ModuleDialogSystem.Local:OnOptionSelected(_PlayerID)
 
     local Selected = XGUIEng.ListBoxGetSelectedIndex(Widget .. "/ListBox")+1;
     local AnswerID = self.Dialog[_PlayerID].MCSelectionOptionsMap[Selected];
-    Swift:DispatchScriptCommand(
-        QSB.ScriptCommands.SendScriptEvent,
-        0,
+    API.BroadcastScriptEventToGlobal(
         QSB.ScriptEvents.DialogOptionSelected,
         _PlayerID,
         AnswerID
@@ -38943,9 +39349,18 @@ function API.AddDialogPages(_Dialog)
 
     local AP = function(_Page)
         if type(_Page) == "table" then
+            local Identifier = "Page" ..(#_Dialog +1);
+            if _Page.Name then
+                Identifier = _Page.Name;
+            else
+                _Page.Name = Identifier;
+            end
+
             if _Page.Position and _Page.Target then
                 local Name = "Dialog #" ..(ModuleDialogSystem.Global.DialogCounter +1);
-                error("AF (" ..Name.. ", Page #" ..(#_Dialog+1).. "): Position and Target can not be used both at the same time!");
+                error("AP (" ..Name.. ", Page '" .._Page.Name.. "'): "..
+                      "Position and Target can not be used both at the "..
+                      "same time!");
                 return;
             end
 
@@ -38984,6 +39399,9 @@ function API.AddDialogPages(_Dialog)
     end
 
     local ASP = function(...)
+        if type(arg[1]) ~= "number" then
+            Name = table.remove(arg, 1);
+        end
         local Sender   = table.remove(arg, 1);
         local Position = table.remove(arg, 1);
         local Text     = table.remove(arg, 1);
@@ -38993,6 +39411,7 @@ function API.AddDialogPages(_Dialog)
             Action = table.remove(arg, 1);
         end
         return AP {
+            Name   = Name,
             Text   = Text,
             Sender = Sender,
             Target = Position,
@@ -39129,7 +39548,7 @@ end
 --     }
 -- }
 --
-function AP(_Data)
+function AP(_Page)
     assert(false);
 end
 
@@ -39141,6 +39560,7 @@ end
 -- <a href="#API.AddPages">API.AddDialogPages</a> erzeugt und an
 -- den Dialog gebunden.
 --
+-- @param[type=string]   _Name         (Optional) Name der Seite
 -- @param[type=number]   _Sender       Spieler (-1 für kein Portrait)
 -- @param[type=string]   _Position     Position der Kamera
 -- @param[type=string]   _Text         Text der Seite
@@ -39148,11 +39568,13 @@ end
 -- @param[type=function] _Action       (Optional) Callback-Funktion
 -- @return[type=table] Referenz auf die Seite
 -- @within Dialog
--- 
--- @usage -- Beispiel ohne Page Name
--- ASP(1, "hans", "Ich gehe in die weitel Welt hinein.", true);
 --
-function ASP(_Data)
+-- @usage -- Beispiel ohne Page Name
+-- ASP("Ich gehe in die weitel Welt hinein.", 1, "hans", true);
+-- -- Beispiel mit Page Name
+-- ASP("Page1", "Ich gehe in die weitel Welt hinein.", 1, "hans", true);
+--
+function ASP(...)
     assert(false);
 end
 
@@ -39604,7 +40026,7 @@ You may use and modify this file unter the terms of the MIT licence.
 -- Notation heißt DOT. Um daraus ein Diagramm zu generieren, musst du
 -- GraphViz installieren.
 --
--- <h4>Installation von GraphViz</h4>
+-- <h5>Installation von GraphViz</h5>
 -- Befolge folgende Schritte, um GraphViz zu installieren:
 -- <ol>
 -- <li>
@@ -39632,7 +40054,7 @@ You may use and modify this file unter the terms of the MIT licence.
 -- </li>
 -- </ol>
 --
--- <h4>Diagramm mit GraphViz erzeugen</h4>
+-- <h5>Diagramm mit GraphViz erzeugen</h5>
 -- <ol>
 -- <li>
 -- Lasse zu einen beliebigen Zeitpunkt die Quests umwandeln.<br/>Siehe dazu
@@ -40996,9 +41418,7 @@ end
 function ModuleQuestJournal.Local:DisplayQuestJournal(_QuestName, _PlayerID, _Info)
     if _Info and GUI.GetPlayerID() == _PlayerID then
         local Title = API.Localize(ModuleQuestJournal.Shared.Text.Title);
-        QSB.TextWindow:New(Title, API.ConvertPlaceholders(_Info))
-            :SetPause(false)
-            :Show();
+        API.SimpleTextWindow(Title, API.ConvertPlaceholders(_Info), _PlayerID);
     end
 end
 
@@ -41025,8 +41445,7 @@ function ModuleQuestJournal.Local:IsShowingJournalButton(_ID)
         return false;
     end
     local Quest = Quests[_ID];
-    if  type(Quest) == "table"
-    and Quest.QuestNotes then
+    if type(Quest) == "table" and Quest.QuestNotes then
         return true;
     end
     return false;
@@ -41082,9 +41501,6 @@ Swift:RegisterModule(ModuleQuestJournal);
 -- <b>Hinweis</b>: Der Button wird auch dann angezeigt, wenn es noch keine
 -- Zusatzinformationen für den Quest gibt.
 --
--- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden, wegen Konflikt
--- mit dem Chat Options.
---
 -- @param[type=string]  _Quest Name des Quest
 -- @param[type=boolean] _Flag  Zusatzinfos aktivieren
 -- @within Anwenderfunktionen
@@ -41117,9 +41533,6 @@ end
 --
 -- <b>Hinweis</b>: Formatierungsbefehle sind deaktiviert.
 --
--- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden, wegen Konflikt
--- mit dem Chat Options.
---
 -- @param[type=string] _Text  Text der Zusatzinfo
 -- @return[type=number] ID des neuen Eintrags
 -- @within Anwenderfunktionen
@@ -41140,9 +41553,6 @@ end
 -- Kopien eines Eintrags werden nicht berücksichtigt.
 --
 -- <b>Hinweis</b>: Formatierungsbefehle sind deaktiviert.
---
--- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden, wegen Konflikt
--- mit dem Chat Options.
 --
 -- @param[type=number] _ID   ID des Eintrag
 -- @param              _Text Neuer Text
@@ -41173,9 +41583,6 @@ end
 -- rote Färbung hervorgehoben. Eigene Farben in einer Nachricht beeinträchtigen
 -- die rote hervorhebung.
 --
--- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden, wegen Konflikt
--- mit dem Chat Options.
---
 -- @param[type=number]  _ID        ID des Eintrag
 -- @param[type=boolean] _Important Wichtig Markierung
 -- @within Anwenderfunktionen
@@ -41202,9 +41609,6 @@ end
 -- <b>Hinweis</b>: Ein Eintrag wird niemals wirklich gelöscht, sondern nur
 -- unsichtbar geschaltet.
 --
--- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden, wegen Konflikt
--- mit dem Chat Options.
---
 -- @param[type=number] _ID ID des Eintrag
 -- @within Anwenderfunktionen
 --
@@ -41226,9 +41630,6 @@ end
 
 ---
 -- Stellt einen gelöschten Eintrag in den Zusatzinformationen wieder her.
---
--- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden, wegen Konflikt
--- mit dem Chat Options.
 --
 -- @param[type=number] _ID ID des Eintrag
 -- @within Anwenderfunktionen
@@ -41252,9 +41653,6 @@ end
 ---
 -- Fügt einen Tagebucheintrag zu einem Quest hinzu.
 --
--- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden, wegen Konflikt
--- mit dem Chat Options.
---
 -- @param[type=number]  _ID    ID des Eintrag
 -- @param[type=boolean] _Quest Name des Quest
 -- @within Anwenderfunktionen
@@ -41271,9 +41669,6 @@ end
 
 ---
 -- Entfernt einen Tagebucheintrag von einem Quest.
---
--- <b>Hinweis:</b> Kann nicht im Multiplayer verwendet werden, wegen Konflikt
--- mit dem Chat Options.
 --
 -- @param[type=number]  _ID    ID des Eintrag
 -- @param[type=boolean] _Quest Name des Quest
@@ -41704,16 +42099,25 @@ if not MapEditor and not GUI then
         if ModuleKnightTitleRequirements then
             InitKnightTitleTables();
         end
-        if Mission_LocalOnQsbLoaded and not Framework.IsNetworkGame() then
-            Mission_LocalOnQsbLoaded();
-        end
-        if Mission_MP_LocalOnQsbLoaded and Framework.IsNetworkGame() then
-            Mission_MP_LocalOnQsbLoaded();
-        end
-        StartSimpleJobEx(function()
-            Swift:DispatchScriptCommand(QSB.ScriptCommands.GlobalQsbLoaded, GUI.GetPlayerID());
-            return true;
-        end);
+        
+        -- Call directly for singleplayer
+        if not Framework.IsNetworkGame() then
+            Swift:CreateRandomSeed();
+            if Mission_LocalOnQsbLoaded then
+                Mission_LocalOnQsbLoaded();
+            end
+
+        -- Send asynchron command to player in multiplayer
+        else
+            function Swift_Selfload_ReadyTrigger()
+                if table.getn(API.GetDelayedPlayers()) == 0 then
+                    Swift:CreateRandomSeed();
+                    Swift:DispatchScriptCommand(QSB.ScriptCommands.GlobalQsbLoaded, GUI.GetPlayerID());
+                    return true;
+                end
+            end
+            StartSimpleHiResJob("Swift_Selfload_ReadyTrigger")
+        end        
     ]]);
     API.Install();
     if ModuleKnightTitleRequirements then
