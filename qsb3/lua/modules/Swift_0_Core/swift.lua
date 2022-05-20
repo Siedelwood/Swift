@@ -636,7 +636,7 @@ function Swift:DispatchScriptCommand(_ID, ...)
                 _ID
             ));
         end
-        info(string.format(
+        debug(string.format(
             "Dispatching script command %s to global.",
             self.m_ScriptCommandRegister[_ID]
         ), true);
@@ -656,7 +656,7 @@ function Swift:ProcessScriptCommand(_PlayerID, _ID)
     if PlayerID ~= 0 and PlayerID ~= _PlayerID then
         return;
     end
-    info(string.format(
+    debug(string.format(
         "Processing script command %s in global.",
         self.m_ScriptCommandRegister[_ID][1]
     ), true);
@@ -745,7 +745,7 @@ function Swift:CreateScriptEvent(_Name, _Function)
         end
     end
     local ID = #self.m_ScriptEventRegister+1;
-    info(string.format("Create script event %s", _Name), true);
+    debug(string.format("Create script event %s", _Name), true);
     self.m_ScriptEventRegister[ID] = {_Name, _Function};
     return ID;
 end
@@ -761,7 +761,7 @@ function Swift:DispatchScriptEvent(_ID, ...)
             Env = "Global";
         end
         if self.m_ModuleRegister[i][Env] and self.m_ModuleRegister[i][Env].OnEvent then
-            info(string.format(
+            debug(string.format(
                 "Dispatching %s script event %s to Module %s",
                 Env:lower(),
                 self.m_ScriptEventRegister[_ID][1],
