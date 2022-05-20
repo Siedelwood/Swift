@@ -185,10 +185,8 @@ function Swift:CreateRandomSeed()
 end
 
 function Swift:OverrideOnMPGameStart()
-    GameCallback_OnMPGameStart_Orig_Swift = GameCallback_OnMPGameStart;
     GameCallback_OnMPGameStart = function()
-        GameCallback_OnMPGameStart_Orig_Swift();
-        Logic.ExecuteInLuaLocalState("Swift:CreateRandomSeed()");
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_TURN, NIL, "VictoryConditionHandler", 1)
     end
 end
 
