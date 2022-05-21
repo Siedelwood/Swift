@@ -88,10 +88,17 @@ function Mission_MP_OnQsbLoaded()
     -- CreateQuests();
 
     TEST_COMMAND = API.RegisterScriptCommand("TestFunction", TestFunction);
+    SetupPlayerHeads();
     CreateTestIOs();
     CreateTestNPCs();
     CreateTestBriefingQuests();
     CreateTestDialogQuests();
+end
+
+function SetupPlayerHeads()
+    API.SetPlayerPortrait(1);
+    API.SetPlayerPortrait(2);
+    API.SetPlayerPortrait(6, "H_NPC_Monk_SE");
 end
 
 -- -------------------------------------------------------------------------- --
