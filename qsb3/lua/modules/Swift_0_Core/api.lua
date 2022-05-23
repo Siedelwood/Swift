@@ -2848,12 +2848,12 @@ function SCP.Core.LoadscreenHidden()
 end
 
 function SCP.Core.GlobalQsbLoaded()
-    Logic.ExecuteInLuaLocalState([[
-        if Mission_MP_LocalOnQsbLoaded and Framework.IsNetworkGame() then
-            Mission_MP_LocalOnQsbLoaded();
-        end
-    ]]);
     if Mission_MP_OnQsbLoaded and not Swift.m_MP_FMA_Loaded and Framework.IsNetworkGame() then
+        Logic.ExecuteInLuaLocalState([[
+            if Mission_MP_LocalOnQsbLoaded then
+                Mission_MP_LocalOnQsbLoaded();
+            end
+        ]]);
         Swift.m_MP_FMA_Loaded = true;
         Mission_MP_OnQsbLoaded();
     end

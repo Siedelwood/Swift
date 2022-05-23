@@ -45,7 +45,7 @@ if not MapEditor and not GUI then
             function Swift_Selfload_ReadyTrigger()
                 if table.getn(API.GetDelayedPlayers()) == 0 then
                     Swift:CreateRandomSeed();
-                    Swift:DispatchScriptCommand(QSB.ScriptCommands.GlobalQsbLoaded, GUI.GetPlayerID());
+                    Swift:DispatchScriptCommand(QSB.ScriptCommands.GlobalQsbLoaded, 0);
                     return true;
                 end
             end

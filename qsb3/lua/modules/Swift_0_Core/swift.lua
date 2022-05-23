@@ -14,7 +14,7 @@ SCP = SCP or {
     Core = {}
 };
 
-QSB.Version = "Version 3.0.0 BETA (1.1.6)";
+QSB.Version = "Version 3.0.0 BETA (1.1.7)";
 QSB.Language = "de";
 QSB.HumanPlayerID = 1;
 QSB.ScriptCommandSequence = 2;
@@ -632,7 +632,7 @@ function Swift:DispatchScriptCommand(_ID, ...)
         else
             GUI.SendScriptCommand(string.format(
                 [[Swift:ProcessScriptCommand(%d, %d)]],
-                GUI.GetPlayerID(),
+                arg[1],
                 _ID
             ));
         end
@@ -879,7 +879,13 @@ function Swift:ChangeSystemLanguage(_Language)
 
     Swift:DispatchScriptEvent(QSB.ScriptEvents.LanguageSet, OldLanguage, NewLanguage);
     Logic.ExecuteInLuaLocalState(string.format(
-        [[Swift:DispatchScriptEvent(QSB.ScriptEvents.LanguageSet, "%s", "%s")]],
+        [[
+            local OldLanguage = "%s"
+            local NewLanguage = "%s"
+            Swift.m_Language = NewLanguage
+            QSB.Language = NewLanguage
+            Swift:DispatchScriptEvent(QSB.ScriptEvents.LanguageSet, OldLanguage, NewLanguage)
+        ]],
         OldLanguage,
         NewLanguage
     ));

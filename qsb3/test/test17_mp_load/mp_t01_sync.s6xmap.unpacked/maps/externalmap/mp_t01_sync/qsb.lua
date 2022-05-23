@@ -14,7 +14,7 @@ SCP = SCP or {
     Core = {}
 };
 
-QSB.Version = "Version 3.0.0 BETA (1.1.6)";
+QSB.Version = "Version 3.0.0 BETA (1.1.7)";
 QSB.Language = "de";
 QSB.HumanPlayerID = 1;
 QSB.ScriptCommandSequence = 2;
@@ -632,7 +632,7 @@ function Swift:DispatchScriptCommand(_ID, ...)
         else
             GUI.SendScriptCommand(string.format(
                 [[Swift:ProcessScriptCommand(%d, %d)]],
-                GUI.GetPlayerID(),
+                arg[1],
                 _ID
             ));
         end
@@ -879,7 +879,13 @@ function Swift:ChangeSystemLanguage(_Language)
 
     Swift:DispatchScriptEvent(QSB.ScriptEvents.LanguageSet, OldLanguage, NewLanguage);
     Logic.ExecuteInLuaLocalState(string.format(
-        [[Swift:DispatchScriptEvent(QSB.ScriptEvents.LanguageSet, "%s", "%s")]],
+        [[
+            local OldLanguage = "%s"
+            local NewLanguage = "%s"
+            Swift.m_Language = NewLanguage
+            QSB.Language = NewLanguage
+            Swift:DispatchScriptEvent(QSB.ScriptEvents.LanguageSet, OldLanguage, NewLanguage)
+        ]],
         OldLanguage,
         NewLanguage
     ));
@@ -3813,12 +3819,12 @@ function SCP.Core.LoadscreenHidden()
 end
 
 function SCP.Core.GlobalQsbLoaded()
-    Logic.ExecuteInLuaLocalState([[
-        if Mission_MP_LocalOnQsbLoaded and Framework.IsNetworkGame() then
-            Mission_MP_LocalOnQsbLoaded();
-        end
-    ]]);
     if Mission_MP_OnQsbLoaded and not Swift.m_MP_FMA_Loaded and Framework.IsNetworkGame() then
+        Logic.ExecuteInLuaLocalState([[
+            if Mission_MP_LocalOnQsbLoaded then
+                Mission_MP_LocalOnQsbLoaded();
+            end
+        ]]);
         Swift.m_MP_FMA_Loaded = true;
         Mission_MP_OnQsbLoaded();
     end
@@ -28074,10 +28080,10 @@ function ModuleObjectInteraction.Global:DestroyObject(_ScriptName)
     API.SendScriptEvent(QSB.ScriptEvents.ObjectDelete, _ScriptName);
     Logic.ExecuteInLuaLocalState(string.format(
         [[
-            API.SendScriptEvent(QSB.ScriptEvents.ObjectDelete, "%s")
-            IO["%s"] = nil
+            local ScriptName = "%s"
+            API.SendScriptEvent(QSB.ScriptEvents.ObjectDelete, ScriptName)
+            IO[ScriptName] = nil
         ]],
-        _ScriptName,
         _ScriptName
     ));
     IO[_ScriptName] = nil;
@@ -42112,7 +42118,7 @@ if not MapEditor and not GUI then
             function Swift_Selfload_ReadyTrigger()
                 if table.getn(API.GetDelayedPlayers()) == 0 then
                     Swift:CreateRandomSeed();
-                    Swift:DispatchScriptCommand(QSB.ScriptCommands.GlobalQsbLoaded, GUI.GetPlayerID());
+                    Swift:DispatchScriptCommand(QSB.ScriptCommands.GlobalQsbLoaded, 0);
                     return true;
                 end
             end
