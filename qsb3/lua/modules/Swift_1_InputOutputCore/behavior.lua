@@ -40,8 +40,8 @@ end
 B_Goal_Decide = {
     Name = "Goal_Decide",
     Description = {
-        en = "Opens a Yes/No Dialog. Decision = Quest Result",
-        de = "Oeffnet einen Ja/Nein-Dialog. Die Entscheidung bestimmt das Quest-Ergebnis (ja=true, nein=false).",
+        en = "Goal: Opens a Yes/No Dialog. Decision = Quest Result",
+        de = "Ziel: Öffnet einen Ja/Nein-Dialog. Die Entscheidung bestimmt das Quest-Ergebnis (ja=true, nein=false).",
     },
     Parameter = {
         { ParameterType.Default, en = "Text", de = "Text", },
@@ -65,7 +65,7 @@ function B_Goal_Decide:AddParameter( _Index, _Parameter )
 end
 
 function B_Goal_Decide:CustomFunction(_Quest)
-    if Framewok.IsNetworkGame() then
+    if Framework.IsNetworkGame() then
         return false;
     end
     if not API.IsCinematicEventActive or (API.IsCinematicEventActive and API.IsCinematicEventActive() == false) then
@@ -107,7 +107,7 @@ function B_Goal_Decide:GetCustomData(_Index)
 end
 
 function B_Goal_Decide:Debug(_Quest)
-    if Framewok.IsNetworkGame() then
+    if Framework.IsNetworkGame() then
         error(_Quest.Identifier.. ": " ..self.Name..": Can not be used in multiplayer!");
         return true;
     end
@@ -155,7 +155,7 @@ B_Goal_InputDialog  = {
     Name = "Goal_InputDialog",
     Description = {
         en = "Goal: Player must type in something. The passwords have to be seperated by ; and whitespaces will be ignored.",
-        de = "Ziel: Oeffnet einen Dialog, der Spieler muss Lösungswörter eingeben. Diese sind durch ; abzutrennen. Leerzeichen werden ignoriert.",
+        de = "Ziel: Öffnet einen Dialog, der Spieler muss Lösungswörter eingeben. Diese sind durch ; abzutrennen. Leerzeichen werden ignoriert.",
     },
     DefaultMessage = {
         de = "Versuche bis zum Fehlschlag: ",
@@ -183,7 +183,7 @@ function B_Goal_InputDialog:AddParameter(_Index, _Parameter)
 end
 
 function B_Goal_InputDialog:CustomFunction(_Quest)
-    if Framewok.IsNetworkGame() then
+    if Framework.IsNetworkGame() then
         return false;
     end
 
@@ -249,7 +249,7 @@ function B_Goal_InputDialog:GetIcon()
 end
 
 function B_Goal_InputDialog:Debug(_Quest)
-    if Framewok.IsNetworkGame() then
+    if Framework.IsNetworkGame() then
         error(_Quest.Identifier.. ": " ..self.Name..": Can not be used in multiplayer!");
         return true;
     end

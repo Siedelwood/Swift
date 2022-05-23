@@ -115,7 +115,7 @@ B_Trigger_Briefing = {
     Name = "Trigger_Briefing",
     Description = {
         en = "Trigger: Checks if an briefing has concluded and starts the quest if so.",
-        de = "Ausloeser: Prüft, ob ein Briefing beendet ist und startet dann den Quest.",
+        de = "Auslöser: Prüft, ob ein Briefing beendet ist und startet dann den Quest.",
     },
     Parameter = {
         { ParameterType.Default, en = "Briefing name", de = "Name des Briefing" },

@@ -115,7 +115,7 @@ B_Trigger_Cutscene = {
     Name = "Trigger_Cutscene",
     Description = {
         en = "Trigger: Checks if an Cutscene has concluded and starts the quest if so.",
-        de = "Ausloeser: Prüft, ob eine Cutscene beendet ist und startet dann den Quest.",
+        de = "Auslöser: Prüft, ob eine Cutscene beendet ist und startet dann den Quest.",
     },
     Parameter = {
         { ParameterType.Default, en = "Cutscene name", de = "Name der Cutscene" },

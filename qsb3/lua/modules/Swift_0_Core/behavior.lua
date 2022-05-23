@@ -2481,8 +2481,8 @@ end
 B_Goal_InstantFailure = {
     Name = "Goal_InstantFailure",
     Description = {
-        en = "Instant failure, the goal returns false.",
-        de = "Direkter Misserfolg, das Goal sendet false.",
+        en = "Goal: Instant failure, the goal returns false.",
+        de = "Ziel: Direkter Misserfolg, das Goal sendet false.",
     },
 }
 
@@ -2506,8 +2506,8 @@ end
 B_Goal_InstantSuccess = {
     Name = "Goal_InstantSuccess",
     Description = {
-        en = "Instant success, the goal returns true.",
-        de = "Direkter Erfolg, das Goal sendet true.",
+        en = "Goal: Instant success, the goal returns true.",
+        de = "Ziel: Direkter Erfolg, das Goal sendet true.",
     },
 }
 
@@ -2534,8 +2534,8 @@ end
 B_Goal_NoChange = {
     Name = "Goal_NoChange",
     Description = {
-        en = "The quest state doesn't change. Use reward functions of other quests to change the state of this quest.",
-        de = "Der Questzustand wird nicht verändert. Ein Reward einer anderen Quest sollte den Zustand dieser Quest verändern.",
+        en = "Goal: The quest state doesn't change. Use reward functions of other quests to change the state of this quest.",
+        de = "Ziel: Der Questzustand wird nicht verändert. Ein Reward einer anderen Quest sollte den Zustand dieser Quest verändern.",
     },
 }
 
@@ -4023,7 +4023,7 @@ B_Reprisal_CustomVariables = {
     Name = "Reprisal_CustomVariables",
     Description = {
         en = "Reprisal: Executes a mathematical operation with this variable. The other operand can be a number or another custom variable.",
-        de = "Vergeltung: Fuehrt eine mathematische Operation mit der Variable aus. Der andere Operand kann eine Zahl oder eine Custom-Varible sein.",
+        de = "Vergeltung: Führt eine mathematische Operation mit der Variable aus. Der andere Operand kann eine Zahl oder eine Custom-Varible sein.",
     },
     Parameter = {
         { ParameterType.Default, en = "Name of variable", de = "Variablenname" },
@@ -4394,8 +4394,8 @@ end
 
 B_Reward_InteractiveObjectDeactivate = Swift:CopyTable(B_Reprisal_InteractiveObjectDeactivate);
 B_Reward_InteractiveObjectDeactivate.Name             = "Reward_InteractiveObjectDeactivate";
-B_Reward_InteractiveObjectDeactivate.Description.de   = "Reward: Deactivates an interactive object";
-B_Reward_InteractiveObjectDeactivate.Description.en   = "Lohn: Deaktiviert ein interaktives Objekt";
+B_Reward_InteractiveObjectDeactivate.Description.en   = "Reward: Deactivates an interactive object";
+B_Reward_InteractiveObjectDeactivate.Description.de   = "Lohn: Deaktiviert ein interaktives Objekt";
 B_Reward_InteractiveObjectDeactivate.GetReprisalTable = nil;
 
 B_Reward_InteractiveObjectDeactivate.GetRewardTable = function(self, _Quest)
@@ -4427,8 +4427,8 @@ end
 
 B_Reward_InteractiveObjectActivate = Swift:CopyTable(B_Reprisal_InteractiveObjectActivate);
 B_Reward_InteractiveObjectActivate.Name             = "Reward_InteractiveObjectActivate";
-B_Reward_InteractiveObjectActivate.Description.de   = "Reward: Activates an interactive object";
-B_Reward_InteractiveObjectActivate.Description.en   = "Lohn: Aktiviert ein interaktives Objekt";
+B_Reward_InteractiveObjectActivate.Description.en   = "Reward: Activates an interactive object";
+B_Reward_InteractiveObjectActivate.Description.de   = "Lohn: Aktiviert ein interaktives Objekt";
 B_Reward_InteractiveObjectActivate.GetReprisalTable = nil;
 
 B_Reward_InteractiveObjectActivate.GetRewardTable = function(self, _Quest)
@@ -4659,8 +4659,8 @@ end
 
 B_Reward_Diplomacy = Swift:CopyTable(B_Reprisal_Diplomacy);
 B_Reward_Diplomacy.Name             = "Reward_Diplomacy";
-B_Reward_Diplomacy.Description.de   = "Reward: Sets Diplomacy state of two Players to a stated value.";
-B_Reward_Diplomacy.Description.en   = "Lohn: Setzt den Diplomatiestatus zweier Spieler auf den angegebenen Wert.";
+B_Reward_Diplomacy.Description.en   = "Reward: Sets Diplomacy state of two Players to a stated value.";
+B_Reward_Diplomacy.Description.de   = "Lohn: Setzt den Diplomatiestatus zweier Spieler auf den angegebenen Wert.";
 B_Reward_Diplomacy.GetReprisalTable = nil;
 
 B_Reward_Diplomacy.GetRewardTable = function(self, _Quest)
@@ -4685,7 +4685,7 @@ B_Reward_SlightlyDiplomacyIncrease = {
     Name = "Reward_SlightlyDiplomacyIncrease",
     Description = {
         en = "Reward: Diplomacy increases slightly to another player",
-        de = "Lohn: Verbesserug des Diplomatiestatus zu einem anderen Spieler",
+        de = "Lohn: Verbesserung des Diplomatiestatus zu einem anderen Spieler",
     },
 }
 
@@ -6906,7 +6906,7 @@ end
 B_Reward_CustomVariables = Swift:CopyTable(B_Reprisal_CustomVariables);
 B_Reward_CustomVariables.Name = "Reward_CustomVariables";
 B_Reward_CustomVariables.Description.en = "Reward: Executes a mathematical operation with this variable. The other operand can be a number or another custom variable.";
-B_Reward_CustomVariables.Description.de = "Lohn: Fuehrt eine mathematische Operation mit der Variable aus. Der andere Operand kann eine Zahl oder eine Custom-Varible sein.";
+B_Reward_CustomVariables.Description.de = "Lohn: Führt eine mathematische Operation mit der Variable aus. Der andere Operand kann eine Zahl oder eine Custom-Varible sein.";
 B_Reward_CustomVariables.GetReprisalTable = nil;
 
 B_Reward_CustomVariables.GetRewardTable = function(self, _Quest)
@@ -7219,8 +7219,8 @@ end
 B_Reward_SetBuildingUpgradeLevel = {
 	Name = "Reward_SetBuildingUpgradeLevel",
 	Description = {
-		en = "Sets the upgrade level of the specified building.",
-		de = "Legt das Upgrade-Level eines Gebaeudes fest.",
+		en = "Reward: Sets the upgrade level of the specified building.",
+		de = "Lohn: Legt das Upgrade-Level eines Gebaeudes fest.",
 	},
 	Parameter = {
 		{ ParameterType.ScriptName, en = "Building", de = "Gebäude" },
@@ -8378,8 +8378,8 @@ end
 B_Trigger_NeverTriggered = {
     Name = "Trigger_NeverTriggered",
     Description = {
-        en = "Never triggers a Quest. The quest may be set active by Reward_QuestActivate or Reward_QuestRestartForceActive",
-        de = "Löst nie eine Quest aus. Die Quest kann von Reward_QuestActivate oder Reward_QuestRestartForceActive aktiviert werden.",
+        en = "Trigger: Never triggers a Quest. The quest may be set active by Reward_QuestActivate or Reward_QuestRestartForceActive",
+        de = "Auslöser: Löst nie eine Quest aus. Die Quest kann von Reward_QuestActivate oder Reward_QuestRestartForceActive aktiviert werden.",
     },
 }
 
@@ -8648,8 +8648,8 @@ end
 B_Trigger_MapScriptFunction = {
     Name = "Trigger_MapScriptFunction",
     Description = {
-        en = "Calls a function within the global map script. If the function returns true the quest will be started",
-        de = "Ruft eine Funktion im globalen Skript auf. Wenn sie true sendet, wird die Quest gestartet.",
+        en = "Trigger: Calls a function within the global map script. If the function returns true the quest will be started",
+        de = "Auslöser: Ruft eine Funktion im globalen Skript auf. Wenn sie true sendet, wird die Quest gestartet.",
     },
     Parameter = {
         { ParameterType.Default, en = "Function name", de = "Funktionsname" },
@@ -8705,7 +8705,7 @@ B_Trigger_OnEffectDestroyed = {
 	Name = "Trigger_OnEffectDestroyed",
 	Description = {
 		en = "Trigger: Starts a quest after an effect was destroyed",
-		de = "Ausloeser: Startet eine Quest, nachdem ein Effekt zerstoert wurde",
+		de = "Auslöser: Startet eine Quest, nachdem ein Effekt zerstoert wurde",
 	},
 	Parameter = {
 		{ ParameterType.Default, en = "Effect name", de = "Effektname" },

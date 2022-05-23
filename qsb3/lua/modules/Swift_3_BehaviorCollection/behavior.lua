@@ -36,7 +36,7 @@ B_Goal_MoveToPosition = {
     Name = "Goal_MoveToPosition",
     Description = {
         en = "Goal: A entity have to moved as close as the distance to another entity. The target can be marked with a static marker.",
-        de = "Ziel: Eine Entity muss sich einer anderen bis auf eine bestimmte Distanz nähern. Die Lupe wird angezeigt, das Ziel kann markiert werden.",
+        de = "Ziel: Ein Entity muss sich einer anderen bis auf eine bestimmte Distanz nähern. Die Lupe wird angezeigt, das Ziel kann markiert werden.",
     },
     Parameter = {
         { ParameterType.ScriptName, en = "Entity",   de = "Entity" },
@@ -154,7 +154,7 @@ B_Goal_AmmunitionAmount = {
     Name = "Goal_AmmunitionAmount",
     Description = {
         en = "Goal: Reach a smaller or bigger value than the given amount of ammunition in a war machine.",
-        de = "Ziel: Ueber- oder unterschreite die angegebene Anzahl Munition in einem Kriegsgerät.",
+        de = "Ziel: Über- oder unterschreite die angegebene Anzahl Munition in einem Kriegsgerät.",
     },
     Parameter = {
         { ParameterType.ScriptName, en = "Script name", de = "Skriptname" },
@@ -221,8 +221,8 @@ end
 B_Goal_CityReputation = {
     Name = "Goal_CityReputation",
     Description = {
-        en = "Goal: Der Ruf der Stadt des Empfängers muss mindestens so hoch sein, wie angegeben.",
-        de = "Ziel: The reputation of the quest receivers city must at least reach the desired hight.",
+        en = "Goal: The reputation of the quest receivers city must at least reach the desired hight.",
+        de = "Ziel: Der Ruf der Stadt des Empfängers muss mindestens so hoch sein, wie angegeben.",
     },
     Parameter = {
         { ParameterType.Number, en = "City reputation", de = "Ruf der Stadt" },
@@ -1159,7 +1159,7 @@ B_Reprisal_SetVisible = {
     Name = "Reprisal_SetVisible",
     Description = {
         en = "Reprisal: Changes the visibility of an entity. If the entity is a spawner the spawned entities will be affected.",
-        de = "Strafe: Setzt die Sichtbarkeit einer Entity. Handelt es sich um einen Spawner werden auch die gespawnten Entities beeinflusst.",
+        de = "Vergeltung: Setzt die Sichtbarkeit einer Entity. Handelt es sich um einen Spawner werden auch die gespawnten Entities beeinflusst.",
     },
     Parameter = {
         { ParameterType.ScriptName, en = "Entity",     de = "Entity", },
@@ -1337,7 +1337,7 @@ B_Reprisal_SetModel = {
     Name = "Reprisal_SetModel",
     Description = {
         en = "Reprisal: Changes the model of the entity. Be careful, some models crash the game.",
-        de = "Vergeltung: Aendert das Model einer Entity. Achtung: Einige Modelle fuehren zum Absturz.",
+        de = "Vergeltung: Ändert das Model einer Entity. Achtung: Einige Modelle führen zum Absturz.",
     },
     Parameter = {
         { ParameterType.ScriptName, en = "Entity",     de = "Entity", },
@@ -1438,7 +1438,7 @@ end
 B_Reward_ChangePlayer = Swift:CopyTable(B_Reprisal_ChangePlayer);
 B_Reward_ChangePlayer.Name = "Reward_ChangePlayer";
 B_Reward_ChangePlayer.Description.en = "Reward: Changes the owner of the entity or a battalion.";
-B_Reward_ChangePlayer.Description.de = "Lohn: Aendert den Besitzer einer Entity oder eines Battalions.";
+B_Reward_ChangePlayer.Description.de = "Lohn: Ändert den Besitzer einer Entity oder eines Battalions.";
 B_Reward_ChangePlayer.GetReprisalTable = nil;
 
 B_Reward_ChangePlayer.GetRewardTable = function(self, _Quest)
@@ -1731,7 +1731,7 @@ end
 B_Reward_SetModel = Swift:CopyTable(B_Reprisal_SetModel);
 B_Reward_SetModel.Name = "Reward_SetModel";
 B_Reward_SetModel.Description.en = "Reward: Changes the model of the entity. Be careful, some models crash the game.";
-B_Reward_SetModel.Description.de = "Lohn: Aendert das Model einer Entity. Achtung: Einige Modelle fuehren zum Absturz.";
+B_Reward_SetModel.Description.de = "Lohn: Ändert das Model einer Entity. Achtung: Einige Modelle führen zum Absturz.";
 B_Reward_SetModel.GetReprisalTable = nil;
 
 B_Reward_SetModel.GetRewardTable = function(self, _Quest)
@@ -1840,7 +1840,7 @@ B_Trigger_OnAtLeastXOfYQuestsFailed = {
     Name = "Trigger_OnAtLeastXOfYQuestsFailed",
     Description = {
         en = "Trigger: if at least X of Y given quests has been finished successfully.",
-        de = "Ausloeser: wenn X von Y angegebener Quests fehlgeschlagen sind.",
+        de = "Auslöser: wenn X von Y angegebener Quests fehlgeschlagen sind.",
     },
     Parameter = {
         { ParameterType.Custom, en = "Least Amount", de = "Mindest Anzahl" },
@@ -1938,7 +1938,7 @@ B_Trigger_AmmunitionDepleted = {
     Name = "Trigger_AmmunitionDepleted",
     Description = {
         en = "Trigger: if the ammunition of the entity is depleted.",
-        de = "Ausloeser: wenn die Munition der Entity aufgebraucht ist.",
+        de = "Auslöser: wenn die Munition der Entity aufgebraucht ist.",
     },
     Parameter = {
         { ParameterType.Scriptname, en = "Script name", de = "Skriptname" },
@@ -1996,7 +1996,7 @@ B_Trigger_OnExactOneQuestIsWon = {
     Name = "Trigger_OnExactOneQuestIsWon",
     Description = {
         en = "Trigger: if one of two given quests has been finished successfully, but NOT both.",
-        de = "Ausloeser: wenn eine von zwei angegebenen Quests (aber NICHT beide) erfolgreich abgeschlossen wurde.",
+        de = "Auslöser: wenn eine von zwei angegebenen Quests (aber NICHT beide) erfolgreich abgeschlossen wurde.",
     },
     Parameter = {
         { ParameterType.QuestName, en = "Quest Name 1", de = "Questname 1" },
@@ -2065,7 +2065,7 @@ B_Trigger_OnExactOneQuestIsLost = {
     Name = "Trigger_OnExactOneQuestIsLost",
     Description = {
         en = "Trigger: If one of two given quests has been lost, but NOT both.",
-        de = "Ausloeser: Wenn einer von zwei angegebenen Quests (aber NICHT beide) fehlschlägt.",
+        de = "Auslöser: Wenn einer von zwei angegebenen Quests (aber NICHT beide) fehlschlägt.",
     },
     Parameter = {
         { ParameterType.QuestName, en = "Quest Name 1", de = "Questname 1" },
