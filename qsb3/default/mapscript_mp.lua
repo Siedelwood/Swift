@@ -82,12 +82,18 @@ function Mission_LoadFiles()
 end
 
 -- -------------------------------------------------------------------------- --
--- Diese Funktion wird nach Spielstart aufgerufen.
+-- In dieser Funktion können eigene Funktionrn aufgerufen werden. Sie werden
+-- atomatisch dann gestartet, wenn alle Spieler ins Spiel geladen haben.
 
 function Mission_MP_OnQsbLoaded()
     -- Testmodus aktivieren
     -- (Auskommentieren, wenn nicht benötigt)
     API.ActivateDebugMode(true, false, true, true);
+
+    -- Standard Quests starten
+    -- (Auskommentieren, wenn nicht benötigt)
+    -- SetupNPCQuests()
+
     -- Assistenten Quests starten
     -- (Auskommentieren, wenn nicht benötigt)
     CreateQuests();

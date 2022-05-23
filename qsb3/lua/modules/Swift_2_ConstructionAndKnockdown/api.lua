@@ -313,10 +313,10 @@ end
 -- @return[type=function] Bedingungsfunktion
 -- @within Anwenderfunktionen
 --
-function API.GetForbidKnockdownTypeAtTerritory(_PlayerID, _Territory, _Type)
+function API.GetForbidKnockdownTypeAtTerritory(_PlayerID, _Territory, _EntityType)
     return function(_EntityID)
         if Logic.EntityGetPlayer(_EntityID) == _PlayerID then
-            if Logic.GetEntityType(_EntityID) == _Type then
+            if Logic.GetEntityType(_EntityID) == _EntityType then
                 return GetTerritoryUnderEntity(_EntityID) ~= _Territory;
             end
         end
@@ -335,10 +335,10 @@ end
 -- @return[type=function] Bedingungsfunktion
 -- @within Anwenderfunktionen
 --
-function API.GetPermitKnockdownTypeAtTerritory(_PlayerID, _Territory, _Type)
+function API.GetPermitKnockdownTypeAtTerritory(_PlayerID, _Territory, _EntityType)
     return function(_EntityID)
         if Logic.EntityGetPlayer(_EntityID) == _PlayerID then
-            if Logic.GetEntityType(_EntityID) == _Type then
+            if Logic.GetEntityType(_EntityID) == _EntityType then
                 return GetTerritoryUnderEntity(_EntityID) == _Territory;
             end
         end
@@ -402,10 +402,10 @@ end
 -- @return[type=function] Bedingungsfunktion
 -- @within Anwenderfunktionen
 --
-function API.GetForbidKnockdownTypeInArea(_PlayerID, _AreaCenter, _AreaSize, _Type)
+function API.GetForbidKnockdownTypeInArea(_PlayerID, _AreaCenter, _AreaSize, _EntityType)
     return function(_EntityID)
         if Logic.EntityGetPlayer(_EntityID) == _PlayerID then
-            if Logic.GetEntityType(_EntityID) == _Type then
+            if Logic.GetEntityType(_EntityID) == _EntityType then
                 return API.GetDistance(_EntityID, _AreaCenter) > _AreaSize;
             end
         end
@@ -425,10 +425,10 @@ end
 -- @return[type=function] Bedingungsfunktion
 -- @within Anwenderfunktionen
 --
-function API.GetPermitKnockdownTypeInArea(_PlayerID, _AreaCenter, _AreaSize, _Type)
+function API.GetPermitKnockdownTypeInArea(_PlayerID, _AreaCenter, _AreaSize, _EntityType)
     return function(_EntityID)
         if Logic.EntityGetPlayer(_EntityID) == _PlayerID then
-            if Logic.GetEntityType(_EntityID) == _Type then
+            if Logic.GetEntityType(_EntityID) == _EntityType then
                 return API.GetDistance(_EntityID, _AreaCenter) <= _AreaSize;
             end
         end

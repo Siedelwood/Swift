@@ -42,7 +42,7 @@ function Mission_MP_LocalOnQsbLoaded()
     Input.EnableDebugMode(1);
     Input.EnableDebugMode(2);
     Input.EnableDebugMode(3);
-    LogTable();
+    -- LogTable();
 end
 
 function LogTable()

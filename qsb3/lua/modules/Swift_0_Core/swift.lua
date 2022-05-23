@@ -14,7 +14,7 @@ SCP = SCP or {
     Core = {}
 };
 
-QSB.Version = "Version 3.0.0 BETA (1.1.5)";
+QSB.Version = "Version 3.0.0 BETA (1.1.7)";
 QSB.Language = "de";
 QSB.HumanPlayerID = 1;
 QSB.ScriptCommandSequence = 2;
@@ -185,10 +185,8 @@ function Swift:CreateRandomSeed()
 end
 
 function Swift:OverrideOnMPGameStart()
-    GameCallback_OnMPGameStart_Orig_Swift = GameCallback_OnMPGameStart;
     GameCallback_OnMPGameStart = function()
-        GameCallback_OnMPGameStart_Orig_Swift();
-        Logic.ExecuteInLuaLocalState("Swift:CreateRandomSeed()");
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_TURN, NIL, "VictoryConditionHandler", 1)
     end
 end
 
@@ -634,11 +632,11 @@ function Swift:DispatchScriptCommand(_ID, ...)
         else
             GUI.SendScriptCommand(string.format(
                 [[Swift:ProcessScriptCommand(%d, %d)]],
-                GUI.GetPlayerID(),
+                arg[1],
                 _ID
             ));
         end
-        info(string.format(
+        debug(string.format(
             "Dispatching script command %s to global.",
             self.m_ScriptCommandRegister[_ID]
         ), true);
@@ -658,7 +656,7 @@ function Swift:ProcessScriptCommand(_PlayerID, _ID)
     if PlayerID ~= 0 and PlayerID ~= _PlayerID then
         return;
     end
-    info(string.format(
+    debug(string.format(
         "Processing script command %s in global.",
         self.m_ScriptCommandRegister[_ID][1]
     ), true);
@@ -747,7 +745,7 @@ function Swift:CreateScriptEvent(_Name, _Function)
         end
     end
     local ID = #self.m_ScriptEventRegister+1;
-    info(string.format("Create script event %s", _Name), true);
+    debug(string.format("Create script event %s", _Name), true);
     self.m_ScriptEventRegister[ID] = {_Name, _Function};
     return ID;
 end
@@ -763,7 +761,7 @@ function Swift:DispatchScriptEvent(_ID, ...)
             Env = "Global";
         end
         if self.m_ModuleRegister[i][Env] and self.m_ModuleRegister[i][Env].OnEvent then
-            info(string.format(
+            debug(string.format(
                 "Dispatching %s script event %s to Module %s",
                 Env:lower(),
                 self.m_ScriptEventRegister[_ID][1],
@@ -881,7 +879,13 @@ function Swift:ChangeSystemLanguage(_Language)
 
     Swift:DispatchScriptEvent(QSB.ScriptEvents.LanguageSet, OldLanguage, NewLanguage);
     Logic.ExecuteInLuaLocalState(string.format(
-        [[Swift:DispatchScriptEvent(QSB.ScriptEvents.LanguageSet, "%s", "%s")]],
+        [[
+            local OldLanguage = "%s"
+            local NewLanguage = "%s"
+            Swift.m_Language = NewLanguage
+            QSB.Language = NewLanguage
+            Swift:DispatchScriptEvent(QSB.ScriptEvents.LanguageSet, OldLanguage, NewLanguage)
+        ]],
         OldLanguage,
         NewLanguage
     ));

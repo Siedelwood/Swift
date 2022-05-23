@@ -585,6 +585,7 @@ function API.OverrideString()
 
     ---
     -- Gibt true zurück, wenn der Teil-String enthalten ist.
+    -- @param[type=string] self String
     -- @param[type=string] s Pattern
     -- @return[type=boolean] Pattern vorhanden
     -- @within string
@@ -595,6 +596,7 @@ function API.OverrideString()
 
     ---
     -- Gibt die Position des Teil-String im String zurück.
+    -- @param[type=string] self String
     -- @param[type=string] s Pattern
     -- @return[type=number] Startindex
     -- @return[type=number] Endindex
@@ -606,6 +608,7 @@ function API.OverrideString()
 
     ---
     -- Zerlegt einen String anhand des Seperators.
+    -- @param[type=string] self String
     -- @param[type=string] _sep Seperator
     -- @return[type=table] Liste der Teilstrings
     -- @within string
@@ -623,6 +626,7 @@ function API.OverrideString()
 
     ---
     -- Für mehrere Werte zu einem String zusammen.
+    -- @param[type=string] self String
     -- @param ... Werteliste
     -- @return[type=string] Stringkombinat
     -- @within string
@@ -642,6 +646,7 @@ function API.OverrideString()
 
     ---
     -- Ersetzt das erste Vorkommens des Musters im String.
+    -- @param[type=string] self String
     -- @param[type=string] p Muster
     -- @param[type=string] r Ersatz
     -- @return[type=string] Neuer String
@@ -653,6 +658,7 @@ function API.OverrideString()
 
     ---
     -- Ersetzt alle Vorkommen des Musters im String.
+    -- @param[type=string] self String
     -- @param[type=string] p Muster
     -- @param[type=string] r Ersatz
     -- @return[type=string] Neuer String
@@ -820,6 +826,25 @@ function API.GetActivePlayers()
             if Logic.PlayerGetIsHumanFlag(PlayerID) and Logic.PlayerGetGameState(PlayerID) ~= 0 then
                 table.insert(PlayerList, PlayerID);
             end
+        end
+    end
+    return PlayerList;
+end
+
+---
+-- Gibt alle Spieler zurück, auf die gerade gewartet wird.
+--
+-- <h5>Multiplayer</h5>
+-- Nur für Multiplayer ausgelegt! Nicht im Singleplayer nutzen!
+--
+-- @return[type=table] Liste der aktiven Spieler
+-- @within Base
+--
+function API.GetDelayedPlayers()
+    local PlayerList = {};
+    for k, v in pairs(API.GetActivePlayers()) do
+        if Network.IsWaitingForNetworkSlotID(API.GetPlayerSlotID(v)) then
+            table.insert(PlayerList, v);
         end
     end
     return PlayerList;
@@ -1063,7 +1088,7 @@ end
 ---
 -- Beginnt einen überwachten Zeitraum.
 --
--- @param[type=string] Name des Benchmark
+-- @param[type=string] _Identifier Name des Benchmark
 -- @within Debug
 -- @see API.StopBenchmark
 --
@@ -1088,7 +1113,7 @@ end
 -- Dabei gilt, dass man möglichst kleine Werte erziehlen will. Die Zeiten werden
 -- in milisekunden (ms) gemessen.
 --
--- @param[type=string] Name des Benchmark
+-- @param[type=string] _Identifier Name des Benchmark
 -- @within Debug
 --
 -- @usage
@@ -1111,6 +1136,47 @@ function API.StopBenchmark(_Identifier)
         return;
     end
     Swift:StopBenchmark(_Identifier);
+end
+
+---
+-- Setzt, ab wann Log-Nachrichten angezeigt bzw. ins Log geschrieben werden.
+--
+-- Mögliche Level:
+-- <table border=1>
+-- <tr>
+-- <td><b>Name</b></td>
+-- <td><b>Beschreibung</b></td>
+-- </tr>
+-- <tr>
+-- <td>LOG_LEVEL_ALL</td>
+-- <td>Alle Stufen ausgeben (Debug, Info, Warning, Error)</td>
+-- </tr>
+-- <tr>
+-- <td>LOG_LEVEL_INFO</td>
+-- <td>Erst ab Stufe Info ausgeben (Info, Warning, Error)</td>
+-- </tr>
+-- <tr>
+-- <td>LOG_LEVEL_WARNING</td>
+-- <td>Erst ab Stufe Warning ausgeben (Warning, Error)</td>
+-- </tr>
+-- <tr>
+-- <td>LOG_LEVEL_ERROR</td>
+-- <td>Erst ab Stufe Error ausgeben (Error)</td>
+-- </tr>
+-- <tr>
+-- <td>LOG_LEVEL_OFF</td>
+-- <td>Keine Meldungen ausgeben</td>
+-- </tr>
+-- </table>
+--
+-- @param[type=number] _ScreenLogLevel Level für Bildschirmausgabe
+-- @param[type=number] _FileLogLevel   Level für Dateiausgaabe
+-- @within Debug
+--
+-- @usage API.SetLogLevel(LOG_LEVEL_ERROR, LOG_LEVEL_WARNING);
+--
+function API.SetLogLevel(_ScreenLogLevel, _FileLogLevel)
+    Swift:SetLogLevel(_ScreenLogLevel, _FileLogLevel);
 end
 
 -- Command
@@ -2762,7 +2828,7 @@ end
 -- @within AI
 --
 function API.AllowFestival(_PlayerID)
-    Swift.m_AIProperties[_PlayerID].ForbidFestival = true;
+    Swift.m_AIProperties[_PlayerID].ForbidFestival = false;
 end
 
 ---
@@ -2772,7 +2838,7 @@ end
 -- @within AI
 --
 function API.ForbidFestival(_PlayerID)
-    Swift.m_AIProperties[_PlayerID].ForbidFestival = false;
+    Swift.m_AIProperties[_PlayerID].ForbidFestival = true;
 end
 
 -- Local callbacks
@@ -2782,12 +2848,12 @@ function SCP.Core.LoadscreenHidden()
 end
 
 function SCP.Core.GlobalQsbLoaded()
-    Logic.ExecuteInLuaLocalState([[
-        if Mission_MP_LocalOnQsbLoaded and Framework.IsNetworkGame() then
-            Mission_MP_LocalOnQsbLoaded();
-        end
-    ]]);
     if Mission_MP_OnQsbLoaded and not Swift.m_MP_FMA_Loaded and Framework.IsNetworkGame() then
+        Logic.ExecuteInLuaLocalState([[
+            if Mission_MP_LocalOnQsbLoaded then
+                Mission_MP_LocalOnQsbLoaded();
+            end
+        ]]);
         Swift.m_MP_FMA_Loaded = true;
         Mission_MP_OnQsbLoaded();
     end

@@ -116,7 +116,7 @@ B_Trigger_Dialog = {
     Name = "Trigger_Dialog",
     Description = {
         en = "Trigger: Checks if an dialog has concluded and starts the quest if so.",
-        de = "Ausloeser: Prüft, ob ein Dialog beendet ist und startet dann den Quest.",
+        de = "Auslöser: Prüft, ob ein Dialog beendet ist und startet dann den Quest.",
     },
     Parameter = {
         { ParameterType.Default, en = "Dialog name",   de = "Name des Dialog" },

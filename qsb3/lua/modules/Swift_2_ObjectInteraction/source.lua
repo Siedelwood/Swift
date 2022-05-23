@@ -123,10 +123,10 @@ function ModuleObjectInteraction.Global:DestroyObject(_ScriptName)
     API.SendScriptEvent(QSB.ScriptEvents.ObjectDelete, _ScriptName);
     Logic.ExecuteInLuaLocalState(string.format(
         [[
-            API.SendScriptEvent(QSB.ScriptEvents.ObjectDelete, "%s")
-            IO["%s"] = nil
+            local ScriptName = "%s"
+            API.SendScriptEvent(QSB.ScriptEvents.ObjectDelete, ScriptName)
+            IO[ScriptName] = nil
         ]],
-        _ScriptName,
         _ScriptName
     ));
     IO[_ScriptName] = nil;

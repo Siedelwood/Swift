@@ -88,10 +88,17 @@ function Mission_MP_OnQsbLoaded()
     -- CreateQuests();
 
     TEST_COMMAND = API.RegisterScriptCommand("TestFunction", TestFunction);
+    SetupPlayerHeads();
     CreateTestIOs();
     CreateTestNPCs();
     CreateTestBriefingQuests();
     CreateTestDialogQuests();
+end
+
+function SetupPlayerHeads()
+    API.SetPlayerPortrait(1);
+    API.SetPlayerPortrait(2);
+    API.SetPlayerPortrait(6, "H_NPC_Monk_SE");
 end
 
 -- -------------------------------------------------------------------------- --
@@ -122,7 +129,7 @@ function TestBriefing(_Name, _PlayerID)
     local HeroID = QSB.Npc.LastHeroEntityID;
 
     ASP("NPC", "Was für ein wunderschöner Tag, um stundenlang zu beten, auf"..
-        "das mein Bart noch länger werde?", "NPC_Briefing" .._PlayerID, true);
+        "das mein Bart noch länger werde?", true, "NPC_Briefing" .._PlayerID);
     AP {
         Name  = "ChoicePage1",
         Title = "",
@@ -133,13 +140,11 @@ function TestBriefing(_Name, _PlayerID)
         }
     }
 
-    local Page = ASP("Held", "Tu, was du nicht lassen kannst.", HeroID, true);
-    Page.Name = "Option1";
-    ASP("NPC", "Allah wird mir Kraft geben!", "NPC_Briefing" .._PlayerID, true);
+    ASP("Option1", "Held", "Tu, was du nicht lassen kannst.", true, HeroID);
+    ASP("NPC", "Allah wird mir Kraft geben!", true, "NPC_Briefing" .._PlayerID);
     AP();
-    local Page = ASP("Held", "Ich kenne ein gutes Haarwuchsmittel", HeroID, true);
-    Page.Name = "Option2";
-    ASP("NPC", "Wirklich? Danke!", "NPC_Briefing" .._PlayerID, true);
+    ASP("Option2", "Held", "Ich kenne ein gutes Haarwuchsmittel", true, HeroID);
+    ASP("NPC", "Wirklich? Danke!", true, "NPC_Briefing" .._PlayerID);
 
     API.StartBriefing(Briefing, _Name, _PlayerID);
 end
@@ -171,7 +176,7 @@ function TestDialog(_Name, _PlayerID)
     local AP, ASP, AAN = API.AddDialogPages(Dialog);
     local HeroID = QSB.Npc.LastHeroEntityID;
 
-    ASP(6, "NPC_Dialog" .._PlayerID, "Gott hat mich erleuchtet. Ich werde".. 
+    ASP(6, "NPC_Dialog" .._PlayerID, "Gott hat mich erleuchtet. Ich werde"..
         " nicht mehr sündigen und die Kerzen in Frieden lassen.", true);
     AP {
         Sender       = _PlayerID,
@@ -185,14 +190,12 @@ function TestDialog(_Name, _PlayerID)
         }
     }
 
-    local Page = ASP(_PlayerID, HeroID, "Ähm... ja. Schön für dich! Ich muss"..
-        " mal reiern gehen...", true);
-    Page.Name = "Option1";
+    ASP("Option1", _PlayerID, HeroID,
+        "Ähm... ja. Schön für dich! Ich muss mal reiern gehen...", true);
     ASP(6, "NPC_Dialog" .._PlayerID, "Ich hab ein Mittel gegen Übelkeit.", true);
     AP();
-    local Page = ASP(_PlayerID, HeroID, "Nicht doch! Ich hab noch welche in"..
-        " meinem Keller vorrätig. Die müssen weg, bevor sie ablaufen", true);
-    Page.Name = "Option2";
+    ASP("Option2", _PlayerID, HeroID, "Nicht doch! Ich hab noch welche in"..
+        " meinem Kellervorrätig. Die müssen weg, bevor sie ablaufen", true);
     ASP(6, "NPC_Dialog" .._PlayerID, "Der Herr stellt mich auf die Probe!"..
         " Doch ich bleibe stark!", true);
 

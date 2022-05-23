@@ -37,7 +37,7 @@ B_Reprisal_JournalEnable = {
     Name = "Reprisal_JournalEnable",
     Description = {
         en = "Reprisal: Displays the journal for a quest or hides it.",
-        de = "Strafe: Zeigt das Tagebuch für einen Quest an oder versteckt es.",
+        de = "Vergeltung: Zeigt das Tagebuch für einen Quest an oder versteckt es.",
     },
     Parameter = {
         { ParameterType.QuestName, en = "Quest name",     de = "Name Quest" },
@@ -210,7 +210,7 @@ B_Reprisal_JournalRemove = {
     Name = "Reprisal_JournalRemove",
     Description = {
         en = "Reprisal: Remove a journal entry from a quest.",
-        de = "Strafe: Entfernt einen Tagebucheintrag vom Quest.",
+        de = "Vergeltung: Entfernt einen Tagebucheintrag vom Quest.",
     },
     Parameter = {
         { ParameterType.QuestName, en = "Quest name", de = "Name Quest" },
@@ -301,7 +301,7 @@ B_Reprisal_JournaHighlight = {
     Name = "Reprisal_JournaHighlight",
     Description = {
         en = "Reprisal: Highlights or unhighlights a journal entry of a quest.",
-        de = "Strafe: Hebt einen Tagebucheintrag hevor oder hebt die Hervorhebung auf.",
+        de = "Vergeltung: Hebt einen Tagebucheintrag hevor oder hebt die Hervorhebung auf.",
     },
     Parameter = {
         { ParameterType.QuestName, en = "Quest name", de = "Name Quest" },

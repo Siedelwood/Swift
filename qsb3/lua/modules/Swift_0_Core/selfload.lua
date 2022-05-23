@@ -42,11 +42,14 @@ if not MapEditor and not GUI then
 
         -- Send asynchron command to player in multiplayer
         else
-            StartSimpleJobEx(function()
-                Swift:CreateRandomSeed();
-                Swift:DispatchScriptCommand(QSB.ScriptCommands.GlobalQsbLoaded, GUI.GetPlayerID());
-                return true;
-            end);
+            function Swift_Selfload_ReadyTrigger()
+                if table.getn(API.GetDelayedPlayers()) == 0 then
+                    Swift:CreateRandomSeed();
+                    Swift:DispatchScriptCommand(QSB.ScriptCommands.GlobalQsbLoaded, 0);
+                    return true;
+                end
+            end
+            StartSimpleHiResJob("Swift_Selfload_ReadyTrigger")
         end        
     ]]);
     API.Install();

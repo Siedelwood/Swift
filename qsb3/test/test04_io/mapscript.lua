@@ -198,7 +198,7 @@ function CreateTestObject2()
     API.SetupObject {
         Name     = "IO1",
         Distance = 1000,
-        Text     = "Bockwurst",
+        Text     = {de = "Bockwurst", en = "Sausages"},
         Texture  = {1, 4},
         Condition = function(_Data)
             return false;

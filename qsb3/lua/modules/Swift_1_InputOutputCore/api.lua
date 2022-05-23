@@ -245,18 +245,6 @@ function API.AddEntityTypePlaceholder(_Type, _Replacement)
 end
 
 ---
--- Das Dialog Modul ermöglicht es Dialogfenster anzuzeigen.
---
--- <b>Vorausgesetzte Module:</b>
--- <ul>
--- <li><a href="Swift_0_Core.api.html">(1) Core</a></li>
--- </ul>
---
--- @within Beschreibung
--- @set sort=true
---
-
----
 -- Öffnet einen Info-Dialog. Sollte bereits ein Dialog zu sehen sein, wird
 -- der Dialog der Dialogwarteschlange hinzugefügt.
 --

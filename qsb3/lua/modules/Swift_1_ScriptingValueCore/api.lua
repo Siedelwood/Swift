@@ -268,7 +268,7 @@ IsVisible = API.IsEntityVisible;
 -- @param[type=boolean] _Visible (Optional) Sichtbarkeit ändern
 -- @within Anwenderfunktionen
 --
-function API.SetEntityVisible(_Entity, _Visble)
+function API.SetEntityVisible(_Entity, _Visible)
     if GUI then
         return;
     end
@@ -277,7 +277,7 @@ function API.SetEntityVisible(_Entity, _Visble)
         error("API.SetEntityVisible: _Entity (" ..tostring(_Entity).. ") does not exist!");
         return;
     end
-    Logic.SetVisible(EntityID, _Visble == true);
+    Logic.SetVisible(EntityID, _Visible == true);
 end
 SetVisible = API.SetEntityVisible;
 

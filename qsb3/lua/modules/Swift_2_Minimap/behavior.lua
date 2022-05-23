@@ -35,7 +35,7 @@ B_Reprisal_CreateMapMarker = {
     Name = "Reprisal_CreateMapMarker",
     Description = {
         en = "Reprisal: Creates an marker on the minimap.",
-        de = "Strafe: Erzeugt eine Markierung auf der Minikarte.",
+        de = "Vergeltung: Erzeugt eine Markierung auf der Minikarte.",
     },
     Parameter = {
         { ParameterType.Default,    en = "Marker Name",  de = "Name Markierung" },
@@ -148,7 +148,7 @@ B_Reprisal_DestroyMapMarker = {
     Name = "Reprisal_DestroyMapMarker",
     Description = {
         en = "Reprisal: Removes an marker from the minimap.",
-        de = "Strafe: Entfernt eine Markierung von der Minikarte.",
+        de = "Vergeltung: Entfernt eine Markierung von der Minikarte.",
     },
     Parameter = {
         { ParameterType.Default,    en = "Marker Name",  de = "Name Markierung" },

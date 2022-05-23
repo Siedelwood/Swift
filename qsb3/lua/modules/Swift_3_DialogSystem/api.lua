@@ -200,7 +200,7 @@ function API.AddDialogPages(_Dialog)
     end
 
     local ASP = function(...)
-        if type(arg[2]) ~= "number" then
+        if type(arg[1]) ~= "number" then
             Name = table.remove(arg, 1);
         end
         local Sender   = table.remove(arg, 1);
@@ -349,7 +349,7 @@ end
 --     }
 -- }
 --
-function AP(_Data)
+function AP(_Page)
     assert(false);
 end
 
@@ -362,9 +362,9 @@ end
 -- den Dialog gebunden.
 --
 -- @param[type=string]   _Name         (Optional) Name der Seite
--- @param[type=string]   _Text         Text der Seite
 -- @param[type=number]   _Sender       Spieler (-1 für kein Portrait)
 -- @param[type=string]   _Position     Position der Kamera
+-- @param[type=string]   _Text         Text der Seite
 -- @param[type=boolean]  _DialogCamera Nahsicht an/aus
 -- @param[type=function] _Action       (Optional) Callback-Funktion
 -- @return[type=table] Referenz auf die Seite
@@ -375,7 +375,7 @@ end
 -- -- Beispiel mit Page Name
 -- ASP("Page1", "Ich gehe in die weitel Welt hinein.", 1, "hans", true);
 --
-function ASP(_Data)
+function ASP(...)
     assert(false);
 end
 
