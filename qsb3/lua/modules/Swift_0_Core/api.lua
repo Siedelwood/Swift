@@ -749,6 +749,10 @@ function API.IsHistoryEdition()
     return Swift:IsHistoryEdition();
 end
 
+function API.IsCommunityPatch()
+    return Entities.U_PolarBear ~= nil;
+end
+
 ---
 -- Prüft, ob das laufende Spiel eine Multiplayerpartie in der History Edition
 -- ist.
@@ -2860,7 +2864,7 @@ function SCP.Core.GlobalQsbLoaded()
 end
 
 function SCP.Core.ProclaimateRandomSeed(_Seed)
-    if not Swift.m_MP_Seed_Set then
+    if Swift.m_MP_Seed_Set then
         return;
     end
     Swift.m_MP_Seed_Set = true;
