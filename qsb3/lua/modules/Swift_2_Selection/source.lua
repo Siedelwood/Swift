@@ -273,6 +273,10 @@ function ModuleSelection.Local:OverwriteMilitaryErect()
         if EntityType == Entities.U_SiegeEngineCart then
             XGUIEng.DisableButton(CurrentWidgetID, 0);
             SetIcon(CurrentWidgetID, {12, 6});
+        elseif EntityType == Entities.U_CannonCart then
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/DialogButtons/SiegeEngineCart", 1);
+            XGUIEng.DisableButton(CurrentWidgetID, 0);
+            SetIcon(CurrentWidgetID, {12, 6});
         else
             GUI_Military.ErectUpdate_Orig_ModuleSelection();
         end
@@ -318,6 +322,10 @@ function ModuleSelection.Local:OverwriteMilitaryDisamble()
         local EntityType = Logic.GetEntityType(SiegeEngineID);
 
         if EntityType == Entities.U_Trebuchet then
+            XGUIEng.DisableButton(CurrentWidgetID, 0);
+            SetIcon(CurrentWidgetID, {12, 9});
+        elseif EntityType == Entities.U_MilitaryCannon then
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/DialogButtons/SiegeEngine", 1);
             XGUIEng.DisableButton(CurrentWidgetID, 0);
             SetIcon(CurrentWidgetID, {12, 9});
         else
@@ -661,6 +669,17 @@ function ModuleSelection.Local:NormalLeaderSortOrder()
         table.insert(LeaderSortOrder,  7, Entities.U_MilitaryBandit_Melee_AS);
         table.insert(LeaderSortOrder, 12, Entities.U_MilitaryBandit_Ranged_AS);
     end
+
+    -- Community Patch
+    if Entities.U_MilitaryCavalry then
+        table.insert(LeaderSortOrder,  2, Entities.U_MilitaryCavalry);
+    end
+    if Entities.U_MilitaryPoleArm then
+        table.insert(LeaderSortOrder,  2, Entities.U_MilitaryPoleArm);
+    end
+    if Entities.U_MilitaryCannon then
+        table.insert(LeaderSortOrder,  17, Entities.U_MilitaryCannon);
+    end
 end
 
 function ModuleSelection.Local:ExtendedLeaderSortOrder()
@@ -697,6 +716,17 @@ function ModuleSelection.Local:ExtendedLeaderSortOrder()
         table.insert(LeaderSortOrder,  6, Entities.U_MilitaryBow_Khana);
         table.insert(LeaderSortOrder,  7, Entities.U_MilitaryBandit_Melee_AS);
         table.insert(LeaderSortOrder, 12, Entities.U_MilitaryBandit_Ranged_AS);
+    end
+
+    -- Community Patch
+    if Entities.U_MilitaryCavalry then
+        table.insert(LeaderSortOrder,  2, Entities.U_MilitaryCavalry);
+    end
+    if Entities.U_MilitaryPoleArm then
+        table.insert(LeaderSortOrder,  2, Entities.U_MilitaryPoleArm);
+    end
+    if Entities.U_MilitaryCannon then
+        table.insert(LeaderSortOrder,  17, Entities.U_MilitaryCannon);
     end
 end
 

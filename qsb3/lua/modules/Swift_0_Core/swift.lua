@@ -98,7 +98,6 @@ function Swift:LoadCore()
     end
     self:LoadExternFiles();
     self:LoadBehaviors();
-    -- Random seed
     -- Copy texture positions
     if self:IsLocalEnvironment() then
         StartSimpleJobEx(function()
@@ -171,7 +170,7 @@ function Swift:CreateRandomSeed()
                 local DateText = Framework.GetSystemTimeDateString();
                 SeedString = SeedString .. PlayerName .. " " .. DateText;
                 for s in SeedString:gmatch(".") do
-                    Seed = Seed + s:byte();
+                    Seed = Seed + ((tonumber(s) ~= nil and tonumber(s)) or s:byte());
                 end
                 if Framework.IsNetworkGame() then
                     Swift:DispatchScriptCommand(QSB.ScriptCommands.ProclaimateRandomSeed, 0, Seed);
@@ -407,6 +406,10 @@ end
 
 function Swift:IsHistoryEdition()
     return Network.IsNATReady ~= nil;
+end
+
+function Swift:IsCommunityPatch()
+    return Entities.U_PolarBear ~= nil;
 end
 
 function Swift:OverrideDoQuicksave()
