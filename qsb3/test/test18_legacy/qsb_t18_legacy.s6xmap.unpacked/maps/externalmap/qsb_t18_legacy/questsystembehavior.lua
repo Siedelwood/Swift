@@ -1,0 +1,1 @@
+Script.Load("E:/Repositories/swift/qsb3/lua/legacy/v_2_14_6_qsb.lua");
