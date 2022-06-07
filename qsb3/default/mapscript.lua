@@ -89,6 +89,7 @@ function Mission_OnQsbLoaded()
     -- Testmodus aktivieren
     -- (Auskommentieren, wenn nicht benötigt)
     API.ActivateDebugMode(true, false, true, true);
+    
     -- Assistenten Quests starten
     -- (Auskommentieren, wenn nicht benötigt)
     CreateQuests();
