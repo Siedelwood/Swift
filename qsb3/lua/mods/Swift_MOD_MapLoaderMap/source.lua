@@ -11,19 +11,17 @@ You may use and modify this file unter the terms of the MIT licence.
 ModMapLoaderMap = {
 	Global = {},
     Local = {
-        Data = {
-            MapData = {},
-			CrimsonSabatt = {
-				ActionPoints = 450,
-				RechargeTime = 450,
-				AbilityIcon = {1, 1, "maploadericons"},
-			},
-			RedPrince = {
-				ActionPoints = 150,
-				RechargeTime = 150,
-				AbilityIcon = {2, 1, "maploadericons"},
-			}
-		},
+        MapData = {},
+        CrimsonSabatt = {
+            ActionPoints = 450,
+            RechargeTime = 450,
+            AbilityIcon = {1, 1, "maploadericons"},
+        },
+        RedPrince = {
+            ActionPoints = 150,
+            RechargeTime = 150,
+            AbilityIcon = {2, 1, "maploadericons"},
+        }
 	},
 
     Text = {},

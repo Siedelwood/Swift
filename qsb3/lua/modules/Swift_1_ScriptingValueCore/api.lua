@@ -40,7 +40,7 @@ QSB.ScriptingValue = {}
 -- @return[type=number] Ermittelter Wert
 -- @within Anwenderfunktionen
 --
--- @usage local PlayerID = API.GetFloat("HansWurst", QSB.ScriptingValue.Player);
+-- @usage local PlayerID = API.GetInteger("HansWurst", QSB.ScriptingValue.Player);
 --
 function API.GetInteger(_Entity, _SV)
     local ID = GetID(_Entity);
