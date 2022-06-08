@@ -15,6 +15,7 @@ ModuleEntityEventCore = {
 
     Global = {
         RegisteredEntities = {},
+        MineAmounts = {},
         AttackedEntities = {},
         OverkillEntities = {},
         DisableThiefStorehouseHeist = false,
@@ -202,6 +203,26 @@ function ModuleEntityEventCore.Global:CleanTaggedAndDeadEntities()
 end
 
 function ModuleEntityEventCore.Global:OverrideCallback()
+    GameCallback_EntityHurt_Orig_QSB_EntityCore = GameCallback_EntityHurt;
+    GameCallback_EntityHurt = function(_AttackedEntityID, _AttackedPlayerID, _AttackingEntityID, _AttackingPlayerID)
+        GameCallback_EntityHurt_Orig_QSB_EntityCore(_AttackedEntityID, _AttackedPlayerID, _AttackingEntityID, _AttackingPlayerID);
+
+        API.SendScriptEvent(
+            QSB.ScriptEvents.EntityHurt,
+            _AttackedEntityID,
+            _AttackedPlayerID,
+            _AttackingEntityID,
+            _AttackingPlayerID
+        );
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.SendScriptEvent(QSB.ScriptEvents.EntityHurt, %d, %d, %d, %d)]],
+            _AttackedEntityID,
+            _AttackedPlayerID,
+            _AttackingEntityID,
+            _AttackingPlayerID
+        ));
+    end
+
     GameCallback_SettlerSpawned_Orig_QSB_EntityCore = GameCallback_SettlerSpawned;
     GameCallback_SettlerSpawned = function(_PlayerID, _EntityID)
         GameCallback_SettlerSpawned_Orig_QSB_EntityCore(_PlayerID, _EntityID);
@@ -388,28 +409,6 @@ function ModuleEntityEventCore.Global:TriggerUpgradeCompleteEvent(_PlayerID, _En
 end
 
 function ModuleEntityEventCore.Global:StartTriggers()
-    GameCallback_EntityHurt_Orig_QSB_EntityCore = GameCallback_EntityHurt;
-    GameCallback_EntityHurt = function(_AttackedEntityID, _AttackedPlayerID, _AttackingEntityID, _AttackingPlayerID)
-        GameCallback_EntityHurt_Orig_QSB_EntityCore(_AttackedEntityID, _AttackedPlayerID, _AttackingEntityID, _AttackingPlayerID);
-
-        API.SendScriptEvent(
-            QSB.ScriptEvents.EntityHurt,
-            _AttackedEntityID,
-            _AttackedPlayerID,
-            _AttackingEntityID,
-            _AttackingPlayerID
-        );
-        Logic.ExecuteInLuaLocalState(string.format(
-            [[API.SendScriptEvent(QSB.ScriptEvents.EntityHurt, %d, %d, %d, %d)]],
-            _AttackedEntityID,
-            _AttackedPlayerID,
-            _AttackingEntityID,
-            _AttackingPlayerID
-        ));
-    end
-
-    -- ---------------------------------------------------------------------- --
-
     function ModuleEntityEventCore_Trigger_EveryTurn()
         if Logic.GetCurrentTurn() > 0 then
             ModuleEntityEventCore.Global:CheckOnSpawnerEntities();
@@ -446,6 +445,33 @@ function ModuleEntityEventCore.Global:StartTriggers()
         end
     end
     Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_DESTROYED, "", "ModuleEntityEventCore_Trigger_EntityDestroyed", 1);
+
+    function ModuleEntityEventCore_Trigger_MineWatch()
+        local MineEntityTypes = {
+            Entities.R_IronMine,
+            Entities.R_StoneMine
+        };
+        for i= 1, #MineEntityTypes do
+            local Mines = Logic.GetEntitiesOfType(MineEntityTypes[i]);
+            for j= 1, #Mines do
+                local Old = self.MineAmounts[Mines[j]];
+                local New = Logic.GetResourceDoodadGoodAmount(Mines[j]);
+                if Old and New and Old ~= New then
+                    local Type = Logic.GetResourceDoodadGoodType(Mines[j]);
+                    API.SendScriptEvent(QSB.ScriptEvents.EntityResourceChanged, Mines[j], Type, Old, New);
+                    Logic.ExecuteInLuaLocalState(string.format(
+                        [[API.SendScriptEvent(QSB.ScriptEvents.EntityResourceChanged, %d, %d, %d, %d)]],
+                        Mines[j],
+                        Type,
+                        Old,
+                        New
+                    ))
+                end
+                self.MineAmounts[Mines[j]] = New;
+            end
+        end
+    end
+    Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", "ModuleEntityEventCore_Trigger_MineWatch", 1);
 end
 
 function ModuleEntityEventCore.Global:GetAllEntitiesOfType(_Type)
@@ -564,28 +590,11 @@ function ModuleEntityEventCore.Local:OnGameStart()
     QSB.ScriptEvents.ThiefDeliverEarnings = API.RegisterScriptEvent("Event_ThiefDeliverEarnings");
     QSB.ScriptEvents.BuildingConstructed = API.RegisterScriptEvent("Event_BuildingConstructed");
     QSB.ScriptEvents.BuildingUpgraded = API.RegisterScriptEvent("Event_BuildingUpgraded");
-
-    self:StartTriggers();
 end
 
 function ModuleEntityEventCore.Local:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.EntityRegistered then
         ModuleEntityEventCore.Shared:SaveHighestEntity(arg[1]);
-    end
-end
-
-function ModuleEntityEventCore.Local:StartTriggers()
-    GameCallback_Feedback_MineAmountChanged_Orig_QSB_EntityCore = GameCallback_Feedback_MineAmountChanged;
-    GameCallback_Feedback_MineAmountChanged = function(_MineID, _GoodType, _TerritoryID, _PlayerID, _Amount)
-        GameCallback_Feedback_MineAmountChanged_Orig_QSB_EntityCore(_MineID, _GoodType, _TerritoryID, _PlayerID, _Amount);
-
-        API.SendScriptEventToGlobal(
-            QSB.ScriptEvents.EntityResourceChanged,
-            _MineID,
-            _GoodType,
-            _Amount
-        );
-        API.SendScriptEvent(QSB.ScriptEvents.EntityResourceChanged, _MineID, _GoodType, _Amount);
     end
 end
 
