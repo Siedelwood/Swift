@@ -260,7 +260,7 @@ function ModuleEntityEventCore.Global:OverrideCallback()
     end
 end
 
-function ModuleEntityEventCore.Global:OverrideLogic()    
+function ModuleEntityEventCore.Global:OverrideLogic()
     self.Logic_CreateConstructionSite = Logic.CreateConstructionSite;
     Logic.CreateConstructionSite = function(...)
         local ID = self.Logic_CreateConstructionSite(unpack(arg));
@@ -388,6 +388,28 @@ function ModuleEntityEventCore.Global:TriggerUpgradeCompleteEvent(_PlayerID, _En
 end
 
 function ModuleEntityEventCore.Global:StartTriggers()
+    GameCallback_EntityHurt_Orig_QSB_EntityCore = GameCallback_EntityHurt;
+    GameCallback_EntityHurt = function(_AttackedEntityID, _AttackedPlayerID, _AttackingEntityID, _AttackingPlayerID)
+        GameCallback_EntityHurt_Orig_QSB_EntityCore(_AttackedEntityID, _AttackedPlayerID, _AttackingEntityID, _AttackingPlayerID);
+
+        API.SendScriptEvent(
+            QSB.ScriptEvents.EntityHurt,
+            _AttackedEntityID,
+            _AttackedPlayerID,
+            _AttackingEntityID,
+            _AttackingPlayerID
+        );
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.SendScriptEvent(QSB.ScriptEvents.EntityHurt, %d, %d, %d, %d)]],
+            _AttackedEntityID,
+            _AttackedPlayerID,
+            _AttackingEntityID,
+            _AttackingPlayerID
+        ));
+    end
+
+    -- ---------------------------------------------------------------------- --
+
     function ModuleEntityEventCore_Trigger_EveryTurn()
         if Logic.GetCurrentTurn() > 0 then
             ModuleEntityEventCore.Global:CheckOnSpawnerEntities();
@@ -553,22 +575,6 @@ function ModuleEntityEventCore.Local:OnEvent(_ID, _Event, ...)
 end
 
 function ModuleEntityEventCore.Local:StartTriggers()
-    GameCallback_Feedback_EntityHurt_Orig_QSB_EntityCore = GameCallback_Feedback_EntityHurt;
-    GameCallback_Feedback_EntityHurt = function(_HurtPlayerID, _HurtEntityID, _HurtingPlayerID, _HurtingEntityID, _DamageReceived, _DamageDealt)
-        GameCallback_Feedback_EntityHurt_Orig_QSB_EntityCore(_HurtPlayerID, _HurtEntityID, _HurtingPlayerID, _HurtingEntityID, _DamageReceived, _DamageDealt);
-
-        API.SendScriptEventToGlobal(
-            QSB.ScriptEvents.EntityHurt,
-            _HurtEntityID,
-            _HurtPlayerID,
-            _HurtingEntityID,
-            _HurtingPlayerID,
-            _DamageDealt,
-            _DamageReceived
-        );
-        API.SendScriptEvent(QSB.ScriptEvents.EntityHurt, _HurtEntityID, _HurtPlayerID, _HurtingEntityID, _HurtingPlayerID, _DamageDealt, _DamageReceived);
-    end
-
     GameCallback_Feedback_MineAmountChanged_Orig_QSB_EntityCore = GameCallback_Feedback_MineAmountChanged;
     GameCallback_Feedback_MineAmountChanged = function(_MineID, _GoodType, _TerritoryID, _PlayerID, _Amount)
         GameCallback_Feedback_MineAmountChanged_Orig_QSB_EntityCore(_MineID, _GoodType, _TerritoryID, _PlayerID, _Amount);
