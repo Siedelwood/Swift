@@ -17,9 +17,9 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={userappdata}\Siedelwood\QuestSystemBehavior
 DefaultGroupName=Siedelwood
-OutputDir=E:\Repositories\symfonia\cnf\QuestSystemBehavior
+OutputDir=E:\Repositories\swift\cnf\QuestSystemBehavior
 OutputBaseFilename=QuestSystemBehaviorInstaller
-SetupIconFile=E:\Repositories\symfonia\bin\QuestSystemBehavior.ico
+SetupIconFile=E:\Repositories\swift\bin\QuestSystemBehavior.ico
 Compression=lzma
 SolidCompression=yes
 DisableProgramGroupPage=no
@@ -29,14 +29,14 @@ DisableDirPage=no
 Name: "german"; MessagesFile: "compiler:Languages\German.isl"
 
 [Files]
-Source: "E:\Repositories\symfonia\app\mapmakers5\bin\QuestSystemBehavior.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "E:\Repositories\symfonia\app\mapmakers5\bin\QuestSystemBehavior.ico"; DestDir: "{app}"; Flags: ignoreversion
-Source: "E:\Repositories\symfonia\app\swapplicationupdater\var\updater.jar"; DestDir: "{app}"; Flags: ignoreversion
-Source: "E:\Repositories\symfonia\app\swapplicationupdater\var\logback-spring.xml"; DestDir: "{app}"; Flags: ignoreversion
-Source: "E:\Repositories\symfonia\app\swapplicationupdater\src\main\resources\config\icon.png"; DestDir: "{app}\config"; Flags: ignoreversion
-Source: "E:\Repositories\symfonia\app\swapplicationupdater\src\main\resources\application.properties"; DestDir: "{app}\config"; Flags: ignoreversion
-Source: "E:\Repositories\symfonia\app\swapplicationupdater\src\main\resources\application-s5mapmaker.properties"; DestDir: "{app}\config"; Flags: ignoreversion
-Source: "E:\Repositories\symfonia\app\swapplicationupdater\var\jre\*"; DestDir: "{app}\jre"; Flags: ignoreversion recursesubdirs
+Source: "E:\Repositories\swift\app\mapmakers5\bin\QuestSystemBehavior.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Repositories\swift\app\mapmakers5\bin\QuestSystemBehavior.ico"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Repositories\swift\app\swapplicationupdater\var\updater.jar"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Repositories\swift\app\swapplicationupdater\src\main\resources\logback-spring.xml"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Repositories\swift\app\swapplicationupdater\src\main\resources\config\logo_100.png"; DestDir: "{app}\config"; Flags: ignoreversion
+Source: "E:\Repositories\swift\app\swapplicationupdater\src\main\resources\application.properties"; DestDir: "{app}\config"; Flags: ignoreversion
+Source: "E:\Repositories\swift\app\swapplicationupdater\src\main\resources\application-s5mapmaker.properties"; DestDir: "{app}\config"; Flags: ignoreversion
+Source: "E:\Repositories\swift\app\swapplicationupdater\var\jre\*"; DestDir: "{app}\jre"; Flags: ignoreversion recursesubdirs
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{%USERPROFILE}\Siedelwood\QuestSystemBehavior"
