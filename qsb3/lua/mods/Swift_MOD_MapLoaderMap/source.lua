@@ -224,21 +224,20 @@ function ModMapLoaderMap.Local:OverrideMethods()
 
     GUI_BuildingButtons.UpgradeClicked_Orig_CampaignMap = GUI_BuildingButtons.UpgradeClicked;
     GUI_BuildingButtons.UpgradeClicked = function()
-        if ModMapLoaderMap.Local:RedPrinceUpgradeBuildingClicked() then
+        if not ModMapLoaderMap.Local:RedPrinceUpgradeBuildingClicked() then
             GUI_BuildingButtons.UpgradeClicked_Orig_CampaignMap();
         end
     end
 
     GUI_Merchant.OfferClicked_Orig_CampaignMap = GUI_Merchant.OfferClicked;
     GUI_Merchant.OfferClicked = function(_ButtonIndex)
-        if not ModMapLoaderMap.Local:ShowSabattPassiveAbilityInformation(_ButtonIndex) then
-            GUI_Merchant.OfferClicked_Orig_CampaignMap(_ButtonIndex);
-        end
+        ModMapLoaderMap.Local:ShowSabattPassiveAbilityInformation(_ButtonIndex);
+        GUI_Merchant.OfferClicked_Orig_CampaignMap(_ButtonIndex);
     end
 
     GameCallback_Feedback_TaxCollectionFinished_Orig_CampaignMap = GameCallback_Feedback_TaxCollectionFinished;
     GameCallback_Feedback_TaxCollectionFinished = function(_PlayerID, _TaxCollected, _SkillBonus)
-        if ModMapLoaderMap.Local:RedPrincePassiveAbility(_PlayerID, _TaxCollected, _SkillBonus) then
+        if not ModMapLoaderMap.Local:RedPrincePassiveAbility(_PlayerID, _TaxCollected, _SkillBonus) then
             GameCallback_Feedback_TaxCollectionFinished_Orig_CampaignMap(_PlayerID, _TaxCollected, _SkillBonus);
         end
     end

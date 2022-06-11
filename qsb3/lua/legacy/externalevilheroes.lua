@@ -210,21 +210,20 @@ function ExternalEvilHeroes.Local:OverrideMethods()
 
     GUI_BuildingButtons.UpgradeClicked_Legacy_EvilHero = GUI_BuildingButtons.UpgradeClicked;
     GUI_BuildingButtons.UpgradeClicked = function()
-        if ExternalEvilHeroes.Local:RedPrinceUpgradeBuildingClicked() then
+        if not ExternalEvilHeroes.Local:RedPrinceUpgradeBuildingClicked() then
             GUI_BuildingButtons.UpgradeClicked_Legacy_EvilHero();
         end
     end
 
     GUI_Merchant.OfferClicked_Legacy_EvilHero = GUI_Merchant.OfferClicked;
     GUI_Merchant.OfferClicked = function(_ButtonIndex)
-        if not ExternalEvilHeroes.Local:ShowSabattPassiveAbilityInformation(_ButtonIndex) then
-            GUI_Merchant.OfferClicked_Legacy_EvilHero(_ButtonIndex);
-        end
+        ExternalEvilHeroes.Local:ShowSabattPassiveAbilityInformation(_ButtonIndex);
+        GUI_Merchant.OfferClicked_Legacy_EvilHero(_ButtonIndex);
     end
 
     GameCallback_Feedback_TaxCollectionFinished_Legacy_EvilHero = GameCallback_Feedback_TaxCollectionFinished;
     GameCallback_Feedback_TaxCollectionFinished = function(_PlayerID, _TaxCollected, _SkillBonus)
-        if ExternalEvilHeroes.Local:RedPrincePassiveAbility(_PlayerID, _TaxCollected, _SkillBonus) then
+        if not ExternalEvilHeroes.Local:RedPrincePassiveAbility(_PlayerID, _TaxCollected, _SkillBonus) then
             GameCallback_Feedback_TaxCollectionFinished_Legacy_EvilHero(_PlayerID, _TaxCollected, _SkillBonus);
         end
     end
