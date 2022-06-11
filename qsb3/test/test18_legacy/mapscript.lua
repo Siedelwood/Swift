@@ -94,7 +94,7 @@ function Mission_FirstMapAction()
     -- CreateQuests();
 
     -- Hier kannst Du Deine Funktionen aufrufen
-
+    ReplaceHeroWithSabatt()
 end
 
 function ReplaceHeroWithSabatt()
