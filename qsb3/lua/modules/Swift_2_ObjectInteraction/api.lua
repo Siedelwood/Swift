@@ -121,6 +121,12 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- <td>ja</td>
 -- </tr>
 -- <tr>
+-- <td>Replacement</td>
+-- <td>number</td>
+-- <td>Entity, mit der das Objekt nach Aktivierung ersetzt wird.</td>
+-- <td>ja</td>
+-- </tr>
+-- <tr>
 -- <td>Costs</td>
 -- <td></td>
 -- <td>Eine Table mit dem Typ und der Menge der Kosten. (Format: {Typ, Menge, Typ, Menge})</td>

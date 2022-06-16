@@ -178,6 +178,9 @@ function ModuleObjectInteraction.Global:SetupObject(_Object)
     local CostGoldCart = _Object.CostGoldCartType or Entities.U_GoldCart;
     Logic.InteractiveObjectSetCostGoldCartType(ID, CostGoldCart);
 
+    if GetNameOfKeyInTable(Entities, _Object.Replacement) then
+        Logic.InteractiveObjectSetReplacingEntityType(ID, _Object.Replacement);
+    end
     if _Object.Reward then
         Logic.InteractiveObjectAddRewards(ID, _Object.Reward[1], _Object.Reward[2]);
     end
