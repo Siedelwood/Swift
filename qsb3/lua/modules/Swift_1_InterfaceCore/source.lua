@@ -510,12 +510,12 @@ function ModuleInterfaceCore.Local:AddButtonBinding(_Type, _ActionFunction, _Too
     if #self.BuildingButtons.Bindings[_Type] < 6 then
         self.BuildingButtons.BindingCounter = self.BuildingButtons.BindingCounter +1;
         table.insert(self.BuildingButtons.Bindings[_Type], {
-            ID      = self.BuildingButtons.Bindings[_Type],
+            ID      = self.BuildingButtons.BindingCounter,
             Action  = _ActionFunction,
             Tooltip = _TooltipController,
             Update  = _UpdateController,
         });
-        return self.BuildingButtons.Bindings[_Type];
+        return self.BuildingButtons.BindingCounter;
     end
     return 0;
 end

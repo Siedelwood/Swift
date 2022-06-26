@@ -622,6 +622,7 @@ end
 --     end,
 --     -- Update
 --     function(_WidgetID, _BuildingID)
+--         -- ggf. muss hier die Position des Buttons gesetzt werden.
 --         SetIcon(_WidgetID, {1, 1});
 --     end
 -- );
