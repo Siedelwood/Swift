@@ -43,6 +43,58 @@ function Mission_LocalOnQsbLoaded()
     VanillaBenchmark = {};
 end
 
+function BuildingButtonTypeTest()
+    for i= 1, 6 do
+        API.AddBuildingButtonByType(
+            Entities.B_HuntersHut,
+            -- Aktion
+            function(_WidgetID, _BuildingID)
+                GUI.AddNote("Hier passiert etwas!");
+            end,
+            -- Tooltip
+            function(_WidgetID, _BuildingID)
+                API.SetTooltipCosts("Beschreibung", "Das ist die Beschreibung!");
+            end,
+            -- Update
+            function(_WidgetID, _BuildingID)
+                SetIcon(_WidgetID, {i, i});
+            end
+        );
+    end
+
+    -- SpecialButtonID2 = API.AddBuildingButtonByType(
+    --     Entities.B_HuntersHut,
+    --     -- Aktion
+    --     function(_WidgetID, _BuildingID)
+    --         GUI.AddNote("Hier passiert etwas!");
+    --     end,
+    --     -- Tooltip
+    --     function(_WidgetID, _BuildingID)
+    --         API.SetTooltipCosts("Beschreibung", "Das ist die Beschreibung!");
+    --     end,
+    --     -- Update
+    --     function(_WidgetID, _BuildingID)
+    --         SetIcon(_WidgetID, {1, 2});
+    --     end
+    -- );
+
+    -- SpecialButtonID2 = API.AddBuildingButtonByType(
+    --     Entities.B_Butcher,
+    --     -- Aktion
+    --     function(_WidgetID, _BuildingID)
+    --         GUI.AddNote("Hier passiert etwas!");
+    --     end,
+    --     -- Tooltip
+    --     function(_WidgetID, _BuildingID)
+    --         API.SetTooltipCosts("Beschreibung", "Das ist die Beschreibung!");
+    --     end,
+    --     -- Update
+    --     function(_WidgetID, _BuildingID)
+    --         SetIcon(_WidgetID, {1, 3});
+    --     end
+    -- );
+end
+
 function ShowTestWindow()
     ModuleInputOutputCore.Local:ShowTextWindow {
         PlayerID = 1,
