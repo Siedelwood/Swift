@@ -295,6 +295,8 @@ function ModuleTradingCore.Local:OverrideMerchantPurchaseOfferUpdate()
         if g_Merchant.Offers[_ButtonIndex] == nil then
             XGUIEng.ShowWidget(CurrentWidgetMotherID,0);
             return;
+        else
+            XGUIEng.ShowWidget(CurrentWidgetMotherID,1);
         end
         local TraderType = g_Merchant.Offers[_ButtonIndex].TraderType;
         local OfferIndex = g_Merchant.Offers[_ButtonIndex].OfferIndex;

@@ -457,9 +457,9 @@ end
 -- @within Anwenderfunktionen
 --
 -- @usage -- Spieler 2 bietet Spieler 1 Brot an
--- API.AddGoodOffer(2, 1, Goods.G_Bread, 2);
+-- API.AddGoodOffer(2, Goods.G_Bread, 1, 2);
 -- -- Spieler 2 bietet Spieler 3 Eisen an
--- API.AddGoodOffer(2, 3, Goods.G_Iron, 4, 180);
+-- API.AddGoodOffer(2, Goods.G_Iron, 3, 4, 180);
 --
 function API.AddGoodOffer(_VendorID, _OfferType, _OfferAmount, _RefreshRate)
     _OfferType = (type(_OfferType) == "string" and Goods[_OfferType]) or _OfferType;
@@ -472,7 +472,7 @@ function API.AddGoodOffer(_VendorID, _OfferType, _OfferAmount, _RefreshRate)
         ));
         return;
     end
-    
+
     local VendorStoreID = Logic.GetStoreHouse(_VendorID);
     AddGoodToTradeBlackList(_VendorID, _OfferType);
 
@@ -486,18 +486,23 @@ function API.AddGoodOffer(_VendorID, _OfferType, _OfferAmount, _RefreshRate)
         _RefreshRate = MerchantSystem.RefreshRates[_OfferType] or 0;
     end
 
-    return Logic.AddGoodTraderOffer(
+    local LogicOfferID = Logic.AddGoodTraderOffer(
         VendorStoreID,
         _OfferAmount,
         Goods.G_Gold,
         0,
         _OfferType,
-        9,
+        MerchantSystem.Waggonload,
         1,
         _RefreshRate,
         MarketerType,
         Entities.U_ResourceMerchant
     );
+    Logic.ExecuteInLuaLocalState(string.format(
+        "GameCallback_CloseNPCInteraction(GUI.GetPlayerID(), %d)",
+        VendorStoreID
+    ));
+    return LogicOfferID;
 end
 -- Compability option
 function AddOffer(_Merchant, _NumberOfOffers, _GoodType, _RefreshRate)
@@ -517,7 +522,7 @@ end
 -- @within Anwenderfunktionen
 --
 -- @usage -- Spieler 2 bietet Spieler 1 Sölder an
--- API.AddMercenaryOffer(2, 1, Entities.U_MilitaryBandit_Melee_SE, 3);
+-- API.AddMercenaryOffer(2, Entities.U_MilitaryBandit_Melee_SE, 1, 3);
 --
 function API.AddMercenaryOffer(_VendorID, _OfferType, _OfferAmount, _RefreshRate)
     _OfferType = (type(_OfferType) == "string" and Entities[_OfferType]) or _OfferType;
@@ -530,7 +535,7 @@ function API.AddMercenaryOffer(_VendorID, _OfferType, _OfferAmount, _RefreshRate
         ));
         return;
     end
-    
+
     local VendorStoreID = Logic.GetStoreHouse(_VendorID);
 
     -- Refresh rate
@@ -546,7 +551,7 @@ function API.AddMercenaryOffer(_VendorID, _OfferType, _OfferAmount, _RefreshRate
         SoldierCount = 0;
     end
 
-    return Logic.AddMercenaryTraderOffer(
+    local LogicOfferID = Logic.AddMercenaryTraderOffer(
         VendorStoreID,
         _OfferAmount,
         Goods.G_Gold,
@@ -556,6 +561,11 @@ function API.AddMercenaryOffer(_VendorID, _OfferType, _OfferAmount, _RefreshRate
         1,
         _RefreshRate
     );
+    Logic.ExecuteInLuaLocalState(string.format(
+        "GameCallback_CloseNPCInteraction(GUI.GetPlayerID(), %d)",
+        VendorStoreID
+    ));
+    return LogicOfferID;
 end
 -- Compability option
 function AddMercenaryOffer(_Mercenary, _Amount, _Type, _RefreshRate)
@@ -571,7 +581,7 @@ end
 -- @within Anwenderfunktionen
 --
 -- @usage -- Spieler 2 bietet Spieler 1 einen Feuerschlucker an
--- API.AddEntertainerOffer(2, 1, Entities.NA_FireEater);
+-- API.AddEntertainerOffer(2, Entities.U_Entertainer_NA_FireEater);
 --
 function API.AddEntertainerOffer(_VendorID, _OfferType)
     _OfferType = (type(_OfferType) == "string" and Entities[_OfferType]) or _OfferType;
@@ -584,9 +594,9 @@ function API.AddEntertainerOffer(_VendorID, _OfferType)
         ));
         return;
     end
-    
+
     local VendorStoreID = Logic.GetStoreHouse(_VendorID);
-    return Logic.AddEntertainerTraderOffer(
+    local LogicOfferID = Logic.AddEntertainerTraderOffer(
         VendorStoreID,
         1,
         Goods.G_Gold,
@@ -595,6 +605,11 @@ function API.AddEntertainerOffer(_VendorID, _OfferType)
         1,
         0
     );
+    Logic.ExecuteInLuaLocalState(string.format(
+        "GameCallback_CloseNPCInteraction(GUI.GetPlayerID(), %d)",
+        VendorStoreID
+    ));
+    return LogicOfferID;
 end
 -- Compability option
 function AddEntertainerOffer(_Merchant, _EntertainerType)
