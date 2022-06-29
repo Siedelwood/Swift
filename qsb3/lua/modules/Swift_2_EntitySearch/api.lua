@@ -23,7 +23,6 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
--- <li><a href="Swift_0_Core.api.html">(0) Core</a></li>
 -- <li><a href="Swift_1_EntityEventCore.api.html">(1) Entity Event Core</a></li>
 -- <li><a href="Swift_1_JobsCore.api.html">(1) Jobs Core</a></li>
 -- </ul>
