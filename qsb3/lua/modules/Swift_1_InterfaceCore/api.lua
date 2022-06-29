@@ -598,15 +598,64 @@ function API.HideBuildMenu(_Flag)
 end
 
 ---
+-- Fügt einen allgemeinen Gebäudeschalter an der Position hinzu.
+--
+-- Einem Gebäude können maximal 6 Buttons zugewiesen werden! Auf diese Weise
+-- hinzugefügte Buttons sind prinzipiell immer sichtbar, abhängig von ihrer
+-- Update-Funktion.
+--
+-- Die Position wird lokal zur linken oberen Ecke des Fensters angegeben.
+--
+-- @param[type=number]   _X       X-Position des Button
+-- @param[type=number]   _Y       Y-Position des Button
+-- @param[type=function] _Action  Funktion für die Aktion beim Klicken
+-- @param[type=function] _Tooltip Funktion für die angezeigte Beschreibung
+-- @param[type=function] _Update  Funktion für Anzeige und Verfügbarkeit
+-- @return[type=number] ID des Bindung
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- SpecialButtonID = API.AddBuildingButton(
+--     -- Position (X, Y)
+--     230, 180,
+--     -- Aktion
+--     function(_WidgetID, _BuildingID)
+--         GUI.AddNote("Hier passiert etwas!");
+--     end,
+--     -- Tooltip
+--     function(_WidgetID, _BuildingID)
+--         -- Es MUSS ein Kostentooltip verwendet werden.
+--         API.SetTooltipCosts("Beschreibung", "Das ist die Beschreibung!");
+--     end,
+--     -- Update
+--     function(_WidgetID, _BuildingID)
+--         -- Ausblenden, wenn noch in Bau
+--         if Logic.IsConstructionComplete(_BuildingID) == 0 then
+--             XGUIEng.ShowWidget(_WidgetID, 0);
+--             return;
+--         end
+--         -- Deaktivieren, wenn ausgebaut wird.
+--         if Logic.IsBuildingBeingUpgraded(_BuildingID) then
+--             XGUIEng.DisableButton(_WidgetID, 1);
+--         end
+--         SetIcon(_WidgetID, {1, 1});
+--     end
+-- );
+--
+function API.AddBuildingButtonAtPosition(_X, _Y, _Action, _Tooltip, _Update)
+    return ModuleInterfaceCore.Local:AddButtonBinding(0, _X, _Y, _Action, _Tooltip, _Update);
+end
+
+---
 -- Fügt einen allgemeinen Gebäudeschalter hinzu.
 --
 -- Einem Gebäude können maximal 6 Buttons zugewiesen werden! Auf diese Weise
 -- hinzugefügte Buttons sind prinzipiell immer sichtbar, abhängig von ihrer
 -- Update-Funktion.
 --
--- @param[type=function] _Action  Funktion beim Klicken
--- @param[type=function] _Tooltip Funktion für den Tooltip
--- @param[type=function] _Update  Funktion für das Update
+-- @param[type=function] _Action  Funktion für die Aktion beim Klicken
+-- @param[type=function] _Tooltip Funktion für die angezeigte Beschreibung
+-- @param[type=function] _Update  Funktion für Anzeige und Verfügbarkeit
 -- @return[type=number] ID des Bindung
 -- @within Anwenderfunktionen
 --
@@ -618,17 +667,26 @@ end
 --     end,
 --     -- Tooltip
 --     function(_WidgetID, _BuildingID)
+--         -- Es MUSS ein Kostentooltip verwendet werden.
 --         API.SetTooltipCosts("Beschreibung", "Das ist die Beschreibung!");
 --     end,
 --     -- Update
 --     function(_WidgetID, _BuildingID)
---         -- ggf. muss hier die Position des Buttons gesetzt werden.
+--         -- Ausblenden, wenn noch in Bau
+--         if Logic.IsConstructionComplete(_BuildingID) == 0 then
+--             XGUIEng.ShowWidget(_WidgetID, 0);
+--             return;
+--         end
+--         -- Deaktivieren, wenn ausgebaut wird.
+--         if Logic.IsBuildingBeingUpgraded(_BuildingID) then
+--             XGUIEng.DisableButton(_WidgetID, 1);
+--         end
 --         SetIcon(_WidgetID, {1, 1});
 --     end
 -- );
 --
 function API.AddBuildingButton(_Action, _Tooltip, _Update)
-    return ModuleInterfaceCore.Local:AddButtonBinding(0, _Action, _Tooltip, _Update);
+    return API.AddBuildingButtonAtPosition(_Action, nil, nil, _Tooltip, _Update);
 end
 
 ---
@@ -639,15 +697,36 @@ end
 -- Buttons für den Typ ignoriert.
 --
 -- @param[type=number]   _Type    Typ des Gebäudes
--- @param[type=function] _Action  Funktion beim Klicken
--- @param[type=function] _Tooltip Funktion für den Tooltip
--- @param[type=function] _Update  Funktion für das Update
+-- @param[type=number]   _X       X-Position des Button
+-- @param[type=number]   _Y       Y-Position des Button
+-- @param[type=function] _Action  Funktion für die Aktion beim Klicken
+-- @param[type=function] _Tooltip Funktion für die angezeigte Beschreibung
+-- @param[type=function] _Update  Funktion für Anzeige und Verfügbarkeit
+-- @return[type=number] ID des Bindung
+-- @within Anwenderfunktionen
+-- @see API.AddBuildingButton
+--
+function API.AddBuildingButtonByTypeAtPosition(_Type, _X, _Y, _Action, _Tooltip, _Update)
+    return ModuleInterfaceCore.Local:AddButtonBinding(_Type, _X, _Y, _Action, _Tooltip, _Update);
+end
+
+---
+-- Fügt einen Gebäudeschalter für den Entity-Typ hinzu.
+--
+-- Einem Gebäude können maximal 6 Buttons zugewiesen werden! Wenn ein Typ einen
+-- Button zugewiesen bekommt, werden alle mit API.AddBuildingButton gesetzten
+-- Buttons für den Typ ignoriert.
+--
+-- @param[type=number]   _Type    Typ des Gebäudes
+-- @param[type=function] _Action  Funktion für die Aktion beim Klicken
+-- @param[type=function] _Tooltip Funktion für die angezeigte Beschreibung
+-- @param[type=function] _Update  Funktion für Anzeige und Verfügbarkeit
 -- @return[type=number] ID des Bindung
 -- @within Anwenderfunktionen
 -- @see API.AddBuildingButton
 --
 function API.AddBuildingButtonByType(_Type, _Action, _Tooltip, _Update)
-    return ModuleInterfaceCore.Local:AddButtonBinding(_Type, _Action, _Tooltip, _Update);
+    return API.AddBuildingButtonByTypeAtPosition(_Type, nil, nil, _Action, _Tooltip, _Update);
 end
 
 ---
@@ -658,15 +737,36 @@ end
 -- API.AddBuildingButtonByType gesetzten Buttons für das Entity ignoriert.
 --
 -- @param[type=function] _ScriptName Scriptname des Entity
--- @param[type=function] _Action     Funktion beim Klicken
--- @param[type=function] _Tooltip    Funktion für den Tooltip
--- @param[type=function] _Update     Funktion für das Update
+-- @param[type=number]   _X          X-Position des Button
+-- @param[type=number]   _Y          Y-Position des Button
+-- @param[type=function] _Action     Funktion für die Aktion beim Klicken
+-- @param[type=function] _Tooltip    Funktion für die angezeigte Beschreibung
+-- @param[type=function] _Update     Funktion für Anzeige und Verfügbarkeit
+-- @return[type=number] ID des Bindung
+-- @within Anwenderfunktionen
+-- @see API.AddBuildingButton
+--
+function API.AddBuildingButtonByEntityAtPosition(_ScriptName, _X, _Y, _Action, _Tooltip, _Update)
+    return ModuleInterfaceCore.Local:AddButtonBinding(_ScriptName, _X, _Y, _Action, _Tooltip, _Update);
+end
+
+---
+-- Fügt einen Gebäudeschalter für das Entity hinzu.
+--
+-- Einem Gebäude können maximal 6 Buttons zugewiesen werden! Wenn ein Entity
+-- einen Button zugewiesen bekommt, werden alle mit API.AddBuildingButton oder
+-- API.AddBuildingButtonByType gesetzten Buttons für das Entity ignoriert.
+--
+-- @param[type=function] _ScriptName Scriptname des Entity
+-- @param[type=function] _Action     Funktion für die Aktion beim Klicken
+-- @param[type=function] _Tooltip    Funktion für die angezeigte Beschreibung
+-- @param[type=function] _Update     Funktion für Anzeige und Verfügbarkeit
 -- @return[type=number] ID des Bindung
 -- @within Anwenderfunktionen
 -- @see API.AddBuildingButton
 --
 function API.AddBuildingButtonByEntity(_ScriptName, _Action, _Tooltip, _Update)
-    return ModuleInterfaceCore.Local:AddButtonBinding(_ScriptName, _Action, _Tooltip, _Update);
+    return API.AddBuildingButtonByEntityAtPosition(_ScriptName, nil, nil, _Action, _Tooltip, _Update);
 end
 
 ---

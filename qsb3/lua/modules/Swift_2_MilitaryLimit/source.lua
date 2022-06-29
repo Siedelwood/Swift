@@ -257,7 +257,7 @@ function ModuleMilitaryLimit.Local:OverrideUI()
         elseif Logic.IsEntityInCategory(BarrackID, EntityCategories.Headquarters) == 1 then
             EntityType = Entities.U_Thief;
         else
-            return
+            return GUI_BuildingButtons.BuyBattalionClicked_Orig_InterfaceCore();
         end
         local Costs = {Logic.GetUnitCost(BarrackID, EntityType)};
         local CanBuyBoolean, CanNotBuyString = AreCostsAffordable(Costs);
@@ -291,7 +291,8 @@ function ModuleMilitaryLimit.Local:OverrideUI()
         end
     end
 
-    function GUI_BuildingButtons.BuyBattalionUpdate()
+    GUI_BuildingButtons.BuyBattalionUpdate_Orig_MilitaryLimit = GUI_BuildingButtons.BuyBattalionUpdate;
+    GUI_BuildingButtons.BuyBattalionUpdate = function()
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
         local PlayerID = GUI.GetPlayerID();
         local BarrackID = GUI.GetSelectedEntity();
@@ -300,8 +301,10 @@ function ModuleMilitaryLimit.Local:OverrideUI()
             SetIcon(CurrentWidgetID, g_TexturePositions.Entities[Entities.U_MilitaryBow]);
         elseif Logic.IsEntityInCategory(BarrackID, EntityCategories.Headquarters) == 1 then
             SetIcon(CurrentWidgetID, g_TexturePositions.Entities[Entities.U_Thief]);
-        else
+        elseif BarrackEntityType == Entities.B_Barracks then
             SetIcon(CurrentWidgetID, g_TexturePositions.Entities[Entities.U_MilitarySword]);
+        else
+            return GUI_BuildingButtons.BuyBattalionUpdate_Orig_MilitaryLimit();
         end
 
         local Visible = true;

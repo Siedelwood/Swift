@@ -24,47 +24,47 @@ ModuleInterfaceCore = {
             Configuration = {
                 ["BuyAmmunitionCart"] = {
                     TypeExclusion = "^B_.*StoreHouse",
-                    Position = nil,
+                    OriginalPosition = nil,
                     Bind = nil,
                 },
                 ["BuyBattallion"] = {
                     TypeExclusion = "^B_[CB]a[sr][tr][la][ec]",
-                    Position = nil,
+                    OriginalPosition = nil,
                     Bind = nil,
                 },
                 ["PlaceField"] = {
                     TypeExclusion = "^B_.*[FH][ai][rv][me]",
-                    Position = nil,
+                    OriginalPosition = nil,
                     Bind = nil,
                 },
                 ["StartFestival"] = {
                     TypeExclusion = "^B_Marketplace",
-                    Position = nil,
+                    OriginalPosition = nil,
                     Bind = nil,
                 },
                 ["StartTheatrePlay"] = {
                     TypeExclusion = "^B_Theatre",
-                    Position = nil,
+                    OriginalPosition = nil,
                     Bind = nil,
                 },
                 ["UpgradeTurret"] = {
                     TypeExclusion = "^B_WallTurret",
-                    Position = nil,
+                    OriginalPosition = nil,
                     Bind = nil,
                 },
                 ["BuyBatteringRamCart"] = {
                     TypeExclusion = "^B_SiegeEngineWorkshop",
-                    Position = nil,
+                    OriginalPosition = nil,
                     Bind = nil,
                 },
                 ["BuyCatapultCart"] = {
                     TypeExclusion = "^B_SiegeEngineWorkshop",
-                    Position = nil,
+                    OriginalPosition = nil,
                     Bind = nil,
                 },
                 ["BuySiegeTowerCart"] = {
                     TypeExclusion = "^B_SiegeEngineWorkshop",
-                    Position = nil,
+                    OriginalPosition = nil,
                     Bind = nil,
                 },
             },
@@ -170,6 +170,7 @@ function ModuleInterfaceCore.Local:OnGameStart()
     self.HumanKnightType = Logic.GetEntityType(Logic.GetKnightID(QSB.HumanPlayerID));
     self.HumanPlayerID = QSB.HumanPlayerID;
 
+    self:InitBackupPositions();
     self:OverrideOnSelectionChanged();
     self:OverrideMissionGoodCounter();
     self:OverrideUpdateClaimTerritory();
@@ -272,6 +273,7 @@ function ModuleInterfaceCore.Local:OverrideBuyBattalion()
         local EntityID = GUI.GetSelectedEntity();
         local Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
         if not Button then
+            XGUIEng.ShowWidget(WidgetID, 0);
             return GUI_BuildingButtons.BuyBattalionUpdate_Orig_InterfaceCore();
         end
         Button.Update(WidgetID, EntityID);
@@ -479,12 +481,18 @@ function ModuleInterfaceCore.Local:OverrideBuySiegeEngineCart()
         if not Button then
             return GUI_BuildingButtons.BuySiegeEngineCartUpdate_Orig_InterfaceCore(_EntityType);
         end
-        XGUIEng.ShowWidget(WidgetID, 1);
         Button.Update(WidgetID, EntityID);
     end
 end
 
 -- -------------------------------------------------------------------------- --
+
+function ModuleInterfaceCore.Local:InitBackupPositions()
+    for k, v in pairs(self.BuildingButtons.Configuration) do
+        local x, y = XGUIEng.GetWidgetLocalPosition("/InGame/Root/Normal/BuildingButtons/" ..k);
+        self.BuildingButtons.Configuration[k].OriginalPosition = {x, y};
+    end
+end
 
 function ModuleInterfaceCore.Local:GetButtonsForOverwrite(_ID, _Amount)
     local Buttons = {};
@@ -503,17 +511,18 @@ function ModuleInterfaceCore.Local:GetButtonsForOverwrite(_ID, _Amount)
     return Buttons;
 end
 
-function ModuleInterfaceCore.Local:AddButtonBinding(_Type, _ActionFunction, _TooltipController, _UpdateController)
+function ModuleInterfaceCore.Local:AddButtonBinding(_Type, _X, _Y, _ActionFunction, _TooltipController, _UpdateController)
     if not self.BuildingButtons.Bindings[_Type] then
         self.BuildingButtons.Bindings[_Type] = {};
     end
     if #self.BuildingButtons.Bindings[_Type] < 6 then
         self.BuildingButtons.BindingCounter = self.BuildingButtons.BindingCounter +1;
         table.insert(self.BuildingButtons.Bindings[_Type], {
-            ID      = self.BuildingButtons.BindingCounter,
-            Action  = _ActionFunction,
-            Tooltip = _TooltipController,
-            Update  = _UpdateController,
+            ID       = self.BuildingButtons.BindingCounter,
+            Position = {_X, _Y},
+            Action   = _ActionFunction,
+            Tooltip  = _TooltipController,
+            Update   = _UpdateController,
         });
         return self.BuildingButtons.BindingCounter;
     end
@@ -542,6 +551,9 @@ function ModuleInterfaceCore.Local:BindButtons(_ID)
     if self.BuildingButtons.Bindings[Name] then
         Key = Name;
     end
+    -- TODO: Proper inclusion of categories
+    -- The problem is, that en entiry might have more than one category. How
+    -- do we decide which category gets the priority?
     if not Key and self.BuildingButtons.Bindings[Type] then
         Key = Type;
     end
@@ -551,21 +563,32 @@ function ModuleInterfaceCore.Local:BindButtons(_ID)
 
     if Key then
         local ButtonNames = self:GetButtonsForOverwrite(_ID, #self.BuildingButtons.Bindings[Key]);
+        local DefaultPositionIndex = 0;
         for i= 1, #self.BuildingButtons.Bindings[Key] do
             self.BuildingButtons.Configuration[ButtonNames[i]].Bind = self.BuildingButtons.Bindings[Key][i];
             XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons/" ..ButtonNames[i], 1);
-            local x, y = XGUIEng.GetWidgetLocalPosition("/InGame/Root/Normal/BuildingButtons/" ..ButtonNames[i]);
-            self.BuildingButtons.Configuration[ButtonNames[i]].Position = {x, y};
+            XGUIEng.DisableButton("/InGame/Root/Normal/BuildingButtons/" ..ButtonNames[i], 0);
+            local Position = self.BuildingButtons.Bindings[Key][i].Position;
+            if not Position[1] or not Position[2] then
+                local AnchorPosition = {12, 296};
+                Position[1] = AnchorPosition[1] + (64 * DefaultPositionIndex);
+                Position[2] = AnchorPosition[2];
+                DefaultPositionIndex = DefaultPositionIndex +1;
+            end
+            XGUIEng.SetWidgetLocalPosition(
+                "/InGame/Root/Normal/BuildingButtons/" ..ButtonNames[i],
+                Position[1],
+                Position[2]
+            );
         end
     end
 end
 
 function ModuleInterfaceCore.Local:UnbindButtons()
     for k, v in pairs(self.BuildingButtons.Configuration) do
-        local Position = self.BuildingButtons.Configuration[k].Position;
+        local Position = self.BuildingButtons.Configuration[k].OriginalPosition;
         if Position then
             XGUIEng.SetWidgetLocalPosition("/InGame/Root/Normal/BuildingButtons/" ..k, Position[1], Position[2]);
-            self.BuildingButtons.Configuration[k].Position = nil;
         end
         self.BuildingButtons.Configuration[k].Bind = nil;
     end
