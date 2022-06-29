@@ -45,25 +45,37 @@ end
 
 function BuildingButtonTypeTest()
     for i= 1, 6 do
+        --API.AddBuildingButton(
         API.AddBuildingButtonByType(
-            Entities.B_HuntersHut,
+            Entities.B_SiegeEngineWorkshop,
             -- Aktion
             function(_WidgetID, _BuildingID)
                 GUI.AddNote("Hier passiert etwas!");
             end,
             -- Tooltip
             function(_WidgetID, _BuildingID)
-                API.SetTooltipCosts("Beschreibung", "Das ist die Beschreibung!");
+                API.SetTooltipCosts("Button " .. i, "Das ist die Beschreibung!");
             end,
             -- Update
             function(_WidgetID, _BuildingID)
+                if Logic.IsConstructionComplete(_BuildingID) == 0 then
+                    XGUIEng.ShowWidget(_WidgetID, 0);
+                    return;
+                end
+                if Logic.IsBuildingBeingUpgraded(_BuildingID) then
+                    XGUIEng.DisableButton(_WidgetID, 1);
+                end
                 SetIcon(_WidgetID, {i, i});
+                -- if i <= 3 then
+                --     XGUIEng.ShowWidget(_WidgetID, 0);
+                -- end
             end
         );
     end
 
-    -- SpecialButtonID2 = API.AddBuildingButtonByType(
+    -- SpecialButtonID2 = API.AddBuildingButtonByTypeAtPosition(
     --     Entities.B_HuntersHut,
+    --     123,123,
     --     -- Aktion
     --     function(_WidgetID, _BuildingID)
     --         GUI.AddNote("Hier passiert etwas!");
@@ -74,7 +86,7 @@ function BuildingButtonTypeTest()
     --     end,
     --     -- Update
     --     function(_WidgetID, _BuildingID)
-    --         SetIcon(_WidgetID, {1, 2});
+    --         SetIcon(_WidgetID, {10, 2});
     --     end
     -- );
 

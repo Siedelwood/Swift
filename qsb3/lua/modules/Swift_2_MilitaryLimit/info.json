@@ -13,6 +13,7 @@
     "dependencies": [
         "Swift_0_Core",
         "Swift_1_EntityEventCore",
-        "Swift_1_JobsCore"
+        "Swift_1_JobsCore",
+        "Swift_1_InterfaceCore"
     ]
 }
