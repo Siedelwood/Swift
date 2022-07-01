@@ -245,7 +245,8 @@ function ModuleMilitaryLimit.Local:OverrideUI()
         XGUIEng.SetText(CurrentWidgetID, "{center}" .. Color .. Count .. "/" .. Limit);
     end
 
-    function GUI_BuildingButtons.BuyBattalionClicked()
+    GUI_BuildingButtons.BuyBattalionClicked_Orig_MilitaryLimit = GUI_BuildingButtons.BuyBattalionClicked;
+    GUI_BuildingButtons.BuyBattalionClicked = function()
         local PlayerID  = GUI.GetPlayerID();
         local BarrackID = GUI.GetSelectedEntity();
         local BarrackEntityType = Logic.GetEntityType(BarrackID);
@@ -257,7 +258,7 @@ function ModuleMilitaryLimit.Local:OverrideUI()
         elseif Logic.IsEntityInCategory(BarrackID, EntityCategories.Headquarters) == 1 then
             EntityType = Entities.U_Thief;
         else
-            return GUI_BuildingButtons.BuyBattalionClicked_Orig_InterfaceCore();
+            return GUI_BuildingButtons.BuyBattalionClicked_Orig_MilitaryLimit();
         end
         local Costs = {Logic.GetUnitCost(BarrackID, EntityType)};
         local CanBuyBoolean, CanNotBuyString = AreCostsAffordable(Costs);
