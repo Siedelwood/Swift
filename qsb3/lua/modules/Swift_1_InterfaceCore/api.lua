@@ -686,7 +686,7 @@ end
 -- );
 --
 function API.AddBuildingButton(_Action, _Tooltip, _Update)
-    return API.AddBuildingButtonAtPosition(_Action, nil, nil, _Tooltip, _Update);
+    return API.AddBuildingButtonAtPosition(nil, nil, _Action, _Tooltip, _Update);
 end
 
 ---

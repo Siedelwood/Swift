@@ -63,3 +63,4 @@ function API.Campaign_StartMapSelection()
 		end
 	end);
 end
+
