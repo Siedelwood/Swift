@@ -705,7 +705,7 @@ ModuleKnightTitleRequirements.Local.Description = {
 
     RichBuildings = {
         Title = {
-            de = "Reiche Stadtgebäude",
+            de = "Reiche Häuser",
             en = "Rich city buildings",
         },
         Text = {
@@ -727,7 +727,7 @@ ModuleKnightTitleRequirements.Local.Description = {
 
     FullDecoratedBuildings = {
         Title = {
-            de = "Dekorierte Stadtgebäude",
+            de = "Dekorierte Häuser",
             en = "Decorated City buildings",
         },
         Text = {
