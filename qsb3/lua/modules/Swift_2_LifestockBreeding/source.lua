@@ -260,7 +260,7 @@ function ModuleLifestockBreeding.Local:OnGameStart()
     MerchantSystem.BasePrices[Goods.G_Sheep] = ModuleLifestockBreeding.Local.SheepMoneyCost;
     MerchantSystem.BasePrices[Goods.G_Cow]   = ModuleLifestockBreeding.Local.CattleMoneyCost;
 
-    self:OverwriteBuySiegeEngine();
+    self:InitBuyLifestockButton();
 end
 
 function ModuleLifestockBreeding.Local:ToggleBreedingState(_BarrackID)
@@ -272,141 +272,7 @@ function ModuleLifestockBreeding.Local:ToggleBreedingState(_BarrackID)
     end
 end
 
-function ModuleLifestockBreeding.Local:OverwriteBuySiegeEngine()
-    GUI_BuildingButtons.BuySiegeEngineCartMouseOver_Orig_Stockbreeding = GUI_BuildingButtons.BuySiegeEngineCartMouseOver;
-    GUI_BuildingButtons.BuySiegeEngineCartMouseOver = function(_EntityType, _TechnologyType)
-        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
-        local BarrackID = GUI.GetSelectedEntity();
-        local BuildingEntityType = Logic.GetEntityType(BarrackID);
-
-        if  BuildingEntityType ~= Entities.B_SiegeEngineWorkshop
-        and BuildingEntityType ~= Entities.B_CattlePasture
-        and BuildingEntityType ~= Entities.B_SheepPasture then
-            GUI_BuildingButtons.BuySiegeEngineCartMouseOver_Orig_Stockbreeding(_EntityType, _TechnologyType);
-            return;
-        end
-
-        local Costs = {Logic.GetUnitCost(BarrackID, _EntityType)}
-
-        if BuildingEntityType == Entities.B_CattlePasture then
-            local Description = ModuleLifestockBreeding.Local.Description.BreedingActive;
-            if Logic.IsBuildingStopped(BarrackID) then
-                Description = ModuleLifestockBreeding.Local.Description.BreedingInactive;
-            end
-            API.SetTooltipCosts(
-                API.Localize(Description.Title), API.Localize(Description.Text), API.Localize(Description.Disabled),
-                {Goods.G_Grain, 1},
-                false
-            );
-        elseif BuildingEntityType == Entities.B_SheepPasture then
-            local Description = ModuleLifestockBreeding.Local.Description.BreedingActive;
-            if Logic.IsBuildingStopped(BarrackID) then
-                Description = ModuleLifestockBreeding.Local.Description.BreedingInactive;
-            end
-            API.SetTooltipCosts(
-                API.Localize(Description.Title), API.Localize(Description.Text), API.Localize(Description.Disabled),
-                {Goods.G_Grain, 1},
-                false
-            );
-        else
-            GUI_BuildingButtons.BuySiegeEngineCartMouseOver_Orig_Stockbreeding(_EntityType, _TechnologyType);
-        end
-    end
-
-    -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    GUI_BuildingButtons.BuySiegeEngineCartClicked_Orig_Stockbreeding = GUI_BuildingButtons.BuySiegeEngineCartClicked
-    GUI_BuildingButtons.BuySiegeEngineCartClicked = function(_EntityType)
-        local BarrackID = GUI.GetSelectedEntity()
-        local eType = Logic.GetEntityType(BarrackID)
-        if eType == Entities.B_CattlePasture or eType == Entities.B_SheepPasture then
-            ModuleLifestockBreeding.Local:ToggleBreedingState(BarrackID);
-        else
-            GUI_BuildingButtons.BuySiegeEngineCartClicked_Orig_Stockbreeding(_EntityType)
-        end
-    end
-
-    -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    GUI_BuildingButtons.BuySiegeEngineCartUpdate_Orig_Stockbreeding = GUI_BuildingButtons.BuySiegeEngineCartUpdate;
-    GUI_BuildingButtons.BuySiegeEngineCartUpdate = function(_Technology)
-        local PlayerID = GUI.GetPlayerID();
-        local KnightTitle = Logic.GetKnightTitle(PlayerID);
-        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
-        local EntityID = GUI.GetSelectedEntity();
-        local EntityType = Logic.GetEntityType(EntityID);
-        local grain = GetPlayerResources(Goods.G_Grain,PlayerID);
-        local pos = GetPosition(EntityID);
-
-        if EntityType == Entities.B_SiegeEngineWorkshop then
-            XGUIEng.ShowWidget(CurrentWidgetID,1);
-            if _Technology == Technologies.R_BatteringRam then
-                SetIcon(CurrentWidgetID, {9,5});
-            elseif _Technology == Technologies.R_SiegeTower then
-                SetIcon(CurrentWidgetID, {9,6});
-            elseif _Technology == Technologies.R_Catapult then
-                SetIcon(CurrentWidgetID, {9,4});
-            end
-        elseif EntityType == Entities.B_CattlePasture then
-            local Icon = {4, 13};
-            if Logic.IsBuildingStopped(EntityID) then
-                Icon = {4, 12};
-            end
-            SetIcon(CurrentWidgetID, Icon);
-
-            if _Technology == Technologies.R_Catapult and ModuleLifestockBreeding.Local.AllowBreedCattle then
-                XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons",1);
-                XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons/BuyCatapultCart",1);
-
-                local DisableState = (ModuleLifestockBreeding.Local.AllowBreedCattle and 0) or 1;
-                XGUIEng.DisableButton(CurrentWidgetID, DisableState);
-                XGUIEng.ShowWidget(CurrentWidgetID, 1);
-            else
-                XGUIEng.ShowWidget(CurrentWidgetID, 0);
-            end
-        elseif EntityType == Entities.B_SheepPasture then
-            local Icon = {4, 13};
-            if Logic.IsBuildingStopped(EntityID) then
-                Icon = {4, 12};
-            end
-            SetIcon(CurrentWidgetID, Icon)
-
-            if _Technology == Technologies.R_Catapult and ModuleLifestockBreeding.Local.AllowBreedSheeps then
-                XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons",1);
-                XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons/BuyCatapultCart",1);
-
-                local DisableState = (ModuleLifestockBreeding.Local.AllowBreedSheeps and 0) or 1;
-                XGUIEng.DisableButton(CurrentWidgetID, DisableState);
-                XGUIEng.ShowWidget(CurrentWidgetID, 1);
-            else
-                XGUIEng.ShowWidget(CurrentWidgetID, 0);
-            end
-        else
-            GUI_BuildingButtons.BuySiegeEngineCartUpdate_Orig_Stockbreeding(_Technology);
-            return;
-        end
-
-        if Logic.IsConstructionComplete(GUI.GetSelectedEntity()) == 0 then
-            XGUIEng.ShowWidget(CurrentWidgetID,0);
-            return;
-        end
-
-        if EntityType ~= Entities.B_SheepPasture and EntityType ~= Entities.B_CattlePasture then
-            local TechnologyState = Logic.TechnologyGetState(PlayerID, _Technology);
-            if EnableRights == nil or EnableRights == false then
-                XGUIEng.DisableButton(CurrentWidgetID,0);
-                return
-            end
-            if TechnologyState == TechnologyStates.Researched then
-                XGUIEng.DisableButton(CurrentWidgetID,0);
-            else
-                XGUIEng.DisableButton(CurrentWidgetID,1);
-            end
-        end
-    end
-
-    -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
+function ModuleLifestockBreeding.Local:InitBuyLifestockButton()
     HouseMenuStopProductionClicked_Orig_Stockbreeding = HouseMenuStopProductionClicked;
     HouseMenuStopProductionClicked = function()
         HouseMenuStopProductionClicked_Orig_Stockbreeding();
@@ -427,6 +293,54 @@ function ModuleLifestockBreeding.Local:OverwriteBuySiegeEngine()
             end
         end
     end
+
+    local Position = {XGUIEng.GetWidgetLocalPosition("/InGame/Root/Normal/BuildingButtons/BuyCatapultCart")};
+    API.AddBuildingButtonByTypeAtPosition(
+        Entities.B_CattlePasture,
+        Position[1], Position[2],
+        function(_WidgetID, _EntityID)
+            ModuleLifestockBreeding.Local:ToggleBreedingState(_EntityID);
+        end,
+        function(_WidgetID, _EntityID)
+            local Description = API.Localize(ModuleLifestockBreeding.Local.Description.BreedingActive);
+            if Logic.IsBuildingStopped(_EntityID) then
+                Description = API.Localize(ModuleLifestockBreeding.Local.Description.BreedingInactive);
+            end
+            API.SetTooltipCosts(Description.Title, Description.Text, Description.Disabled, {Goods.G_Grain, 1}, false);
+        end,
+        function(_WidgetID, _EntityID)
+            local Icon = {4, 13};
+            if Logic.IsBuildingStopped(_EntityID) then
+                Icon = {4, 12};
+            end
+            SetIcon(_WidgetID, Icon);
+            local DisableState = (ModuleLifestockBreeding.Local.AllowBreedCattle and 0) or 1;
+            XGUIEng.DisableButton(_WidgetID, DisableState);
+        end
+    );
+    API.AddBuildingButtonByTypeAtPosition(
+        Entities.B_SheepPasture,
+        Position[1], Position[2],
+        function(_WidgetID, _EntityID)
+            ModuleLifestockBreeding.Local:ToggleBreedingState(_EntityID);
+        end,
+        function(_WidgetID, _EntityID)
+            local Description = API.Localize(ModuleLifestockBreeding.Local.Description.BreedingActive);
+            if Logic.IsBuildingStopped(_EntityID) then
+                Description = API.Localize(ModuleLifestockBreeding.Local.Description.BreedingInactive);
+            end
+            API.SetTooltipCosts(Description.Title, Description.Text, Description.Disabled, {Goods.G_Grain, 1}, false);
+        end,
+        function(_WidgetID, _EntityID)
+            local Icon = {4, 13};
+            if Logic.IsBuildingStopped(_EntityID) then
+                Icon = {4, 12};
+            end
+            SetIcon(_WidgetID, Icon);
+            local DisableState = (ModuleLifestockBreeding.Local.AllowBreedSheeps and 0) or 1;
+            XGUIEng.DisableButton(_WidgetID, DisableState);
+        end
+    );
 end
 
 -- -------------------------------------------------------------------------- --
