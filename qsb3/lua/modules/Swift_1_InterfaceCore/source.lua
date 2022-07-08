@@ -350,6 +350,7 @@ function ModuleInterfaceCore.Local:OverrideStartFestival()
         local EntityID = GUI.GetSelectedEntity();
         local Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
         if not Button then
+            SetIcon(WidgetID, {4, 15});
             return GUI_BuildingButtons.StartFestivalUpdate_Orig_InterfaceCore();
         end
         Button.Update(WidgetID, EntityID);
