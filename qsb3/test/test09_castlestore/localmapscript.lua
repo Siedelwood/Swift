@@ -47,10 +47,10 @@ function BuildingButtonTypeTest()
     for i= 1, 6 do
         --API.AddBuildingButton(
         API.AddBuildingButtonByType(
-            Entities.B_SiegeEngineWorkshop,
+            Entities.B_Butcher,
             -- Aktion
             function(_WidgetID, _BuildingID)
-                GUI.AddNote("Hier passiert etwas!");
+                GUI.AddNote("Button " .. i .. " geklickt.");
             end,
             -- Tooltip
             function(_WidgetID, _BuildingID)
@@ -66,9 +66,6 @@ function BuildingButtonTypeTest()
                     XGUIEng.DisableButton(_WidgetID, 1);
                 end
                 SetIcon(_WidgetID, {i, i});
-                -- if i <= 3 then
-                --     XGUIEng.ShowWidget(_WidgetID, 0);
-                -- end
             end
         );
     end
