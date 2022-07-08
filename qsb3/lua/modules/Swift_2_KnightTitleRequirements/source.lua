@@ -678,14 +678,14 @@ ModuleKnightTitleRequirements.Local.GoodCategoryNames = {
 };
 
 ModuleKnightTitleRequirements.Local.BuffTypeNames = {
-    [Buffs.Buff_ClothesDiversity]        = {de = "Abwechslungsreiche Kleidung", en = "Clothes diversity"},
+    [Buffs.Buff_ClothesDiversity]        = {de = "Vielfältige Kleidung", en = "Clothes variety"},
     [Buffs.Buff_Colour]                  = {de = "Farben beschaffen", en = "Obtain color"},
     [Buffs.Buff_Entertainers]            = {de = "Gaukler anheuern", en = "Hire entertainer"}, -- Funktioniert nicht, belegt MP!
-    [Buffs.Buff_EntertainmentDiversity]  = {de = "Abwechslungsreiche Unterhaltung", en = "Entertainment diversity"},
+    [Buffs.Buff_EntertainmentDiversity]  = {de = "Vielfältige Unterhaltung", en = "Entertainment variety"},
     [Buffs.Buff_ExtraPayment]            = {de = "Sonderzahlung", en = "Extra payment"},
     [Buffs.Buff_Festival]                = {de = "Fest veranstalten", en = "Hold Festival"},   -- Funktioniert nicht, belegt MP!
-    [Buffs.Buff_FoodDiversity]           = {de = "Abwechslungsreiche Nahrung", en = "Food diversity"},
-    [Buffs.Buff_HygieneDiversity]        = {de = "Abwechslungsreiche Hygiene", en = "Hygiene diversity"},
+    [Buffs.Buff_FoodDiversity]           = {de = "Vielfältige Nahrung", en = "Food variety"},
+    [Buffs.Buff_HygieneDiversity]        = {de = "Vielfältige Hygiene", en = "Hygiene variety"},
     [Buffs.Buff_NoTaxes]                 = {de = "Steuerbefreiung", en = "No taxes"},
     [Buffs.Buff_Sermon]                  = {de = "Pregigt abhalten", en = "Hold sermon"},
     [Buffs.Buff_Spice]                   = {de = "Salz beschaffen", en = "Obtain salt"},
