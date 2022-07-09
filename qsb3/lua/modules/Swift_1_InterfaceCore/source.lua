@@ -273,7 +273,8 @@ function ModuleInterfaceCore.Local:OverrideBuyBattalion()
         local EntityID = GUI.GetSelectedEntity();
         local Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
         if not Button then
-            XGUIEng.ShowWidget(WidgetID, 0);
+            XGUIEng.ShowWidget(WidgetID, 1);
+            XGUIEng.DisableButton(WidgetID, 0);
             return GUI_BuildingButtons.BuyBattalionUpdate_Orig_InterfaceCore();
         end
         Button.Update(WidgetID, EntityID);
