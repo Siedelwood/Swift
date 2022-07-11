@@ -66,18 +66,18 @@ function ModuleEntitySearch.Shared:IterateEntities(...)
 
     -- Iteriert über alle Entities und wendet Predikate an.
     local ResultList = {};
-    for i= 65536, ModuleEntityEventCore.Shared.HighestEntityID do
-        local ID = ModuleEntityEventCore.Shared.ReplacementEntityID[i] or i;
-        local Select = true;
-        if IsExisting(ID) then
+    for _, v in pairs(Entities) do
+        local AllEntitiesOfType = Logic.GetEntitiesOfType(v);
+        for i= 1, #AllEntitiesOfType do
+            local Select = true;
             for j= 1, #Predicates do
-                if not Predicates[j][1](ID, unpack(Predicates[j][2])) then
+                if not Predicates[j][1](AllEntitiesOfType[i], unpack(Predicates[j][2])) then
                     Select = false;
                     break;
                 end
             end
             if Select then
-                table.insert(ResultList, ID);
+                table.insert(ResultList, AllEntitiesOfType[i]);
             end
         end
     end
