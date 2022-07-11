@@ -147,6 +147,9 @@ function ModuleBriefingSystem.Global:NextBriefing(_PlayerID)
         Briefing.PlayerID = _PlayerID;
         Briefing.BarOpacity = Briefing.BarOpacity or 1;
         Briefing.CurrentPage = 0;
+        if Briefing.EnableSoothingCamera == nil then
+            Briefing.EnableSoothingCamera = true;
+        end
         self.Briefing[_PlayerID] = Briefing;
         self:TransformAnimations(_PlayerID);
 
@@ -810,11 +813,23 @@ end
 
 function ModuleBriefingSystem.Local:GetLERP(_PlayerID)
     if self.Briefing[_PlayerID].CurrentAnimation then
-        return API.LERP(
-            self.Briefing[_PlayerID].CurrentAnimation.Started,
-            Logic.GetTime(),
-            self.Briefing[_PlayerID].CurrentAnimation.Duration
-        );
+        local Anim = self.Briefing[_PlayerID].CurrentAnimation;
+        local CurrentTime = Logic.GetTime();
+        local FrameworkTime = Framework.GetTimeMs();
+        local Speed = Game.GameTimeGetFactor(GUI.GetPlayerID());
+        local Factor = API.LERP(Anim.Started, CurrentTime, Anim.Duration);
+        -- Optional soothening the camera
+        -- Get the time between each tenth seconds between tenthseconds to get
+        -- rid of the asynchronozity and fix the factor.
+        -- Note: This will have it's issues with slow machines.
+        if self.Briefing[_PlayerID].EnableSoothingCamera then
+            if Anim.LastLogicTime ~= CurrentTime then
+                Anim.LastLogicTime = CurrentTime;
+                Anim.LastFrameworkTime = FrameworkTime;
+            end
+            Factor = Factor + (FrameworkTime - Anim.LastFrameworkTime) / Anim.Duration / 1000 * Speed;
+        end
+        return Factor;
     end
     return 1;
 end
@@ -937,6 +952,7 @@ function ModuleBriefingSystem.Local:ActivateCinematicMode(_PlayerID)
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Text", 1);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Title", 1);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", 1);
+    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/updater", 1);
 
     -- Text
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Text", " ");
