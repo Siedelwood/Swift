@@ -827,9 +827,11 @@ function ModuleBriefingSystem.Local:GetLERP(_PlayerID)
                 Anim.LastLogicTime = CurrentTime;
                 Anim.LastFrameworkTime = FrameworkTime;
             end
-            Factor = Factor + (FrameworkTime - Anim.LastFrameworkTime) / Anim.Duration / 1000 * Speed;
+            -- math.max will prevent backjumps when value is below 0
+            Factor = Factor + (math.max(FrameworkTime - Anim.LastFrameworkTime, 0)) / Anim.Duration / 1000 * Speed;
         end
-        return Factor;
+        -- math.min will prevents flickering at the end of the animation
+        return math.min(Factor, 1);
     end
     return 1;
 end
