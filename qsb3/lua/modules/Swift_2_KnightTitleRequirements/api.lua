@@ -15,6 +15,8 @@ You may use and modify this file unter the terms of the MIT licence.
 -- Die Aufstiegsbedingungen werden in der Funktion InitKnightTitleTables
 -- angegeben und bearbeitet.
 --
+-- <b>Achtung</b>: es können maximal 6 Bedingungen angezeigt werden!
+--
 -- <p>Mögliche Aufstiegsbedingungen:
 -- <ul>
 -- <li><b>Entitytyp besitzen</b><br/>
@@ -48,7 +50,8 @@ You may use and modify this file unter the terms of the MIT licence.
 -- </li>
 --
 -- <li><b>Produkte erzeugen</b><br/>
--- Der Spieler muss Gebrauchsgegenstände für ein Bedürfnis bereitstellen.
+-- Der Spieler muss Gebrauchsgegenstände für ein Bedürfnis bereitstellen. Hier
+-- werden nicht die Warentypen sonderen deren Kategorie angegeben.
 -- <pre><code>
 -- KnightTitleRequirements[KnightTitles.Mayor].Products = {
 --     {GoodCategories.GC_Clothes, 6},
@@ -67,8 +70,8 @@ You may use and modify this file unter the terms of the MIT licence.
 -- </code></pre>
 -- </li>
 --
--- <li><b>Vielfältigkeit bereitstellen</b><br/>
--- Der Spieler muss einen Vielfältigkeits-Buff aktivieren.
+-- <li><b>Buffs aktivieren</b><br/>
+-- Der Spieler muss einen Buff aktivieren.
 -- <pre><code>
 -- KnightTitleRequirements[KnightTitles.Mayor].Buff = {
 --     Buffs.Buff_FoodDiversity,
@@ -88,6 +91,7 @@ You may use and modify this file unter the terms of the MIT licence.
 -- <code><pre>
 -- KnightTitleRequirements[KnightTitles.Mayor].DecoratedBuildings = {
 --     {Goods.G_Banner, 9 },
+--     ...
 -- }
 -- </code></pre>
 -- </li>
@@ -124,11 +128,23 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 -- <li><b>Benutzerdefiniert</b><br/>
 -- Eine benutzerdefinierte Funktion, die entweder als Schalter oder als Zähler
--- fungieren kann und true oder false zurückgeben muss.
+-- fungieren kann und true oder false zurückgeben muss. Soll ein Zähler
+-- angezeigt werden, muss nach dem Wahrheitswert der minimale und der maximale
+-- Wert des Zählers folgen.
 -- <pre><code>
 -- KnightTitleRequirements[KnightTitles.Mayor].Custom = {
 --     {SomeFunction, {1, 1}, "Überschrift", "Beschreibung"}
+--     ...
 -- }
+--
+-- -- Funktion prüft Schalter
+-- function SomeFunction(_PlayerID, _NextTitle, _Index)
+--     return gvMission.MySwitch == true;
+-- end
+-- -- Funktion prüft Zähler
+-- function SomeFunction(_PlayerID, _NextTitle, _Index)
+--     return gvMission.MyCounter == 6, gvMission.MyCounter, 6;
+-- end
 -- </code></pre>
 -- </li>
 -- </ul></p>
@@ -374,6 +390,9 @@ end
 ---
 -- Prüft, ob die Custom Function true vermeldet.
 --
+-- <b>Hinweis</b>: Die Funktion wird innerhalb eines GUI Update aufgerufen.
+-- Schreibe daher effizienten Lua Code!
+--
 -- @param[type=number] _PlayerID ID des Spielers
 -- @param[type=number] _KnightTitle Nächster Titel
 -- @param[type=number] _i Button Index
@@ -385,7 +404,7 @@ DoCustomFunctionForKnightTitleSucceed = function(_PlayerID, _KnightTitle, _i)
         return;
     end
     if _i then
-        return KnightTitleRequirements[_KnightTitle].Custom[_i][1]();
+        return KnightTitleRequirements[_KnightTitle].Custom[_i][1](_PlayerID, _KnightTitle, _i);
     else
         local bool, reach, need;
         for i=1,#KnightTitleRequirements[_KnightTitle].Custom do
