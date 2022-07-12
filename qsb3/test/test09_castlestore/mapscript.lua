@@ -116,17 +116,29 @@ function CallTestFunction2()
 end
 
 GameCallback_QSB_OnEventReceived = function(_EventID, ...)
-    if _EventID == QSB.ScriptEvents.EntityRegistered then
+    if _EventID == QSB.ScriptEvents.BuildingPlaced then
         if IsExisting(arg[1]) then
             local TypeID = Logic.GetEntityType(arg[1]);
             local TypeName = Logic.GetEntityTypeName(TypeID);
-            API.Note("Create: " ..TypeName);
+            API.Note("Placed: " ..TypeName);
         end
-    elseif _EventID == QSB.ScriptEvents.EntityDestroyed then
+    elseif _EventID == QSB.ScriptEvents.EntityArrived then
         if IsExisting(arg[1]) then
             local TypeID = Logic.GetEntityType(arg[1]);
             local TypeName = Logic.GetEntityTypeName(TypeID);
-            API.Note("Destroyed: " ..TypeName);
+            API.Note("Lured: " ..TypeName);
+        end
+    elseif _EventID == QSB.ScriptEvents.EntitySpawned then
+        if IsExisting(arg[1]) then
+            local TypeID = Logic.GetEntityType(arg[1]);
+            local TypeName = Logic.GetEntityTypeName(TypeID);
+            API.Note("Spawned: " ..TypeName);
+        end
+    elseif _EventID == QSB.ScriptEvents.AnimalBred then
+        if IsExisting(arg[1]) then
+            local TypeID = Logic.GetEntityType(arg[1]);
+            local TypeName = Logic.GetEntityTypeName(TypeID);
+            API.Note("Bred: " ..TypeName);
         end
     end
 end

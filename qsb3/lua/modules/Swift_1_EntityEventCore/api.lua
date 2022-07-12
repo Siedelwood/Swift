@@ -31,7 +31,9 @@ You may use and modify this file unter the terms of the MIT licence.
 ---
 -- Events, auf die reagiert werden kann.
 --
--- @field EntityRegistered Ein Entity wurde erzeugt. Wird auch durch Spieler ändern ausgelöst! (Parameter: EntityID)
+-- @field BuildingPlaced Ein Gebäude wurde gesetzt.(Parameter: EntityID)
+-- @field EntitySpawned Ein Entity wurde aus einem Spawner erzeugt. (Parameter: EntityID, SpawnerID)
+-- @field SettlerArrived Ein Siedler kommt in die Siedlung. (Parameter: EntityID)
 -- @field EntityDestroyed Ein Entity wurde zerstört. Wird auch durch Spieler ändern ausgelöst! (Parameter: EntityID)
 -- @field EntityHurt Ein Entity wurde angegriffen. (Parameter: AttackedEntityID, AttackedPlayerID, AttackingEntityID, AttackingPlayerID)
 -- @field EntityKilled Ein Entity wurde getötet. (Parameter: KilledEntityID, KilledPlayerID, KillerEntityID, KillerPlayerID)
