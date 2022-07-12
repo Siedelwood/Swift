@@ -22,46 +22,33 @@ ModuleEntityEventCore = {
         DisableThiefCathedralSabotage = false,
         DisableThiefCisternSabotage = false,
 
-        -- Those are animal types that are automatically spawned by the game
-        -- without triggering a callback. They are spawned in every climate
-        -- zone by spawner or by buildings.
-        SharedAnimalTypes = {
-            "A_Bees",
-            "A_Chicken",
-            "A_Chicken02",
-            "A_Chicken03",
-            "A_X_Cat",
-            "A_X_Dog",
-            "A_X_Rabbit",
-            "A_X_WildBoar_Child",
-            "A_X_WildBoar_Female",
-            "A_X_WildBoar_Male",
-        },
-
-        -- Those are resource types that are automatically spawned by the game
-        -- without triggering a callback. They are spawned when an animal is
-        -- killed (either by men or animal).
-        SharedResourceTypes = {
-            "R_WildBoar_Child",
-            "R_WildBoar_Female",
-            "R_WildBoar_Male",
-            "R_DeadCow",
-            "R_DeadSheep",
-            "R_ResourceTree_Grow",
-            "R_ResourceTree_GrowStatic",
-            "R_ResourceTree_KnockdownStatic",
-            "R_ResourceTree_Respawn",
-            "R_ResourceTree_RespawnStatic",
-            "R_ResourceTreeStatic",
-            "XD_TreeStump_Respawn",
-            "XD_TreeStump_RespawnStatic",
-            "XD_TreeStump1",
+        StaticSpawnerTypes = {
+            "B_NPC_BanditsHQ_ME",
+            "B_NPC_BanditsHQ_NA",
+            "B_NPC_BanditsHQ_NE",
+            "B_NPC_BanditsHQ_SE",
+            "B_NPC_BanditsHutBig_ME",
+            "B_NPC_BanditsHutBig_NA",
+            "B_NPC_BanditsHutBig_NE",
+            "B_NPC_BanditsHutBig_SE",
+            "B_NPC_BanditsHutSmall_ME",
+            "B_NPC_BanditsHutSmall_NA",
+            "B_NPC_BanditsHutSmall_NE",
+            "B_NPC_BanditsHutSmall_SE",
+            "B_NPC_Barracks_ME",
+            "B_NPC_Barracks_NA",
+            "B_NPC_Barracks_NE",
+            "B_NPC_Barracks_SE",
+            "B_NPC_BanditsHQ_AS",
+            "B_NPC_BanditsHutBig_AS",
+            "B_NPC_BanditsHutSmall_AS",
+            "B_NPC_Barracks_AS",
         },
 
         -- Those are "fluctuating" spawner entities that are keep appearing
         -- and disappearing depending of if they have resources spawned. Sadly
         -- they change their ID every time they do it.
-        SpawnerTypes = {
+        DynamicSpawnerTypes = {
             "S_AxisDeer_AS",
             "S_Deer_ME",
             "S_FallowDeer_SE",
@@ -75,17 +62,14 @@ ModuleEntityEventCore = {
         },
     },
     Local = {},
-    -- This is a shared structure but the values are asynchronous!
-    Shared = {
-        ReplacementEntityID = {},
-        HighestEntityID = 0,
-    };
 }
 
 -- Global ------------------------------------------------------------------- --
 
 function ModuleEntityEventCore.Global:OnGameStart()
-    QSB.ScriptEvents.EntityRegistered = API.RegisterScriptEvent("Event_EntityRegistered");
+    QSB.ScriptEvents.BuildingPlaced = API.RegisterScriptEvent("Event_BuildingPlaced");
+    QSB.ScriptEvents.SettlerArrived = API.RegisterScriptEvent("Event_SettlerArrived");
+    QSB.ScriptEvents.EntitySpawned = API.RegisterScriptEvent("Event_EntitySpawned");
     QSB.ScriptEvents.EntityDestroyed = API.RegisterScriptEvent("Event_EntityDestroyed");
     QSB.ScriptEvents.EntityHurt = API.RegisterScriptEvent("Event_EntityHurt");
     QSB.ScriptEvents.EntityKilled = API.RegisterScriptEvent("Event_EntityKilled");
@@ -97,7 +81,6 @@ function ModuleEntityEventCore.Global:OnGameStart()
     QSB.ScriptEvents.BuildingConstructed = API.RegisterScriptEvent("Event_BuildingConstructed");
     QSB.ScriptEvents.BuildingUpgraded = API.RegisterScriptEvent("Event_BuildingUpgraded");
 
-    self.ClimateShort = self:GetClimateZoneShort();
     self:StartTriggers();
     self:OverrideCallback();
     self:OverrideLogic();
@@ -111,32 +94,6 @@ function ModuleEntityEventCore.Global:OnEvent(_ID, _Event, ...)
         self:OnSaveGameLoaded();
     elseif _ID == QSB.ScriptEvents.EntityHurt then
         self.AttackedEntities[arg[1]] = {arg[3], 100};
-    elseif _ID == QSB.ScriptEvents.EntityRegistered then
-        ModuleEntityEventCore.Shared:SaveHighestEntity(arg[1]);
-    end
-end
-
-function ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(_EntityID)
-    if _EntityID and IsExisting(_EntityID) then
-        if not self.RegisteredEntities[_EntityID] then
-            self.RegisteredEntities[_EntityID] = true;
-            API.SendScriptEvent(QSB.ScriptEvents.EntityRegistered, _EntityID);
-            Logic.ExecuteInLuaLocalState(string.format(
-                "API.SendScriptEvent(QSB.ScriptEvents.EntityRegistered, %d)",
-                _EntityID
-            ))
-        end
-    end
-end
-
-function ModuleEntityEventCore.Global:UnregisterEntityAndTriggerEvent(_EntityID)
-    if _EntityID and self.RegisteredEntities[_EntityID] then
-        self.RegisteredEntities[_EntityID] = nil;
-        API.SendScriptEvent(QSB.ScriptEvents.EntityDestroyed, _EntityID);
-        Logic.ExecuteInLuaLocalState(string.format(
-            "API.SendScriptEvent(QSB.ScriptEvents.EntityDestroyed, %d)",
-            _EntityID
-        ))
     end
 end
 
@@ -172,14 +129,7 @@ function ModuleEntityEventCore.Global:CleanTaggedAndDeadEntities()
                 if not self.OverkillEntities[k] and Logic.KnightGetResurrectionProgress(k) ~= 1 then
                     local PlayerID1 = Logic.EntityGetPlayer(k);
                     local PlayerID2 = Logic.EntityGetPlayer(v[1]);
-                    API.SendScriptEvent(QSB.ScriptEvents.EntityKilled, k, PlayerID1, v[1], PlayerID2);
-                    Logic.ExecuteInLuaLocalState(string.format(
-                        "API.SendScriptEvent(QSB.ScriptEvents.EntityKilled, %d, %d, %d, %d)",
-                        k,
-                        PlayerID1,
-                        v[1],
-                        PlayerID2
-                    ));
+                    self:TriggerEntityKilledEvent(k, PlayerID1, v[1], PlayerID2);
                     self.OverkillEntities[k] = 50;
                     self.AttackedEntities[k] = nil;
                 end
@@ -191,13 +141,6 @@ function ModuleEntityEventCore.Global:CleanTaggedAndDeadEntities()
         self.OverkillEntities[k] = v - 1;
         if v <= 0 then
             self.OverkillEntities[k] = nil;
-        end
-    end
-
-    -- unregister dead entities if not already unregistered
-    for k,v in pairs(self.RegisteredEntities) do
-        if not IsExisting(k) then
-            self:UnregisterEntityAndTriggerEvent(k);
         end
     end
 end
@@ -226,13 +169,12 @@ function ModuleEntityEventCore.Global:OverrideCallback()
     GameCallback_SettlerSpawned_Orig_QSB_EntityCore = GameCallback_SettlerSpawned;
     GameCallback_SettlerSpawned = function(_PlayerID, _EntityID)
         GameCallback_SettlerSpawned_Orig_QSB_EntityCore(_PlayerID, _EntityID);
-        ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(_EntityID);
+        ModuleEntityEventCore.Global:TriggerSettlerArrivedEvent(_EntityID);
     end
 
     GameCallback_OnBuildingConstructionComplete_Orig_QSB_EntityCore = GameCallback_OnBuildingConstructionComplete;
     GameCallback_OnBuildingConstructionComplete = function(_PlayerID, _EntityID)
         GameCallback_OnBuildingConstructionComplete_Orig_QSB_EntityCore(_PlayerID, _EntityID);
-        ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(_EntityID);
         ModuleEntityEventCore.Global:TriggerConstructionCompleteEvent(_PlayerID, _EntityID);
     end
 
@@ -241,24 +183,18 @@ function ModuleEntityEventCore.Global:OverrideCallback()
         GameCallback_FarmAnimalChangedPlayerID_Orig_QSB_EntityCore(_PlayerID, _NewEntityID, _OldEntityID);
         local OldPlayerID = Logic.EntityGetPlayer(_OldEntityID);
         local NewPlayerID = Logic.EntityGetPlayer(_NewEntityID);
-        ModuleEntityEventCore.Global:UnregisterEntityAndTriggerEvent(_OldEntityID);
-        ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(_NewEntityID);
         ModuleEntityEventCore.Global:TriggerEntityOnwershipChangedEvent(_OldEntityID, OldPlayerID, _NewEntityID, NewPlayerID);
     end
 
     GameCallback_EntityCaptured_Orig_QSB_EntityCore = GameCallback_EntityCaptured;
     GameCallback_EntityCaptured = function(_OldEntityID, _OldEntityPlayerID, _NewEntityID, _NewEntityPlayerID)
         GameCallback_EntityCaptured_Orig_QSB_EntityCore(_OldEntityID, _OldEntityPlayerID, _NewEntityID, _NewEntityPlayerID)
-        ModuleEntityEventCore.Global:UnregisterEntityAndTriggerEvent(_OldEntityID);
-        ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(_NewEntityID);
         ModuleEntityEventCore.Global:TriggerEntityOnwershipChangedEvent(_OldEntityID, _OldEntityPlayerID, _NewEntityID, _NewEntityPlayerID);
     end
 
     GameCallback_CartFreed_Orig_QSB_EntityCore = GameCallback_CartFreed;
     GameCallback_CartFreed = function(_OldEntityID, _OldEntityPlayerID, _NewEntityID, _NewEntityPlayerID)
         GameCallback_CartFreed_Orig_QSB_EntityCore(_OldEntityID, _OldEntityPlayerID, _NewEntityID, _NewEntityPlayerID);
-        ModuleEntityEventCore.Global:UnregisterEntityAndTriggerEvent(_OldEntityID);
-        ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(_NewEntityID);
         ModuleEntityEventCore.Global:TriggerEntityOnwershipChangedEvent(_OldEntityID, _OldEntityPlayerID, _NewEntityID, _NewEntityPlayerID);
     end
 
@@ -282,41 +218,6 @@ function ModuleEntityEventCore.Global:OverrideCallback()
 end
 
 function ModuleEntityEventCore.Global:OverrideLogic()
-    self.Logic_CreateConstructionSite = Logic.CreateConstructionSite;
-    Logic.CreateConstructionSite = function(...)
-        local ID = self.Logic_CreateConstructionSite(unpack(arg));
-        ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(ID);
-        return ID;
-    end
-
-    self.Logic_CreateEntity = Logic.CreateEntity;
-    Logic.CreateEntity = function(...)
-        local ID = self.Logic_CreateEntity(unpack(arg));
-        ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(ID);
-        return ID;
-    end
-
-    self.Logic_CreateEntityOnUnblockedLand = Logic.CreateEntityOnUnblockedLand;
-    Logic.CreateEntityOnUnblockedLand = function(...)
-        local ID = self.Logic_CreateEntityOnUnblockedLand(unpack(arg));
-        ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(ID);
-        return ID;
-    end
-
-    self.Logic_CreateBattalion = Logic.CreateBattalion;
-    Logic.CreateBattalion = function(...)
-        local ID = self.Logic_CreateBattalion(unpack(arg));
-        ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(ID);
-        return ID;
-    end
-
-    self.Logic_CreateBattalionOnUnblockedLand = Logic.CreateBattalionOnUnblockedLand;
-    Logic.CreateBattalionOnUnblockedLand = function(...)
-        local ID = self.Logic_CreateBattalionOnUnblockedLand(unpack(arg));
-        ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(ID);
-        return ID;
-    end
-
     self.Logic_ChangeEntityPlayerID = Logic.ChangeEntityPlayerID;
     Logic.ChangeEntityPlayerID = function(...)
         local OldID = arg[1];
@@ -389,6 +290,42 @@ function ModuleEntityEventCore.Global:TriggerThiefStealFromBuildingEvent(_ThiefI
     ));
 end
 
+function ModuleEntityEventCore.Global:TriggerEntitySpawnedEvent(_EntityID, _SpawnerID)
+    API.SendScriptEvent(QSB.ScriptEvents.EntitySpawned, _EntityID, _SpawnerID);
+    Logic.ExecuteInLuaLocalState(string.format(
+        "API.SendScriptEvent(QSB.ScriptEvents.EntityArrived, %d, %d)",
+        _EntityID,
+        _SpawnerID
+    ));
+end
+
+function ModuleEntityEventCore.Global:TriggerSettlerArrivedEvent(_EntityID)
+    API.SendScriptEvent(QSB.ScriptEvents.SettlerArrived, _EntityID);
+    Logic.ExecuteInLuaLocalState(string.format(
+        "API.SendScriptEvent(QSB.ScriptEvents.SettlerArrived, %d)",
+        _EntityID
+    ));
+end
+
+function ModuleEntityEventCore.Global:TriggerEntityDestroyedEvent(_EntityID)
+    API.SendScriptEvent(QSB.ScriptEvents.EntityDestroyed, _EntityID);
+    Logic.ExecuteInLuaLocalState(string.format(
+        "API.SendScriptEvent(QSB.ScriptEvents.EntityDestroyed, %d)",
+        _EntityID
+    ));
+end
+
+function ModuleEntityEventCore.Global:TriggerEntityKilledEvent(_EntityID1, _PlayerID1, _EntityID2, _PlayerID2)
+    API.SendScriptEvent(QSB.ScriptEvents.EntityKilled, _EntityID1, _PlayerID1, _EntityID2, _PlayerID2);
+    Logic.ExecuteInLuaLocalState(string.format(
+        "API.SendScriptEvent(QSB.ScriptEvents.EntityKilled, %d, %d, %d, %d)",
+        _EntityID1,
+        _PlayerID1,
+        _EntityID2,
+        _PlayerID2
+    ));
+end
+
 function ModuleEntityEventCore.Global:TriggerConstructionCompleteEvent(_PlayerID, _EntityID)
     API.SendScriptEvent(QSB.ScriptEvents.BuildingConstructed, _PlayerID, _EntityID);
     Logic.ExecuteInLuaLocalState(string.format(
@@ -411,37 +348,20 @@ end
 function ModuleEntityEventCore.Global:StartTriggers()
     function ModuleEntityEventCore_Trigger_EveryTurn()
         if Logic.GetCurrentTurn() > 0 then
-            ModuleEntityEventCore.Global:CheckOnSpawnerEntities();
-            ModuleEntityEventCore.Global:CheckOnNonTrackableEntities();
             ModuleEntityEventCore.Global:CleanTaggedAndDeadEntities();
+            ModuleEntityEventCore.Global:CheckOnSpawnerEntities();
         end
     end
     Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_TURN, "", "ModuleEntityEventCore_Trigger_EveryTurn", 1);
 
-    -- Why did I even put this here... This trigger is dead... :(
-    function ModuleEntityEventCore_Trigger_EntityCreated()
-        local EntityID = Event.GetEntityID();
-        ModuleEntityEventCore.Global:RegisterEntityAndTriggerEvent(EntityID);
-    end
-    Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_CREATED, "", "ModuleEntityEventCore_Trigger_EntityCreated", 1);
-
     function ModuleEntityEventCore_Trigger_EntityDestroyed()
         local EntityID1 = Event.GetEntityID();
         local PlayerID1 = Event.GetPlayerID();
-        ModuleEntityEventCore.Global:UnregisterEntityAndTriggerEvent(EntityID1);
         if ModuleEntityEventCore.Global.AttackedEntities[EntityID1] ~= nil then
             local EntityID2 = ModuleEntityEventCore.Global.AttackedEntities[EntityID1][1];
             local PlayerID2 = Logic.EntityGetPlayer(EntityID2);
             ModuleEntityEventCore.Global.AttackedEntities[EntityID1] = nil;
-
-            API.SendScriptEvent(QSB.ScriptEvents.EntityKilled, EntityID1, PlayerID1, EntityID2, PlayerID2);
-            Logic.ExecuteInLuaLocalState(string.format(
-                "API.SendScriptEvent(QSB.ScriptEvents.EntityKilled, %d, %d, %d, %d);",
-                EntityID1,
-                PlayerID1,
-                EntityID2,
-                PlayerID2
-            ));
+            ModuleEntityEventCore.Global:TriggerEntityKilledEvent(EntityID1, PlayerID1, EntityID2, PlayerID2);
         end
     end
     Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_DESTROYED, "", "ModuleEntityEventCore_Trigger_EntityDestroyed", 1);
@@ -474,95 +394,22 @@ function ModuleEntityEventCore.Global:StartTriggers()
     Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", "ModuleEntityEventCore_Trigger_MineWatch", 1);
 end
 
-function ModuleEntityEventCore.Global:GetAllEntitiesOfType(_Type)
-    local ResultList = {};
-    for i= 1, 8 do
-        local n,eID = Logic.GetPlayerEntities(i, _Type, 1);
-        if (n > 0) then
-            local firstEntity = eID;
-            repeat
-                table.insert(ResultList,eID)
-                eID = Logic.GetNextEntityOfPlayerOfType(eID);
-            until (firstEntity == eID);
-        end
-    end
-    return ResultList;
-end
-
-function ModuleEntityEventCore.Global:CheckOnNonTrackableEntities()
-    local Step = 10;
-    local TurnMod = Logic.GetCurrentTurn() % Step;
-    -- Buildings
-    for i= 1, 8 do
-        local Buildings = {Logic.GetPlayerEntitiesInCategory(i, EntityCategories.AttackableBuilding)};
-        for j= Step-TurnMod, #Buildings, Step do
-            self:RegisterEntityAndTriggerEvent(Buildings[j]);
-        end
-        local PalisadeSegment = {Logic.GetPlayerEntitiesInCategory(i, EntityCategories.PalisadeSegment)};
-        for j= Step-TurnMod, #PalisadeSegment, Step do
-            self:RegisterEntityAndTriggerEvent(PalisadeSegment[j]);
-        end
-        local Walls = {Logic.GetPlayerEntitiesInCategory(i, EntityCategories.Wall)};
-        for j= Step-TurnMod, #Walls, Step do
-            self:RegisterEntityAndTriggerEvent(Walls[j]);
-        end
-    end
-    -- Ambiend
-    for i= 1, #self.SharedAnimalTypes do
-        local FoundEntities = Logic.GetEntitiesOfType(Entities[self.SharedAnimalTypes[i]]);
-        for j= Step-TurnMod, #FoundEntities, Step do
-            self:RegisterEntityAndTriggerEvent(FoundEntities[j]);
-        end
-    end
-    -- Resources
-    for i= 1, #self.SharedResourceTypes do
-        local FoundEntities = Logic.GetEntitiesOfType(Entities[self.SharedResourceTypes[i]]);
-        for j= Step-TurnMod, #FoundEntities, Step do
-            self:RegisterEntityAndTriggerEvent(FoundEntities[j]);
-        end
-    end
-    -- Climate specific
-    local TypesToSearch = {};
-    for k, v in pairs(Entities) do
-        if string.find(k, "^A_" ..self.ClimateShort.. "_") or string.find(k, "^R_" ..self.ClimateShort.. "_") then
-            TypesToSearch[#TypesToSearch+1] = v;
-        end
-    end
-    for i= Step-TurnMod, #TypesToSearch, Step do
-        local FoundEntities = Logic.GetEntitiesOfType(TypesToSearch[i]);
-        for j= 1, #FoundEntities do
-            self:RegisterEntityAndTriggerEvent(FoundEntities[j]);
-        end
-    end
-end
-
-function ModuleEntityEventCore.Global:GetClimateZoneShort()
-    local ClimateZone = Logic.GetClimateZone();
-    local Suffix = ""
-
-    if ClimateZone ==  ClimateZones.Generic
-    or ClimateZone == ClimateZones.MiddleEurope then
-        Suffix = "ME"
-    elseif ClimateZone == ClimateZones.NorthEurope then
-        Suffix = "NE"
-    elseif ClimateZone == ClimateZones.SouthEurope then
-        Suffix = "SE"
-    elseif ClimateZone == ClimateZones.NorthAfrica then
-        Suffix = "NA"
-    elseif ClimateZone == ClimateZones.Asia then
-        Suffix = "AS"
-    end
-    return Suffix;
-end
-
 function ModuleEntityEventCore.Global:CheckOnSpawnerEntities()
     -- Get spawners
     local SpawnerEntities = {};
-    for i= 1, #self.SpawnerTypes do
-        if Entities[self.SpawnerTypes[i]] then
+    for i= 1, #self.DynamicSpawnerTypes do
+        if Entities[self.DynamicSpawnerTypes[i]] then
             if Logic.GetCurrentTurn() % 10 == i then
-                for k, v in pairs(Logic.GetEntitiesOfType(Entities[self.SpawnerTypes[i]])) do
-                    self:RegisterEntityAndTriggerEvent(v);
+                for k, v in pairs(Logic.GetEntitiesOfType(Entities[self.DynamicSpawnerTypes[i]])) do
+                    table.insert(SpawnerEntities, v);
+                end
+            end
+        end
+    end
+    for i= 1, #self.StaticSpawnerTypes do
+        if Entities[self.StaticSpawnerTypes[i]] then
+            if Logic.GetCurrentTurn() % 10 == i then
+                for k, v in pairs(Logic.GetEntitiesOfType(Entities[self.StaticSpawnerTypes[i]])) do
                     table.insert(SpawnerEntities, v);
                 end
             end
@@ -571,7 +418,11 @@ function ModuleEntityEventCore.Global:CheckOnSpawnerEntities()
     -- Check spawned entities
     for i= 1, #SpawnerEntities do
         for k, v in pairs{Logic.GetSpawnedEntities(SpawnerEntities[i])} do
-            self:RegisterEntityAndTriggerEvent(v);
+            -- On Spawner entity spawned
+            if not self.RegisteredEntities[v] then
+                self:TriggerEntitySpawnedEvent(v, SpawnerEntities[i]);
+                self.RegisteredEntities[v] = SpawnerEntities[i];
+            end
         end
     end
 end
@@ -579,7 +430,9 @@ end
 -- Local -------------------------------------------------------------------- --
 
 function ModuleEntityEventCore.Local:OnGameStart()
-    QSB.ScriptEvents.EntityRegistered = API.RegisterScriptEvent("Event_EntityRegistered");
+    QSB.ScriptEvents.BuildingPlaced = API.RegisterScriptEvent("Event_BuildingPlaced");
+    QSB.ScriptEvents.SettlerArrived = API.RegisterScriptEvent("Event_SettlerArrived");
+    QSB.ScriptEvents.EntitySpawned = API.RegisterScriptEvent("Event_EntitySpawned");
     QSB.ScriptEvents.EntityDestroyed = API.RegisterScriptEvent("Event_EntityDestroyed");
     QSB.ScriptEvents.EntityHurt = API.RegisterScriptEvent("Event_EntityHurt");
     QSB.ScriptEvents.EntityKilled = API.RegisterScriptEvent("Event_EntityKilled");
@@ -590,31 +443,29 @@ function ModuleEntityEventCore.Local:OnGameStart()
     QSB.ScriptEvents.ThiefDeliverEarnings = API.RegisterScriptEvent("Event_ThiefDeliverEarnings");
     QSB.ScriptEvents.BuildingConstructed = API.RegisterScriptEvent("Event_BuildingConstructed");
     QSB.ScriptEvents.BuildingUpgraded = API.RegisterScriptEvent("Event_BuildingUpgraded");
+
+    self:OverrideAfterBuildingPlacement();
 end
 
-function ModuleEntityEventCore.Local:OnEvent(_ID, _Event, ...)
-    if _ID == QSB.ScriptEvents.EntityRegistered then
-        ModuleEntityEventCore.Shared:SaveHighestEntity(arg[1]);
+function ModuleEntityEventCore.Local:OverrideAfterBuildingPlacement()
+    GameCallback_GUI_AfterBuildingPlacement_Orig_EntityEventCore = GameCallback_GUI_AfterBuildingPlacement;
+    GameCallback_GUI_AfterBuildingPlacement = function ()
+        GameCallback_GUI_AfterBuildingPlacement_Orig_EntityEventCore();
+
+        local x,y = GUI.Debug_GetMapPositionUnderMouse();
+        API.StartHiResDelay(0, function()
+            local Results = {Logic.GetPlayerEntitiesInArea(GUI.GetPlayerID(), 0, x, y, 50, 16)};
+            for i= 2, Results[1] +1 do
+                if Results[i] and Results[i] ~= 0 and Logic.IsBuilding(Results[i]) == 1 then
+                    API.BroadcastScriptEventToGlobal(QSB.ScriptEvents.BuildingPlaced, Results[i]);
+                    API.SendScriptEvent(QSB.ScriptEvents.BuildingPlaced, Results[i]);
+                end
+            end
+        end, x, y);
     end
 end
 
--- Shared ------------------------------------------------------------------- --
-
-function ModuleEntityEventCore.Shared:SaveHighestEntity(_ID)
-    if _ID > 131072 then
-		local OldID = (_ID - math.floor(_ID/65536)*65536) + 65536;
-		self.ReplacementEntityID[OldID] = _ID
-	else
-		self.HighestEntityID = _ID;
-	end
-end
-
-function ModuleEntityEventCore.Shared:GetHighestEntity()
-    return self.HighestEntityID;
-end
-
-function ModuleEntityEventCore.Shared:GetReplacementID(_ID)
-    return self.ReplacementEntityID[_ID];
+function ModuleEntityEventCore.Local:OnEvent(_ID, _Event, ...)
 end
 
 -- -------------------------------------------------------------------------- --

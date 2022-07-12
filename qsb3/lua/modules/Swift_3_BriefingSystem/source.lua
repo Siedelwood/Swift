@@ -819,8 +819,8 @@ function ModuleBriefingSystem.Local:GetLERP(_PlayerID)
         local Speed = Game.GameTimeGetFactor(GUI.GetPlayerID());
         local Factor = API.LERP(Anim.Started, CurrentTime, Anim.Duration);
         -- Optional soothening the camera
-        -- Get the time between each tenth seconds between tenthseconds to get
-        -- rid of the asynchronozity and fix the factor.
+        -- Get the time between each tenth seconds to get rid of the
+        -- asynchronozity and fix the factor.
         -- Note: This will have it's issues with slow machines.
         if self.Briefing[_PlayerID].EnableSoothingCamera then
             if Anim.LastLogicTime ~= CurrentTime then
@@ -828,7 +828,7 @@ function ModuleBriefingSystem.Local:GetLERP(_PlayerID)
                 Anim.LastFrameworkTime = FrameworkTime;
             end
             -- math.max will prevent backjumps when value is below 0
-            Factor = Factor + (math.max(FrameworkTime - Anim.LastFrameworkTime, 0)) / Anim.Duration / 1000 * Speed;
+            Factor = Factor + math.max((FrameworkTime - Anim.LastFrameworkTime) / Anim.Duration / 1000 * Speed, 0);
         end
         -- math.min will prevents flickering at the end of the animation
         return math.min(Factor, 1);

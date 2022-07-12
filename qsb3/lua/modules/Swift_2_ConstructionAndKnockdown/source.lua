@@ -21,21 +21,36 @@ ModuleConstructionControl = {
         KnockdownConditionCounter = 0,
         KnockdownConditions = {},
     },
-    Local = {},
+    Local = {
+        WallData = {-1,};
+    },
+    Shared = {
+        WallTypes = {
+            "B_PalisadeSegment",
+            "B_PalisadeGate",
+            "B_WallGate_AS",
+            "B_WallSegment_AS",
+            "B_WallGate_NA",
+            "B_WallSegment_NA",
+            "B_WallGate_NE",
+            "B_WallSegment_NE",
+            "B_WallGate_ME",
+            "B_WallSegment_ME",
+            "B_WallGate_SE",
+            "B_WallSegment_SE",
+        }
+    }
 }
 
 -- Global ------------------------------------------------------------------- --
 
 function ModuleConstructionControl.Global:OnGameStart()
     API.RegisterScriptCommand("Cmd_CheckCancelKnockdown", SCP.ConstructionAndKnockdown.CancelKnockdown);
-    
+
     self:OverrideCanPlayerPlaceBuilding();
 end
 
 function ModuleConstructionControl.Global:OnEvent(_ID, _Event, ...)
-    if _ID == QSB.ScriptEvents.EntityRegistered then
-        self:OnEntityCreated(arg[1]);
-    end
 end
 
 function ModuleConstructionControl.Global:OverrideCanPlayerPlaceBuilding()
@@ -46,27 +61,31 @@ function ModuleConstructionControl.Global:OverrideCanPlayerPlaceBuilding()
         end
         return GameCallback_CanPlayerPlaceBuilding_Orig_ConstructionControl(_PlayerID, _Type, _x, _y);
     end
-end
 
-function ModuleConstructionControl.Global:OnEntityCreated(_EntityID)
-    local PlayerID = Logic.EntityGetPlayer(_EntityID);
-    local EntityType = Logic.GetEntityType(_EntityID);
-    local x, y, z = Logic.EntityGetPos(_EntityID);
-    if Logic.IsEntityInCategory(_EntityID, EntityCategories.Wall) == 1 then
-        if not self:CheckConstructionConditions(PlayerID, EntityType, x, y) then
-            -- Destroy entity
-            if Logic.IsConstructionComplete(_EntityID) == 1 then
-                Logic.HurtEntity(_EntityID, Logic.GetEntityHealth(_EntityID));
-            else
-                Logic.DestroyEntity(_EntityID);
+    -- As last resort to implement this 'cause all other approaches were to
+    -- unreliable to accomplish safe wall erasure.
+    API.StartHiResJob(function()
+        for i= 1, #ModuleConstructionControl.Shared.WallTypes do
+            local Type = Entities[ModuleConstructionControl.Shared.WallTypes[i]];
+            if Type then
+                local EntityList = Logic.GetEntitiesOfType(Type);
+                for j= 1, #EntityList do
+                    local PlayerID = Logic.EntityGetPlayer(EntityList[j]);
+                    local x,y,z = Logic.EntityGetPos(EntityList[j]);
+                    if  Logic.IsConstructionComplete(EntityList[j]) == 0
+                    and not self:CheckConstructionConditions(PlayerID, Type, x, y) then
+                        Logic.ExecuteInLuaLocalState(string.format([[
+                            if GUI.GetPlayerID() == %d then
+                                -- TODO: Add message
+                                GUI.CancelState()
+                            end
+                        ]], PlayerID));
+                        DestroyEntity(EntityList[j]);
+                    end
+                end
             end
-            -- Cancel state
-            Logic.ExecuteInLuaLocalState(string.format(
-                [[if GUI.GetPlayerID() == %d then GUI.CancelState() end]],
-                PlayerID
-            ));
         end
-    end
+    end);
 end
 
 function ModuleConstructionControl.Global:CheckCancelBuildingKnockdown(_PlayerID, _BuildingID, _State)
