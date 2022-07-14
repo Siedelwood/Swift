@@ -281,7 +281,7 @@ function B_Goal_Deliver:AddParameter(_Index, _Parameter)
     elseif (_Index == 2) then
         self.OverrideTarget = tonumber(_Parameter)
     elseif (_Index == 3) then
-        self.IgnoreCapture = AcceptAlternativeBoolean(_Parameter)
+        self.IgnoreCapture = API.ToBoolean(_Parameter)
     end
 end
 
@@ -1059,7 +1059,7 @@ function B_Goal_UnitsOnTerritory:AddParameter(_Index, _Parameter)
 end
 
 function B_Goal_UnitsOnTerritory:CustomFunction(_Quest)
-    local Units = GetEntitiesOfCategoryInTerritory(self.PlayerID, EntityCategories[self.Category], self.TerritoryID);
+    local Units = API.GetEntitiesOfCategoryInTerritory(self.PlayerID, EntityCategories[self.Category], self.TerritoryID);
     if self.bRelSmallerThan == false and #Units >= self.NumberOfUnits then
         return true;
     elseif self.bRelSmallerThan == true and #Units < self.NumberOfUnits then
@@ -1299,7 +1299,7 @@ function B_Goal_BuildRoad:AddParameter(_Index, _Parameter)
     elseif (_Index == 1) then
         self.Entity2 = _Parameter
     elseif (_Index == 2) then
-        self.bRoadsOnly = AcceptAlternativeBoolean(_Parameter)
+        self.bRoadsOnly = API.ToBoolean(_Parameter)
     end
 end
 
@@ -2786,7 +2786,7 @@ function B_Goal_TributeDiplomacy:AddParameter(_Index, _Parameter)
     elseif (_Index == 5) then
         self.FailureMsg = _Parameter;
     elseif (_Index == 6) then
-        self.RestartAtFailure = AcceptAlternativeBoolean(_Parameter);
+        self.RestartAtFailure = API.ToBoolean(_Parameter);
     end
 end
 
@@ -2991,9 +2991,9 @@ function B_Goal_TributeClaim:AddParameter(_Index, _Parameter)
     elseif (_Index == 8) then
         self.HowOften = _Parameter * 1;
     elseif (_Index == 9) then
-        self.OtherOwnerCancels = AcceptAlternativeBoolean(_Parameter);
+        self.OtherOwnerCancels = API.ToBoolean(_Parameter);
     elseif (_Index == 10) then
-        self.DontPayCancels = AcceptAlternativeBoolean(_Parameter);
+        self.DontPayCancels = API.ToBoolean(_Parameter);
     end
 end
 
@@ -3954,7 +3954,7 @@ function B_Reprisal_QuestForceInterrupt:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.QuestName = _Parameter
     elseif (_Index == 1) then
-        self.InterruptEnded = AcceptAlternativeBoolean(_Parameter)
+        self.InterruptEnded = API.ToBoolean(_Parameter)
     end
 
 end
@@ -4989,7 +4989,7 @@ function B_Reward_CreateBattalion:AddParameter(_Index, _Parameter)
     elseif (_Index == 4) then
         self.SoldierCount = _Parameter * 1
     elseif (_Index == 5) then
-        self.HideFromAI = AcceptAlternativeBoolean(_Parameter)
+        self.HideFromAI = API.ToBoolean(_Parameter)
     end
 end
 
@@ -5105,7 +5105,7 @@ function B_Reward_CreateSeveralBattalions:AddParameter(_Index, _Parameter)
     elseif (_Index == 5) then
         self.SoldierCount = _Parameter * 1
     elseif (_Index == 6) then
-        self.HideFromAI = AcceptAlternativeBoolean(_Parameter)
+        self.HideFromAI = API.ToBoolean(_Parameter)
     end
 end
 
@@ -5325,7 +5325,7 @@ function B_Reward_CreateEntity:AddParameter(_Index, _Parameter)
     elseif (_Index == 3) then
         self.Orientation = _Parameter * 1
     elseif (_Index == 4) then
-        self.HideFromAI = AcceptAlternativeBoolean(_Parameter)
+        self.HideFromAI = API.ToBoolean(_Parameter)
     end
 end
 
@@ -5459,7 +5459,7 @@ function B_Reward_CreateSeveralEntities:AddParameter(_Index, _Parameter)
     elseif (_Index == 4) then
         self.Orientation = _Parameter * 1
     elseif (_Index == 5) then
-        self.HideFromAI = AcceptAlternativeBoolean(_Parameter)
+        self.HideFromAI = API.ToBoolean(_Parameter)
     end
 end
 
@@ -5771,7 +5771,7 @@ function B_Reward_AI_SpawnAndAttackTerritory:AddParameter(_Index, _Parameter)
             assert(false)
         end
     elseif (_Index == 10) then
-        self.ReuseTroops = AcceptAlternativeBoolean(_Parameter)
+        self.ReuseTroops = API.ToBoolean(_Parameter)
     end
 end
 
@@ -5921,7 +5921,7 @@ function B_Reward_AI_SpawnAndAttackArea:AddParameter(_Index, _Parameter)
             assert(false)
         end
     elseif (_Index == 7) then
-        self.ReuseTroops = AcceptAlternativeBoolean(_Parameter)
+        self.ReuseTroops = API.ToBoolean(_Parameter)
     end
 end
 
@@ -6050,7 +6050,7 @@ function B_Reward_AI_SpawnAndProtectArea:AddParameter(_Index, _Parameter)
     elseif (_Index == 6) then
         self.NumBow = _Parameter * 1
     elseif (_Index == 7) then
-        self.CaptureTradeCarts = AcceptAlternativeBoolean(_Parameter)
+        self.CaptureTradeCarts = API.ToBoolean(_Parameter)
     elseif (_Index == 8) then
         if _Parameter == "Normal" or _Parameter == true then
             self.TroopType = false
@@ -6064,7 +6064,7 @@ function B_Reward_AI_SpawnAndProtectArea:AddParameter(_Index, _Parameter)
             assert(false)
         end
     elseif (_Index == 9) then
-        self.ReuseTroops = AcceptAlternativeBoolean(_Parameter)
+        self.ReuseTroops = API.ToBoolean(_Parameter)
     end
 
 end
@@ -6606,9 +6606,9 @@ function B_Reward_SendCart:AddParameter(_Index, _Parameter)
     elseif (_Index == 5) then
         self.OverrideTargetPlayer = tonumber(_Parameter)
     elseif (_Index == 6) then
-        self.IgnoreReservation = AcceptAlternativeBoolean(_Parameter)
+        self.IgnoreReservation = API.ToBoolean(_Parameter)
     elseif (_Index == 7) then
-        self.ReplaceEntity = AcceptAlternativeBoolean(_Parameter)
+        self.ReplaceEntity = API.ToBoolean(_Parameter)
     end
 end
 
@@ -6618,7 +6618,7 @@ function B_Reward_SendCart:CustomFunction(_Quest)
         return false;
     end
 
-    local ID = SendCart(self.ScriptNameEntity, self.PlayerID, Goods[self.GoodType], self.GoodAmount, Entities[self.UnitKey], self.IgnoreReservation);
+    local ID = API.SendCart(self.ScriptNameEntity, self.PlayerID, Goods[self.GoodType], self.GoodAmount, Entities[self.UnitKey], self.IgnoreReservation);
 
     if self.ReplaceEntity and Logic.IsBuilding(GetID(self.ScriptNameEntity)) == 0 then
         DestroyEntity(self.ScriptNameEntity);

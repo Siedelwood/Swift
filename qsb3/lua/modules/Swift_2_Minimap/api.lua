@@ -86,7 +86,6 @@ function API.CreateMinimapSignal(_PlayerID, _PlayerIDOrColorTable, _Position)
     end
     return ModuleMinimap.Global:CreateMinimapMarker(_PlayerID, _PlayerIDOrColorTable, Position.X, Position.Y, 7);
 end
-CreateMinimapSignal = API.CreateMinimapSignal;
 
 ---
 -- Erstellt eine statische Markierung auf der Minimap.
@@ -117,7 +116,6 @@ function API.CreateMinimapMarker(_PlayerID, _PlayerIDOrColorTable, _Position)
     end
     return ModuleMinimap.Global:CreateMinimapMarker(_PlayerID, _PlayerIDOrColorTable, Position.X, Position.Y, 6);
 end
-CreateMinimapMarker = API.CreateMinimapMarker;
 
 ---
 -- Erstellt eine pulsierende Markierung auf der Minimap.
@@ -147,7 +145,6 @@ function API.CreateMinimapPulse(_PlayerID, _PlayerIDOrColorTable, _Position)
     end
     return ModuleMinimap.Global:CreateMinimapMarker(_PlayerID, _PlayerIDOrColorTable, Position.X, Position.Y, 1);
 end
-CreateMinimapPulse = API.CreateMinimapPulse;
 
 ---
 -- Zerstört eine Markierung auf der Minimap.
@@ -167,5 +164,4 @@ function API.DestroyMinimapSignal(_ID)
     end
     ModuleMinimap.Global:DestroyMinimapMarker(_ID);
 end
-DestroyMinimapMarker = API.DestroyMinimapSignal;
 

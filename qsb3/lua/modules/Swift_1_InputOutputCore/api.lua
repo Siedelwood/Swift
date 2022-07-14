@@ -77,8 +77,6 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 --
 -- <b>Hinweis:</b> Texte werden automatisch lokalisiert und Platzhalter ersetzt.
 --
--- <b>Alias:</b> GUI_Note
---
 -- @param[type=string] _Text Anzeigetext
 -- @within Anwenderfunktionen
 --
@@ -87,15 +85,12 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 function API.Note(_Text)
     ModuleInputOutputCore.Shared:Note(_Text);
 end
-GUI_Note = API.Note;
 
 ---
 -- Schreibt eine Nachricht in das Debug Window. Der Text erscheint links am
 -- Bildschirm und verbleibt dauerhaft am Bildschirm.
 --
 -- <b>Hinweis:</b> Texte werden automatisch lokalisiert und Platzhalter ersetzt.
---
--- <b>Alias:</b> GUI_StaticNote
 --
 -- @param[type=string] _Text Anzeigetext
 -- @within Anwenderfunktionen
@@ -105,15 +100,12 @@ GUI_Note = API.Note;
 function API.StaticNote(_Text)
     ModuleInputOutputCore.Shared:StaticNote(_Text);
 end
-GUI_StaticNote = API.StaticNote;
 
 ---
 -- Schreibt eine Nachricht unten in das Nachrichtenfenster. Die Nachricht
 -- verschwindet nach einigen Sekunden.
 --
 -- <b>Hinweis:</b> Texte werden automatisch lokalisiert und Platzhalter ersetzt.
---
--- <b>Alias:</b> GUI_Message<
 --
 -- @param[type=string] _Text Anzeigetext
 -- @within Anwenderfunktionen
@@ -123,7 +115,6 @@ GUI_StaticNote = API.StaticNote;
 function API.Message(_Text)
     ModuleInputOutputCore.Shared:Message(_Text);
 end
-GUI_Message = API.Message;
 
 ---
 -- Löscht alle Nachrichten im Debug Window.
@@ -135,7 +126,6 @@ GUI_Message = API.Message;
 function API.ClearNotes()
     ModuleInputOutputCore.Shared:ClearNotes();
 end
-GUI_ClearNotes = API.ClearNotes;
 
 ---
 -- Ersetzt alle Platzhalter im Text oder in der Table.

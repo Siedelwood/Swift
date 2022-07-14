@@ -137,8 +137,6 @@ end
 -- Der Faktor gibt an, um wie viel die Größe des Entity verändert wurde, im
 -- Vergleich zur normalen Größe. Faktor 1 entspricht der normalen Größe.
 --
--- <b>Alias</b>: GetScale
---
 -- @param _Entity Entity (Scriptname oder ID)
 -- @return[type=number] Größenfaktor des Entity
 -- @within Anwenderfunktionen
@@ -150,13 +148,10 @@ function API.GetEntityScale(_Entity)
     end
     return API.GetFloat(_Entity, QSB.ScriptingValue.Size);
 end
-GetScale = API.GetEntityScale;
 
 ---
 -- Setzt die Größe des Entity. Wenn es sich um einen Siedler handelt, wird
 -- versucht einen neuen Speed Factor zu setzen.
---
--- <b>Alias</b>: SetScale
 --
 -- @param              _Entity Entity (Scriptname oder ID)
 -- @param[type=number] _Scale Neuer Größenfaktor
@@ -182,12 +177,9 @@ function API.SetEntityScale(_Entity, _Scale)
         end
     end
 end
-SetScale = API.SetEntityScale;
 
 ---
 -- Gibt den Besitzer des Entity zurück.
---
--- <b>Alias</b>: GetPlayer
 --
 -- @param[type=string] _Entity Scriptname des Entity
 -- @return[type=number] Besitzer des Entity
@@ -200,12 +192,9 @@ function API.GetEntityPlayer(_Entity)
     end
     return API.GetInteger(_Entity, QSB.ScriptingValue.Player);
 end
-GetPlayer = API.GetEntityPlayer;
 
 ---
 -- Setzt den Besitzer des Entity.
---
--- <b>Alias</b>: SetPlayer
 --
 -- @param               _Entity  Entity (Scriptname oder ID)
 -- @param[type=number] _PlayerID ID des Besitzers
@@ -239,12 +228,9 @@ function API.SetEntityPlayer(_Entity, _PlayerID)
     end
     return EntityID;
 end
-SetPlayer = API.SetEntityPlayer;
 
 ---
 -- Gibt zurück, ob das Entity sichtbar ist.
---
--- <b>Alias</b>: IsVisible
 --
 -- @param _Entity Entity (Scriptname oder ID)
 -- @return[type=boolean] Ist sichtbar
@@ -257,12 +243,9 @@ function API.IsEntityVisible(_Entity)
     end
     return API.GetInteger(_Entity, QSB.ScriptingValue.Visible) == 801280;
 end
-IsVisible = API.IsEntityVisible;
 
 ---
 -- Ändert die Sichtbarkeit des Entity.
---
--- <b>Alias</b>: SetVisible
 --
 -- @param               _Entity   Entity (Scriptname oder ID)
 -- @param[type=boolean] _Visible (Optional) Sichtbarkeit ändern
@@ -279,12 +262,9 @@ function API.SetEntityVisible(_Entity, _Visible)
     end
     Logic.SetVisible(EntityID, _Visible == true);
 end
-SetVisible = API.SetEntityVisible;
 
 ---
 -- Gibt zurück, ob eine NPC-Interaktion mit dem Siedler möglich ist.
---
--- <b>Alias</b>: IsNpc
 --
 -- @param _Entity Entity (Scriptname oder ID)
 -- @return[type=boolean] Ist NPC
@@ -298,12 +278,9 @@ function API.IsEntityActiveNpc(_Entity)
     error("API.IsEntityActiveNpc: _Entity (" ..tostring(_Entity).. ") does not exist!");
     return false;
 end
-IsNpc = API.IsEntityActiveNpc;
 
 ---
 -- Gibt das Bewegungsziel des Entity zurück.
---
--- <b>Alias</b>: GetDestination
 --
 -- @param _Entity Entity (Scriptname oder ID)
 -- @return[type=table] Positionstabelle
@@ -324,7 +301,6 @@ function API.GetEntityMovementTarget(_Entity)
     error("API.GetEntityMovementTarget: _Entity (" ..tostring(_Entity).. ") does not exist!");
     return {X= 0, Y= 0, Z= 0};
 end
-GetDestination = API.GetEntityMovementTarget;
 
 -- Override
 

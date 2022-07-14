@@ -208,7 +208,6 @@ function API.SetupObject(_Description)
     return ModuleObjectInteraction.Global:CreateObject(_Description);
 end
 API.CreateObject = API.SetupObject;
-CreateObject = API.SetupObject;
 
 ---
 -- Zerstört die Interation mit dem Objekt.
@@ -218,7 +217,7 @@ CreateObject = API.SetupObject;
 -- @param[type=string] _ScriptName Skriptname des Objektes
 -- @see API.SetupObject
 -- @see API.ResetObject
--- @usage API.ResetObject("MyObject");
+-- @usage API.DisposeObject("MyObject");
 --
 function API.DisposeObject(_ScriptName)
     if GUI or not IO[_ScriptName] then
@@ -226,7 +225,6 @@ function API.DisposeObject(_ScriptName)
     end
     ModuleObjectInteraction.Global:DestroyObject(_ScriptName);
 end
-DisposeObject = API.DisposeObject;
 
 ---
 -- Setzt das interaktive Objekt zurück. Dadurch verhält es sich, wie vor der
@@ -249,7 +247,6 @@ function API.ResetObject(_ScriptName)
     ModuleObjectInteraction.Global:ResetObject(_ScriptName);
     API.InteractiveObjectDeactivate(_ScriptName);
 end
-ResetObject = API.ResetObject;
 
 ---
 -- Aktiviert ein Interaktives Objekt, sodass es von den Spielern
@@ -338,10 +335,10 @@ InteractiveObjectDeactivate = API.InteractiveObjectDeactivate;
 -- @within Anwenderfunktionen
 --
 -- @usage
--- API.SetObjectCustomName("D_X_ChestClosed", {de = "Schatztruhe", en = "Treasure"});
--- API.SetObjectCustomName("D_X_ChestOpenEmpty", "Leere Schatztruhe");
+-- API.InteractiveObjectSetName("D_X_ChestClosed", {de = "Schatztruhe", en = "Treasure"});
+-- API.InteractiveObjectSetName("D_X_ChestOpenEmpty", "Leere Schatztruhe");
 --
-function API.SetObjectCustomName(_Key, _Text)
+function API.InteractiveObjectSetName(_Key, _Text)
     if GUI then
         return;
     end
@@ -352,6 +349,5 @@ function API.SetObjectCustomName(_Key, _Text)
         table.tostring(IO_UserDefindedNames)
     ));
 end
-API.InteractiveObjectSetName = API.SetObjectCustomName;
-AddCustomIOName = API.SetObjectCustomName;
+API.SetObjectCustomName = API.InteractiveObjectSetName;
 

@@ -58,7 +58,7 @@ function B_Goal_MoveToPosition:AddParameter(_Index, _Parameter)
     elseif (_Index == 2) then
         self.Distance = _Parameter * 1
     elseif (_Index == 3) then
-        self.Marker = AcceptAlternativeBoolean(_Parameter)
+        self.Marker = API.ToBoolean(_Parameter)
     end
 end
 
@@ -331,7 +331,7 @@ function B_Goal_DestroySpawnedEntities:AddParameter(_Index, _Parameter)
         self.Amount = _Parameter * 1;
     elseif (_Index == 2) then
         _Parameter = _Parameter or "false";
-        self.Prefixed = AcceptAlternativeBoolean(_Parameter);
+        self.Prefixed = API.ToBoolean(_Parameter);
     end
 end
 
@@ -459,10 +459,10 @@ function B_Goal_StealGold:AddParameter(_Index, _Parameter)
         self.Target = PlayerID * 1;
     elseif (_Index == 2) then
         _Parameter = _Parameter or "false"
-        self.CheatEarnings = AcceptAlternativeBoolean(_Parameter);
+        self.CheatEarnings = API.ToBoolean(_Parameter);
     elseif (_Index == 3) then
         _Parameter = _Parameter or "true"
-        self.Printout = AcceptAlternativeBoolean(_Parameter);
+        self.Printout = API.ToBoolean(_Parameter);
     end
     self.StohlenGold = 0;
 end
@@ -583,7 +583,7 @@ function B_Goal_StealFromBuilding:AddParameter(_Index, _Parameter)
         self.Building = _Parameter
     elseif (_Index == 1) then
         _Parameter = _Parameter or "false"
-        self.CheatEarnings = AcceptAlternativeBoolean(_Parameter);
+        self.CheatEarnings = API.ToBoolean(_Parameter);
     end
     self.RobberList = {};
 end
@@ -737,10 +737,10 @@ function B_Goal_SpyOnBuilding:AddParameter(_Index, _Parameter)
         self.Building = _Parameter
     elseif (_Index == 1) then
         _Parameter = _Parameter or "false"
-        self.CheatEarnings = AcceptAlternativeBoolean(_Parameter);
+        self.CheatEarnings = API.ToBoolean(_Parameter);
     elseif (_Index == 2) then
         _Parameter = _Parameter or "true"
-        self.Delete = AcceptAlternativeBoolean(_Parameter)
+        self.Delete = API.ToBoolean(_Parameter)
     end
 end
 
@@ -1021,7 +1021,7 @@ function B_Reprisal_SetPosition:AddParameter( _Index, _Parameter )
     elseif (_Index == 1) then
         self.Target = _Parameter;
     elseif (_Index == 2) then
-        self.FaceToFace = AcceptAlternativeBoolean(_Parameter)
+        self.FaceToFace = API.ToBoolean(_Parameter)
     elseif (_Index == 3) then
         self.Distance = (_Parameter ~= nil and tonumber(_Parameter)) or 100;
     end
@@ -1175,7 +1175,7 @@ function B_Reprisal_SetVisible:AddParameter( _Index, _Parameter )
     if (_Index == 0) then
         self.Entity = _Parameter;
     elseif (_Index == 1) then
-        self.Visible = AcceptAlternativeBoolean(_Parameter)
+        self.Visible = API.ToBoolean(_Parameter)
     end
 end
 
@@ -1268,7 +1268,7 @@ function B_Reprisal_SetVulnerability:AddParameter( _Index, _Parameter )
     if (_Index == 0) then
         self.Entity = _Parameter;
     elseif (_Index == 1) then
-        self.Vulnerability = AcceptAlternativeBoolean(_Parameter)
+        self.Vulnerability = API.ToBoolean(_Parameter)
     end
 end
 
@@ -1774,7 +1774,7 @@ function B_Reward_AI_SetEntityControlled:AddParameter( _Index, _Parameter )
     if (_Index == 0) then
         self.Entity = _Parameter;
     elseif (_Index == 1) then
-        self.Hidden = AcceptAlternativeBoolean(_Parameter)
+        self.Hidden = API.ToBoolean(_Parameter)
     end
 end
 

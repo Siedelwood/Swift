@@ -41,7 +41,6 @@ function API.AllowExtendedZoom(_Flag)
         ModuleExtendedCamera.Local:DeactivateExtendedZoom();
     end
 end
-AllowExtendedZoom = API.AllowExtendedZoom;
 
 ---
 -- Fokusiert die Kamera auf dem Primärritter des Spielers.
@@ -54,7 +53,6 @@ AllowExtendedZoom = API.AllowExtendedZoom;
 function API.FocusCameraOnKnight(_Player, _Rotation, _ZoomFactor)
     API.FocusCameraOnEntity(Logic.GetKnightID(_Player), _Rotation, _ZoomFactor)
 end
-SetCameraToPlayerKnight = API.FocusCameraOnKnight;
 
 ---
 -- Fokusiert die Kamera auf dem Entity.
@@ -84,5 +82,4 @@ function API.FocusCameraOnEntity(_Entity, _Rotation, _ZoomFactor)
     end
     return ModuleExtendedCamera.Local:SetCameraToEntity(_Entity, _Rotation, _ZoomFactor);
 end
-SetCameraToEntity = API.FocusCameraOnEntity;
 

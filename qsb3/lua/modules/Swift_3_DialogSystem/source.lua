@@ -224,7 +224,7 @@ function ModuleDialogSystem.Global:DisplayPage(_PlayerID, _PageID)
         Extension = API.ConvertPlaceholders(API.Localize(ModuleDialogSystem.Shared.Text.Continue));
     end
     local Sender = Page.Sender or _PlayerID;
-    AddQuest {
+    API.CreateQuest {
         Name        = QuestName,
         Suggestion  = QuestText .. Extension,
         Sender      = (Sender == -1 and _PlayerID) or Sender,

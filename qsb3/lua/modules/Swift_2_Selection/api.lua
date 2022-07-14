@@ -102,7 +102,6 @@ function API.IsEntityInSelection(_Entity, _PlayerID)
     end
     return false;
 end
-IsEntitySelected = API.IsEntityInSelection;
 
 ---
 -- Gibt die ID des selektierten Entity zurück.
@@ -126,7 +125,6 @@ function API.GetSelectedEntity(_PlayerID)
     end
     return SelectedEntity or 0;
 end
-GetSelectedEntity = API.GetSelectedEntity;
 
 ---
 -- Gibt alle selektierten Entities zurück.
@@ -147,7 +145,6 @@ function API.GetSelectedEntities(_PlayerID)
     end
     return SelectedEntities;
 end
-GetSelectedEntities = API.GetSelectedEntities;
 
 -- Local callbacks
 

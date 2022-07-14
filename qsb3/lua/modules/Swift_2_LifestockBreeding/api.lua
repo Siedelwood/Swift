@@ -44,8 +44,6 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- diese Funktion genommen werden. Natürlich kann das Recht auf diesem Weg
 -- auch wieder zurückgegeben werden.
 --
--- <p><b>Alias:</b> UseBreedSheeps</p>
---
 -- @param[type=boolean] _Flag Schafzucht aktiv/inaktiv
 -- @within Anwenderfunktionen
 --
@@ -70,7 +68,6 @@ function API.UseBreedSheeps(_Flag)
         Logic.ExecuteInLuaLocalState("MerchantSystem.BasePrices[Goods.G_Sheep] = " ..Price);
     end
 end
-UseBreedSheeps = API.UseBreedSheeps;
 
 ---
 -- Erlaube oder verbiete dem Spieler Kühe zu züchten.
@@ -78,8 +75,6 @@ UseBreedSheeps = API.UseBreedSheeps;
 -- Wenn der Spieler keine Kühe züchten soll, kann ihm dieses Recht durch
 -- diese Funktion genommen werden. Natürlich kann das Recht auf diesem Weg
 -- auch wieder zurückgegeben werden.
---
--- <p><b>Alias:</b> UseBreedCattle</p>
 --
 -- @param[type=boolean] _Flag Kuhzucht aktiv/inaktiv
 -- @within Anwenderfunktionen
@@ -105,7 +100,6 @@ function API.UseBreedCattle(_Flag)
         Logic.ExecuteInLuaLocalState("MerchantSystem.BasePrices[Goods.G_Cow] = " ..Price);
     end
 end
-UseBreedCattle = API.UseBreedCattle;
 
 ---
 -- Aktiviert oder deaktiviert den "Baby Mode" für Schafe.
@@ -113,8 +107,6 @@ UseBreedCattle = API.UseBreedCattle;
 -- Ist der Modus aktiv, werden neu gekaufte Tiere mit 40% ihrer Große erzeugt
 -- und wachseln allmählich heran. Dies ist nur kosmetisch und hat keinen
 -- Einfluss auf ihre Funktion.
---
--- <b>Alias</b>: SetSheepBabyMode
 --
 -- @param[type=boolean] _Flag Baby Mode aktivieren/deaktivieren
 -- @within Anwenderfunktionen
@@ -129,7 +121,6 @@ function API.SetSheepBabyMode(_Flag)
     end
     ModuleLifestockBreeding.Global.SheepBaby = _Flag == true;
 end
-SetSheepBabyMode = API.SetSheepBabyMode;
 
 ---
 -- Setzt die Dauer des Fütterungsintervals für Schafe.
@@ -139,8 +130,6 @@ SetSheepBabyMode = API.SetSheepBabyMode;
 --
 -- <b>Hinweis:</b> Das Interval ist auf 45 Sekunden voreingestellt und kann
 -- nicht unter 15 Sekunden gesenkt werden.
---
--- <b>Alias</b>: SetSheepFeedingTimer
 --
 -- @param[type=number] _Timer Fütterungsinterval
 -- @within Anwenderfunktionen
@@ -159,7 +148,6 @@ function API.SetSheepFeedingInvervalForBreeding(_Timer)
     end
     ModuleLifestockBreeding.Global.SheepFeedingTimer = _Timer;
 end
-SetSheepFeedingTimer = API.SetSheepFeedingInvervalForBreeding;
 
 ---
 -- Aktiviert oder deaktiviert den "Baby Mode" für Kühe.
@@ -167,8 +155,6 @@ SetSheepFeedingTimer = API.SetSheepFeedingInvervalForBreeding;
 -- Ist der Modus aktiv, werden neu gekaufte Tiere mit 40% ihrer Große erzeugt
 -- und wachseln allmählich heran. Dies ist nur kosmetisch und hat keinen
 -- Einfluss auf ihre Funktion.
---
--- <b>Alias</b>: SetCattleBaby
 --
 -- @param[type=boolean] _Flag Baby Mode aktivieren/deaktivieren
 -- @within Anwenderfunktionen
@@ -183,7 +169,6 @@ function API.SetCattleBabyMode(_Flag)
     end
     ModuleLifestockBreeding.Global.CattleBaby = _Flag == true;
 end
-SetCattleBaby = API.SetCattleBaby;
 
 ---
 -- Setzt die Dauer des Fütterungsintervals für Kühe.
@@ -193,8 +178,6 @@ SetCattleBaby = API.SetCattleBaby;
 --
 -- <b>Hinweis:</b> Das Interval ist auf 45 Sekunden voreingestellt und kann
 -- nicht unter 15 Sekunden gesenkt werden.
---
--- <b>Alias</b>: SetCattleFeedingTimer
 --
 -- @param[type=number] _Timer Fütterungsinterval
 -- @within Anwenderfunktionen
@@ -213,7 +196,6 @@ function API.SetCattleFeedingInvervalForBreeding(_Timer)
     end
     ModuleLifestockBreeding.Global.CattleFeedingTimer = _Timer;
 end
-SetCattleFeedingTimer = API.SetCattleFeedingInvervalForBreeding;
 
 ---
 -- Stellt die benötigte Menge an Tieren ein.
@@ -222,8 +204,6 @@ SetCattleFeedingTimer = API.SetCattleFeedingInvervalForBreeding;
 -- keine neuen Tiere gezüchtet werden.
 --
 -- <b>Hinweis:</b> Die Mindestmenge ist standardmäßig auf 2 eingestellt.
---
--- <b>Alias</b>: SetBreedingAnimalsAmount
 --
 -- @param[type=number] _Amount Menge an Tieren
 -- @within Anwenderfunktionen
@@ -243,7 +223,6 @@ function API.SetRequiredAnimalsInCatchmentArea(_Amount)
     end
     ModuleLifestockBreeding.Global.MinAmountNearby = _Amount;
 end
-SetBreedingAnimalsAmount = API.SetRequiredAnimalsInCatchmentArea;
 
 ---
 -- Legt die Größe des Einzugsbereich des Gatters fest.
@@ -253,8 +232,6 @@ SetBreedingAnimalsAmount = API.SetRequiredAnimalsInCatchmentArea;
 --
 -- <b>Hinweis:</b> Der Einzugsbereich ist standardmäßig auf 3000 eingestellt
 -- und kann nicht unter 800 gesenkt werden.
---
--- <b>Alias</b>: SetBreedingAreaSize
 --
 -- @param[type=number] _AreaSize Einzugsbereich des Gatters
 -- @within Anwenderfunktionen
@@ -276,5 +253,4 @@ function API.SetSizeOfCatchmentAreaOfPasture(_AreaSize)
     end
     ModuleLifestockBreeding.Global.AreaSizeNearby = _AreaSize;
 end
-SetBreedingAreaSize = API.SetSizeOfCatchmentAreaOfPasture;
 
