@@ -390,6 +390,7 @@ function ModuleInterfaceCore.Local:OverrideStartTheatrePlay()
         local EntityID = GUI.GetSelectedEntity();
         local Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
         if not Button then
+            SetIcon(WidgetID, {16,2});
             return GUI_BuildingButtons.StartTheatrePlayUpdate_Orig_InterfaceCore();
         end
         Button.Update(WidgetID, EntityID);
