@@ -86,7 +86,6 @@ function API.CreateRandomChest(_Name, _Good, _Min, _Max, _Callback)
     end
     ModuleInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _Callback, false);
 end
-CreateRandomChest = API.CreateRandomChest;
 
 ---
 -- Erstellt ein beliebiges IO mit einer zufälligen Menge an Waren
@@ -144,7 +143,6 @@ function API.CreateRandomTreasure(_Name, _Good, _Min, _Max, _Callback)
     end
     ModuleInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _Callback, false, true);
 end
-CreateRandomTreasure = API.CreateRandomTreasure;
 
 ---
 -- Erstellt eine Schatztruhe mit einer zufälligen Menge Gold.
@@ -165,7 +163,6 @@ function API.CreateRandomGoldChest(_Name)
     end
     ModuleInteractiveChests.Global:CreateRandomGoldChest(_Name);
 end
-CreateRandomGoldChest = API.CreateRandomGoldChest;
 
 ---
 -- Erstellt eine Schatztruhe mit einer zufälligen Art und Menge
@@ -190,7 +187,6 @@ function API.CreateRandomResourceChest(_Name)
     end
     ModuleInteractiveChests.Global:CreateRandomResourceChest(_Name);
 end
-CreateRandomResourceChest = API.CreateRandomResourceChest;
 
 ---
 -- Erstellt eine Schatztruhe mit einer zufälligen Art und Menge
@@ -215,5 +211,4 @@ function API.CreateRandomLuxuryChest(_Name)
     end
     ModuleInteractiveChests.Global:CreateRandomLuxuryChest(_Name);
 end
-CreateRandomLuxuryChest = API.CreateRandomLuxuryChest;
 

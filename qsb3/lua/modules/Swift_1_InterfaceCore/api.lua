@@ -89,7 +89,6 @@ function API.SetTooltipNormal(_title, _text, _disabledText)
     end
     ModuleInterfaceCore.Local:TextNormal(_title, _text, _disabledText);
 end
-UserSetTextNormal = API.SetTooltipNormal;
 
 ---
 -- Ändert den Beschreibungstext und die Kosten eines Button.

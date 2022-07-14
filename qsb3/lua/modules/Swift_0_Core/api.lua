@@ -949,7 +949,6 @@ end
 function API.ToBoolean(_Value)
     return Swift:ToBoolean(_Value);
 end
-AcceptAlternativeBoolean = API.ToBoolean;
 
 ---
 -- Rundet eine Dezimalzahl kaufmännisch ab.
@@ -996,7 +995,6 @@ function API.Round(_Value, _DecimalDigits)
     end
     return tonumber(Value);
 end
-Round = API.Round;
 
 ---
 -- Fügt eine Bedingung für Quicksaves hinzu.
@@ -1422,7 +1420,6 @@ function API.GetEntityType(_Entity)
     error("API.EntityGetType: _Entity (" ..tostring(_Entity).. ") must be a leader with soldiers!");
     return 0;
 end
-GetType = API.GetEntityType
 
 ---
 -- Gibt den Typnamen des Entity zurück.
@@ -1438,7 +1435,6 @@ function API.GetEntityTypeName(_Entity)
     end
     return Logic.GetEntityTypeName(API.GetEntityType(_Entity));
 end
-GetTypeName = API.GetEntityTypeName;
 
 ---
 -- Setzt das Entity oder das Battalion verwundbar oder unverwundbar.
@@ -1462,7 +1458,6 @@ function API.SetEntityVulnerableFlag(_Entity, _Flag)
         Logic.SetEntityInvulnerabilityFlag(EntityID, VulnerabilityFlag);
     end
 end
-SetVulnerable = API.SetEntityVulnerableFlag;
 
 MakeVulnerable = function(_Entity)
     API.SetEntityVulnerableFlag(_Entity, false);
@@ -1486,8 +1481,6 @@ end
 -- @within Entity
 -- @usage -- API-Call
 -- API.SendCart(Logic.GetStoreHouse(1), 2, Goods.G_Grain, 45)
--- -- Legacy-Call mit ID-Speicherung
--- local ID = SendCart("Position_1", 5, Goods.G_Wool, 5)
 --
 function API.SendCart(_Position, _PlayerID, _GoodType, _Amount, _CartOverlay, _IgnoreReservation, _Overtake)
     local OriginalID = GetID(_Position);
@@ -1552,7 +1545,6 @@ function API.SendCart(_Position, _PlayerID, _GoodType, _Amount, _CartOverlay, _I
     info("API.SendCart: Cart has been send successfully.");
     return ID
 end
-SendCart = API.SendCart;
 
 ---
 -- Gibt die relative Gesundheit des Entity zurück.
@@ -1574,7 +1566,6 @@ function API.GetEntityHealth(_Entity)
     error("API.GetEntityHealth: _Entity (" ..tostring(_Entity).. ") does not exist!");
     return 0;
 end
-GetHealth = API.GetEntityHealth;
 
 ---
 -- Setzt die Gesundheit des Entity. Optional kann die Gesundheit relativ zur
@@ -1619,7 +1610,6 @@ function API.ChangeEntityHealth(_Entity, _Health, _Relative)
     end
     error("API.ChangeEntityHealth: _Entity (" ..tostring(_Entity).. ") does not exist!");
 end
-SetHealth = API.ChangeEntityHealth;
 
 ---
 -- Gibt alle Kategorien zurück, zu denen das Entity gehört.
@@ -1642,7 +1632,6 @@ function API.GetEntityCategoyList(_Entity)
     end
     return Categories;
 end
-GetCategories = API.GetEntityCategoyList;
 
 ---
 -- Prüft, ob das Entity mindestens eine der Kategorien hat.
@@ -1665,7 +1654,6 @@ function API.IsEntityInAtLeastOneCategory(_Entity, ...)
     error("API.IsEntityInAtLeastOneCategory: _Entity (" ..tostring(_Entity).. ") does not exist!");
     return false;
 end
-IsInCategory = API.IsEntityInAtLeastOneCategory;
 
 ---
 -- Gibt die aktuelle Tasklist des Entity zurück.
@@ -1683,7 +1671,6 @@ function API.GetEntityTaskList(_Entity)
     local CurrentTask = Logic.GetCurrentTaskList(EntityID) or "";
     return TaskLists[CurrentTask];
 end
-GetTask = API.GetEntityTaskList;
 
 ---
 -- Weist dem Entity ein Neues Model zu.
@@ -1716,7 +1703,6 @@ function API.SetEntityModel(_Entity, _NewModel, _AnimSet)
         Logic.SetModelAndAnimSet(EntityID, _NewModel, _AnimSet);
     end
 end
-SetModel = API.SetEntityModel;
 
 ---
 -- Setzt die aktuelle Tasklist des Entity.
@@ -1740,7 +1726,6 @@ function API.SetEntityTaskList(_Entity, _NewTask)
     end
     Logic.SetTaskList(EntityID, _NewTask);
 end
-SetTask = API.SetEntityTaskList;
 
 ---
 -- Gibt die Menge an Rohstoffen des Entity zurück. Optional kann
@@ -1758,7 +1743,6 @@ function API.GetResourceAmount(_Entity)
     error("API.GetResourceAmount: _Entity (" ..tostring(_Entity).. ") does not exist!");
     return 0;
 end
-GetResource = API.GetResourceAmount
 
 ---
 -- Setzt die Menge an Rohstoffen und die durchschnittliche Auffüllmenge
@@ -1791,7 +1775,6 @@ function API.SetResourceAmount(_Entity, _StartAmount, _RefillAmount)
         QSB.RefillAmounts[EntityID] = _RefillAmount;
     end
 end
-SetResourceAmount = API.SetResourceAmount;
 
 ---
 -- Ermittelt alle Entities in der Kategorie auf dem Territorium und gibt
@@ -1826,7 +1809,6 @@ function API.GetEntitiesOfCategoryInTerritory(_PlayerID, _Category, _Territory)
     end
     return PlayerEntities;
 end
-GetEntitiesOfCategoryInTerritory = API.GetEntitiesOfCategoryInTerritory;
 
 ---
 -- Sucht auf den angegebenen Territorium nach Entities mit bestimmten
@@ -1859,8 +1841,6 @@ function API.GetEntitiesOfCategoriesInTerritories(_PlayerID, _Category, _Territo
     end
     return PlayerEntities;
 end
-GetEntitiesOfCategoriesInTerritories = API.GetEntitiesOfCategoriesInTerritories;
-EntitiesInCategories = API.GetEntitiesOfCategoriesInTerritories;
 
 ---
 -- Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.
@@ -1884,7 +1864,6 @@ function API.CreateEntityName(_EntityID)
         return name;
     end
 end
-GiveEntityName = API.CreateEntityName;
 
 -- Mögliche (zufällige) Siedler, getrennt in männlich und weiblich.
 QSB.PossibleSettlerTypes = {
@@ -1979,7 +1958,6 @@ function API.CountSoldiersOfGroup(_Entity)
     local SoldierTable = {Logic.GetSoldiersAttachedToLeader(EntityID)};
     return SoldierTable[1];
 end
-CoundSoldiers = API.CountSoldiersOfGroup;
 
 ---
 -- Gibt die IDs aller Soldaten zurück, die zum Battalion gehören.
@@ -2001,7 +1979,6 @@ function API.GetGroupSoldiers(_Entity)
     table.remove(SoldierTable, 1);
     return SoldierTable;
 end
-GetSoldiers = API.GetGroupSoldiers;
 
 ---
 -- Gibt den Leader des Soldaten zurück.
@@ -2021,7 +1998,6 @@ function API.GetGroupLeader(_Entity)
     end
     return Logic.SoldierGetLeaderEntityID(EntityID);
 end
-GetLeader = API.GetGroupLeader;
 
 ---
 -- Heilt das Entity um die angegebene Menge an Gesundheit.
@@ -2045,7 +2021,6 @@ function API.GroupHeal(_Entity, _Amount)
     end
     API.ChangeEntityHealth(EntityID, Logic.GetEntityHealth(EntityID) + _Amount);
 end
-HealEntity = API.GroupHeal;
 
 ---
 -- Verwundet ein Entity oder ein Battallion um die angegebene
@@ -2096,7 +2071,6 @@ function API.GroupHurt(_Entity, _Damage, _Attacker)
         end
     end
 end
-HurtEntity = API.GroupHurt;
 
 -- Object --
 
@@ -2157,7 +2131,6 @@ function API.GetEntityOrientation(_Entity)
     error("API.GetEntityOrientation: _Entity (" ..tostring(_Entity).. ") does not exist!");
     return 0;
 end
-GetOrientation = API.GetEntityOrientation;
 
 ---
 -- Setzt die Ausrichtung des Entity.
@@ -2181,7 +2154,6 @@ function API.SetEntityOrientation(_Entity, _Orientation)
         error("API.SetEntityOrientation: _Entity (" ..tostring(_Entity).. ") does not exist!");
     end
 end
-SetOrientation = API.SetEntityOrientation;
 
 ---
 -- Rotiert ein Entity, sodass es zum Ziel schaut.
@@ -2246,7 +2218,6 @@ function API.Confront(_entity, _entityToLookAt)
     API.LookAt(_entity, _entityToLookAt);
     API.LookAt(_entityToLookAt, _entity);
 end
-ConfrontEntities = API.LookAt;
 
 ---
 -- Bestimmt die Distanz zwischen zwei Punkten. Es können Entity-IDs,
@@ -2423,7 +2394,6 @@ function API.IsValidPosition(_pos)
     end
     return false;
 end
-IsValidPosition = API.IsValidPosition;
 
 -- Math --
 
@@ -2453,7 +2423,6 @@ function API.GetGeometricFocus(...)
         Z= PositionData.Z * (1/ValidEntryCount);
     }
 end
-GetAveragePosition = API.GetGeometricFocus;
 
 ---
 -- Gib eine Position auf einer Linie im relativen Abstand zur ersten Position
@@ -2558,7 +2527,7 @@ API.GetRelatiePos = API.GetCirclePosition;
 -- @usage local PositionList = API.GetCirclePosition("Position", 3000, 6, 45);
 --
 function API.GetCirclePositions(_Target, _Distance, _Periode, _Offset)
-    local Periode = Round(360 / _Periode, 0);
+    local Periode = API.Round(360 / _Periode, 0);
     local PositionList = {};
     for i= (Periode + _Offset), (360 + _Offset) do
         local Section = API.GetCirclePosition(_Target, _Distance, i);
