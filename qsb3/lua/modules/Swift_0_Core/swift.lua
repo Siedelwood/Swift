@@ -72,8 +72,6 @@ function Swift:LoadCore()
         self:InitalizeCallbackGlobal();
         self:OverrideOnMPGameStart();
         self:DisableLogicFestival();
-        -- Fixme: Causes game freeze
-        -- self:LogGlobalCFunctions();
     end
 
     if self:IsLocalEnvironment() then
@@ -83,8 +81,6 @@ function Swift:LoadCore()
         self:OverrideDoQuicksave();
         self:InitalizeCallbackLocal();
         self:ValidateTerritories();
-        -- Fixme: Causes game freeze
-        -- self:LogLocalCFunctions();
 
         -- Saving human player ID makes only sense in singleplayer context
         -- cause in multiplayer there would be more than one.
@@ -504,46 +500,6 @@ function warn(_Text, _Silent)
 end
 function error(_Text, _Silent)
     Swift:Log("ERROR: " .._Text, LOG_LEVEL_ERROR, not _Silent);
-end
-
-function Swift:LogCFunctionTable(_TableName)
-    if _G[_TableName] and type(_G[_TableName]) == "table" then
-        for k, v in pairs(_G[_TableName]) do
-            if k ~= "ExecuteInLuaLocalState" and k ~= "SendScriptCommand" then
-                if type(v) == "function" then
-                    _G[_TableName][k.. "_Orig_SwiftCore"] = v;
-                    _G[_TableName][k] = function(...)
-                        if Swift.m_FileLogLevel == LOG_LEVEL_ALL then
-                            local ArgsString = "";
-                            for i=1, #arg do
-                                local Arg = tostring(arg[i]);
-                                if type(arg[i]) == "string" then
-                                    Arg = "\"" .. Arg .. "\"";
-                                end
-                                ArgsString = ArgsString .. (((i > 1 and ", ") or "") .. Arg);
-                            end
-                            if not k:find("Orig") then
-                                debug(string.format("Call: %s.%s(%s)", _TableName, k, ArgsString), true);
-                            end
-                        end
-                        return _G[_TableName][k.. "_Orig_SwiftCore"](unpack(arg));
-                    end
-                end
-            end
-        end;
-    end
-end;
-
-function Swift:LogGlobalCFunctions()
-    self:LogCFunctionTable("AICore");
-    self:LogCFunctionTable("Logic");
-end
-
-function Swift:LogLocalCFunctions()
-    self:LogCFunctionTable("Display");
-    self:LogCFunctionTable("Game");
-    self:LogCFunctionTable("GUI");
-    self:LogCFunctionTable("Logic");
 end
 
 -- Lua base functions

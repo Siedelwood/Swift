@@ -33,14 +33,18 @@ You may use and modify this file unter the terms of the MIT licence.
 ---
 -- Mögliche Prädikate für die Suche.
 --
--- @field OfID (_ID) - Schränkt auf eine bestimmte EntityID ein.
--- @field OfName (_Name) - Schränkt auf eine bestimmten Skriptnamen ein.
--- @field OfNamePrefix (_Prefix) - Schränkt auf Entities ein, deren Name mit dem Präfix beginnt.
--- @field OfNameSuffix (_Suffix) - Schränkt auf Entities ein, deren Name mit dem Suffix endet.
--- @field OfType (_Type) - Schränkt auf Entities mit dem Typen ein.
--- @field OfCategory (_Category) - Schränkt auf Entities mit der Kategorie ein.
+-- @field OfID (_ID, ...) - Schränkt auf eine bestimmte EntityID ein.
+-- @field OfPlayer (_Player, ...) - Schränkt auf Entities eines bestimmten Spielers ein.
+-- @field OfName (_Name, ...) - Schränkt auf eine bestimmten Skriptnamen ein.
+-- @field OfNamePrefix (_Prefix, ...) - Schränkt auf Entities ein, deren Name mit dem Präfix beginnt.
+-- @field OfNameSuffix (_Suffix, ...) - Schränkt auf Entities ein, deren Name mit dem Suffix endet.
+-- @field OfType (_Type, ...) - Schränkt auf Entities mit dem Typen ein.
+-- @field OfCategory (_Category, ...) - Schränkt auf Entities mit der Kategorie ein.
 -- @field InArea (_X, _Y, _AreaSize) - Schränkt auf Entities im Gebiet ein.
--- @field InTerritory (_Territory) - Schränkt auf Entities im Territorium.
+-- @field InTerritory (_Territory, ...) - Schränkt auf Entities im Territorium.
+-- @field IsBuilding () - Schränkt auf Gebäude ein.
+-- @field IsFinishedBuilding () - Schränkt auf fertig gebaute Gebäude ein.
+-- @field IsSettler () - Schränkt auf Siedler ein.
 --
 -- Predikate können verknüpft werden über Operatoren.
 -- <ul>
@@ -52,7 +56,7 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 -- @see API.CommenceEntitySearch
 --
-QSB.Search = QSB.Search or {};
+QSB.SearchPredicate = QSB.SearchPredicate or {};
 
 -- -------------------------------------------------------------------------- --
 
@@ -79,7 +83,7 @@ QSB.Search = QSB.Search or {};
 function API.SearchEntities(_PlayerID)
     if _PlayerID then
         return API.CommenceEntitySearch(
-            {QSB.Search.OfPlayer, _PlayerID}
+            {QSB.SearchPredicate.OfPlayer, _PlayerID}
         );
     end
     return API.CommenceEntitySearch();
@@ -110,16 +114,16 @@ function API.SearchEntitiesInArea(_Area, _Position, _PlayerID, _Type, _Category)
         Position = GetPosition(Position);
     end
     local Predicates = {
-        {QSB.Search.InArea, Position.X, Position.Y, _Area}
+        {QSB.SearchPredicate.InArea, Position.X, Position.Y, _Area}
     }
     if _Type then
-        table.insert(Predicates, 1, {QSB.Search.OfType, _Type});
-    end
-    if _Category then
-        table.insert(Predicates, 1, {QSB.Search.OfCategory, _Category});
+        table.insert(Predicates, 1, {QSB.SearchPredicate.OfType, _Type});
     end
     if _PlayerID then
-        table.insert(Predicates, 1, {QSB.Search.OfPlayer, _PlayerID});
+        table.insert(Predicates, 1, {QSB.SearchPredicate.OfPlayer, _PlayerID});
+    end
+    if _Category then
+        table.insert(Predicates, 1, {QSB.SearchPredicate.OfCategory, _Category});
     end
     return API.CommenceEntitySearch(unpack(Predicates));
 end
@@ -144,16 +148,16 @@ end
 --
 function API.SearchEntitiesInTerritory(_Territory, _PlayerID, _Type, _Category)
     local Predicates = {
-        {QSB.Search.InTerritory, _Territory}
+        {QSB.SearchPredicate.InTerritory, _Territory}
     }
     if _Type then
-        table.insert(Predicates, {QSB.Search.OfType, _Type});
-    end
-    if _Category then
-        table.insert(Predicates, {QSB.Search.OfCategory, _Category});
+        table.insert(Predicates, {QSB.SearchPredicate.OfType, _Type});
     end
     if _PlayerID then
-        table.insert(Predicates, {QSB.Search.OfPlayer, _PlayerID});
+        table.insert(Predicates, {QSB.SearchPredicate.OfPlayer, _PlayerID});
+    end
+    if _Category then
+        table.insert(Predicates, {QSB.SearchPredicate.OfCategory, _Category});
     end
     return API.CommenceEntitySearch(unpack(Predicates));
 end
@@ -173,35 +177,25 @@ end
 -- @param[type=table] ... Liste mit Suchprädikaten
 -- @return[type=table] Liste mit Ergebnissen
 -- @within Anwenderfunktionen
--- @see QSB.Search
+-- @see QSB.SearchPredicate
 --
 -- @usage
 -- -- Es werden alle Kühe und Schafe von Spieler 1 gefunden, die nicht auf den
 -- -- Territorien 7 und 15 sind.
 -- local Result = API.CommenceEntitySearch(
 --     -- Nur Entities von Spieler 1 akzeptieren
---     {QSB.Search.OfPlayer, 1},
+--     {QSB.SearchPredicate.OfPlayer, 1},
 --     -- Nur Entities akzeptieren, die Kühe oder Schafe sind.
 --     {ANY,
---      {QSB.Search.OfCategory, EntityCategories.SheepPasture},
---      {QSB.Search.OfCategory, EntityCategories.CattlePasture}},
+--      {QSB.SearchPredicate.OfCategory, EntityCategories.SheepPasture},
+--      {QSB.SearchPredicate.OfCategory, EntityCategories.CattlePasture}},
 --     -- Nur Entities akzeptieren, die nicht auf den Territorien 7 und 15 sind.
 --     {ALL,
---      {NOT, {QSB.Search.InTerritory, 15}},
---      {NOT, {QSB.Search.InTerritory, 7}}}
+--      {NOT, {QSB.SearchPredicate.InTerritory, 15}},
+--      {NOT, {QSB.SearchPredicate.InTerritory, 7}}}
 -- );
 --
 function API.CommenceEntitySearch(...)
     return ModuleEntitySearch.Shared:IterateEntities(arg);
-end
-
--- Local callbacks
-
--- FIX: Die höchste ID vom Trigger ermitteln und speichern lassen. Das ist
--- nötig, da die Abfrage über alle Spawner möglicher Weise noch nicht durch
--- ist, wenn der Aufruf ausgeführt wird und somit Entities verpasst werden.
-function SCP.EntitySearch.TriggerEntityTrigger()
-    local ID = Logic.CreateEntity(Entities.XD_ScriptEntity, 5, 5, 0, 0);
-    Logic.DestroyEntity(ID);
 end
 

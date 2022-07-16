@@ -390,7 +390,7 @@ function ModuleInterfaceCore.Local:OverrideStartTheatrePlay()
         local EntityID = GUI.GetSelectedEntity();
         local Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
         if not Button then
-            SetIcon(WidgetID, {16,2});
+            SetIcon(WidgetID, {16, 2});
             return GUI_BuildingButtons.StartTheatrePlayUpdate_Orig_InterfaceCore();
         end
         Button.Update(WidgetID, EntityID);
@@ -482,6 +482,13 @@ function ModuleInterfaceCore.Local:OverrideBuySiegeEngineCart()
             Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
         end
         if not Button then
+            if WidgetName == "BuyBatteringRamCart" then
+                SetIcon(WidgetID, {9, 2});
+            elseif WidgetName == "BuySiegeTowerCart" then
+                SetIcon(WidgetID, {9, 3});
+            elseif WidgetName == "BuyCatapultCart" then
+                SetIcon(WidgetID, {9, 1});
+            end
             return GUI_BuildingButtons.BuySiegeEngineCartUpdate_Orig_InterfaceCore(_EntityType);
         end
         Button.Update(WidgetID, EntityID);
