@@ -17,44 +17,28 @@ ModuleEntitySearch = {
 
     Global = {},
     Local = {},
-    -- This is a shared structure but the values are asynchronous!
     Shared = {};
 }
 
 -- Global ------------------------------------------------------------------- --
 
 function ModuleEntitySearch.Global:OnGameStart()
-    QSB.ScriptEvents.TriggerEntityTrigger = API.RegisterScriptEvent("Event_TriggerEntityTrigger");
-    API.RegisterScriptCommand("Cmd_TriggerEntityTrigger", SCP.EntitySearch.TriggerEntityTrigger);
 end
 
 function ModuleEntitySearch.Global:OnEvent(_ID, _Event, ...)
-    if _ID == QSB.ScriptEvents.TriggerEntityTrigger then
-        self:TriggerEntityTrigger();
-    end
-end
-
-function ModuleEntitySearch.Global:TriggerEntityTrigger()
-    local ID = Logic.CreateEntity(Entities.XD_ScriptEntity, 5, 5, 0, 0);
-    Logic.DestroyEntity(ID);
 end
 
 -- Local -------------------------------------------------------------------- --
 
 function ModuleEntitySearch.Local:OnGameStart()
-    QSB.ScriptEvents.TriggerEntityTrigger = API.RegisterScriptEvent("Event_TriggerEntityTrigger");
+end
+
+function ModuleEntitySearch.Local:OnEvent(_ID, _Event, ...)
 end
 
 -- Shared ------------------------------------------------------------------- --
 
 function ModuleEntitySearch.Shared:IterateEntities(...)
-    if not GUI then
-        SCP.EntitySearch.TriggerEntityTrigger();
-    else
-        -- Job is synchronous so do not broadcast the command
-        API.SendScriptCommand(QSB.ScriptCommands.TriggerEntityTrigger);
-    end
-
     -- Speichert die Predikate für spätere Prüfung.
     local Predicates = {};
     if arg[1] then
@@ -86,13 +70,13 @@ end
 
 -- Predicates --------------------------------------------------------------- --
 
-QSB.Search = {};
+QSB.SearchPredicate = {};
 
-QSB.Search.Custom = function(_ID, _Function, ...)
+QSB.SearchPredicate.Custom = function(_ID, _Function, ...)
     return _Function(_ID, unpack(arg));
 end
 
-QSB.Search.OfID = function(_ID, ...)
+QSB.SearchPredicate.OfID = function(_ID, ...)
     for i= 1, #arg do
         if _ID == arg[i] then
             return true;
@@ -101,7 +85,7 @@ QSB.Search.OfID = function(_ID, ...)
     return false;
 end
 
-QSB.Search.OfPlayer = function(_ID, ...)
+QSB.SearchPredicate.OfPlayer = function(_ID, ...)
     for i= 1, #arg do
         if Logic.EntityGetPlayer(_ID) == arg[i] then
             return true;
@@ -110,7 +94,7 @@ QSB.Search.OfPlayer = function(_ID, ...)
     return false;
 end
 
-QSB.Search.OfName = function(_ID, ...)
+QSB.SearchPredicate.OfName = function(_ID, ...)
     for i= 1, #arg do
         if Logic.GetEntityName(_ID) == arg[i] then
             return true;
@@ -119,7 +103,7 @@ QSB.Search.OfName = function(_ID, ...)
     return false;
 end
 
-QSB.Search.OfNamePrefix = function(_ID, ...)
+QSB.SearchPredicate.OfNamePrefix = function(_ID, ...)
     -- FIXME: Bad benchmark!
     local ScriptName = Logic.GetEntityName(_ID);
     for i= 1, #arg do
@@ -132,7 +116,7 @@ QSB.Search.OfNamePrefix = function(_ID, ...)
     return false;
 end
 
-QSB.Search.OfNameSuffix = function(_ID, ...)
+QSB.SearchPredicate.OfNameSuffix = function(_ID, ...)
     -- FIXME: Bad benchmark!
     local ScriptName = Logic.GetEntityName(_ID);
     for i= 1, #arg do
@@ -145,7 +129,7 @@ QSB.Search.OfNameSuffix = function(_ID, ...)
     return false;
 end
 
-QSB.Search.OfType = function(_ID, ...)
+QSB.SearchPredicate.OfType = function(_ID, ...)
     for i= 1, #arg do
         if Logic.GetEntityType(_ID) == arg[i] then
             return true;
@@ -154,7 +138,7 @@ QSB.Search.OfType = function(_ID, ...)
     return false;
 end
 
-QSB.Search.OfCategory = function(_ID, ...)
+QSB.SearchPredicate.OfCategory = function(_ID, ...)
     for i= 1, #arg do
         if Logic.IsEntityInCategory(_ID, arg[i]) == 1 then
             return true;
@@ -163,18 +147,35 @@ QSB.Search.OfCategory = function(_ID, ...)
     return false;
 end
 
-QSB.Search.InArea = function(_ID, _X, _Y, _AreaSize)
+QSB.SearchPredicate.InArea = function(_ID, ...)
     -- FIXME: Bad benchmark!
-    return API.GetDistance(_ID, {X= _X, Y= _Y}) <= _AreaSize;
+    for i= 1, #arg, 3 do
+        if API.GetDistance(_ID, {X= arg[i], Y= arg[i+1]}) <= arg[i+2] then
+            return true;
+        end
+    end
+    return false;
 end
 
-QSB.Search.InTerritory = function(_ID, ...)
+QSB.SearchPredicate.InTerritory = function(_ID, ...)
     for i= 1, #arg do
         if GetTerritoryUnderEntity(_ID) == arg[i] then
             return true;
         end
     end
     return false;
+end
+
+QSB.SearchPredicate.IsBuilding = function(_ID)
+    return Logic.IsBuilding(_ID) == 1;
+end
+
+QSB.SearchPredicate.IsFinishedBuilding = function(_ID)
+    return Logic.IsBuilding(_ID) == 1 and Logic.IsConstructionComplete(_ID) == 1;
+end
+
+QSB.SearchPredicate.IsSettler = function(_ID)
+    return Logic.IsSettler(_ID) == 1;
 end
 
 -- -------------------------------------------------------------------------- --
