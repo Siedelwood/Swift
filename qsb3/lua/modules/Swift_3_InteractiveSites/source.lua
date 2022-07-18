@@ -86,7 +86,7 @@ function ModuleInteractiveSites.Global:CreateIOBuildingSite(_Data)
     Logic.SetModel(EntityID, Models.Buildings_B_BuildingPlot_10x10);
     Logic.SetVisible(EntityID, true);
 
-    CreateObject {
+    API.SetupObject {
         Name              = _Data.Name,
         IsInteractiveSite = true,
         Title             = Title,
