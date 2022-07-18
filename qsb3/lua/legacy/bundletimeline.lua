@@ -3,6 +3,7 @@
 -- #  Symfonia BundleTimeLine                                               # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
+---@diagnostic disable: undefined-global
 
 ---
 -- Dieses Bundle ermöglicht es Aktionen in einer zeitlichen Abfolge zu

@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-global
 
 local parser = require'ParseLua'
 local ParseLua = parser.ParseLua

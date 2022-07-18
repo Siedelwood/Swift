@@ -181,7 +181,7 @@ end
 
 function Swift:OverrideOnMPGameStart()
     GameCallback_OnMPGameStart = function()
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_TURN, NIL, "VictoryConditionHandler", 1)
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_TURN, "", "VictoryConditionHandler", 1)
     end
 end
 

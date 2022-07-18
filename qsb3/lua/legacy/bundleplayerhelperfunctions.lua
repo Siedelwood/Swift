@@ -1,8 +1,9 @@
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
--- #  Symfonia BundlePlayerHelperFunctions                                   # --
+-- #  Symfonia BundlePlayerHelperFunctions                                  # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
+---@diagnostic disable: undefined-global
 
 ---
 -- Mit diesem Bundle kommen einige Funktionalitäten zur Steuerung von

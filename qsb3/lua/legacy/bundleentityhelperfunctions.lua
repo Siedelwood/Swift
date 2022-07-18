@@ -3,6 +3,9 @@
 -- #  Symfonia BundleEntityHelperFunctions                                  # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
+---@diagnostic disable: undefined-global
+---@diagnostic disable: need-check-nil
+---@diagnostic disable: lowercase-global
 
 ---
 -- Stellt Hilfsfunktionen bereit um die Eigenschaften von Entities zu

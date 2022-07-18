@@ -3,6 +3,7 @@
 -- #  Symfonia BundleSaveGameTools                                          # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
+---@diagnostic disable: undefined-global
 
 ---
 -- Dieses Bundle bietet Funktionen an, mit denen Anlegen und Laden von

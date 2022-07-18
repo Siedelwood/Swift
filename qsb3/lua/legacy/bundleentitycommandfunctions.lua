@@ -3,6 +3,9 @@
 -- #  Symfonia BundleEntityCommandFunctions                                 # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
+---@diagnostic disable: undefined-global
+---@diagnostic disable: need-check-nil
+---@diagnostic disable: lowercase-global
 
 ---
 -- Stellt Hilfsfunktionen bereit um Entities Befehle zu erteilen oder sie
