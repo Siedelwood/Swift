@@ -94,11 +94,11 @@ function ModuleDialogSystem.Global:StartDialog(_Name, _PlayerID, _Data)
 end
 
 function ModuleDialogSystem.Global:EndDialog(_PlayerID)
-    API.FinishCinematicEvent(self.Dialog[_PlayerID].Name, _PlayerID);
     Logic.SetGlobalInvulnerability(0);
     if self.Dialog[_PlayerID].Finished then
         self.Dialog[_PlayerID]:Finished();
     end
+    API.FinishCinematicEvent(self.Dialog[_PlayerID].Name, _PlayerID);
     Logic.ExecuteInLuaLocalState(string.format(
         "ModuleDialogSystem.Local:EndDialog(%d, %s)",
         _PlayerID,
@@ -329,10 +329,10 @@ function ModuleDialogSystem.Local:EndDialog(_PlayerID, _Data)
     if GUI.GetPlayerID() == _PlayerID then
         API.ActivateNormalInterface();
         API.ActivateBorderScroll();
-        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 0);
+        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 1);
         XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/Update", 1);
         XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles/Update", 1);
-        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles", 0);
+        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles", 1);
         XGUIEng.ShowWidget("/InGame/Root/3dWorldView", 1);
         Input.GameMode()
 
@@ -395,8 +395,8 @@ function ModuleDialogSystem.Local:DisplayPage(_PlayerID, _PageData)
             Camera.RTS_SetLookAtPosition(_PageData.Position.X, _PageData.Position.Y);
         end
         if _PageData.Zoom then
-            Camera.RTS_SetZoomFactorMin(_PageData.Zoom -0.00001);
             Camera.RTS_SetZoomFactor(_PageData.Zoom);
+            Camera.RTS_SetZoomFactorMin(_PageData.Zoom -0.00001);
             Camera.RTS_SetZoomFactorMax(_PageData.Zoom +0.00001);
         end
         if _PageData.Rotation then

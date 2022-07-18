@@ -459,7 +459,7 @@ function ModuleKnightTitleRequirements.Local:OverwriteUpdateRequirements()
         if KnightTitleRequirements[NextTitle].Custom ~= nil then
             for i=1, #KnightTitleRequirements[NextTitle].Custom do
                 local Icon = KnightTitleRequirements[NextTitle].Custom[i][2];
-                API.InterfaceSetIcon(WidgetPos[RequirementsIndex] .. "/Icon", Icon);
+                API.SetIcon(WidgetPos[RequirementsIndex] .. "/Icon", Icon);
                 local IsFulfilled, CurrentAmount, NeededAmount = DoCustomFunctionForKnightTitleSucceed(PlayerID, NextTitle, i);
                 if CurrentAmount and NeededAmount then
                     XGUIEng.SetText(WidgetPos[RequirementsIndex] .. "/Amount", "{center}" .. CurrentAmount .. "/" .. NeededAmount);
