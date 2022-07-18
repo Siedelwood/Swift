@@ -3,6 +3,7 @@
 -- #  Symfonia BundleFollowKnight                                           # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
+---@diagnostic disable: undefined-global
 
 ---
 -- Dieses Bundle bietet Funktionalität um Entities dauerhaft einem Helden

@@ -3,6 +3,9 @@
 -- #  Symfonia BundleBuildingButtons                                        # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
+---@diagnostic disable: undefined-global
+---@diagnostic disable: need-check-nil
+---@diagnostic disable: lowercase-global
 
 ---
 -- Dieses Bundle erweitert das Gebäudemenü für verschiedene Gebäude um weitere

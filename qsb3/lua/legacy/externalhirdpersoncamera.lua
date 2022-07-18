@@ -1,8 +1,9 @@
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
--- #  Symfonia ExternalThirdPersonCamera                                     # --
+-- #  Symfonia ExternalThirdPersonCamera                                    # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
+---@diagnostic disable: undefined-global
 
 ---
 -- Dieses Bundle bietet einen Kameramodus an, mit dem ein Entity aus der

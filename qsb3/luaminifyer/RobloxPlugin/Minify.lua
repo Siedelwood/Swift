@@ -1,3 +1,4 @@
+---@diagnostic disable: redundant-parameter, need-check-nil
 
 --
 -- Minify.lua

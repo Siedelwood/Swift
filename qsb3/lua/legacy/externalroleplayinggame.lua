@@ -3,6 +3,9 @@
 -- #  Symfonia ExternalRolePlayingGame                                      # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
+---@diagnostic disable: undefined-global
+---@diagnostic disable: redundant-parameter
+---@diagnostic disable: lowercase-global
 
 ---
 -- Bietet dem Mapper ein vereinfachtes Interface für RPG-Maps.
@@ -1765,7 +1768,7 @@ function ExternalRolePlayingGame.Local:OverrideActiveAbility()
             return;
         end
 
-        local TotalRechargeTime = HeroInstance.RechargeTime or 6 * 60;
+        local TotalRechargeTime = (HeroInstance.RechargeTime or 6) * 60;
         local ActionPoints = HeroInstance.ActionPoints;
         local TimeAlreadyCharged = ActionPoints or TotalRechargeTime;
 
@@ -3137,7 +3140,7 @@ function ExternalRolePlayingGame.Item:SetIcon(_Icon)
 
     local CommandString = "ExternalRolePlayingGame.ItemList['" ..self.Identifier.. "'].Icon  = nil";
     if LocalIcon then 
-        LocalIcon = (LocalIcon:find("{") and LocalIcon) or "'" ..LocalIcon.. "'";
+        LocalIcon = (LocalIcon:find("{") and LocalIcon) or ("'" ..LocalIcon.. "'");
         CommandString = "ExternalRolePlayingGame.ItemList['" ..self.Identifier.. "'].Icon  = " ..LocalIcon;
     end
     Logic.ExecuteInLuaLocalState(CommandString);

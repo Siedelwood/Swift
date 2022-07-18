@@ -3,6 +3,9 @@
 -- #  Symfonia AddOnArmyController                                          # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
+---@diagnostic disable: undefined-global
+---@diagnostic disable: need-check-nil
+---@diagnostic disable: lowercase-global
 
 ---
 -- 

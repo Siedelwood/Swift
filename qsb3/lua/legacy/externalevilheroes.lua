@@ -1,6 +1,7 @@
 --- 
 -- Legacy Conversion of Swift_MOD_MapLoaderMap
 --
+---@diagnostic disable: undefined-global
 
 ExternalEvilHeroes = {
 	Global = {},

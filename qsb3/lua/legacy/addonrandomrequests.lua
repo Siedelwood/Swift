@@ -3,6 +3,9 @@
 -- #  Symfonia AddOnRandomRequests                                          # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
+---@diagnostic disable: undefined-global
+---@diagnostic disable: need-check-nil
+---@diagnostic disable: lowercase-global
 
 ---
 -- Dieses Bundle stellt zufällige Aufgaben durch NPC-Spieler bereit.

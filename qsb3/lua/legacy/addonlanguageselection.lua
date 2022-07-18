@@ -3,6 +3,9 @@
 -- #  Symfonia AddOnLanguageSelection                                       # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
+---@diagnostic disable: undefined-global
+---@diagnostic disable: need-check-nil
+---@diagnostic disable: lowercase-global
 
 ---
 -- Ermöglicht dem Spieler zu Beginn der Map eine von mehreren Sprachen

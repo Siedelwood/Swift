@@ -3,6 +3,9 @@
 -- #  Symfonia BundleEntityProperties                                       # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
+---@diagnostic disable: undefined-global
+---@diagnostic disable: need-check-nil
+---@diagnostic disable: lowercase-global
 
 ---
 -- In diesem Bundle werden grundlegende Funktionen zur Abfrage und Manipulation

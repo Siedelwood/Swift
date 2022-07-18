@@ -3,6 +3,7 @@
 -- #  Symfonia BundleTerrainAndWater                                        # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
+---@diagnostic disable: undefined-global
 
 ---
 -- Dieses Bundle beinhaltet Funktionen zur Veränderung der Höhe von Land und

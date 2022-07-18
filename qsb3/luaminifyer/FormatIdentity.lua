@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-global
 require'strict'
 require'ParseLua'
 local util = require'Util'

@@ -3,6 +3,7 @@
 -- Autor: totalwarANGEL
 -- Version 3.4
 --------------------------------------------------------------------------------------------
+---@diagnostic disable: undefined-global
 
 ---
 -- DEPRECATED
