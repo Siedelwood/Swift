@@ -64,8 +64,6 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- nicht platzierter Baustelle. Muss Gebäude ID zurückgeben</td></tr>
 -- </table>
 --
--- <p><b>Alias</b>: CreateIOBuildingSite</p>
---
 -- @param[type=table] _Data Konfiguration des Objektes
 -- @within Anwenderfunktionen
 --

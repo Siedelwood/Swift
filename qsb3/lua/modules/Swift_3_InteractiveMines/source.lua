@@ -80,7 +80,7 @@ function ModuleInteractiveMines.Global:CreateIOMine(
         end
     end
 
-    CreateObject {
+    API.SetupObject {
         Name                 = _Position,
         IsInteractiveMine    = true,
         Title                = _Title or ModuleInteractiveMines.Shared.Text.Title,
