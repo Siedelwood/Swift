@@ -55,7 +55,8 @@ You may use and modify this file unter the terms of the MIT licence.
 -- </li>
 -- <li>
 -- Suche im Log nach GraphViz Export. Kopiere den "kryptischen Buchstabensalat"
--- innerhalb des markierten Bereichs in eine Datei (z.B. quests.dot).
+-- innerhalb des markierten Bereichs (ohne die Markierungen) in eine Datei
+-- (z.B. quests.dot).
 -- Ein Log-Eintrag kann so aussehen:
 -- <pre>==== GraphViz Export Start ====
 --

@@ -2,7 +2,7 @@ local htmlparser = require("htmlparser");
 dofile("loader.lua");
 
 BinDocBuilder_Data = {
-    Extensions = {".api", ".behavior", ".callback", ".requirements"},
+    Extensions = {".api", ".behavior", ".debug", ".callback", ".requirements", ".sample"},
     Modules = {},
     Parsed = {},
 };
