@@ -709,9 +709,6 @@ end
 ---
 -- Fügt eine Bedingung für Quicksaves hinzu.
 --
--- Die Bedingungsfunktion erwartet keine Parameter und muss true zurückgeben,
--- kein Quicksave möglich sein soll.
---
 -- <b>Hinweis:</b> Nur im lokalen Skript möglich!
 --
 -- @param[type=function] _Function Bedingungsprüfung

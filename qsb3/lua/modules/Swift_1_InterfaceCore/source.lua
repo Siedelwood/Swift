@@ -188,8 +188,8 @@ function ModuleInterfaceCore.Local:OnGameStart()
         return ModuleInterfaceCore.Local.ForbidRegularSave == true;
     end);
     -- HE Quicksave verbieten
-    API.AddBlockQuicksaveCondition(function()
-        return ModuleInterfaceCore.Local.DisableHEAutoSave == true;
+    API.AddBlockQuicksaveCondition(function(...)
+        return not arg[1] and ModuleInterfaceCore.Local.DisableHEAutoSave == true;
     end);
 end
 

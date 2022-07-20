@@ -79,6 +79,7 @@ function Swift:LoadCore()
         self:InitalizeEventsLocal();
         self:InstallBehaviorLocal();
         self:OverrideDoQuicksave();
+        self:AlterQuickSaveHotkey();
         self:InitalizeCallbackLocal();
         self:ValidateTerritories();
 
@@ -415,21 +416,33 @@ function Swift:OverrideDoQuicksave()
     end);
 
     KeyBindings_SaveGame_Orig_Module_SaveGame = KeyBindings_SaveGame;
-    KeyBindings_SaveGame = function()
-        if not Swift:CanDoQuicksave() then
+    KeyBindings_SaveGame = function(...)
+        if not Swift:CanDoQuicksave(unpack(arg)) then
             return;
         end
         KeyBindings_SaveGame_Orig_Module_SaveGame();
     end
 end
 
+function Swift:AlterQuickSaveHotkey()
+    StartSimpleHiResJobEx(function()
+        Input.KeyBindDown(
+            Keys.ModifierControl + Keys.S,
+            "KeyBindings_SaveGame(true)",
+            2,
+            false
+        );
+        return true;
+    end);
+end
+
 function Swift:AddBlockQuicksaveCondition(_Function)
     table.insert(self.m_NoQuicksaveConditions, _Function);
 end
 
-function Swift:CanDoQuicksave()
+function Swift:CanDoQuicksave(...)
     for i= 1, #self.m_NoQuicksaveConditions, 1 do
-        if self.m_NoQuicksaveConditions[i]() then
+        if self.m_NoQuicksaveConditions[i](unpack(arg)) then
             return false;
         end
     end
