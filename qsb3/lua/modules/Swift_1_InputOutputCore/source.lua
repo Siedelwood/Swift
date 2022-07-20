@@ -114,13 +114,7 @@ function ModuleInputOutputCore.Local:OnGameStart()
     self:OverrideChatLog();
     self:DialogOverwriteOriginal();
     self:DialogAltF4Hotkey();
-    -- Some kind of wierd timing problem...
-    StartSimpleJobEx(function()
-        if Logic.GetTime() > 1 then
-            self:OverrideDebugInput();
-            return true;
-        end
-    end);
+    self:OverrideDebugInput();
 end
 
 function ModuleInputOutputCore.Local:OnEvent(_ID, _Event, ...)
@@ -407,8 +401,8 @@ function ModuleInputOutputCore.Local:OverrideQuicksave()
         return ModuleInputOutputCore.Local.DialogWindowShown;
     end);
 
-    KeyBindings_SaveGame = function()
-        if not Swift:CanDoQuicksave() then
+    KeyBindings_SaveGame = function(...)
+        if not Swift:CanDoQuicksave(unpack(arg)) then
             return;
         end
         if g_Throneroom ~= nil
@@ -486,13 +480,18 @@ end
 -- Override the original usage of the chat box to make it compatible to this
 -- module. Otherwise there would be no reaction whatsoever to console commands.
 function ModuleInputOutputCore.Local:OverrideDebugInput()
-    Swift.InitalizeQsbDebugShell = function(self)
-        if not self.m_DevelopingShell then
-            return;
+    StartSimpleJobEx(function ()
+        if not API.IsLoadscreenVisible() then
+            Swift.InitalizeQsbDebugShell = function(self)
+                if not self.m_DevelopingShell then
+                    return;
+                end
+                Input.KeyBindDown(Keys.ModifierShift + Keys.OemPipe, "API.ShowTextInput(true)", 2, false);
+            end
+            Swift:InitalizeQsbDebugShell();
+            return true;
         end
-        Input.KeyBindDown(Keys.ModifierShift + Keys.OemPipe, "API.ShowTextInput(true)", 2, false);
-    end
-    Swift:InitalizeQsbDebugShell();
+    end);
 end
 
 function ModuleInputOutputCore.Local:DialogAltF4Hotkey()

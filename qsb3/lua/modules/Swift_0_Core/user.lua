@@ -69,6 +69,7 @@ function Swift:RestoreAfterLoad()
         self:LocalRestoreDebugAfterLoad();
         self:SetEscapeKeyTrigger();
         self:CreateRandomSeed();
+        self:AlterQuickSaveHotkey();
         -- self:LogLocalCFunctions();
     end
 end
