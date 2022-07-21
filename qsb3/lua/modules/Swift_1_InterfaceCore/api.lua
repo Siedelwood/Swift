@@ -332,7 +332,7 @@ end
 ---
 -- Deaktiviert reguläres Speichern.
 --
--- @param[type=number] _Flag Speichern deaktivieren
+-- @param[type=boolean] _Flag Speichern deaktivieren
 -- @within Anwenderfunktionen
 --
 function API.DisableRegularSaveGame(_Flag)
@@ -352,7 +352,7 @@ end
 --
 -- Das Spiel wird zu keinem Zeitpunkt einen automatischen Spielstand anlegen.
 --
--- @param[type=number] _Flag Autosave deaktivieren
+-- @param[type=boolean] _Flag Autosave deaktivieren
 -- @within Anwenderfunktionen
 --
 function API.DisableHistoryEditionAutoSave(_Flag)

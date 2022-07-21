@@ -17,6 +17,7 @@ ModuleInputOutputCore = {
 
     Global = {};
     Local  = {
+        DisableQuestTimerToggling = false,
         CheatsDisabled = false,
         Chat = {
             Data = {},
@@ -78,8 +79,8 @@ function ModuleInputOutputCore.Global:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.ChatClosed then
         -- Send event back to all players local script
         Logic.ExecuteInLuaLocalState(string.format(
-            [[API.SendScriptEvent(QSB.ScriptEvents.ChatClosed, "%s", %d)]],
-            arg[1], arg[2]
+            [[API.SendScriptEvent(QSB.ScriptEvents.ChatClosed, "%s", %d, %s)]],
+            arg[1], arg[2], tostring(arg[3] == true)
         ));
         -- Alter quest data
         for i= 1, Quests[0], 1 do
@@ -115,6 +116,7 @@ function ModuleInputOutputCore.Local:OnGameStart()
     self:DialogOverwriteOriginal();
     self:DialogAltF4Hotkey();
     self:OverrideDebugInput();
+    self:OverrideShowQuestTimerButton();
 end
 
 function ModuleInputOutputCore.Local:OnEvent(_ID, _Event, ...)
@@ -123,7 +125,7 @@ function ModuleInputOutputCore.Local:OnEvent(_ID, _Event, ...)
         self:OverrideCheats();
         self:DialogAltF4Hotkey();
     elseif _ID == QSB.ScriptEvents.ChatClosed then
-        if Swift:IsProcessDebugCommands() then
+        if arg[3] then
             if arg[1] == "restartmap" then
                 Framework.RestartMap();
             elseif arg[1]:find("^> ") then
@@ -144,8 +146,11 @@ function ModuleInputOutputCore.Local:OnEvent(_ID, _Event, ...)
                 GUI.ClearNotes();
             elseif arg[1]:find("^version$") then
                 GUI.AddStaticNote(QSB.Version);
+            elseif arg[1] == "dummy" then
+                API.Note("Debug: proccessing commands");
             end
         end
+        self.DisableQuestTimerToggling = false;
     end
 end
 
@@ -156,6 +161,10 @@ function ModuleInputOutputCore.Local:ShowTextWindow(_Data)
     _Data.Button = _Data.Button or {};
     local PlayerID = GUI.GetPlayerID();
     if _Data.PlayerID ~= PlayerID then
+        return;
+    end
+    if XGUIEng.IsWidgetShown("/InGame/Root/Normal/ChatOptions") == 1 then
+        self:UpdateChatLogText(_Data);
         return;
     end
     self.Chat.Data[PlayerID] = _Data;
@@ -184,6 +193,10 @@ function ModuleInputOutputCore.Local:CloseTextWindow(_PlayerID)
         return;
     end
     GUI_Chat.CloseChatMenu();
+end
+
+function ModuleInputOutputCore.Local:UpdateChatLogText(_Data)
+    XGUIEng.SetText("/InGame/Root/Normal/ChatOptions/ChatLog", _Data.Content);
 end
 
 function ModuleInputOutputCore.Local:AlterChatLog()
@@ -216,7 +229,8 @@ end
 function ModuleInputOutputCore.Local:UpdateToggleWhisperTarget()
     local PlayerID = GUI.GetPlayerID();
     local MotherWidget = "/InGame/Root/Normal/ChatOptions/";
-    if not self.Chat.Data[PlayerID] or not self.Chat.Data[PlayerID].Button.Action then
+    if not self.Chat.Data[PlayerID] or not self.Chat.Data[PlayerID].Button
+    or not self.Chat.Data[PlayerID].Button.Action then
         XGUIEng.ShowWidget(MotherWidget.. "ToggleWhisperTarget",0);
         return;
     end
@@ -480,18 +494,28 @@ end
 -- Override the original usage of the chat box to make it compatible to this
 -- module. Otherwise there would be no reaction whatsoever to console commands.
 function ModuleInputOutputCore.Local:OverrideDebugInput()
-    StartSimpleJobEx(function ()
-        if not API.IsLoadscreenVisible() then
+    StartSimpleJobEx(function (_Time)
+        if not API.IsLoadscreenVisible() and Logic.GetTime() > _Time+1 then
             Swift.InitalizeQsbDebugShell = function(self)
                 if not self.m_DevelopingShell then
                     return;
                 end
-                Input.KeyBindDown(Keys.ModifierShift + Keys.OemPipe, "API.ShowTextInput(true)", 2, false);
+                Input.KeyBindDown(Keys.ModifierShift + Keys.OemPipe, "API.ShowTextInput(GUI.GetPlayerID(), true)", 2, false);
             end
             Swift:InitalizeQsbDebugShell();
             return true;
         end
-    end);
+    end, Logic.GetTime());
+end
+
+function ModuleInputOutputCore.Local:OverrideShowQuestTimerButton()
+    GUI_Interaction.TimerButtonClicked_Orig_ModuleInputOutputCore = GUI_Interaction.TimerButtonClicked;
+    GUI_Interaction.TimerButtonClicked = function()
+        if ModuleInputOutputCore.Local.DisableQuestTimerToggling then
+            return;
+        end
+        GUI_Interaction.TimerButtonClicked_Orig_ModuleInputOutputCore();
+    end
 end
 
 function ModuleInputOutputCore.Local:DialogAltF4Hotkey()
@@ -728,7 +752,10 @@ function ModuleInputOutputCore.Local:DialogOverwriteOriginal()
     end
 end
 
-function ModuleInputOutputCore.Local:ShowInputBox(_Debug)
+function ModuleInputOutputCore.Local:ShowInputBox(_PlayerID, _Debug)
+    if GUI.GetPlayerID() ~= _PlayerID then
+        return;
+    end
     Swift:SetProcessDebugCommands(_Debug);
     StartSimpleHiResJob("ModuleInputOutputCore_Local_InputBoxJob");
 end
@@ -742,14 +769,24 @@ function ModuleInputOutputCore_Local_InputBoxJob()
     XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 1);
     XGUIEng.ShowWidget("/InGame/Root/Normal/ChatInput", 1);
     XGUIEng.SetFocus("/InGame/Root/Normal/ChatInput/ChatInput");
+    
+    ModuleInputOutputCore.Local.DisableQuestTimerToggling = true;
+    -- Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_TURN, "", "ModuleInputOutputCore_Local_DisableQuestToggle", 1, {}, {GUI.GetPlayerID()});
     return true;
 end
 
-function ModuleInputOutputCore.Local:PrepareInputVariable()
+function ModuleInputOutputCore_Local_DisableQuestToggle(_PlayerID)
+    if GUI.GetPlayerID() == _PlayerID then
+        ModuleInputOutputCore.Local.DisableQuestTimerToggling = true;
+    end
+    return true;
+end
+
+function ModuleInputOutputCore.Local:PrepareInputVariable(_PlayerID)
     -- FIXME: Must this be syncronized? Who has opened the chat is totaly
     -- uninteresting in the global script i.m.o
-    API.SendScriptEventToGlobal(QSB.ScriptEvents.ChatOpened, GUI.GetPlayerID());
-    API.SendScriptEvent(QSB.ScriptEvents.ChatOpened, GUI.GetPlayerID());
+    API.SendScriptEventToGlobal(QSB.ScriptEvents.ChatOpened, _PlayerID);
+    API.SendScriptEvent(QSB.ScriptEvents.ChatOpened, _PlayerID);
 
     GUI_Chat.Abort_Orig_ModuleInputOutputCore = GUI_Chat.Abort_Orig_ModuleInputOutputCore or GUI_Chat.Abort;
     GUI_Chat.Confirm_Orig_ModuleInputOutputCore = GUI_Chat.Confirm_Orig_ModuleInputOutputCore or GUI_Chat.Confirm;
@@ -760,21 +797,16 @@ function ModuleInputOutputCore.Local:PrepareInputVariable()
             XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 0);
         end
         local ChatMessage = XGUIEng.GetText("/InGame/Root/Normal/ChatInput/ChatInput");
-        if Swift.m_DevelopingShell then
-            Swift.m_ChatBoxInput = ChatMessage;
-            ModuleInputOutputCore.Local:LocalToGlobal(ChatMessage);
-        end
+        local IsDebug = Swift:IsProcessDebugCommands();
+        Swift.m_ChatBoxInput = ChatMessage;
+        ModuleInputOutputCore.Local:LocalToGlobal(ChatMessage, IsDebug);
         g_Chat.JustClosed = 1;
         if not Framework.IsNetworkGame() then
-            Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
+            Game.GameTimeSetFactor(_PlayerID, 1);
         end
         Input.GameMode();
-        -- In multiplayer every entered command will be shown in the respective
-        -- chat log and as message on screen. So at least the persons talked to
-        -- will know, if a command is entered.
-        -- BUT debug shell should always be disabled in multiplayer!
-        if ChatMessage:len() > 0 and Framework.IsNetworkGame() then
-            GUI.SendChatMessage(ChatMessage, GUI.GetPlayerID(), g_Chat.CurrentMessageType, g_Chat.CurrentWhisperTarget);
+        if ChatMessage:len() > 0 and Framework.IsNetworkGame() and not IsDebug then
+            GUI.SendChatMessage(ChatMessage, _PlayerID, g_Chat.CurrentMessageType, g_Chat.CurrentWhisperTarget);
         end
     end
 
@@ -784,14 +816,15 @@ function ModuleInputOutputCore.Local:PrepareInputVariable()
     end
 end
 
-function ModuleInputOutputCore.Local:LocalToGlobal(_Text)
+function ModuleInputOutputCore.Local:LocalToGlobal(_Text, _Debug)
     _Text = (_Text == nil and "") or _Text;
     API.BroadcastScriptEventToGlobal(
         QSB.ScriptEvents.ChatClosed,
         (_Text or "<<<ES>>>"),
-        GUI.GetPlayerID()
+        GUI.GetPlayerID(),
+        _Debug == true
     );
-    Swift:SetProcessDebugCommands(true);
+    Swift:SetProcessDebugCommands(false);
 end
 
 -- Shared ------------------------------------------------------------------- --

@@ -191,12 +191,12 @@ function B_Goal_InputDialog:CustomFunction(_Quest)
         if (not self.Trials) or (self.Trials) == 0 then
             QSB.GoalInputDialogQuest = _Quest.Identifier;
             self.Shown = true;
-            API.ShowTextInput();
+            API.ShowTextInput(_Quest.ReceivingPlayer);
         elseif not self.Shown then
             QSB.GoalInputDialogQuest = _Quest.Identifier;
             self.Shown = true;
             self.TrialCounter = self.TrialCounter or self.Trials;
-            API.ShowTextInput();
+            API.ShowTextInput(_Quest.ReceivingPlayer);
             self.TrialCounter = self.TrialCounter - 1;
         end
     end
