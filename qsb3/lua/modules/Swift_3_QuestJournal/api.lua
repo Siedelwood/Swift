@@ -44,6 +44,31 @@ function API.ShowJournalForQuest(_Quest, _Flag)
 end
 
 ---
+-- Aktiviert die Möglichkeit, selbst Notizen zu schreiben.
+--
+-- <b>Hinweis</b>: Die Zusatzinformationen müssen für den Quest aktiv sein.
+--
+-- @param[type=string]  _Quest Name des Quest
+-- @param[type=boolean] _Flag  Notizen aktivieren
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- -- Deaktivieren
+-- API.AllowNotesForQuest("MyQuest", false);
+-- -- Aktivieren
+-- API.AllowNotesForQuest("MyQuest", true);
+--
+function API.AllowNotesForQuest(_Quest, _Flag)
+    if GUI then
+        return;
+    end
+    local Quest = Quests[GetQuestID(_Quest)];
+    if Quest then
+        ModuleQuestJournal.Global.CustomInputAllowed[_Quest] = _Flag == true;
+    end
+end
+
+---
 -- Fugt eine Zusatzinformation für diesen Quests hinzu.
 --
 -- <b>Hinweis</b>: Die erzeugte ID ist immer eindeutig für alle Einträge,
@@ -63,7 +88,9 @@ end
 -- local NewEntryID = API.CreateJournalEntry("Wichtige Information zum Anzeigen");
 --
 function API.CreateJournalEntry(_Text)
-    _Text = _Text:gsub("\\{.*\\}", "");
+    --_Text = _Text:gsub("\\{.*\\}", "");
+    _Text = _Text:gsub("{@[A-Za-z0-9:,]+}", "");
+    _Text = _Text:gsub("{[A-Za-z0-9_]+}", "");
     return ModuleQuestJournal.Global:CreateJournalEntry(_Text, 0, false);
 end
 
@@ -84,7 +111,9 @@ end
 -- API.AlterJournalEntry(SomeEntryID, "Das ist der neue Text.");
 --
 function API.AlterJournalEntry(_ID, _Text)
-    _Text = _Text:gsub("\\{.*\\}", "");
+    -- _Text = _Text:gsub("\\{.*\\}", "");
+    _Text = _Text:gsub("{@[A-Za-z0-9:,]+}", "");
+    _Text = _Text:gsub("{[A-Za-z0-9_]+}", "");
     local Entry = ModuleQuestJournal.Global:GetJournalEntry(_ID);
     if Entry then
         ModuleQuestJournal.Global:UpdateJournalEntry(
@@ -92,7 +121,8 @@ function API.AlterJournalEntry(_ID, _Text)
             _Text,
             Entry.Rank,
             Entry.AlwaysVisible,
-            Entry.Deleted
+            Entry.Deleted,
+            Entry.AllowInput
         );
     end
 end
@@ -120,7 +150,8 @@ function API.HighlightJournalEntry(_ID, _Important)
             Entry[1],
             (_Important == true and 1) or 0,
             Entry.AlwaysVisible,
-            Entry.Deleted
+            Entry.Deleted,
+            Entry.AllowInput
         );
     end
 end
@@ -145,7 +176,8 @@ function API.DeleteJournalEntry(_ID)
             Entry[1],
             Entry.Rank,
             Entry.AlwaysVisible,
-            true
+            true,
+            Entry.AllowInput
         );
     end
 end
@@ -167,7 +199,8 @@ function API.RestoreJournalEntry(_ID)
             Entry[1],
             Entry.Rank,
             Entry.AlwaysVisible,
-            false
+            false,
+            Entry.AllowInput
         );
     end
 end

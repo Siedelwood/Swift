@@ -31,6 +31,11 @@ end
 
 function Mission_OnQsbLoaded()
     API.ActivateDebugMode(true, false, true, true);
+
+    TestVariable = "placeholders";
+
+    CreateStaticQuest()
+    CreateEntriesQuest()
 end
 
 -- -------------------------------------------------------------------------- --
@@ -61,6 +66,7 @@ function CreateEntriesQuest()
         Reward_JournalWrite("StaticQuest", "Entry1", "Some important information."),
         Reward_JournalWrite("StaticQuest", "Entry2", "Another information noteworthy."),
         Reward_JournalWrite("StaticQuest", "Entry3", "This shouls also be remembered."),
+        Reward_JournalWrite("StaticQuest", "Entry4", "This {green}Text{@color:255,255,255,255} hase some {v:TestVariable} that are filtered out."),
         Trigger_Time(0),
     }
 end

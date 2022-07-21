@@ -9,10 +9,12 @@ ModuleQuestJournal = {
 
     Global = {
         Journal = {ID = 0},
-        ShowInfo   = {},
+        CustomInputAllowed = {},
+        InputShown = {},
         TextColor  = "{tooltip}",
     };
     Local = {
+        CurrentJournalEntry = nil,
         NextButton = "/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/TutorialNextButton",
         NextButtonIcon = {16, 10},
     };
@@ -21,6 +23,7 @@ ModuleQuestJournal = {
         Text = {
             Next  = {de = "Tagebuch anzeigen", en = "Show Journal"},
             Title = {de = "Tagebuch", en = "Journal"},
+            Note  = {de = "Notiz", en = "Note"},
         },
     };
 };
@@ -29,19 +32,22 @@ ModuleQuestJournal = {
 
 function ModuleQuestJournal.Global:OnGameStart()
     QSB.ScriptEvents.QuestJournalDisplayed = API.RegisterScriptEvent("Event_QuestJournalDisplayed");
+    QSB.ScriptEvents.QuestJournalPlayerNote = API.RegisterScriptEvent("Event_QuestJournalPlayerNote");
 end
 
 function ModuleQuestJournal.Global:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.ChatClosed then
         self:ProcessChatInput(arg[1], arg[2]);
+    elseif _ID == QSB.ScriptEvents.QuestJournalPlayerNote then
+        self.InputShown[arg[1]] = arg[2];
     elseif _ID == QSB.ScriptEvents.QuestJournalDisplayed then
         local Info = self:DisplayJournalEntry(arg[1], arg[2]);
         Logic.ExecuteInLuaLocalState(string.format(
-            [[API.SendScriptEvent(%d, %s, %d, "%s")]],
-            _ID,
+            [[API.SendScriptEvent(QSB.ScriptEvents.QuestJournalDisplayed, "%s", %d, "%s", %s)]],
             arg[1],
             arg[2],
-            Info
+            Info,
+            tostring(self.CustomInputAllowed[arg[1]] ~= nil)
         ));
     end
 end
@@ -97,7 +103,7 @@ function ModuleQuestJournal.Global:DisplayJournalEntry(_QuestName, _PlayerID)
             if Journal[i].AlwaysVisible or Journal[i].Quests[_QuestName] then
                 if not Journal[i].Deleted then
                     local Text = API.ConvertPlaceholders(API.Localize(Journal[i][1]));
-                    
+
                     if Journal[i].Rank == 1 then
                         Text = "{scarlet}" .. Text .. self.TextColor;
                         SeperateImportant = true;
@@ -111,11 +117,13 @@ function ModuleQuestJournal.Global:DisplayJournalEntry(_QuestName, _PlayerID)
                     end
                     -- Unused. Reserved for future notes by the player.
                     if Journal[i].Rank == -1 then
+                        local Color = "";
                         if SeperateNormal then
                             SeperateNormal = false;
+                            Color = "{violet}";
                             Text = "{cr}----------{cr}{cr}" .. Text;
                         end
-                        Text = "{amber}" .. Text .. self.TextColor;
+                        Text = Color .. Text .. self.TextColor;
                     end
 
                     Info = Info .. ((Info ~= "" and "{cr}") or "") .. Text;
@@ -137,14 +145,21 @@ function ModuleQuestJournal.Global:GetJournalEntriesSorted()
     return Journal;
 end
 
--- Deprecated
 function ModuleQuestJournal.Global:ProcessChatInput(_Text, _PlayerID)
+    if self.InputShown[_PlayerID] then
+        if _Text and _Text ~= "" then
+            local ID = self:CreateJournalEntry(_Text, -1, false)
+            self:AssociateJournalEntryToQuest(ID, self.InputShown[_PlayerID], true);
+        end
+        self.InputShown[_PlayerID] = nil;
+    end
 end
 
 -- Local Script ----------------------------------------------------------------
 
 function ModuleQuestJournal.Local:OnGameStart()
     QSB.ScriptEvents.QuestJournalDisplayed = API.RegisterScriptEvent("Event_QuestJournalDisplayed");
+    QSB.ScriptEvents.QuestJournalPlayerNote = API.RegisterScriptEvent("Event_QuestJournalPlayerNote");
 
     self:OverrideUpdateVoiceMessage();
     self:OverrideTutorialNext();
@@ -153,14 +168,42 @@ end
 
 function ModuleQuestJournal.Local:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.QuestJournalDisplayed then
-        self:DisplayQuestJournal(arg[1], arg[2], arg[3]);
+        self:DisplayQuestJournal(arg[1], arg[2], arg[3], arg[4]);
+    elseif _ID == QSB.ScriptEvents.ChatClosed then
+        if arg[2] == GUI.GetPlayerID() then
+            if self.CurrentJournalEntry then
+                local Data = table.copy(self.CurrentJournalEntry);
+                self.CurrentJournalEntry = nil;
+                API.BroadcastScriptEventToGlobal(
+                    QSB.ScriptEvents.QuestJournalDisplayed,
+                    Data.QuestName,
+                    GUI.GetPlayerID()
+                );
+            end
+        end
     end
 end
 
-function ModuleQuestJournal.Local:DisplayQuestJournal(_QuestName, _PlayerID, _Info)
+function ModuleQuestJournal.Local:DisplayQuestJournal(_QuestName, _PlayerID, _Info, _Input)
     if _Info and GUI.GetPlayerID() == _PlayerID then
         local Title = API.Localize(ModuleQuestJournal.Shared.Text.Title);
-        API.SimpleTextWindow(Title, API.ConvertPlaceholders(_Info), _PlayerID);
+        local Data = {
+            PlayerID  = _PlayerID,
+            Caption   = Title,
+            Content   = API.ConvertPlaceholders(_Info),
+            QuestName = _QuestName
+        }
+        if _Input then
+            Data.Button = {
+                Text   = API.Localize{de = "Notiz", en = "Note"},
+                Action = function(_Data)
+                    API.BroadcastScriptEventToGlobal(QSB.ScriptEvents.QuestJournalPlayerNote, _Data.PlayerID, _Data.QuestName);
+                    API.ShowTextInput(_Data.PlayerID, false);
+                end
+            }
+        end
+        self.CurrentJournalEntry = Data;
+        ModuleInputOutputCore.Local:ShowTextWindow(Data);
     end
 end
 
@@ -199,7 +242,7 @@ function ModuleQuestJournal.Local:OverrideTutorialNext()
         if g_Interaction.CurrentMessageQuestIndex then
             local QuestID = g_Interaction.CurrentMessageQuestIndex;
             local Quest = Quests[QuestID];
-            API.SendScriptEventToGlobal(QSB.ScriptEvents.QuestJournalDisplayed, Quest.Identifier, GUI.GetPlayerID());
+            API.BroadcastScriptEventToGlobal(QSB.ScriptEvents.QuestJournalDisplayed, Quest.Identifier, GUI.GetPlayerID());
         end
     end
 end

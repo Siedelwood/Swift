@@ -392,11 +392,11 @@ end
 -- @param[type=boolean] _AllowDebug Debug Commands auswerten
 -- @usage
 -- -- Debug Options werden geblockt
--- API.ShowTextInput(false);
+-- API.ShowTextInput(1, false);
 -- -- Debug Options werden ausgewertet
--- API.ShowTextInput(true);
+-- API.ShowTextInput(1, true);
 --
-function API.ShowTextInput(_AllowDebug)
+function API.ShowTextInput(_PlayerID, _AllowDebug)
     -- Text input will only be evaluated in the original version of the game
     -- and in Singleplayer History Edition.
     if API.IsHistoryEditionNetworkGame() then
@@ -404,13 +404,15 @@ function API.ShowTextInput(_AllowDebug)
     end
     if not GUI then
         Logic.ExecuteInLuaLocalState(string.format(
-            [[API.ShowTextInput(%s)]],
+            [[API.ShowTextInput(%d, %s)]],
+            _PlayerID,
             tostring(_AllowDebug == true)
         ))
         return;
     end
-    ModuleInputOutputCore.Local:PrepareInputVariable();
-    ModuleInputOutputCore.Local:ShowInputBox(_AllowDebug == true);
+    _PlayerID = _PlayerID or GUI.GetPlayerID();
+    ModuleInputOutputCore.Local:PrepareInputVariable(_PlayerID);
+    ModuleInputOutputCore.Local:ShowInputBox(_PlayerID, _AllowDebug == true);
 end
 
 ---

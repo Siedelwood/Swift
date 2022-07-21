@@ -653,7 +653,7 @@ function Swift:EncodeScriptCommandParameters(...)
         if string.len(Query) > 0 then
             Query = Query .. "#";
         end
-        Query = Query .. Parameter;
+        Query = Query .. tostring(Parameter);
     end
     return Query;
 end
