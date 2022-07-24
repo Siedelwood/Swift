@@ -250,6 +250,11 @@ end
 -- wird die Blende nicht angezeigt. <br><b>Zwischen einer Seite mit FadeOut und
 -- der nächsten mit Fade In muss immer eine Seite mit FaderAlpha sein!</b></td>
 -- </tr>
+-- <tr>
+-- <td>BigBars</td>
+-- <td>boolean</td>
+-- <td>(Optional) Schalted breite Balken ein oder aus.</b></td>
+-- </tr>
 -- </table>
 --
 -- @within Cutscene
