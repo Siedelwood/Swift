@@ -72,6 +72,7 @@ function Swift:LoadCore()
         self:InitalizeCallbackGlobal();
         self:OverrideOnMPGameStart();
         self:DisableLogicFestival();
+        self:InitalizeBugfixesGlobal();
     end
 
     if self:IsLocalEnvironment() then
@@ -82,9 +83,10 @@ function Swift:LoadCore()
         self:AlterQuickSaveHotkey();
         self:InitalizeCallbackLocal();
         self:ValidateTerritories();
+        self:InitalizeBugfixesLocal();
 
         -- Saving human player ID makes only sense in singleplayer context
-        -- cause in multiplayer there would be more than one.
+        -- 'cause in multiplayer there would be more than one.
         -- FIXME Find sufficient solution for this!
         if not Framework.IsNetworkGame() then
             local HumanID = GUI.GetPlayerID();

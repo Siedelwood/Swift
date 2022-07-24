@@ -5,6 +5,7 @@ BinLoader_CoreFiles = {
     "Swift_0_Core/debug.lua",
     "Swift_0_Core/behavior.lua",
     "Swift_0_Core/user.lua",
+    "Swift_0_Core/bugfixes.lua",
 }
 BinLoader_ModuleFiles = {
     "Swift_1_DisplayCore/source.lua",

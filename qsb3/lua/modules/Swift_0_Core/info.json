@@ -10,7 +10,8 @@
         "api.lua",
         "debug.lua",
         "behavior.lua",
-        "user.lua"
+        "user.lua",
+        "bugfixes.lua"
     ],
     "dependencies": []
 }
