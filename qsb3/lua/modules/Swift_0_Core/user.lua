@@ -62,15 +62,15 @@ function Swift:RestoreAfterLoad()
     self:OverrideTable();
     if self:IsGlobalEnvironment() then
         self:GlobalRestoreDebugAfterLoad();
+        self:GlobalRestoreBugfixesAfterLoad();
         self:DisableLogicFestival();
-        -- self:LogGlobalCFunctions();
     end
     if self:IsLocalEnvironment() then
         self:LocalRestoreDebugAfterLoad();
+        self:LocalRestoreBugfixesAfterLoad();
         self:SetEscapeKeyTrigger();
         self:CreateRandomSeed();
         self:AlterQuickSaveHotkey();
-        -- self:LogLocalCFunctions();
     end
 end
 

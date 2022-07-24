@@ -69,14 +69,6 @@ function ModuleTradingCore.Global:OnEvent(_ID, _Event, ...)
 end
 
 function ModuleTradingCore.Global:OverwriteBasePricesAndRefreshRates()
-    -- HACK: Allow salt and dye to be sold to AI players.
-    for i= 1, 8 do
-        if Logic.GetStoreHouse(i) ~= 0 then
-            Logic.AddGoodToStock(Logic.GetStoreHouse(i), Goods.G_Salt, 0, true, true);
-            Logic.AddGoodToStock(Logic.GetStoreHouse(i), Goods.G_Dye, 0, true, true);
-        end
-    end
-
     MerchantSystem.BasePrices[Entities.U_CatapultCart] = MerchantSystem.BasePrices[Entities.U_CatapultCart] or 1000;
     MerchantSystem.BasePrices[Entities.U_BatteringRamCart] = MerchantSystem.BasePrices[Entities.U_BatteringRamCart] or 450;
     MerchantSystem.BasePrices[Entities.U_SiegeTowerCart] = MerchantSystem.BasePrices[Entities.U_SiegeTowerCart] or 600;
