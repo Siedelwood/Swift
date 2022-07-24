@@ -33,7 +33,7 @@ ModuleInterfaceCore = {
                     Bind = nil,
                 },
                 ["PlaceField"] = {
-                    TypeExclusion = "^B_.*[FH][ai][rv][me]",
+                    TypeExclusion = "^B_.*[BFH][aei][erv][kme]",
                     OriginalPosition = nil,
                     Bind = nil,
                 },
