@@ -436,8 +436,8 @@ function ModuleBriefingSystem.Local:DisplayPageBars(_PlayerID, _PageID)
     local OpacityBig = (255 * self.Briefing[_PlayerID].BarOpacity);
     local OpacitySmall = (255 * self.Briefing[_PlayerID].BarOpacity);
 
-    local BigVisibility = (Page.BigBars and 1 or 0);
-    local SmallVisibility = (Page.BigBars and 0 or 1);
+    local BigVisibility = (Page.BigBars and 1) or 0;
+    local SmallVisibility = (Page.BigBars and 0) or 1;
     if self.Briefing[_PlayerID].BarOpacity == 0 then
         BigVisibility = 0;
         SmallVisibility = 0;
