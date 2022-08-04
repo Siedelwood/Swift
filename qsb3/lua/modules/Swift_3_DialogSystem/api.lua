@@ -173,6 +173,7 @@ function API.AddDialogPages(_Dialog)
                 return 0;
             end
 
+            _Page.Title = _Page.Title or "";
             if _Page.Rotation == nil then
                 if _Page.Target ~= nil then
                     local ID = GetID(_Page.Target);
@@ -205,6 +206,7 @@ function API.AddDialogPages(_Dialog)
         end
         local Sender   = table.remove(arg, 1);
         local Position = table.remove(arg, 1);
+        local Title    = table.remove(arg, 1);
         local Text     = table.remove(arg, 1);
         local Dialog   = table.remove(arg, 1);
         local Action;
@@ -213,6 +215,7 @@ function API.AddDialogPages(_Dialog)
         end
         return AP {
             Name   = Name,
+            Title  = Title,
             Text   = Text,
             Sender = Sender,
             Target = Position,
@@ -238,6 +241,10 @@ end
 -- <tr>
 -- <td><b>Einstellung</b></td>
 -- <td><b>Beschreibung</b></td>
+-- </tr>
+-- <tr>
+-- <td>Titel</td>
+-- <td>(string) Bestimmt den Namen des Sprechers.</td>
 -- </tr>
 -- <tr>
 -- <td>Text</td>
@@ -328,6 +335,7 @@ end
 -- -- Eine einfache Seite
 -- AP {
 --     Name   = "StartPage",
+--     Title  = "Horst",
 --     Text   = "Das ist ein Test!",
 --     Sender = -1,
 --     Target = "npc1",
@@ -339,6 +347,7 @@ end
 -- -- Ausführen und danach einen Namen zurückgeben.
 -- AP {
 --     Name   = "StartPage",
+--     Title  = "Horst",
 --     Text   = "Das ist ein Test!",
 --     Sender = -1,
 --     Target = "npc1",
@@ -364,6 +373,7 @@ end
 -- @param[type=string]   _Name         (Optional) Name der Seite
 -- @param[type=number]   _Sender       Spieler (-1 für kein Portrait)
 -- @param[type=string]   _Position     Position der Kamera
+-- @param[type=string]   _Title        Name des Sprechers
 -- @param[type=string]   _Text         Text der Seite
 -- @param[type=boolean]  _DialogCamera Nahsicht an/aus
 -- @param[type=function] _Action       (Optional) Callback-Funktion

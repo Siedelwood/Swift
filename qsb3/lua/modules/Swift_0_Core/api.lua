@@ -1031,10 +1031,6 @@ end
 -- An den Listener werden die gleichen Parameter übergeben, die für das Event
 -- auch bei GameCallback_QSB_OnEventReceived übergeben werden.
 --
--- Es wird eine für das Event im Environment eindeutige ID erzeugt. Diese
--- muss in einer Variable gespeichert werden, um den Listener später löschen
--- zu können.
---
 -- <b>Hinweis</b>: Event Listener für ein spezifisches Event werden nach
 -- GameCallback_QSB_OnEventReceived aufgerufen.
 --
@@ -1316,6 +1312,37 @@ function API.ChangeEntityHealth(_Entity, _Health, _Relative)
         return;
     end
     error("API.ChangeEntityHealth: _Entity (" ..tostring(_Entity).. ") does not exist!");
+end
+
+---
+-- Schreibt ein genaues Abbild der Table ins Log. Funktionen, Threads und
+-- Metatables werden als Adresse geschrieben.
+--
+-- @param[type=table]  _Table Tabelle, die gedumpt wird
+-- @param[type=string] _Name Optionaler Name im Log
+-- @within Base
+-- @local
+-- @usage Table = {1, 2, 3, {a = true}}
+-- API.DumpTable(Table)
+--
+function API.DumpTable(_Table, _Name)
+    local Start = "{";
+    if _Name then
+        Start = _Name.. " = \n" ..Start;
+    end
+    Framework.WriteToLog(Start);
+
+    for k, v in pairs(_Table) do
+        if type(v) == "table" then
+            Framework.WriteToLog("[" ..k.. "] = ");
+            API.DumpTable(v);
+        elseif type(v) == "string" then
+            Framework.WriteToLog("[" ..k.. "] = \"" ..v.. "\"");
+        else
+            Framework.WriteToLog("[" ..k.. "] = " ..tostring(v));
+        end
+    end
+    Framework.WriteToLog("}");
 end
 
 ---
@@ -2147,7 +2174,7 @@ function API.GetLinePosition(_Pos1, _Pos2, _Percentage)
         _Percentage = _Percentage / 100;
     end
 
-    if not API.ValidatePosition(_Pos1) and not IsExisting(_Pos1) then
+    if not API.IsValidPosition(_Pos1) and not IsExisting(_Pos1) then
         error("API.GetLinePosition: _Pos1 does not exist or is invalid position!");
         return;
     end
@@ -2156,7 +2183,7 @@ function API.GetLinePosition(_Pos1, _Pos2, _Percentage)
         Pos1 = GetPosition(Pos1);
     end
 
-    if not API.ValidatePosition(_Pos2) and not IsExisting(_Pos2) then
+    if not API.IsValidPosition(_Pos2) and not IsExisting(_Pos2) then
         error("API.GetLinePosition: _Pos1 does not exist or is invalid position!");
         return;
     end
@@ -2200,7 +2227,7 @@ end
 -- @usage local Position = API.GetCirclePosition("HQ1", 3000, -45);
 --
 function API.GetCirclePosition(_Target, _Distance, _Angle)
-    if not API.ValidatePosition(_Target) and not IsExisting(_Target) then
+    if not API.IsValidPosition(_Target) and not IsExisting(_Target) then
         error("API.GetCirclePosition: _Target does not exist or is invalid position!");
         return;
     end
