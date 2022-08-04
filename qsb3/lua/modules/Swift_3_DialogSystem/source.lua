@@ -69,7 +69,7 @@ end
 function ModuleDialogSystem.Global:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.EscapePressed then
         if self.Dialog[arg[1]] ~= nil then
-            if Logic.GetTime() - self.Dialog[arg[1]].PageStartedTime >= 2 then
+            if Logic.GetTime() - self.Dialog[arg[1]].PageStartedTime >= 1 then
                 local PageID = self.Dialog[arg[1]].CurrentPage;
                 local Page = self.Dialog[arg[1]][PageID];
                 if not self.Dialog[arg[1]].DisableSkipping and not Page.DisableSkipping and not Page.MC then
@@ -217,6 +217,7 @@ function ModuleDialogSystem.Global:DisplayPage(_PlayerID, _PageID)
 
     self.DialogPageCounter = self.DialogPageCounter +1;
     local Page = self.Dialog[_PlayerID][_PageID];
+    local PrevQuestName = "DialogSystemQuest_" .._PlayerID.. "_" ..(self.DialogPageCounter-1);
     local QuestName = "DialogSystemQuest_" .._PlayerID.. "_" ..self.DialogPageCounter;
     local QuestText = API.ConvertPlaceholders(API.Localize(Page.Text));
     local Extension = "";
@@ -224,6 +225,7 @@ function ModuleDialogSystem.Global:DisplayPage(_PlayerID, _PageID)
         Extension = API.ConvertPlaceholders(API.Localize(ModuleDialogSystem.Shared.Text.Continue));
     end
     local Sender = Page.Sender or _PlayerID;
+    local AutoSkip = (self.Dialog[_PlayerID].DisableSkipping or Page.DisableSkipping) == true;
     API.CreateQuest {
         Name        = QuestName,
         Suggestion  = QuestText .. Extension,
@@ -233,6 +235,17 @@ function ModuleDialogSystem.Global:DisplayPage(_PlayerID, _PageID)
         Goal_NoChange(),
         Trigger_Time(0),
     }
+    -- Using a inline job because quest do not really tick and there is no
+    -- point in assigning quest durations.
+    API.StartJob(function(_AutoSkip, _PlayerID, _StartTime, _Duration)
+        if not _AutoSkip then
+            return true;
+        end
+        if Logic.GetTime() >= _StartTime+_Duration then
+            ModuleDialogSystem.Global:NextPage(_PlayerID);
+            return true;
+        end
+    end, AutoSkip, _PlayerID, Logic.GetTime(), 12)
 
     Logic.ExecuteInLuaLocalState(string.format(
         [[ModuleDialogSystem.Local:DisplayPage(%d, %s)]],
@@ -373,7 +386,7 @@ function ModuleDialogSystem.Local:DisplayPage(_PlayerID, _PageData)
             XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/QuestLog", 0);
             XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/Update", 0);
             XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles/Update", 1);
-            self:ResetPlayerPortrait(_PageData.Sender);
+            self:ResetPlayerPortrait(_PageData.Sender, _PageData.Head);
             self:ResetSubtitlesPosition(_PlayerID);
             self:SetSubtitlesText(_PlayerID);
             self:SetSubtitlesPosition(_PlayerID);
@@ -386,6 +399,16 @@ function ModuleDialogSystem.Local:DisplayPage(_PlayerID, _PageData)
             self:SetSubtitlesPosition(_PlayerID);
         end
 
+        if _PageData.Title then
+            local Title = API.ConvertPlaceholders(_PageData.Title);
+            if Title:find("^[A-Za-Z0-9_]+/[A-Za-Z0-9_]+$") then
+                Title = XGUIEng.GetStringTableText(Title);
+            end
+            if Title:sub(1, 1) ~= "{" then
+                Title = "{center}" ..Title;
+            end
+            XGUIEng.SetText("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/PlayerName", Title);
+        end
         if _PageData.Target then
             Camera.RTS_FollowEntity(GetID(_PageData.Target));
         else
@@ -437,9 +460,15 @@ function ModuleDialogSystem.Local:SetSubtitlesPosition(_PlayerID)
     end
 end
 
-function ModuleDialogSystem.Local:ResetPlayerPortrait(_PlayerID)
+function ModuleDialogSystem.Local:ResetPlayerPortrait(_PlayerID, _HeadModel)
     local PortraitWidget = "/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/3DPortraitFaceFX";
     local Actor = g_PlayerPortrait[_PlayerID];
+    if _HeadModel then
+        if not Models["Heads_" .. tostring(_HeadModel)] then
+            _HeadModel = "H_NPC_Generic_Trader";
+        end
+        Actor = _HeadModel;
+    end
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/QuestObjectives", 0);
     SetPortraitWithCameraSettings(PortraitWidget, Actor);
     GUI.PortraitWidgetSetRegister(PortraitWidget, "Mood_Friendly", 1,2,0);
