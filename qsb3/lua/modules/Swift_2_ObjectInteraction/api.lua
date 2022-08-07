@@ -263,8 +263,8 @@ end
 -- @param[type=number] _PlayerID   (Optional) Spieler-ID
 -- @within Anwenderfunktionen
 --
-function API.InteractiveObjectActivate(_ScriptName, _State, _PlayerID)
-    _State = _State or 0;
+function API.InteractiveObjectActivate(_ScriptName, _State, ...)
+    arg = arg or {1};
     if GUI then
         return;
     end
@@ -277,14 +277,14 @@ function API.InteractiveObjectActivate(_ScriptName, _State, _PlayerID)
                 SlaveName
             ));
         end
-        ModuleObjectInteraction.Global:SetObjectState(SlaveName, _State, _PlayerID);
+        ModuleObjectInteraction.Global:SetObjectState(SlaveName, _State, unpack(arg));
         IO[_ScriptName].IsActive = true;
         Logic.ExecuteInLuaLocalState(string.format(
             [[IO["%s"].IsActive = true]],
             _ScriptName
         ));
     else
-        ModuleObjectInteraction.Global:SetObjectState(_ScriptName, _State, _PlayerID);
+        ModuleObjectInteraction.Global:SetObjectState(_ScriptName, _State, unpack(arg));
     end
 end
 InteractiveObjectActivate = API.InteractiveObjectActivate;
@@ -299,7 +299,8 @@ InteractiveObjectActivate = API.InteractiveObjectActivate;
 -- @param[type=number] _PlayerID   (Optional) Spieler-ID
 -- @within Anwenderfunktionen
 --
-function API.InteractiveObjectDeactivate(_ScriptName, _PlayerID)
+function API.InteractiveObjectDeactivate(_ScriptName, ...)
+    arg = arg or {1};
     if GUI then
         return;
     end
@@ -312,14 +313,14 @@ function API.InteractiveObjectDeactivate(_ScriptName, _PlayerID)
                 SlaveName
             ));
         end
-        ModuleObjectInteraction.Global:SetObjectState(SlaveName, 2, _PlayerID);
+        ModuleObjectInteraction.Global:SetObjectState(SlaveName, 2, unpack(arg));
         IO[_ScriptName].IsActive = false;
         Logic.ExecuteInLuaLocalState(string.format(
             [[IO["%s"].IsActive = false]],
             _ScriptName
         ));
     else
-        ModuleObjectInteraction.Global:SetObjectState(_ScriptName, 2, _PlayerID);
+        ModuleObjectInteraction.Global:SetObjectState(_ScriptName, 2, unpack(arg));
     end
 end
 InteractiveObjectDeactivate = API.InteractiveObjectDeactivate;

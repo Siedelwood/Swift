@@ -390,7 +390,11 @@ function ModuleObjectInteraction.Local:OnGameStart()
 end
 
 function ModuleObjectInteraction.Local:OnEvent(_ID, _Event, _ScriptName, _KnightID, _PlayerID)
-    if _ID == QSB.ScriptEvents.ObjectInteraction then
+    if _ID == QSB.ScriptEvents.ObjectReset then
+        if IO[_ScriptName] then
+            IO[_ScriptName].IsUsed = false;
+        end
+    elseif _ID == QSB.ScriptEvents.ObjectInteraction then
         QSB.IO.LastObjectEntityID = GetID(_ScriptName);
         QSB.IO.LastHeroEntityID = _KnightID;
     end
