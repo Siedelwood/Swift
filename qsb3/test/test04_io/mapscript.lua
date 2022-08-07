@@ -77,32 +77,13 @@ function Mission_FirstMapAction()
     end
 
     API.ActivateDebugMode(true, false, true, true);
+
+    CreateTestObject();
 end
 
-function HH_prepareCows()
-    local cow = GetPlayerEntities(1, Entities.A_X_Cow01)
-    for i = 1, #cow do
-        Logic.SetEntityName(cow[i], "IOCow"..i)
-        API.CreateObject {
-            Name        = "IOCow"..i,
-            Title       = "Kuh",
-            Text        = "Kuh verkaufen",
-            -- Distance    = 300,
-            State       = 1,
-            Texture     = {3, 16},
-            Action      = function(_Data)
-                API.Note("It works!");
-            end
-        }
-
-        -- API.NpcCompose {
-        --     Name     = "IOCow"..i,
-        --     Callback = function(_Npc, _Hero)
-        --         API.SetEntityPlayer("IOCow"..i, 2);
-        --         API.Note("It works!");
-        --     end,
-        -- }
-    end
+function ResetTestObject()
+    API.ResetObject("IO1")
+    API.InteractiveObjectActivate("IO1", 1, 1);
 end
 
 function CreateTestMines1()
