@@ -71,9 +71,9 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- <td>(Optional) Alle Einheiten und Gebäude werden unverwundbar solange das Briefing aktiv ist.</td>
 -- </tr>
 -- <tr>
--- <td>BarOpacity</td>
--- <td>number</td>
--- <td>(Optional) Setzt den Alphawert der Bars (Zwischen 0 und 1).</td>
+-- <td>EnableCameraSoothing</td>
+-- <td>boolean</td>
+-- <td>(Optional) Aktiviert die Bewegungsglättung der Kamera. Kann auf langsamen Systemen zu massiven Lags führen!</td>
 -- </tr>
 -- <tr>
 -- <td>EnableSky</td>
@@ -96,6 +96,8 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- Animationen für Seiten eines Briefings werden vom Text entkoppelt. Das hat
 -- den Charme, dass Spielfiguren erzählen und erzählen und die Kamera über die
 -- ganze Zeit die gleiche Animation zeigt, was das Lesen angenehmer macht.
+--
+-- Animationen werden nur erzeugt, wenn die Page noch keine Position hat!
 --
 -- Animationen können auch über eine Table angegeben werden. Diese wird direkt
 -- an die Briefing Table angehangen. Die Animation wird die Kamera dann von
@@ -502,6 +504,11 @@ end
 -- <td>(Optional) Zeigt entweder die Blende an (1) oder nicht (0). Per Default
 -- wird die Blende nicht angezeigt. <br><b>Zwischen einer Seite mit FadeOut und
 -- der nächsten mit Fade In muss immer eine Seite mit FaderAlpha sein!</b></td>
+-- </tr>
+-- <tr>
+-- <td>BarOpacity</td>
+-- <td>number</td>
+-- <td>(Optional) Setzt den Alphawert der Bars (Zwischen 0 und 1).</td>
 -- </tr>
 -- <tr>
 -- <td>BigBars</td>

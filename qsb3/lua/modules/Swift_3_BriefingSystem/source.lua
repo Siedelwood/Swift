@@ -145,10 +145,9 @@ function ModuleBriefingSystem.Global:NextBriefing(_PlayerID)
         local Briefing = BriefingData[2];
         Briefing.Name = BriefingData[1];
         Briefing.PlayerID = _PlayerID;
-        Briefing.BarOpacity = Briefing.BarOpacity or 1;
         Briefing.CurrentPage = 0;
-        if Briefing.EnableSoothingCamera == nil then
-            Briefing.EnableSoothingCamera = true;
+        if Briefing.EnableCameraSoothing == nil then
+            Briefing.EnableCameraSoothing = false;
         end
         self.Briefing[_PlayerID] = Briefing;
         self:TransformAnimations(_PlayerID);
@@ -433,12 +432,13 @@ end
 
 function ModuleBriefingSystem.Local:DisplayPageBars(_PlayerID, _PageID)
     local Page = self.Briefing[_PlayerID][_PageID];
-    local OpacityBig = (255 * self.Briefing[_PlayerID].BarOpacity);
-    local OpacitySmall = (255 * self.Briefing[_PlayerID].BarOpacity);
+    local Opacity = (Page.BarOpacity ~= nil and Page.BarOpacity) or 1;
+    local OpacityBig = (255 * Opacity);
+    local OpacitySmall = (255 * Opacity);
 
     local BigVisibility = (Page.BigBars and 1) or 0;
     local SmallVisibility = (Page.BigBars and 0) or 1;
-    if self.Briefing[_PlayerID].BarOpacity == 0 then
+    if Opacity == 0 then
         BigVisibility = 0;
         SmallVisibility = 0;
     end
@@ -818,11 +818,11 @@ function ModuleBriefingSystem.Local:GetLERP(_PlayerID)
         local FrameworkTime = Framework.GetTimeMs();
         local Speed = Game.GameTimeGetFactor(GUI.GetPlayerID());
         local Factor = API.LERP(Anim.Started, CurrentTime, Anim.Duration);
-        -- Optional soothening the camera
+        -- Optional camera soothing
         -- Get the time between each tenth seconds to get rid of the
         -- asynchronozity and fix the factor.
         -- Note: This will have it's issues with slow machines.
-        if self.Briefing[_PlayerID].EnableSoothingCamera then
+        if self.Briefing[_PlayerID].EnableCameraSoothing then
             if Anim.LastLogicTime ~= CurrentTime then
                 Anim.LastLogicTime = CurrentTime;
                 Anim.LastFrameworkTime = FrameworkTime;
