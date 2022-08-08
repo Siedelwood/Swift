@@ -255,6 +255,11 @@ end
 -- <td>boolean</td>
 -- <td>(Optional) Schalted breite Balken ein oder aus.</b></td>
 -- </tr>
+-- <tr>
+-- <td>BarOpacity</td>
+-- <td>number</td>
+-- <td>(Optional) Setzt den Alphawert der Bars (Zwischen 0 und 1).</td>
+-- </tr>
 -- </table>
 --
 -- @within Cutscene

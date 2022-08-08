@@ -268,6 +268,7 @@ function API.AddBriefingPages(_Briefing)
             -- Language
             _Page.Title = API.Localize(_Page.Title);
             _Page.Text = API.Localize(_Page.Text);
+            _Page.FOV = _Page.FOV or 42.0;
 
             -- Display time
             if not _Page.Duration then

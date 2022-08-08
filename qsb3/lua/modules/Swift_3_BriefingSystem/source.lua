@@ -694,11 +694,11 @@ function ModuleBriefingSystem.Local:ThroneRoomCameraControl(_PlayerID, _Page)
         local PX, PY, PZ = self:GetPagePosition(_PlayerID);
         local LX, LY, LZ = self:GetPageLookAt(_PlayerID);
         if PX and not LX then
-            LX, LY, LZ, PX, PY, PZ = self:GetCameraProperties(_PlayerID);
+            LX, LY, LZ, PX, PY, PZ, FOV = self:GetCameraProperties(_PlayerID);
         end
         Camera.ThroneRoom_SetPosition(PX, PY, PZ);
         Camera.ThroneRoom_SetLookAt(LX, LY, LZ);
-        Camera.ThroneRoom_SetFOV(42.0);
+        Camera.ThroneRoom_SetFOV(FOV);
 
         -- Portrait
         self:AnimatePortrait(_PlayerID);
@@ -788,6 +788,7 @@ function ModuleBriefingSystem.Local:GetCameraProperties(_PlayerID)
     local lookAtX = lPLX + (cPLX - lPLX) * factor;
     local lookAtY = lPLY + (cPLY - lPLY) * factor;
     local lookAtZ = lPLZ + (cPLZ - lPLZ) * factor;
+    local FOV = startFOV + (endFOV - startFOV) * factor;
 
     local zoomDistance = startZoomDistance + (endZoomDistance - startZoomDistance) * factor;
     local zoomAngle = startZoomAngle + (endZoomAngle - startZoomAngle) * factor;
@@ -797,7 +798,7 @@ function ModuleBriefingSystem.Local:GetCameraProperties(_PlayerID)
     local positionY = lookAtY + math.sin(math.rad(rotation - 90)) * line;
     local positionZ = lookAtZ + (zoomDistance) * math.sin(math.rad(zoomAngle));
 
-    return lookAtX, lookAtY, lookAtZ, positionX, positionY, positionZ;
+    return lookAtX, lookAtY, lookAtZ, positionX, positionY, positionZ, FOV;
 end
 
 function ModuleBriefingSystem.Local:ConvertPosition(_Table)
