@@ -27,6 +27,17 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 
 ---
+-- Events, auf die reagiert werden kann.
+--
+-- @field DialogStarted        Ein Dialog beginnt (Parameter: PlayerID, CutsceneTable)
+-- @field DialogEnded          Ein Dialog endet (Parameter: PlayerID, CutsceneTable)
+-- @field DialogOptionSelected Eine Multiple Choice Option wurde ausgewählt (Parameter: PlayerID, OptionID)
+--
+-- @within Event
+--
+QSB.ScriptEvents = QSB.ScriptEvents or {};
+
+---
 -- Startet einen Dialog.
 --
 -- Für einen Dialog können verschiedene spezielle Einstellungen vorgenommen

@@ -45,6 +45,8 @@ QSB.Dialog = {
 
 function ModuleDialogSystem.Global:OnGameStart()
     QSB.ScriptEvents.DialogOptionSelected = API.RegisterScriptEvent("Event_DialogOptionSelected");
+    QSB.ScriptEvents.DialogStarted = API.RegisterScriptEvent("Event_DialogStarted");
+    QSB.ScriptEvents.DialogEnded = API.RegisterScriptEvent("Event_DialogEnded");
 
     for i= 1, 8 do
         self.DialogQueue[i] = {};
@@ -99,8 +101,13 @@ function ModuleDialogSystem.Global:EndDialog(_PlayerID)
         self.Dialog[_PlayerID]:Finished();
     end
     API.FinishCinematicEvent(self.Dialog[_PlayerID].Name, _PlayerID);
+    API.SendScriptEvent(
+        QSB.ScriptEvents.DialogEnded,
+        _PlayerID,
+        self.Dialog[_PlayerID]
+    );
     Logic.ExecuteInLuaLocalState(string.format(
-        "ModuleDialogSystem.Local:EndDialog(%d, %s)",
+        [[API.SendScriptEvent(QSB.ScriptEvents.DialogEnded, %d, %s)]],
         _PlayerID,
         table.tostring(self.Dialog[_PlayerID])
     ));
@@ -130,10 +137,15 @@ function ModuleDialogSystem.Global:NextDialog(_PlayerID)
             self.Dialog[_PlayerID]:Starting();
         end
 
-        Logic.ExecuteInLuaLocalState(string.format(
-            "ModuleDialogSystem.Local:StartDialog(%d, %s)",
+        API.SendScriptEvent(
+            QSB.ScriptEvents.DialogStarted,
             _PlayerID,
-            table.tostring(Dialog)
+            self.Dialog[_PlayerID]
+        );
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.SendScriptEvent(QSB.ScriptEvents.DialogStarted, %d, %s)]],
+            _PlayerID,
+            table.tostring(self.Dialog[_PlayerID])
         ));
         self:NextPage(_PlayerID);
     end
@@ -292,12 +304,22 @@ end
 
 function ModuleDialogSystem.Local:OnGameStart()
     QSB.ScriptEvents.DialogOptionSelected = API.RegisterScriptEvent("Event_DialogOptionSelected");
+    QSB.ScriptEvents.DialogStarted = API.RegisterScriptEvent("Event_DialogStarted");
+    QSB.ScriptEvents.DialogEnded = API.RegisterScriptEvent("Event_DialogEnded");
 
     API.StartHiResJob(function()
         for i= 1, 8 do
             ModuleDialogSystem.Local:Update(i);
         end
     end);
+end
+
+function ModuleDialogSystem.Local:OnEvent(_ID, _Event, ...)
+    if _ID == QSB.ScriptEvents.DialogStarted then
+        ModuleDialogSystem.Local:StartDialog(arg[1], arg[2]);
+    elseif _ID == QSB.ScriptEvents.DialogEnded then
+        ModuleDialogSystem.Local:EndDialog(arg[1], arg[2]);
+    end
 end
 
 function ModuleDialogSystem.Local:StartDialog(_PlayerID, _Data)
