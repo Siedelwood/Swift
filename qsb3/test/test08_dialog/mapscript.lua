@@ -76,6 +76,7 @@ function BriefingCutsceneTest(_Name, _PlayerID)
         Flight  = "c02",
         Title   = "Flight 2",
         Text    = "They are NOT supposed to display huge chuncks of text!",
+        DisableSkipping = true,
         Action  = function()
             API.Note("It just work's!");
         end
@@ -88,7 +89,7 @@ function BriefingCutsceneTest(_Name, _PlayerID)
     };
 
     Cutscene.Finished = function()
-        -- BriefingAnimationTest1([[foo]], 1)
+        BriefingAnimationTest1([[foo]], 1)
     end
     API.StartCutscene(Cutscene, _Name, _PlayerID)
 end
@@ -150,7 +151,7 @@ function BriefingAnimationTest2(_Name, _PlayerID)
     Briefing.Starting = function(_Data)
     end
     Briefing.Finished = function(_Data)
-        -- BriefingAnimationTest1([[foo]], 1)
+        BriefingAnimationTest1([[foo]], 1)
     end
     API.StartBriefing(Briefing, _Name, _PlayerID)
 end
@@ -239,6 +240,7 @@ function CreateTestNPCDialogBriefing(_Name, _PlayerID)
     Dialog.Starting = function(_Data)
     end
     Dialog.Finished = function(_Data)
+        BriefingAnimationTest1([[foo]], 1)
     end
     API.StartDialog(Dialog, _Name, _PlayerID);
 end

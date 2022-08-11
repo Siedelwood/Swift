@@ -143,7 +143,7 @@ function API.DeactivateBorderScroll(_Position)
 end
 
 ---
--- Propagiert den Beginn des cinematischen Events und bindet es an den Spieler.
+-- Propagiert den Beginn des Kinoevents und bindet es an den Spieler.
 --
 -- @param[type=string] _Name     Bezeichner
 -- @param[type=number] _PlayerID ID des Spielers
@@ -153,12 +153,13 @@ function API.StartCinematicEvent(_Name, _PlayerID)
     if GUI then
         return;
     end
+    QSB.CinematicEvents[_PlayerID] = QSB.CinematicEvents[_PlayerID] or {};
     local ID = ModuleDisplayCore.Global:ActivateCinematicEvent(_PlayerID);
-    QSB.CinematicEvents[_Name] = ID;
+    QSB.CinematicEvents[_PlayerID][_Name] = ID;
 end
 
 ---
--- Propagiert das Ende des cinematischen Events.
+-- Propagiert das Ende des Kinoeventss.
 --
 -- @param[type=string] _Name Bezeichner
 -- @within Anwenderfunktionen
@@ -167,55 +168,48 @@ function API.FinishCinematicEvent(_Name, _PlayerID)
     if GUI then
         return;
     end
-    if QSB.CinematicEvents[_Name] then
-        ModuleDisplayCore.Global:ConcludeCinematicEvent(QSB.CinematicEvents[_Name], _PlayerID);
+    QSB.CinematicEvents[_PlayerID] = QSB.CinematicEvents[_PlayerID] or {};
+    if QSB.CinematicEvents[_PlayerID][_Name] then
+        ModuleDisplayCore.Global:ConcludeCinematicEvent(QSB.CinematicEvents[_PlayerID][_Name], _PlayerID);
     end
 end
 
 ---
--- Gibt den Status des cinematischen Event zurück.
+-- Gibt den Status des Kinoevents zurück.
 --
--- @param[type=string] _Name Bezeichner
+-- @param _Identifier Bezeichner oder ID
 -- @return[type=number] Event Status
 -- @within Anwenderfunktionen
 --
-function API.GetCinematicEventStatus(_Name)
-    if QSB.CinematicEvents[_Name] then
+function API.GetCinematicEventStatus(_Identifier, _PlayerID)
+    QSB.CinematicEvents[_PlayerID] = QSB.CinematicEvents[_PlayerID] or {};
+    if type(_Identifier) == "number" then
         if GUI then
-            return ModuleDisplayCore.Local:GetCinematicEventStatus(QSB.CinematicEvents[_Name]);
+            return ModuleDisplayCore.Local:GetCinematicEventStatus(_Identifier);
         end
-        return ModuleDisplayCore.Global:GetCinematicEventStatus(QSB.CinematicEvents[_Name]);
+        return ModuleDisplayCore.Global:GetCinematicEventStatus(_Identifier);
+    end
+    if QSB.CinematicEvents[_PlayerID][_Identifier] then
+        if GUI then
+            return ModuleDisplayCore.Local:GetCinematicEventStatus(QSB.CinematicEvents[_PlayerID][_Identifier]);
+        end
+        return ModuleDisplayCore.Global:GetCinematicEventStatus(QSB.CinematicEvents[_PlayerID][_Identifier]);
     end
     return CinematicEventStatus.NotTriggered;
 end
 
 ---
--- Gibt den Spieler zurück, an den das cinematische Event gebunden ist.
---
--- @param[type=string] _Name Bezeichner
--- @return[type=number] ID des Spielers
--- @within Anwenderfunktionen
---
-function API.GetCinematicEventPlayerID(_Name)
-    if GUI then
-        return ModuleDisplayCore.Local:GetCinematicEventPlayerID(QSB.CinematicEvents[_Name]);
-    end
-    return ModuleDisplayCore.Global:GetCinematicEventPlayerID(QSB.CinematicEvents[_Name]);
-end
-
----
--- Prüft ob gerade ein cinematisches Event für den Spieler aktiv ist.
+-- Prüft ob gerade ein Kinoevents für den Spieler aktiv ist.
 --
 -- @param[type=number] _PlayerID ID des Spielers
 -- @return[type=boolean] Event aktiv
 -- @within Anwenderfunktionen
 --
 function API.IsCinematicEventActive(_PlayerID)
-    for k, v in pairs(QSB.CinematicEvents) do
-        if API.GetCinematicEventPlayerID(k) == _PlayerID then
-            if API.GetCinematicEventStatus(k) == CinematicEventStatus.Active then
-                return true;
-            end
+    QSB.CinematicEvents[_PlayerID] = QSB.CinematicEvents[_PlayerID] or {};
+    for k, v in pairs(QSB.CinematicEvents[_PlayerID]) do
+        if API.GetCinematicEventStatus(k, _PlayerID) == CinematicEventStatus.Active then
+            return true;
         end
     end
     return false;

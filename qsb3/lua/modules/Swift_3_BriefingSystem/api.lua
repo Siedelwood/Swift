@@ -110,6 +110,7 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 --        {"pos4", -60, 2000, 35, "pos4", -30, 2000, 25, 30}
 --    },
 --    ["Page3"] = {
+--        -- Diese Option löscht alle laufenden Animationen
 --        PurgeOld = true,
 --        {"pos2", -45, 6000, 35, "pos2", -45, 3000, 35, 30},
 --    }
@@ -123,11 +124,7 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 --
 -- @usage
 -- function Briefing1(_Name, _PlayerID)
---     local Briefing = {
---         EnableFoW = false,
---         EnableSky = true,
---         EnableBoderPins = false,
---     };
+--     local Briefing = {};
 --     local AP, ASP, AAN = API.AddBriefingPages(Briefing);
 --
 --     -- Aufrufe von AP oder ASP um Seiten zu erstellen
@@ -529,7 +526,7 @@ end
 -- <tr>
 -- <td>BigBars</td>
 -- <td>boolean</td>
--- <td>(Optional) Schalted breite Balken ein oder aus.</b></td>
+-- <td>(Optional) Schalted breite Balken ein oder aus.</td>
 -- </tr>
 -- <tr>
 -- <td>MC</td>

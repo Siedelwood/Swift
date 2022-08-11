@@ -87,14 +87,10 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 --
 -- @usage
 -- function Cutscene1(_Name, _PlayerID)
---     local Cutscene = {
---         DisableFoW = true,
---         EnableSky = true,
---         DisableBoderPins = true,
---     };
---     local AP, ASP = API.AddCutscenePages(Cutscene);
+--     local Cutscene = {};
+--     local AF = API.AddCutscenePages(Cutscene);
 --
---     -- Aufrufe von AP oder ASP um Seiten zu erstellen
+--     -- Aufrufe von AF um Seiten zu erstellen
 --
 --     Cutscene.Starting = function(_Data)
 --         -- Mach was tolles hier wenn es anfängt.
@@ -142,9 +138,6 @@ function API.StartCutscene(_Cutscene, _Name, _PlayerID)
     end
     if _Cutscene.EnableBorderPins == nil then
         _Cutscene.EnableBorderPins = false;
-    end
-    if _Cutscene.DisableFastForward == nil then
-        _Cutscene.DisableFastForward = false;
     end
     ModuleCutsceneSystem.Global:StartCutscene(_Name, PlayerID, _Cutscene);
 end
@@ -266,9 +259,14 @@ end
 -- der nächsten mit Fade In muss immer eine Seite mit FaderAlpha sein!</b></td>
 -- </tr>
 -- <tr>
+-- <td>DisableSkipping</td>
+-- <td>boolean</td>
+-- <td>(Optional) Die Fast Forward Aktion wird unterbunden. Außerdem wird die Beschleunigung automatisch aufgehoben.</td>
+-- </tr>
+-- <tr>
 -- <td>BigBars</td>
 -- <td>boolean</td>
--- <td>(Optional) Schalted breite Balken ein oder aus.</b></td>
+-- <td>(Optional) Schalted breite Balken ein oder aus.</td>
 -- </tr>
 -- <tr>
 -- <td>BarOpacity</td>

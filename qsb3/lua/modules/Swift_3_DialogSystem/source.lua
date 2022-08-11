@@ -176,7 +176,7 @@ function ModuleDialogSystem.Global:NextPage(_PlayerID)
                 end
             end
         end
-        
+
         if PageID <= #self.Dialog[_PlayerID] then
             if self.Dialog[_PlayerID][PageID].Action then
                 self.Dialog[_PlayerID][PageID]:Action();

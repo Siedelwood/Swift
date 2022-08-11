@@ -421,9 +421,10 @@ function ModuleCutsceneSystem.Local:DisplayPageControls(_PlayerID, _PageID)
     local Page = self.Cutscene[_PlayerID][_PageID];
     local SkipFlag = 1;
     if Page.DisableSkipping == true then
+        Game.GameTimeSetFactor(_PlayerID, 1);
         SkipFlag = 0;
     end
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", 1);
+    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", SkipFlag);
 end
 
 function ModuleCutsceneSystem.Local:DisplayPageFader(_PlayerID, _PageID)
@@ -448,12 +449,12 @@ end
 
 function ModuleCutsceneSystem.Local:ThroneRoomCameraControl(_PlayerID, _Page)
     if _Page then
-        if _Page.DisableFastForward then
+        if _Page.DisableSkipping then
             XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", " ");
-            XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", 0);
+            -- XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", 0);
             return;
         end
-        XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", 1);
+        -- XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", 1);
 
         -- Button text
         local SkipText = API.Localize(ModuleCutsceneSystem.Shared.Text.FastForwardActivate);

@@ -64,15 +64,6 @@ function ModuleDisplayCore.Global:GetNewCinematicEventID()
     return self.CinematicEventID;
 end
 
-function ModuleDisplayCore.Global:GetCinematicEventPlayerID(_InfoID)
-    for i= 1, 8 do
-        if self.CinematicEventStatus[i][_InfoID] then
-            return i;
-        end
-    end
-    return 0;
-end
-
 function ModuleDisplayCore.Global:GetCinematicEventStatus(_InfoID)
     for i= 1, 8 do
         if self.CinematicEventStatus[i][_InfoID] then
@@ -131,15 +122,6 @@ function ModuleDisplayCore.Local:OnEvent(_ID, _Event, ...)
             end
         end
     end
-end
-
-function ModuleDisplayCore.Local:GetCinematicEventPlayerID(_InfoID)
-    for i= 1, 8 do
-        if self.CinematicEventStatus[i][_InfoID] then
-            return i;
-        end
-    end
-    return 0;
 end
 
 function ModuleDisplayCore.Local:GetCinematicEventStatus(_InfoID)

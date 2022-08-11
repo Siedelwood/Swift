@@ -118,8 +118,9 @@ B_Trigger_Cutscene = {
         de = "Auslöser: Prüft, ob eine Cutscene beendet ist und startet dann den Quest.",
     },
     Parameter = {
-        { ParameterType.Default, en = "Cutscene name", de = "Name der Cutscene" },
-        { ParameterType.Number,  en = "Wait time",     de = "Wartezeit" },
+        { ParameterType.Default,  en = "Cutscene name", de = "Name der Cutscene" },
+        { ParameterType.PlayerID, en = "Player ID",     de = "Player ID" },
+        { ParameterType.Number,   en = "Wait time",     de = "Wartezeit" },
     },
 }
 
@@ -130,6 +131,8 @@ end
 function B_Trigger_Cutscene:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.CutsceneName = _Parameter;
+    elseif (_Index == 1) then
+        self.PlayerID = _Parameter * 1;
     elseif (_Index == 2) then
         _Parameter = _Parameter or 0;
         self.WaitTime = _Parameter * 1;
@@ -137,7 +140,7 @@ function B_Trigger_Cutscene:AddParameter(_Index, _Parameter)
 end
 
 function B_Trigger_Cutscene:CustomFunction(_Quest)
-    if API.GetCinematicEventStatus(self.CutsceneName) == CinematicEventStatus.Concluded then
+    if API.GetCinematicEventStatus(self.CutsceneName, self.PlayerID) == CinematicEventStatus.Concluded then
         if self.WaitTime and self.WaitTime > 0 then
             self.WaitTimeTimer = self.WaitTimeTimer or Logic.GetTime();
             if Logic.GetTime() >= self.WaitTimeTimer + self.WaitTime then
@@ -155,20 +158,12 @@ function B_Trigger_Cutscene:Debug(_Quest)
         error(string.format("%s: %s: Wait time must be 0 or greater!", _Quest.Identifier, self.Name));
         return true;
     end
-    if self.CutsceneName == nil or self.CutsceneName == "" then
-        error(string.format("%s: %s: Dialog name is invalid!", _Quest.Identifier, self.Name));
+    if self.PlayerID < 1 or self.PlayerID > 8 then
+        error(string.format("%s: %s: Player-ID must be between 1 and 8!", _Quest.Identifier, self.Name));
         return true;
     end
-    local EventPlayerID = API.GetCinematicEventPlayerID(self.CutsceneName);
-    if EventPlayerID ~= _Quest.ReceivingPlayer then
-        error(string.format(
-            "%s: %s: Dialog '%s' is for player %d but quest is for player %d!",
-            _Quest.Identifier,
-            self.Name,
-            self.CutsceneName,
-            EventPlayerID,
-            _Quest.ReceivingPlayer
-        ));
+    if self.CutsceneName == nil or self.CutsceneName == "" then
+        error(string.format("%s: %s: Dialog name is invalid!", _Quest.Identifier, self.Name));
         return true;
     end
     return false;
