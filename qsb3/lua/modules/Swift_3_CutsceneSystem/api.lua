@@ -61,22 +61,22 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- <tr>
 -- <td>EnableGlobalImmortality</td>
 -- <td>boolean</td>
--- <td>(Optional) Alle Einheiten und Gebäude werden unverwundbar solange die Cutscene aktiv ist.</td>
+-- <td>(Optional) Alle Einheiten und Gebäude werden unverwundbar solange die Cutscene aktiv ist. <br>Standard: ein</td>
 -- </tr>
 -- <tr>
 -- <td>EnableSky</td>
 -- <td>boolean</td>
--- <td>(Optional) Der Himmel wird während der Cutscene angezeigt.</td>
+-- <td>(Optional) Der Himmel wird während der Cutscene angezeigt. <br>Standard: ein</td>
 -- </tr>
 -- <tr>
--- <td>DisableFoW</td>
+-- <td>EnableFoW</td>
 -- <td>boolean</td>
--- <td>(Optional) Der Nebel des Krieges wird für die Dauer der Cutscene ausgeblendet.</td>
+-- <td>(Optional) Der Nebel des Krieges wird während der Cutscene angezeigt. <br>Standard: aus</td>
 -- </tr>
 -- <tr>
--- <td>DisableBorderPins</td>
+-- <td>EnableBorderPins</td>
 -- <td>boolean</td>
--- <td>(Optional) Die Grenzsteine werden für die Dauer der Cutscene ausgeblendet.</td>
+-- <td>(Optional) Die Grenzsteine werden während der Cutscene angezeigt. <br>Standard: aus</td>
 -- </tr>
 -- </table>
 --
@@ -130,6 +130,21 @@ function API.StartCutscene(_Cutscene, _Name, _PlayerID)
             error("API.StartCutscene (" ..Name.. ", Page #" ..i.. "): Page is not initialized!");
             return;
         end
+    end
+    if _Cutscene.EnableSky == nil then
+        _Cutscene.EnableSky = true;
+    end
+    if _Cutscene.EnableFoW == nil then
+        _Cutscene.EnableFoW = false;
+    end
+    if _Cutscene.EnableGlobalImmortality == nil then
+        _Cutscene.EnableGlobalImmortality = true;
+    end
+    if _Cutscene.EnableBorderPins == nil then
+        _Cutscene.EnableBorderPins = false;
+    end
+    if _Cutscene.DisableFastForward == nil then
+        _Cutscene.DisableFastForward = false;
     end
     ModuleCutsceneSystem.Global:StartCutscene(_Name, PlayerID, _Cutscene);
 end

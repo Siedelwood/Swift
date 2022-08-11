@@ -448,6 +448,12 @@ end
 
 function ModuleCutsceneSystem.Local:ThroneRoomCameraControl(_PlayerID, _Page)
     if _Page then
+        if _Page.DisableFastForward then
+            XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", " ");
+            XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", 0);
+            return;
+        end
+        XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", 1);
 
         -- Button text
         local SkipText = API.Localize(ModuleCutsceneSystem.Shared.Text.FastForwardActivate);
@@ -613,13 +619,13 @@ function ModuleCutsceneSystem.Local:ActivateCinematicMode(_PlayerID)
     GUI.SetFeedbackSoundOutputState(0);
     GUI.EnableBattleSignals(false);
     Input.CutsceneMode();
-    if self.Cutscene[_PlayerID].DisableFoW then
+    if not self.Cutscene[_PlayerID].EnableFoW then
         Display.SetRenderFogOfWar(0);
     end
     if self.Cutscene[_PlayerID].EnableSky then
         Display.SetRenderSky(1);
     end
-    if self.Cutscene[_PlayerID].DisableBorderPins then
+    if not self.Cutscene[_PlayerID].EnableBorderPins then
         Display.SetRenderBorderPins(0);
     end
     Display.SetUserOptionOcclusionEffect(0);

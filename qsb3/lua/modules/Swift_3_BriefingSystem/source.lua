@@ -146,9 +146,6 @@ function ModuleBriefingSystem.Global:NextBriefing(_PlayerID)
         Briefing.Name = BriefingData[1];
         Briefing.PlayerID = _PlayerID;
         Briefing.CurrentPage = 0;
-        if Briefing.EnableCameraSoothing == nil then
-            Briefing.EnableCameraSoothing = false;
-        end
         self.Briefing[_PlayerID] = Briefing;
         self:TransformAnimations(_PlayerID);
 
@@ -397,6 +394,9 @@ function ModuleBriefingSystem.Local:EndBriefing(_PlayerID, _Briefing)
         return;
     end
 
+    if not Framework.IsNetworkGame() then
+        Game.GameTimeSetFactor(_PlayerID, 1);
+    end
     self:DeactivateCinematicMode(_PlayerID);
     API.ActivateNormalInterface();
     API.ActivateBorderScroll();
@@ -994,13 +994,13 @@ function ModuleBriefingSystem.Local:ActivateCinematicMode(_PlayerID)
     GUI.SetFeedbackSoundOutputState(0);
     GUI.EnableBattleSignals(false);
     Input.CutsceneMode();
-    if self.Briefing[_PlayerID].DisableFoW then
+    if not self.Briefing[_PlayerID].EnableFoW then
         Display.SetRenderFogOfWar(0);
     end
     if self.Briefing[_PlayerID].EnableSky then
         Display.SetRenderSky(1);
     end
-    if self.Briefing[_PlayerID].DisableBorderPins then
+    if not self.Briefing[_PlayerID].EnableBorderPins then
         Display.SetRenderBorderPins(0);
     end
     Display.SetUserOptionOcclusionEffect(0);

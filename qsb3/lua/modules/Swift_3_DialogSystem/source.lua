@@ -44,9 +44,9 @@ QSB.Dialog = {
 -- Global ------------------------------------------------------------------- --
 
 function ModuleDialogSystem.Global:OnGameStart()
-    QSB.ScriptEvents.DialogOptionSelected = API.RegisterScriptEvent("Event_DialogOptionSelected");
     QSB.ScriptEvents.DialogStarted = API.RegisterScriptEvent("Event_DialogStarted");
     QSB.ScriptEvents.DialogEnded = API.RegisterScriptEvent("Event_DialogEnded");
+    QSB.ScriptEvents.DialogOptionSelected = API.RegisterScriptEvent("Event_DialogOptionSelected");
 
     for i= 1, 8 do
         self.DialogQueue[i] = {};
@@ -303,9 +303,9 @@ end
 -- Local -------------------------------------------------------------------- --
 
 function ModuleDialogSystem.Local:OnGameStart()
-    QSB.ScriptEvents.DialogOptionSelected = API.RegisterScriptEvent("Event_DialogOptionSelected");
     QSB.ScriptEvents.DialogStarted = API.RegisterScriptEvent("Event_DialogStarted");
     QSB.ScriptEvents.DialogEnded = API.RegisterScriptEvent("Event_DialogEnded");
+    QSB.ScriptEvents.DialogOptionSelected = API.RegisterScriptEvent("Event_DialogOptionSelected");
 
     API.StartHiResJob(function()
         for i= 1, 8 do
@@ -348,10 +348,10 @@ function ModuleDialogSystem.Local:StartDialog(_PlayerID, _Data)
             Speed    = Game.GameTimeGetFactor(_PlayerID),
         };
 
-        if _Data.DisableFoW then
+        if not _Data.EnableFoW then
             Display.SetRenderFogOfWar(0);
         end
-        if _Data.DisableBorderPins then
+        if not _Data.EnableBorderPins then
             Display.SetRenderBorderPins(0);
         end
         if not Framework.IsNetworkGame() then

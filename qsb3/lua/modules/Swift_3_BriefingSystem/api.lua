@@ -68,27 +68,27 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- <tr>
 -- <td>EnableGlobalImmortality</td>
 -- <td>boolean</td>
--- <td>(Optional) Alle Einheiten und Gebäude werden unverwundbar solange das Briefing aktiv ist.</td>
+-- <td>(Optional) Alle Einheiten und Gebäude werden unverwundbar solange das Briefing aktiv ist. <br>Standard: ein</td>
 -- </tr>
 -- <tr>
 -- <td>EnableCameraSoothing</td>
 -- <td>boolean</td>
--- <td>(Optional) Aktiviert die Bewegungsglättung der Kamera. Kann auf langsamen Systemen zu massiven Lags führen!</td>
+-- <td>(Optional) Aktiviert die Bewegungsglättung der Kamera. Kann auf langsamen Systemen zu massiven Lags führen! <br>Standard: aus</td>
 -- </tr>
 -- <tr>
 -- <td>EnableSky</td>
 -- <td>boolean</td>
--- <td>(Optional) Der Himmel wird während des Briefing angezeigt.</td>
+-- <td>(Optional) Der Himmel wird während des Briefing angezeigt. <br>Standard: ein</td>
 -- </tr>
 -- <tr>
--- <td>DisableFoW</td>
+-- <td>EnableFoW</td>
 -- <td>boolean</td>
--- <td>(Optional) Der Nebel des Krieges wird für die Dauer des Briefing ausgeblendet.</td>
+-- <td>(Optional) Der Nebel des Krieges wird während des Briefing angezeigt. <br>Standard: aus</td>
 -- </tr>
 -- <tr>
--- <td>DisableBorderPins</td>
+-- <td>EnableBorderPins</td>
 -- <td>boolean</td>
--- <td>(Optional) Die Grenzsteine werden für die Dauer des Briefing ausgeblendet.</td>
+-- <td>(Optional) Die Grenzsteine werden während des Briefing angezeigt. <br>Standard: aus</td>
 -- </tr>
 -- </table>
 --
@@ -124,9 +124,9 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- @usage
 -- function Briefing1(_Name, _PlayerID)
 --     local Briefing = {
---         DisableFoW = true,
+--         EnableFoW = false,
 --         EnableSky = true,
---         DisableBoderPins = true,
+--         EnableBoderPins = false,
 --     };
 --     local AP, ASP, AAN = API.AddBriefingPages(Briefing);
 --
@@ -166,6 +166,21 @@ function API.StartBriefing(_Briefing, _Name, _PlayerID)
             error("API.StartBriefing (" ..Name.. ", Page #" ..i.. "): Page is not initialized!");
             return;
         end
+    end
+    if _Briefing.EnableCameraSoothing == nil then
+        _Briefing.EnableCameraSoothing = false;
+    end
+    if _Briefing.EnableSky == nil then
+        _Briefing.EnableSky = true;
+    end
+    if _Briefing.EnableFoW == nil then
+        _Briefing.EnableFoW = false;
+    end
+    if _Briefing.EnableGlobalImmortality == nil then
+        _Briefing.EnableGlobalImmortality = true;
+    end
+    if _Briefing.EnableBorderPins == nil then
+        _Briefing.EnableBorderPins = false;
     end
     ModuleBriefingSystem.Global:StartBriefing(_Name, PlayerID, _Briefing);
 end

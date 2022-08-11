@@ -29,8 +29,8 @@ You may use and modify this file unter the terms of the MIT licence.
 ---
 -- Events, auf die reagiert werden kann.
 --
--- @field DialogStarted        Ein Dialog beginnt (Parameter: PlayerID, CutsceneTable)
--- @field DialogEnded          Ein Dialog endet (Parameter: PlayerID, CutsceneTable)
+-- @field DialogStarted        Ein Dialog beginnt (Parameter: PlayerID, DialogTable)
+-- @field DialogEnded          Ein Dialog endet (Parameter: PlayerID, DialogTable)
 -- @field DialogOptionSelected Eine Multiple Choice Option wurde ausgewählt (Parameter: PlayerID, OptionID)
 --
 -- @within Event
@@ -59,19 +59,29 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- <td>(Optional) Eine Funktion, die nach Beendigung des Dialog ausgeführt wird.</td>
 -- </tr>
 -- <tr>
+-- <td>RestoreCamera</td>
+-- <td>boolean</td>
+-- <td>(Optional) Stellt die Kameraposition am Ende des Dialog wieder her. <br>Standard: ein</td>
+-- </tr>
+-- <tr>
+-- <td>RestoreGameSpeed</td>
+-- <td>boolean</td>
+-- <td>(Optional) Stellt die Geschwindigkeit von dor dem Dialog wieder her. <br>Standard: ein</td>
+-- </tr>
+-- <tr>
 -- <td>EnableGlobalImmortality</td>
 -- <td>boolean</td>
--- <td>(Optional) Alle Einheiten und Gebäude werden unverwundbar solange der Dialog aktiv ist.</td>
+-- <td>(Optional) Alle Einheiten und Gebäude werden unverwundbar solange der Dialog aktiv ist. <br>Standard: ein</td>
 -- </tr>
 -- <tr>
--- <td>DisableFoW</td>
+-- <td>EnableFoW</td>
 -- <td>boolean</td>
--- <td>(Optional) Der Nebel des Krieges wird für die Dauer des Dialog ausgeblendet.</td>
+-- <td>(Optional) Der Nebel des Krieges während des Dialog anzeigen. <br>Standard: aus</td>
 -- </tr>
 -- <tr>
--- <td>DisableBorderPins</td>
+-- <td>EnableBorderPins</td>
 -- <td>boolean</td>
--- <td>(Optional) Die Grenzsteine werden für die Dauer des Dialog ausgeblendet.</td>
+-- <td>(Optional) Die Grenzsteine während des Dialog anzeigen. <br>Standard: aus</td>
 -- </tr>
 -- </table>
 --
@@ -123,6 +133,22 @@ function API.StartDialog(_Dialog, _Name, _PlayerID)
             error("API.StartDialog (" ..Name.. ", Page #" ..i.. "): Page is not initialized!");
             return;
         end
+    end
+
+    if _Dialog.EnableGlobalImmortality == nil then
+        _Dialog.EnableGlobalImmortality = true;
+    end
+    if _Dialog.EnableFoW == nil then
+        _Dialog.EnableFoW = false;
+    end
+    if _Dialog.EnableBorderPins == nil then
+        _Dialog.EnableBorderPins = false;
+    end
+    if _Dialog.RestoreGameSpeed == nil then
+        _Dialog.RestoreGameSpeed = true;
+    end
+    if _Dialog.RestoreCamera == nil then
+        _Dialog.RestoreCamera = true;
     end
     ModuleDialogSystem.Global:StartDialog(_Name, PlayerID, _Dialog);
 end
