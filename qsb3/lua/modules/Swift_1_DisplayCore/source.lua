@@ -138,7 +138,7 @@ function ModuleDisplayCore.Local:OverrideInterfaceUpdateForCinematicMode()
         if ModuleDisplayCore.Local.NormalModeHidden
         or ModuleDisplayCore.Local.BorderScrollDeactivated
         or ModuleDisplayCore.Local.PauseScreenShown
-        or API.IsCinematicEventActive() then
+        or API.IsCinematicEventActive(GUI.GetPlayerID()) then
             return true;
         end
     end);
@@ -149,7 +149,7 @@ function ModuleDisplayCore.Local:OverrideInterfaceUpdateForCinematicMode()
             GameCallback_GameSpeedChanged_Orig_ModuleDisplayCoreInterface(_Speed);
         end
     end
-    
+
     MissionTimerUpdate_Orig_ModuleDisplayCoreInterface = MissionTimerUpdate;
     MissionTimerUpdate = function()
         MissionTimerUpdate_Orig_ModuleDisplayCoreInterface();
