@@ -145,7 +145,6 @@ function ModuleBriefingSystem.Global:NextBriefing(_PlayerID)
         local Briefing = BriefingData[2];
         Briefing.Name = BriefingData[1];
         Briefing.PlayerID = _PlayerID;
-        Briefing.BarOpacity = Briefing.BarOpacity or 1;
         Briefing.CurrentPage = 0;
         if Briefing.EnableSoothingCamera == nil then
             Briefing.EnableSoothingCamera = true;
@@ -398,6 +397,9 @@ function ModuleBriefingSystem.Local:EndBriefing(_PlayerID, _Briefing)
         return;
     end
 
+    if not Framework.IsNetworkGame() then
+        Game.GameTimeSetFactor(_PlayerID, 1);
+    end
     self:DeactivateCinematicMode(_PlayerID);
     API.ActivateNormalInterface();
     API.ActivateBorderScroll();
@@ -433,12 +435,13 @@ end
 
 function ModuleBriefingSystem.Local:DisplayPageBars(_PlayerID, _PageID)
     local Page = self.Briefing[_PlayerID][_PageID];
-    local OpacityBig = (255 * self.Briefing[_PlayerID].BarOpacity);
-    local OpacitySmall = (255 * self.Briefing[_PlayerID].BarOpacity);
+    local Opacity = (Page.BarOpacity ~= nil and Page.BarOpacity) or 1;
+    local OpacityBig = (255 * Opacity);
+    local OpacitySmall = (255 * Opacity);
 
     local BigVisibility = (Page.BigBars and 1) or 0;
     local SmallVisibility = (Page.BigBars and 0) or 1;
-    if self.Briefing[_PlayerID].BarOpacity == 0 then
+    if Opacity == 0 then
         BigVisibility = 0;
         SmallVisibility = 0;
     end
@@ -694,11 +697,11 @@ function ModuleBriefingSystem.Local:ThroneRoomCameraControl(_PlayerID, _Page)
         local PX, PY, PZ = self:GetPagePosition(_PlayerID);
         local LX, LY, LZ = self:GetPageLookAt(_PlayerID);
         if PX and not LX then
-            LX, LY, LZ, PX, PY, PZ = self:GetCameraProperties(_PlayerID);
+            LX, LY, LZ, PX, PY, PZ, FOV = self:GetCameraProperties(_PlayerID);
         end
         Camera.ThroneRoom_SetPosition(PX, PY, PZ);
         Camera.ThroneRoom_SetLookAt(LX, LY, LZ);
-        Camera.ThroneRoom_SetFOV(42.0);
+        Camera.ThroneRoom_SetFOV(FOV);
 
         -- Portrait
         self:AnimatePortrait(_PlayerID);
@@ -788,6 +791,7 @@ function ModuleBriefingSystem.Local:GetCameraProperties(_PlayerID)
     local lookAtX = lPLX + (cPLX - lPLX) * factor;
     local lookAtY = lPLY + (cPLY - lPLY) * factor;
     local lookAtZ = lPLZ + (cPLZ - lPLZ) * factor;
+    local FOV = startFOV + (endFOV - startFOV) * factor;
 
     local zoomDistance = startZoomDistance + (endZoomDistance - startZoomDistance) * factor;
     local zoomAngle = startZoomAngle + (endZoomAngle - startZoomAngle) * factor;
@@ -797,7 +801,7 @@ function ModuleBriefingSystem.Local:GetCameraProperties(_PlayerID)
     local positionY = lookAtY + math.sin(math.rad(rotation - 90)) * line;
     local positionZ = lookAtZ + (zoomDistance) * math.sin(math.rad(zoomAngle));
 
-    return lookAtX, lookAtY, lookAtZ, positionX, positionY, positionZ;
+    return lookAtX, lookAtY, lookAtZ, positionX, positionY, positionZ, FOV;
 end
 
 function ModuleBriefingSystem.Local:ConvertPosition(_Table)
@@ -818,11 +822,11 @@ function ModuleBriefingSystem.Local:GetLERP(_PlayerID)
         local FrameworkTime = Framework.GetTimeMs();
         local Speed = Game.GameTimeGetFactor(GUI.GetPlayerID());
         local Factor = API.LERP(Anim.Started, CurrentTime, Anim.Duration);
-        -- Optional soothening the camera
+        -- Optional camera soothing
         -- Get the time between each tenth seconds to get rid of the
         -- asynchronozity and fix the factor.
         -- Note: This will have it's issues with slow machines.
-        if self.Briefing[_PlayerID].EnableSoothingCamera then
+        if self.Briefing[_PlayerID].EnableCameraSoothing then
             if Anim.LastLogicTime ~= CurrentTime then
                 Anim.LastLogicTime = CurrentTime;
                 Anim.LastFrameworkTime = FrameworkTime;
@@ -993,13 +997,13 @@ function ModuleBriefingSystem.Local:ActivateCinematicMode(_PlayerID)
     GUI.SetFeedbackSoundOutputState(0);
     GUI.EnableBattleSignals(false);
     Input.CutsceneMode();
-    if self.Briefing[_PlayerID].DisableFoW then
+    if not self.Briefing[_PlayerID].EnableFoW then
         Display.SetRenderFogOfWar(0);
     end
     if self.Briefing[_PlayerID].EnableSky then
         Display.SetRenderSky(1);
     end
-    if self.Briefing[_PlayerID].DisableBorderPins then
+    if not self.Briefing[_PlayerID].EnableBorderPins then
         Display.SetRenderBorderPins(0);
     end
     Display.SetUserOptionOcclusionEffect(0);

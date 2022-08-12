@@ -44,6 +44,8 @@ QSB.Dialog = {
 -- Global ------------------------------------------------------------------- --
 
 function ModuleDialogSystem.Global:OnGameStart()
+    QSB.ScriptEvents.DialogStarted = API.RegisterScriptEvent("Event_DialogStarted");
+    QSB.ScriptEvents.DialogEnded = API.RegisterScriptEvent("Event_DialogEnded");
     QSB.ScriptEvents.DialogOptionSelected = API.RegisterScriptEvent("Event_DialogOptionSelected");
 
     for i= 1, 8 do
@@ -99,8 +101,13 @@ function ModuleDialogSystem.Global:EndDialog(_PlayerID)
         self.Dialog[_PlayerID]:Finished();
     end
     API.FinishCinematicEvent(self.Dialog[_PlayerID].Name, _PlayerID);
+    API.SendScriptEvent(
+        QSB.ScriptEvents.DialogEnded,
+        _PlayerID,
+        self.Dialog[_PlayerID]
+    );
     Logic.ExecuteInLuaLocalState(string.format(
-        "ModuleDialogSystem.Local:EndDialog(%d, %s)",
+        [[API.SendScriptEvent(QSB.ScriptEvents.DialogEnded, %d, %s)]],
         _PlayerID,
         table.tostring(self.Dialog[_PlayerID])
     ));
@@ -130,10 +137,15 @@ function ModuleDialogSystem.Global:NextDialog(_PlayerID)
             self.Dialog[_PlayerID]:Starting();
         end
 
-        Logic.ExecuteInLuaLocalState(string.format(
-            "ModuleDialogSystem.Local:StartDialog(%d, %s)",
+        API.SendScriptEvent(
+            QSB.ScriptEvents.DialogStarted,
             _PlayerID,
-            table.tostring(Dialog)
+            self.Dialog[_PlayerID]
+        );
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.SendScriptEvent(QSB.ScriptEvents.DialogStarted, %d, %s)]],
+            _PlayerID,
+            table.tostring(self.Dialog[_PlayerID])
         ));
         self:NextPage(_PlayerID);
     end
@@ -164,7 +176,7 @@ function ModuleDialogSystem.Global:NextPage(_PlayerID)
                 end
             end
         end
-        
+
         if PageID <= #self.Dialog[_PlayerID] then
             if self.Dialog[_PlayerID][PageID].Action then
                 self.Dialog[_PlayerID][PageID]:Action();
@@ -291,6 +303,8 @@ end
 -- Local -------------------------------------------------------------------- --
 
 function ModuleDialogSystem.Local:OnGameStart()
+    QSB.ScriptEvents.DialogStarted = API.RegisterScriptEvent("Event_DialogStarted");
+    QSB.ScriptEvents.DialogEnded = API.RegisterScriptEvent("Event_DialogEnded");
     QSB.ScriptEvents.DialogOptionSelected = API.RegisterScriptEvent("Event_DialogOptionSelected");
 
     API.StartHiResJob(function()
@@ -298,6 +312,14 @@ function ModuleDialogSystem.Local:OnGameStart()
             ModuleDialogSystem.Local:Update(i);
         end
     end);
+end
+
+function ModuleDialogSystem.Local:OnEvent(_ID, _Event, ...)
+    if _ID == QSB.ScriptEvents.DialogStarted then
+        ModuleDialogSystem.Local:StartDialog(arg[1], arg[2]);
+    elseif _ID == QSB.ScriptEvents.DialogEnded then
+        ModuleDialogSystem.Local:EndDialog(arg[1], arg[2]);
+    end
 end
 
 function ModuleDialogSystem.Local:StartDialog(_PlayerID, _Data)
@@ -326,10 +348,10 @@ function ModuleDialogSystem.Local:StartDialog(_PlayerID, _Data)
             Speed    = Game.GameTimeGetFactor(_PlayerID),
         };
 
-        if _Data.DisableFoW then
+        if not _Data.EnableFoW then
             Display.SetRenderFogOfWar(0);
         end
-        if _Data.DisableBorderPins then
+        if not _Data.EnableBorderPins then
             Display.SetRenderBorderPins(0);
         end
         if not Framework.IsNetworkGame() then
@@ -347,7 +369,7 @@ function ModuleDialogSystem.Local:EndDialog(_PlayerID, _Data)
         XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles/Update", 1);
         XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles", 1);
         XGUIEng.ShowWidget("/InGame/Root/3dWorldView", 1);
-        Input.GameMode()
+        Input.GameMode();
 
         -- Load subtitles backup
         self:ResetSubtitlesPosition(_PlayerID);

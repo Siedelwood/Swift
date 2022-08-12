@@ -360,12 +360,13 @@ end
 
 function ModuleCutsceneSystem.Local:DisplayPageBars(_PlayerID, _PageID)
     local Page = self.Cutscene[_PlayerID][_PageID];
-    local OpacityBig = (255 * self.Cutscene[_PlayerID].BarOpacity);
-    local OpacitySmall = (255 * self.Cutscene[_PlayerID].BarOpacity);
+    local Opacity = (Page.Opacity ~= nil and Page.Opacity) or 1;
+    local OpacityBig = (255 * Opacity);
+    local OpacitySmall = (255 * Opacity);
 
     local BigVisibility = (Page.BigBars and 1) or 0;
     local SmallVisibility = (Page.BigBars and 0) or 1;
-    if self.Cutscene[_PlayerID].BarOpacity == 0 then
+    if Opacity == 0 then
         BigVisibility = 0;
         SmallVisibility = 0;
     end
@@ -420,9 +421,10 @@ function ModuleCutsceneSystem.Local:DisplayPageControls(_PlayerID, _PageID)
     local Page = self.Cutscene[_PlayerID][_PageID];
     local SkipFlag = 1;
     if Page.DisableSkipping == true then
+        Game.GameTimeSetFactor(_PlayerID, 1);
         SkipFlag = 0;
     end
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", 1);
+    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", SkipFlag);
 end
 
 function ModuleCutsceneSystem.Local:DisplayPageFader(_PlayerID, _PageID)
@@ -447,6 +449,12 @@ end
 
 function ModuleCutsceneSystem.Local:ThroneRoomCameraControl(_PlayerID, _Page)
     if _Page then
+        if _Page.DisableSkipping then
+            XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", " ");
+            -- XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", 0);
+            return;
+        end
+        -- XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", 1);
 
         -- Button text
         local SkipText = API.Localize(ModuleCutsceneSystem.Shared.Text.FastForwardActivate);
@@ -612,13 +620,13 @@ function ModuleCutsceneSystem.Local:ActivateCinematicMode(_PlayerID)
     GUI.SetFeedbackSoundOutputState(0);
     GUI.EnableBattleSignals(false);
     Input.CutsceneMode();
-    if self.Cutscene[_PlayerID].DisableFoW then
+    if not self.Cutscene[_PlayerID].EnableFoW then
         Display.SetRenderFogOfWar(0);
     end
     if self.Cutscene[_PlayerID].EnableSky then
         Display.SetRenderSky(1);
     end
-    if self.Cutscene[_PlayerID].DisableBorderPins then
+    if not self.Cutscene[_PlayerID].EnableBorderPins then
         Display.SetRenderBorderPins(0);
     end
     Display.SetUserOptionOcclusionEffect(0);

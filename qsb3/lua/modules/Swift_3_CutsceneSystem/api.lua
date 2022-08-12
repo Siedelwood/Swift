@@ -61,22 +61,22 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- <tr>
 -- <td>EnableGlobalImmortality</td>
 -- <td>boolean</td>
--- <td>(Optional) Alle Einheiten und Gebäude werden unverwundbar solange die Cutscene aktiv ist.</td>
+-- <td>(Optional) Alle Einheiten und Gebäude werden unverwundbar solange die Cutscene aktiv ist. <br>Standard: ein</td>
 -- </tr>
 -- <tr>
 -- <td>EnableSky</td>
 -- <td>boolean</td>
--- <td>(Optional) Der Himmel wird während der Cutscene angezeigt.</td>
+-- <td>(Optional) Der Himmel wird während der Cutscene angezeigt. <br>Standard: ein</td>
 -- </tr>
 -- <tr>
--- <td>DisableFoW</td>
+-- <td>EnableFoW</td>
 -- <td>boolean</td>
--- <td>(Optional) Der Nebel des Krieges wird für die Dauer der Cutscene ausgeblendet.</td>
+-- <td>(Optional) Der Nebel des Krieges wird während der Cutscene angezeigt. <br>Standard: aus</td>
 -- </tr>
 -- <tr>
--- <td>DisableBorderPins</td>
+-- <td>EnableBorderPins</td>
 -- <td>boolean</td>
--- <td>(Optional) Die Grenzsteine werden für die Dauer der Cutscene ausgeblendet.</td>
+-- <td>(Optional) Die Grenzsteine werden während der Cutscene angezeigt. <br>Standard: aus</td>
 -- </tr>
 -- </table>
 --
@@ -87,14 +87,10 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 --
 -- @usage
 -- function Cutscene1(_Name, _PlayerID)
---     local Cutscene = {
---         DisableFoW = true,
---         EnableSky = true,
---         DisableBoderPins = true,
---     };
---     local AP, ASP = API.AddCutscenePages(Cutscene);
+--     local Cutscene = {};
+--     local AF = API.AddCutscenePages(Cutscene);
 --
---     -- Aufrufe von AP oder ASP um Seiten zu erstellen
+--     -- Aufrufe von AF um Seiten zu erstellen
 --
 --     Cutscene.Starting = function(_Data)
 --         -- Mach was tolles hier wenn es anfängt.
@@ -130,6 +126,18 @@ function API.StartCutscene(_Cutscene, _Name, _PlayerID)
             error("API.StartCutscene (" ..Name.. ", Page #" ..i.. "): Page is not initialized!");
             return;
         end
+    end
+    if _Cutscene.EnableSky == nil then
+        _Cutscene.EnableSky = true;
+    end
+    if _Cutscene.EnableFoW == nil then
+        _Cutscene.EnableFoW = false;
+    end
+    if _Cutscene.EnableGlobalImmortality == nil then
+        _Cutscene.EnableGlobalImmortality = true;
+    end
+    if _Cutscene.EnableBorderPins == nil then
+        _Cutscene.EnableBorderPins = false;
     end
     ModuleCutsceneSystem.Global:StartCutscene(_Name, PlayerID, _Cutscene);
 end
@@ -251,9 +259,19 @@ end
 -- der nächsten mit Fade In muss immer eine Seite mit FaderAlpha sein!</b></td>
 -- </tr>
 -- <tr>
+-- <td>DisableSkipping</td>
+-- <td>boolean</td>
+-- <td>(Optional) Die Fast Forward Aktion wird unterbunden. Außerdem wird die Beschleunigung automatisch aufgehoben.</td>
+-- </tr>
+-- <tr>
 -- <td>BigBars</td>
 -- <td>boolean</td>
--- <td>(Optional) Schalted breite Balken ein oder aus.</b></td>
+-- <td>(Optional) Schalted breite Balken ein oder aus.</td>
+-- </tr>
+-- <tr>
+-- <td>BarOpacity</td>
+-- <td>number</td>
+-- <td>(Optional) Setzt den Alphawert der Bars (Zwischen 0 und 1).</td>
 -- </tr>
 -- </table>
 --

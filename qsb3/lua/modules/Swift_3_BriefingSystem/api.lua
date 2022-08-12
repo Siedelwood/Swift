@@ -68,27 +68,27 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- <tr>
 -- <td>EnableGlobalImmortality</td>
 -- <td>boolean</td>
--- <td>(Optional) Alle Einheiten und Gebäude werden unverwundbar solange das Briefing aktiv ist.</td>
+-- <td>(Optional) Alle Einheiten und Gebäude werden unverwundbar solange das Briefing aktiv ist. <br>Standard: ein</td>
 -- </tr>
 -- <tr>
--- <td>BarOpacity</td>
--- <td>number</td>
--- <td>(Optional) Setzt den Alphawert der Bars (Zwischen 0 und 1).</td>
+-- <td>EnableCameraSoothing</td>
+-- <td>boolean</td>
+-- <td>(Optional) Aktiviert die Bewegungsglättung der Kamera. Kann auf langsamen Systemen zu massiven Lags führen! <br>Standard: aus</td>
 -- </tr>
 -- <tr>
 -- <td>EnableSky</td>
 -- <td>boolean</td>
--- <td>(Optional) Der Himmel wird während des Briefing angezeigt.</td>
+-- <td>(Optional) Der Himmel wird während des Briefing angezeigt. <br>Standard: ein</td>
 -- </tr>
 -- <tr>
--- <td>DisableFoW</td>
+-- <td>EnableFoW</td>
 -- <td>boolean</td>
--- <td>(Optional) Der Nebel des Krieges wird für die Dauer des Briefing ausgeblendet.</td>
+-- <td>(Optional) Der Nebel des Krieges wird während des Briefing angezeigt. <br>Standard: aus</td>
 -- </tr>
 -- <tr>
--- <td>DisableBorderPins</td>
+-- <td>EnableBorderPins</td>
 -- <td>boolean</td>
--- <td>(Optional) Die Grenzsteine werden für die Dauer des Briefing ausgeblendet.</td>
+-- <td>(Optional) Die Grenzsteine werden während des Briefing angezeigt. <br>Standard: aus</td>
 -- </tr>
 -- </table>
 --
@@ -96,6 +96,8 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- Animationen für Seiten eines Briefings werden vom Text entkoppelt. Das hat
 -- den Charme, dass Spielfiguren erzählen und erzählen und die Kamera über die
 -- ganze Zeit die gleiche Animation zeigt, was das Lesen angenehmer macht.
+--
+-- Animationen werden nur erzeugt, wenn die Page noch keine Position hat!
 --
 -- Animationen können auch über eine Table angegeben werden. Diese wird direkt
 -- an die Briefing Table angehangen. Die Animation wird die Kamera dann von
@@ -108,6 +110,7 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 --        {"pos4", -60, 2000, 35, "pos4", -30, 2000, 25, 30}
 --    },
 --    ["Page3"] = {
+--        -- Diese Option löscht alle laufenden Animationen
 --        PurgeOld = true,
 --        {"pos2", -45, 6000, 35, "pos2", -45, 3000, 35, 30},
 --    }
@@ -121,11 +124,7 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 --
 -- @usage
 -- function Briefing1(_Name, _PlayerID)
---     local Briefing = {
---         DisableFoW = true,
---         EnableSky = true,
---         DisableBoderPins = true,
---     };
+--     local Briefing = {};
 --     local AP, ASP, AAN = API.AddBriefingPages(Briefing);
 --
 --     -- Aufrufe von AP oder ASP um Seiten zu erstellen
@@ -164,6 +163,21 @@ function API.StartBriefing(_Briefing, _Name, _PlayerID)
             error("API.StartBriefing (" ..Name.. ", Page #" ..i.. "): Page is not initialized!");
             return;
         end
+    end
+    if _Briefing.EnableCameraSoothing == nil then
+        _Briefing.EnableCameraSoothing = false;
+    end
+    if _Briefing.EnableSky == nil then
+        _Briefing.EnableSky = true;
+    end
+    if _Briefing.EnableFoW == nil then
+        _Briefing.EnableFoW = false;
+    end
+    if _Briefing.EnableGlobalImmortality == nil then
+        _Briefing.EnableGlobalImmortality = true;
+    end
+    if _Briefing.EnableBorderPins == nil then
+        _Briefing.EnableBorderPins = false;
     end
     ModuleBriefingSystem.Global:StartBriefing(_Name, PlayerID, _Briefing);
 end
@@ -266,6 +280,7 @@ function API.AddBriefingPages(_Briefing)
             -- Language
             _Page.Title = API.Localize(_Page.Title);
             _Page.Text = API.Localize(_Page.Text);
+            _Page.FOV = _Page.FOV or 42.0;
 
             -- Display time
             if not _Page.Duration then
@@ -504,9 +519,14 @@ end
 -- der nächsten mit Fade In muss immer eine Seite mit FaderAlpha sein!</b></td>
 -- </tr>
 -- <tr>
+-- <td>BarOpacity</td>
+-- <td>number</td>
+-- <td>(Optional) Setzt den Alphawert der Bars (Zwischen 0 und 1).</td>
+-- </tr>
+-- <tr>
 -- <td>BigBars</td>
 -- <td>boolean</td>
--- <td>(Optional) Schalted breite Balken ein oder aus.</b></td>
+-- <td>(Optional) Schalted breite Balken ein oder aus.</td>
 -- </tr>
 -- <tr>
 -- <td>MC</td>

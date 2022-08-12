@@ -232,6 +232,8 @@ function ModuleInterfaceCore.Local:OverrideBuyAmmunitionCart()
         local Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
         if not Button then
             SetIcon(WidgetID, {10, 4});
+            XGUIEng.ShowWidget(WidgetID, 1);
+            XGUIEng.DisableButton(WidgetID, 0);
             return GUI_BuildingButtons.BuyAmmunitionCartUpdate_Orig_InterfaceCore();
         end
         Button.Update(WidgetID, EntityID);
@@ -313,6 +315,8 @@ function ModuleInterfaceCore.Local:OverridePlaceField()
         local EntityID = GUI.GetSelectedEntity();
         local Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
         if not Button then
+            XGUIEng.ShowWidget(WidgetID, 1);
+            XGUIEng.DisableButton(WidgetID, 0);
             return GUI_BuildingButtons.PlaceFieldUpdate_Orig_InterfaceCore();
         end
         Button.Update(WidgetID, EntityID);
@@ -352,6 +356,8 @@ function ModuleInterfaceCore.Local:OverrideStartFestival()
         local Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
         if not Button then
             SetIcon(WidgetID, {4, 15});
+            XGUIEng.ShowWidget(WidgetID, 1);
+            XGUIEng.DisableButton(WidgetID, 0);
             return GUI_BuildingButtons.StartFestivalUpdate_Orig_InterfaceCore();
         end
         Button.Update(WidgetID, EntityID);
@@ -391,6 +397,8 @@ function ModuleInterfaceCore.Local:OverrideStartTheatrePlay()
         local Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
         if not Button then
             SetIcon(WidgetID, {16, 2});
+            XGUIEng.ShowWidget(WidgetID, 1);
+            XGUIEng.DisableButton(WidgetID, 0);
             return GUI_BuildingButtons.StartTheatrePlayUpdate_Orig_InterfaceCore();
         end
         Button.Update(WidgetID, EntityID);
@@ -429,6 +437,8 @@ function ModuleInterfaceCore.Local:OverrideUpgradeTurret()
         local EntityID = GUI.GetSelectedEntity();
         local Button = ModuleInterfaceCore.Local.BuildingButtons.Configuration[WidgetName].Bind;
         if not Button then
+            XGUIEng.ShowWidget(WidgetID, 1);
+            XGUIEng.DisableButton(WidgetID, 0);
             return GUI_BuildingButtons.UpgradeTurretUpdate_Orig_InterfaceCore();
         end
         Button.Update(WidgetID, EntityID);
@@ -489,6 +499,8 @@ function ModuleInterfaceCore.Local:OverrideBuySiegeEngineCart()
             elseif WidgetName == "BuyCatapultCart" then
                 SetIcon(WidgetID, {9, 1});
             end
+            XGUIEng.ShowWidget(WidgetID, 1);
+            XGUIEng.DisableButton(WidgetID, 0);
             return GUI_BuildingButtons.BuySiegeEngineCartUpdate_Orig_InterfaceCore(_EntityType);
         end
         Button.Update(WidgetID, EntityID);

@@ -76,6 +76,7 @@ function BriefingCutsceneTest(_Name, _PlayerID)
         Flight  = "c02",
         Title   = "Flight 2",
         Text    = "They are NOT supposed to display huge chuncks of text!",
+        DisableSkipping = true,
         Action  = function()
             API.Note("It just work's!");
         end
@@ -87,6 +88,10 @@ function BriefingCutsceneTest(_Name, _PlayerID)
         FadeOut = 3,
     };
 
+    Cutscene.Finished = function()
+        CreateTestNPCDialogBriefing(_Name, _PlayerID);
+        -- BriefingAnimationTest1([[foo]], 1);
+    end
     API.StartCutscene(Cutscene, _Name, _PlayerID)
 end
 
@@ -95,11 +100,8 @@ end
 function BriefingAnimationTest1(_Name, _PlayerID)
     local Briefing = {
         HideBorderPins = true,
-        ShowSky = true,
-        RestoreGameSpeed = true,
-        RestoreCamera = true,
-        SkippingAllowed = true,
-        DisableReturn = false,
+        EnableSky = true,
+        EnableCameraSoothing = false,
     }
     local AP, ASP, AAN = API.AddBriefingPages(Briefing);
 
@@ -138,10 +140,6 @@ function BriefingAnimationTest2(_Name, _PlayerID)
     local Briefing = {
         HideBorderPins = true,
         ShowSky = true,
-        RestoreGameSpeed = true,
-        RestoreCamera = true,
-        SkippingAllowed = true,
-        DisableReturn = false,
     }
     local AP, ASP, AAN = API.AddBriefingPages(Briefing);
 
@@ -154,6 +152,7 @@ function BriefingAnimationTest2(_Name, _PlayerID)
     Briefing.Starting = function(_Data)
     end
     Briefing.Finished = function(_Data)
+        BriefingAnimationTest1([[foo]], 1)
     end
     API.StartBriefing(Briefing, _Name, _PlayerID)
 end
@@ -178,6 +177,7 @@ function CreateTestNPCDialogBriefing(_Name, _PlayerID)
     local Dialog = {
         DisableFow = true,
         DisableBoderPins = true,
+        RestoreGameSpeed = true,
         RestoreCamera = true,
     };
     local AP, ASP = API.AddDialogPages(Dialog);
@@ -210,7 +210,6 @@ function CreateTestNPCDialogBriefing(_Name, _PlayerID)
         Zoom   = 0.1,
     }
 
-    
     AP {
         Text   = "We can show large texts with portrait... {cr}{cr}Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
         Sender = 2,
@@ -242,6 +241,7 @@ function CreateTestNPCDialogBriefing(_Name, _PlayerID)
     Dialog.Starting = function(_Data)
     end
     Dialog.Finished = function(_Data)
+        BriefingAnimationTest1([[foo]], 1)
     end
     API.StartDialog(Dialog, _Name, _PlayerID);
 end
