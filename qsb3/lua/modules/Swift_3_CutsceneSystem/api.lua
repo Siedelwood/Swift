@@ -88,9 +88,9 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- @usage
 -- function Cutscene1(_Name, _PlayerID)
 --     local Cutscene = {};
---     local AF = API.AddCutscenePages(Cutscene);
+--     local AP = API.AddCutscenePages(Cutscene);
 --
---     -- Aufrufe von AF um Seiten zu erstellen
+--     -- Aufrufe von AP um Seiten zu erstellen
 --
 --     Cutscene.Starting = function(_Data)
 --         -- Mach was tolles hier wenn es anfängt.
@@ -162,11 +162,11 @@ end
 -- gebunden werden können.
 --
 -- @param[type=table] _Cutscene Cutscene Definition
--- @return[type=function] <a href="#AF">AF</a>
+-- @return[type=function] <a href="#AP">AP</a>
 -- @within Anwenderfunktionen
 --
 -- @usage
--- local AF = API.AddCutscenePages(Cutscene);
+-- local AP = API.AddCutscenePages(Cutscene);
 --
 function API.AddCutscenePages(_Cutscene)
     _Cutscene.GetPage = function(self, _PlayerID, _NameOrID)
@@ -174,10 +174,9 @@ function API.AddCutscenePages(_Cutscene)
         return ModuleCutsceneSystem.Global.Cutscene[_PlayerID][ID];
     end
 
-    local AF = function(_Page)
+    local AP = function(_Page)
         if type(_Page) == "table" then
             _Page.__Legit = true;
-            
             -- Language
             _Page.Title = API.Localize(_Page.Title);
             if _Page.Text then
@@ -189,7 +188,7 @@ function API.AddCutscenePages(_Cutscene)
             end
             if not _Page.Lines and not _Page.Text then
                 local Name = "Cutscene #" ..(ModuleCutsceneSystem.Global.CutsceneCounter +1);
-                error("AF (" ..Name.. ", Page #" ..(#_Cutscene+1).. "): Missing Lines or Text attribute!");
+                error("AP[Cutscene] (" ..Name.. ", Page #" ..(#_Cutscene+1).. "): Missing Lines or Text attribute!");
                 return;
             end
 
@@ -201,7 +200,7 @@ function API.AddCutscenePages(_Cutscene)
         table.insert(_Cutscene, _Page);
         return _Page;
     end
-    return AF;
+    return AP;
 end
 
 ---
@@ -277,7 +276,7 @@ end
 --
 -- @within Cutscene
 --
-function AF(_Data)
+function AP(_Data)
     assert(false);
 end
 

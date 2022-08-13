@@ -333,7 +333,7 @@ function API.AddBriefingPages(_Briefing)
             end
         end
         if not PageID then
-            error("AAN (Briefing System): Can not find name or ID '".. tostring(_Identifier).. "'!");
+            error("AAN[Briefing]: Can not find name or ID '".. tostring(_Identifier).. "'!");
             return;
         end
         if not _Briefing.PageAnimations[_Identifier] then

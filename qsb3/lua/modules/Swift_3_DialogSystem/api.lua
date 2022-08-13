@@ -196,7 +196,7 @@ function API.AddDialogPages(_Dialog)
 
             if _Page.Position and _Page.Target then
                 local Name = "Dialog #" ..(ModuleDialogSystem.Global.DialogCounter +1);
-                error("AP (" ..Name.. ", Page '" .._Page.Name.. "'): "..
+                error("AP[Dialog] (" ..Name.. ", Page '" .._Page.Name.. "'): "..
                       "Position and Target can not be used both at the "..
                       "same time!");
                 return;
