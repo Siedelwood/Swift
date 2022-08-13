@@ -402,7 +402,6 @@ function ModuleDialogSystem.Local:DisplayPage(_PlayerID, _PageData)
 
         self.Dialog[_PlayerID].PageData = _PageData;
         if _PageData.Sender ~= -1 then
-            -- XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 1);
             XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 1);
             XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomLeft/Message", 1);
             XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/QuestLog", 0);
@@ -413,7 +412,8 @@ function ModuleDialogSystem.Local:DisplayPage(_PlayerID, _PageData)
             self:SetSubtitlesText(_PlayerID);
             self:SetSubtitlesPosition(_PlayerID);
         else
-            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 0);
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait", 0);
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 1);
             XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles", 1);
             XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles/Update", 1);
             self:ResetSubtitlesPosition(_PlayerID);
@@ -491,6 +491,7 @@ function ModuleDialogSystem.Local:ResetPlayerPortrait(_PlayerID, _HeadModel)
         end
         Actor = _HeadModel;
     end
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait", 1);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/QuestObjectives", 0);
     SetPortraitWithCameraSettings(PortraitWidget, Actor);
     GUI.PortraitWidgetSetRegister(PortraitWidget, "Mood_Friendly", 1,2,0);

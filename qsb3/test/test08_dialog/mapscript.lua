@@ -171,6 +171,15 @@ function CreateTestNPCDialogQuest()
         Reward_Dialog("TestDialog", "CreateTestNPCDialogBriefing"),
         Trigger_Time(0),
     }
+
+    AddQuest {
+        Name        = "TestNpcQuest9",
+        Suggestion  = "Sometimes it just work's!",
+        Receiver    = 1,
+
+        Goal_NoChange(),
+        Trigger_Dialog("TestDialog", 1, 0),
+    }
 end
 
 function CreateTestNPCDialogBriefing(_Name, _PlayerID)
