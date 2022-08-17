@@ -121,8 +121,7 @@ function API.AlterJournalEntry(_ID, _Text)
             _Text,
             Entry.Rank,
             Entry.AlwaysVisible,
-            Entry.Deleted,
-            Entry.AllowInput
+            Entry.Deleted
         );
     end
 end
@@ -150,8 +149,7 @@ function API.HighlightJournalEntry(_ID, _Important)
             Entry[1],
             (_Important == true and 1) or 0,
             Entry.AlwaysVisible,
-            Entry.Deleted,
-            Entry.AllowInput
+            Entry.Deleted
         );
     end
 end
@@ -176,8 +174,7 @@ function API.DeleteJournalEntry(_ID)
             Entry[1],
             Entry.Rank,
             Entry.AlwaysVisible,
-            true,
-            Entry.AllowInput
+            true
         );
     end
 end
@@ -199,8 +196,7 @@ function API.RestoreJournalEntry(_ID)
             Entry[1],
             Entry.Rank,
             Entry.AlwaysVisible,
-            false,
-            Entry.AllowInput
+            false
         );
     end
 end

@@ -52,7 +52,9 @@ function ModuleInteractiveSites.Global:OnEvent(_ID, _Event, ...)
             -- Nothing to do?
         end
     elseif _ID == QSB.ScriptEvents.ObjectDelete then
-        -- Nothing to do?
+        if IO[arg[1]] and IO[arg[1]].IsInteractiveSite then
+            -- Nothing to do?
+        end
     end
 end
 

@@ -58,7 +58,9 @@ function ModuleInteractiveChests.Global:OnEvent(_ID, _Event, ...)
             self:ResetIOChest(arg[1]);
         end
     elseif _ID == QSB.ScriptEvents.ObjectDelete then
-        -- Nothing to do?
+        if IO[arg[1]] and IO[arg[1]].IsInteractiveChest then
+            -- Nothing to do?
+        end
     end
 end
 

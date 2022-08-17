@@ -54,7 +54,9 @@ function ModuleInteractiveMines.Global:OnEvent(_ID, _Event, ...)
             self:ResetIOMine(arg[1], IO[arg[1]].Type);
         end
     elseif _ID == QSB.ScriptEvents.ObjectDelete then
-        ReplaceEntity(arg[1], IO[arg[1]].Type);
+        if IO[arg[1]].IsInteractiveMine and IO[arg[1]].Type then
+            ReplaceEntity(arg[1], IO[arg[1]].Type);
+        end
     end
 end
 
