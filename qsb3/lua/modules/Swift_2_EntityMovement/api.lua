@@ -46,20 +46,25 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- wird das Event QSB.ScriptEvents.EntityArrived geworfen.
 --
 -- @param               _Entity         Bewegtes Entity (Skriptname oder ID)
--- @param               _Target         Ziel (Skriptname oder ID)
+-- @param               _Target         Ziel (Skriptname, ID oder Position)
 -- @param[type=boolean] _IgnoreBlocking Direkten Weg benutzen
 -- @within Anwenderfunktionen
 --
 function API.MoveEntity(_Entity, _Target, _IgnoreBlocking)
-    local ID1 = GetID(_Entity);
-    if not IsExisting(ID1) then
+    if not IsExisting(_Entity) then
         error("API.MoveEntity: entity '" ..tostring(_Entity).. "' does not exist!");
         return;
     end
-    local ID2 = GetID(_Target);
-    if not IsExisting(ID2) then
-        error("API.MoveEntity: entity '" ..tostring(_Target).. "' does not exist!");
-        return;
+    if type(_Target) == "table" then
+        if not API.IsValidPosition(_Target) then
+            error("API.MoveEntity: position '" ..tostring(_Target).. "' is invaid!");
+            return;
+        end
+    else
+        if not IsExisting(_Target) then
+            error("API.MoveEntity: entity '" ..tostring(_Target).. "' does not exist!");
+            return;
+        end
     end
     local Index = ModuleEntityMovement.Global:FillMovingEntityDataForController(
         _Entity, {_Target}, nil, nil, _IgnoreBlocking
@@ -80,24 +85,73 @@ end
 -- wird das Event QSB.ScriptEvents.EntityArrived geworfen.
 --
 -- @param               _Entity         Bewegtes Entity (Skriptname oder ID)
--- @param               _Target         Ziel (Skriptname oder ID)
+-- @param               _Target         Ziel (Skriptname, ID oder Position)
 -- @param               _LookAt         Angeschaute Position (Skriptname, ID oder Position)
 -- @param[type=boolean] _IgnoreBlocking Direkten Weg benutzen
 -- @within Anwenderfunktionen
 --
 function API.MoveEntityAndLookAt(_Entity, _Target, _LookAt, _IgnoreBlocking)
-    local ID1 = GetID(_Entity);
-    if not IsExisting(ID1) then
+    if not IsExisting(_Entity) then
         error("API.MoveEntityAndLookAt: entity '" ..tostring(_Entity).. "' does not exist!");
         return;
     end
-    local ID2 = GetID(_Target);
-    if not IsExisting(ID2) then
-        error("API.MoveEntityAndLookAt: entity '" ..tostring(_Target).. "' does not exist!");
-        return;
+    if type(_Target) == "table" then
+        if not API.IsValidPosition(_Target) then
+            error("API.MoveEntityAndLookAt: position '" ..tostring(_Target).. "' is invaid!");
+            return;
+        end
+    else
+        if not IsExisting(_Target) then
+            error("API.MoveEntityAndLookAt: entity '" ..tostring(_Target).. "' does not exist!");
+            return;
+        end
     end
     local Index = ModuleEntityMovement.Global:FillMovingEntityDataForController(
         _Entity, {_Target}, _LookAt, nil, _IgnoreBlocking
+    );
+    API.StartHiResJob(function(_Index)
+        return ModuleEntityMovement.Global:MoveEntityPathController(_Index);
+    end, Index);
+    return Index;
+end
+
+---
+-- Bewegt ein Entity relativ zu einer Position.
+--
+-- Wenn das Ziel zu irgend einem Zeitpunkt nicht erreicht werden kann, wird die
+-- Bewegung abgebrochen und das Event QSB.ScriptEvents.EntityStuck geworfen.
+--
+-- Das Ziel gilt als erreicht, sobald sich das Entity nicht mehr bewegt. Dann
+-- wird das Event QSB.ScriptEvents.EntityArrived geworfen.
+--
+-- @param                _Entity         Bewegtes Entity (Skriptname oder ID)
+-- @param                _Target         Ziel (Skriptname, ID oder Position)
+-- @param[type=number]  _Distance        Entfernung zum Ziel
+-- @param[type=number]  _Angle           Winkel zum Ziel
+-- @within Anwenderfunktionen
+--
+function API.MoveEntityToPosition(_Entity, _Target, _Distance, _Angle, _IgnoreBlocking)
+    if not IsExisting(_Entity) then
+        error("API.MoveEntityToPosition: entity '" ..tostring(_Entity).. "' does not exist!");
+        return;
+    end
+    if type(_Target) == "table" then
+        if not API.IsValidPosition(_Target) then
+            error("API.MoveEntityToPosition: position '" ..tostring(_Target).. "' is invaid!");
+            return;
+        end
+    else
+        if not IsExisting(_Target) then
+            error("API.MoveEntityToPosition: entity '" ..tostring(_Target).. "' does not exist!");
+            return;
+        end
+    end
+    local Target = API.GetCirclePosition(_Target, _Distance, _Angle);
+    if not API.IsValidPosition(Target) then
+        return;
+    end
+    local Index = ModuleEntityMovement.Global:FillMovingEntityDataForController(
+        _Entity, {Target}, nil, nil, _IgnoreBlocking
     );
     API.StartHiResJob(function(_Index)
         return ModuleEntityMovement.Global:MoveEntityPathController(_Index);
@@ -115,21 +169,26 @@ end
 -- wird das Event QSB.ScriptEvents.EntityArrived geworfen.
 --
 -- @param                _Entity         Bewegtes Entity (Skriptname oder ID)
--- @param                _Target         Ziel (Skriptname oder ID)
+-- @param                _Target         Ziel (Skriptname, ID oder Position)
 -- @param[type=function] _Action         Funktion wenn Entity ankommt
 -- @param[type=boolean]  _IgnoreBlocking Direkten Weg benutzen
 -- @within Anwenderfunktionen
 --
 function API.MoveEntityAndExecute(_Entity, _Target, _Action, _IgnoreBlocking)
-    local ID1 = GetID(_Entity);
-    if not IsExisting(ID1) then
+    if not IsExisting(_Entity) then
         error("API.MoveEntityAndExecute: entity '" ..tostring(_Entity).. "' does not exist!");
         return;
     end
-    local ID2 = GetID(_Target);
-    if not IsExisting(ID2) then
-        error("API.MoveEntityAndExecute: entity '" ..tostring(_Target).. "' does not exist!");
-        return;
+    if type(_Target) == "table" then
+        if not API.IsValidPosition(_Target) then
+            error("API.MoveEntityAndExecute: position '" ..tostring(_Target).. "' is invaid!");
+            return;
+        end
+    else
+        if not IsExisting(_Target) then
+            error("API.MoveEntityAndExecute: entity '" ..tostring(_Target).. "' does not exist!");
+            return;
+        end
     end
     local Index = ModuleEntityMovement.Global:FillMovingEntityDataForController(
         _Entity, {_Target}, nil, _Action, _IgnoreBlocking
@@ -158,8 +217,7 @@ end
 -- @within Anwenderfunktionen
 --
 function API.MoveEntityOnCheckpoints(_Entity, _Targets, _IgnoreBlocking)
-    local ID1 = GetID(_Entity);
-    if not IsExisting(ID1) then
+    if not IsExisting(_Entity) then
         error("API.MoveEntityOnCheckpoints: entity '" ..tostring(_Entity).. "' does not exist!");
         return;
     end
@@ -174,5 +232,67 @@ function API.MoveEntityOnCheckpoints(_Entity, _Targets, _IgnoreBlocking)
         return ModuleEntityMovement.Global:MoveEntityPathController(_Index);
     end, Index);
     return Index;
+end
+
+-- Even though this is no movement at all...
+
+---
+-- Positioniert ein Entity und lässt es einen Ort ansehen.
+--
+-- @param _Entity Bewegtes Entity (Skriptname oder ID)
+-- @param _Target Ziel (Skriptname, ID oder Position)
+-- @param _LookAt Angeschaute Position (Skriptname, ID oder Position)
+-- @within Anwenderfunktionen
+--
+function API.PlaceEntityAndLookAt(_Entity, _Target, _LookAt)
+    if not IsExisting(_Entity) then
+        error("API.PlaceEntityAndLookAt: entity '" ..tostring(_Entity).. "' does not exist!");
+        return;
+    end
+    if type(_Target) == "table" then
+        if not API.IsValidPosition(_Target) then
+            error("API.PlaceEntityAndLookAt: position '" ..tostring(_Target).. "' is invaid!");
+            return;
+        end
+    else
+        if not IsExisting(_Target) then
+            error("API.PlaceEntityAndLookAt: entity '" ..tostring(_Target).. "' does not exist!");
+            return;
+        end
+    end
+    API.SetPosition(_Entity, _Target);
+    API.LookAt(_Entity, _LookAt);
+end
+
+---
+-- Positioniert ein Entity relativ zu einer Position.
+--
+-- @param               _Entity  Bewegtes Entity (Skriptname oder ID)
+-- @param               _Target  Ziel (Skriptname, ID oder Position)
+-- @param[type=number] _Distance Entfernung zum Ziel
+-- @param[type=number] _Angle    Winkel zum Ziel
+-- @within Anwenderfunktionen
+--
+function API.PlaceEntityToPosition(_Entity, _Target, _Distance, _Angle)
+    if not IsExisting(_Entity) then
+        error("API.PlaceEntityToPosition: entity '" ..tostring(_Entity).. "' does not exist!");
+        return;
+    end
+    if type(_Target) == "table" then
+        if not API.IsValidPosition(_Target) then
+            error("API.PlaceEntityToPosition: position '" ..tostring(_Target).. "' is invaid!");
+            return;
+        end
+    else
+        if not IsExisting(_Target) then
+            error("API.PlaceEntityToPosition: entity '" ..tostring(_Target).. "' does not exist!");
+            return;
+        end
+    end
+    local Target = API.GetCirclePosition(_Target, _Distance, _Angle);
+    if not API.IsValidPosition(Target) then
+        return;
+    end
+    API.SetPosition(_Entity, Target);
 end
 

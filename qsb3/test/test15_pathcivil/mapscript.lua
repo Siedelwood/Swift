@@ -97,10 +97,7 @@ function CreateRoadPathWithBlockedAlternative()
         300,
         1,
         function(_Node, _Siblings, _Start)
-            local ID = Logic.CreateEntity(Entities.XD_ScriptEntity, _Node.X, _Node.Y, 0, 0);
-            local Sector = Logic.GetSector(ID);
-            DestroyEntity(ID);
-            if Sector == 0 then
+            if Logic.DEBUG_GetSectorAtPosition(_Node.X, _Node.Y) == 0 then
                 return false;
             end
 

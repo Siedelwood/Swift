@@ -40,6 +40,8 @@ function ModuleEntityMovement.Global:OnEvent(_ID, _Event, ...)
 end
 
 function ModuleEntityMovement.Global:FillMovingEntityDataForController(_Entity, _Path, _LookAt, _Action, _IgnoreBlocking)
+    -- FIXME: Should we check that the moving entity isn't already involved in
+    -- another task or should the user do some thinking on their own?
     local Index = #self.PathMovingEntities +1;
     self.PathMovingEntities[Index] = {
         Entity = GetID(_Entity),
@@ -65,10 +67,14 @@ function ModuleEntityMovement.Global:MoveEntityPathController(_Index)
     if CanMove and Logic.IsEntityMoving(Data.Entity) == false then
         -- Arrived at waypoint
         if Data.Index > 0 then
-            API.SendScriptEvent(QSB.ScriptEvents.EntityAtCheckpoint, Data.Entity, GetID(Data[Data.Index]), _Index);
+            API.SendScriptEvent(QSB.ScriptEvents.EntityAtCheckpoint, Data.Entity, Data[Data.Index], _Index);
+            local Target = tostring(Data[Data.Index]);
+            if type(Data[Data.Index]) == "table" then
+                Target = table.tostring(Data[Data.Index]);
+            end
             Logic.ExecuteInLuaLocalState(string.format(
-                [[API.SendScriptEvent(QSB.ScriptEvents.EntityAtCheckpoint, %d, %d, %d)]],
-                Data.Entity, GetID(Data[Data.Index]), _Index
+                [[API.SendScriptEvent(QSB.ScriptEvents.EntityAtCheckpoint, %d, %s, %d)]],
+                Data.Entity, Target, _Index
             ));
         end
         self.PathMovingEntities[_Index].Index = Data.Index +1;
@@ -85,10 +91,16 @@ function ModuleEntityMovement.Global:MoveEntityPathController(_Index)
                     Data:Callback();
                 end
             end
-            API.SendScriptEvent(QSB.ScriptEvents.EntityArrived, Data.Entity, GetID(Data[#Data]), _Index);
+            -- The event is send when the task is fully completed. That means
+            -- look at and callback must be executed first!
+            API.SendScriptEvent(QSB.ScriptEvents.EntityArrived, Data.Entity, Data[#Data], _Index);
+            local Target = tostring(Data[#Data]);
+            if type(Data[#Data]) == "table" then
+                Target = table.tostring(Data[#Data]);
+            end
             Logic.ExecuteInLuaLocalState(string.format(
-                [[API.SendScriptEvent(QSB.ScriptEvents.EntityArrived, %d, %d, %d)]],
-                Data.Entity, GetID(Data[#Data]), _Index
+                [[API.SendScriptEvent(QSB.ScriptEvents.EntityArrived, %d, %s, %d)]],
+                Data.Entity, Target, _Index
             ));
             return true;
         end
@@ -129,10 +141,14 @@ function ModuleEntityMovement.Global:MoveEntityPathController(_Index)
 
     -- Send movement failed event
     if not CanMove then
-        API.SendScriptEvent(QSB.ScriptEvents.EntityStuck, Data.Entity, GetID(Data[Data.Index]), _Index);
+        API.SendScriptEvent(QSB.ScriptEvents.EntityStuck, Data.Entity, Data[Data.Index], _Index);
+        local Target = tostring(Data[Data.Index]);
+        if type(Data[Data.Index]) == "table" then
+            Target = table.tostring(Data[Data.Index]);
+        end
         Logic.ExecuteInLuaLocalState(string.format(
-            [[API.SendScriptEvent(QSB.ScriptEvents.EntityStuck, %d, %d, %d)]],
-            Data.Entity, GetID(Data[Data.Index]), _Index
+            [[API.SendScriptEvent(QSB.ScriptEvents.EntityStuck, %d, %s, %d)]],
+            Data.Entity, Target, _Index
         ));
         return true;
     end
@@ -322,7 +338,7 @@ function Pathfinder:AcceptSuccessors(_Index, _SuccessorList)
         if useNode then
             table.insert(self.m_ProcessedPaths[_Index].Open, v);
             self.m_ProcessedPaths[_Index].OpenMap[v.ID] = true;
-            -- Visialize (debug only)
+            -- Make visible (debug only)
             -- Logic.CreateEntity(Entities.XD_CoordinateEntity, v.X, v.Y, 0, 0);
         end
     end

@@ -102,6 +102,22 @@ function Mission_FirstMapAction()
     TEST_COMMAND = API.RegisterScriptCommand("TestFunction", TestFunction);
 end
 
+function TestMoveAmma()
+    -- API.MoveEntity("amma", "pos")
+    -- API.MoveEntityAndLookAt("amma", "pos", "manuel");
+    -- local Position = GetPosition("constructionSite");
+    -- API.MoveEntityToPosition("amma", Position, 500, 180);
+    -- Logic.CreateEntity(Entities.XD_CoordinateEntity, Position.X, Position.Y, 0, 0);
+    -- API.MoveEntityOnCheckpoints("amma", {"pos", "constructionSite", "manuel"});
+    -- API.MoveEntityAndExecute("amma", "pos", function()
+    --     API.Note("Bockwurst");
+    -- end);
+    -- API.PlaceEntityAndLookAt("amma", "pos", "manuel")
+    -- local Position = GetPosition("constructionSite");
+    -- Logic.CreateEntity(Entities.XD_CoordinateEntity, Position.X, Position.Y, 0, 0);
+    -- API.PlaceEntityToPosition("amma", Position, 500, 180)
+end
+
 function TestFunction(_PlayerID, _Number, _String)
     local Text = "TestFunction :: PlayerID: " .._PlayerID.. " Param1: " .._Number.. " Param2: " .._String;
     API.Note(Text);
@@ -128,18 +144,18 @@ GameCallback_QSB_OnEventReceived = function(_EventID, ...)
             local TypeName = Logic.GetEntityTypeName(TypeID);
             API.Note("Lured: " ..TypeName);
         end
-    elseif _EventID == QSB.ScriptEvents.EntitySpawned then
-        if IsExisting(arg[1]) then
-            local TypeID = Logic.GetEntityType(arg[1]);
-            local TypeName = Logic.GetEntityTypeName(TypeID);
-            API.Note("Spawned: " ..TypeName);
-        end
-    elseif _EventID == QSB.ScriptEvents.AnimalBred then
-        if IsExisting(arg[1]) then
-            local TypeID = Logic.GetEntityType(arg[1]);
-            local TypeName = Logic.GetEntityTypeName(TypeID);
-            API.Note("Bred: " ..TypeName);
-        end
+    -- elseif _EventID == QSB.ScriptEvents.EntitySpawned then
+    --     if IsExisting(arg[1]) then
+    --         local TypeID = Logic.GetEntityType(arg[1]);
+    --         local TypeName = Logic.GetEntityTypeName(TypeID);
+    --         API.Note("Spawned: " ..TypeName);
+    --     end
+    -- elseif _EventID == QSB.ScriptEvents.AnimalBred then
+    --     if IsExisting(arg[1]) then
+    --         local TypeID = Logic.GetEntityType(arg[1]);
+    --         local TypeName = Logic.GetEntityTypeName(TypeID);
+    --         API.Note("Bred: " ..TypeName);
+    --     end
     end
 end
 
