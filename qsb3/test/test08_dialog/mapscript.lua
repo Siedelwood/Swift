@@ -215,7 +215,7 @@ function CreateTestNPCDialogBriefing(_Name, _PlayerID)
         Name   = "ContinuePage",
         Text   = "Splendit, it seems to work as intended.",
         Sender = 1,
-        Target = Logic.GetKnightID(_PlayerID),
+        Target = "hero",
         Zoom   = 0.1,
     }
 

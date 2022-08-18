@@ -16,6 +16,7 @@ ModuleNpcInteraction = {
     Global = {
         Interactions = {},
         NPC = {},
+        UseMarker = true,
     };
     Local  = {};
     -- This is a shared structure but the values are asynchronous!
@@ -44,8 +45,11 @@ function ModuleNpcInteraction.Global:OnGameStart()
 
     API.StartHiResJob(function()
         if Logic.GetTime() > 1 then
-            ModuleNpcInteraction.Global:DialogTriggerController();
+            ModuleNpcInteraction.Global:InteractionTriggerController();
         end
+    end);
+    API.StartJob(function()
+        ModuleNpcInteraction.Global:InteractableMarkerController();
     end);
 end
 
@@ -75,7 +79,9 @@ function ModuleNpcInteraction.Global:CreateNpc(_Data)
         WrongHeroAction   = _Data.WrongHeroAction,
         Distance          = _Data.Distance or 350,
         Condition         = _Data.Condition,
-        Callback          = _Data.Callback
+        Callback          = _Data.Callback,
+        UseMarker         = self.UseMarker == true,
+        MarkerID          = 0
     }
     self:UpdateNpc(_Data);
     return self.NPC[_Data.Name];
@@ -84,6 +90,7 @@ end
 function ModuleNpcInteraction.Global:DestroyNpc(_Data)
     _Data.Active = false;
     self:UpdateNpc(_Data);
+    self:DestroyMarker(_Data.Name);
     self.NPC[_Data.Name] = nil;
 end
 
@@ -103,6 +110,7 @@ function ModuleNpcInteraction.Global:UpdateNpc(_Data)
     for k, v in pairs(_Data) do
         self.NPC[_Data.Name][k] = v;
     end
+    self:CreateMarker(_Data.Name);
     if self.NPC[_Data.Name].Active then
         local EntityID = GetID(_Data.Name);
         Logic.SetOnScreenInformation(EntityID, self.NPC[_Data.Name].Type);
@@ -309,7 +317,52 @@ function ModuleNpcInteraction.Global:GetClosestKnight(_EntityID, _PlayerID)
     return API.GetClosestToTarget(_EntityID, KnightIDs);
 end
 
-function ModuleNpcInteraction.Global:DialogTriggerController()
+function ModuleNpcInteraction.Global:ToggleMarkerUsage(_Flag)
+    self.UseMarker = _Flag == true;
+    for k, v in pairs(self.NPC) do
+        self.NPC[k].UseMarker = _Flag == true;
+        self:HideMarker(k);
+    end
+end
+
+function ModuleNpcInteraction.Global:CreateMarker(_ScriptName)
+    if self.NPC[_ScriptName] then
+        local x,y,z = Logic.EntityGetPos(GetID(_ScriptName));
+        local MarkerID = Logic.CreateEntity(Entities.XD_ScriptEntity, x, y, 0, 0);
+        DestroyEntity(self.NPC[_ScriptName].MarkerID);
+        self.NPC[_ScriptName].MarkerID = MarkerID;
+        self:HideMarker(_ScriptName);
+    end
+end
+
+function ModuleNpcInteraction.Global:DestroyMarker(_ScriptName)
+    if self.NPC[_ScriptName] then
+        DestroyEntity(self.NPC[_ScriptName].MarkerID);
+        self.NPC[_ScriptName].MarkerID = 0;
+    end
+end
+
+function ModuleNpcInteraction.Global:HideMarker(_ScriptName)
+    if self.NPC[_ScriptName] then
+        if IsExisting(self.NPC[_ScriptName].MarkerID) then
+            Logic.SetModel(self.NPC[_ScriptName].MarkerID, Models.Effects_E_NullFX);
+            Logic.SetVisible(self.NPC[_ScriptName].MarkerID, false);
+        end
+    end
+end
+
+function ModuleNpcInteraction.Global:ShowMarker(_ScriptName)
+    if self.NPC[_ScriptName] then
+        if self.NPC[_ScriptName].UseMarker == true and IsExisting(self.NPC[_ScriptName].MarkerID) then
+            local Size = API.GetEntityScale(_ScriptName);
+            API.SetEntityScale(self.NPC[_ScriptName].MarkerID, Size);
+            Logic.SetModel(self.NPC[_ScriptName].MarkerID, Models.Effects_E_Wealth);
+            Logic.SetVisible(self.NPC[_ScriptName].MarkerID, true);
+        end
+    end
+end
+
+function ModuleNpcInteraction.Global:InteractionTriggerController()
     for PlayerID = 1, 8, 1 do
         local PlayersKnights = {};
         Logic.GetKnights(PlayerID, PlayersKnights);
@@ -328,6 +381,23 @@ function ModuleNpcInteraction.Global:DialogTriggerController()
                         end
                     end
                 end
+            end
+        end
+    end
+end
+
+function ModuleNpcInteraction.Global:InteractableMarkerController()
+    for k, v in pairs(self.NPC) do
+        if v.Active then
+            if v.UseMarker and IsExisting(v.MarkerID) and API.IsEntityVisible(v.MarkerID) then
+                self:HideMarker(k);
+            else
+                self:ShowMarker(k);
+            end
+            local x1,y1,z1 = Logic.EntityGetPos(v.MarkerID);
+            local x2,y2,z2 = Logic.EntityGetPos(GetID(k));
+            if math.abs(x1-x2) > 20 or math.abs(y1-y2) > 20 then
+                Logic.DEBUG_SetPosition(v.MarkerID, x2, y2);
             end
         end
     end
