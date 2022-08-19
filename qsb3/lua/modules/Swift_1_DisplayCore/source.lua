@@ -298,32 +298,24 @@ function ModuleDisplayCore.Local:InterfaceDeactivateNormalInterface()
     XGUIEng.ShowWidget("/InGame/Root/Normal", 1);
     XGUIEng.ShowWidget("/InGame/Root/Normal/TextMessages", 1);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/SpeechStartAgainOrStop", 0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/BuildMenu", 0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/MapFrame", 0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopRight", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/TopBar", 0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/TopBar/Windows/Gold", 0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/TopBar/Windows/Resources", 0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/TopBar/Windows/Nutrition", 0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/TopBar/Windows/Cleanliness", 0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/TopBar/Windows/Clothes", 0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/TopBar/Windows/Entertainment", 0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/TopBar/Windows/Decoration", 0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/TopBar/Windows/Prosperity", 0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/TopBar/Windows/Military", 0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/TopBar/UpdateFunction", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/TopBar/UpdateFunction", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/Buttons", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/QuestLogButton", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/QuestTimers", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles", 0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/GameClock", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Merchant", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal/MissionGoodOrEntityCounter", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal/MissionTimer", 0);
     HideOtherMenus();
+    if XGUIEng.IsWidgetShown("/InGame/Root/Normal/AlignTopLeft/GameClock") == 1 then
+        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/GameClock", 0);
+        self.GameClockWasShown = true;
+    end
     if XGUIEng.IsWidgetShownEx("/InGame/Root/Normal/ChatOptions/Background") == 1 then
         XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions", 0);
         self.ChatOptionsWasShown = true;
@@ -349,8 +341,7 @@ function ModuleDisplayCore.Local:InterfaceActivateNormalInterface()
     XGUIEng.ShowWidget("/InGame/Root/Normal", 1);
     XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 1);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/SpeechStartAgainOrStop", 1);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/BuildMenu", 1);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/MapFrame", 1);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight", 1);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopRight", 1);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft", 1);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/TopBar", 1);
@@ -361,11 +352,7 @@ function ModuleDisplayCore.Local:InterfaceActivateNormalInterface()
     XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Merchant", 1);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 1);
     XGUIEng.PopPage();
-    
-    -- Debug Clock
-    -- if AddOnQuestDebug and AddOnQuestDebug.Local.GameClock then
-    --     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/GameClock", 1);
-    -- end
+
     -- Timer
     if g_MissionTimerEndTime then
         XGUIEng.ShowWidget("/InGame/Root/Normal/MissionTimer", 1);
@@ -373,6 +360,11 @@ function ModuleDisplayCore.Local:InterfaceActivateNormalInterface()
     -- Counter
     if g_MissionGoodOrEntityCounterAmountToReach then
         XGUIEng.ShowWidget("/InGame/Root/Normal/MissionGoodOrEntityCounter", 1);
+    end
+    -- Debug Clock
+    if self.GameClockWasShown then
+        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/GameClock", 1);
+        self.GameClockWasShown = false;
     end
     -- Chat Options
     if self.ChatOptionsWasShown then
