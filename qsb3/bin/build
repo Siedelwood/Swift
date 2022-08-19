@@ -4,12 +4,12 @@
 echo "build unifile qsb..."
 rm -rf ../var/*
 mkdir -p ../var/qsb
-mkdir -p ../lua/var
+#mkdir -p ../lua/var
 cd ../lua/bin
 lua writer.lua
 cd ../../bin
 cp ../var/qsb.lua ../var/qsb/qsb.lua
-cp ../var/qsb.lua ../lua/var/qsb.lua
+#cp ../var/qsb.lua ../lua/var/qsb.lua
 echo "done!"
 echo "create minified qsb..."
 #FIXME Minifyer produces invalid code!
@@ -17,7 +17,9 @@ echo "create minified qsb..."
 #./LuaMinify.sh ../var/qsb.lua &>/dev/null
 cp ../var/qsb.lua ../var/qsb_min.lua
 cp ../var/qsb_min.lua ../var/qsb/qsb_min.lua
-cp ../var/qsb_min.lua ../lua/var/qsb_min.lua
+rm ../var/qsb.lua
+rm ../var/qsb_min.lua
+#cp ../var/qsb_min.lua ../lua/var/qsb_min.lua
 echo "done!"
 
 # build documentation
