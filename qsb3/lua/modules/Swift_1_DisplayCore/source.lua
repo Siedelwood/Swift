@@ -254,14 +254,11 @@ function ModuleDisplayCore.Local:InterfaceDeactivateBorderScroll(_PositionID)
         return;
     end
     self.BorderScrollDeactivated = true;
-    GameCallback_Camera_GetBorderscrollFactor_Orig_Interface = GameCallback_Camera_GetBorderscrollFactor;
-	GameCallback_Camera_GetBorderscrollFactor = function() end;
     if _PositionID then
         Camera.RTS_FollowEntity(_PositionID);
     end
-    Camera.RTS_SetZoomFactor(0.5000);
-    Camera.RTS_SetZoomFactorMax(0.5001);
-    Camera.RTS_SetZoomFactorMin(0.4999);
+    Camera.RTS_SetBorderScrollSize(0);
+    Camera.RTS_SetZoomWheelSpeed(0);
 
     API.SendScriptEventToGlobal(
         QSB.ScriptEvents.BorderScrollLocked,
@@ -276,12 +273,9 @@ function ModuleDisplayCore.Local:InterfaceActivateBorderScroll()
         return;
     end
     self.BorderScrollDeactivated = false;
-	GameCallback_Camera_GetBorderscrollFactor = GameCallback_Camera_GetBorderscrollFactor_Orig_Interface;
-    GameCallback_Camera_GetBorderscrollFactor_Orig_Interface = nil;
     Camera.RTS_FollowEntity(0);
-    Camera.RTS_SetZoomFactor(0.5000);
-    Camera.RTS_SetZoomFactorMax(0.5001);
-    Camera.RTS_SetZoomFactorMin(0.0999);
+    Camera.RTS_SetBorderScrollSize(3.0);
+    Camera.RTS_SetZoomWheelSpeed(4.2);
 
     API.SendScriptEventToGlobal(QSB.ScriptEvents.BorderScrollReset, GUI.GetPlayerID());
     API.SendScriptEvent(QSB.ScriptEvents.BorderScrollReset, GUI.GetPlayerID());

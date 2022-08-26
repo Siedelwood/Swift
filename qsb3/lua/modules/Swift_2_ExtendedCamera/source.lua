@@ -39,11 +39,6 @@ function ModuleExtendedCamera.Local:OnEvent(_ID, _Event)
             self:ActivateExtendedZoom();
         end
         self:ActivateExtendedZoomHotkey();
-    elseif _ID == QSB.ScriptEvents.BorderScrollReset then
-        if self.ExtendedZoomActive then
-            Camera.RTS_SetZoomFactorMax(0.8701);
-            Camera.RTS_SetZoomFactorMin(0.0999);
-        end
     end
 end
 
