@@ -163,7 +163,7 @@ function ModuleDialogSystem.Global:NextPage(_PlayerID)
     end
 
     local PageID = self.Dialog[_PlayerID].CurrentPage;
-    if PageID == -1 or PageID == 0 then
+    if PageID <= 0 then
         self:EndDialog(_PlayerID);
         return;
     end
@@ -362,8 +362,6 @@ end
 
 function ModuleDialogSystem.Local:EndDialog(_PlayerID, _Data)
     if GUI.GetPlayerID() == _PlayerID then
-        API.ActivateNormalInterface();
-        API.ActivateBorderScroll();
         XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 1);
         XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/Update", 1);
         XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles/Update", 1);
@@ -391,6 +389,8 @@ function ModuleDialogSystem.Local:EndDialog(_PlayerID, _Data)
         end
 
         self.Dialog[_PlayerID] = nil;
+        API.ActivateNormalInterface();
+        API.ActivateBorderScroll();
         Display.SetRenderFogOfWar(1);
         Display.SetRenderBorderPins(1);
     end
@@ -441,8 +441,6 @@ function ModuleDialogSystem.Local:DisplayPage(_PlayerID, _PageData)
         end
         if _PageData.Zoom then
             Camera.RTS_SetZoomFactor(_PageData.Zoom);
-            Camera.RTS_SetZoomFactorMin(_PageData.Zoom -0.00001);
-            Camera.RTS_SetZoomFactorMax(_PageData.Zoom +0.00001);
         end
         if _PageData.Rotation then
             Camera.RTS_SetRotationAngle(_PageData.Rotation);
