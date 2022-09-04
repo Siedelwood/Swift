@@ -418,9 +418,9 @@ end
 -- @within Dialog
 --
 -- @usage -- Beispiel ohne Page Name
--- ASP("Ich gehe in die weitel Welt hinein.", 1, "hans", true);
+-- ASP(1, "hans", "Hans", "Ich gehe in die weitel Welt hinein.", true);
 -- -- Beispiel mit Page Name
--- ASP("Page1", "Ich gehe in die weitel Welt hinein.", 1, "hans", true);
+-- ASP("Page1", 1, "hans", "Hans", "Ich gehe in die weitel Welt hinein.", true);
 --
 function ASP(...)
     assert(false);
