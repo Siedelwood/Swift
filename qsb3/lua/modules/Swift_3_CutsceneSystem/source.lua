@@ -430,6 +430,7 @@ function ModuleCutsceneSystem.Local:DisplayPageControls(_PlayerID, _PageID)
     local Page = self.Cutscene[_PlayerID][_PageID];
     local SkipFlag = 1;
     if Page.DisableSkipping == true then
+        self.Cutscene[_PlayerID].FastForward = false;
         Game.GameTimeSetFactor(_PlayerID, 1);
         SkipFlag = 0;
     end

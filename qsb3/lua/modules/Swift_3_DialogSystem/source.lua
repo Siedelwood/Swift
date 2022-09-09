@@ -370,8 +370,8 @@ end
 
 function ModuleDialogSystem.Local:EndDialog(_PlayerID, _Data)
     if GUI.GetPlayerID() == _PlayerID then
-        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 1);
         XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/Update", 1);
+        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 1);
         XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles/Update", 1);
         XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles", 1);
         XGUIEng.ShowWidget("/InGame/Root/3dWorldView", 1);
