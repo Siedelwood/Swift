@@ -31,6 +31,8 @@ ModuleCutsceneSystem = {
     },
 };
 
+QSB.CinematicEventTypes.Cutscene = 3;
+
 -- Global ------------------------------------------------------------------- --
 
 function ModuleCutsceneSystem.Global:OnGameStart()
@@ -71,7 +73,8 @@ end
 function ModuleCutsceneSystem.Global:UpdateQueue()
     for i= 1, 8 do
         if self:CanStartCutscene(i) then
-            if #self.CutsceneQueue[i] > 0 then
+            local Next = ModuleDisplayCore.Global:LookUpCinematicInFromQueue(i);
+            if Next and Next[1] == QSB.CinematicEventTypes.Cutscene then
                 self:NextCutscene(i);
             end
         end
@@ -82,7 +85,12 @@ function ModuleCutsceneSystem.Global:StartCutscene(_Name, _PlayerID, _Data)
     self.CutsceneQueue[_PlayerID] = self.CutsceneQueue[_PlayerID] or {};
     self.CutsceneCounter = (self.CutsceneCounter or 0) +1;
     _Data.CutsceneName = "Cutscene #" .. self.CutsceneCounter;
-    table.insert(self.CutsceneQueue[_PlayerID], {_Name, _Data});
+    ModuleDisplayCore.Global:PushCinematicEventToQueue(
+        _PlayerID,
+        QSB.CinematicEventTypes.Cutscene,
+        _Name,
+        _Data
+    );
 end
 
 function ModuleCutsceneSystem.Global:EndCutscene(_PlayerID)
@@ -100,11 +108,12 @@ end
 
 function ModuleCutsceneSystem.Global:NextCutscene(_PlayerID)
     if self:CanStartCutscene(_PlayerID) then
-        local CutsceneData = table.remove(self.CutsceneQueue[_PlayerID], 1);
-        API.StartCinematicEvent(CutsceneData[1], _PlayerID);
+        local CutsceneData = ModuleDisplayCore.Global:PopCinematicEventFromQueue(_PlayerID);
+        assert(CutsceneData[1] == QSB.CinematicEventTypes.Cutscene);
+        API.StartCinematicEvent(CutsceneData[2], _PlayerID);
 
-        local Cutscene = CutsceneData[2];
-        Cutscene.Name = CutsceneData[1];
+        local Cutscene = CutsceneData[3];
+        Cutscene.Name = CutsceneData[2];
         Cutscene.PlayerID = _PlayerID;
         Cutscene.BarOpacity = Cutscene.BarOpacity or 1;
         Cutscene.CurrentPage = 0;

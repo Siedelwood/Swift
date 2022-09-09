@@ -21,7 +21,7 @@ function CreateInitiatorQuest()
         Receiver    = 1,
 
         Goal_NoChange(),
-        Trigger_Dialog("TestDialog", 1, 0),
+        Trigger_Dialog("DialogTestX", 1, 0),
     }
 end
 

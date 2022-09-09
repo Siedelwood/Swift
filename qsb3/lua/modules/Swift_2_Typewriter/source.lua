@@ -23,6 +23,8 @@ ModuleTypewriter = {
     Shared = {};
 }
 
+QSB.CinematicEventTypes.Typewriter = 1;
+
 -- Global Script ---------------------------------------------------------------
 
 function ModuleTypewriter.Global:OnGameStart()
@@ -42,7 +44,12 @@ function ModuleTypewriter.Global:StartTypewriter(_Data)
     local EventName = "CinematicEvent_Typewriter" ..self.TypewriterEventCounter;
     _Data.Name = EventName;
     if API.IsLoadscreenVisible() or API.IsCinematicEventActive(_Data.PlayerID) then
-        table.insert(self.TypewriterEventQueue[_Data.PlayerID], _Data);
+        ModuleDisplayCore.Global:PushCinematicEventToQueue(
+            _Data.PlayerID,
+            QSB.CinematicEventTypes.Typewriter,
+            EventName,
+            _Data
+        );
         return _Data.Name;
     end
     return self:PlayTypewriter(_Data);
@@ -159,10 +166,11 @@ end
 
 function ModuleTypewriter.Global:ControlTypewriter()
     -- Check queue for next event
-    for k, v in pairs(self.TypewriterEventQueue) do
-        if not API.IsLoadscreenVisible() and not API.IsCinematicEventActive(k) then
-            if #v > 0 then
-                local Data = table.remove(self.TypewriterEventQueue[k], 1);
+    for i= 1, 8 do
+        if not API.IsLoadscreenVisible() and not API.IsCinematicEventActive(i) then
+            local Next = ModuleDisplayCore.Global:LookUpCinematicInFromQueue(i);
+            if Next and Next[1] == QSB.CinematicEventTypes.Typewriter then
+                local Data = ModuleDisplayCore.Global:PopCinematicEventFromQueue(i);
                 self:PlayTypewriter(Data);
             end
         end

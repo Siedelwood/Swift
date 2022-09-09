@@ -31,6 +31,8 @@ ModuleBriefingSystem = {
     },
 };
 
+QSB.CinematicEventTypes.Briefing = 2;
+
 QSB.Briefing = {
     TIMER_PER_CHAR = 0.175,
     CAMERA_ANGLEDEFAULT = 43,
@@ -95,7 +97,8 @@ end
 function ModuleBriefingSystem.Global:UpdateQueue()
     for i= 1, 8 do
         if self:CanStartBriefing(i) then
-            if #self.BriefingQueue[i] > 0 then
+            local Next = ModuleDisplayCore.Global:LookUpCinematicInFromQueue(i);
+            if Next and Next[1] == QSB.CinematicEventTypes.Briefing then
                 self:NextBriefing(i);
             end
         end
@@ -120,7 +123,12 @@ function ModuleBriefingSystem.Global:StartBriefing(_Name, _PlayerID, _Data)
     self.BriefingQueue[_PlayerID] = self.BriefingQueue[_PlayerID] or {};
     self.BriefingCounter = (self.BriefingCounter or 0) +1;
     _Data.BriefingName = "Briefing #" .. self.BriefingCounter;
-    table.insert(self.BriefingQueue[_PlayerID], {_Name, _Data});
+    ModuleDisplayCore.Global:PushCinematicEventToQueue(
+        _PlayerID,
+        QSB.CinematicEventTypes.Briefing,
+        _Name,
+        _Data
+    );
 end
 
 function ModuleBriefingSystem.Global:EndBriefing(_PlayerID)
@@ -139,11 +147,12 @@ end
 
 function ModuleBriefingSystem.Global:NextBriefing(_PlayerID)
     if self:CanStartBriefing(_PlayerID) then
-        local BriefingData = table.remove(self.BriefingQueue[_PlayerID], 1);
-        API.StartCinematicEvent(BriefingData[1], _PlayerID);
+        local BriefingData = ModuleDisplayCore.Global:PopCinematicEventFromQueue(_PlayerID);
+        assert(BriefingData[1] == QSB.CinematicEventTypes.Briefing);
+        API.StartCinematicEvent(BriefingData[2], _PlayerID);
 
-        local Briefing = BriefingData[2];
-        Briefing.Name = BriefingData[1];
+        local Briefing = BriefingData[3];
+        Briefing.Name = BriefingData[2];
         Briefing.PlayerID = _PlayerID;
         Briefing.CurrentPage = 0;
         if Briefing.EnableSoothingCamera == nil then

@@ -1,2 +1,2 @@
 gvMission = gvMission or {};
-gvMission.MapIsInDevelopmentMode = false;
+gvMission.MapIsInDevelopmentMode = true;

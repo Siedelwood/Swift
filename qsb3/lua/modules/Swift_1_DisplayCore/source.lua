@@ -16,6 +16,7 @@ ModuleDisplayCore = {
     Global = {
         CinematicEventID = 0,
         CinematicEventStatus = {},
+        CinematicEventQueue = {},
     },
     Local = {
         CinematicEventStatus = {},
@@ -29,6 +30,9 @@ ModuleDisplayCore = {
     -- This is a shared structure but the values are asynchronous!
     Shared = {};
 }
+
+QSB.CinematicEvents = {};
+QSB.CinematicEventTypes = {};
 
 -- Global ------------------------------------------------------------------- --
 
@@ -44,6 +48,7 @@ function ModuleDisplayCore.Global:OnGameStart()
 
     for i= 1, 8 do
         self.CinematicEventStatus[i] = {};
+        self.CinematicEventQueue[i] = {};
     end
 end
 
@@ -51,11 +56,25 @@ function ModuleDisplayCore.Global:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.CinematicActivated then
         self.CinematicEventStatus[arg[2]][arg[1]] = 1;
     elseif _ID == QSB.ScriptEvents.CinematicConcluded then
-        for i= 1, 8 do
-            if self.CinematicEventStatus[i][arg[1]] then
-                self.CinematicEventStatus[i][arg[1]] = 2;
-            end
+        if self.CinematicEventStatus[arg[2]][arg[1]] then
+            self.CinematicEventStatus[arg[2]][arg[1]] = 2;
         end
+    end
+end
+
+function ModuleDisplayCore.Global:PushCinematicEventToQueue(_PlayerID, _Type, _Name, _Data)
+    table.insert(self.CinematicEventQueue[_PlayerID], {_Type, _Name, _Data});
+end
+
+function ModuleDisplayCore.Global:LookUpCinematicInFromQueue(_PlayerID)
+    if #self.CinematicEventQueue[_PlayerID] > 0 then
+        return self.CinematicEventQueue[_PlayerID][1];
+    end
+end
+
+function ModuleDisplayCore.Global:PopCinematicEventFromQueue(_PlayerID)
+    if #self.CinematicEventQueue[_PlayerID] > 0 then
+        return table.remove(self.CinematicEventQueue[_PlayerID], 1);
     end
 end
 

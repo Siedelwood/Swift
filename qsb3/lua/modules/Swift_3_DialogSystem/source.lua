@@ -33,6 +33,8 @@ ModuleDialogSystem = {
     },
 };
 
+QSB.CinematicEventTypes.Dialog = 4;
+
 QSB.Dialog = {
     TIMER_PER_CHAR = 0.175,
     CAMERA_ROTATIONDEFAULT = -45,
@@ -62,9 +64,7 @@ function ModuleDialogSystem.Global:OnGameStart()
     end);
     -- Updates the dialog queue for all players
     API.StartHiResJob(function()
-        for i= 1, 8 do
-            ModuleDialogSystem.Global:Update(i);
-        end
+        ModuleDialogSystem.Global:Update();
     end);
 end
 
@@ -92,7 +92,13 @@ function ModuleDialogSystem.Global:StartDialog(_Name, _PlayerID, _Data)
     self.DialogQueue[_PlayerID] = self.DialogQueue[_PlayerID] or {};
     self.DialogCounter = (self.DialogCounter or 0) +1;
     _Data.DialogName = "Dialog #" .. self.DialogCounter;
-    table.insert(self.DialogQueue[_PlayerID], {_Name, _Data});
+    ModuleDisplayCore.Global:PushCinematicEventToQueue(
+        _PlayerID,
+        QSB.CinematicEventTypes.Dialog,
+        _Name,
+        _Data
+    );
+    -- table.insert(self.DialogQueue[_PlayerID], {_Name, _Data});
 end
 
 function ModuleDialogSystem.Global:EndDialog(_PlayerID)
@@ -122,11 +128,12 @@ end
 
 function ModuleDialogSystem.Global:NextDialog(_PlayerID)
     if self:CanStartDialog(_PlayerID) then
-        local DialogData = table.remove(self.DialogQueue[_PlayerID], 1);
-        API.StartCinematicEvent(DialogData[1], _PlayerID);
+        local DialogData = ModuleDisplayCore.Global:PopCinematicEventFromQueue(_PlayerID);
+        assert(DialogData[1] == QSB.CinematicEventTypes.Dialog);
+        API.StartCinematicEvent(DialogData[2], _PlayerID);
 
-        local Dialog = DialogData[2];
-        Dialog.Name = DialogData[1];
+        local Dialog = DialogData[3];
+        Dialog.Name = DialogData[2];
         Dialog.PlayerID = _PlayerID;
         Dialog.CurrentPage = 0;
         self.Dialog[_PlayerID] = Dialog;
@@ -292,10 +299,13 @@ function ModuleDialogSystem.Global:GetPageIDByName(_PlayerID, _Name)
     return _Name;
 end
 
-function ModuleDialogSystem.Global:Update(_PlayerID)
-    if self:CanStartDialog(_PlayerID) then
-        if #self.DialogQueue[_PlayerID] > 0 then
-            self:NextDialog(_PlayerID);
+function ModuleDialogSystem.Global:Update()
+    for i= 1, 8 do
+        if self:CanStartDialog(i) then
+            local Next = ModuleDisplayCore.Global:LookUpCinematicInFromQueue(i);
+            if Next and Next[1] == QSB.CinematicEventTypes.Dialog then
+                self:NextDialog(i);
+            end
         end
     end
 end
@@ -308,9 +318,7 @@ function ModuleDialogSystem.Local:OnGameStart()
     QSB.ScriptEvents.DialogOptionSelected = API.RegisterScriptEvent("Event_DialogOptionSelected");
 
     API.StartHiResJob(function()
-        for i= 1, 8 do
-            ModuleDialogSystem.Local:Update(i);
-        end
+        ModuleDialogSystem.Local:Update();
     end);
 end
 
