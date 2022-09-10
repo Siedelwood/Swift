@@ -37,10 +37,10 @@ function CreateInitiatorQuest()
 end
 
 function CreateInitiatorCallback(_Behavior, _Quest)
-    -- TypewriterTest(_Quest.ReceivingPlayer);
+    TypewriterTest(_Quest.ReceivingPlayer);
     -- CutsceneTest("CutsceneTest1", _Quest.ReceivingPlayer);
     -- BriefingTest("BriefingTest1", _Quest.ReceivingPlayer);
-    DialogTest("DialogTest1", _Quest.ReceivingPlayer);
+    -- DialogTest("DialogTest1", _Quest.ReceivingPlayer);
 end
 
 -- -------------------------------------------------------------------------- --
@@ -50,7 +50,7 @@ function TypewriterTest(_PlayerID)
         Text      = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, "..
                     "sed diam nonumy eirmod tempor invidunt ut labore et dolore"..
                     "magna aliquyam erat, sed diam voluptua.",
-        PlayerID  = 1,
+        PlayerID  = _PlayerID,
         CharSpeed = 1.5,
         Callback  = function(_Data)
         end
