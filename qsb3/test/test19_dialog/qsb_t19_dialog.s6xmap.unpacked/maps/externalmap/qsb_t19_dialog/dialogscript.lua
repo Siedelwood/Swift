@@ -16,19 +16,30 @@ function CreateInitiatorQuest()
     }
 
     AddQuest {
+        Name        = "TestNpcQuest0",
+        Suggestion  = "This is a quest that just HAD to butt in.",
+        Receiver    = 1,
+        Sender      = 2,
+
+        Goal_NoChange(),
+        Trigger_Time(5),
+    }
+
+    AddQuest {
         Name        = "TestNpcQuest2",
         Suggestion  = "Sometimes it just work's!",
         Receiver    = 1,
+        Sender      = 2,
 
         Goal_NoChange(),
-        Trigger_Dialog("DialogTestX", 1, 0),
+        Trigger_Dialog("DialogTest1", 1, 5),
     }
 end
 
 function CreateInitiatorCallback(_Behavior, _Quest)
-    TypewriterTest(_Quest.ReceivingPlayer);
-    CutsceneTest("CutsceneTest1", _Quest.ReceivingPlayer);
-    BriefingTest("BriefingTest1", _Quest.ReceivingPlayer);
+    -- TypewriterTest(_Quest.ReceivingPlayer);
+    -- CutsceneTest("CutsceneTest1", _Quest.ReceivingPlayer);
+    -- BriefingTest("BriefingTest1", _Quest.ReceivingPlayer);
     DialogTest("DialogTest1", _Quest.ReceivingPlayer);
 end
 

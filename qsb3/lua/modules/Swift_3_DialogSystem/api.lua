@@ -16,6 +16,31 @@ You may use and modify this file unter the terms of the MIT licence.
 -- gestartet werden. Mittels Sprüngen und Leerseiten kann innerhalb des
 -- Dialog navigiert werden.
 --
+-- <h4>Bekannte Probleme</h4>
+-- Sobald eine beliebige Voice Message angezeigt wird - <b>alle Quests sind
+-- ebenfalls Voice Messages</b> - kann es zu verschiedenen Problemen kommen,
+-- die mit dem Spiel selbst zusammen hängen und nicht umgangen werden können.
+--
+-- Voice Messages jeglicher Art - <b>auch eine aneinanderreihung von Quests als
+-- vermeintlicher Workaround</b> - zu benutzen, wird <b>nicht empfohlen</b> und
+-- geschieht auf <b>eigene Gefahr</b>!
+-- <ul>
+-- <li>
+-- <b>Rhian over the Sea Chapell</b><br>
+-- Jede Voice Message hat die
+-- Chance, dass die Message Queue des Spiels hängen bleibt und dann ein leeres
+-- Fenster mit dem Titel "Rhian over the Sea Chapell" angezeigt wird, welches
+-- das Portrait Window dauerhaft blockiert und verhindert, dass weitere Voice
+-- Messages - <b>auch Quests</b> - angezeigt werden können.
+-- </li>
+-- <li>
+-- <b>Dialog Actor bleibt kurz stehen</b><br>
+-- Nach einem Dialog kann es passieren, dass der Actor der letzten Nachricht
+-- für einige Sekunden stehen bleibt, bevor ein neuer Quest angezeigt wird.
+-- Das Problem ist wahrscheinlich verwand mit Rian over the Sea Chapell.
+-- </li>
+-- </ul>
+--
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
 -- <li><a href="Swift_1_JobsCore.api.html">(1) Jobs Core</a></li>

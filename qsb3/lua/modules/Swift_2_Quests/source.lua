@@ -39,6 +39,10 @@ function ModuleQuests.Global:OnGameStart()
 
     -- Stop quest from triggering when a cinematic event takes place
     table.insert(self.ExternalTriggerConditions, function(_PlayerID, _Quest)
+        -- Hack: This is for dialogs from the Dialog System to trigger
+        if _Quest and string.find(_Quest.Identifier, "^DialogSystemQuest_.*$") then
+            return true;
+        end
         return not API.IsCinematicEventActive(_PlayerID);
     end);
     -- Disable quest timers when a cinematic event takes place

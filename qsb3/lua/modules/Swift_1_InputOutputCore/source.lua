@@ -769,7 +769,7 @@ function ModuleInputOutputCore_Local_InputBoxJob()
     XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 1);
     XGUIEng.ShowWidget("/InGame/Root/Normal/ChatInput", 1);
     XGUIEng.SetFocus("/InGame/Root/Normal/ChatInput/ChatInput");
-    
+
     ModuleInputOutputCore.Local.DisableQuestTimerToggling = true;
     -- Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_TURN, "", "ModuleInputOutputCore_Local_DisableQuestToggle", 1, {}, {GUI.GetPlayerID()});
     return true;

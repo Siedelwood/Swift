@@ -55,7 +55,6 @@ function BriefingTypewriterTest()
         PlayerID  = 1,
         CharSpeed = 1.5,
         Callback  = function(_Data)
-            API.Note("It just work's!");
         end
     }
 end
@@ -89,8 +88,6 @@ function BriefingCutsceneTest(_Name, _PlayerID)
     };
 
     Cutscene.Finished = function()
-        CreateTestNPCDialogBriefing(_Name, _PlayerID);
-        -- BriefingAnimationTest1([[foo]], 1);
     end
     API.StartCutscene(Cutscene, _Name, _PlayerID)
 end
@@ -152,7 +149,6 @@ function BriefingAnimationTest2(_Name, _PlayerID)
     Briefing.Starting = function(_Data)
     end
     Briefing.Finished = function(_Data)
-        BriefingAnimationTest1([[foo]], 1)
     end
     API.StartBriefing(Briefing, _Name, _PlayerID)
 end
@@ -232,10 +228,10 @@ function CreateTestNPCDialogBriefing(_Name, _PlayerID)
         Zoom   = 0.1,
     }
     AP {
-        Text   = "And even more text... {cr}{cr}Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
+        Text   = "And without skipping... {cr}{cr}Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
         Sender = 2,
         Target = "npc1",
-        Zoom   = 0.1,
+        DisableSkipping = true,
     }
     AP("StartPage");
 
@@ -250,7 +246,6 @@ function CreateTestNPCDialogBriefing(_Name, _PlayerID)
     Dialog.Starting = function(_Data)
     end
     Dialog.Finished = function(_Data)
-        BriefingAnimationTest1([[foo]], 1)
     end
     API.StartDialog(Dialog, _Name, _PlayerID);
 end

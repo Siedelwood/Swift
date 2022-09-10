@@ -54,6 +54,16 @@ You may use and modify this file unter the terms of the MIT licence.
 -- </tr>
 -- </table>
 --
+-- <h4>Bekannte Probleme</h4>
+-- Jede Voice Message - <b>Quests sind ebenfalls Voice Messages</b> - hat die
+-- Chance, dass die Message Queue des Spiels hängen bleibt und dann ein leeres
+-- Fenster mit dem Titel "Rhian over the Sea Chapell" angezeigt wird, welches
+-- das Portrait Window dauerhaft blockiert und verhindert, dass weitere Voice
+-- Messages - <b>auch Quests</b> - angezeigt werden können.
+--
+-- Es wird dringend geraten, Quests <b>ausschließlich</b> zur Darstellung von
+-- Aufgaben für den Spieler und für <b>nichts anderes</b> zu benutzen.
+--
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
 -- <li><a href="Swift_1_DisplayCore.api.html">(1) Display Core</a></li>
