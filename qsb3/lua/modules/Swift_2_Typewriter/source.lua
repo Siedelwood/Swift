@@ -171,7 +171,7 @@ function ModuleTypewriter.Global:ControlTypewriter()
             local Next = ModuleDisplayCore.Global:LookUpCinematicInFromQueue(i);
             if Next and Next[1] == QSB.CinematicEventTypes.Typewriter then
                 local Data = ModuleDisplayCore.Global:PopCinematicEventFromQueue(i);
-                self:PlayTypewriter(Data);
+                self:PlayTypewriter(Data[3]);
             end
         end
     end
