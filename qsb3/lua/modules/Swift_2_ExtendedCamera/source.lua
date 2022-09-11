@@ -57,7 +57,7 @@ function ModuleExtendedCamera.Local:RegisterExtendedZoomHotkey()
          en = "CTRL + SHIFT + K"},
         {de = "Alternativen Zoom ein/aus",
          en = "Alternative zoom on/off"}
-    )
+    );
 end
 
 function ModuleExtendedCamera.Local:ActivateExtendedZoomHotkey()
