@@ -107,6 +107,12 @@ function ModuleDialogSystem.Global:EndDialog(_PlayerID)
         self.Dialog[_PlayerID]:Finished();
     end
     API.FinishCinematicEvent(self.Dialog[_PlayerID].Name, _PlayerID);
+
+    Logic.ExecuteInLuaLocalState(string.format(
+        [[ModuleDialogSystem.Local:ResetTimerButtons(%d)]],
+        _PlayerID
+    ));
+
     API.SendScriptEvent(
         QSB.ScriptEvents.DialogEnded,
         _PlayerID,
@@ -131,11 +137,6 @@ function ModuleDialogSystem.Global:NextDialog(_PlayerID)
         local DialogData = ModuleDisplayCore.Global:PopCinematicEventFromQueue(_PlayerID);
         assert(DialogData[1] == QSB.CinematicEventTypes.Dialog);
         API.StartCinematicEvent(DialogData[2], _PlayerID);
-
-        Logic.ExecuteInLuaLocalState(string.format(
-            [[ModuleDialogSystem.Local:ResetTimerButtons(%d)]],
-            _PlayerID
-        ));
 
         local Dialog = DialogData[3];
         Dialog.Name = DialogData[2];
@@ -204,7 +205,7 @@ function ModuleDialogSystem.Global:NextPage(_PlayerID)
         self:EndDialog(_PlayerID);
     end
 end
--- ModuleDialogSystem.Global:NextPage(_PlayerID);
+
 function ModuleDialogSystem.Global:OnOptionSelected(_PlayerID, _OptionID)
     if self.Dialog[_PlayerID] == nil then
         return;
@@ -338,11 +339,12 @@ function ModuleDialogSystem.Local:OnEvent(_ID, _Event, ...)
         if Quest then
             local Actor = g_PlayerPortrait[Quest.SendingPlayer];
             SetPortraitWithCameraSettings("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait", Actor);
-            -- Update only when no event is active
             if GUI.GetPlayerID() == Quest.ReceivingPlayer then
+                -- Update only when no event is active
                 if not self:IsAnyCinematicEventActive(Quest.ReceivingPlayer) then
                     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/Update", 1);
                     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles/Update", 1);
+                -- Prevent percisting objective icon
                 else
                     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/QuestObjectives", 0);
                 end
