@@ -385,7 +385,7 @@ end
 -- Bereitet die Texteingabe über den Chat Input vor.
 --
 -- <b>Hinweis</b>: Der Spieler kann den Input nicht mit Esc verlassen. Der Input
--- kann nur durch Enter geschlossen werden. Das dedeutet, dass evtl. ein leerer
+-- kann nur durch Enter geschlossen werden. Das bedeutet, dass evtl. ein leerer
 -- String übergeben wird. In diesem Fall wurde nichts eingegeben.
 -- @within Anwenderfunktionen
 --
@@ -426,7 +426,7 @@ end
 --
 function API.DisableCheats()
     if not GUI then
-        Logic.ExecuteInLuaLocalState([[API.DisableCheats(%s)]]);
+        Logic.ExecuteInLuaLocalState([[API.DisableCheats()]]);
         return;
     end
     ModuleInputOutputCore.Local.CheatsDisabled = true;
