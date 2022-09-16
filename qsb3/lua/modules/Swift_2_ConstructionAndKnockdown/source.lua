@@ -21,9 +21,7 @@ ModuleConstructionControl = {
         KnockdownConditionCounter = 0,
         KnockdownConditions = {},
     },
-    Local = {
-        WallData = {-1,};
-    },
+    Local = {},
     Shared = {
         WallTypes = {
             "B_PalisadeSegment",
@@ -45,6 +43,8 @@ ModuleConstructionControl = {
 -- Global ------------------------------------------------------------------- --
 
 function ModuleConstructionControl.Global:OnGameStart()
+    QSB.ScriptEvents.BuildingKnockdown = API.RegisterScriptEvent("Event_BuildingKnockdown");
+
     API.RegisterScriptCommand("Cmd_CheckCancelKnockdown", SCP.ConstructionAndKnockdown.CancelKnockdown);
 
     self:OverrideCanPlayerPlaceBuilding();
@@ -88,9 +88,22 @@ function ModuleConstructionControl.Global:OverrideCanPlayerPlaceBuilding()
     end);
 end
 
-function ModuleConstructionControl.Global:CheckCancelBuildingKnockdown(_PlayerID, _BuildingID, _State)
+function ModuleConstructionControl.Global:CheckCancelBuildingKnockdown(_BuildingID, _PlayerID, _State)
     if Logic.EntityGetPlayer(_BuildingID) == _PlayerID and _State == 1 and not self:CheckKnockdownConditions(_BuildingID) then
         Logic.ExecuteInLuaLocalState(string.format([[GUI.CancelBuildingKnockDown(%d)]], _BuildingID));
+    else
+        API.SendScriptEvent(
+            QSB.ScriptEvents.BuildingKnockdown,
+            _BuildingID,
+            _PlayerID,
+            _State
+        );
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.SendScriptEvent(QSB.ScriptEvents.BuildingKnockdown, %d, %d, %d)]],
+            _BuildingID,
+            _PlayerID,
+            _State
+        ));
     end
 end
 
@@ -125,6 +138,8 @@ end
 -- Local -------------------------------------------------------------------- --
 
 function ModuleConstructionControl.Local:OnGameStart()
+    QSB.ScriptEvents.BuildingKnockdown = API.RegisterScriptEvent("Event_BuildingKnockdown");
+
     self:OverrideDeleteEntityStateBuilding();
 end
 
@@ -133,7 +148,7 @@ function ModuleConstructionControl.Local:OverrideDeleteEntityStateBuilding()
     GameCallback_GUI_DeleteEntityStateBuilding = function(_BuildingID, _State)
         GameCallback_GUI_DeleteEntityStateBuilding_Orig_ConstructionControl(_BuildingID, _State);
 
-        API.BroadcastScriptCommand(QSB.ScriptCommands.CheckCancelKnockdown, GUI.GetPlayerID(), _BuildingID, _State);
+        API.BroadcastScriptCommand(QSB.ScriptCommands.CheckCancelKnockdown, _BuildingID, GUI.GetPlayerID(), _State);
     end
 end
 

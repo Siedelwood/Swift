@@ -132,17 +132,35 @@ function CallTestFunction2()
 end
 
 GameCallback_QSB_OnEventReceived = function(_EventID, ...)
-    if _EventID == QSB.ScriptEvents.BuildingPlaced then
+    if _EventID == QSB.ScriptEvents.EntityHurt then
+    --     local TypeID1 = Logic.GetEntityType(arg[1]);
+    --     local TypeName1 = Logic.GetEntityTypeName(TypeID1);
+    --     local TypeID2 = Logic.GetEntityType(arg[3]);
+    --     local TypeName2 = Logic.GetEntityTypeName(TypeID2);
+    --     API.Note(TypeName2 .. " (Player " ..arg[4].. ") attacked " ..TypeName1.. " (Player " ..arg[2].. ")");
+    -- elseif _EventID == QSB.ScriptEvents.EntityDestroyed then
+    --     local TypeID1 = Logic.GetEntityType(arg[1]);
+    --     local TypeName1 = Logic.GetEntityTypeName(TypeID1);
+    --     local TypeID2 = Logic.GetEntityType(arg[3]);
+    --     local TypeName2 = Logic.GetEntityTypeName(TypeID2);
+    --     API.Note(TypeName2 .. " (Player " ..arg[4].. ") attacked " ..TypeName1.. " (Player " ..arg[2].. ")");
+    -- elseif _EventID == QSB.ScriptEvents.BuildingPlaced then
+    --     if IsExisting(arg[1]) then
+    --         local TypeID = Logic.GetEntityType(arg[1]);
+    --         local TypeName = Logic.GetEntityTypeName(TypeID);
+    --         API.Note("Building placed: " ..TypeName.. " (Player: " ..arg[2].. ")");
+    --     end
+    -- elseif _EventID == QSB.ScriptEvents.BuildingKnockdown then
+    --     if IsExisting(arg[1]) then
+    --         local TypeID = Logic.GetEntityType(arg[1]);
+    --         local TypeName = Logic.GetEntityTypeName(TypeID);
+    --         API.Note("Knockdown: " ..TypeName.. " (Player: " ..arg[2].. ")");
+    --     end
+    elseif _EventID == QSB.ScriptEvents.SettlerAttracted then
         if IsExisting(arg[1]) then
             local TypeID = Logic.GetEntityType(arg[1]);
             local TypeName = Logic.GetEntityTypeName(TypeID);
-            API.Note("Placed: " ..TypeName);
-        end
-    elseif _EventID == QSB.ScriptEvents.EntityArrived then
-        if IsExisting(arg[1]) then
-            local TypeID = Logic.GetEntityType(arg[1]);
-            local TypeName = Logic.GetEntityTypeName(TypeID);
-            API.Note("Lured: " ..TypeName);
+            API.Note("Settler attracted: " ..TypeName.. " (Player: " ..arg[2].. ")");
         end
     -- elseif _EventID == QSB.ScriptEvents.EntitySpawned then
     --     if IsExisting(arg[1]) then

@@ -68,7 +68,7 @@ ModuleEntityEventCore = {
 
 function ModuleEntityEventCore.Global:OnGameStart()
     QSB.ScriptEvents.BuildingPlaced = API.RegisterScriptEvent("Event_BuildingPlaced");
-    QSB.ScriptEvents.SettlerArrived = API.RegisterScriptEvent("Event_SettlerArrived");
+    QSB.ScriptEvents.SettlerAttracted = API.RegisterScriptEvent("Event_SettlerAttracted");
     QSB.ScriptEvents.EntitySpawned = API.RegisterScriptEvent("Event_EntitySpawned");
     QSB.ScriptEvents.EntityDestroyed = API.RegisterScriptEvent("Event_EntityDestroyed");
     QSB.ScriptEvents.EntityHurt = API.RegisterScriptEvent("Event_EntityHurt");
@@ -146,30 +146,10 @@ function ModuleEntityEventCore.Global:CleanTaggedAndDeadEntities()
 end
 
 function ModuleEntityEventCore.Global:OverrideCallback()
-    GameCallback_EntityHurt_Orig_QSB_EntityCore = GameCallback_EntityHurt;
-    GameCallback_EntityHurt = function(_AttackedEntityID, _AttackedPlayerID, _AttackingEntityID, _AttackingPlayerID)
-        GameCallback_EntityHurt_Orig_QSB_EntityCore(_AttackedEntityID, _AttackedPlayerID, _AttackingEntityID, _AttackingPlayerID);
-
-        API.SendScriptEvent(
-            QSB.ScriptEvents.EntityHurt,
-            _AttackedEntityID,
-            _AttackedPlayerID,
-            _AttackingEntityID,
-            _AttackingPlayerID
-        );
-        Logic.ExecuteInLuaLocalState(string.format(
-            [[API.SendScriptEvent(QSB.ScriptEvents.EntityHurt, %d, %d, %d, %d)]],
-            _AttackedEntityID,
-            _AttackedPlayerID,
-            _AttackingEntityID,
-            _AttackingPlayerID
-        ));
-    end
-
     GameCallback_SettlerSpawned_Orig_QSB_EntityCore = GameCallback_SettlerSpawned;
     GameCallback_SettlerSpawned = function(_PlayerID, _EntityID)
         GameCallback_SettlerSpawned_Orig_QSB_EntityCore(_PlayerID, _EntityID);
-        ModuleEntityEventCore.Global:TriggerSettlerArrivedEvent(_EntityID);
+        ModuleEntityEventCore.Global:TriggerSettlerArrivedEvent(_PlayerID, _EntityID);
     end
 
     GameCallback_OnBuildingConstructionComplete_Orig_QSB_EntityCore = GameCallback_OnBuildingConstructionComplete;
@@ -291,27 +271,31 @@ function ModuleEntityEventCore.Global:TriggerThiefStealFromBuildingEvent(_ThiefI
 end
 
 function ModuleEntityEventCore.Global:TriggerEntitySpawnedEvent(_EntityID, _SpawnerID)
-    API.SendScriptEvent(QSB.ScriptEvents.EntitySpawned, _EntityID, _SpawnerID);
+    local PlayerID = Logic.EntityGetPlayer(_EntityID);
+    API.SendScriptEvent(QSB.ScriptEvents.EntitySpawned, _EntityID, PlayerID, _SpawnerID);
     Logic.ExecuteInLuaLocalState(string.format(
-        "API.SendScriptEvent(QSB.ScriptEvents.EntityArrived, %d, %d)",
+        "API.SendScriptEvent(QSB.ScriptEvents.EntitySpawned, %d, %d, %d)",
         _EntityID,
+        PlayerID,
         _SpawnerID
     ));
 end
 
-function ModuleEntityEventCore.Global:TriggerSettlerArrivedEvent(_EntityID)
-    API.SendScriptEvent(QSB.ScriptEvents.SettlerArrived, _EntityID);
+function ModuleEntityEventCore.Global:TriggerSettlerArrivedEvent(_PlayerID, _EntityID)
+    API.SendScriptEvent(QSB.ScriptEvents.SettlerAttracted, _EntityID, _PlayerID);
     Logic.ExecuteInLuaLocalState(string.format(
-        "API.SendScriptEvent(QSB.ScriptEvents.SettlerArrived, %d)",
-        _EntityID
+        "API.SendScriptEvent(QSB.ScriptEvents.SettlerAttracted, %d, %d)",
+        _EntityID,
+        _PlayerID
     ));
 end
 
-function ModuleEntityEventCore.Global:TriggerEntityDestroyedEvent(_EntityID)
-    API.SendScriptEvent(QSB.ScriptEvents.EntityDestroyed, _EntityID);
+function ModuleEntityEventCore.Global:TriggerEntityDestroyedEvent(_PlayerID, _EntityID)
+    API.SendScriptEvent(QSB.ScriptEvents.EntityDestroyed, _EntityID, _PlayerID);
     Logic.ExecuteInLuaLocalState(string.format(
-        "API.SendScriptEvent(QSB.ScriptEvents.EntityDestroyed, %d)",
-        _EntityID
+        "API.SendScriptEvent(QSB.ScriptEvents.EntityDestroyed, %d, %d)",
+        _EntityID,
+        _PlayerID
     ));
 end
 
@@ -327,20 +311,20 @@ function ModuleEntityEventCore.Global:TriggerEntityKilledEvent(_EntityID1, _Play
 end
 
 function ModuleEntityEventCore.Global:TriggerConstructionCompleteEvent(_PlayerID, _EntityID)
-    API.SendScriptEvent(QSB.ScriptEvents.BuildingConstructed, _PlayerID, _EntityID);
+    API.SendScriptEvent(QSB.ScriptEvents.BuildingConstructed, _EntityID, _PlayerID);
     Logic.ExecuteInLuaLocalState(string.format(
         "API.SendScriptEvent(QSB.ScriptEvents.BuildingConstructed, %d, %d)",
-        _PlayerID,
-        _EntityID
+        _EntityID,
+        _PlayerID
     ));
 end
 
 function ModuleEntityEventCore.Global:TriggerUpgradeCompleteEvent(_PlayerID, _EntityID, _NewUpgradeLevel)
-    API.SendScriptEvent(QSB.ScriptEvents.BuildingUpgraded, _PlayerID, _EntityID, _NewUpgradeLevel);
+    API.SendScriptEvent(QSB.ScriptEvents.BuildingUpgraded, _EntityID, _PlayerID, _NewUpgradeLevel);
     Logic.ExecuteInLuaLocalState(string.format(
         "API.SendScriptEvent(QSB.ScriptEvents.BuildingUpgraded, %d, %d, %d)",
-        _PlayerID,
         _EntityID,
+        _PlayerID,
         _NewUpgradeLevel
     ));
 end
@@ -357,6 +341,7 @@ function ModuleEntityEventCore.Global:StartTriggers()
     function ModuleEntityEventCore_Trigger_EntityDestroyed()
         local EntityID1 = Event.GetEntityID();
         local PlayerID1 = Event.GetPlayerID();
+        ModuleEntityEventCore.Global:TriggerEntityDestroyedEvent(EntityID1, PlayerID1);
         if ModuleEntityEventCore.Global.AttackedEntities[EntityID1] ~= nil then
             local EntityID2 = ModuleEntityEventCore.Global.AttackedEntities[EntityID1][1];
             local PlayerID2 = Logic.EntityGetPlayer(EntityID2);
@@ -365,6 +350,29 @@ function ModuleEntityEventCore.Global:StartTriggers()
         end
     end
     Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_DESTROYED, "", "ModuleEntityEventCore_Trigger_EntityDestroyed", 1);
+
+    function ModuleEntityEventCore_Trigger_EntityHurt()
+        local EntityID1 = Event.GetEntityID1();
+        local PlayerID1 = Logic.EntityGetPlayer(EntityID1);
+        local EntityID2 = Event.GetEntityID2();
+        local PlayerID2 = Logic.EntityGetPlayer(EntityID2);
+
+        API.SendScriptEvent(
+            QSB.ScriptEvents.EntityHurt,
+            EntityID2,
+            PlayerID2,
+            EntityID1,
+            PlayerID1
+        );
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.SendScriptEvent(QSB.ScriptEvents.EntityHurt, %d, %d, %d, %d)]],
+            EntityID2,
+            PlayerID2,
+            EntityID1,
+            PlayerID1
+        ));
+    end
+    Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_HURT_ENTITY, "", "ModuleEntityEventCore_Trigger_EntityHurt", 1);
 
     function ModuleEntityEventCore_Trigger_MineWatch()
         local MineEntityTypes = {
@@ -431,7 +439,7 @@ end
 
 function ModuleEntityEventCore.Local:OnGameStart()
     QSB.ScriptEvents.BuildingPlaced = API.RegisterScriptEvent("Event_BuildingPlaced");
-    QSB.ScriptEvents.SettlerArrived = API.RegisterScriptEvent("Event_SettlerArrived");
+    QSB.ScriptEvents.SettlerAttracted = API.RegisterScriptEvent("Event_SettlerAttracted");
     QSB.ScriptEvents.EntitySpawned = API.RegisterScriptEvent("Event_EntitySpawned");
     QSB.ScriptEvents.EntityDestroyed = API.RegisterScriptEvent("Event_EntityDestroyed");
     QSB.ScriptEvents.EntityHurt = API.RegisterScriptEvent("Event_EntityHurt");
@@ -456,9 +464,13 @@ function ModuleEntityEventCore.Local:OverrideAfterBuildingPlacement()
         API.StartHiResDelay(0, function()
             local Results = {Logic.GetPlayerEntitiesInArea(GUI.GetPlayerID(), 0, x, y, 50, 16)};
             for i= 2, Results[1] +1 do
-                if Results[i] and Results[i] ~= 0 and Logic.IsBuilding(Results[i]) == 1 then
-                    API.BroadcastScriptEventToGlobal(QSB.ScriptEvents.BuildingPlaced, Results[i]);
-                    API.SendScriptEvent(QSB.ScriptEvents.BuildingPlaced, Results[i]);
+                if  Results[i]
+                and Results[i] ~= 0
+                and Logic.IsBuilding(Results[i]) == 1
+                and Logic.IsConstructionComplete(Results[i]) == 0
+                then
+                    API.BroadcastScriptEventToGlobal(QSB.ScriptEvents.BuildingPlaced, Results[i], Logic.EntityGetPlayer(Results[i]));
+                    API.SendScriptEvent(QSB.ScriptEvents.BuildingPlaced, Results[i], Logic.EntityGetPlayer(Results[i]));
                 end
             end
         end, x, y);

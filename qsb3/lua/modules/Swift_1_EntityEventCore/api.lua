@@ -31,16 +31,16 @@ You may use and modify this file unter the terms of the MIT licence.
 ---
 -- Events, auf die reagiert werden kann.
 --
--- @field BuildingPlaced Ein Gebäude wurde gesetzt.(Parameter: EntityID)
--- @field EntitySpawned Ein Entity wurde aus einem Spawner erzeugt. (Parameter: EntityID, SpawnerID)
--- @field SettlerArrived Ein Siedler kommt in die Siedlung. (Parameter: EntityID)
--- @field EntityDestroyed Ein Entity wurde zerstört. Wird auch durch Spieler ändern ausgelöst! (Parameter: EntityID)
+-- @field BuildingPlaced Ein Gebäude wurde in Auftrag gegeben. (Parameter: EntityID, PlayerID)
+-- @field EntitySpawned Ein Entity wurde aus einem Spawner erzeugt. (Parameter: EntityID, PlayerID, SpawnerID)
+-- @field SettlerAttracted Ein Siedler kommt in die Siedlung. (Parameter: EntityID, PlayerID)
+-- @field EntityDestroyed Ein Entity wurde zerstört. Wird auch durch Spieler ändern ausgelöst! (Parameter: EntityID, PlayerID)
 -- @field EntityHurt Ein Entity wurde angegriffen. (Parameter: AttackedEntityID, AttackedPlayerID, AttackingEntityID, AttackingPlayerID)
 -- @field EntityKilled Ein Entity wurde getötet. (Parameter: KilledEntityID, KilledPlayerID, KillerEntityID, KillerPlayerID)
 -- @field EntityOwnerChanged Ein Entity wechselt den Besitzer. (Parameter: OldID, OldPlayer, NewID, OldPlayer)
 -- @field EntityResourceChanged Resourcen im Entity verändern sich. (Parameter: EntityID, GoodType, OldAmount, NewAmount)
--- @field BuildingConstructed Ein Gebäude wurde fertiggestellt. (Parameter: PlayerID, BuildingID)
--- @field BuildingUpgraded Ein Gebäude wurde aufgewertet. (Parameter: PlayerID, BuildingID, NewUpgradeLevel)
+-- @field BuildingConstructed Ein Gebäude wurde fertiggestellt. (Parameter: BuildingID, PlayerID)
+-- @field BuildingUpgraded Ein Gebäude wurde aufgewertet. (Parameter: BuildingID, PlayerID, NewUpgradeLevel)
 -- @field ThiefInfiltratedBuilding Ein Dieb hat ein Gebäude infiltriert. (Parameter: ThiefID, PlayerID, BuildingID, BuildingPlayerID)
 -- @field ThiefDeliverEarnings Ein Dieb liefert seine Beute ab. (Parameter: ThiefID, PlayerID, BuildingID, BuildingPlayerID, GoldAmount)
 --

@@ -33,6 +33,16 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 
 ---
+-- Events, auf die reagiert werden kann.
+--
+-- @field BuildingKnockdown Ein Gebäude wurde zum Abriss markiert. (Parameter: EntityID, PlayerID, _State)
+-- <br>Gebäude, die noch nicht fertig gebaut sind, werden sofort abgerissen!
+--
+-- @within Event
+--
+QSB.ScriptEvents = QSB.ScriptEvents or {};
+
+---
 -- Erzeugt eine neue Baubeschränkung.
 --
 -- Eine Baubeschränkung muss <b>true</b> zurückgeben, wenn ein Gebäudetyp oder
@@ -483,7 +493,7 @@ end
 
 -- Local callbacks
 
-function SCP.ConstructionAndKnockdown.CancelKnockdown(_BuildingID, _State)
-    ModuleConstructionControl.Global:CheckCancelBuildingKnockdown(_BuildingID, _State)
+function SCP.ConstructionAndKnockdown.CancelKnockdown(_BuildingID, _PlayerID, _State)
+    ModuleConstructionControl.Global:CheckCancelBuildingKnockdown(_BuildingID, _PlayerID, _State)
 end
 
