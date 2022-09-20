@@ -308,25 +308,31 @@ function API.AddShortcut(_Key, _Description)
         return;
     end
     g_KeyBindingsOptions.Descriptions = nil;
-    table.insert(ModuleInterfaceCore.Local.HotkeyDescriptions, {_Key, _Description});
+    local ID = #ModuleInterfaceCore.Local.HotkeyDescriptions+1;
+    table.insert(ModuleInterfaceCore.Local.HotkeyDescriptions, {ID = ID, _Key, _Description});
     return #ModuleInterfaceCore.Local.HotkeyDescriptions;
 end
 
 ---
 -- Entfernt eine Beschreibung eines selbst gewählten Hotkeys.
 --
--- @param[type=number] _Index Index in Table
+-- @param[type=number] _ID Index in Table
 -- @within Anwenderfunktionen
 --
-function API.RemoveShortcut(_Index)
+function API.RemoveShortcut(_ID)
     if not GUI then
         return;
     end
-    if type(_Index) ~= "number" or _Index > #ModuleInterfaceCore.Local.HotkeyDescriptions then
-        error("API.RemoveShortcut: No candidate found or Index is nil!");
+    if type(_ID) ~= "number" then
+        error("API.RemoveShortcut: _ID must be a number and a valid index!");
         return;
     end
-    ModuleInterfaceCore.Local.HotkeyDescriptions[_Index] = nil;
+    g_KeyBindingsOptions.Descriptions = nil;
+    for k, v in pairs(ModuleInterfaceCore.Local.HotkeyDescriptions) do
+        if v.ID == _ID then
+            ModuleInterfaceCore.Local.HotkeyDescriptions[k] = nil;
+        end
+    end
 end
 
 ---
