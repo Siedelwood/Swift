@@ -385,6 +385,7 @@ function ModuleObjectInteraction.Local:OnGameStart()
     IO = {};
     IO_UserDefindedNames = {};
     IO_SlaveToMaster = {};
+    IO_SlaveState = {};
 
     self:OverrideGameFunctions();
 end

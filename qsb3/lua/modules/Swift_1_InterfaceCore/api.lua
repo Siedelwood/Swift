@@ -27,7 +27,6 @@ You may use and modify this file unter the terms of the MIT licence.
 ---
 -- Setzt einen Icon aus einer Icon Matrix.
 --
--- <u>Benutzerdefinierte Grafiken:</u><br>
 -- Es ist möglich, eine benutzerdefinierte Icon Matrix zu verwenden.
 -- Dafür müssen die Quellen nach gui_768, gui_920 und gui_1080 in der
 -- entsprechenden Größe gepackt werden, da das Spiel für unterschiedliche
@@ -38,26 +37,33 @@ You may use and modify this file unter the terms of the MIT licence.
 -- Jede Map muss einen eigenen eindeutigen Namen für jede Grafik verwenden, da
 -- diese Grafiken solange geladen werden, wie die Map im Verzeichnis liegt.
 --
--- <u>Größen:</u><br>
--- Die Gesamtgröße ergibt sich aus der Anzahl der Buttons und der Pixelbreite
--- für die jeweilige Grö0e. z.B. 64 Buttons -> (Größe * 8) * (Größe * 8)
+-- Es können 3 verschiedene Icon-Größen angegeben werden. Je nach dem welche
+-- Größe gefordert wird, wird nach einer anderen Datei gesucht. Es entscheidet
+-- der als Name angegebene Präfix.
 -- <ul>
--- <li>768: 41x41</li>
--- <li>960: 52x52</li>
--- <li>1200: 64x64</li>
+-- <li>keine: siehe 64</li>
+-- <li>44: [Dateiname].png</li>
+-- <li>64: [Dateiname]big.png</li>
+-- <li>1200: [Dateiname]verybig.png</li>
 -- </ul>
 --
 -- @param[type=string] _WidgetID Widgetpfad oder ID
 -- @param[type=table]  _Coordinates Koordinaten [Format: {x, y, addon}]
 -- @param[type=number] _Size (Optional) Größe des Icon
--- @param[type=string] _Name (Optional) Name der Icon Matrix
+-- @param[type=string] _Name (Optional) Base Name der Icon Matrix
 -- @within Anwenderfunktionen
 --
 -- @usage
 -- -- Setzt eine Originalgrafik
 -- API.SetIcon(AnyWidgetID, {1, 1, 1});
+--
 -- -- Setzt eine benutzerdefinierte Grafik
--- API.SetIcon(AnyWidgetID, {8, 5}, 64, "meinetollenicons.png");
+-- API.SetIcon(AnyWidgetID, {8, 5}, nil, "meinetollenicons");
+-- -- (Es wird als Datei gesucht: meinetolleniconsbig.png)
+--
+-- -- Setzt eine benutzerdefinierte Grafik
+-- API.SetIcon(AnyWidgetID, {8, 5}, 128, "meinetollenicons");
+-- -- (Es wird als Datei gesucht: meinetolleniconsverybig.png)
 --
 function API.SetIcon(_WidgetID, _Coordinates, _Size, _Name)
     if not GUI then

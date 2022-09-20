@@ -747,6 +747,17 @@ function ModuleInterfaceCore.Local:SetIcon(_WidgetID, _Coordinates, _Size, _Name
     if _Name == nil then
         return SetIcon(_WidgetID, _Coordinates, _Size);
     end
+    assert(_Size == 44 or _Size == 64 or _Size == 128);
+    if _Size == 44 then
+        _Name = _Name.. ".png";
+    end
+    if _Size == 64 then
+        _Name = _Name.. "big.png";
+    end
+    if _Size == 128 then
+        _Name = _Name.. "verybig.png";
+    end
+
     local u0, u1, v0, v1;
     u0 = (_Coordinates[1] - 1) * _Size;
     v0 = (_Coordinates[2] - 1) * _Size;
