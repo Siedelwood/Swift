@@ -742,32 +742,16 @@ function ModuleInterfaceCore.Local:SetPlayerPortraitByModelName(_PlayerID, _Port
 end
 
 function ModuleInterfaceCore.Local:SetIcon(_WidgetID, _Coordinates, _Size, _Name)
-    local Appendix = "";
-    if type(_Coordinates[3]) == "number" then
-        Appendix = ((_Coordinates[3] > 0 and _Coordinates[3]+1) or "");
-    end
+    _Size = _Size or 64;
+    _Coordinates[3] = _Coordinates[3] or 0;
     if _Name == nil then
-        _Name = "icons";
+        return SetIcon(_WidgetID, _Coordinates, _Size);
     end
-    if _Size == nil then
-        _Size = 64;
-    end
-    if _Size == 44 then
-        _Name = _Name..Appendix.. ".png";
-    end
-    if _Size == 64 then
-        _Name = _Name.. "big" ..Appendix.. ".png";
-    end
-    if _Size == 128 then
-        _Name = _Name.. "verybig" ..Appendix.. ".png";
-    end
-
     local u0, u1, v0, v1;
     u0 = (_Coordinates[1] - 1) * _Size;
     v0 = (_Coordinates[2] - 1) * _Size;
     u1 = (_Coordinates[1]) * _Size;
     v1 = (_Coordinates[2]) * _Size;
-
     State = 1;
     if XGUIEng.IsButton(_WidgetID) == 1 then
         State = 7;

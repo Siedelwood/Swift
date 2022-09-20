@@ -25,46 +25,46 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 
 ---
--- Setzt einen Icon aus einer benutzerdefinierten Icon Matrix.
+-- Setzt einen Icon aus einer Icon Matrix.
 --
--- Es wird also die Grafik eines Button oder Icon mit einer neuen Grafik
--- ausgetauscht.
+-- <u>Benutzerdefinierte Grafiken:</u><br>
+-- Es ist möglich, eine benutzerdefinierte Icon Matrix zu verwenden.
+-- Dafür müssen die Quellen nach gui_768, gui_920 und gui_1080 in der
+-- entsprechenden Größe gepackt werden, da das Spiel für unterschiedliche
+-- Auflösungen in verschiedene Verzeichnisse schaut.
+-- 
+-- Die Dateien müssen in <i>graphics/textures</i> liegen, was auf gleicher
+-- Ebene ist, wie <i>maps/externalmap</i>.
+-- Jede Map muss einen eigenen eindeutigen Namen für jede Grafik verwenden, da
+-- diese Grafiken solange geladen werden, wie die Map im Verzeichnis liegt.
 --
--- Dabei müssen die Quellen nach gui_768, gui_920 und gui_1080 in der
--- entsprechenden Größe gepackt werden. Die Ordner liegen in graphics/textures.
--- Jede Map muss einen eigenen eindeutigen Namen für jede Grafik verwenden.
---
--- <u>Größen:</u>
+-- <u>Größen:</u><br>
 -- Die Gesamtgröße ergibt sich aus der Anzahl der Buttons und der Pixelbreite
--- für die jeweilige Grö0e. z.B. 64 Buttons -> Größe * 8 x Größe * 8
+-- für die jeweilige Grö0e. z.B. 64 Buttons -> (Größe * 8) * (Größe * 8)
 -- <ul>
 -- <li>768: 41x41</li>
 -- <li>960: 52x52</li>
 -- <li>1200: 64x64</li>
 -- </ul>
 --
--- <u>Namenskonvention:</u>
--- Die Namenskonvention wird durch das Spiel vorgegeben. Je nach Größe sind
--- die Namen der Matrizen erweitert mit .png, big.png und verybig.png. Du
--- gibst also niemals die Dateiendung mit an!
--- <ul>
--- <li>Für normale Icons: _Name .. .png</li>
--- <li>Für große Icons: _Name .. big.png</li>
--- <li>Für riesige Icons: _Name .. verybig.png</li>
--- </ul>
---
 -- @param[type=string] _WidgetID Widgetpfad oder ID
--- @param[type=table]  _Coordinates Koordinaten
--- @param[type=number] _Size Größe des Icon
--- @param[type=string] _Name Name der Icon Matrix
+-- @param[type=table]  _Coordinates Koordinaten [Format: {x, y, addon}]
+-- @param[type=number] _Size (Optional) Größe des Icon
+-- @param[type=string] _Name (Optional) Name der Icon Matrix
 -- @within Anwenderfunktionen
+--
+-- @usage
+-- -- Setzt eine Originalgrafik
+-- API.SetIcon(AnyWidgetID, {1, 1, 1});
+-- -- Setzt eine benutzerdefinierte Grafik
+-- API.SetIcon(AnyWidgetID, {8, 5}, 64, "meinetollenicons.png");
 --
 function API.SetIcon(_WidgetID, _Coordinates, _Size, _Name)
     if not GUI then
         return;
     end
     _Coordinates = _Coordinates or {10, 14};
-    ModuleInterfaceCore.Local:SetIcon(_WidgetID, _Coordinates, _Size, _Name)
+    ModuleInterfaceCore.Local:SetIcon(_WidgetID, _Coordinates, _Size, _Name);
 end
 
 ---

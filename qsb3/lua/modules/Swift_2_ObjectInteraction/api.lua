@@ -90,6 +90,15 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- <td>nein</td>
 -- </tr>
 -- <tr>
+-- <td>Texture</td>
+-- <td>table</td>
+-- <td>Angezeigtes Icon des Buttons. Die Icons können auf die Icons des Spiels
+-- oder auf eigene Icons zugreifen.
+-- <br>- Spiel-Icons: {x, y, Spielversion}
+-- <br>- Benutzerdefinierte Icons: {x, y, Dateinamenpräfix}</td>
+-- <td>ja</td>
+-- </tr>
+-- <tr>
 -- <td>Title</td>
 -- <td>string</td>
 -- <td>Angezeigter Titel des Objekt</td>

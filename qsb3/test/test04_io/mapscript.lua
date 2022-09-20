@@ -161,16 +161,22 @@ function CreateTestNPCs()
 end
 
 function CreateTestObject()
+    local Text = "it work's!";
+    local s1 = ReplaceEntity("IO1", Entities.XD_ScriptEntity);
+    API.SetEntityModel(s1, Models.Doodads_D_X_SpecialEdition_StatueDario)
+    API.SetEntityVisible(s1, true)
+    API.SetEntityScale(s1, 1.3)
+
     API.SetupObject {
         Name     = "IO1",
         Distance = 1000,
         Text     = "Bockwurst",
-        Texture  = {1, 1},
+        Texture  = {1, 1, 1},
         Condition = function(_Data)
             return true;
         end,
-        Callback = function(_Data)
-            API.Note("it work's!");
+        Action = function(_Data)
+            API.Note(Text);
         end,
     }
 end
@@ -184,7 +190,7 @@ function CreateTestObject2()
         Condition = function(_Data)
             return false;
         end,
-        Callback = function(_Data)
+        Action = function(_Data)
             API.Note("it work's!");
         end,
     }

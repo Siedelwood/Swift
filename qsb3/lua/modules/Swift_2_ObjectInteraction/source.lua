@@ -531,10 +531,15 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
                 ScriptName = IO_SlaveToMaster[ScriptName];
             end
             if IO[ScriptName] and IO[ScriptName].Texture then
+                local FileBaseName;
                 local a = (IO[ScriptName].Texture[1]) or 14;
                 local b = (IO[ScriptName].Texture[2]) or 10;
                 local c = (IO[ScriptName].Texture[3]) or 0;
-                API.SetIcon(Widget, {a, b, c}, nil, nil);
+                if type(c) == "string" then
+                    FileBaseName = c;
+                    c = 0;
+                end
+                API.SetIcon(Widget, {a, b, c}, nil, FileBaseName);
             end
         end
     end
