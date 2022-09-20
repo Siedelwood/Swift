@@ -38,6 +38,7 @@ ModuleCastleStore = {
         },
     },
     Local = {
+        Shortcuts = {},
         CastleStore = {},
         Player = {},
     },
@@ -555,6 +556,9 @@ end
 function ModuleCastleStore.Local:OnGameStart()
     IO = Logic.CreateReferenceToTableInGlobaLuaState("IO");
 
+    for i= 1, 8 do
+        self.Shortcuts[i] = {};
+    end
     QSB.CastleStore = self.CastleStore;
     self:OverwriteGameFunctions();
     self:OverwriteGetStringTableText();
@@ -565,6 +569,50 @@ function ModuleCastleStore.Local:OnEvent(_ID, _Event, _Text)
     if _ID == QSB.ScriptEvents.SaveGameLoaded then
         self:OverwriteGetStringTableText();
         self.CastleStore:ActivateHotkeys();
+    end
+end
+
+
+
+function ModuleCastleStore.Local:DescribeHotkeys(_PlayerID)
+    if GUI.GetPlayerID() ~= _PlayerID then
+        return;
+    end
+    if not self.Shortcuts[_PlayerID].StoreGoods then
+        self.Shortcuts[_PlayerID].StoreGoods = API.AddShortcut(
+            {de = "Umschalt + B", en = "Shift + B"},
+            {de = "Burglager: Waren einlagern", en = "Vault: Store goods"}
+        );
+    end
+    if not self.Shortcuts[_PlayerID].LockGoods then
+        self.Shortcuts[_PlayerID].LockGoods = API.AddShortcut(
+            {de = "Umschalt + N", en = "Shift + N"},
+            {de = "Burglager: Waren sperren", en = "Vault: Lock goods"}
+        );
+    end
+    if not self.Shortcuts[_PlayerID].EmptyWarehouse then
+        self.Shortcuts[_PlayerID].EmptyWarehouse = API.AddShortcut(
+            {de = "Umschalt + M", en = "Shift + M"},
+            {de = "Burglager: Lager räumen", en = "Vault: Empty store"}
+        );
+    end
+end
+
+function ModuleCastleStore.Local:UndescriveHotkeys(_PlayerID)
+    if GUI.GetPlayerID() ~= _PlayerID then
+        return;
+    end
+    if self.Shortcuts[_PlayerID].StoreGoods then
+        API.RemoveShortcut(self.Shortcuts[_PlayerID].StoreGoods);
+        self.Shortcuts[_PlayerID].StoreGoods = nil;
+    end
+    if self.Shortcuts[_PlayerID].LockGoods then
+        API.RemoveShortcut(self.Shortcuts[_PlayerID].LockGoods);
+        self.Shortcuts[_PlayerID].LockGoods = nil;
+    end
+    if self.Shortcuts[_PlayerID].EmptyWarehouse then
+        API.RemoveShortcut(self.Shortcuts[_PlayerID].EmptyWarehouse);
+        self.Shortcuts[_PlayerID].EmptyWarehouse = nil;
     end
 end
 
@@ -587,13 +635,14 @@ function ModuleCastleStore.Local.CastleStore:CreateStore(_PlayerID)
         }
     }
     QSB.CastleStorePlayerData[_PlayerID] = Store;
-    
+
+    ModuleCastleStore.Local:DescribeHotkeys(_PlayerID);
     self:ActivateHotkeys();
-    self:DescribeHotkeys();
 end
 
 function ModuleCastleStore.Local.CastleStore:DeleteStore(_PlayerID)
     assert(self == ModuleCastleStore.Local.CastleStore, "Can not be used from instance!");
+    ModuleCastleStore.Local:UndescriveHotkeys(_PlayerID);
     QSB.CastleStorePlayerData[_PlayerID] = nil;
 end
 
@@ -1065,24 +1114,6 @@ function ModuleCastleStore.Local.CastleStore:ActivateHotkeys()
         2,
         false
     );
-end
-
-function ModuleCastleStore.Local.CastleStore:DescribeHotkeys()
-    if not self.HotkeysAddToList then
-        API.AddShortcut(
-            {de = "Umschalt + B", en = "Shift + B"},
-            {de = "Burglager: Waren einlagern", en = "Vault: Store goods"}
-        );
-        API.AddShortcut(
-            {de = "Umschalt + N", en = "Shift + N"},
-            {de = "Burglager: Waren sperren", en = "Vault: Lock goods"}
-        );
-        API.AddShortcut(
-            {de = "Umschalt + M", en = "Shift + M"},
-            {de = "Burglager: Lager räumen", en = "Vault: Empty store"}
-        );
-        self.HotkeysAddToList = true;
-    end
 end
 
 function ModuleCastleStore.Local:OverwriteGetStringTableText()

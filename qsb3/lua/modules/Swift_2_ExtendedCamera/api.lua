@@ -37,7 +37,10 @@ function API.AllowExtendedZoom(_Flag)
         return;
     end
     ModuleExtendedCamera.Local.ExtendedZoomAllowed = _Flag == true;
-    if _Flag == false then
+    if _Flag == true then
+        ModuleExtendedCamera.Local:RegisterExtendedZoomHotkey();
+    else
+        ModuleExtendedCamera.Local:UnregisterExtendedZoomHotkey();
         ModuleExtendedCamera.Local:DeactivateExtendedZoom();
     end
 end

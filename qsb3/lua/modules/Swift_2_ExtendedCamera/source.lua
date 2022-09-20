@@ -15,6 +15,7 @@ ModuleExtendedCamera = {
 
     Global = {},
     Local = {
+        ExtendedZoomHotKeyID = 0,
         ExtendedZoomAllowed = true,
     },
     -- This is a shared structure but the values are asynchronous!
@@ -52,12 +53,22 @@ function ModuleExtendedCamera.Local:SetCameraToEntity(_Entity, _Rotation, _ZoomF
 end
 
 function ModuleExtendedCamera.Local:RegisterExtendedZoomHotkey()
-    API.AddShortcut(
-        {de = "STRG + SHIFT + K",
-         en = "CTRL + SHIFT + K"},
-        {de = "Alternativen Zoom ein/aus",
-         en = "Alternative zoom on/off"}
-    );
+    self:UnregisterExtendedZoomHotkey();
+    if self.ExtendedZoomHotKeyID == 0 then
+        self.ExtendedZoomHotKeyID = API.AddShortcut(
+            {de = "STRG + SHIFT + K",
+             en = "CTRL + SHIFT + K"},
+            {de = "Alternativen Zoom ein/aus",
+             en = "Alternative zoom on/off"}
+        );
+    end
+end
+
+function ModuleExtendedCamera.Local:UnregisterExtendedZoomHotkey()
+    if self.ExtendedZoomHotKeyID ~= 0 then
+        API.RemoveShortcut(self.ExtendedZoomHotKeyID);
+        self.ExtendedZoomHotKeyID = 0;
+    end
 end
 
 function ModuleExtendedCamera.Local:ActivateExtendedZoomHotkey()
