@@ -95,14 +95,14 @@ end
 
 function ModuleCutsceneSystem.Global:EndCutscene(_PlayerID)
     Logic.SetGlobalInvulnerability(0);
-    if self.Cutscene[_PlayerID].Finished then
-        self.Cutscene[_PlayerID]:Finished();
-    end
-    API.FinishCinematicEvent(self.Cutscene[_PlayerID].Name, _PlayerID);
     Logic.ExecuteInLuaLocalState(string.format(
         [[API.SendScriptEvent(QSB.ScriptEvents.CutsceneEnded, %d)]],
         _PlayerID
     ));
+    if self.Cutscene[_PlayerID].Finished then
+        self.Cutscene[_PlayerID]:Finished();
+    end
+    API.FinishCinematicEvent(self.Cutscene[_PlayerID].Name, _PlayerID);
     self.Cutscene[_PlayerID] = nil;
 end
 

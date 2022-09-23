@@ -133,15 +133,15 @@ end
 
 function ModuleBriefingSystem.Global:EndBriefing(_PlayerID)
     Logic.SetGlobalInvulnerability(0);
-    if self.Briefing[_PlayerID].Finished then
-        self.Briefing[_PlayerID]:Finished();
-    end
-    API.FinishCinematicEvent(self.Briefing[_PlayerID].Name, _PlayerID);
     API.SendScriptEvent(
         QSB.ScriptEvents.BriefingEnded,
         _PlayerID,
         self.Briefing[_PlayerID]
     );
+    if self.Briefing[_PlayerID].Finished then
+        self.Briefing[_PlayerID]:Finished();
+    end
+    API.FinishCinematicEvent(self.Briefing[_PlayerID].Name, _PlayerID);
     self.Briefing[_PlayerID] = nil;
 end
 

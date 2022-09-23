@@ -103,11 +103,6 @@ end
 
 function ModuleDialogSystem.Global:EndDialog(_PlayerID)
     Logic.SetGlobalInvulnerability(0);
-    if self.Dialog[_PlayerID].Finished then
-        self.Dialog[_PlayerID]:Finished();
-    end
-    API.FinishCinematicEvent(self.Dialog[_PlayerID].Name, _PlayerID);
-
     Logic.ExecuteInLuaLocalState(string.format(
         [[ModuleDialogSystem.Local:ResetTimerButtons(%d)]],
         _PlayerID
@@ -123,6 +118,10 @@ function ModuleDialogSystem.Global:EndDialog(_PlayerID)
         _PlayerID,
         table.tostring(self.Dialog[_PlayerID])
     ));
+    if self.Dialog[_PlayerID].Finished then
+        self.Dialog[_PlayerID]:Finished();
+    end
+    API.FinishCinematicEvent(self.Dialog[_PlayerID].Name, _PlayerID);
     self.Dialog[_PlayerID] = nil;
 end
 

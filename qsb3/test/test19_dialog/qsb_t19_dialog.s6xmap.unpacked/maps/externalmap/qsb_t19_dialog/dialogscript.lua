@@ -122,14 +122,17 @@ function DialogTest(_Name, _PlayerID)
     };
     local AP, ASP = API.AddDialogPages(Dialog);
 
-    TestOptionVisibility = true;
-
     ASP(8, "npc1", "NPC", "I aren't done drowning you in useless text.", true);
     ASP(1, "npc1", "Hero", "Maybe I should make your fat neck spin...", true);
 
     Dialog.Starting = function(_Data)
     end
     Dialog.Finished = function(_Data)
+        Logic.ExecuteInLuaLocalState(string.format([[
+            Camera.RTS_SetZoomFactor(0.1);
+            Camera.RTS_FollowEntity(GetID("hero"));
+            API.DeactivateNormalInterface();
+        ]]));
     end
     API.StartDialog(Dialog, _Name, _PlayerID);
 end

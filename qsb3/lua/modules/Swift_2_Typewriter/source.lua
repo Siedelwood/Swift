@@ -104,10 +104,6 @@ function ModuleTypewriter.Global:FinishTypewriter(_PlayerID)
             ]],
             _PlayerID
         ));
-        self.TypewriterEventData[_PlayerID]:Callback();
-        self.TypewriterEventData[_PlayerID] = nil;
-
-        API.FinishCinematicEvent(EventData.Name, EventPlayer);
         API.SendScriptEvent(QSB.ScriptEvents.TypewriterEnded, EventPlayer, EventData);
         Logic.ExecuteInLuaLocalState(string.format(
             [[API.SendScriptEvent(%d, %d, %s)]],
@@ -115,6 +111,9 @@ function ModuleTypewriter.Global:FinishTypewriter(_PlayerID)
             EventPlayer,
             table.tostring(EventData)
         ));
+        self.TypewriterEventData[_PlayerID]:Callback();
+        API.FinishCinematicEvent(EventData.Name, EventPlayer);
+        self.TypewriterEventData[_PlayerID] = nil;
     end
 end
 
