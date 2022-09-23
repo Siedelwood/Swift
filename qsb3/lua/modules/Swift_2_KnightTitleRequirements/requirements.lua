@@ -108,9 +108,9 @@
 --             Needs.Hygiene,                                      -- Bedürfnis: Hygiene
 --         },
 --         ActivateRightForPlayer, {
+--             Technologies.R_SiegeEngineWorkshop,                 -- Recht: Belagerungswaffenschmied
+--             Technologies.R_BatteringRam,                        -- Recht: Ramme
 --             Technologies.R_Medicine,                            -- Recht: Medizin
---             Technologies.R_BowMaker,                            -- Recht: Bogenmacher
---             Technologies.R_BarracksArchers,                     -- Recht: Bogenschützenkaserne
 --             Technologies.R_Entertainment,                       -- Recht: Unterhaltung
 --             Technologies.R_Tavern,                              -- Recht: Taverne
 --             Technologies.R_Festival,                            -- Recht: Fest
@@ -129,8 +129,8 @@
 --             Needs.Prosperity,                                   -- Bedürfnis: Reichtum
 --         },
 --         ActivateRightForPlayer, {
---             Technologies.R_SiegeEngineWorkshop,                 -- Recht: Belagerungswaffenschmied
---             Technologies.R_BatteringRam,                        -- Recht: Ramme
+--             Technologies.R_BowMaker,                            -- Recht: Bogenmacher
+--             Technologies.R_BarracksArchers,                     -- Recht: Bogenschützenkaserne
 --             Technologies.R_Baths,                               -- Recht: Badehaus
 --             Technologies.R_AmmunitionCart,                      -- Recht: Munitionswagen
 --             Technologies.R_Prosperity,                          -- Recht: Reichtum
@@ -355,9 +355,9 @@ InitKnightTitleTables = function()
             Needs.Hygiene,                                      -- Bedürfnis: Hygiene
         },
         ActivateRightForPlayer, {
+            Technologies.R_SiegeEngineWorkshop,                 -- Recht: Belagerungswaffenschmied
+            Technologies.R_BatteringRam,                        -- Recht: Ramme
             Technologies.R_Medicine,                            -- Recht: Medizin
-            Technologies.R_BowMaker,                            -- Recht: Bogenmacher
-            Technologies.R_BarracksArchers,                     -- Recht: Bogenschützenkaserne
             Technologies.R_Entertainment,                       -- Recht: Unterhaltung
             Technologies.R_Tavern,                              -- Recht: Taverne
             Technologies.R_Festival,                            -- Recht: Fest
@@ -376,8 +376,8 @@ InitKnightTitleTables = function()
             Needs.Prosperity,                                   -- Bedürfnis: Reichtum
         },
         ActivateRightForPlayer, {
-            Technologies.R_SiegeEngineWorkshop,                 -- Recht: Belagerungswaffenschmied
-            Technologies.R_BatteringRam,                        -- Recht: Ramme
+            Technologies.R_BowMaker,                            -- Recht: Bogenmacher
+            Technologies.R_BarracksArchers,                     -- Recht: Bogenschützenkaserne
             Technologies.R_Baths,                               -- Recht: Badehaus
             Technologies.R_AmmunitionCart,                      -- Recht: Munitionswagen
             Technologies.R_Prosperity,                          -- Recht: Reichtum

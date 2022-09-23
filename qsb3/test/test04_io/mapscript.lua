@@ -12,7 +12,9 @@
 -- werden in der angegebenen Reihenfolge geladen.
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Mission_LoadFiles()
-    return {};
+    return {
+        gvMission.ContentPath .. "requirements.lua"
+    };
 end
 
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
