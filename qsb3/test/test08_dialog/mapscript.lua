@@ -190,12 +190,12 @@ function CreateTestNPCDialogBriefing(_Name, _PlayerID)
     TestOptionVisibility = true;
 
     AP {
-        Name   = "StartPage",
-        Text   = "This is a test!",
-        Sender = 1,
-        Target = "npc1",
-        Zoom   = 0.1,
-        MC     = {
+        Name         = "StartPage",
+        Text         = "This is a test!",
+        Actor        = 1,
+        Position     = "npc1",
+        DialogCamera = true,
+        MC           = {
             {"Continue testing", "ContinuePage"},
             {"Remove answer",
              function()
@@ -208,39 +208,38 @@ function CreateTestNPCDialogBriefing(_Name, _PlayerID)
     }
 
     AP {
-        Name   = "ContinuePage",
-        Text   = "Splendit, it seems to work as intended.",
-        Sender = 1,
-        Target = "hero",
-        Zoom   = 0.1,
+        Name         = "ContinuePage",
+        Text         = "Splendit, it seems to work as intended.",
+        Actor        = 1,
+        Position     = "hero",
+        DialogCamera = true,
     }
 
     AP {
-        Text   = "We can show large texts with portrait... {cr}{cr}Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
-        Sender = 2,
-        Target = "npc1",
-        Zoom   = 0.1,
+        Text         = "We can show large texts with portrait... {cr}{cr}Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
+        Actor        = 2,
+        Position     = "npc1",
+        DialogCamera = true,
     }
     AP {
-        Text   = "... or without portrait... {cr}{cr}Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
-        Sender = -1,
-        Target = "npc1",
-        Zoom   = 0.1,
+        Text         = "... or without portrait... {cr}{cr}Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
+        Position     = "npc1",
+        DialogCamera = true,
     }
     AP {
-        Text   = "And without skipping... {cr}{cr}Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
-        Sender = 2,
-        Target = "npc1",
-        DisableSkipping = true,
+        Text         = "And with auto skip after some seconds... {cr}{cr}Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
+        Actor        = 2,
+        Position     = "npc1",
+        Duration     = 12,
+        DialogCamera = true,
     }
     AP("StartPage");
 
     AP {
-        Name   = "EndPage",
-        Text   = "Well, then we end this mess!",
-        Sender = -1,
-        Target = "npc1",
-        Zoom   = 0.1,
+        Name         = "EndPage",
+        Text         = "Well, then we end this mess!",
+        Position     = "npc1",
+        DialogCamera = true,
     }
 
     Dialog.Starting = function(_Data)
