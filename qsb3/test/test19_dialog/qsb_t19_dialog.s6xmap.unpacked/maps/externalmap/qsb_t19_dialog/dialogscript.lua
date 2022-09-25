@@ -178,6 +178,30 @@ function DialogTest2(_Name, _PlayerID)
         Camera   = {
             Position = "hero",
             Dialog   = true,
+        },
+        MC       = {
+            {"Option 1", "Page3"},
+            {"Option 2",
+             function()
+                return "Page4";
+             end,},
+        }
+    };
+    AP {
+        Name     = "Page3",
+        Title    = "Hero",
+        Text     = "This page has an actor and a choice.",
+        Actor    = 1,
+        Camera   = {
+            Position = "hero",
+            Dialog   = true,
+        },
+        MC       = {
+            {"Option 1", "Page2"},
+            {"Option 2",
+             function()
+                return "Page4";
+             end,},
         }
     };
     AP {

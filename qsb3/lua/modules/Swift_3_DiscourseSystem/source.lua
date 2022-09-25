@@ -590,15 +590,25 @@ function ModuleDiscourseSystem.Local:DisplayPageOptionsDialog(_PlayerID, _PageID
     end
     XGUIEng.ListBoxSetSelectedIndex(Listbox, 0);
 
-    local wSize = {XGUIEng.GetWidgetScreenSize(Widget)};
-    local xFix = math.ceil((Screen[1] /2) - (wSize[1] /2));
-    local yFix = math.ceil(Screen[2] - (wSize[2] -10));
-    if Page.Text and Page.Text ~= "" then
-        yFix = math.ceil((Screen[2] /2) - (wSize[2] /2));
+    -- Choice
+    local ChoiceSize = {XGUIEng.GetWidgetScreenSize(Widget)};
+    local CX = math.ceil((Screen[1] * 0.06) + (ChoiceSize[1] /2));
+    local CY = math.ceil(Screen[2] - (ChoiceSize[2] + 60 * (Screen[2]/540)));
+    if not Page.Actor then
+        CX = 15 * (Screen[1]/960);
+        CY = math.ceil(Screen[2] - (ChoiceSize[2] + 0 * (Screen[2]/540)));
     end
-    XGUIEng.SetWidgetScreenPosition(Widget, xFix, yFix);
+    XGUIEng.SetWidgetScreenPosition(Widget, CX, CY);
     XGUIEng.PushPage(Widget, false);
     XGUIEng.ShowWidget(Widget, 1);
+
+    -- Text
+    if not Page.Actor then
+        local TextWidget = "/InGame/Root/Normal/AlignBottomLeft/SubTitles";
+        local DX,DY = XGUIEng.GetWidgetLocalPosition(TextWidget);
+        XGUIEng.SetWidgetLocalPosition(TextWidget, DX, DY-220);
+    end
+
     self.Discourse[_PlayerID].MCSelectionIsShown = true;
 end
 
