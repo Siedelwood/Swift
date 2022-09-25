@@ -150,21 +150,19 @@ function API.StartBriefing(_Briefing, _Name, _PlayerID)
     if not PlayerID and not Framework.IsNetworkGame() then
         PlayerID = QSB.HumanPlayerID;
     end
+    assert(_Name ~= nil);
     assert(_PlayerID ~= nil);
     if type(_Briefing) ~= "table" then
-        local Name = "Briefing #" ..(ModuleBriefingSystem.Global.BriefingCounter +1);
-        error("API.StartBriefing (" ..Name.. "): _Briefing must be a table!");
+        error("API.StartBriefing (" .._Name.. "): _Briefing must be a table!");
         return;
     end
     if #_Briefing == 0 then
-        local Name = "Briefing #" ..(ModuleBriefingSystem.Global.BriefingCounter +1);
-        error("API.StartBriefing (" ..Name.. "): _Briefing does not contain pages!");
+        error("API.StartBriefing (" .._Name.. "): _Briefing does not contain pages!");
         return;
     end
     for i=1, #_Briefing do
         if type(_Briefing[i]) == "table" and not _Briefing[i].__Legit then
-            local Name = "Briefing #" ..(ModuleBriefingSystem.Global.BriefingCounter +1);
-            error("API.StartBriefing (" ..Name.. ", Page #" ..i.. "): Page is not initialized!");
+            error("API.StartBriefing (" .._Name.. ", Page #" ..i.. "): Page is not initialized!");
             return;
         end
     end

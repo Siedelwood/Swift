@@ -147,19 +147,16 @@ function API.StartDialog(_Dialog, _Name, _PlayerID)
     end
     assert(_PlayerID ~= nil);
     if type(_Dialog) ~= "table" then
-        local Name = "Dialog #" ..(ModuleDialogSystem.Global.DialogCounter +1);
-        error("API.StartDialog (" ..Name.. "): _Dialog must be a table!");
+        error("API.StartDialog (" .._Name.. "): _Dialog must be a table!");
         return;
     end
     if #_Dialog == 0 then
-        local Name = "Dialog #" ..(ModuleDialogSystem.Global.DialogCounter +1);
-        error("API.StartDialog (" ..Name.. "): _Dialog does not contain pages!");
+        error("API.StartDialog (" .._Name.. "): _Dialog does not contain pages!");
         return;
     end
     for i=1, #_Dialog do
         if type(_Dialog[i]) == "table" and not _Dialog[i].__Legit then
-            local Name = "Dialog #" ..(ModuleDialogSystem.Global.DialogCounter +1);
-            error("API.StartDialog (" ..Name.. ", Page #" ..i.. "): Page is not initialized!");
+            error("API.StartDialog (" .._Name.. ", Page #" ..i.. "): Page is not initialized!");
             return;
         end
     end
@@ -224,10 +221,8 @@ function API.AddDialogPages(_Dialog)
             end
 
             if _Page.Position and _Page.Target then
-                local Name = "Dialog #" ..(ModuleDialogSystem.Global.DialogCounter +1);
-                error("AP[Dialog] (" ..Name.. ", Page '" .._Page.Name.. "'): "..
-                      "Position and Target can not be used both at the "..
-                      "same time!");
+                assert(false, "Position and Target can not be used both at "..
+                    "the same time!");
                 return;
             end
 

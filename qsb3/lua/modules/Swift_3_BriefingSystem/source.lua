@@ -121,8 +121,6 @@ end
 
 function ModuleBriefingSystem.Global:StartBriefing(_Name, _PlayerID, _Data)
     self.BriefingQueue[_PlayerID] = self.BriefingQueue[_PlayerID] or {};
-    self.BriefingCounter = (self.BriefingCounter or 0) +1;
-    _Data.BriefingName = "Briefing #" .. self.BriefingCounter;
     ModuleDisplayCore.Global:PushCinematicEventToQueue(
         _PlayerID,
         QSB.CinematicEventTypes.Briefing,

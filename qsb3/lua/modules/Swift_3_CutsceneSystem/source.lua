@@ -83,8 +83,6 @@ end
 
 function ModuleCutsceneSystem.Global:StartCutscene(_Name, _PlayerID, _Data)
     self.CutsceneQueue[_PlayerID] = self.CutsceneQueue[_PlayerID] or {};
-    self.CutsceneCounter = (self.CutsceneCounter or 0) +1;
-    _Data.CutsceneName = "Cutscene #" .. self.CutsceneCounter;
     ModuleDisplayCore.Global:PushCinematicEventToQueue(
         _PlayerID,
         QSB.CinematicEventTypes.Cutscene,

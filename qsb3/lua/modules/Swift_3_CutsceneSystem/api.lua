@@ -113,20 +113,18 @@ function API.StartCutscene(_Cutscene, _Name, _PlayerID)
     if not PlayerID and not Framework.IsNetworkGame() then
         PlayerID = QSB.HumanPlayerID;
     end
+    assert(_Name ~= nil);
     assert(_PlayerID ~= nil);
     if type(_Cutscene) ~= "table" then
-        local Name = "Cutscene #" ..(ModuleCutsceneSystem.Global.CutsceneCounter +1);
         error("API.StartCutscene (" ..Name.. "): _Cutscene must be a table!");
         return;
     end
     if #_Cutscene == 0 then
-        local Name = "Cutscene #" ..(ModuleCutsceneSystem.Global.CutsceneCounter +1);
         error("API.StartCutscene (" ..Name.. "): _Cutscene does not contain pages!");
         return;
     end
     for i=1, #_Cutscene do
         if not _Cutscene[i].__Legit then
-            local Name = "Cutscene #" ..(ModuleCutsceneSystem.Global.CutsceneCounter +1);
             error("API.StartCutscene (" ..Name.. ", Page #" ..i.. "): Page is not initialized!");
             return;
         end
@@ -191,8 +189,7 @@ function API.AddCutscenePages(_Cutscene)
                 _Page.Lines = API.Localize(_Page.Lines);
             end
             if not _Page.Lines and not _Page.Text then
-                local Name = "Cutscene #" ..(ModuleCutsceneSystem.Global.CutsceneCounter +1);
-                error("AP[Cutscene] (" ..Name.. ", Page #" ..(#_Cutscene+1).. "): Missing Lines or Text attribute!");
+                assert(false, "Missing Lines or Text attribute!");
                 return;
             end
 

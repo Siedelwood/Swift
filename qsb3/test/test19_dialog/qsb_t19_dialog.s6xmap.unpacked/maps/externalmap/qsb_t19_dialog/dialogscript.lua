@@ -128,11 +128,11 @@ function DialogTest(_Name, _PlayerID)
     Dialog.Starting = function(_Data)
     end
     Dialog.Finished = function(_Data)
-        Logic.ExecuteInLuaLocalState(string.format([[
-            Camera.RTS_SetZoomFactor(0.1);
-            Camera.RTS_FollowEntity(GetID("hero"));
-            API.DeactivateNormalInterface();
-        ]]));
+        -- Logic.ExecuteInLuaLocalState(string.format([[
+        --     Camera.RTS_SetZoomFactor(0.1);
+        --     Camera.RTS_FollowEntity(GetID("hero"));
+        --     API.DeactivateNormalInterface();
+        -- ]]));
     end
     API.StartDialog(Dialog, _Name, _PlayerID);
 end
