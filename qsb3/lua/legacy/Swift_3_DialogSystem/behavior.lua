@@ -8,18 +8,19 @@ You may use and modify this file unter the terms of the MIT licence.
 (See https://en.wikipedia.org/wiki/MIT_License)
 ]]
 
+-- -------------------------------------------------------------------------- --
+
 ---
--- Fügt Behavior zur Steuerung von Dialogs hinzu.
+-- Fügt Behavior zur Steuerung von Dialogen hinzu.
 --
 -- @set sort=true
 --
 
--- -------------------------------------------------------------------------- --
 
 ---
--- Ruft die Funktion auf und startet das enthaltene Dialog.
+-- Ruft die Funktion auf und startet den enthaltenen Dialog.
 --
--- Jedes Dialog braucht einen eindeutigen Namen!
+-- Jeder Dialog braucht einen eindeutigen Namen!
 --
 -- @param[type=string] _Name   Bezeichner des Dialog
 -- @param[type=string] _Dialog Funktionsname als String
@@ -32,8 +33,8 @@ end
 B_Reprisal_Dialog = {
     Name = "Reprisal_Dialog",
     Description = {
-        en = "Reprisal: Calls a function to start an new briefing.",
-        de = "Lohn: Ruft die Funktion auf und startet das enthaltene Dialog.",
+        en = "Reprisal: Calls a function to start an new dialog briefing.",
+        de = "Lohn: Ruft die Funktion auf und startet den enthaltenen Dialog.",
     },
     Parameter = {
         { ParameterType.Default, en = "Dialog name",     de = "Name des Dialog" },
@@ -74,9 +75,9 @@ Swift:RegisterBehavior(B_Reprisal_Dialog);
 -- -------------------------------------------------------------------------- --
 
 ---
--- Ruft die Funktion auf und startet das enthaltene Dialog.
+-- Ruft die Funktion auf und startet den enthaltenen Dialog.
 --
--- Jedes Dialog braucht einen eindeutigen Namen!
+-- Jeder Dialog braucht einen eindeutigen Namen!
 --
 -- @param[type=string] _Name   Bezeichner des Dialog
 -- @param[type=string] _Dialog Funktionsname als String
@@ -88,8 +89,8 @@ end
 
 B_Reward_Dialog = Swift:CopyTable(B_Reprisal_Dialog);
 B_Reward_Dialog.Name = "Reward_Dialog";
-B_Reward_Dialog.Description.en = "Reward: Calls a function to start an new briefing.";
-B_Reward_Dialog.Description.de = "Lohn: Ruft die Funktion auf und startet das enthaltene Dialog.";
+B_Reward_Dialog.Description.en = "Reward: Calls a function to start an new dialog briefing.";
+B_Reward_Dialog.Description.de = "Lohn: Ruft die Funktion auf und startet den enthaltenen Dialog.";
 B_Reward_Dialog.GetReprisalTable = nil;
 
 B_Reward_Dialog.GetRewardTable = function(self, _Quest)
@@ -114,11 +115,11 @@ end
 B_Trigger_Dialog = {
     Name = "Trigger_Dialog",
     Description = {
-        en = "Trigger: Checks if an briefing has concluded and starts the quest if so.",
+        en = "Trigger: Checks if an dialog has concluded and starts the quest if so.",
         de = "Auslöser: Prüft, ob ein Dialog beendet ist und startet dann den Quest.",
     },
     Parameter = {
-        { ParameterType.Default,  en = "Dialog name", de = "Name des Dialog" },
+        { ParameterType.Default,  en = "Dialog name",   de = "Name des Dialog" },
         { ParameterType.PlayerID, en = "Player ID",     de = "Player ID" },
         { ParameterType.Number,   en = "Wait time",     de = "Wartezeit" },
     },

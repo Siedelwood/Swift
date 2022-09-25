@@ -44,7 +44,7 @@ function CreateInitiatorQuest()
         Sender      = 2,
 
         Goal_NoChange(),
-        Trigger_Discourse("DialogTest1", 1, 5),
+        Trigger_Dialog("DialogTest1", 1, 5),
     }
 end
 
@@ -158,28 +158,16 @@ function DialogTest2(_Name, _PlayerID)
         RestoreGameSpeed = true,
         RestoreCamera = true,
     };
-    local AP, ASP = API.AddDiscoursePages(Dialog);
+    local AP, ASP = API.AddDialogPages(Dialog);
 
+    ASP("Page1", 8, "npc1", "NPC", "I aren't done drowning you in useless text.", true)
     AP {
-        Name     = "Page1",
-        Title    = "NPC",
-        Text     = "I aren't done drowning you in useless text.",
-        Actor    = 8,
-        Duration = 10,
-        Camera   = {
-            Position = "npc1",
-            Dialog   = true,
-        }
-    };
-    AP {
-        Name     = "Page2",
-        Title    = "No Actor",
-        Text     = "Page without an actor. How sad...",
-        Camera   = {
-            Position = "hero",
-            Dialog   = true,
-        },
-        MC       = {
+        Name         = "Page2",
+        Title        = "No Actor",
+        Text         = "Page without an actor. How sad...",
+        Position     = "hero",
+        DialogCamera = true,
+        MC           = {
             {"Option 1", "Page3"},
             {"Option 2",
              function()
@@ -188,15 +176,13 @@ function DialogTest2(_Name, _PlayerID)
         }
     };
     AP {
-        Name     = "Page3",
-        Title    = "Hero",
-        Text     = "This page has an actor and a choice.",
-        Actor    = 1,
-        Camera   = {
-            Position = "hero",
-            Dialog   = true,
-        },
-        MC       = {
+        Name         = "Page3",
+        Title        = "Hero",
+        Text         = "This page has an actor and a choice.",
+        Actor        = 1,
+        Position     = "hero",
+        DialogCamera = true,
+        MC           = {
             {"Option 1", "Page2"},
             {"Option 2",
              function()
@@ -205,21 +191,18 @@ function DialogTest2(_Name, _PlayerID)
         }
     };
     AP {
-        Name     = "Page4",
-        Title    = "Hero",
-        Text     = "Maybe I should make your fat neck spin...",
-        Actor    = 1,
-        Duration = 10,
-        Camera   = {
-            Position = "hero",
-            Dialog   = true,
-        }
+        Name         = "Page4",
+        Title        = "Hero",
+        Text         = "Maybe I should make your fat neck spin...",
+        Actor        = 1,
+        Position     = "hero",
+        DialogCamera = true,
     };
 
     Dialog.Starting = function(_Data)
     end
     Dialog.Finished = function(_Data)
     end
-    API.StartDiscourse(Dialog, _Name, _PlayerID);
+    API.StartDialog(Dialog, _Name, _PlayerID);
 end
 

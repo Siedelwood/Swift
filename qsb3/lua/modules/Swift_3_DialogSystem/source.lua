@@ -14,10 +14,9 @@ ModuleDialogSystem = {
     },
 
     Global = {
-        DialogPageCounter = 0,
-        DialogCounter = 0,
         Dialog = {},
         DialogQueue = {},
+        DialogCounter = 0,
     },
     Local = {
         Dialog = {},
@@ -33,14 +32,18 @@ ModuleDialogSystem = {
     },
 };
 
-QSB.CinematicEventTypes.Dialog = 4;
+QSB.CinematicEventTypes.Dialog = 5;
 
 QSB.Dialog = {
     TIMER_PER_CHAR = 0.175,
+    CAMERA_ANGLEDEFAULT = 43,
     CAMERA_ROTATIONDEFAULT = -45,
-    CAMERA_ZOOMDEFAULT = 0.5,
+    CAMERA_ZOOMDEFAULT = 6500,
+    CAMERA_FOVDEFAULT = 42,
+    DLGCAMERA_ANGLEDEFAULT = 27,
     DLGCAMERA_ROTATIONDEFAULT = -45,
-    DLGCAMERA_ZOOMDEFAULT = 0.15,
+    DLGCAMERA_ZOOMDEFAULT = 1750,
+    DLGCAMERA_FOVDEFAULT = 25,
 }
 
 -- Global ------------------------------------------------------------------- --
@@ -48,43 +51,68 @@ QSB.Dialog = {
 function ModuleDialogSystem.Global:OnGameStart()
     QSB.ScriptEvents.DialogStarted = API.RegisterScriptEvent("Event_DialogStarted");
     QSB.ScriptEvents.DialogEnded = API.RegisterScriptEvent("Event_DialogEnded");
+    QSB.ScriptEvents.DialogPageShown = API.RegisterScriptEvent("Event_DialogPageShown");
     QSB.ScriptEvents.DialogOptionSelected = API.RegisterScriptEvent("Event_DialogOptionSelected");
-
+    
     for i= 1, 8 do
         self.DialogQueue[i] = {};
     end
-
-    -- Quests can not be decided while a dialog is active. This must be done to
-    -- prevent flickering when a quest ends. Dialog quests themselves must run!
-    API.AddDisableDecisionCondition(function(_PlayerID, _Quest)
-        if ModuleDialogSystem.Global.Dialog[_PlayerID] ~= nil then
-            return _Quest.Identifier:contains("DialogSystemQuest_");
-        end
-        return true;
-    end);
     -- Updates the dialog queue for all players
     API.StartHiResJob(function()
-        ModuleDialogSystem.Global:Update();
+        ModuleDialogSystem.Global:UpdateQueue();
+        ModuleDialogSystem.Global:DialogExecutionController();
     end);
 end
 
 function ModuleDialogSystem.Global:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.EscapePressed then
-        if self.Dialog[arg[1]] ~= nil then
-            if Logic.GetTime() - self.Dialog[arg[1]].PageStartedTime >= 1 then
-                local PageID = self.Dialog[arg[1]].CurrentPage;
-                local Page = self.Dialog[arg[1]][PageID];
-                if not self.Dialog[arg[1]].DisableSkipping and not Page.DisableSkipping and not Page.MC then
-                    self:NextPage(arg[1]);
+        self:SkipButtonPressed(arg[1]);
+    elseif _ID == QSB.ScriptEvents.DialogStarted then
+        self:NextPage(arg[1]);
+    elseif _ID == QSB.ScriptEvents.DialogEnded then
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.SendScriptEvent(QSB.ScriptEvents.DialogEnded, %d, %s)]],
+            arg[1],
+            table.tostring(arg[2])
+        ));
+    elseif _ID == QSB.ScriptEvents.DialogPageShown then
+        local Page = self.Dialog[arg[1]][arg[2]];
+        if type(Page) == "table" then
+            Page = table.tostring(Page);
+        end
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.SendScriptEvent(QSB.ScriptEvents.DialogPageShown, %d, %d, %s)]],
+            arg[1],
+            arg[2],
+            Page
+        ));
+    elseif _ID == QSB.ScriptEvents.DialogOptionSelected then
+        self:OnOptionSelected(arg[1], arg[2]);
+    end
+end
+
+function ModuleDialogSystem.Global:UpdateQueue()
+    for i= 1, 8 do
+        if self:CanStartDialog(i) then
+            local Next = ModuleDisplayCore.Global:LookUpCinematicInFromQueue(i);
+            if Next and Next[1] == QSB.CinematicEventTypes.Dialog then
+                self:NextDialog(i);
+            end
+        end
+    end
+end
+
+function ModuleDialogSystem.Global:DialogExecutionController()
+    for i= 1, 8 do
+        if self.Dialog[i] then
+            local PageID = self.Dialog[i].CurrentPage;
+            local Page = self.Dialog[i][PageID];
+            if Page and not Page.MC and Page.Duration > 0 and Page.AutoSkip then
+                if (Page.Started + Page.Duration) < Logic.GetTime() then
+                    self:NextPage(i);
                 end
             end
         end
-    elseif _ID == QSB.ScriptEvents.DialogOptionSelected then
-        Logic.ExecuteInLuaLocalState(string.format(
-            [[API.SendScriptEvent(QSB.ScriptEvents.DialogOptionSelected, %d, %d)]],
-            arg[1], arg[2]
-        ));
-        ModuleDialogSystem.Global:OnOptionSelected(arg[1], arg[2]);
     end
 end
 
@@ -104,28 +132,16 @@ function ModuleDialogSystem.Global:EndDialog(_PlayerID)
         [[ModuleDialogSystem.Local:ResetTimerButtons(%d)]],
         _PlayerID
     ));
-
     API.SendScriptEvent(
         QSB.ScriptEvents.DialogEnded,
         _PlayerID,
         self.Dialog[_PlayerID]
     );
-    Logic.ExecuteInLuaLocalState(string.format(
-        [[API.SendScriptEvent(QSB.ScriptEvents.DialogEnded, %d, %s)]],
-        _PlayerID,
-        table.tostring(self.Dialog[_PlayerID])
-    ));
     if self.Dialog[_PlayerID].Finished then
         self.Dialog[_PlayerID]:Finished();
     end
     API.FinishCinematicEvent(self.Dialog[_PlayerID].Name, _PlayerID);
     self.Dialog[_PlayerID] = nil;
-end
-
-function ModuleDialogSystem.Global:CanStartDialog(_PlayerID)
-    return  self.Dialog[_PlayerID] == nil and
-            not API.IsCinematicEventActive(_PlayerID) and
-            not API.IsLoadscreenVisible();
 end
 
 function ModuleDialogSystem.Global:NextDialog(_PlayerID)
@@ -137,25 +153,30 @@ function ModuleDialogSystem.Global:NextDialog(_PlayerID)
         local Dialog = DialogData[3];
         Dialog.Name = DialogData[2];
         Dialog.PlayerID = _PlayerID;
+        Dialog.LastSkipButtonPressed = 0;
         Dialog.CurrentPage = 0;
+        if Dialog.EnableSoothingCamera == nil then
+            Dialog.EnableSoothingCamera = true;
+        end
         self.Dialog[_PlayerID] = Dialog;
+
         if Dialog.EnableGlobalImmortality then
             Logic.SetGlobalInvulnerability(1);
         end
         if self.Dialog[_PlayerID].Starting then
             self.Dialog[_PlayerID]:Starting();
         end
-        API.SendScriptEvent(
-            QSB.ScriptEvents.DialogStarted,
-            _PlayerID,
-            self.Dialog[_PlayerID]
-        );
+
         Logic.ExecuteInLuaLocalState(string.format(
             [[API.SendScriptEvent(QSB.ScriptEvents.DialogStarted, %d, %s)]],
             _PlayerID,
             table.tostring(self.Dialog[_PlayerID])
         ));
-        self:NextPage(_PlayerID);
+        API.SendScriptEvent(
+            QSB.ScriptEvents.DialogStarted,
+            _PlayerID,
+            self.Dialog[_PlayerID]
+        );
     end
 end
 
@@ -165,31 +186,21 @@ function ModuleDialogSystem.Global:NextPage(_PlayerID)
     end
 
     self.Dialog[_PlayerID].CurrentPage = self.Dialog[_PlayerID].CurrentPage +1;
-    self.Dialog[_PlayerID].PageStartedTime = Logic.GetTime();
-    if self.Dialog[_PlayerID].PageQuest then
-        API.StopQuest(self.Dialog[_PlayerID].PageQuest, true);
-    end
-
     local PageID = self.Dialog[_PlayerID].CurrentPage;
-    if PageID <= 0 then
+    if PageID == -1 or PageID == 0 then
         self:EndDialog(_PlayerID);
         return;
     end
+
     local Page = self.Dialog[_PlayerID][PageID];
     if type(Page) == "table" then
-        if Page.MC then
-            for i= 1, #Page.MC, 1 do
-                if type(Page.MC[i][3]) == "function" then
-                    self.Dialog[_PlayerID][PageID].MC[i].Visible = not Page.MC[i][3](_PlayerID, PageID, i)
-                end
-            end
-        end
-
         if PageID <= #self.Dialog[_PlayerID] then
+            self.Dialog[_PlayerID][PageID].Started = Logic.GetTime();
+            self.Dialog[_PlayerID][PageID].Duration = Page.Duration or -1;
             if self.Dialog[_PlayerID][PageID].Action then
                 self.Dialog[_PlayerID][PageID]:Action();
             end
-            self.Dialog[_PlayerID].PageQuest = self:DisplayPage(_PlayerID, PageID);
+            self:DisplayPage(_PlayerID, PageID);
         else
             self:EndDialog(_PlayerID);
         end
@@ -200,6 +211,50 @@ function ModuleDialogSystem.Global:NextPage(_PlayerID)
     else
         self:EndDialog(_PlayerID);
     end
+end
+
+function ModuleDialogSystem.Global:DisplayPage(_PlayerID, _PageID)
+    if self.Dialog[_PlayerID] == nil then
+        return;
+    end
+
+    local Page = self.Dialog[_PlayerID][_PageID];
+    if type(Page) == "table" then
+        local PageID = self.Dialog[_PlayerID].CurrentPage;
+        if Page.MC then
+            for i= 1, #Page.MC, 1 do
+                if type(Page.MC[i][3]) == "function" then
+                    self.Dialog[_PlayerID][PageID].MC[i].Visible = Page.MC[i][3](_PlayerID, PageID, i);
+                end
+            end
+        end
+    end
+
+    API.SendScriptEvent(
+        QSB.ScriptEvents.DialogPageShown,
+        _PlayerID,
+        _PageID,
+        self.Dialog[_PlayerID][_PageID]
+    );
+end
+
+function ModuleDialogSystem.Global:SkipButtonPressed(_PlayerID, _PageID)
+    if not self.Dialog[_PlayerID] then
+        return;
+    end
+    if (self.Dialog[_PlayerID].LastSkipButtonPressed + 500) > Logic.GetTimeMs() then
+        return;
+    end
+    local PageID = self.Dialog[_PlayerID].CurrentPage;
+    if self.Dialog[_PlayerID][PageID].AutoSkip
+    or self.Dialog[_PlayerID][PageID].MC then
+        return;
+    end
+    if self.Dialog[_PlayerID][PageID].OnForward then
+        self.Dialog[_PlayerID][PageID]:OnForward();
+    end
+    self.Dialog[_PlayerID].LastSkipButtonPressed = Logic.GetTimeMs();
+    self:NextPage(_PlayerID);
 end
 
 function ModuleDialogSystem.Global:OnOptionSelected(_PlayerID, _OptionID)
@@ -230,51 +285,6 @@ function ModuleDialogSystem.Global:OnOptionSelected(_PlayerID, _OptionID)
     end
 end
 
-function ModuleDialogSystem.Global:DisplayPage(_PlayerID, _PageID)
-    if self.Dialog[_PlayerID] == nil then
-        return;
-    end
-
-    self.DialogPageCounter = self.DialogPageCounter +1;
-    local Page = self.Dialog[_PlayerID][_PageID];
-    local PrevQuestName = "DialogSystemQuest_" .._PlayerID.. "_" ..(self.DialogPageCounter-1);
-    local QuestName = "DialogSystemQuest_" .._PlayerID.. "_" ..self.DialogPageCounter;
-    local QuestText = API.ConvertPlaceholders(API.Localize(Page.Text));
-    local Extension = "";
-    if not self.Dialog[_PlayerID].DisableSkipping and not Page.DisableSkipping and not Page.MC then
-        Extension = API.ConvertPlaceholders(API.Localize(ModuleDialogSystem.Shared.Text.Continue));
-    end
-    local Sender = Page.Sender or _PlayerID;
-    local AutoSkip = (self.Dialog[_PlayerID].DisableSkipping or Page.DisableSkipping) == true;
-    API.CreateQuest {
-        Name        = QuestName,
-        Suggestion  = QuestText .. Extension,
-        Sender      = (Sender == -1 and _PlayerID) or Sender,
-        Receiver    = _PlayerID,
-
-        Goal_NoChange(),
-        Trigger_Time(0),
-    }
-    -- Using a inline job because quest do not really tick and there is no
-    -- point in assigning quest durations.
-    API.StartJob(function(_AutoSkip, _PlayerID, _StartTime, _Duration)
-        if not _AutoSkip then
-            return true;
-        end
-        if Logic.GetTime() >= _StartTime+_Duration then
-            ModuleDialogSystem.Global:NextPage(_PlayerID);
-            return true;
-        end
-    end, AutoSkip, _PlayerID, Logic.GetTime(), 12)
-
-    Logic.ExecuteInLuaLocalState(string.format(
-        [[ModuleDialogSystem.Local:DisplayPage(%d, %s)]],
-        _PlayerID,
-        table.tostring(Page)
-    ));
-    return QuestName;
-end
-
 function ModuleDialogSystem.Global:GetCurrentDialog(_PlayerID)
     return self.Dialog[_PlayerID];
 end
@@ -300,15 +310,10 @@ function ModuleDialogSystem.Global:GetPageIDByName(_PlayerID, _Name)
     return _Name;
 end
 
-function ModuleDialogSystem.Global:Update()
-    for i= 1, 8 do
-        if self:CanStartDialog(i) then
-            local Next = ModuleDisplayCore.Global:LookUpCinematicInFromQueue(i);
-            if Next and Next[1] == QSB.CinematicEventTypes.Dialog then
-                self:NextDialog(i);
-            end
-        end
-    end
+function ModuleDialogSystem.Global:CanStartDialog(_PlayerID)
+    return  self.Dialog[_PlayerID] == nil and
+            not API.IsCinematicEventActive(_PlayerID) and
+            not API.IsLoadscreenVisible();
 end
 
 -- Local -------------------------------------------------------------------- --
@@ -316,37 +321,210 @@ end
 function ModuleDialogSystem.Local:OnGameStart()
     QSB.ScriptEvents.DialogStarted = API.RegisterScriptEvent("Event_DialogStarted");
     QSB.ScriptEvents.DialogEnded = API.RegisterScriptEvent("Event_DialogEnded");
+    QSB.ScriptEvents.DialogPageShown = API.RegisterScriptEvent("Event_DialogPageShown");
     QSB.ScriptEvents.DialogOptionSelected = API.RegisterScriptEvent("Event_DialogOptionSelected");
 
     self:OverrideTimerButtonClicked();
-    API.StartHiResJob(function()
-        ModuleDialogSystem.Local:Update();
-    end);
+    self:OverrideThroneRoomFunctions();
 end
 
 function ModuleDialogSystem.Local:OnEvent(_ID, _Event, ...)
-    if _ID == QSB.ScriptEvents.DialogStarted then
-        ModuleDialogSystem.Local:StartDialog(arg[1], arg[2]);
+    if _ID == QSB.ScriptEvents.EscapePressed then
+        self:SkipButtonPressed(arg[1]);
+    elseif _ID == QSB.ScriptEvents.DialogStarted then
+        self:StartDialog(arg[1], arg[2]);
     elseif _ID == QSB.ScriptEvents.DialogEnded then
-        ModuleDialogSystem.Local:EndDialog(arg[1], arg[2]);
-    elseif _ID == QSB.ScriptEvents.QuestTrigger then
-        -- Enforce the actor when the quest starts
-        local Quest = Quests[arg[1]];
-        if Quest then
-            local Actor = g_PlayerPortrait[Quest.SendingPlayer];
-            SetPortraitWithCameraSettings("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait", Actor);
-            if GUI.GetPlayerID() == Quest.ReceivingPlayer then
-                -- Update only when no event is active
-                if not self:IsAnyCinematicEventActive(Quest.ReceivingPlayer) then
-                    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/Update", 1);
-                    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles/Update", 1);
-                -- Prevent percisting objective icon
-                else
-                    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/QuestObjectives", 0);
-                end
-            end
+        self:EndDialog(arg[1], arg[2]);
+    elseif _ID == QSB.ScriptEvents.DialogPageShown then
+        self:DisplayPage(arg[1], arg[2], arg[3]);
+    end
+end
+
+function ModuleDialogSystem.Local:StartDialog(_PlayerID, _Dialog)
+    if GUI.GetPlayerID() ~= _PlayerID then
+        return;
+    end
+    self.Dialog[_PlayerID] = _Dialog;
+    self.Dialog[_PlayerID].SubtitlesPosition = {
+        XGUIEng.GetWidgetLocalPosition("/InGame/Root/Normal/AlignBottomLeft/SubTitles")
+    };
+    self.Dialog[_PlayerID].CurrentPage = 0;
+    local PosX, PosY = Camera.RTS_GetLookAtPosition();
+    local Rotation = Camera.RTS_GetRotationAngle();
+    local ZoomFactor = Camera.RTS_GetZoomFactor();
+    local SpeedFactor = Game.GameTimeGetFactor(_PlayerID);
+    self.Dialog[_PlayerID].Backup = {
+        Speed  = SpeedFactor;
+        Camera = {PosX, PosY, Rotation, ZoomFactor}
+    };
+
+    API.DeactivateNormalInterface();
+    API.DeactivateBorderScroll();
+
+    if not Framework.IsNetworkGame() then
+        Game.GameTimeSetFactor(_PlayerID, 1);
+    end
+    self:ActivateCinematicMode(_PlayerID);
+end
+
+function ModuleDialogSystem.Local:EndDialog(_PlayerID, _Dialog)
+    if GUI.GetPlayerID() ~= _PlayerID then
+        return;
+    end
+
+    if self.Dialog[_PlayerID].RestoreGameSpeed and not Framework.IsNetworkGame() then
+        Game.GameTimeSetFactor(_PlayerID, self.Dialog[_PlayerID].Backup.Speed);
+    end
+    if self.Dialog[_PlayerID].RestoreCamera then
+        Camera.RTS_SetLookAtPosition(self.Dialog[_PlayerID].Backup.Camera[1], self.Dialog[_PlayerID].Backup.Camera[2]);
+        Camera.RTS_SetRotationAngle(self.Dialog[_PlayerID].Backup.Camera[3]);
+        Camera.RTS_SetZoomFactor(self.Dialog[_PlayerID].Backup.Camera[4]);
+    end
+    self.Dialog[_PlayerID].Backup = nil;
+
+    if not Framework.IsNetworkGame() then
+        Game.GameTimeSetFactor(_PlayerID, 1);
+    end
+    self:DeactivateCinematicMode(_PlayerID);
+    API.ActivateNormalInterface();
+    API.ActivateBorderScroll();
+
+    self.Dialog[_PlayerID] = nil;
+    Display.SetRenderFogOfWar(1);
+    Display.SetRenderBorderPins(1);
+    Display.SetRenderSky(0);
+end
+
+function ModuleDialogSystem.Local:DisplayPage(_PlayerID, _PageID, _PageData)
+    if GUI.GetPlayerID() ~= _PlayerID then
+        return;
+    end
+    self.Dialog[_PlayerID][_PageID] = _PageData;
+    self.Dialog[_PlayerID].CurrentPage = _PageID;
+
+    if type(self.Dialog[_PlayerID][_PageID]) == "table" then
+        self.Dialog[_PlayerID][_PageID].Started = Logic.GetTime();
+        self:DisplayPageFader(_PlayerID, _PageID);
+        self:DisplayPageActor(_PlayerID, _PageID);
+        self:DisplayPageTitle(_PlayerID, _PageID);
+        self:DisplayPageText(_PlayerID, _PageID);
+        if self.Dialog[_PlayerID][_PageID].MC then
+            self:DisplayPageOptionsDialog(_PlayerID, _PageID);
         end
     end
+end
+
+function ModuleDialogSystem.Local:DisplayPageFader(_PlayerID, _PageID)
+    local Page = self.Dialog[_PlayerID][_PageID];
+    g_Fade.To = Page.FaderAlpha or 0;
+
+    local PageFadeIn = Page.FadeIn;
+    if PageFadeIn then
+        FadeIn(PageFadeIn);
+    end
+
+    local PageFadeOut = Page.FadeOut;
+    if PageFadeOut then
+        self.Dialog[_PlayerID].FaderJob = API.StartHiResJob(function(_Time, _FadeOut)
+            if Logic.GetTimeMs() > _Time - (_FadeOut * 1000) then
+                FadeOut(_FadeOut);
+                return true;
+            end
+        end, Logic.GetTimeMs() + ((Page.Duration or 0) * 1000), PageFadeOut);
+    end
+end
+
+function ModuleDialogSystem.Local:DisplayPageActor(_PlayerID, _PageID)
+    local PortraitWidget = "/InGame/Root/Normal/AlignBottomLeft/Message";
+    XGUIEng.ShowWidget(PortraitWidget, 1);
+    XGUIEng.ShowAllSubWidgets(PortraitWidget, 1);
+    XGUIEng.ShowWidget(PortraitWidget.. "/QuestLog", 0);
+    XGUIEng.ShowWidget(PortraitWidget.. "/Update", 0);
+    local Page = self.Dialog[_PlayerID][_PageID];
+    if not Page.Actor or Page.Actor == -1 then
+        XGUIEng.ShowWidget(PortraitWidget, 0);
+        return;
+    end
+    local Actor = self:GetPageActor(_PlayerID, _PageID);
+    self:DisplayActorPortrait(_PlayerID, Actor);
+end
+
+function ModuleDialogSystem.Local:GetPageActor(_PlayerID, _PageID)
+    local Actor = g_PlayerPortrait[_PlayerID];
+    local Page = self.Dialog[_PlayerID][_PageID];
+    if type(Page.Actor) == "string" then
+        Actor = Page.Actor;
+    elseif type(Page.Actor) == "number" then
+        Actor = g_PlayerPortrait[Page.Actor];
+    end
+    -- If someone doesn't read the fucking manual...
+    if not Models["Heads_" .. tostring(Actor)] then
+        Actor = "H_NPC_Generic_Trader";
+    end
+    return Actor;
+end
+
+function ModuleDialogSystem.Local:DisplayPageTitle(_PlayerID, _PageID)
+    local PortraitWidget = "/InGame/Root/Normal/AlignBottomLeft/Message";
+    local Page = self.Dialog[_PlayerID][_PageID];
+    if Page.Title then
+        local Title = API.ConvertPlaceholders(Page.Title);
+        if Title:find("^[A-Za-Z0-9_]+/[A-Za-Z0-9_]+$") then
+            Title = XGUIEng.GetStringTableText(Title);
+        end
+        if Title:sub(1, 1) ~= "{" then
+            Title = "{center}" ..Title;
+        end
+        XGUIEng.SetText(PortraitWidget.. "/MessagePortrait/PlayerName", Title);
+        XGUIEng.ShowWidget(PortraitWidget.. "/MessagePortrait/PlayerName", 1);
+    else
+        XGUIEng.ShowWidget(PortraitWidget.. "/MessagePortrait/PlayerName", 0);
+    end
+end
+
+function ModuleDialogSystem.Local:DisplayPageText(_PlayerID, _PageID)
+    self:ResetSubtitlesPosition(_PlayerID);
+    local Page = self.Dialog[_PlayerID][_PageID];
+    local SubtitlesWidget = "/InGame/Root/Normal/AlignBottomLeft/SubTitles";
+    if not Page or not Page.Text or Page.Text == "" then
+        XGUIEng.ShowWidget(SubtitlesWidget, 0);
+        return;
+    end
+    XGUIEng.ShowWidget(SubtitlesWidget, 1);
+    XGUIEng.ShowWidget(SubtitlesWidget.. "/Update", 0);
+    XGUIEng.ShowWidget(SubtitlesWidget.. "/VoiceText1", 1);
+    XGUIEng.ShowWidget(SubtitlesWidget.. "/BG", 1);
+
+    local Text = API.ConvertPlaceholders(API.Localize(Page.Text));
+    local Extension = "";
+    if not Page.AutoSkip and not Page.MC then
+        Extension = API.ConvertPlaceholders(API.Localize(ModuleDialogSystem.Shared.Text.Continue));
+    end
+    XGUIEng.SetText(SubtitlesWidget.. "/VoiceText1", Text .. Extension);
+    self:SetSubtitlesPosition(_PlayerID, _PageID);
+end
+
+function ModuleDialogSystem.Local:SetSubtitlesPosition(_PlayerID, _PageID)
+    local Page = self.Dialog[_PlayerID][_PageID];
+    local MotherWidget = "/InGame/Root/Normal/AlignBottomLeft/SubTitles";
+    local Height = XGUIEng.GetTextHeight(MotherWidget.. "/VoiceText1", true);
+    local W, H = XGUIEng.GetWidgetSize(MotherWidget.. "/VoiceText1");
+    local X,Y = XGUIEng.GetWidgetLocalPosition(MotherWidget);
+    if Page.Actor then
+        XGUIEng.SetWidgetSize(MotherWidget.. "/BG", W + 10, Height + 120);
+        Y = 675 - Height;
+        XGUIEng.SetWidgetLocalPosition(MotherWidget, X, Y);
+    else
+        XGUIEng.SetWidgetSize(MotherWidget.. "/BG", W + 10, Height + 35);
+        Y = 1115 - Height;
+        XGUIEng.SetWidgetLocalPosition(MotherWidget, 46, Y);
+    end
+end
+
+function ModuleDialogSystem.Local:ResetSubtitlesPosition(_PlayerID)
+    local Position = self.Dialog[_PlayerID].SubtitlesPosition;
+    local SubtitleWidget = "/InGame/Root/Normal/AlignBottomLeft/SubTitles";
+    XGUIEng.SetWidgetLocalPosition(SubtitleWidget, Position[1], Position[2]);
 end
 
 function ModuleDialogSystem.Local:OverrideTimerButtonClicked()
@@ -364,255 +542,6 @@ function ModuleDialogSystem.Local:OverrideTimerButtonClicked()
         end
         GUI_Interaction.TimerButtonClicked_Orig_ModuleDialogSystem();
     end
-end
-
-function ModuleDialogSystem.Local:StartDialog(_PlayerID, _Data)
-    if GUI.GetPlayerID() == _PlayerID then
-        API.DeactivateNormalInterface();
-        API.DeactivateBorderScroll();
-        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 1);
-        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/Update", 0);
-        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles", 1);
-        XGUIEng.ShowWidget("/InGame/Root/3dWorldView", 0);
-        Input.CutsceneMode();
-        GUI.ClearSelection();
-
-        self.Dialog[_PlayerID] = self.Dialog[_PlayerID] or {};
-
-        -- Subtitles position backup
-        self.Dialog[_PlayerID].SubtitlesPosition = {
-            XGUIEng.GetWidgetScreenPosition("/InGame/Root/Normal/AlignBottomLeft/SubTitles")
-        };
-
-        -- Make camera backup
-        self.Dialog[_PlayerID].Backup = {
-            Rotation = Camera.RTS_GetRotationAngle(),
-            Zoom     = Camera.RTS_GetZoomFactor(),
-            Position = {Camera.RTS_GetLookAtPosition()},
-            Speed    = Game.GameTimeGetFactor(_PlayerID),
-        };
-
-        if not _Data.EnableFoW then
-            Display.SetRenderFogOfWar(0);
-        end
-        if not _Data.EnableBorderPins then
-            Display.SetRenderBorderPins(0);
-        end
-        if not Framework.IsNetworkGame() then
-            Game.GameTimeSetFactor(_PlayerID, 1);
-        end
-    end
-end
-
-function ModuleDialogSystem.Local:EndDialog(_PlayerID, _Data)
-    if GUI.GetPlayerID() == _PlayerID then
-        XGUIEng.SetText("/InGame/Root/Normal/AlignBottomLeft/SubTitles/VoiceText1", "");
-        XGUIEng.ShowWidget("/InGame/Root/3dWorldView", 1);
-        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 1);
-        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/QuestObjectives", 0);
-        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait", 0);
-        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/Update", 0);
-        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles", 1);
-        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles/BG", 0);
-        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles/VoiceText1", 0);
-        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles/Update", 0);
-        Input.GameMode();
-
-        -- Load subtitles backup
-        self:ResetSubtitlesPosition(_PlayerID);
-
-        -- Load camera backup
-        Camera.RTS_FollowEntity(0);
-        if self.Dialog[_PlayerID].Backup then
-            if _Data.RestoreCamera then
-                Camera.RTS_SetRotationAngle(self.Dialog[_PlayerID].Backup.Rotation);
-                Camera.RTS_SetZoomFactor(self.Dialog[_PlayerID].Backup.Zoom);
-                Camera.RTS_SetLookAtPosition(
-                    self.Dialog[_PlayerID].Backup.Position[1],
-                    self.Dialog[_PlayerID].Backup.Position[2]
-                );
-            end
-            if _Data.RestoreGameSpeed and not Framework.IsNetworkGame() then
-                Game.GameTimeSetFactor(_PlayerID, self.Dialog[_PlayerID].Backup.Speed);
-            end
-        end
-
-        self.Dialog[_PlayerID] = nil;
-        API.ActivateNormalInterface();
-        API.ActivateBorderScroll();
-        Display.SetRenderFogOfWar(1);
-        Display.SetRenderBorderPins(1);
-    end
-end
-
-function ModuleDialogSystem.Local:DisplayPage(_PlayerID, _PageData)
-    if GUI.GetPlayerID() == _PlayerID then
-        GUI.ClearSelection();
-
-        self.Dialog[_PlayerID].PageData = _PageData;
-        if _PageData.Sender ~= -1 then
-            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 1);
-            XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomLeft/Message", 1);
-            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/QuestLog", 0);
-            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/Update", 0);
-            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles/Update", 1);
-            self:ResetPlayerPortrait(_PageData.Sender, _PageData.Head);
-            self:ResetSubtitlesPosition(_PlayerID);
-            self:SetSubtitlesText(_PlayerID);
-            self:SetSubtitlesPosition(_PlayerID);
-        else
-            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait", 0);
-            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message", 1);
-            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles", 1);
-            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles/Update", 1);
-            self:ResetSubtitlesPosition(_PlayerID);
-            self:SetSubtitlesText(_PlayerID);
-            self:SetSubtitlesPosition(_PlayerID);
-        end
-
-        if _PageData.Title then
-            local Title = API.ConvertPlaceholders(_PageData.Title);
-            if Title:find("^[A-Za-Z0-9_]+/[A-Za-Z0-9_]+$") then
-                Title = XGUIEng.GetStringTableText(Title);
-            end
-            if Title:sub(1, 1) ~= "{" then
-                Title = "{center}" ..Title;
-            end
-            XGUIEng.SetText("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/PlayerName", Title);
-        end
-        if _PageData.Target then
-            Camera.RTS_FollowEntity(GetID(_PageData.Target));
-        else
-            Camera.RTS_FollowEntity(0);
-        end
-        if _PageData.Position then
-            Camera.RTS_SetLookAtPosition(_PageData.Position.X, _PageData.Position.Y);
-        end
-        if _PageData.Zoom then
-            Camera.RTS_SetZoomFactor(_PageData.Zoom);
-        end
-        if _PageData.Rotation then
-            Camera.RTS_SetRotationAngle(_PageData.Rotation);
-        end
-        if _PageData.MC then
-            self:SetOptionsDialogContent(_PlayerID);
-        end
-    end
-end
-
-function ModuleDialogSystem.Local:SetSubtitlesText(_PlayerID)
-    local PageData = self.Dialog[_PlayerID].PageData;
-    local MotherWidget = "/InGame/Root/Normal/AlignBottomLeft/SubTitles";
-    local QuestText = API.ConvertPlaceholders(API.Localize(PageData.Text));
-    local Extension = "";
-    if not self.Dialog[_PlayerID].DisableSkipping and not PageData.DisableSkipping and not PageData.MC then
-        Extension = API.ConvertPlaceholders(API.Localize(ModuleDialogSystem.Shared.Text.Continue));
-    end
-    XGUIEng.SetText(MotherWidget.. "/VoiceText1", QuestText .. Extension);
-end
-
-function ModuleDialogSystem.Local:SetSubtitlesPosition(_PlayerID)
-    local PageData = self.Dialog[_PlayerID].PageData;
-    local MotherWidget = "/InGame/Root/Normal/AlignBottomLeft/SubTitles";
-    local Height = XGUIEng.GetTextHeight(MotherWidget.. "/VoiceText1", true);
-    local W, H = XGUIEng.GetWidgetSize(MotherWidget.. "/VoiceText1");
-
-    local X,Y = XGUIEng.GetWidgetLocalPosition(MotherWidget);
-    if PageData.Sender ~= -1 then
-        XGUIEng.SetWidgetSize(MotherWidget.. "/BG", W + 10, Height + 120);
-        Y = 675 - Height;
-        XGUIEng.SetWidgetLocalPosition(MotherWidget, X, Y);
-    else
-        XGUIEng.SetWidgetSize(MotherWidget.. "/BG", W + 10, Height + 35);
-        Y = 1115 - Height;
-        XGUIEng.SetWidgetLocalPosition(MotherWidget, 46, Y);
-    end
-end
-
-function ModuleDialogSystem.Local:ResetPlayerPortrait(_PlayerID, _HeadModel)
-    local PortraitWidget = "/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/3DPortraitFaceFX";
-    local Actor = g_PlayerPortrait[_PlayerID];
-    if _HeadModel then
-        if not Models["Heads_" .. tostring(_HeadModel)] then
-            _HeadModel = "H_NPC_Generic_Trader";
-        end
-        Actor = _HeadModel;
-    end
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait", 1);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/QuestObjectives", 0);
-    SetPortraitWithCameraSettings(PortraitWidget, Actor);
-    GUI.PortraitWidgetSetRegister(PortraitWidget, "Mood_Friendly", 1,2,0);
-    GUI.PortraitWidgetSetRegister(PortraitWidget, "Mood_Angry", 1,2,0);
-end
-
-function ModuleDialogSystem.Local:ResetSubtitlesPosition(_PlayerID)
-    local Position = self.Dialog[_PlayerID].SubtitlesPosition;
-    local SubtitleWidget = "/InGame/Root/Normal/AlignBottomLeft/SubTitles";
-    XGUIEng.SetWidgetScreenPosition(SubtitleWidget, Position[1], Position[2]);
-end
-
-function ModuleDialogSystem.Local:SetOptionsDialogContent(_PlayerID)
-    local Widget = "/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer";
-    local PageData = self.Dialog[_PlayerID].PageData;
-
-    local Listbox = XGUIEng.GetWidgetID(Widget .. "/ListBox");
-    XGUIEng.ListBoxPopAll(Listbox);
-    self.Dialog[_PlayerID].MCSelectionOptionsMap = {};
-    for i=1, #PageData.MC, 1 do
-        if PageData.MC[i].Visible ~= false then
-            XGUIEng.ListBoxPushItem(Listbox, PageData.MC[i][1]);
-            table.insert(self.Dialog[_PlayerID].MCSelectionOptionsMap, PageData.MC[i].ID);
-        end
-    end
-    XGUIEng.ListBoxSetSelectedIndex(Listbox, 0);
-
-    self:SetOptionsDialogPosition(_PlayerID);
-    self.Dialog[_PlayerID].MCSelectionIsShown = true;
-end
-
-function ModuleDialogSystem.Local:SetOptionsDialogPosition(_PlayerID)
-    local Screen = {GUI.GetScreenSize()};
-    local PortraitWidget = "/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer";
-    local PageData = self.Dialog[_PlayerID].PageData;
-
-    self.Dialog[_PlayerID].MCSelectionBoxPosition = {
-        XGUIEng.GetWidgetScreenPosition(PortraitWidget)
-    };
-
-    -- Choice
-    local ChoiceSize = {XGUIEng.GetWidgetScreenSize(PortraitWidget)};
-    local CX = math.ceil((Screen[1] * 0.06) + (ChoiceSize[1] /2));
-    local CY = math.ceil(Screen[2] - (ChoiceSize[2] + 60 * (Screen[2]/540)));
-    if PageData.Sender == -1 then
-        CX = 15 * (Screen[1]/960);
-        CY = math.ceil(Screen[2] - (ChoiceSize[2] + 0 * (Screen[2]/540)));
-    end
-    XGUIEng.SetWidgetScreenPosition(PortraitWidget, CX, CY);
-    XGUIEng.PushPage(PortraitWidget, false);
-    XGUIEng.ShowWidget(PortraitWidget, 1);
-
-    -- Text
-    if PageData.Sender == -1 then
-        local TextWidget = "/InGame/Root/Normal/AlignBottomLeft/SubTitles";
-        local DX,DY = XGUIEng.GetWidgetLocalPosition(TextWidget);
-        XGUIEng.SetWidgetLocalPosition(TextWidget, DX, DY-220);
-    end
-end
-
-function ModuleDialogSystem.Local:OnOptionSelected(_PlayerID)
-    local Widget = "/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer";
-    local Position = self.Dialog[_PlayerID].MCSelectionBoxPosition;
-    XGUIEng.SetWidgetScreenPosition(Widget, Position[1], Position[2]);
-    XGUIEng.ShowWidget(Widget, 0);
-    XGUIEng.PopPage();
-
-    local Selected = XGUIEng.ListBoxGetSelectedIndex(Widget .. "/ListBox")+1;
-    local AnswerID = self.Dialog[_PlayerID].MCSelectionOptionsMap[Selected];
-    API.BroadcastScriptEventToGlobal(
-        QSB.ScriptEvents.DialogOptionSelected,
-        _PlayerID,
-        AnswerID
-    );
 end
 
 function ModuleDialogSystem.Local:ResetTimerButtons(_PlayerID)
@@ -636,10 +565,150 @@ function ModuleDialogSystem.Local:ResetTimerButtons(_PlayerID)
                 XGUIEng.HighLightButton(ButtonWidget, 0);
             end
             if Quest then
-                self:ResetPlayerPortrait(Quest.SendingPlayer);
+                self:DisplayActorPortrait(Quest.SendingPlayer);
             end
         end
     end
+end
+
+function ModuleDialogSystem.Local:DisplayActorPortrait(_PlayerID, _HeadModel)
+    local PortraitWidget = "/InGame/Root/Normal/AlignBottomLeft/Message";
+    local Actor = g_PlayerPortrait[_PlayerID];
+    if _HeadModel then
+        if not Models["Heads_" .. tostring(_HeadModel)] then
+            _HeadModel = "H_NPC_Generic_Trader";
+        end
+        Actor = _HeadModel;
+    end
+    XGUIEng.ShowWidget(PortraitWidget.. "/MessagePortrait", 1);
+    XGUIEng.ShowWidget(PortraitWidget.. "/QuestObjectives", 0);
+    SetPortraitWithCameraSettings(PortraitWidget.. "/MessagePortrait/3DPortraitFaceFX", Actor);
+    GUI.PortraitWidgetSetRegister(PortraitWidget.. "/MessagePortrait/3DPortraitFaceFX", "Mood_Friendly", 1,2,0);
+    GUI.PortraitWidgetSetRegister(PortraitWidget.. "/MessagePortrait/3DPortraitFaceFX", "Mood_Angry", 1,2,0);
+end
+
+function ModuleDialogSystem.Local:DisplayPageOptionsDialog(_PlayerID, _PageID)
+    local Widget = "/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer";
+    local Screen = {GUI.GetScreenSize()};
+    local Page = self.Dialog[_PlayerID][_PageID];
+    local Listbox = XGUIEng.GetWidgetID(Widget .. "/ListBox");
+
+    self.Dialog[_PlayerID].MCSelectionBoxPosition = {
+        XGUIEng.GetWidgetScreenPosition(Widget)
+    };
+
+    XGUIEng.ListBoxPopAll(Listbox);
+    self.Dialog[_PlayerID].MCSelectionOptionsMap = {};
+    for i=1, #Page.MC, 1 do
+        if Page.MC[i].Visible ~= false then
+            XGUIEng.ListBoxPushItem(Listbox, Page.MC[i][1]);
+            table.insert(self.Dialog[_PlayerID].MCSelectionOptionsMap, Page.MC[i].ID);
+        end
+    end
+    XGUIEng.ListBoxSetSelectedIndex(Listbox, 0);
+
+    -- Choice
+    local ChoiceSize = {XGUIEng.GetWidgetScreenSize(Widget)};
+    local CX = math.ceil((Screen[1] * 0.05) + (ChoiceSize[1] /2));
+    local CY = math.ceil(Screen[2] - (ChoiceSize[2] + 60 * (Screen[2]/540)));
+    if not Page.Actor then
+        CX = 15 * (Screen[1]/960);
+        CY = math.ceil(Screen[2] - (ChoiceSize[2] + 0 * (Screen[2]/540)));
+    end
+    XGUIEng.SetWidgetScreenPosition(Widget, CX, CY);
+    XGUIEng.PushPage(Widget, false);
+    XGUIEng.ShowWidget(Widget, 1);
+
+    -- Text
+    if not Page.Actor then
+        local TextWidget = "/InGame/Root/Normal/AlignBottomLeft/SubTitles";
+        local DX,DY = XGUIEng.GetWidgetLocalPosition(TextWidget);
+        XGUIEng.SetWidgetLocalPosition(TextWidget, DX, DY-220);
+    end
+
+    self.Dialog[_PlayerID].MCSelectionIsShown = true;
+end
+
+function ModuleDialogSystem.Local:OnOptionSelected(_PlayerID)
+    local Widget = "/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer";
+    local Position = self.Dialog[_PlayerID].MCSelectionBoxPosition;
+    XGUIEng.SetWidgetScreenPosition(Widget, Position[1], Position[2]);
+    XGUIEng.ShowWidget(Widget, 0);
+    XGUIEng.PopPage();
+
+    local Selected = XGUIEng.ListBoxGetSelectedIndex(Widget .. "/ListBox")+1;
+    local AnswerID = self.Dialog[_PlayerID].MCSelectionOptionsMap[Selected];
+
+    API.SendScriptEvent(QSB.ScriptEvents.DialogOptionSelected, _PlayerID, AnswerID);
+    API.BroadcastScriptEventToGlobal(
+        QSB.ScriptEvents.DialogOptionSelected,
+        _PlayerID,
+        AnswerID
+    );
+end
+
+function ModuleDialogSystem.Local:ThroneRoomCameraControl(_PlayerID, _Page)
+    if _Page then
+        -- Camera
+        local Position = _Page.Position;
+        if type(Position) ~= "table" then
+            Position = GetPosition(_Page.Position);
+        end
+        Camera.RTS_SetLookAtPosition(Position.X, Position.Y);
+        Camera.RTS_SetRotationAngle(_Page.Rotation);
+        Camera.RTS_SetZoomFactor(_Page.Distance / 18000);
+        -- FIXME: This does not work?
+        Camera.RTS_SetZoomAngle(_Page.Angle);
+
+        -- Multiple Choice
+        if self.Dialog[_PlayerID].MCSelectionIsShown then
+            local Widget = "/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer";
+            if XGUIEng.IsWidgetShown(Widget) == 0 then
+                self.Dialog[_PlayerID].MCSelectionIsShown = false;
+                self:OnOptionSelected(_PlayerID);
+            end
+        end
+    end
+end
+
+function ModuleDialogSystem.Local:ConvertPosition(_Table)
+    local Position = _Table;
+    if type(Position) ~= "table" then
+        Position = GetPosition(_Table);
+    end
+    return Position.X, Position.Y, Position.Z;
+end
+
+function ModuleDialogSystem.Local:SkipButtonPressed(_PlayerID, _Page)
+    if not self.Dialog[_PlayerID] then
+        return;
+    end
+    -- Nothing to do?
+end
+
+function ModuleDialogSystem.Local:GetCurrentDialog(_PlayerID)
+    return self.Dialog[_PlayerID];
+end
+
+function ModuleDialogSystem.Local:GetCurrentDialogPage(_PlayerID)
+    if self.Dialog[_PlayerID] then
+        local PageID = self.Dialog[_PlayerID].CurrentPage;
+        return self.Dialog[_PlayerID][PageID];
+    end
+end
+
+function ModuleDialogSystem.Local:GetPageIDByName(_PlayerID, _Name)
+    if type(_Name) == "string" then
+        if self.Dialog[_PlayerID] ~= nil then
+            for i= 1, #self.Dialog[_PlayerID], 1 do
+                if type(self.Dialog[_PlayerID][i]) == "table" and self.Dialog[_PlayerID][i].Name == _Name then
+                    return i;
+                end
+            end
+        end
+        return 0;
+    end
+    return _Name;
 end
 
 function ModuleDialogSystem.Local:IsAnyCinematicEventActive(_PlayerID)
@@ -651,19 +720,118 @@ function ModuleDialogSystem.Local:IsAnyCinematicEventActive(_PlayerID)
     return false;
 end
 
-function ModuleDialogSystem.Local:Update()
-    for i= 1, 8 do
-        if GUI.GetPlayerID() == i and self.Dialog[i] then
-            -- Multiple Choice
-            if self.Dialog[i].MCSelectionIsShown then
-                local Widget = "/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer";
-                if XGUIEng.IsWidgetShown(Widget) == 0 then
-                    self.Dialog[i].MCSelectionIsShown = false;
-                    self:OnOptionSelected(i);
-                end
+function ModuleDialogSystem.Local:OverrideThroneRoomFunctions()
+    GameCallback_Camera_ThroneroomCameraControl_Orig_ModuleDialogSystem = GameCallback_Camera_ThroneroomCameraControl;
+    GameCallback_Camera_ThroneroomCameraControl = function(_PlayerID)
+        GameCallback_Camera_ThroneroomCameraControl_Orig_ModuleDialogSystem(_PlayerID);
+        if _PlayerID == GUI.GetPlayerID() then
+            local Dialog = ModuleDialogSystem.Local:GetCurrentDialog(_PlayerID);
+            if Dialog ~= nil then
+                ModuleDialogSystem.Local:ThroneRoomCameraControl(
+                    _PlayerID,
+                    ModuleDialogSystem.Local:GetCurrentDialogPage(_PlayerID)
+                );
             end
         end
     end
+end
+
+function ModuleDialogSystem.Local:ActivateCinematicMode(_PlayerID)
+    if self.CinematicActive or GUI.GetPlayerID() ~= _PlayerID then
+        return;
+    end
+    self.CinematicActive = true;
+
+    local LoadScreenVisible = API.IsLoadscreenVisible();
+    if LoadScreenVisible then
+        XGUIEng.PopPage();
+    end
+
+    XGUIEng.ShowWidget("/InGame/ThroneRoom", 1);
+    XGUIEng.PushPage("/InGame/ThroneRoom/Main", false);
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars", 0);
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2", 0);
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_Dodge", 0);
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", 0);
+    XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo", 0);
+    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main", 1);
+    XGUIEng.ShowAllSubWidgets("/InGame/ThroneRoom/Main", 0);
+    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/updater", 1);
+
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/SpeechStartAgainOrStop", 0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/SpeechButtons/SpeechStartAgainOrStop", 0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/Update", 0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles/Update", 0);
+    XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionDialog/Text", " ");
+    XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionDialog/Title", " ");
+    XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionDialog/Objectives", " ");
+
+    GUI.ClearSelection();
+    GUI.ClearNotes();
+    GUI.ForbidContextSensitiveCommandsInSelectionState();
+    GUI.ActivateCutSceneState();
+    GUI.SetFeedbackSoundOutputState(0);
+    GUI.EnableBattleSignals(false);
+    Input.CutsceneMode();
+    if not self.Dialog[_PlayerID].EnableFoW then
+        Display.SetRenderFogOfWar(0);
+    end
+    if self.Dialog[_PlayerID].EnableSky then
+        Display.SetRenderSky(1);
+    end
+    if not self.Dialog[_PlayerID].EnableBorderPins then
+        Display.SetRenderBorderPins(0);
+    end
+    Display.SetUserOptionOcclusionEffect(0);
+    Camera.SwitchCameraBehaviour(0);
+
+    InitializeFader();
+    g_Fade.To = 0;
+    SetFaderAlpha(0);
+
+    if LoadScreenVisible then
+        XGUIEng.PushPage("/LoadScreen/LoadScreen", false);
+    end
+end
+
+function ModuleDialogSystem.Local:DeactivateCinematicMode(_PlayerID)
+    if not self.CinematicActive or GUI.GetPlayerID() ~= _PlayerID then
+        return;
+    end
+    self.CinematicActive = false;
+
+    g_Fade.To = 0;
+    SetFaderAlpha(0);
+    XGUIEng.PopPage();
+    Camera.SwitchCameraBehaviour(0);
+    Display.UseStandardSettings();
+    Input.GameMode();
+    GUI.EnableBattleSignals(true);
+    GUI.SetFeedbackSoundOutputState(1);
+    GUI.ActivateSelectionState();
+    GUI.PermitContextSensitiveCommandsInSelectionState();
+    Display.SetRenderSky(0);
+    Display.SetRenderBorderPins(1);
+    Display.SetRenderFogOfWar(1);
+    if Options.GetIntValue("Display", "Occlusion", 0) > 0 then
+        Display.SetUserOptionOcclusionEffect(1);
+    end
+
+    XGUIEng.SetText("/InGame/Root/Normal/AlignBottomLeft/SubTitlesVoiceText1", " ");
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/SpeechButtons/SpeechStartAgainOrStop", 1);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/SpeechStartAgainOrStop", 1);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/Update", 1);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles/Update", 1);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait", 0);
+
+    XGUIEng.PopPage();
+    XGUIEng.ShowWidget("/InGame/ThroneRoom", 0);
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars", 0);
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2", 0);
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_Dodge", 0);
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", 0);
+
+    self:ResetSubtitlesPosition(_PlayerID);
 end
 
 -- -------------------------------------------------------------------------- --

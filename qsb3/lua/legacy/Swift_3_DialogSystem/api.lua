@@ -43,8 +43,8 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
--- <li><a href="Swift_1_DisplayCore.api.html">(1) Display Core</a></li>
 -- <li><a href="Swift_1_JobsCore.api.html">(1) Jobs Core</a></li>
+-- <li><a href="Swift_2_QuestCore.api.html">(2) Quests Core</a></li>
 -- </ul>
 --
 -- @within Beschreibung
@@ -56,7 +56,6 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 -- @field DialogStarted        Ein Dialog beginnt (Parameter: PlayerID, DialogTable)
 -- @field DialogEnded          Ein Dialog endet (Parameter: PlayerID, DialogTable)
--- @field DialogPageShown      Ein Dialog endet (Parameter: PlayerID, PageIndex)
 -- @field DialogOptionSelected Eine Multiple Choice Option wurde ausgewählt (Parameter: PlayerID, OptionID)
 --
 -- @within Event
@@ -146,7 +145,6 @@ function API.StartDialog(_Dialog, _Name, _PlayerID)
     if not PlayerID and not Framework.IsNetworkGame() then
         PlayerID = QSB.HumanPlayerID;
     end
-    assert(_Name ~= nil);
     assert(_PlayerID ~= nil);
     if type(_Dialog) ~= "table" then
         error("API.StartDialog (" .._Name.. "): _Dialog must be a table!");
@@ -162,17 +160,21 @@ function API.StartDialog(_Dialog, _Name, _PlayerID)
             return;
         end
     end
-    if _Dialog.EnableSky == nil then
-        _Dialog.EnableSky = true;
+
+    if _Dialog.EnableGlobalImmortality == nil then
+        _Dialog.EnableGlobalImmortality = true;
     end
     if _Dialog.EnableFoW == nil then
         _Dialog.EnableFoW = false;
     end
-    if _Dialog.EnableGlobalImmortality == nil then
-        _Dialog.EnableGlobalImmortality = true;
-    end
     if _Dialog.EnableBorderPins == nil then
         _Dialog.EnableBorderPins = false;
+    end
+    if _Dialog.RestoreGameSpeed == nil then
+        _Dialog.RestoreGameSpeed = true;
+    end
+    if _Dialog.RestoreCamera == nil then
+        _Dialog.RestoreCamera = true;
     end
     ModuleDialogSystem.Global:StartDialog(_Name, PlayerID, _Dialog);
 end
@@ -204,21 +206,24 @@ end
 -- @usage local AP, ASP = API.AddPages(Briefing);
 --
 function API.AddDialogPages(_Dialog)
-    _Dialog.GetPage = function(self, _NameOrID)
-        local ID = ModuleDialogSystem.Global:GetPageIDByName(_Dialog.PlayerID, _NameOrID);
-        return ModuleDialogSystem.Global.Dialog[_Dialog.PlayerID][ID];
+    _Dialog.GetPage = function(self, _PlayerID, _NameOrID)
+        local ID = ModuleDialogSystem.Global:GetPageIDByName(_PlayerID, _NameOrID);
+        return ModuleDialogSystem.Global.Dialog[_PlayerID][ID];
     end
 
     local AP = function(_Page)
-        _Dialog.PageAnimations = _Dialog.PageAnimations or {};
-
-        _Dialog.Length = (_Dialog.Length or 0) +1;
         if type(_Page) == "table" then
             local Identifier = "Page" ..(#_Dialog +1);
             if _Page.Name then
                 Identifier = _Page.Name;
             else
                 _Page.Name = Identifier;
+            end
+
+            if _Page.Position and _Page.Target then
+                assert(false, "Position and Target can not be used both at "..
+                    "the same time!");
+                return;
             end
 
             _Page.__Legit = true;
@@ -229,56 +234,25 @@ function API.AddDialogPages(_Dialog)
                 return 0;
             end
 
-            -- Default camera position
-            if not _Page.Rotation then
-                _Page.Rotation = QSB.Dialog.CAMERA_ROTATIONDEFAULT;
-                if _Page.DialogCamera then
-                    _Page.Rotation = QSB.Dialog.DLGCAMERA_ROTATIONDEFAULT;
-                end
-                if _Page.Position and type(_Page.Position) ~= "table" then
-                    local ID = GetID(_Page.Position);
+            _Page.Title = _Page.Title or "";
+            if _Page.Rotation == nil then
+                if _Page.Target ~= nil then
+                    local ID = GetID(_Page.Target);
                     local Orientation = Logic.GetEntityOrientation(ID) +90;
                     _Page.Rotation = Orientation;
+                else
+                    _Page.Rotation = QSB.Dialog.DLGCAMERA_ROTATIONDEFAULT;
                 end
             end
-            if not _Page.Distance then
-                _Page.Distance = QSB.Dialog.CAMERA_ZOOMDEFAULT;
-                if _Page.DialogCamera then
-                    _Page.Distance = QSB.Dialog.DLGCAMERA_ZOOMDEFAULT;
-                end
+            if _Page.Zoom == nil then
+                _Page.Zoom = QSB.Dialog.DLGCAMERA_ZOOMDEFAULT;
             end
-            if not _Page.Angle then
-                _Page.Angle = QSB.Dialog.CAMERA_ANGLEDEFAULT;
-                if _Page.DialogCamera then
-                    _Page.Angle = QSB.Dialog.DLGCAMERA_ANGLEDEFAULT;
+            if _Page.MC ~= nil then
+                for j= 1, #_Page.MC, 1 do
+                    _Page.MC[j].ID = j;
+                    _Page.MC[j].Selected = 0;
+                    _Page.MC[j].Visible = true;
                 end
-            end
-
-            -- Language
-            _Page.Text = API.Localize(_Page.Text or "");
-
-            -- Skip page
-            _Page.AutoSkip = false;
-            if _Page.Duration then
-                if _Page.Duration == -1 then
-                    _Page.Duration = string.len(_Page.Text or "") * QSB.Dialog.TIMER_PER_CHAR;
-                    if _Page.Duration < 6 then
-                        _Page.Duration = 6;
-                    end
-                end
-                if _Page.Duration > 0 then
-                    _Page.AutoSkip = true;
-                end
-            end
-
-            -- Multiple Choice
-            if _Page.MC then
-                for i= 1, #_Page.MC do
-                    _Page.MC[i][1] = API.Localize(_Page.MC[i][1]);
-                    _Page.MC[i].ID = _Page.MC[i].ID or i;
-                end
-                _Page.AutoSkip = false;
-                _Page.Duration = -1;
             end
         else
             _Page = (_Page == nil and -1) or _Page;
@@ -301,13 +275,13 @@ function API.AddDialogPages(_Dialog)
             Action = table.remove(arg, 1);
         end
         return AP {
-            Name         = Name,
-            Title        = Title,
-            Text         = Text,
-            Actor        = Sender,
-            Position     = Position,
-            DialogCamera = Dialog == true,
-            Action       = Action,
+            Name   = Name,
+            Title  = Title,
+            Text   = Text,
+            Sender = Sender,
+            Target = Position,
+            Zoom   = (Dialog and QSB.Dialog.DLGCAMERA_ZOOMDEFAULT) or QSB.Dialog.CAMERA_ZOOMDEFAULT,
+            Action = Action,
         };
     end
     return AP, ASP;
@@ -322,7 +296,7 @@ end
 --
 -- <h5>Dialog Page</h5>
 -- Eine Dialog Page stellt den gesprochenen Text mit und ohne Akteur dar.
--- 
+--
 -- Mögliche Felder:
 -- <table border="1">
 -- <tr>
@@ -330,36 +304,44 @@ end
 -- <td><b>Beschreibung</b></td>
 -- </tr>
 -- <tr>
--- <td>Actor</td>
--- <td>(optional) Spieler-ID oder Model des Actors</td>
--- </tr>
--- <tr>
 -- <td>Titel</td>
--- <td>(optional) Zeigt den Namen des Sprechers an. (Nur mit Actor)</td>
+-- <td>(string) Bestimmt den Namen des Sprechers.</td>
 -- </tr>
 -- <tr>
 -- <td>Text</td>
--- <td>(optional) Zeigt Text auf der Dialogseite an.</td>
+-- <td>(string) Bestimmt den auf dieser Dialogseite angezeigten Text.</td>
+-- </tr>
+-- <tr>
+-- <td>Sender</td>
+-- <td>(number) Bestimmt den Spieler, dessen Portrait angezeigt wird. Bei -1 wird kein Portrait angezeigt</td>
 -- </tr>
 -- <tr>
 -- <td>Action</td>
--- <td>(optional) Führt eine Funktion aus, wenn die aktuelle Dialogseite angezeigt wird.</td>
+-- <td>(function) Führt eine Funktion aus, wenn die aktuelle Dialogseite angezeigt wird.</td>
+-- </tr>
+-- <tr>
+-- <td>DisableSkipping</td>
+-- <td>(boolean) Verbietet das Überspringen durch drücken von Escape für diese Seite.</td>
 -- </tr>
 -- <tr>
 -- <td>Position</td>
--- <td>Legt die Kameraposition der Seite fest.</td>
+-- <td>(table) Bestimmt die Position der Kamera anhand des übergebenen Positions-Table.</td>
 -- </tr>
 -- <tr>
--- <td>Distance</td>
--- <td>(optional) Bestimmt die Entfernung der Kamera zur Position.</td>
+-- <td>Target</td>
+-- <td>(string) Setzt die Kamera auf das angegebene Entity und folgt ihm für die Anzeigedauer der Dialogseite.</td>
+-- </tr>
+-- <tr>
+-- <td>Zoom</td>
+-- <td>(number) Zoomfaktor für die Kamera. Werte zwischen 0.1 und 0.5 sind möglich.</td>
 -- </tr>
 -- <tr>
 -- <td>Rotation</td>
--- <td>(optional) Rotationswinkel der Kamera. Werte zwischen 0 und 360 sind möglich.</td>
+-- <td>(number) Rotationswinkel der Kamera. Werte zwischen 0 und 360 sind möglich.</td>
 -- </tr>
 -- <tr>
 -- <td>MC</td>
--- <td>(optional) Table mit möglichen Dialogoptionen. (Multiple Choice)</td>
+-- <td>(table) Table mit möglichen Dialogoptionen. (Multiple Choice)</td>
 -- </tr>
 -- </table>
 --
@@ -410,7 +392,34 @@ end
 -- @return[type=table] Refernez auf die angelegte Seite
 -- @within Dialog
 --
-function AP(_Data)
+-- @usage
+-- -- Eine einfache Seite
+-- AP {
+--     Name   = "StartPage",
+--     Title  = "Horst",
+--     Text   = "Das ist ein Test!",
+--     Sender = -1,
+--     Target = "npc1",
+--     Zoom   = 0.1,
+-- }
+--
+-- -- Eine Seite mit Optionen
+-- -- Hier können Namen von Seiten angegeben werden oder Aktionen, welche etwas
+-- -- Ausführen und danach einen Namen zurückgeben.
+-- AP {
+--     Name   = "StartPage",
+--     Title  = "Horst",
+--     Text   = "Das ist ein Test!",
+--     Sender = -1,
+--     Target = "npc1",
+--     Zoom   = 0.1,
+--     MC     = {
+--         {"Machen wir weiter...", "ContinuePage"},
+--         {"Schluss jetzt!", "EndPage"}
+--     }
+-- }
+--
+function AP(_Page)
     assert(false);
 end
 
@@ -423,7 +432,7 @@ end
 -- den Dialog gebunden.
 --
 -- @param[type=string]   _Name         (Optional) Name der Seite
--- @param[type=number]   _Sender       Spieler-ID oder Actor Model
+-- @param[type=number]   _Sender       Spieler (-1 für kein Portrait)
 -- @param[type=string]   _Position     Position der Kamera
 -- @param[type=string]   _Title        Name des Sprechers
 -- @param[type=string]   _Text         Text der Seite

@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "mandatory": false,
     "caption": "(3) Dialog System",
-    "shortdesc": "Ermöglicht es Dialoge zu verwenden.",
+    "shortdesc": "Ermöglicht es Dialog zu verwenden.",
     "description": "",
     "files": [
         "source.lua",
