@@ -110,7 +110,7 @@ function ModuleBriefingSystem.Global:BriefingExecutionController()
         if self.Briefing[i] and not self.Briefing[i].DisplayIngameCutscene then
             local PageID = self.Briefing[i].CurrentPage;
             local Page = self.Briefing[i][PageID];
-            if Page and Page.Duration > 0 then
+            if Page and not Page.MC and Page.Duration > 0 then
                 if (Page.Started + Page.Duration) < Logic.GetTime() then
                     self:NextPage(i);
                 end

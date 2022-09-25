@@ -161,21 +161,32 @@ function DialogTest2(_Name, _PlayerID)
     local AP, ASP = API.AddDiscoursePages(Dialog);
 
     AP {
-        Name    = "Page1",
-        Title   = "NPC",
-        Text    = "I aren't done drowning you in useless text.",
-        Actor   = 8,
-        Camera  = {
+        Name     = "Page1",
+        Title    = "NPC",
+        Text     = "I aren't done drowning you in useless text.",
+        Actor    = 8,
+        Duration = 10,
+        Camera   = {
             Position = "npc1",
             Dialog   = true,
         }
     };
     AP {
-        Name    = "Page2",
-        Title   = "Hero",
-        Text    = "Maybe I should make your fat neck spin...",
-        Actor   = 1,
-        Camera  = {
+        Name     = "Page2",
+        Title    = "No Actor",
+        Text     = "Page without an actor. How sad...",
+        Camera   = {
+            Position = "hero",
+            Dialog   = true,
+        }
+    };
+    AP {
+        Name     = "Page4",
+        Title    = "Hero",
+        Text     = "Maybe I should make your fat neck spin...",
+        Actor    = 1,
+        Duration = 10,
+        Camera   = {
             Position = "hero",
             Dialog   = true,
         }

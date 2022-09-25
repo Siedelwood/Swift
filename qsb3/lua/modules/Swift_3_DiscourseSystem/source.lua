@@ -24,9 +24,10 @@ ModuleDiscourseSystem = {
     -- This is a shared structure but the values are asynchronous!
     Shared = {
         Text = {
-            NextButton = {de = "Weiter",  en = "Forward"},
-            PrevButton = {de = "Zurück",  en = "Previous"},
-            EndButton  = {de = "Beenden", en = "Close"},
+            Continue = {
+                de = "{cr}{cr}{azure}(Weiter mit ESC)",
+                en = "{cr}{cr}{azure}(Continue with ESC)"
+            }
         },
     },
 };
@@ -53,7 +54,6 @@ function ModuleDiscourseSystem.Global:OnGameStart()
     QSB.ScriptEvents.DiscoursePageShown = API.RegisterScriptEvent("Event_DiscoursePageShown");
     QSB.ScriptEvents.DiscourseOptionSelected = API.RegisterScriptEvent("Event_DiscourseOptionSelected");
     QSB.ScriptEvents.DiscourseLeftClick = API.RegisterScriptEvent("Event_DiscourseLeftClick");
-    QSB.ScriptEvents.DiscourseSkipButtonPressed = API.RegisterScriptEvent("Event_DiscourseSkipButtonPressed");
     
     for i= 1, 8 do
         self.DiscourseQueue[i] = {};
@@ -67,7 +67,7 @@ end
 
 function ModuleDiscourseSystem.Global:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.EscapePressed then
-        -- TODO fix problem with throneroom
+        self:SkipButtonPressed(arg[1]);
     elseif _ID == QSB.ScriptEvents.DiscourseStarted then
         self:NextPage(arg[1]);
     elseif _ID == QSB.ScriptEvents.DiscourseEnded then
@@ -89,8 +89,6 @@ function ModuleDiscourseSystem.Global:OnEvent(_ID, _Event, ...)
         ));
     elseif _ID == QSB.ScriptEvents.DiscourseOptionSelected then
         self:OnOptionSelected(arg[1], arg[2]);
-    elseif _ID == QSB.ScriptEvents.DiscourseSkipButtonPressed then
-        self:SkipButtonPressed(arg[1]);
     end
 end
 
@@ -107,10 +105,10 @@ end
 
 function ModuleDiscourseSystem.Global:DiscourseExecutionController()
     for i= 1, 8 do
-        if self.Discourse[i] and not self.Discourse[i].DisplayIngameCutscene then
+        if self.Discourse[i] then
             local PageID = self.Discourse[i].CurrentPage;
             local Page = self.Discourse[i][PageID];
-            if Page and Page.Duration > 0 then
+            if Page and not Page.MC and Page.Duration > 0 and Page.AutoSkipPage then
                 if (Page.Started + Page.Duration) < Logic.GetTime() then
                     self:NextPage(i);
                 end
@@ -156,6 +154,7 @@ function ModuleDiscourseSystem.Global:NextDiscourse(_PlayerID)
         local Discourse = DiscourseData[3];
         Discourse.Name = DiscourseData[2];
         Discourse.PlayerID = _PlayerID;
+        Discourse.LastSkipButtonPressed = 0;
         Discourse.CurrentPage = 0;
         if Discourse.EnableSoothingCamera == nil then
             Discourse.EnableSoothingCamera = true;
@@ -244,10 +243,18 @@ function ModuleDiscourseSystem.Global:SkipButtonPressed(_PlayerID, _PageID)
     if not self.Discourse[_PlayerID] then
         return;
     end
+    if (self.Discourse[_PlayerID].LastSkipButtonPressed + 500) > Logic.GetTimeMs() then
+        return;
+    end
     local PageID = self.Discourse[_PlayerID].CurrentPage;
+    if self.Discourse[_PlayerID][PageID].AutoSkipPage
+    or self.Discourse[_PlayerID][PageID].MC then
+        return;
+    end
     if self.Discourse[_PlayerID][PageID].OnForward then
         self.Discourse[_PlayerID][PageID]:OnForward();
     end
+    self.Discourse[_PlayerID].LastSkipButtonPressed = Logic.GetTimeMs();
     self:NextPage(_PlayerID);
 end
 
@@ -318,7 +325,6 @@ function ModuleDiscourseSystem.Local:OnGameStart()
     QSB.ScriptEvents.DiscoursePageShown = API.RegisterScriptEvent("Event_DiscoursePageShown");
     QSB.ScriptEvents.DiscourseOptionSelected = API.RegisterScriptEvent("Event_DiscourseOptionSelected");
     QSB.ScriptEvents.DiscourseLeftClick = API.RegisterScriptEvent("Event_DiscourseLeftClick");
-    QSB.ScriptEvents.DiscourseSkipButtonPressed = API.RegisterScriptEvent("Event_DiscourseSkipButtonPressed");
 
     self:OverrideTimerButtonClicked();
     self:OverrideThroneRoomFunctions();
@@ -326,24 +332,13 @@ end
 
 function ModuleDiscourseSystem.Local:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.EscapePressed then
-        -- TODO fix problem with throneroom
+        self:SkipButtonPressed(arg[1]);
     elseif _ID == QSB.ScriptEvents.DiscourseStarted then
         self:StartDiscourse(arg[1], arg[2]);
     elseif _ID == QSB.ScriptEvents.DiscourseEnded then
         self:EndDiscourse(arg[1], arg[2]);
     elseif _ID == QSB.ScriptEvents.DiscoursePageShown then
         self:DisplayPage(arg[1], arg[2], arg[3]);
-    elseif _ID == QSB.ScriptEvents.DiscourseSkipButtonPressed then
-        self:SkipButtonPressed(arg[1]);
-    elseif _ID == QSB.ScriptEvents.QuestTrigger then
-        -- Enforce the actor when the quest starts
-        -- local Quest = Quests[arg[1]];
-        -- if Quest then
-        --     local Actor = g_PlayerPortrait[Quest.SendingPlayer];
-        --     SetPortraitWithCameraSettings("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait", Actor);
-        --     GUI.PortraitWidgetSetRegister("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/3DPortraitFaceFX", "Mood_Friendly", 1,2,0);
-        --     GUI.PortraitWidgetSetRegister("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/3DPortraitFaceFX", "Mood_Angry", 1,2,0);
-        -- end
     end
 end
 
@@ -352,7 +347,9 @@ function ModuleDiscourseSystem.Local:StartDiscourse(_PlayerID, _Discourse)
         return;
     end
     self.Discourse[_PlayerID] = _Discourse;
-    self.Discourse[_PlayerID].LastSkipButtonPressed = 0;
+    self.Discourse[_PlayerID].SubtitlesPosition = {
+        XGUIEng.GetWidgetScreenPosition("/InGame/Root/Normal/AlignBottomLeft/SubTitles")
+    };
     self.Discourse[_PlayerID].CurrentPage = 0;
 
     API.DeactivateNormalInterface();
@@ -390,89 +387,13 @@ function ModuleDiscourseSystem.Local:DisplayPage(_PlayerID, _PageID, _PageData)
     self.Discourse[_PlayerID].CurrentPage = _PageID;
     if type(self.Discourse[_PlayerID][_PageID]) == "table" then
         self.Discourse[_PlayerID][_PageID].Started = Logic.GetTime();
-        self:DisplayPageBars(_PlayerID, _PageID);
-        self:DisplayPageTitle(_PlayerID, _PageID);
-        self:DisplayPageText(_PlayerID, _PageID);
-        self:DisplayPageControls(_PlayerID, _PageID);
         self:DisplayPageFader(_PlayerID, _PageID);
         self:DisplayPageActor(_PlayerID, _PageID);
+        self:DisplayPageText(_PlayerID, _PageID);
         if self.Discourse[_PlayerID][_PageID].MC then
             self:DisplayPageOptionsDialog(_PlayerID, _PageID);
         end
     end
-end
-
-function ModuleDiscourseSystem.Local:DisplayPageBars(_PlayerID, _PageID)
-    local Page = self.Discourse[_PlayerID][_PageID];
-    local Opacity = (Page.BarOpacity ~= nil and Page.BarOpacity) or 1;
-    local OpacityBig = (255 * Opacity);
-    local OpacitySmall = (255 * Opacity);
-
-    local BigVisibility = (Page.BigBars and 1) or 0;
-    local SmallVisibility = (Page.BigBars and 0) or 1;
-    if Opacity == 0 then
-        BigVisibility = 0;
-        SmallVisibility = 0;
-    end
-
-    XGUIEng.ShowWidget("/InGame/ThroneRoomBars", BigVisibility);
-    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2", SmallVisibility);
-    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_Dodge", BigVisibility);
-    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", SmallVisibility);
-
-    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars/BarBottom", 1, OpacityBig);
-    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars/BarTop", 1, OpacityBig);
-    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars_2/BarBottom", 1, OpacitySmall);
-    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars_2/BarTop", 1, OpacitySmall);
-end
-
-function ModuleDiscourseSystem.Local:DisplayPageTitle(_PlayerID, _PageID)
-    local Page = self.Discourse[_PlayerID][_PageID];
-    local TitleWidget = "/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight";
-    XGUIEng.SetText(TitleWidget, "");
-    if Page.Title then
-        local Title = API.ConvertPlaceholders(Page.Title);
-        if Title:find("^[A-Za-Z0-9_]+/[A-Za-Z0-9_]+$") then
-            Title = XGUIEng.GetStringTableText(Title);
-        end
-        if Title:sub(1, 1) ~= "{" then
-            Title = "{@color:255,250,0,255}{center}" ..Title;
-        end
-        XGUIEng.SetText(TitleWidget, Title);
-    end
-end
-
-function ModuleDiscourseSystem.Local:DisplayPageText(_PlayerID, _PageID)
-    local Page = self.Discourse[_PlayerID][_PageID];
-    local TextWidget = "/InGame/ThroneRoom/Main/MissionDiscourse/Text";
-    XGUIEng.SetText(TextWidget, "");
-    if Page.Text then
-        local Text = API.ConvertPlaceholders(Page.Text);
-        if Text:find("^[A-Za-Z0-9_]+/[A-Za-Z0-9_]+$") then
-            Text = XGUIEng.GetStringTableText(Text);
-        end
-        if Text:sub(1, 1) ~= "{" then
-            Text = "{center}" ..Text;
-        end
-        if not Page.BigBars then
-            Text = "{cr}{cr}{cr}" .. Text;
-        end
-        XGUIEng.SetText(TextWidget, Text);
-    end
-end
-
-function ModuleDiscourseSystem.Local:DisplayPageControls(_PlayerID, _PageID)
-    local Page = self.Discourse[_PlayerID][_PageID];
-    local SkipFlag = 1;
-
-    SkipFlag = ((Page.Duration == nil or Page.Duration == -1) and 1) or 0;
-    if Page.DisableSkipping ~= nil then
-        SkipFlag = (Page.DisableSkipping and 0) or 1;
-    end
-    if Page.MC ~= nil then
-        SkipFlag = 0;
-    end
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", SkipFlag);
 end
 
 function ModuleDiscourseSystem.Local:DisplayPageFader(_PlayerID, _PageID)
@@ -496,19 +417,18 @@ function ModuleDiscourseSystem.Local:DisplayPageFader(_PlayerID, _PageID)
 end
 
 function ModuleDiscourseSystem.Local:DisplayPageActor(_PlayerID, _PageID)
-    local MotherWidget = "/InGame/Root/Normal/AlignBottomLeft/Message";
-    XGUIEng.ShowWidget(MotherWidget, 1);
-    XGUIEng.ShowAllSubWidgets(MotherWidget, 1);
-    XGUIEng.ShowWidget(MotherWidget.. "/QuestLog", 0);
-    XGUIEng.ShowWidget(MotherWidget.. "/Update", 0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles", 0);
+    local PortraitWidget = "/InGame/Root/Normal/AlignBottomLeft/Message";
+    XGUIEng.ShowWidget(PortraitWidget, 1);
+    XGUIEng.ShowAllSubWidgets(PortraitWidget, 1);
+    XGUIEng.ShowWidget(PortraitWidget.. "/QuestLog", 0);
+    XGUIEng.ShowWidget(PortraitWidget.. "/Update", 0);
     local Page = self.Discourse[_PlayerID][_PageID];
     if not Page.Actor then
-        XGUIEng.ShowWidget(MotherWidget, 0);
+        XGUIEng.ShowWidget(PortraitWidget, 0);
         return;
     end
     local Actor = self:GetPageActor(_PlayerID, _PageID);
-    self:ResetPlayerPortrait(_PlayerID, Actor);
+    self:DisplayActorPortrait(_PlayerID, Actor);
 end
 
 function ModuleDiscourseSystem.Local:GetPageActor(_PlayerID, _PageID)
@@ -524,6 +444,51 @@ function ModuleDiscourseSystem.Local:GetPageActor(_PlayerID, _PageID)
         Actor = "H_NPC_Generic_Trader";
     end
     return Actor;
+end
+
+function ModuleDiscourseSystem.Local:DisplayPageText(_PlayerID, _PageID)
+    local Page = self.Discourse[_PlayerID][_PageID];
+    local SubtitlesWidget = "/InGame/Root/Normal/AlignBottomLeft/SubTitles";
+    if not Page or not Page.Text or Page.Text == "" then
+        XGUIEng.ShowWidget(SubtitlesWidget, 0);
+        return;
+    end
+    XGUIEng.ShowWidget(SubtitlesWidget, 1);
+    XGUIEng.ShowWidget(SubtitlesWidget.. "/Update", 0);
+    XGUIEng.ShowWidget(SubtitlesWidget.. "/VoiceText1", 1);
+    XGUIEng.ShowWidget(SubtitlesWidget.. "/BG", 1);
+
+    local Text = API.ConvertPlaceholders(API.Localize(Page.Text));
+    local Extension = "";
+    if not Page.AutoSkipPage and not Page.MC then
+        Extension = API.ConvertPlaceholders(API.Localize(ModuleDiscourseSystem.Shared.Text.Continue));
+    end
+    XGUIEng.SetText(SubtitlesWidget.. "/VoiceText1", Text .. Extension);
+    self:SetSubtitlesPosition(_PlayerID, _PageID);
+end
+
+function ModuleDiscourseSystem.Local:SetSubtitlesPosition(_PlayerID, _PageID)
+    local Page = self.Discourse[_PlayerID][_PageID];
+    local MotherWidget = "/InGame/Root/Normal/AlignBottomLeft/SubTitles";
+    local Height = XGUIEng.GetTextHeight(MotherWidget.. "/VoiceText1", true);
+    local W, H = XGUIEng.GetWidgetSize(MotherWidget.. "/VoiceText1");
+
+    local X,Y = XGUIEng.GetWidgetLocalPosition(MotherWidget);
+    if Page.Actor then
+        XGUIEng.SetWidgetSize(MotherWidget.. "/BG", W + 10, Height + 120);
+        Y = 675 - Height;
+        XGUIEng.SetWidgetLocalPosition(MotherWidget, X, Y);
+    else
+        XGUIEng.SetWidgetSize(MotherWidget.. "/BG", W + 10, Height + 35);
+        Y = 1115 - Height;
+        XGUIEng.SetWidgetLocalPosition(MotherWidget, 46, Y);
+    end
+end
+
+function ModuleDiscourseSystem.Local:ResetSubtitlesPosition(_PlayerID)
+    local Position = self.Discourse[_PlayerID].SubtitlesPosition;
+    local SubtitleWidget = "/InGame/Root/Normal/AlignBottomLeft/SubTitles";
+    XGUIEng.SetWidgetScreenPosition(SubtitleWidget, Position[1], Position[2]);
 end
 
 function ModuleDiscourseSystem.Local:OverrideTimerButtonClicked()
@@ -564,14 +529,14 @@ function ModuleDiscourseSystem.Local:ResetTimerButtons(_PlayerID)
                 XGUIEng.HighLightButton(ButtonWidget, 0);
             end
             if Quest then
-                self:ResetPlayerPortrait(Quest.SendingPlayer);
+                self:DisplayActorPortrait(Quest.SendingPlayer);
             end
         end
     end
 end
 
-function ModuleDiscourseSystem.Local:ResetPlayerPortrait(_PlayerID, _HeadModel)
-    local PortraitWidget = "/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/3DPortraitFaceFX";
+function ModuleDiscourseSystem.Local:DisplayActorPortrait(_PlayerID, _HeadModel)
+    local PortraitWidget = "/InGame/Root/Normal/AlignBottomLeft/Message";
     local Actor = g_PlayerPortrait[_PlayerID];
     if _HeadModel then
         if not Models["Heads_" .. tostring(_HeadModel)] then
@@ -579,11 +544,11 @@ function ModuleDiscourseSystem.Local:ResetPlayerPortrait(_PlayerID, _HeadModel)
         end
         Actor = _HeadModel;
     end
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait", 1);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/QuestObjectives", 0);
-    SetPortraitWithCameraSettings(PortraitWidget, Actor);
-    GUI.PortraitWidgetSetRegister(PortraitWidget, "Mood_Friendly", 1,2,0);
-    GUI.PortraitWidgetSetRegister(PortraitWidget, "Mood_Angry", 1,2,0);
+    XGUIEng.ShowWidget(PortraitWidget.. "/MessagePortrait", 1);
+    XGUIEng.ShowWidget(PortraitWidget.. "/QuestObjectives", 0);
+    SetPortraitWithCameraSettings(PortraitWidget.. "/MessagePortrait/3DPortraitFaceFX", Actor);
+    GUI.PortraitWidgetSetRegister(PortraitWidget.. "/MessagePortrait/3DPortraitFaceFX", "Mood_Friendly", 1,2,0);
+    GUI.PortraitWidgetSetRegister(PortraitWidget.. "/MessagePortrait/3DPortraitFaceFX", "Mood_Angry", 1,2,0);
 end
 
 function ModuleDiscourseSystem.Local:DisplayPageOptionsDialog(_PlayerID, _PageID)
@@ -639,10 +604,6 @@ end
 function ModuleDiscourseSystem.Local:ThroneRoomCameraControl(_PlayerID, _Page)
     if _Page then
         -- Camera
-        -- local LX, LY, LZ, PX, PY, PZ, FOV = self:GetCameraProperties(_PlayerID);
-        -- Camera.ThroneRoom_SetPosition(PX, PY, PZ);
-        -- Camera.ThroneRoom_SetLookAt(LX, LY, LZ);
-        -- Camera.ThroneRoom_SetFOV(FOV);
         local Position = _Page.Camera.Position;
         if type(Position) ~= "table" then
             Position = GetPosition(_Page.Camera.Position);
@@ -659,31 +620,7 @@ function ModuleDiscourseSystem.Local:ThroneRoomCameraControl(_PlayerID, _Page)
                 self:OnOptionSelected(_PlayerID);
             end
         end
-        -- Button texts
-        local SkipText = API.Localize(ModuleDiscourseSystem.Shared.Text.NextButton);
-        local PageID = self.Discourse[_PlayerID].CurrentPage;
-        if PageID == #self.Discourse[_PlayerID] or self.Discourse[_PlayerID][PageID+1] == -1 then
-            SkipText = API.Localize(ModuleDiscourseSystem.Shared.Text.EndButton);
-        end
-        XGUIEng.SetText("/InGame/ThroneRoom/Main/Skip", "{center}" ..SkipText);
     end
-end
-
-function ModuleDiscourseSystem.Local:GetCameraProperties(_PlayerID)
-    local PageID = self.Discourse[_PlayerID].CurrentPage;
-    local CurrentPage = self.Discourse[_PlayerID][PageID];
-    if CurrentPage.Camera then
-        local lookAtX, lookAtY, lookAtZ = self:ConvertPosition(CurrentPage.Camera.Position);
-        local zoomDistance = CurrentPage.Camera.Distance;
-        local zoomAngle = CurrentPage.Camera.Angle;
-        local rotation = CurrentPage.Camera.Rotation;
-        local line = zoomDistance * math.cos(math.rad(zoomAngle));
-        local positionX = lookAtX + math.cos(math.rad(rotation - 90)) * line;
-        local positionY = lookAtY + math.sin(math.rad(rotation - 90)) * line;
-        local positionZ = lookAtZ + (zoomDistance) * math.sin(math.rad(zoomAngle));
-        return lookAtX, lookAtY, lookAtZ, positionX, positionY, positionZ, 42;
-    end
-    return 0, 0, 0, 0, 0, 0, 42;
 end
 
 function ModuleDiscourseSystem.Local:ConvertPosition(_Table)
@@ -698,9 +635,7 @@ function ModuleDiscourseSystem.Local:SkipButtonPressed(_PlayerID, _Page)
     if not self.Discourse[_PlayerID] then
         return;
     end
-    if (self.Discourse[_PlayerID].LastSkipButtonPressed + 500) < Logic.GetTimeMs() then
-        self.Discourse[_PlayerID].LastSkipButtonPressed = Logic.GetTimeMs();
-    end
+    -- Nothing to do?
 end
 
 function ModuleDiscourseSystem.Local:GetCurrentDiscourse(_PlayerID)
@@ -738,32 +673,6 @@ function ModuleDiscourseSystem.Local:IsAnyCinematicEventActive(_PlayerID)
 end
 
 function ModuleDiscourseSystem.Local:OverrideThroneRoomFunctions()
-    GameCallback_Camera_ThroneRoomLeftClick_Orig_ModuleDiscourseSystem = GameCallback_Camera_ThroneRoomLeftClick;
-    GameCallback_Camera_ThroneRoomLeftClick = function(_PlayerID)
-        GameCallback_Camera_ThroneRoomLeftClick_Orig_ModuleDiscourseSystem(_PlayerID);
-        if _PlayerID == GUI.GetPlayerID() then
-            -- Must trigger in global script for all players.
-            API.BroadcastScriptEventToGlobal(
-                QSB.ScriptEvents.DiscourseLeftClick,
-                _PlayerID
-            );
-            API.SendScriptEvent(QSB.ScriptEvents.DiscourseLeftClick, _PlayerID);
-        end
-    end
-
-    GameCallback_Camera_SkipButtonPressed_Orig_ModuleDiscourseSystem = GameCallback_Camera_SkipButtonPressed;
-    GameCallback_Camera_SkipButtonPressed = function(_PlayerID)
-        GameCallback_Camera_SkipButtonPressed_Orig_ModuleDiscourseSystem(_PlayerID);
-        if _PlayerID == GUI.GetPlayerID() then
-            -- Must trigger in global script for all players.
-            API.BroadcastScriptEventToGlobal(
-                QSB.ScriptEvents.DiscourseSkipButtonPressed,
-                _PlayerID
-            );
-            API.SendScriptEvent(QSB.ScriptEvents.DiscourseSkipButtonPressed, _PlayerID);
-        end
-    end
-
     GameCallback_Camera_ThroneroomCameraControl_Orig_ModuleDiscourseSystem = GameCallback_Camera_ThroneroomCameraControl;
     GameCallback_Camera_ThroneroomCameraControl = function(_PlayerID)
         GameCallback_Camera_ThroneroomCameraControl_Orig_ModuleDiscourseSystem(_PlayerID);
@@ -777,14 +686,6 @@ function ModuleDiscourseSystem.Local:OverrideThroneRoomFunctions()
             end
         end
     end
-
-    GameCallback_Escape_Orig_DiscourseSystem = GameCallback_Escape;
-    GameCallback_Escape = function()
-        if ModuleDiscourseSystem.Local.Discourse[GUI.GetPlayerID()] then
-            return;
-        end
-        GameCallback_Escape_Orig_DiscourseSystem();
-    end
 end
 
 function ModuleDiscourseSystem.Local:ActivateCinematicMode(_PlayerID)
@@ -792,64 +693,35 @@ function ModuleDiscourseSystem.Local:ActivateCinematicMode(_PlayerID)
         return;
     end
     self.CinematicActive = true;
-    
+
     local LoadScreenVisible = API.IsLoadscreenVisible();
     if LoadScreenVisible then
         XGUIEng.PopPage();
     end
-    local ScreenX, ScreenY = GUI.GetScreenSize();
+
+    local PosX, PosY = Camera.RTS_GetLookAtPosition();
+    local Rotation = Camera.RTS_GetRotationAngle();
+    local ZoomFactor = Camera.RTS_GetZoomFactor();
+    self.CameraBackup = {PosX, PosY, Rotation, ZoomFactor};
 
     XGUIEng.ShowWidget("/InGame/ThroneRoom", 1);
-    XGUIEng.PushPage("/InGame/ThroneRoom/KnightInfo", false);
-    XGUIEng.PushPage("/InGame/ThroneRoomBars", false);
-    XGUIEng.PushPage("/InGame/ThroneRoomBars_2", false);
     XGUIEng.PushPage("/InGame/ThroneRoom/Main", false);
-    XGUIEng.PushPage("/InGame/ThroneRoomBars_Dodge", false);
-    XGUIEng.PushPage("/InGame/ThroneRoomBars_2_Dodge", false);
-    XGUIEng.PushPage("/InGame/ThroneRoom/KnightInfo/LeftFrame", false);
-    XGUIEng.PushPage("/InGame/Root/Normal/AlignBottomLeft/Message", false);
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", 1);
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/StartButton", 0);
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/DialogTopChooseKnight", 1);
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/DialogTopChooseKnight/Frame", 0);
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/DialogTopChooseKnight/DialogBG", 0);
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/DialogTopChooseKnight/FrameEdges", 0);
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/DialogBottomRight3pcs", 0);
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/KnightInfoButton", 0);
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/BackButton", 0);
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Briefing", 0);
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/TitleContainer", 0);
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionDiscourse/Text", 1);
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionDiscourse/Title", 1);
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionDiscourse/Objectives", 1);
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars", 0);
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2", 0);
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_Dodge", 0);
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", 0);
+    XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo", 0);
+    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main", 1);
+    XGUIEng.ShowAllSubWidgets("/InGame/ThroneRoom/Main", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/updater", 1);
+
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/SpeechStartAgainOrStop", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/SpeechButtons/SpeechStartAgainOrStop", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/Update", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles/Update", 0);
-
-    -- Text
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionDiscourse/Text", " ");
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionDiscourse/Title", " ");
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionDiscourse/Objectives", " ");
-
-    -- Title and back button
-    local x,y = XGUIEng.GetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight");
-    XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight", x, 65 * (ScreenY/1080));
-    XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/Objectives", 2, 0, 2000, 20);
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/LeftFrame", 0);
-
-    -- Discourse messages
-    XGUIEng.ShowAllSubWidgets("/InGame/ThroneRoom/KnightInfo", 0);
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/Text", 1);
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/BG", 1);
-    XGUIEng.SetText("/InGame/ThroneRoom/KnightInfo/Text", " ");
-    XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/Text", 200, 300, 1000, 10);
-
-    -- Splashscreen
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/BG", 1);
-    XGUIEng.SetMaterialColor("/InGame/ThroneRoom/KnightInfo/BG", 0, 255, 255, 255, 0);
-    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/BG", 0, 0);
 
     GUI.ClearSelection();
     GUI.ClearNotes();
@@ -902,6 +774,7 @@ function ModuleDiscourseSystem.Local:DeactivateCinematicMode(_PlayerID)
         Display.SetUserOptionOcclusionEffect(1);
     end
 
+    XGUIEng.SetText("/InGame/Root/Normal/AlignBottomLeft/SubTitlesVoiceText1", " ");
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/SpeechButtons/SpeechStartAgainOrStop", 1);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/SpeechStartAgainOrStop", 1);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/Update", 1);
@@ -909,18 +782,16 @@ function ModuleDiscourseSystem.Local:DeactivateCinematicMode(_PlayerID)
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait", 0);
 
     XGUIEng.PopPage();
-    XGUIEng.PopPage();
-    XGUIEng.PopPage();
-    XGUIEng.PopPage();
-    XGUIEng.PopPage();
-    XGUIEng.PopPage();
-    XGUIEng.PopPage();
-    XGUIEng.PopPage();
     XGUIEng.ShowWidget("/InGame/ThroneRoom", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoomBars", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoomBars_Dodge", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", 0);
+
+    Camera.RTS_SetLookAtPosition(self.CameraBackup[1], self.CameraBackup[2]);
+    Camera.RTS_SetRotationAngle(self.CameraBackup[3]);
+    Camera.RTS_SetZoomFactor(self.CameraBackup[4]);
+    self.CameraBackup = nil;
 end
 
 -- -------------------------------------------------------------------------- --
