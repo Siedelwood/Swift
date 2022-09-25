@@ -246,12 +246,12 @@ function ModuleDisplayCore.Local:InterfaceActivateImageBackground(_Graphic, _R, 
     end
     self.PauseScreenShown = true;
 
-    XGUIEng.PushPage("/InGame/Root/Normal/PauseScreen", false)
+    XGUIEng.PushPage("/InGame/Root/Normal/PauseScreen", false);
     XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 1);
     if _Graphic and _Graphic ~= "" then
-        local size = {GUI.GetScreenSize()};
+        local Size = {GUI.GetScreenSize()};
         local u0, v0, u1, v1 = 0, 0, 1, 1;
-        if size[1]/size[2] < 1.6 then
+        if Size[1]/Size[2] < 1.6 then
             u0 = u0 + (u0 / 0.125);
             u1 = u1 - (u1 * 0.125);
         end

@@ -63,7 +63,7 @@ function ModuleTypewriter.Global:PlayTypewriter(_Data)
     Logic.ExecuteInLuaLocalState(string.format(
         [[
         if GUI.GetPlayerID() == %d then
-            API.ActivateColoredScreen(%d, %d, %d, %d);
+            API.ActivateImageScreen("%s", %d, %d, %d, %d);
             API.DeactivateNormalInterface();
             API.DeactivateBorderScroll(%d);
             Input.CutsceneMode()
@@ -71,10 +71,11 @@ function ModuleTypewriter.Global:PlayTypewriter(_Data)
         end
         ]],
         _Data.PlayerID,
-        _Data.Color.R,
-        _Data.Color.G,
-        _Data.Color.B,
-        _Data.Color.A,
+        _Data.Image,
+        _Data.Color.R or 0,
+        _Data.Color.G or 0,
+        _Data.Color.B or 0,
+        _Data.Color.A or 255,
         _Data.TargetEntity
     ));
 
@@ -95,7 +96,7 @@ function ModuleTypewriter.Global:FinishTypewriter(_PlayerID)
         Logic.ExecuteInLuaLocalState(string.format(
             [[
             if GUI.GetPlayerID() == %d then
-                API.DeactivateColoredScreen()
+                API.DeactivateImageScreen()
                 API.ActivateNormalInterface()
                 API.ActivateBorderScroll()
                 Input.GameMode()

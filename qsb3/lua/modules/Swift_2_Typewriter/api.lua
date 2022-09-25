@@ -71,7 +71,7 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- <tr>
 -- <td>CharSpeed</td>
 -- <td>number</td>
--- <td>(Optional) Die Schreibgeschwindigkeit (Default: 1.0) </td>
+-- <td>(Optional) Die Schreibgeschwindigkeit (Default: 1.0)</td>
 -- </tr>
 -- <tr>
 -- <td>Waittime</td>
@@ -81,12 +81,17 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- <tr>
 -- <td>Opacity</td>
 -- <td></td>
--- <td>(Optional) Durchsichtigkeit des Hintergrund (Default: 1) </td>
+-- <td>(Optional) Durchsichtigkeit des Hintergrund (Default: 1)</td>
 -- </tr>
 -- <tr>
 -- <td>Color</td>
 -- <td>table</td>
 -- <td>(Optional) Farbe des Hintergrund (Default: {R= 0, G= 0, B= 0}}</td>
+-- </tr>
+-- <tr>
+-- <td>Image</td>
+-- <td>string</td>
+-- <td>(Optional) Pfad zur anzuzeigenden Grafik</td>
 -- </tr>
 -- </table>
 --
@@ -131,7 +136,13 @@ function API.StartTypewriter(_Data)
     _Data.CharSpeed = _Data.CharSpeed or 1;
     _Data.Waittime = (_Data.Waittime or 8) * 10;
     _Data.TargetEntity = GetID(_Data.TargetEntity or 0);
-    _Data.Color = _Data.Color or {R= 0, G= 0, B= 0, A= 255};
+    _Data.Image = _Data.Image or "";
+    _Data.Color = _Data.Color or {
+        R = (_Data.Image and _Data.Image ~= "" and 255) or 0,
+        G = (_Data.Image and _Data.Image ~= "" and 255) or 0,
+        B = (_Data.Image and _Data.Image ~= "" and 255) or 0,
+        A = 255
+    };
     if _Data.Opacity and _Data.Opacity >= 0 and _Data.Opacity then
         _Data.Color.A = math.floor((255 * _Data.Opacity) + 0.5);
     end
