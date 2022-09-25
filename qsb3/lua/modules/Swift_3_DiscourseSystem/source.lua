@@ -348,7 +348,7 @@ function ModuleDiscourseSystem.Local:StartDiscourse(_PlayerID, _Discourse)
     end
     self.Discourse[_PlayerID] = _Discourse;
     self.Discourse[_PlayerID].SubtitlesPosition = {
-        XGUIEng.GetWidgetScreenPosition("/InGame/Root/Normal/AlignBottomLeft/SubTitles")
+        XGUIEng.GetWidgetLocalPosition("/InGame/Root/Normal/AlignBottomLeft/SubTitles")
     };
     self.Discourse[_PlayerID].CurrentPage = 0;
 
@@ -389,6 +389,7 @@ function ModuleDiscourseSystem.Local:DisplayPage(_PlayerID, _PageID, _PageData)
         self.Discourse[_PlayerID][_PageID].Started = Logic.GetTime();
         self:DisplayPageFader(_PlayerID, _PageID);
         self:DisplayPageActor(_PlayerID, _PageID);
+        self:DisplayPageTitle(_PlayerID, _PageID);
         self:DisplayPageText(_PlayerID, _PageID);
         if self.Discourse[_PlayerID][_PageID].MC then
             self:DisplayPageOptionsDialog(_PlayerID, _PageID);
@@ -446,7 +447,26 @@ function ModuleDiscourseSystem.Local:GetPageActor(_PlayerID, _PageID)
     return Actor;
 end
 
+function ModuleDiscourseSystem.Local:DisplayPageTitle(_PlayerID, _PageID)
+    local PortraitWidget = "/InGame/Root/Normal/AlignBottomLeft/Message";
+    local Page = self.Discourse[_PlayerID][_PageID];
+    if Page.Title then
+        local Title = API.ConvertPlaceholders(Page.Title);
+        if Title:find("^[A-Za-Z0-9_]+/[A-Za-Z0-9_]+$") then
+            Title = XGUIEng.GetStringTableText(Title);
+        end
+        if Title:sub(1, 1) ~= "{" then
+            Title = "{center}" ..Title;
+        end
+        XGUIEng.SetText(PortraitWidget.. "/MessagePortrait/PlayerName", Title);
+        XGUIEng.ShowWidget(PortraitWidget.. "/MessagePortrait/PlayerName", 1);
+    else
+        XGUIEng.ShowWidget(PortraitWidget.. "/MessagePortrait/PlayerName", 0);
+    end
+end
+
 function ModuleDiscourseSystem.Local:DisplayPageText(_PlayerID, _PageID)
+    self:ResetSubtitlesPosition(_PlayerID);
     local Page = self.Discourse[_PlayerID][_PageID];
     local SubtitlesWidget = "/InGame/Root/Normal/AlignBottomLeft/SubTitles";
     if not Page or not Page.Text or Page.Text == "" then
@@ -472,7 +492,6 @@ function ModuleDiscourseSystem.Local:SetSubtitlesPosition(_PlayerID, _PageID)
     local MotherWidget = "/InGame/Root/Normal/AlignBottomLeft/SubTitles";
     local Height = XGUIEng.GetTextHeight(MotherWidget.. "/VoiceText1", true);
     local W, H = XGUIEng.GetWidgetSize(MotherWidget.. "/VoiceText1");
-
     local X,Y = XGUIEng.GetWidgetLocalPosition(MotherWidget);
     if Page.Actor then
         XGUIEng.SetWidgetSize(MotherWidget.. "/BG", W + 10, Height + 120);
@@ -488,7 +507,7 @@ end
 function ModuleDiscourseSystem.Local:ResetSubtitlesPosition(_PlayerID)
     local Position = self.Discourse[_PlayerID].SubtitlesPosition;
     local SubtitleWidget = "/InGame/Root/Normal/AlignBottomLeft/SubTitles";
-    XGUIEng.SetWidgetScreenPosition(SubtitleWidget, Position[1], Position[2]);
+    XGUIEng.SetWidgetLocalPosition(SubtitleWidget, Position[1], Position[2]);
 end
 
 function ModuleDiscourseSystem.Local:OverrideTimerButtonClicked()
@@ -788,6 +807,7 @@ function ModuleDiscourseSystem.Local:DeactivateCinematicMode(_PlayerID)
     XGUIEng.ShowWidget("/InGame/ThroneRoomBars_Dodge", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", 0);
 
+    self:ResetSubtitlesPosition(_PlayerID);
     Camera.RTS_SetLookAtPosition(self.CameraBackup[1], self.CameraBackup[2]);
     Camera.RTS_SetRotationAngle(self.CameraBackup[3]);
     Camera.RTS_SetZoomFactor(self.CameraBackup[4]);
