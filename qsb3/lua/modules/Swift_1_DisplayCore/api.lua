@@ -49,24 +49,15 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- Blendet einen farbigen Hintergrund über der Spielwelt aber hinter dem
 -- Interface ein.
 --
--- @param[type=number] _R (Optional) Rotwert
--- @param[type=number] _G (Optional) Grünwert
--- @param[type=number] _B (Optional) Blauwert
--- @param[type=number] _A (Optional) Alphawert
+-- @param[type=number] _Red   (Optional) Rotwert (Standard: 0)
+-- @param[type=number] _Green (Optional) Grünwert (Standard: 0)
+-- @param[type=number] _Blue  (Optional) Blauwert (Standard: 0)
+-- @param[type=number] _Alpha (Optional) Alphawert (Standard: 255)
 -- @within Anwenderfunktionen
 --
-function API.ActivateColoredScreen(_R, _G, _B, _A)
-    if not GUI then
-        Logic.ExecuteInLuaLocalState(string.format(
-            "ModuleDisplayCore.Local:InterfaceActivateColoredBackground(%d, %d, %d, %d)",
-            (_R ~= nil and _R) or 0,
-            (_G ~= nil and _G) or 0,
-            (_B ~= nil and _B) or 0,
-            (_A ~= nil and _A) or 255
-        ));
-        return;
-    end
-    ModuleDisplayCore.Local:InterfaceActivateColoredBackground(_R, _G, _B, _A);
+function API.ActivateColoredScreen(_Red, _Green, _Blue, _Alpha)
+    -- Just to be compatible with the old version.
+    API.ActivateImageScreen("", _Red or 0, _Green or 0, _Blue or 0, _Alpha);
 end
 
 ---
@@ -75,11 +66,48 @@ end
 -- @within Anwenderfunktionen
 --
 function API.DeactivateColoredScreen()
+    -- Just to be compatible with the old version.
+    API.DeactivateImageScreen()
+end
+
+---
+-- Blendet eine Graphic über der Spielwelt aber hinter dem Interface ein.
+-- Die Grafik muss im 16:9-Format sein. Bei 4:3-Auflösungen wird
+-- links und rechts abgeschnitten.
+--
+-- @param[type=string] _Image Pfad zur Grafik
+-- @param[type=number] _Red   (Optional) Rotwert (Standard: 255)
+-- @param[type=number] _Green (Optional) Grünwert (Standard: 255)
+-- @param[type=number] _Blue  (Optional) Blauwert (Standard: 255)
+-- @param[type=number] _Alpha (Optional) Alphawert (Standard: 255)
+-- @within Anwenderfunktionen
+--
+function API.ActivateImageScreen(_Image, _Red, _Green, _Blue, _Alpha)
     if not GUI then
-        Logic.ExecuteInLuaLocalState("ModuleDisplayCore.Local:InterfaceDeactivateColoredBackground()");
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[ModuleDisplayCore.Local:InterfaceActivateImageBackground("%s", %d, %d, %d, %d)]],
+            _Image,
+            (_Red ~= nil and _Red) or 255,
+            (_Green ~= nil and _Green) or 255,
+            (_Blue ~= nil and _Blue) or 255,
+            (_Alpha ~= nil and _Alpha) or 255
+        ));
         return;
     end
-    ModuleDisplayCore.Local:InterfaceDeactivateColoredBackground();
+    ModuleDisplayCore.Local:InterfaceActivateImageBackground(_Image, _Red, _Green, _Blue, _Alpha);
+end
+
+---
+-- Deaktiviert ein angezeigtes Bild, wenn dieses angezeigt wird.
+--
+-- @within Anwenderfunktionen
+--
+function API.DeactivateImageScreen()
+    if not GUI then
+        Logic.ExecuteInLuaLocalState("ModuleDisplayCore.Local:InterfaceDeactivateImageBackground()");
+        return;
+    end
+    ModuleDisplayCore.Local:InterfaceDeactivateImageBackground();
 end
 
 ---

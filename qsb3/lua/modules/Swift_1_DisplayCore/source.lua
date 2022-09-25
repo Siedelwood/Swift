@@ -240,7 +240,7 @@ function ModuleDisplayCore.Local:OverrideInterfaceThroneroomForCinematicMode()
     end
 end
 
-function ModuleDisplayCore.Local:InterfaceActivateColoredBackground(_R, _G, _B, _A)
+function ModuleDisplayCore.Local:InterfaceActivateImageBackground(_Graphic, _R, _G, _B, _A)
     if self.PauseScreenShown then
         return;
     end
@@ -248,22 +248,31 @@ function ModuleDisplayCore.Local:InterfaceActivateColoredBackground(_R, _G, _B, 
 
     XGUIEng.PushPage("/InGame/Root/Normal/PauseScreen", false)
     XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 1);
+    if _Graphic and _Graphic ~= "" then
+        local size = {GUI.GetScreenSize()};
+        local u0, v0, u1, v1 = 0, 0, 1, 1;
+        if size[1]/size[2] < 1.6 then
+            u0 = u0 + (u0 / 0.125);
+            u1 = u1 - (u1 * 0.125);
+        end
+        XGUIEng.SetMaterialTexture("/InGame/Root/Normal/PauseScreen", 0, _Graphic);
+        XGUIEng.SetMaterialUV("/InGame/Root/Normal/PauseScreen", 0, u0, v0, u1, v1);
+    end
     XGUIEng.SetMaterialColor("/InGame/Root/Normal/PauseScreen", 0, _R, _G, _B, _A);
-
     API.SendScriptEventToGlobal( QSB.ScriptEvents.BlackScreenShown, GUI.GetPlayerID());
     API.SendScriptEvent(QSB.ScriptEvents.BlackScreenShown, GUI.GetPlayerID());
 end
 
-function ModuleDisplayCore.Local:InterfaceDeactivateColoredBackground()
+function ModuleDisplayCore.Local:InterfaceDeactivateImageBackground()
     if not self.PauseScreenShown then
         return;
     end
     self.PauseScreenShown = false;
 
     XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 0);
+    XGUIEng.SetMaterialTexture("/InGame/Root/Normal/PauseScreen", 0, "");
     XGUIEng.SetMaterialColor("/InGame/Root/Normal/PauseScreen", 0, 40, 40, 40, 180);
     XGUIEng.PopPage();
-
     API.SendScriptEventToGlobal( QSB.ScriptEvents.BlackScreenHidden, GUI.GetPlayerID());
     API.SendScriptEvent(QSB.ScriptEvents.BlackScreenHidden, GUI.GetPlayerID());
 end
