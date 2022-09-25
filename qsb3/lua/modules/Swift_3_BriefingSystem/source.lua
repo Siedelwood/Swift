@@ -832,16 +832,16 @@ function ModuleBriefingSystem.Local:GetLERP(_PlayerID)
         local Speed = Game.GameTimeGetFactor(GUI.GetPlayerID());
         local Factor = API.LERP(Anim.Started, CurrentTime, Anim.Duration);
         -- Optional camera soothing
-        -- Get the time between each tenth seconds to get rid of the
-        -- asynchronozity and fix the factor.
-        -- Note: This will have it's issues with slow machines.
+        -- Get the time between each tenth seconds and (try to) get rid of the
+        -- asynchronozity to fix the factor.
+        -- Note: This will have it's issues on some machines. This will also
+        -- work better in the History Edition (of all god damn things).
         if self.Briefing[_PlayerID].EnableCameraSoothing then
             if Anim.LastLogicTime ~= CurrentTime then
                 Anim.LastLogicTime = CurrentTime;
                 Anim.LastFrameworkTime = FrameworkTime;
             end
-            -- math.max will prevent backjumps when value is below 0
-            Factor = Factor + math.max((FrameworkTime - Anim.LastFrameworkTime) / Anim.Duration / 1000 * Speed, 0);
+            Factor = Factor + (FrameworkTime - Anim.LastFrameworkTime) / Anim.Duration / 1000 * Speed;
         end
         -- math.min will prevents flickering at the end of the animation
         return math.min(Factor, 1);
@@ -990,7 +990,7 @@ function ModuleBriefingSystem.Local:ActivateCinematicMode(_PlayerID)
     XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/BG", 1);
     XGUIEng.SetMaterialColor("/InGame/ThroneRoom/KnightInfo/BG", 0, 255, 255, 255, 0);
     XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/BG", 0, 0);
-    
+
     -- Portrait
     XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/LeftFrame", 1);
     XGUIEng.ShowAllSubWidgets("/InGame/ThroneRoom/KnightInfo/LeftFrame", 0);

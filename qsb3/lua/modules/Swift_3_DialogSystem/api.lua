@@ -76,12 +76,16 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- <tr>
 -- <td>Starting</td>
 -- <td>function</td>
--- <td>(Optional) Eine Funktion, die beim Start des Dialog ausgeführt wird.</td>
+-- <td>(Optional) Eine Funktion, die beim Start des Dialog ausgeführt wird.<br>
+-- Wird (im globalen Skript) vor QSB.ScriptEvents.DialogStarted aufgerufen!
+-- </td>
 -- </tr>
 -- <tr>
 -- <td>Finished</td>
 -- <td>function</td>
--- <td>(Optional) Eine Funktion, die nach Beendigung des Dialog ausgeführt wird.</td>
+-- <td>(Optional) Eine Funktion, die nach Beendigung des Dialog ausgeführt wird.<br>
+-- Wird (im globalen Skript) nach QSB.ScriptEvents.DialogEnded aufgerufen!
+-- </td>
 -- </tr>
 -- <tr>
 -- <td>RestoreCamera</td>

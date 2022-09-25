@@ -425,9 +425,9 @@ local function ThisWillForeverBeLostToTheVoidBecauseNoOneComesUpWithThatName()
     -- @usage
     -- GameCallback_QSB_OnEventReceived = function(_EventID, ...)
     --     if _EventID == QSB.ScriptEvents.EscapePressed then
-    --         API.Note("Player " ..arg[1].. " has pressed Escape!");
+    --         Logic.DEBUG_AddNote("Player " ..arg[1].. " has pressed Escape!");
     --     elseif _EventID == QSB.ScriptEvents.SaveGameLoaded then
-    --         API.Note("A save has been loaded!");
+    --         Logic.DEBUG_AddNote("A save has been loaded!");
     --     end
     -- end
     --
@@ -662,6 +662,8 @@ end
 
 ---
 -- Rundet eine Dezimalzahl kaufmännisch ab.
+-- 
+-- FIXME: Prüfen, ob nach neuem HE-Patch noch notwendig.
 --
 -- @param[type=string] _Value         Zu rundender Wert
 -- @param[type=string] _DecimalDigits Maximale Dezimalstellen
@@ -1041,7 +1043,7 @@ end
 --
 -- @usage
 -- local ListenerID = API.AddScriptEventListener(QSB.ScriptEvents.SaveGameLoaded, function()
---     API.Note("A save has been loaded!");
+--     Logic.DEBUG_AddNote("A save has been loaded!");
 -- end);
 --
 function API.AddScriptEventListener(_EventID, _Function)

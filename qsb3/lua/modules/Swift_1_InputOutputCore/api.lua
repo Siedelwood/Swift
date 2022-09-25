@@ -389,6 +389,7 @@ end
 -- String übergeben wird. In diesem Fall wurde nichts eingegeben.
 -- @within Anwenderfunktionen
 --
+-- @param[type=number]  _PlayerID   Für diesen Spieler anzeigen
 -- @param[type=boolean] _AllowDebug Debug Commands auswerten
 -- @usage
 -- -- Debug Options werden geblockt

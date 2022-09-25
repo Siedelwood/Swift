@@ -51,12 +51,16 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- <tr>
 -- <td>Starting</td>
 -- <td>function</td>
--- <td>(Optional) Eine Funktion, die beim Start der Cutscene ausgeführt wird.</td>
+-- <td>(Optional) Eine Funktion, die beim Start der Cutscene ausgeführt wird.<br>
+-- Wird (im globalen Skript) vor QSB.ScriptEvents.CutsceneStarted aufgerufen!
+-- </td>
 -- </tr>
 -- <tr>
 -- <td>Finished</td>
 -- <td>function</td>
--- <td>(Optional) Eine Funktion, die nach Beendigung der Cutscene ausgeführt wird.</td>
+-- <td>(Optional) Eine Funktion, die nach Beendigung der Cutscene ausgeführt wird.<br>
+-- Wird (im globalen Skript) nach QSB.ScriptEvents.CutsceneEnded aufgerufen!
+-- </td>
 -- </tr>
 -- <tr>
 -- <td>EnableGlobalImmortality</td>

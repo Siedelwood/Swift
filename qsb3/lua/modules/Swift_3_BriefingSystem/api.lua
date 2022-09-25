@@ -58,12 +58,16 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- <tr>
 -- <td>Starting</td>
 -- <td>function</td>
--- <td>(Optional) Eine Funktion, die beim Start des Briefing ausgeführt wird.</td>
+-- <td>(Optional) Eine Funktion, die beim Start des Briefing ausgeführt wird.<br>
+-- Wird (im globalen Skript) vor QSB.ScriptEvents.BriefingStarted aufgerufen!
+-- </td>
 -- </tr>
 -- <tr>
 -- <td>Finished</td>
 -- <td>function</td>
--- <td>(Optional) Eine Funktion, die nach Beendigung des Briefing ausgeführt wird.</td>
+-- <td>(Optional) Eine Funktion, die nach Beendigung des Briefing ausgeführt wird.<br>
+-- Wird (im globalen Skript) nach QSB.ScriptEvents.BriefingEnded aufgerufen!
+-- </td>
 -- </tr>
 -- <tr>
 -- <td>EnableGlobalImmortality</td>
@@ -163,9 +167,6 @@ function API.StartBriefing(_Briefing, _Name, _PlayerID)
             error("API.StartBriefing (" ..Name.. ", Page #" ..i.. "): Page is not initialized!");
             return;
         end
-    end
-    if _Briefing.EnableCameraSoothing == nil then
-        _Briefing.EnableCameraSoothing = false;
     end
     if _Briefing.EnableSky == nil then
         _Briefing.EnableSky = true;

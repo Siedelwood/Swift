@@ -676,7 +676,7 @@ end
 --
 -- @usage -- Wird die Ware angeboten?
 -- if API.IsGoodOrUnitOffered(4, Goods.G_Bread) then
---     API.Note("Brot wird von Spieler 4 angeboten.");
+--     Logic.DEBUG_AddNote("Brot wird von Spieler 4 angeboten.");
 -- end
 --
 function API.IsGoodOrUnitOffered(_PlayerID, _GoodOrEntityType)
