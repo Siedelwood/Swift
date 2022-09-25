@@ -6,13 +6,25 @@ end
 
 function CreateInitiatorQuest()
     AddQuest {
+        Name        = "TestNpcQuest_1",
+        Suggestion  = "This is another quest with a different actor.",
+        Success     = "Success Message",
+        Failure     = "Failure Message",
+        Receiver    = 1,
+        Sender      = 4,
+
+        Goal_NoChange(),
+        Trigger_Time(0),
+    }
+
+    AddQuest {
         Name        = "TestNpcQuest1",
         Suggestion  = "Speak to this npc.",
         Receiver    = 1,
 
         Goal_NPC("npc1", "-"),
         Reward_MapScriptFunction("CreateInitiatorCallback"),
-        Trigger_Time(0),
+        Trigger_Time(5),
     }
 
     AddQuest {
@@ -22,7 +34,7 @@ function CreateInitiatorQuest()
         Sender      = 2,
 
         Goal_NoChange(),
-        Trigger_Time(5),
+        Trigger_Time(10),
     }
 
     AddQuest {
@@ -32,15 +44,15 @@ function CreateInitiatorQuest()
         Sender      = 2,
 
         Goal_NoChange(),
-        Trigger_Dialog("DialogTest1", 1, 5),
+        Trigger_Discourse("DialogTest1", 1, 5),
     }
 end
 
 function CreateInitiatorCallback(_Behavior, _Quest)
-    TypewriterTest(_Quest.ReceivingPlayer);
-    CutsceneTest("CutsceneTest1", _Quest.ReceivingPlayer);
-    BriefingTest("BriefingTest1", _Quest.ReceivingPlayer);
-    DialogTest("DialogTest1", _Quest.ReceivingPlayer);
+    -- TypewriterTest(_Quest.ReceivingPlayer);
+    -- CutsceneTest("CutsceneTest1", _Quest.ReceivingPlayer);
+    -- BriefingTest("BriefingTest1", _Quest.ReceivingPlayer);
+    DialogTest2("DialogTest1", _Quest.ReceivingPlayer);
 end
 
 -- -------------------------------------------------------------------------- --
@@ -135,5 +147,44 @@ function DialogTest(_Name, _PlayerID)
         -- ]]));
     end
     API.StartDialog(Dialog, _Name, _PlayerID);
+end
+
+-- -------------------------------------------------------------------------- --
+
+function DialogTest2(_Name, _PlayerID)
+    local Dialog = {
+        EnableFoW = false,
+        EnableBorderPins = false,
+        RestoreGameSpeed = true,
+        RestoreCamera = true,
+    };
+    local AP, ASP = API.AddDiscoursePages(Dialog);
+
+    AP {
+        Name    = "Page1",
+        Title   = "NPC",
+        Text    = "I aren't done drowning you in useless text.",
+        Actor   = 8,
+        Camera  = {
+            Position = "npc1",
+            Dialog   = true,
+        }
+    };
+    AP {
+        Name    = "Page2",
+        Title   = "Hero",
+        Text    = "Maybe I should make your fat neck spin...",
+        Actor   = 1,
+        Camera  = {
+            Position = "hero",
+            Dialog   = true,
+        }
+    };
+
+    Dialog.Starting = function(_Data)
+    end
+    Dialog.Finished = function(_Data)
+    end
+    API.StartDiscourse(Dialog, _Name, _PlayerID);
 end
 
