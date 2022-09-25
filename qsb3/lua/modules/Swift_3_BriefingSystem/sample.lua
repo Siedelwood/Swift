@@ -197,7 +197,7 @@ NormalDialogBriefing("Briefing1", 1);
 -- Du kannst einen normalen Trigger innerhalb eines Quests nutzen und den Namen
 -- dort angeben. Du kannst aber auch direkt abfragen, z.B. in einem Job.
 
-if API.GetCinematicEventStatus("Briefing1", 1) == QSB.CinematicEventStatus.Concluded then
+if API.GetCinematicEventStatus("Briefing1", 1) == CinematicEventStatus.Concluded then
     -- mach was
 end
 

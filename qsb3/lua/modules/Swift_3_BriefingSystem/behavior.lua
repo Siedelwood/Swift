@@ -140,7 +140,7 @@ function B_Trigger_Briefing:AddParameter(_Index, _Parameter)
 end
 
 function B_Trigger_Briefing:CustomFunction(_Quest)
-    if API.GetCinematicEventStatus(self.BriefingName, self.PlayerID) == QSB.CinematicEventStatus.Concluded then
+    if API.GetCinematicEventStatus(self.BriefingName, self.PlayerID) == CinematicEventStatus.Concluded then
         if self.WaitTime and self.WaitTime > 0 then
             self.WaitTimeTimer = self.WaitTimeTimer or Logic.GetTime();
             if Logic.GetTime() >= self.WaitTimeTimer + self.WaitTime then
