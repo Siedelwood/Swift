@@ -79,6 +79,7 @@ function ModuleEntityEventCore.Global:OnGameStart()
     QSB.ScriptEvents.ThiefInfiltratedBuilding = API.RegisterScriptEvent("Event_ThiefInfiltratedBuilding");
     QSB.ScriptEvents.ThiefDeliverEarnings = API.RegisterScriptEvent("Event_ThiefDeliverEarnings");
     QSB.ScriptEvents.BuildingConstructed = API.RegisterScriptEvent("Event_BuildingConstructed");
+    QSB.ScriptEvents.BuildingUpgradeCollapsed = API.RegisterScriptEvent("Event_BuildingUpgradeCollapsed");
     QSB.ScriptEvents.BuildingUpgraded = API.RegisterScriptEvent("Event_BuildingUpgraded");
 
     self:StartTriggers();
@@ -194,6 +195,12 @@ function ModuleEntityEventCore.Global:OverrideCallback()
 	GameCallback_OnBuildingUpgradeFinished = function(_PlayerID, _EntityID, _NewUpgradeLevel)
 		GameCallback_OnBuildingUpgradeFinished_Orig_QSB_EntityCore(_PlayerID, _EntityID, _NewUpgradeLevel);
         ModuleEntityEventCore.Global:TriggerUpgradeCompleteEvent(_PlayerID, _EntityID, _NewUpgradeLevel);
+    end
+
+    GameCallback_OnUpgradeLevelCollapsed_Orig_QSB_EntityCore = GameCallback_OnUpgradeLevelCollapsed;
+    GameCallback_OnUpgradeLevelCollapsed = function(_PlayerID, _BuildingID, _NewUpgradeLevel)
+        GameCallback_OnUpgradeLevelCollapsed_Orig_QSB_EntityCore(_PlayerID, _BuildingID, _NewUpgradeLevel);
+        ModuleEntityEventCore.Global:TriggerUpgradeCollapsedEvent(_PlayerID, _BuildingID, _NewUpgradeLevel);
     end
 end
 
@@ -329,6 +336,16 @@ function ModuleEntityEventCore.Global:TriggerUpgradeCompleteEvent(_PlayerID, _En
     ));
 end
 
+function ModuleEntityEventCore.Global:TriggerUpgradeCollapsedEvent(_PlayerID, _EntityID, _NewUpgradeLevel)
+    API.SendScriptEvent(QSB.ScriptEvents.BuildingUpgradeCollapsed, _EntityID, _PlayerID, _NewUpgradeLevel);
+    Logic.ExecuteInLuaLocalState(string.format(
+        "API.SendScriptEvent(QSB.ScriptEvents.BuildingUpgradeCollapsed, %d, %d, %d)",
+        _EntityID,
+        _PlayerID,
+        _NewUpgradeLevel
+    ));
+end
+
 function ModuleEntityEventCore.Global:StartTriggers()
     function ModuleEntityEventCore_Trigger_EveryTurn()
         if Logic.GetCurrentTurn() > 0 then
@@ -450,6 +467,7 @@ function ModuleEntityEventCore.Local:OnGameStart()
     QSB.ScriptEvents.ThiefInfiltratedBuilding = API.RegisterScriptEvent("Event_ThiefInfiltratedBuilding");
     QSB.ScriptEvents.ThiefDeliverEarnings = API.RegisterScriptEvent("Event_ThiefDeliverEarnings");
     QSB.ScriptEvents.BuildingConstructed = API.RegisterScriptEvent("Event_BuildingConstructed");
+    QSB.ScriptEvents.BuildingUpgradeCollapsed = API.RegisterScriptEvent("Event_BuildingUpgradeCollapsed");
     QSB.ScriptEvents.BuildingUpgraded = API.RegisterScriptEvent("Event_BuildingUpgraded");
 
     self:OverrideAfterBuildingPlacement();
