@@ -32,7 +32,7 @@ end
 B_Reprisal_Dialog = {
     Name = "Reprisal_Dialog",
     Description = {
-        en = "Reprisal: Calls a function to start an new briefing.",
+        en = "Reprisal: Calls a function to start an new dialog.",
         de = "Lohn: Ruft die Funktion auf und startet das enthaltene Dialog.",
     },
     Parameter = {
@@ -88,7 +88,7 @@ end
 
 B_Reward_Dialog = Swift:CopyTable(B_Reprisal_Dialog);
 B_Reward_Dialog.Name = "Reward_Dialog";
-B_Reward_Dialog.Description.en = "Reward: Calls a function to start an new briefing.";
+B_Reward_Dialog.Description.en = "Reward: Calls a function to start an new dialog.";
 B_Reward_Dialog.Description.de = "Lohn: Ruft die Funktion auf und startet das enthaltene Dialog.";
 B_Reward_Dialog.GetReprisalTable = nil;
 
@@ -114,7 +114,7 @@ end
 B_Trigger_Dialog = {
     Name = "Trigger_Dialog",
     Description = {
-        en = "Trigger: Checks if an briefing has concluded and starts the quest if so.",
+        en = "Trigger: Checks if an dialog has concluded and starts the quest if so.",
         de = "Auslöser: Prüft, ob ein Dialog beendet ist und startet dann den Quest.",
     },
     Parameter = {

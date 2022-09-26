@@ -16,30 +16,8 @@ You may use and modify this file unter the terms of the MIT licence.
 -- gestartet werden. Mittels Sprüngen und Leerseiten kann innerhalb des
 -- Dialog navigiert werden.
 --
--- <h4>Bekannte Probleme</h4>
--- Sobald eine beliebige Voice Message angezeigt wird - <b>alle Quests sind
--- ebenfalls Voice Messages</b> - kann es zu verschiedenen Problemen kommen,
--- die mit dem Spiel selbst zusammen hängen und nicht umgangen werden können.
---
--- Voice Messages jeglicher Art - <b>auch eine aneinanderreihung von Quests als
--- vermeintlicher Workaround</b> - zu benutzen, wird <b>nicht empfohlen</b> und
--- geschieht auf <b>eigene Gefahr</b>!
--- <ul>
--- <li>
--- <b>Rhian over the Sea Chapell</b><br>
--- Jede Voice Message hat die
--- Chance, dass die Message Queue des Spiels hängen bleibt und dann ein leeres
--- Fenster mit dem Titel "Rhian over the Sea Chapell" angezeigt wird, welches
--- das Portrait Window dauerhaft blockiert und verhindert, dass weitere Voice
--- Messages - <b>auch Quests</b> - angezeigt werden können.
--- </li>
--- <li>
--- <b>Dialog Actor bleibt kurz stehen</b><br>
--- Nach einem Dialog kann es passieren, dass der Actor der letzten Nachricht
--- für einige Sekunden stehen bleibt, bevor ein neuer Quest angezeigt wird.
--- Das Problem ist wahrscheinlich verwand mit Rian over the Sea Chapell.
--- </li>
--- </ul>
+-- Das Dialogsystem soll eine Alternative zu den Briefings darstellen, denen
+-- die Darstellung wie im Thronsaal zu "unpersönlich" ist.
 --
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
@@ -201,7 +179,7 @@ end
 -- @return[type=function] <a href="#ASP">ASP</a>
 -- @within Anwenderfunktionen
 --
--- @usage local AP, ASP = API.AddPages(Briefing);
+-- @usage local AP, ASP = API.AddPages(Dialog);
 --
 function API.AddDialogPages(_Dialog)
     _Dialog.GetPage = function(self, _NameOrID)
@@ -210,8 +188,6 @@ function API.AddDialogPages(_Dialog)
     end
 
     local AP = function(_Page)
-        _Dialog.PageAnimations = _Dialog.PageAnimations or {};
-
         _Dialog.Length = (_Dialog.Length or 0) +1;
         if type(_Page) == "table" then
             local Identifier = "Page" ..(#_Dialog +1);
@@ -237,6 +213,10 @@ function API.AddDialogPages(_Dialog)
                 end
                 if _Page.Position and type(_Page.Position) ~= "table" then
                     local ID = GetID(_Page.Position);
+                    local Orientation = Logic.GetEntityOrientation(ID) +90;
+                    _Page.Rotation = Orientation;
+                elseif _Page.Target then
+                    local ID = GetID(_Page.Target);
                     local Orientation = Logic.GetEntityOrientation(ID) +90;
                     _Page.Rotation = Orientation;
                 end
@@ -305,7 +285,7 @@ function API.AddDialogPages(_Dialog)
             Title        = Title,
             Text         = Text,
             Actor        = Sender,
-            Position     = Position,
+            Target       = Position,
             DialogCamera = Dialog == true,
             Action       = Action,
         };
@@ -327,39 +307,72 @@ end
 -- <table border="1">
 -- <tr>
 -- <td><b>Einstellung</b></td>
+-- <td><b>Typ</b></td>
 -- <td><b>Beschreibung</b></td>
 -- </tr>
 -- <tr>
 -- <td>Actor</td>
--- <td>(optional) Spieler-ID oder Model des Actors</td>
+-- <td>number</td>
+-- <td>(optional) Spieler-ID des Akteur</td>
 -- </tr>
 -- <tr>
 -- <td>Titel</td>
--- <td>(optional) Zeigt den Namen des Sprechers an. (Nur mit Actor)</td>
+-- <td>string</td>
+-- <td>(optional) Zeigt den Namen des Sprechers an. (Nur mit Akteur)</td>
 -- </tr>
 -- <tr>
 -- <td>Text</td>
+-- <td>string</td>
 -- <td>(optional) Zeigt Text auf der Dialogseite an.</td>
 -- </tr>
 -- <tr>
 -- <td>Action</td>
+-- <td>function</td>
 -- <td>(optional) Führt eine Funktion aus, wenn die aktuelle Dialogseite angezeigt wird.</td>
 -- </tr>
 -- <tr>
 -- <td>Position</td>
+-- <td>any (string|number|table)</td>
 -- <td>Legt die Kameraposition der Seite fest.</td>
 -- </tr>
 -- <tr>
+-- <td>Target</td>
+-- <td>any (string|number)</td>
+-- <td>Legt das Entity fest, dem die Kamera folgt.</td>
+-- </tr>
+-- <tr>
 -- <td>Distance</td>
+-- <td>number</td>
 -- <td>(optional) Bestimmt die Entfernung der Kamera zur Position.</td>
 -- </tr>
 -- <tr>
 -- <td>Rotation</td>
+-- <td>number</td>
 -- <td>(optional) Rotationswinkel der Kamera. Werte zwischen 0 und 360 sind möglich.</td>
 -- </tr>
 -- <tr>
 -- <td>MC</td>
+-- <td>table</td>
 -- <td>(optional) Table mit möglichen Dialogoptionen. (Multiple Choice)</td>
+-- </tr>
+-- <tr>
+-- <td>FadeIn</td>
+-- <td>number</td>
+-- <td>(Optional) Dauer des Einblendens von Schwarz zu Beginn der Page.<br>
+-- Die Page benötigt eine Anzeigedauer!</td>
+-- </tr>
+-- <tr>
+-- <td>FadeOut</td>
+-- <td>number</td>
+-- <td>(Optional) Dauer des Abblendens zu Schwarz am Ende der Page.<br>
+-- Die Page benötigt eine Anzeigedauer!</td>
+-- </tr>
+-- <tr>
+-- <td>FaderAlpha</td>
+-- <td>number</td>
+-- <td>(Optional) Zeigt entweder die Blende an (1) oder nicht (0). Per Default
+-- wird die Blende nicht angezeigt. <br><b>Zwischen einer Seite mit FadeOut und
+-- der nächsten mit FadeIn muss immer eine Seite mit FaderAlpha sein!</b></td>
 -- </tr>
 -- </table>
 --
@@ -423,8 +436,8 @@ end
 -- den Dialog gebunden.
 --
 -- @param[type=string]   _Name         (Optional) Name der Seite
--- @param[type=number]   _Sender       Spieler-ID oder Actor Model
--- @param[type=string]   _Position     Position der Kamera
+-- @param[type=number]   _Sender       Spieler-ID des Akteur
+-- @param[type=string]   _Target       Entity auf die die Kamera schaut
 -- @param[type=string]   _Title        Name des Sprechers
 -- @param[type=string]   _Text         Text der Seite
 -- @param[type=boolean]  _DialogCamera Nahsicht an/aus

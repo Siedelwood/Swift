@@ -160,10 +160,16 @@ function DialogTest2(_Name, _PlayerID)
     };
     local AP, ASP = API.AddDialogPages(Dialog);
 
+    AP {
+        Name         = "Page0",
+        Duration     = 2,
+        FadeIn       = 2,
+        Position     = "npc1",
+        DialogCamera = true,
+    };
     ASP("Page1", 8, "npc1", "NPC", "I aren't done drowning you in useless text.", true)
     AP {
         Name         = "Page2",
-        Title        = "No Actor",
         Text         = "Page without an actor. How sad...",
         Position     = "hero",
         DialogCamera = true,
@@ -195,6 +201,13 @@ function DialogTest2(_Name, _PlayerID)
         Title        = "Hero",
         Text         = "Maybe I should make your fat neck spin...",
         Actor        = 1,
+        Position     = "hero",
+        DialogCamera = true,
+    };
+    AP {
+        Name         = "Page5",
+        Duration     = 2,
+        FadeOut      = 2,
         Position     = "hero",
         DialogCamera = true,
     };

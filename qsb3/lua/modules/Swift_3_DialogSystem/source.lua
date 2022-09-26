@@ -53,11 +53,10 @@ function ModuleDialogSystem.Global:OnGameStart()
     QSB.ScriptEvents.DialogEnded = API.RegisterScriptEvent("Event_DialogEnded");
     QSB.ScriptEvents.DialogPageShown = API.RegisterScriptEvent("Event_DialogPageShown");
     QSB.ScriptEvents.DialogOptionSelected = API.RegisterScriptEvent("Event_DialogOptionSelected");
-    
+
     for i= 1, 8 do
         self.DialogQueue[i] = {};
     end
-    -- Updates the dialog queue for all players
     API.StartHiResJob(function()
         ModuleDialogSystem.Global:UpdateQueue();
         ModuleDialogSystem.Global:DialogExecutionController();
@@ -91,6 +90,7 @@ function ModuleDialogSystem.Global:OnEvent(_ID, _Event, ...)
     end
 end
 
+-- Manages the actual activation of dialogues.
 function ModuleDialogSystem.Global:UpdateQueue()
     for i= 1, 8 do
         if self:CanStartDialog(i) then
@@ -102,6 +102,7 @@ function ModuleDialogSystem.Global:UpdateQueue()
     end
 end
 
+-- Manages auto skipping of pages.
 function ModuleDialogSystem.Global:DialogExecutionController()
     for i= 1, 8 do
         if self.Dialog[i] then
@@ -116,6 +117,8 @@ function ModuleDialogSystem.Global:DialogExecutionController()
     end
 end
 
+-- Does not really start the dialog. It is pushed inside the global queue for
+-- all informational stuff and executed later by a job.
 function ModuleDialogSystem.Global:StartDialog(_Name, _PlayerID, _Data)
     self.DialogQueue[_PlayerID] = self.DialogQueue[_PlayerID] or {};
     ModuleDisplayCore.Global:PushCinematicEventToQueue(
@@ -129,7 +132,8 @@ end
 function ModuleDialogSystem.Global:EndDialog(_PlayerID)
     Logic.SetGlobalInvulnerability(0);
     Logic.ExecuteInLuaLocalState(string.format(
-        [[ModuleDialogSystem.Local:ResetTimerButtons(%d)]],
+        [[ModuleDialogSystem.Local:ResetTimerButtons(%d);
+          Camera.RTS_FollowEntity(0);]],
         _PlayerID
     ));
     API.SendScriptEvent(
@@ -238,6 +242,9 @@ function ModuleDialogSystem.Global:DisplayPage(_PlayerID, _PageID)
     );
 end
 
+-- There is no skip button but I want to keep the original names to make
+-- comparisons easier for other authors who might want to implement yet
+-- another information system.
 function ModuleDialogSystem.Global:SkipButtonPressed(_PlayerID, _PageID)
     if not self.Dialog[_PlayerID] then
         return;
@@ -311,9 +318,9 @@ function ModuleDialogSystem.Global:GetPageIDByName(_PlayerID, _Name)
 end
 
 function ModuleDialogSystem.Global:CanStartDialog(_PlayerID)
-    return  self.Dialog[_PlayerID] == nil and
-            not API.IsCinematicEventActive(_PlayerID) and
-            not API.IsLoadscreenVisible();
+    return self.Dialog[_PlayerID] == nil and
+           not API.IsCinematicEventActive(_PlayerID) and
+           not API.IsLoadscreenVisible();
 end
 
 -- Local -------------------------------------------------------------------- --
@@ -324,13 +331,12 @@ function ModuleDialogSystem.Local:OnGameStart()
     QSB.ScriptEvents.DialogPageShown = API.RegisterScriptEvent("Event_DialogPageShown");
     QSB.ScriptEvents.DialogOptionSelected = API.RegisterScriptEvent("Event_DialogOptionSelected");
 
-    self:OverrideTimerButtonClicked();
     self:OverrideThroneRoomFunctions();
 end
 
 function ModuleDialogSystem.Local:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.EscapePressed then
-        self:SkipButtonPressed(arg[1]);
+        -- Nothing to do?
     elseif _ID == QSB.ScriptEvents.DialogStarted then
         self:StartDialog(arg[1], arg[2]);
     elseif _ID == QSB.ScriptEvents.DialogEnded then
@@ -405,6 +411,7 @@ function ModuleDialogSystem.Local:DisplayPage(_PlayerID, _PageID, _PageData)
     if type(self.Dialog[_PlayerID][_PageID]) == "table" then
         self.Dialog[_PlayerID][_PageID].Started = Logic.GetTime();
         self:DisplayPageFader(_PlayerID, _PageID);
+        self:DisplayPagePosition(_PlayerID, _PageID);
         self:DisplayPageActor(_PlayerID, _PageID);
         self:DisplayPageTitle(_PlayerID, _PageID);
         self:DisplayPageText(_PlayerID, _PageID);
@@ -412,6 +419,27 @@ function ModuleDialogSystem.Local:DisplayPage(_PlayerID, _PageID, _PageData)
             self:DisplayPageOptionsDialog(_PlayerID, _PageID);
         end
     end
+end
+
+function ModuleDialogSystem.Local:DisplayPagePosition(_PlayerID, _PageID)
+    local Page = self.Dialog[_PlayerID][_PageID];
+    -- Camera
+    Camera.RTS_FollowEntity(0);
+    if Page.Position then
+        local Position = Page.Position;
+        if type(Position) ~= "table" then
+            Position = GetPosition(Page.Position);
+        end
+        Camera.RTS_SetLookAtPosition(Position.X, Position.Y);
+    elseif Page.Target then
+        Camera.RTS_FollowEntity(GetID(Page.Target));
+    else
+        assert(false);
+    end
+    Camera.RTS_SetRotationAngle(Page.Rotation);
+    Camera.RTS_SetZoomFactor(Page.Distance / 18000);
+    -- FIXME: This does not work?
+    Camera.RTS_SetZoomAngle(Page.Angle);
 end
 
 function ModuleDialogSystem.Local:DisplayPageFader(_PlayerID, _PageID)
@@ -487,6 +515,7 @@ function ModuleDialogSystem.Local:DisplayPageText(_PlayerID, _PageID)
     local Page = self.Dialog[_PlayerID][_PageID];
     local SubtitlesWidget = "/InGame/Root/Normal/AlignBottomLeft/SubTitles";
     if not Page or not Page.Text or Page.Text == "" then
+        XGUIEng.SetText(SubtitlesWidget.. "/VoiceText1", " ");
         XGUIEng.ShowWidget(SubtitlesWidget, 0);
         return;
     end
@@ -527,23 +556,8 @@ function ModuleDialogSystem.Local:ResetSubtitlesPosition(_PlayerID)
     XGUIEng.SetWidgetLocalPosition(SubtitleWidget, Position[1], Position[2]);
 end
 
-function ModuleDialogSystem.Local:OverrideTimerButtonClicked()
-    GUI_Interaction.TimerButtonClicked_Orig_ModuleDialogSystem = GUI_Interaction.TimerButtonClicked;
-    GUI_Interaction.TimerButtonClicked = function ()
-        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
-        local MotherContainerName = XGUIEng.GetWidgetNameByID(XGUIEng.GetWidgetsMotherID(CurrentWidgetID));
-        local TimerNumber = tonumber(MotherContainerName);
-        local QuestIndex = g_Interaction.TimerQuests[TimerNumber];
-
-        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/Update", 1);
-        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles/Update", 1);
-        if not (g_Interaction.CurrentMessageQuestIndex == QuestIndex and not QuestLog.IsQuestLogShown()) then
-            ModuleDialogSystem.Local:ResetTimerButtons(GUI.GetPlayerID());
-        end
-        GUI_Interaction.TimerButtonClicked_Orig_ModuleDialogSystem();
-    end
-end
-
+-- This is needed to reset the timer buttons after the portrait widget has been
+-- abused to show the actor in the dialog.
 function ModuleDialogSystem.Local:ResetTimerButtons(_PlayerID)
     if GUI.GetPlayerID() ~= _PlayerID then
         return;
@@ -575,6 +589,7 @@ function ModuleDialogSystem.Local:DisplayActorPortrait(_PlayerID, _HeadModel)
     local PortraitWidget = "/InGame/Root/Normal/AlignBottomLeft/Message";
     local Actor = g_PlayerPortrait[_PlayerID];
     if _HeadModel then
+        -- Just because I am paranoid... Should never happen.
         if not Models["Heads_" .. tostring(_HeadModel)] then
             _HeadModel = "H_NPC_Generic_Trader";
         end
@@ -593,10 +608,12 @@ function ModuleDialogSystem.Local:DisplayPageOptionsDialog(_PlayerID, _PageID)
     local Page = self.Dialog[_PlayerID][_PageID];
     local Listbox = XGUIEng.GetWidgetID(Widget .. "/ListBox");
 
+    -- Save original coordinates of sound provider selection
     self.Dialog[_PlayerID].MCSelectionBoxPosition = {
         XGUIEng.GetWidgetScreenPosition(Widget)
     };
 
+    -- Fill sound provider selection with options
     XGUIEng.ListBoxPopAll(Listbox);
     self.Dialog[_PlayerID].MCSelectionOptionsMap = {};
     for i=1, #Page.MC, 1 do
@@ -607,7 +624,7 @@ function ModuleDialogSystem.Local:DisplayPageOptionsDialog(_PlayerID, _PageID)
     end
     XGUIEng.ListBoxSetSelectedIndex(Listbox, 0);
 
-    -- Choice
+    -- Set choice position
     local ChoiceSize = {XGUIEng.GetWidgetScreenSize(Widget)};
     local CX = math.ceil((Screen[1] * 0.05) + (ChoiceSize[1] /2));
     local CY = math.ceil(Screen[2] - (ChoiceSize[2] + 60 * (Screen[2]/540)));
@@ -619,7 +636,7 @@ function ModuleDialogSystem.Local:DisplayPageOptionsDialog(_PlayerID, _PageID)
     XGUIEng.PushPage(Widget, false);
     XGUIEng.ShowWidget(Widget, 1);
 
-    -- Text
+    -- Set text position
     if not Page.Actor then
         local TextWidget = "/InGame/Root/Normal/AlignBottomLeft/SubTitles";
         local DX,DY = XGUIEng.GetWidgetLocalPosition(TextWidget);
@@ -649,18 +666,6 @@ end
 
 function ModuleDialogSystem.Local:ThroneRoomCameraControl(_PlayerID, _Page)
     if _Page then
-        -- Camera
-        local Position = _Page.Position;
-        if type(Position) ~= "table" then
-            Position = GetPosition(_Page.Position);
-        end
-        Camera.RTS_SetLookAtPosition(Position.X, Position.Y);
-        Camera.RTS_SetRotationAngle(_Page.Rotation);
-        Camera.RTS_SetZoomFactor(_Page.Distance / 18000);
-        -- FIXME: This does not work?
-        Camera.RTS_SetZoomAngle(_Page.Angle);
-
-        -- Multiple Choice
         if self.Dialog[_PlayerID].MCSelectionIsShown then
             local Widget = "/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer";
             if XGUIEng.IsWidgetShown(Widget) == 0 then
@@ -677,13 +682,6 @@ function ModuleDialogSystem.Local:ConvertPosition(_Table)
         Position = GetPosition(_Table);
     end
     return Position.X, Position.Y, Position.Z;
-end
-
-function ModuleDialogSystem.Local:SkipButtonPressed(_PlayerID, _Page)
-    if not self.Dialog[_PlayerID] then
-        return;
-    end
-    -- Nothing to do?
 end
 
 function ModuleDialogSystem.Local:GetCurrentDialog(_PlayerID)
@@ -721,6 +719,8 @@ function ModuleDialogSystem.Local:IsAnyCinematicEventActive(_PlayerID)
 end
 
 function ModuleDialogSystem.Local:OverrideThroneRoomFunctions()
+    -- We only need this to update the sound provider list box for the multiple
+    -- choice options. We do not even use the throneroom camera.
     GameCallback_Camera_ThroneroomCameraControl_Orig_ModuleDialogSystem = GameCallback_Camera_ThroneroomCameraControl;
     GameCallback_Camera_ThroneroomCameraControl = function(_PlayerID)
         GameCallback_Camera_ThroneroomCameraControl_Orig_ModuleDialogSystem(_PlayerID);
@@ -737,16 +737,19 @@ function ModuleDialogSystem.Local:OverrideThroneRoomFunctions()
 end
 
 function ModuleDialogSystem.Local:ActivateCinematicMode(_PlayerID)
+    -- Check for cinematic mode running and UI player
     if self.CinematicActive or GUI.GetPlayerID() ~= _PlayerID then
         return;
     end
     self.CinematicActive = true;
 
+    -- Pop loadscreen if visible
     local LoadScreenVisible = API.IsLoadscreenVisible();
     if LoadScreenVisible then
         XGUIEng.PopPage();
     end
 
+    -- Show throneroom updater
     XGUIEng.ShowWidget("/InGame/ThroneRoom", 1);
     XGUIEng.PushPage("/InGame/ThroneRoom/Main", false);
     XGUIEng.ShowWidget("/InGame/ThroneRoomBars", 0);
@@ -758,6 +761,7 @@ function ModuleDialogSystem.Local:ActivateCinematicMode(_PlayerID)
     XGUIEng.ShowAllSubWidgets("/InGame/ThroneRoom/Main", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/updater", 1);
 
+    -- Show message stuff
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/SpeechStartAgainOrStop", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/SpeechButtons/SpeechStartAgainOrStop", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/Update", 0);
@@ -766,6 +770,7 @@ function ModuleDialogSystem.Local:ActivateCinematicMode(_PlayerID)
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionDialog/Title", " ");
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionDialog/Objectives", " ");
 
+    -- Change ui state for cinematic
     GUI.ClearSelection();
     GUI.ClearNotes();
     GUI.ForbidContextSensitiveCommandsInSelectionState();
@@ -785,21 +790,25 @@ function ModuleDialogSystem.Local:ActivateCinematicMode(_PlayerID)
     Display.SetUserOptionOcclusionEffect(0);
     Camera.SwitchCameraBehaviour(0);
 
+    -- Prepare the fader
     InitializeFader();
     g_Fade.To = 0;
     SetFaderAlpha(0);
 
+    -- Push loadscreen if previously visible
     if LoadScreenVisible then
         XGUIEng.PushPage("/LoadScreen/LoadScreen", false);
     end
 end
 
 function ModuleDialogSystem.Local:DeactivateCinematicMode(_PlayerID)
+    -- Check for cinematic mode running and UI player
     if not self.CinematicActive or GUI.GetPlayerID() ~= _PlayerID then
         return;
     end
     self.CinematicActive = false;
 
+    -- Reset ui state
     g_Fade.To = 0;
     SetFaderAlpha(0);
     XGUIEng.PopPage();
@@ -817,19 +826,18 @@ function ModuleDialogSystem.Local:DeactivateCinematicMode(_PlayerID)
         Display.SetUserOptionOcclusionEffect(1);
     end
 
-    XGUIEng.SetText("/InGame/Root/Normal/AlignBottomLeft/SubTitlesVoiceText1", " ");
+    -- Hide the message stuff
+    XGUIEng.SetText("/InGame/Root/Normal/AlignBottomLeft/SubTitles/VoiceText1", " ");
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/SpeechButtons/SpeechStartAgainOrStop", 1);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait/SpeechStartAgainOrStop", 1);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/Update", 1);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles/Update", 1);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/MessagePortrait", 0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/SubTitles", 0);
 
+    -- Reset the throneroom
     XGUIEng.PopPage();
     XGUIEng.ShowWidget("/InGame/ThroneRoom", 0);
-    XGUIEng.ShowWidget("/InGame/ThroneRoomBars", 0);
-    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2", 0);
-    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_Dodge", 0);
-    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", 0);
 
     self:ResetSubtitlesPosition(_PlayerID);
 end
