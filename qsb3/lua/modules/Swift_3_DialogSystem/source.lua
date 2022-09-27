@@ -562,6 +562,9 @@ function ModuleDialogSystem.Local:ResetTimerButtons(_PlayerID)
     if GUI.GetPlayerID() ~= _PlayerID then
         return;
     end
+    if not g_Interaction.TimerQuests then
+        return;
+    end
     local MainWidget = "/InGame/Root/Normal/AlignTopLeft/QuestTimers/";
     for i= 1,6 do
         local ButtonWidget = MainWidget ..i.. "/TimerButton";

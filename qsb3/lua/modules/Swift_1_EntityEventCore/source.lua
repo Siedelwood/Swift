@@ -358,7 +358,7 @@ function ModuleEntityEventCore.Global:StartTriggers()
     function ModuleEntityEventCore_Trigger_EntityDestroyed()
         local EntityID1 = Event.GetEntityID();
         local PlayerID1 = Event.GetPlayerID();
-        ModuleEntityEventCore.Global:TriggerEntityDestroyedEvent(EntityID1, PlayerID1);
+        ModuleEntityEventCore.Global:TriggerEntityDestroyedEvent(PlayerID1, EntityID1);
         if ModuleEntityEventCore.Global.AttackedEntities[EntityID1] ~= nil then
             local EntityID2 = ModuleEntityEventCore.Global.AttackedEntities[EntityID1][1];
             local PlayerID2 = Logic.EntityGetPlayer(EntityID2);
