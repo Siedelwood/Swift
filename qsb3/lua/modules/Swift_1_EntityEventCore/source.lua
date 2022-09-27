@@ -297,7 +297,7 @@ function ModuleEntityEventCore.Global:TriggerSettlerArrivedEvent(_PlayerID, _Ent
     ));
 end
 
-function ModuleEntityEventCore.Global:TriggerEntityDestroyedEvent(_PlayerID, _EntityID)
+function ModuleEntityEventCore.Global:TriggerEntityDestroyedEvent(_EntityID, _PlayerID)
     API.SendScriptEvent(QSB.ScriptEvents.EntityDestroyed, _EntityID, _PlayerID);
     Logic.ExecuteInLuaLocalState(string.format(
         "API.SendScriptEvent(QSB.ScriptEvents.EntityDestroyed, %d, %d)",
@@ -357,8 +357,8 @@ function ModuleEntityEventCore.Global:StartTriggers()
 
     function ModuleEntityEventCore_Trigger_EntityDestroyed()
         local EntityID1 = Event.GetEntityID();
-        local PlayerID1 = Event.GetPlayerID();
-        ModuleEntityEventCore.Global:TriggerEntityDestroyedEvent(PlayerID1, EntityID1);
+        local PlayerID1 = Logic.EntityGetPlayer(EntityID1);
+        ModuleEntityEventCore.Global:TriggerEntityDestroyedEvent(EntityID1, PlayerID1);
         if ModuleEntityEventCore.Global.AttackedEntities[EntityID1] ~= nil then
             local EntityID2 = ModuleEntityEventCore.Global.AttackedEntities[EntityID1][1];
             local PlayerID2 = Logic.EntityGetPlayer(EntityID2);
