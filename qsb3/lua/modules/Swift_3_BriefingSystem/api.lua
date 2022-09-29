@@ -77,7 +77,10 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- <tr>
 -- <td>EnableCameraSoothing</td>
 -- <td>boolean</td>
--- <td>(Optional) Aktiviert die Bewegungsglättung der Kamera. Kann auf langsamen Systemen zu massiven Lags führen! <br>Standard: aus</td>
+-- <td>(Optional) Aktiviert die Bewegungsglättung der Kamera. Kann bei Spielern mir schwachen System und/oder 
+-- Originalspiel stattdessen zu massiven Rucklern führen.<br>
+-- Standard Original: aus<br>
+-- Standard HE: ein</td>
 -- </tr>
 -- <tr>
 -- <td>EnableSky</td>
@@ -165,6 +168,9 @@ function API.StartBriefing(_Briefing, _Name, _PlayerID)
             error("API.StartBriefing (" .._Name.. ", Page #" ..i.. "): Page is not initialized!");
             return;
         end
+    end
+    if _Briefing.EnableCameraSoothing == nil then
+        _Briefing.EnableCameraSoothing = API.IsHistoryEdition() == true;
     end
     if _Briefing.EnableSky == nil then
         _Briefing.EnableSky = true;
