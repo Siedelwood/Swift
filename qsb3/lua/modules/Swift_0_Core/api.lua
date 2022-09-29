@@ -135,6 +135,16 @@ function API.OverrideTable()
     end
 
     ---
+    -- Prüft, ob die Table keine Elemente hat.
+    -- @param[type=table] t Quelle
+    -- @return[type=boolean] Tabelle ist leer
+    -- @within table
+    --
+    table.isEmpty = function(t)
+        return table.size(t) == 0;
+    end
+
+    ---
     -- Erzeugt eine Deep Copy der Tabelle und schreibt alle Werte optional in
     -- eine weitere Tabelle.
     -- @param[type=table] t1 Quelle
