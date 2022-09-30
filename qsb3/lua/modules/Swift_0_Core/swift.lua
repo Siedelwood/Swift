@@ -59,6 +59,7 @@ Swift = {
 function Swift:LoadCore()
     self:OverrideString();
     self:OverrideTable();
+    self:OverrideMath();
     self:DetectEnvironment();
     self:DetectLanguage();
 
@@ -525,6 +526,10 @@ end
 
 function Swift:OverrideString()
     API.OverrideString();
+end
+
+function Swift:OverrideMath()
+    API.OverrideMath();
 end
 
 function Swift:ConvertTableToString(_Table)

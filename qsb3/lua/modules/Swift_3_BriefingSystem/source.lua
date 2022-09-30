@@ -824,7 +824,7 @@ end
 
 function ModuleBriefingSystem.Local:GetLERP(_PlayerID)
     if self.Briefing[_PlayerID].CurrentAnimation then
-        local Factor = API.LERP(
+        local Factor = math.lerp(
             self.Briefing[_PlayerID].CurrentAnimation.Started,
             XGUIEng.GetSystemTime(),
             self.Briefing[_PlayerID].CurrentAnimation.Duration

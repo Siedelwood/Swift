@@ -301,8 +301,6 @@ function API.OverrideTable()
 end
 
 function API.OverrideString()
-    -- TODO: Implement!
-
     ---
     -- Gibt true zurück, wenn der Teil-String enthalten ist.
     -- @param[type=string] self String
@@ -386,6 +384,21 @@ function API.OverrideString()
     --
     string.replaceAll = function(self, p, r)
         return self:gsub(p, r);
+    end
+end
+
+function API.OverrideMath()
+    ---
+    -- Berechnet den Faktor der linearen Interpolation.
+    -- @param[type=number] s Startwert
+    -- @param[type=number] c Aktueller Wert
+    -- @param[type=number] e Endwert
+    -- @return[type=number] Interpolationsfaktor
+    -- @within math
+    --
+    math.lerp = function(s, c, e)
+        local f = (c - s) / e;
+        return (f > 1 and 1) or f;
     end
 end
 
@@ -2280,23 +2293,6 @@ function API.GetCirclePositions(_Target, _Distance, _Periode, _Offset)
         table.insert(PositionList, Section);
     end
     return PositionList;
-end
-
----
--- Berechnet den Faktor der linearen Interpolation.
---
--- @param[type=number] _Start   Startwert
--- @param[type=number] _Current Aktueller Wert
--- @param[type=number] _End     Endwert
--- @return[type=number] Interpolationsfaktor
--- @within Mathematik
---
-function API.LERP(_Start, _Current, _End)
-    local Factor = (_Current - _Start) / _End;
-    if Factor > 1 then
-        Factor = 1;
-    end
-    return Factor;
 end
 
 -- Quest --
