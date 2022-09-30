@@ -33,21 +33,18 @@ https://git-scm.com/download/win
 
 Klonen des Repository:
 ```
-git clone https://BITBUCKET_USER_NAME@bitbucket.org/siedelwood/symfonia.git
+git clone https://github.com/totalwarANGEL1993/Swift.git
 ```
-Dabei ist BITBUCKET_USER_NAME Dein Benutzername bei Bitbucket.
 
 # 3 Build
 
-Swift wird über die make.sh bzw. die publish.sh erzeugt. Dazu muss in der
+Swift wird über die build.sh erzeugt. Dazu muss in der
 Shell in das bin-Verzeichnis des Projektes gewechselt werden. Da dies aber
 Bash-Skripte sind, wird das auf Windows nicht funktionieren.
 
-In diesem Fall müssen die Befehle manuell von Hand eingegeben werden.
-
 ## QSB bauen
 
-Die QSb und die minimierte QSB werden durch die folgenden Befehle erzeugt.
+Die QSB und die minimierte QSB werden durch die folgenden Befehle erzeugt.
 Dazu wird eine Installation von Lua 5.1 auf dem PC benötigt.
 
 ```
@@ -56,7 +53,7 @@ cd qsb/luaminifyer
 LuaMinify.bat ../../var/qsb.lua
 ```
 
-## Dokumenttion erzeugen
+## Dokumentation erzeugen
 
 Die Dokumentation kann automatisch erzeugt werden, wenn Lua installiert ist.
 
