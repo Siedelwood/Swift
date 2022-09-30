@@ -153,9 +153,6 @@ function ModuleBriefingSystem.Global:NextBriefing(_PlayerID)
         Briefing.Name = BriefingData[2];
         Briefing.PlayerID = _PlayerID;
         Briefing.CurrentPage = 0;
-        if Briefing.EnableSoothingCamera == nil then
-            Briefing.EnableSoothingCamera = true;
-        end
         self.Briefing[_PlayerID] = Briefing;
         self:TransformAnimations(_PlayerID);
 

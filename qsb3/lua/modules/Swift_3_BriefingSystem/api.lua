@@ -75,14 +75,6 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- <td>(Optional) Alle Einheiten und Gebäude werden unverwundbar solange das Briefing aktiv ist. <br>Standard: ein</td>
 -- </tr>
 -- <tr>
--- <td>EnableCameraSoothing</td>
--- <td>boolean</td>
--- <td>(Optional) Aktiviert die Bewegungsglättung der Kamera. Kann bei Spielern mir schwachen System und/oder 
--- Originalspiel stattdessen zu massiven Rucklern führen.<br>
--- Standard Original: aus<br>
--- Standard HE: ein</td>
--- </tr>
--- <tr>
 -- <td>EnableSky</td>
 -- <td>boolean</td>
 -- <td>(Optional) Der Himmel wird während des Briefing angezeigt. <br>Standard: ein</td>
@@ -168,9 +160,6 @@ function API.StartBriefing(_Briefing, _Name, _PlayerID)
             error("API.StartBriefing (" .._Name.. ", Page #" ..i.. "): Page is not initialized!");
             return;
         end
-    end
-    if _Briefing.EnableCameraSoothing == nil then
-        _Briefing.EnableCameraSoothing = API.IsHistoryEdition() == true;
     end
     if _Briefing.EnableSky == nil then
         _Briefing.EnableSky = true;

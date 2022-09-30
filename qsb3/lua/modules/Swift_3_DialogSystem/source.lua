@@ -159,9 +159,6 @@ function ModuleDialogSystem.Global:NextDialog(_PlayerID)
         Dialog.PlayerID = _PlayerID;
         Dialog.LastSkipButtonPressed = 0;
         Dialog.CurrentPage = 0;
-        if Dialog.EnableSoothingCamera == nil then
-            Dialog.EnableSoothingCamera = true;
-        end
         self.Dialog[_PlayerID] = Dialog;
 
         if Dialog.EnableGlobalImmortality then

@@ -98,7 +98,6 @@ function BriefingAnimationTest1(_Name, _PlayerID)
     local Briefing = {
         HideBorderPins = true,
         EnableSky = true,
-        EnableCameraSoothing = false,
     }
     local AP, ASP, AAN = API.AddBriefingPages(Briefing);
 
