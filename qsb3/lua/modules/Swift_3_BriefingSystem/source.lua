@@ -684,7 +684,7 @@ function ModuleBriefingSystem.Local:ThroneRoomCameraControl(_PlayerID, _Page)
     if _Page then
         -- Control animations
         if self.Briefing[_PlayerID].CurrentAnimation then
-            local CurrentTime = Logic.GetTime();
+            local CurrentTime = XGUIEng.GetSystemTime();
             local Animation = self.Briefing[_PlayerID].CurrentAnimation;
             if CurrentTime > Animation.Started + Animation.Duration then
                 if #self.Briefing[_PlayerID].AnimationQueue > 0 then
@@ -695,7 +695,7 @@ function ModuleBriefingSystem.Local:ThroneRoomCameraControl(_PlayerID, _Page)
         if self.Briefing[_PlayerID].CurrentAnimation == nil then
             if self.Briefing[_PlayerID].AnimationQueue and #self.Briefing[_PlayerID].AnimationQueue > 0 then
                 local Next = table.remove(self.Briefing[_PlayerID].AnimationQueue, 1);
-                Next.Started = Logic.GetTime();
+                Next.Started = XGUIEng.GetSystemTime();
                 self.Briefing[_PlayerID].CurrentAnimation = Next;
             end
         end
@@ -824,24 +824,11 @@ end
 
 function ModuleBriefingSystem.Local:GetLERP(_PlayerID)
     if self.Briefing[_PlayerID].CurrentAnimation then
-        local Anim = self.Briefing[_PlayerID].CurrentAnimation;
-        local CurrentTime = Logic.GetTime();
-        local FrameworkTime = Framework.GetTimeMs();
-        local Speed = Game.GameTimeGetFactor(GUI.GetPlayerID());
-        local Factor = API.LERP(Anim.Started, CurrentTime, Anim.Duration);
-        -- Optional camera soothing
-        -- Get the time between each tenth seconds and (try to) get rid of the
-        -- asynchronozity to fix the factor.
-        -- Note: This will have it's issues on some machines. This will also
-        -- work better in the History Edition (of all god damn things).
-        if self.Briefing[_PlayerID].EnableCameraSoothing then
-            if Anim.LastLogicTime ~= CurrentTime then
-                Anim.LastLogicTime = CurrentTime;
-                Anim.LastFrameworkTime = FrameworkTime;
-            end
-            Factor = Factor + (FrameworkTime - Anim.LastFrameworkTime) / Anim.Duration / 1000 * Speed;
-        end
-        -- math.min will prevents flickering at the end of the animation
+        local Factor = API.LERP(
+            self.Briefing[_PlayerID].CurrentAnimation.Started,
+            XGUIEng.GetSystemTime(),
+            self.Briefing[_PlayerID].CurrentAnimation.Duration
+        );
         return math.min(Factor, 1);
     end
     return 1;

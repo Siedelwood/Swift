@@ -49,9 +49,9 @@ function CreateInitiatorQuest()
 end
 
 function CreateInitiatorCallback(_Behavior, _Quest)
-    -- TypewriterTest(_Quest.ReceivingPlayer);
-    -- CutsceneTest("CutsceneTest1", _Quest.ReceivingPlayer);
-    -- BriefingTest("BriefingTest1", _Quest.ReceivingPlayer);
+    TypewriterTest(_Quest.ReceivingPlayer);
+    CutsceneTest("CutsceneTest1", _Quest.ReceivingPlayer);
+    BriefingTest("BriefingTest1", _Quest.ReceivingPlayer);
     DialogTest2("DialogTest1", _Quest.ReceivingPlayer);
 end
 
