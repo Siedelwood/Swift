@@ -842,6 +842,7 @@ function ModuleDialogSystem.Local:DeactivateCinematicMode(_PlayerID)
     XGUIEng.PopPage();
     XGUIEng.ShowWidget("/InGame/ThroneRoom", 0);
 
+    ModuleDisplayCore.Local:ResetFarClipPlane();
     self:ResetSubtitlesPosition(_PlayerID);
 end
 

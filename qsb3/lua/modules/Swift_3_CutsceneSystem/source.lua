@@ -357,6 +357,7 @@ function ModuleCutsceneSystem.Local:DisplayPage(_PlayerID, _PageID, _Duration)
     if type(self.Cutscene[_PlayerID][_PageID]) == "table" then
         self.Cutscene[_PlayerID][_PageID].Started = Logic.GetTime();
         self.Cutscene[_PlayerID][_PageID].Duration = _Duration;
+        ModuleDisplayCore.Local:ResetFarClipPlane();
         self:DisplayPageBars(_PlayerID, _PageID);
         self:DisplayPageTitle(_PlayerID, _PageID);
         self:DisplayPageText(_PlayerID, _PageID);
@@ -489,6 +490,14 @@ function ModuleCutsceneSystem.Local:ThroneRoomCameraControl(_PlayerID, _Page)
             XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", Text..Indent.. ". . .");
         else
             XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", " ");
+        end
+
+        -- Far Clip Plane
+        -- (After each camera event is executed, the value is reset to what ever
+        -- is set in it. So to not need to add script events to each flight we
+        -- need to set the value here.)
+        if _Page.FarClipPlane then
+            ModuleDisplayCore.Local:SetFarClipPlane(_Page.FarClipPlane);
         end
     end
 end
@@ -683,6 +692,8 @@ function ModuleCutsceneSystem.Local:DeactivateCinematicMode(_PlayerID)
     XGUIEng.ShowWidget("/InGame/ThroneRoomBars_Dodge", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", 0);
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", " ");
+
+    ModuleDisplayCore.Local:ResetFarClipPlane();
 end
 
 -- -------------------------------------------------------------------------- --

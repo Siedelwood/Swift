@@ -242,6 +242,12 @@ end
 -- angezeigt wird.</td>
 -- </tr>
 -- <tr>
+-- <td>FarClipPlane</td>
+-- <td>number</td>
+-- <td>(Optional) Renderdistanz für die Seite (Default 100000).
+-- wird.</td>
+-- </tr>
+-- <tr>
 -- <td>FadeIn</td>
 -- <td>number</td>
 -- <td>(Optional) Dauer des Einblendens von Schwarz zu Beginn des Flight.</td>

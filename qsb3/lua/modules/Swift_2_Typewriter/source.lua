@@ -96,6 +96,7 @@ function ModuleTypewriter.Global:FinishTypewriter(_PlayerID)
         Logic.ExecuteInLuaLocalState(string.format(
             [[
             if GUI.GetPlayerID() == %d then
+                ModuleDisplayCore.Local:ResetFarClipPlane()
                 API.DeactivateImageScreen()
                 API.ActivateNormalInterface()
                 API.ActivateBorderScroll()

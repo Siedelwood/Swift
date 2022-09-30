@@ -43,7 +43,7 @@ QSB.Briefing = {
     DLGCAMERA_ROTATIONDEFAULT = -45,
     DLGCAMERA_ZOOMDEFAULT = 1750,
     DLGCAMERA_FOVDEFAULT = 25,
-}
+};
 
 -- Global ------------------------------------------------------------------- --
 
@@ -426,6 +426,7 @@ function ModuleBriefingSystem.Local:DisplayPage(_PlayerID, _PageID, _PageData)
     self.Briefing[_PlayerID].CurrentPage = _PageID;
     if type(self.Briefing[_PlayerID][_PageID]) == "table" then
         self.Briefing[_PlayerID][_PageID].Started = Logic.GetTime();
+        self:SetPageFarClipPlane(_PlayerID, _PageID);
         self:DisplayPageBars(_PlayerID, _PageID);
         self:DisplayPageTitle(_PlayerID, _PageID);
         self:DisplayPageText(_PlayerID, _PageID);
@@ -437,6 +438,14 @@ function ModuleBriefingSystem.Local:DisplayPage(_PlayerID, _PageID, _PageData)
         if self.Briefing[_PlayerID][_PageID].MC then
             self:DisplayPageOptionsDialog(_PlayerID, _PageID);
         end
+    end
+end
+
+function ModuleBriefingSystem.Local:SetPageFarClipPlane(_PlayerID, _PageID)
+    ModuleDisplayCore.Local:ResetFarClipPlane();
+    local Page = self.Briefing[_PlayerID][_PageID];
+    if Page.FarClipPlane then
+        ModuleDisplayCore.Local:SetFarClipPlane(Page.FarClipPlane);
     end
 end
 
@@ -1047,6 +1056,8 @@ function ModuleBriefingSystem.Local:DeactivateCinematicMode(_PlayerID)
     XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoomBars_Dodge", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", 0);
+
+    ModuleDisplayCore.Local:ResetFarClipPlane();
 end
 
 -- -------------------------------------------------------------------------- --

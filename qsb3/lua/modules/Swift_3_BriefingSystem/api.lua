@@ -490,6 +490,13 @@ end
 -- die Seite angezeigt wird.</td>
 -- </tr>
 -- <tr>
+-- <td>FarClipPlane</td>
+-- <td>number</td>
+-- <td>(Optional) Renderdistanz für die Seite (Default 100000).
+-- wird.</td>
+-- </tr>
+-- <tr>
+-- <tr>
 -- <td>Rotation</td>
 -- <td>number</td>
 -- <td>(Optional) Die Rotation der Kamera gibt den Winkel an, indem die Kamera
@@ -710,6 +717,9 @@ end
 -- das Briefing gebunden.
 --
 -- <b>Hinweis</b>: Diese Funktion erzeugt keine eigene Seite!
+--
+-- <b>Hinweis</b>: Kameraanimationen laufen unabhängig von der Geschwindigkeit
+-- des Spiels ab. Also auch, wenn das Spiel pausiert oder beschleunigt ist!
 --
 -- Animationen werden beim Aufruf der Seite in die Warteschlange geschoben und
 -- ausgeführt, sobald keine anderen Animationen mehr laufen. Dadurch ist es nun

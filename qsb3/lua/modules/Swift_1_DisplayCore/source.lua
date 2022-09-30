@@ -31,6 +31,11 @@ ModuleDisplayCore = {
     Shared = {};
 }
 
+QSB.DisplayConstants = {
+    FAR_CLIP_MIN = 100000,
+    FAR_CLIP_MAX = 100000,
+}
+
 QSB.CinematicEvents = {};
 QSB.CinematicEventTypes = {};
 
@@ -129,6 +134,7 @@ function ModuleDisplayCore.Local:OnGameStart()
     end
     self:OverrideInterfaceUpdateForCinematicMode();
     self:OverrideInterfaceThroneroomForCinematicMode();
+    self:ResetFarClipPlane();
 end
 
 function ModuleDisplayCore.Local:OnEvent(_ID, _Event, ...)
@@ -140,7 +146,22 @@ function ModuleDisplayCore.Local:OnEvent(_ID, _Event, ...)
                 self.CinematicEventStatus[i][arg[1]] = 2;
             end
         end
+    elseif _ID == QSB.ScriptEvents.SaveGameLoaded then
+        self:ResetFarClipPlane();
     end
+end
+
+function ModuleDisplayCore.Local:SetFarClipPlane(_View)
+    Camera.Cutscene_SetFarClipPlane(_View, _View);
+    Display.SetFarClipPlaneMinAndMax(_View, _View);
+end
+
+function ModuleDisplayCore.Local:ResetFarClipPlane()
+    Camera.Cutscene_SetFarClipPlane(QSB.DisplayConstants.FAR_CLIP_MAX);
+    Display.SetFarClipPlaneMinAndMax(
+        QSB.DisplayConstants.FAR_CLIP_MIN,
+        QSB.DisplayConstants.FAR_CLIP_MAX
+    );
 end
 
 function ModuleDisplayCore.Local:GetCinematicEventStatus(_InfoID)
