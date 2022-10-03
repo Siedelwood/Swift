@@ -31,9 +31,10 @@ ModuleDisplayCore = {
     Shared = {};
 }
 
+-- Just because I am a control freak and want to know what the default is...
 QSB.DisplayConstants = {
-    FAR_CLIP_MIN = 100000,
-    FAR_CLIP_MAX = 100000,
+    FAR_CLIP_MIN = 50000,
+    FAR_CLIP_MAX = 50000,
 }
 
 QSB.CinematicEvents = {};
