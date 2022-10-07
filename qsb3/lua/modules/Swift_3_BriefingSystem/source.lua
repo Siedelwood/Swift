@@ -387,8 +387,8 @@ function ModuleBriefingSystem.Local:StartBriefing(_PlayerID, _Briefing)
     self.Briefing[_PlayerID].LastSkipButtonPressed = 0;
     self.Briefing[_PlayerID].CurrentPage = 0;
 
-    API.DeactivateNormalInterface();
-    API.DeactivateBorderScroll();
+    API.DeactivateNormalInterface(_PlayerID);
+    API.DeactivateBorderScroll(_PlayerID);
 
     if not Framework.IsNetworkGame() then
         Game.GameTimeSetFactor(_PlayerID, 1);
@@ -405,8 +405,8 @@ function ModuleBriefingSystem.Local:EndBriefing(_PlayerID, _Briefing)
         Game.GameTimeSetFactor(_PlayerID, 1);
     end
     self:DeactivateCinematicMode(_PlayerID);
-    API.ActivateNormalInterface();
-    API.ActivateBorderScroll();
+    API.ActivateNormalInterface(_PlayerID);
+    API.ActivateBorderScroll(_PlayerID);
 
     self.Briefing[_PlayerID] = nil;
     Display.SetRenderFogOfWar(1);

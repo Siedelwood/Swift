@@ -704,6 +704,7 @@ function Swift:InitalizeEventsGlobal()
     QSB.ScriptEvents.QuestTrigger = Swift:CreateScriptEvent("Event_QuestTrigger", nil);
     QSB.ScriptEvents.CustomValueChanged = Swift:CreateScriptEvent("Event_CustomValueChanged", nil);
     QSB.ScriptEvents.LanguageSet = Swift:CreateScriptEvent("Event_LanguageSet", nil);
+    QSB.ScriptEvents.LoadscreenClosed = Swift:CreateScriptEvent("Event_LoadscreenClosed", nil);
 end
 function Swift:InitalizeEventsLocal()
     QSB.ScriptEvents.SaveGameLoaded = Swift:CreateScriptEvent("Event_SaveGameLoaded", nil);
@@ -715,6 +716,7 @@ function Swift:InitalizeEventsLocal()
     QSB.ScriptEvents.QuestTrigger = Swift:CreateScriptEvent("Event_QuestTrigger", nil);
     QSB.ScriptEvents.CustomValueChanged = Swift:CreateScriptEvent("Event_CustomValueChanged", nil);
     QSB.ScriptEvents.LanguageSet = Swift:CreateScriptEvent("Event_LanguageSet", nil);
+    QSB.ScriptEvents.LoadscreenClosed = Swift:CreateScriptEvent("Event_LoadscreenClosed", nil);
 end
 
 function Swift:CreateScriptEvent(_Name, _Function)
@@ -932,7 +934,6 @@ end
 function Swift_EventJob_WaitForLoadScreenHidden()
     if XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 0 then
         Swift:DispatchScriptCommand(QSB.ScriptCommands.RegisterLoadscreenHidden, GUI.GetPlayerID());
-        Swift.m_LoadScreenHidden = true;
         return true;
     end
 end

@@ -104,6 +104,7 @@ Swift:RegisterBehavior(B_Reward_Cutscene);
 -- Prüft, ob ein Cutscene beendet ist und startet dann den Quest.
 --
 -- @param[type=string] _Name     Bezeichner des Cutscene
+-- @param[type=number] _PlayerID ID des Spielers
 -- @param[type=number] _Waittime (optional) Wartezeit in Sekunden
 -- @within Trigger
 --

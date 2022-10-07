@@ -416,6 +416,7 @@ end
 -- @field QuestTrigger       Ein Quest wurde aktiviert (Parameter: QuestID)
 -- @field CustomValueChanged Eine Custom Variable hat sich geändert (Parameter: Name, OldValue, NewValue)
 -- @field LanguageSet        Die Sprache wurde geändert (Parameter: OldLanguage, NewLanguage)
+-- @field LoadscreenClosed   Der Ladebildschirm wurde beendet.
 -- @within Event
 --
 QSB.ScriptEvents = QSB.ScriptEvents or {};
@@ -2556,10 +2557,32 @@ function API.ForbidFestival(_PlayerID)
     Swift.m_AIProperties[_PlayerID].ForbidFestival = true;
 end
 
+---
+-- Startet die Map sofort neu.
+--
+-- <b>Achtung:</b> Die Funktion Framework.RestartMap kann nicht mehr verwendet
+-- werden, da es sonst zu Fehlern mit dem Ladebildschirm kommt!
+--
+-- @within Base
+--
+function API.RestartMap()
+    Camera.RTS_FollowEntity(0);
+    Framework.SetLoadScreenNeedButton(1);
+    Framework.RestartMap();
+end
+
 -- Local callbacks
 
 function SCP.Core.LoadscreenHidden()
+    -- FIXME: Maybe the whole loadscreen hidden business should be converted
+    -- into an event on wich every module can listen to? This way of doing it
+    -- is a relict from ancient times before the event system...
     Swift.m_LoadScreenHidden = true;
+    API.SendScriptEvent(QSB.ScriptEvents.LoadscreenClosed);
+    Logic.ExecuteInLuaLocalState([[
+        Swift.m_LoadScreenHidden = true
+        API.SendScriptEvent(QSB.ScriptEvents.LoadscreenClosed)
+    ]]);
 end
 
 function SCP.Core.GlobalQsbLoaded()

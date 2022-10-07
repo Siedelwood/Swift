@@ -361,8 +361,8 @@ function ModuleDialogSystem.Local:StartDialog(_PlayerID, _Dialog)
         Camera = {PosX, PosY, Rotation, ZoomFactor}
     };
 
-    API.DeactivateNormalInterface();
-    API.DeactivateBorderScroll();
+    API.DeactivateNormalInterface(_PlayerID);
+    API.DeactivateBorderScroll(_PlayerID);
 
     if not Framework.IsNetworkGame() then
         Game.GameTimeSetFactor(_PlayerID, 1);
@@ -389,8 +389,8 @@ function ModuleDialogSystem.Local:EndDialog(_PlayerID, _Dialog)
         Game.GameTimeSetFactor(_PlayerID, 1);
     end
     self:DeactivateCinematicMode(_PlayerID);
-    API.ActivateNormalInterface();
-    API.ActivateBorderScroll();
+    API.ActivateNormalInterface(_PlayerID);
+    API.ActivateBorderScroll(_PlayerID);
 
     self.Dialog[_PlayerID] = nil;
     Display.SetRenderFogOfWar(1);

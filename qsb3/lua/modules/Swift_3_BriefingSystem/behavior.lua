@@ -104,6 +104,7 @@ Swift:RegisterBehavior(B_Reward_Briefing);
 -- Prüft, ob ein Briefing beendet ist und startet dann den Quest.
 --
 -- @param[type=string] _Name     Bezeichner des Briefing
+-- @param[type=number] _PlayerID ID des Spielers
 -- @param[type=number] _Waittime (optional) Wartezeit in Sekunden
 -- @within Trigger
 --

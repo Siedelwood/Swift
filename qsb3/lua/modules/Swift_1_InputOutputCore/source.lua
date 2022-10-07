@@ -127,7 +127,7 @@ function ModuleInputOutputCore.Local:OnEvent(_ID, _Event, ...)
     elseif _ID == QSB.ScriptEvents.ChatClosed then
         if arg[3] then
             if arg[1] == "restartmap" then
-                Framework.RestartMap();
+                API.RestartMap();
             elseif arg[1]:find("^> ") then
                 GUI.SendScriptCommand(arg[1]:sub(3), true);
             elseif arg[1]:find("^>> ") then

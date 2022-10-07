@@ -56,6 +56,7 @@ function ModuleDisplayCore.Global:OnGameStart()
         self.CinematicEventStatus[i] = {};
         self.CinematicEventQueue[i] = {};
     end
+    self:ShowInitialBlackscreen();
 end
 
 function ModuleDisplayCore.Global:OnEvent(_ID, _Event, ...)
@@ -64,6 +65,12 @@ function ModuleDisplayCore.Global:OnEvent(_ID, _Event, ...)
     elseif _ID == QSB.ScriptEvents.CinematicConcluded then
         if self.CinematicEventStatus[arg[2]][arg[1]] then
             self.CinematicEventStatus[arg[2]][arg[1]] = 2;
+        end
+        -- HACK: prevents flickering by always activate a blackscreen when the
+        -- cinematic queue is not empty.
+        if #self.CinematicEventQueue[arg[2]] > 0 then
+            API.DeactivateImageScreen(arg[2]);
+            API.ActivateNormalInterface(arg[2]);
         end
     end
 end
@@ -118,6 +125,17 @@ function ModuleDisplayCore.Global:ConcludeCinematicEvent(_ID, _PlayerID)
     API.SendScriptEvent(QSB.ScriptEvents.CinematicConcluded, _ID, _PlayerID);
 end
 
+-- HACK: This is an attemp to fix the problem, that the normal game screen is
+-- shown for a split second when the loadscreen is clicked away.
+function ModuleDisplayCore.Global:ShowInitialBlackscreen()
+    Logic.ExecuteInLuaLocalState([[
+        XGUIEng.PopPage();
+        API.ActivateColoredScreen(GUI.GetPlayerID(), 0, 0, 0, 255);
+        API.DeactivateNormalInterface(GUI.GetPlayerID());
+        XGUIEng.PushPage("/LoadScreen/LoadScreen", false);
+    ]]);
+end
+
 -- Local -------------------------------------------------------------------- --
 
 function ModuleDisplayCore.Local:OnGameStart()
@@ -149,6 +167,11 @@ function ModuleDisplayCore.Local:OnEvent(_ID, _Event, ...)
         end
     elseif _ID == QSB.ScriptEvents.SaveGameLoaded then
         self:ResetFarClipPlane();
+    -- HACK: This is the second part of the blackscreen hack. Removes it after
+    -- the loadscreen is clicked away.
+    elseif _ID == QSB.ScriptEvents.LoadscreenClosed then
+        API.DeactivateImageScreen(GUI.GetPlayerID());
+        API.ActivateNormalInterface(GUI.GetPlayerID());
     end
 end
 
@@ -262,7 +285,7 @@ function ModuleDisplayCore.Local:OverrideInterfaceThroneroomForCinematicMode()
     end
 end
 
-function ModuleDisplayCore.Local:InterfaceActivateImageBackground(_Graphic, _R, _G, _B, _A)
+function ModuleDisplayCore.Local:InterfaceActivateImageBackground(_PlayerID, _Graphic, _R, _G, _B, _A)
     if self.PauseScreenShown then
         return;
     end
@@ -285,7 +308,7 @@ function ModuleDisplayCore.Local:InterfaceActivateImageBackground(_Graphic, _R, 
     API.SendScriptEvent(QSB.ScriptEvents.BlackScreenShown, GUI.GetPlayerID());
 end
 
-function ModuleDisplayCore.Local:InterfaceDeactivateImageBackground()
+function ModuleDisplayCore.Local:InterfaceDeactivateImageBackground(_PlayerID)
     if not self.PauseScreenShown then
         return;
     end
@@ -299,7 +322,7 @@ function ModuleDisplayCore.Local:InterfaceDeactivateImageBackground()
     API.SendScriptEvent(QSB.ScriptEvents.BlackScreenHidden, GUI.GetPlayerID());
 end
 
-function ModuleDisplayCore.Local:InterfaceDeactivateBorderScroll(_PositionID)
+function ModuleDisplayCore.Local:InterfaceDeactivateBorderScroll(_PlayerID, _PositionID)
     if self.BorderScrollDeactivated then
         return;
     end
@@ -318,7 +341,7 @@ function ModuleDisplayCore.Local:InterfaceDeactivateBorderScroll(_PositionID)
     API.SendScriptEvent(QSB.ScriptEvents.BorderScrollLocked, GUI.GetPlayerID(), _PositionID);
 end
 
-function ModuleDisplayCore.Local:InterfaceActivateBorderScroll()
+function ModuleDisplayCore.Local:InterfaceActivateBorderScroll(_PlayerID)
     if not self.BorderScrollDeactivated then
         return;
     end
@@ -331,8 +354,8 @@ function ModuleDisplayCore.Local:InterfaceActivateBorderScroll()
     API.SendScriptEvent(QSB.ScriptEvents.BorderScrollReset, GUI.GetPlayerID());
 end
 
-function ModuleDisplayCore.Local:InterfaceDeactivateNormalInterface()
-    if self.NormalModeHidden then
+function ModuleDisplayCore.Local:InterfaceDeactivateNormalInterface(_PlayerID)
+    if GUI.GetPlayerID() ~= _PlayerID or self.NormalModeHidden then
         return;
     end
     self.NormalModeHidden = true;
@@ -376,8 +399,8 @@ function ModuleDisplayCore.Local:InterfaceDeactivateNormalInterface()
     API.SendScriptEvent(QSB.ScriptEvents.GameInterfaceHidden, GUI.GetPlayerID());
 end
 
-function ModuleDisplayCore.Local:InterfaceActivateNormalInterface()
-    if not self.NormalModeHidden then
+function ModuleDisplayCore.Local:InterfaceActivateNormalInterface(_PlayerID)
+    if GUI.GetPlayerID() ~= _PlayerID or not self.NormalModeHidden then
         return;
     end
     self.NormalModeHidden = false;

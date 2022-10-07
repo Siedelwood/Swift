@@ -246,8 +246,8 @@ function ModuleCutsceneSystem.Local:StartCutscene(_PlayerID, _Cutscene)
     self.Cutscene[_PlayerID].LastSkipButtonPressed = 0;
     self.Cutscene[_PlayerID].CurrentPage = 0;
 
-    API.DeactivateNormalInterface();
-    API.DeactivateBorderScroll();
+    API.DeactivateNormalInterface(_PlayerID);
+    API.DeactivateBorderScroll(_PlayerID);
 
     if not Framework.IsNetworkGame() then
         Game.GameTimeSetFactor(_PlayerID, 1);
@@ -265,8 +265,8 @@ function ModuleCutsceneSystem.Local:EndCutscene(_PlayerID)
         Game.GameTimeSetFactor(_PlayerID, 1);
     end
     self:DeactivateCinematicMode(_PlayerID);
-    API.ActivateNormalInterface();
-    API.ActivateBorderScroll();
+    API.ActivateNormalInterface(_PlayerID);
+    API.ActivateBorderScroll(_PlayerID);
 
     self.Cutscene[_PlayerID] = nil;
 end
