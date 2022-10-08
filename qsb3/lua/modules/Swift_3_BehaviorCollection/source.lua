@@ -379,7 +379,7 @@ function ModuleBehaviorCollection.Local:OverrideSaveQuestEntityTypes()
         end
         local Quest, QuestType = GUI_Interaction.GetPotentialSubQuestAndType(_QuestIndex);
         local EntitiesList;
-        if QuestType ~= Objective.DestroyEntities and Quest.Objectives[1].Data[1] ~= 3 then
+        if QuestType ~= Objective.DestroyEntities or Quest.Objectives[1].Data[1] ~= 3 then
             return;
         end
         EntitiesList = GUI_Interaction.GetEntitiesOrTerritoryListForQuest(Quest, QuestType);
