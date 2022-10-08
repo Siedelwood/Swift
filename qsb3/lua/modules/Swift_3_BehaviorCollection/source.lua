@@ -378,23 +378,20 @@ function ModuleBehaviorCollection.Local:OverrideSaveQuestEntityTypes()
             return;
         end
         local Quest, QuestType = GUI_Interaction.GetPotentialSubQuestAndType(_QuestIndex);
-        local EntitiesList;
-        if QuestType ~= Objective.DestroyEntities or Quest.Objectives[1].Data[1] ~= 3 then
-            return;
-        end
-        EntitiesList = GUI_Interaction.GetEntitiesOrTerritoryListForQuest(Quest, QuestType);
-        EntitiesList[0] = #EntitiesList;
-        if EntitiesList ~= nil then
-            g_Interaction.SavedQuestEntityTypes[_QuestIndex] = {};
-            for i = 1, EntitiesList[0], 1 do
-                if Logic.IsEntityAlive(EntitiesList[i]) then
-                    local EntityType = Logic.GetEntityType(GetID(EntitiesList[i]));
-                    table.insert(g_Interaction.SavedQuestEntityTypes[_QuestIndex], i, EntityType);
+        if QuestType == Objective.DestroyEntities and Quest.Objectives[1].Data[1] == 3 then
+            local EntitiesList = GUI_Interaction.GetEntitiesOrTerritoryListForQuest(Quest, QuestType);
+            EntitiesList[0] = #EntitiesList;
+            if EntitiesList ~= nil then
+                g_Interaction.SavedQuestEntityTypes[_QuestIndex] = {};
+                for i = 1, EntitiesList[0], 1 do
+                    if Logic.IsEntityAlive(EntitiesList[i]) then
+                        local EntityType = Logic.GetEntityType(GetID(EntitiesList[i]));
+                        table.insert(g_Interaction.SavedQuestEntityTypes[_QuestIndex], i, EntityType);
+                    end
                 end
+                return;
             end
-            return;
         end
-
         GUI_Interaction.SaveQuestEntityTypes_Orig_SwiftBehavior(_QuestIndex)
     end
 end
