@@ -8,8 +8,6 @@ You may use and modify this file unter the terms of the MIT licence.
 (See https://en.wikipedia.org/wiki/MIT_License)
 ]]
 
-SCP.EntityEventCore = {};
-
 ModuleEntityEventCore = {
     Properties = {
         Name = "ModuleEntityEventCore",
@@ -82,12 +80,7 @@ function ModuleEntityEventCore.Global:OnGameStart()
     QSB.ScriptEvents.ThiefDeliverEarnings = API.RegisterScriptEvent("Event_ThiefDeliverEarnings");
     QSB.ScriptEvents.BuildingConstructed = API.RegisterScriptEvent("Event_BuildingConstructed");
     QSB.ScriptEvents.BuildingUpgradeCollapsed = API.RegisterScriptEvent("Event_BuildingUpgradeCollapsed");
-    QSB.ScriptEvents.BuildingUpgradeFinished = API.RegisterScriptEvent("Event_BuildingUpgradeFinished");
-    QSB.ScriptEvents.BuildingUpgradeCanceled = API.RegisterScriptEvent("Event_BuildingUpgradeCanceled");
-    QSB.ScriptEvents.BuildingUpgradeStarted = API.RegisterScriptEvent("Event_BuildingUpgradeStarted");
-
-    API.RegisterScriptCommand("Cmd_StartBuildingUpgrade", SCP.EntityEventCore.StartBuildingUpgrade);
-    API.RegisterScriptCommand("Cmd_CancelBuildingUpgrade", SCP.EntityEventCore.CancelBuildingUpgrade);
+    QSB.ScriptEvents.BuildingUpgraded = API.RegisterScriptEvent("Event_BuildingUpgraded");
 
     self:StartTriggers();
     self:OverrideCallback();
@@ -198,9 +191,9 @@ function ModuleEntityEventCore.Global:OverrideCallback()
         ModuleEntityEventCore.Global:TriggerThiefStealFromBuildingEvent(_ThiefID, _ThiefPlayerID, _BuildingID, _BuildingPlayerID);
     end
 
-    GameCallback_OnBuildingUpgradeFinished_Orig_QSB_EntityCore = GameCallback_OnBuildingUpgradeFinished;
-	GameCallback_OnBuildingUpgradeFinished = function(_PlayerID, _EntityID, _NewUpgradeLevel)
-		GameCallback_OnBuildingUpgradeFinished_Orig_QSB_EntityCore(_PlayerID, _EntityID, _NewUpgradeLevel);
+    GameCallback_OnBuildingUpgraded_Orig_QSB_EntityCore = GameCallback_OnBuildingUpgraded;
+	GameCallback_OnBuildingUpgraded = function(_PlayerID, _EntityID, _NewUpgradeLevel)
+		GameCallback_OnBuildingUpgraded_Orig_QSB_EntityCore(_PlayerID, _EntityID, _NewUpgradeLevel);
         ModuleEntityEventCore.Global:TriggerUpgradeCompleteEvent(_PlayerID, _EntityID, _NewUpgradeLevel);
     end
 
@@ -334,9 +327,9 @@ function ModuleEntityEventCore.Global:TriggerConstructionCompleteEvent(_PlayerID
 end
 
 function ModuleEntityEventCore.Global:TriggerUpgradeCompleteEvent(_PlayerID, _EntityID, _NewUpgradeLevel)
-    API.SendScriptEvent(QSB.ScriptEvents.BuildingUpgradeFinished, _EntityID, _PlayerID, _NewUpgradeLevel);
+    API.SendScriptEvent(QSB.ScriptEvents.BuildingUpgraded, _EntityID, _PlayerID, _NewUpgradeLevel);
     Logic.ExecuteInLuaLocalState(string.format(
-        "API.SendScriptEvent(QSB.ScriptEvents.BuildingUpgradeFinished, %d, %d, %d)",
+        "API.SendScriptEvent(QSB.ScriptEvents.BuildingUpgraded, %d, %d, %d)",
         _EntityID,
         _PlayerID,
         _NewUpgradeLevel
@@ -350,26 +343,6 @@ function ModuleEntityEventCore.Global:TriggerUpgradeCollapsedEvent(_PlayerID, _E
         _EntityID,
         _PlayerID,
         _NewUpgradeLevel
-    ));
-end
-
-function ModuleEntityEventCore.Global:SendStartBuildingUpgradeEvent(_BuildingID, _PlayerID)
-    API.SendScriptEvent(QSB.ScriptEvents.BuildingUpgradeStarted, _BuildingID, _PlayerID);
-    Logic.ExecuteInLuaLocalState(string.format(
-        [[API.SendScriptEvent(%d, %d, %d)]],
-        QSB.ScriptEvents.BuildingUpgradeStarted,
-        _BuildingID,
-        _PlayerID
-    ));
-end
-
-function ModuleEntityEventCore.Global:SendCancelBuildingUpgradeEvent(_BuildingID, _PlayerID)
-    API.SendScriptEvent(QSB.ScriptEvents.BuildingUpgradeCanceled, _BuildingID, _PlayerID);
-    Logic.ExecuteInLuaLocalState(string.format(
-        [[API.SendScriptEvent(%d, %d, %d)]],
-        QSB.ScriptEvents.BuildingUpgradeCanceled,
-        _BuildingID,
-        _PlayerID
     ));
 end
 
@@ -495,12 +468,9 @@ function ModuleEntityEventCore.Local:OnGameStart()
     QSB.ScriptEvents.ThiefDeliverEarnings = API.RegisterScriptEvent("Event_ThiefDeliverEarnings");
     QSB.ScriptEvents.BuildingConstructed = API.RegisterScriptEvent("Event_BuildingConstructed");
     QSB.ScriptEvents.BuildingUpgradeCollapsed = API.RegisterScriptEvent("Event_BuildingUpgradeCollapsed");
-    QSB.ScriptEvents.BuildingUpgradeFinished = API.RegisterScriptEvent("Event_BuildingUpgradeFinished");
-    QSB.ScriptEvents.BuildingUpgradeCanceled = API.RegisterScriptEvent("Event_BuildingUpgradeCanceled");
-    QSB.ScriptEvents.BuildingUpgradeStarted = API.RegisterScriptEvent("Event_BuildingUpgradeStarted");
+    QSB.ScriptEvents.BuildingUpgraded = API.RegisterScriptEvent("Event_BuildingUpgraded");
 
     self:OverrideAfterBuildingPlacement();
-    self:OverrideUpgradeBuilding();
 end
 
 function ModuleEntityEventCore.Local:OnEvent(_ID, _Event, ...)
@@ -525,33 +495,6 @@ function ModuleEntityEventCore.Local:OverrideAfterBuildingPlacement()
                 end
             end
         end, x, y);
-    end
-end
-
-function ModuleEntityEventCore.Local:OverrideUpgradeBuilding()
-    GUI_BuildingButtons.UpgradeClicked = function()
-        local WidgetID = XGUIEng.GetCurrentWidgetID();
-        local EntityID = GUI.GetSelectedEntity();
-        if Logic.CanCancelUpgradeBuilding(EntityID) then
-            Sound.FXPlay2DSound("ui\\menu_click");
-            GUI.CancelBuildingUpgrade(EntityID);
-            XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/BuildingButtons", 1);
-            API.BroadcastScriptCommand(QSB.ScriptCommands.CancelBuildingUpgrade, EntityID, GUI.GetPlayerID());
-            return;
-        end
-        local Costs = GUI_BuildingButtons.GetUpgradeCosts();
-        local CanBuyBoolean, CanNotBuyString = AreCostsAffordable(Costs);
-        if CanBuyBoolean == true then
-            Sound.FXPlay2DSound("ui\\menu_click");
-            GUI.UpgradeBuilding(EntityID, nil);
-            StartKnightVoiceForPermanentSpecialAbility(Entities.U_KnightWisdom);
-            if WidgetID ~= 0 then
-                SaveButtonPressed(WidgetID);
-            end
-            API.BroadcastScriptCommand(QSB.ScriptCommands.StartBuildingUpgrade, EntityID, GUI.GetPlayerID());
-        else
-            Message(CanNotBuyString);
-        end
     end
 end
 

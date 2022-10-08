@@ -8,6 +8,8 @@ You may use and modify this file unter the terms of the MIT licence.
 (See https://en.wikipedia.org/wiki/MIT_License)
 ]]
 
+SCP.InterfaceCore = {};
+
 ModuleInterfaceCore = {
     Properties = {
         Name = "ModuleInterfaceCore",
@@ -85,6 +87,12 @@ QSB.PlayerNames = {};
 -- Global ------------------------------------------------------------------- --
 
 function ModuleInterfaceCore.Global:OnGameStart()
+    QSB.ScriptEvents.UpgradeCanceled = API.RegisterScriptEvent("Event_UpgradeCanceled");
+    QSB.ScriptEvents.UpgradeStarted = API.RegisterScriptEvent("Event_UpgradeStarted");
+
+    API.RegisterScriptCommand("Cmd_StartBuildingUpgrade", SCP.InterfaceCore.StartBuildingUpgrade);
+    API.RegisterScriptCommand("Cmd_CancelBuildingUpgrade", SCP.InterfaceCore.CancelBuildingUpgrade);
+
     self.HumanKnightType = Logic.GetEntityType(Logic.GetKnightID(QSB.HumanPlayerID));
     self.HumanPlayerID = QSB.HumanPlayerID;
 
@@ -94,6 +102,26 @@ function ModuleInterfaceCore.Global:OnGameStart()
             return true;
         end
     end);
+end
+
+function ModuleInterfaceCore.Global:SendStartBuildingUpgradeEvent(_BuildingID, _PlayerID)
+    API.SendScriptEvent(QSB.ScriptEvents.UpgradeStarted, _BuildingID, _PlayerID);
+    Logic.ExecuteInLuaLocalState(string.format(
+        [[API.SendScriptEvent(%d, %d, %d)]],
+        QSB.ScriptEvents.UpgradeStarted,
+        _BuildingID,
+        _PlayerID
+    ));
+end
+
+function ModuleInterfaceCore.Global:SendCancelBuildingUpgradeEvent(_BuildingID, _PlayerID)
+    API.SendScriptEvent(QSB.ScriptEvents.UpgradeCanceled, _BuildingID, _PlayerID);
+    Logic.ExecuteInLuaLocalState(string.format(
+        [[API.SendScriptEvent(%d, %d, %d)]],
+        QSB.ScriptEvents.UpgradeCanceled,
+        _BuildingID,
+        _PlayerID
+    ));
 end
 
 function ModuleInterfaceCore.Global:OverridePlayerLost()
@@ -167,6 +195,9 @@ end
 -- Local -------------------------------------------------------------------- --
 
 function ModuleInterfaceCore.Local:OnGameStart()
+    QSB.ScriptEvents.UpgradeCanceled = API.RegisterScriptEvent("Event_UpgradeCanceled");
+    QSB.ScriptEvents.UpgradeStarted = API.RegisterScriptEvent("Event_UpgradeStarted");
+
     self.HumanKnightType = Logic.GetEntityType(Logic.GetKnightID(QSB.HumanPlayerID));
     self.HumanPlayerID = QSB.HumanPlayerID;
 
@@ -182,6 +213,7 @@ function ModuleInterfaceCore.Local:OnGameStart()
     self:OverrideStartFestival();
     self:OverrideStartTheatrePlay();
     self:OverrideUpgradeTurret();
+    self:OverrideUpgradeBuilding();
 
     -- Schnellspeichern generell verbieten
     API.AddBlockQuicksaveCondition(function()
@@ -201,6 +233,33 @@ function ModuleInterfaceCore.Local:OnEvent(_ID, _Event, ...)
 end
 
 -- -------------------------------------------------------------------------- --
+
+function ModuleInterfaceCore.Local:OverrideUpgradeBuilding()
+    GUI_BuildingButtons.UpgradeClicked = function()
+        local WidgetID = XGUIEng.GetCurrentWidgetID();
+        local EntityID = GUI.GetSelectedEntity();
+        if Logic.CanCancelUpgradeBuilding(EntityID) then
+            Sound.FXPlay2DSound("ui\\menu_click");
+            GUI.CancelBuildingUpgrade(EntityID);
+            XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/BuildingButtons", 1);
+            API.BroadcastScriptCommand(QSB.ScriptCommands.CancelBuildingUpgrade, EntityID, GUI.GetPlayerID());
+            return;
+        end
+        local Costs = GUI_BuildingButtons.GetUpgradeCosts();
+        local CanBuyBoolean, CanNotBuyString = AreCostsAffordable(Costs);
+        if CanBuyBoolean == true then
+            Sound.FXPlay2DSound("ui\\menu_click");
+            GUI.UpgradeBuilding(EntityID, nil);
+            StartKnightVoiceForPermanentSpecialAbility(Entities.U_KnightWisdom);
+            if WidgetID ~= 0 then
+                SaveButtonPressed(WidgetID);
+            end
+            API.BroadcastScriptCommand(QSB.ScriptCommands.StartBuildingUpgrade, EntityID, GUI.GetPlayerID());
+        else
+            Message(CanNotBuyString);
+        end
+    end
+end
 
 function ModuleInterfaceCore.Local:OverrideOnSelectionChanged()
     GameCallback_GUI_SelectionChanged_Orig_InterfaceCore = GameCallback_GUI_SelectionChanged;

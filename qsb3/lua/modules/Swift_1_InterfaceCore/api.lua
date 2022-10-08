@@ -25,6 +25,16 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 
 ---
+-- Events, auf die reagiert werden kann.
+--
+-- @field UpgradeStarted  Ein Ausbau wurde gestartet. (Parameter: EntityID, PlayerID)
+-- @field UpgradeCanceled Ein Ausbau wurde abgebrochen. (Parameter: EntityID, PlayerID)
+--
+-- @within Event
+--
+QSB.ScriptEvents = QSB.ScriptEvents or {};
+
+---
 -- Setzt einen Icon aus einer Icon Matrix.
 --
 -- Es ist möglich, eine benutzerdefinierte Icon Matrix zu verwenden.
@@ -813,5 +823,19 @@ end
 --
 function API.DropBuildingButtonFromEntity(_ScriptName, _ID)
     return ModuleInterfaceCore.Local:RemoveButtonBinding(_ScriptName, _ID);
+end
+
+-- Local callbacks
+
+function SCP.InterfaceCore.StartBuildingUpgrade(_BuildingID, _PlayerID)
+    if Logic.IsBuildingBeingUpgraded(_BuildingID) then
+        ModuleInterfaceCore.Global:SendStartBuildingUpgradeEvent(_BuildingID, _PlayerID);
+    end
+end
+
+function SCP.InterfaceCore.CancelBuildingUpgrade(_BuildingID, _PlayerID)
+    if not Logic.IsBuildingBeingUpgraded(_BuildingID) then
+        ModuleInterfaceCore.Global:SendCancelBuildingUpgradeEvent(_BuildingID, _PlayerID);
+    end
 end
 
