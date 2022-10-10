@@ -136,8 +136,7 @@ function ModuleNpcInteraction.Global:PerformNpcInteraction(_PlayerID)
             return;
         end
 
-        if Data.Condition == nil
-        or Data:Condition(_PlayerID, QSB.Npc.LastHeroEntityID) then
+        if Data.Condition == nil or Data:Condition(_PlayerID, QSB.Npc.LastHeroEntityID) then
             Data.Active = false;
             if Data.Callback then
                 Data:Callback(_PlayerID, QSB.Npc.LastHeroEntityID);
