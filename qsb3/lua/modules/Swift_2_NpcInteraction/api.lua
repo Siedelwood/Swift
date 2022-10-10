@@ -135,7 +135,8 @@ function API.NpcCompose(_Data)
         error("API.NpcCompose: '" .._Data.Name.. "' NPC does not exist!");
         return;
     end
-    if ModuleNpcInteraction.Global:GetNpc(_Data.Name) ~= nil then
+    local Npc = ModuleNpcInteraction.Global:GetNpc(_Data.Name);
+    if Npc ~= nil and Npc.Active then
         error("API.NpcCompose: '" .._Data.Name.. "' is already composed as NPC!");
         return;
     end
