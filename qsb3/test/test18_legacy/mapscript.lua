@@ -108,3 +108,6 @@ function CreateEnemy()
     local ID = Logic.CreateBattalionOnUnblockedLand(Entities.U_MilitarySword, x, y, 0, 2, 6);
 end
 
+function CreateMine()
+    API.CreateIOIronMine("MineTest", Goods.G_Gold, 50, Goods.G_Wood, 5, true)
+end

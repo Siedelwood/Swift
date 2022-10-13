@@ -66,10 +66,9 @@ function ModuleInteractiveMines.Global:CreateIOMine(
     _Title,
     _Text,
     _Costs,
-    _NotRefillable,
-    _Condition,
-    _ConstructionAction,
-    _DepletedAction
+    _ResourceAmount,
+    _RefillAmount,
+    _Condition
 )
     local BlockerID = self:ResetIOMine(_Position, _Type);
     local Icon = {14, 10};
@@ -89,26 +88,22 @@ function ModuleInteractiveMines.Global:CreateIOMine(
         Text                 = _Text or ModuleInteractiveMines.Shared.Text.Text,
         Texture              = Icon,
         Type                 = _Type,
-        Crumbles             = _NotRefillable,
+        ResourceAmount       = _ResourceAmount or 250,
+        RefillAmount         = _RefillAmount or 75,
         Costs                = _Costs,
         InvisibleBlocker     = BlockerID,
         Distance             = 1200,
         AdditionalCondition  = _Condition,
-        AdditionalAction     = _ConstructionAction,
-        DepletionAction      = _DepletedAction,
         Condition            = function(_Data)
-            if _Data.AdditionalAction then
-                return _Data:AdditionalAction();
+            if _Data.AdditionalCondition then
+                return _Data:AdditionalCondition();
             end
             return true;
         end,
         Action               = function(_Data, _KnightID, _PlayerID)
-            ReplaceEntity(_Data.Name, _Data.Type);
+            local ID = ReplaceEntity(_Data.Name, _Data.Type);
+            API.SetResourceAmount(ID, _Data.ResourceAmount, _Data.RefillAmount);
             DestroyEntity(_Data.InvisibleBlocker);
-            if _Data.AdditionalAction then
-                _Data:AdditionalAction(_KnightID, _PlayerID);
-            end
-
             API.SendScriptEvent(QSB.ScriptEvents.InteractiveMineActivated, _Data.Name, _KnightID, _PlayerID);
             Logic.ExecuteInLuaLocalState(string.format(
                 [[API.SendScriptEvent(%d, "%s", %d, %d)]],
@@ -146,17 +141,13 @@ function ModuleInteractiveMines.Global:ControlIOMines()
         local EntityID = GetID(k);
         if v.IsInteractiveMine and Logic.GetResourceDoodadGoodType(EntityID) ~= 0 then
             if Logic.GetResourceDoodadGoodAmount(EntityID) == 0 then
-                if v.Crumbles == true then
+                if v.RefillAmount == 0 then
                     local Model = Models.Doodads_D_SE_ResourceIron_Wrecked;
                     if v.Type == Entities.R_StoneMine then
                         Model = Models.R_ResorceStone_Scaffold_Destroyed;
                     end
-                    EntityID = ReplaceEntity(EntityID, Entities.XD_ScriptEntity);
-                    Logic.SetVisible(EntityID, true);
+                    API.InteractiveObjectDeactivate(EntityID);
                     Logic.SetModel(EntityID, Model);
-                end
-                if v.DepletionAction then
-                    v:DepletionAction();
                 end
 
                 API.SendScriptEvent(QSB.ScriptEvents.InteractiveMineDepleted, k);

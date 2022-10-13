@@ -99,12 +99,14 @@ end
 
 function CreateTestMines2()
     API.CreateIOIronMine{
-        Position = "ironmine",
-        Costs    = {Goods.G_Wood, 50, Goods.G_Gold, 1500}
+        Position      = "ironmine",
+        Costs         = {Goods.G_Grain, 20, Goods.G_Stone, 30},
     };
     API.CreateIOStoneMine{
-        Position = "stonemine",
-        Costs    = {Goods.G_Wood, 50, Goods.G_Gold, 1500}
+        Position       = "stonemine",
+        Costs          = {Goods.G_Wood, 50, Goods.G_Gold, 1500},
+        ResourceAmount = 3,
+        RefillAmount   = 0,
     };
 end
 
