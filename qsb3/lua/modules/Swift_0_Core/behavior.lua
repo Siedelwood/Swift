@@ -387,8 +387,8 @@ end
 function B_Goal_Diplomacy:ChangeCaption(_Quest)
     local PlayerName = GetPlayerName(self.PlayerID) or "";
     local Text = string.format(
-        Swift:GetTextOfDesiredLanguage(self.TextPattern),
-        Swift:GetTextOfDesiredLanguage(self.DiploNameMap[self.DiplState]),
+        Swift:Localize(self.TextPattern),
+        Swift:Localize(self.DiploNameMap[self.DiplState]),
         PlayerName
     );
     Swift:ChangeCustomQuestCaptionText(Text, _Quest);
@@ -1177,8 +1177,8 @@ function B_Goal_ActivateBuff:CustomFunction(_Quest)
         end
         Swift:ChangeCustomQuestCaptionText(
             string.format(
-                Swift:GetTextOfDesiredLanguage(Swift.Behavior.Text.ActivateBuff.Pattern),
-                Swift:GetTextOfDesiredLanguage(tMapping[self.BuffName])
+                Swift:Localize(Swift.Behavior.Text.ActivateBuff.Pattern),
+                Swift:Localize(tMapping[self.BuffName])
             ),
             _Quest
         );
@@ -1883,9 +1883,9 @@ function B_Goal_SoldierCount:CustomFunction(_Quest)
         local PlayerName = GetPlayerName(self.PlayerID) or "";
         Swift:ChangeCustomQuestCaptionText(
             string.format(
-                Swift:GetTextOfDesiredLanguage(Swift.Behavior.Text.SoldierCount.Pattern),
+                Swift:Localize(Swift.Behavior.Text.SoldierCount.Pattern),
                 PlayerName,
-                Swift:GetTextOfDesiredLanguage(Swift.Behavior.Text.SoldierCount.Relation[Relation]),
+                Swift:Localize(Swift.Behavior.Text.SoldierCount.Relation[Relation]),
                 self.NumberOfUnits
             ),
             _Quest
@@ -2066,7 +2066,7 @@ function B_Goal_Festivals:CustomFunction(_Quest)
         local PlayerName = GetPlayerName(self.PlayerID) or "";
         Swift:ChangeCustomQuestCaptionText(
             string.format(
-                Swift:GetTextOfDesiredLanguage(Swift.Behavior.Text.Festivals.Pattern),
+                Swift:Localize(Swift.Behavior.Text.Festivals.Pattern),
                 PlayerName, self.NeededFestivals
             ), 
             _Quest

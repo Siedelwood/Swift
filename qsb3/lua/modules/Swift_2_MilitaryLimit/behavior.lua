@@ -82,7 +82,7 @@ function B_Goal_DestroySoldiers:CustomFunction(_Quest)
         local PlayerName = GetPlayerName(self.AttackedPlayer) or "";
         Swift:ChangeCustomQuestCaptionText(
             string.format(
-                Swift:GetTextOfDesiredLanguage(ModuleMilitaryLimit.Text),
+                Swift:Localize(ModuleMilitaryLimit.Text),
                 PlayerName, self.KillsNeeded
             ),
             _Quest

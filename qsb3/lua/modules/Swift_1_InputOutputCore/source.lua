@@ -60,6 +60,19 @@ ModuleInputOutputCore = {
             Names = {},
             EntityTypes = {},
         };
+
+        Text = {
+            ChooseLanguage = {
+                Title = {
+                    de = "Wählt die Sprache",
+                    en = "Chose your Tongue",
+                },
+                Text = {
+                    de = "Wählt aus der Liste die Sprache aus, in die Handlungstexte übersetzt werden sollen.",
+                    en = "Choose from the list below which language story texts shall be presented to you.",
+                }
+            }
+        }
     };
 };
 
@@ -70,6 +83,7 @@ function ModuleInputOutputCore.Global:OnGameStart()
     QSB.ScriptEvents.ChatClosed = API.RegisterScriptEvent("Event_ChatClosed");
 
     API.RegisterScriptCommand("Cmd_SetDecisionResult", SCP.InputOutputCore.SetDecisionResult);
+    API.RegisterScriptCommand("Cmd_SetLanguageResult", SCP.InputOutputCore.SetLanguageResult);
 end
 
 function ModuleInputOutputCore.Global:OnEvent(_ID, _Event, ...)

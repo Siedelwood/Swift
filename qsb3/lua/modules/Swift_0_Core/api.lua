@@ -648,21 +648,6 @@ function API.Localize(_Text)
 end
 
 ---
--- Stellt die angegebene Sprache zur Verwendung durch die QSB ein.
---
--- Alle von der QSB erzeugten Texte werden der übergebenen Sprache angepasst.
---
--- @param _Language Genutzte Sprache
--- @within Base
---
-function API.ChangeDesiredLanguage(_Language)
-    if GUI or type(_Language) ~= "string" or _Language:len() ~= 2 then
-        return;
-    end
-    Swift:ChangeSystemLanguage(_Language);
-end
-
----
 -- Wandelt underschiedliche Darstellungen einer Boolean in eine echte um.
 --
 -- Jeder String, der mit j, t, y oder + beginnt, wird als true interpretiert.
@@ -686,8 +671,9 @@ end
 
 ---
 -- Rundet eine Dezimalzahl kaufmännisch ab.
--- 
--- FIXME: Prüfen, ob nach neuem HE-Patch noch notwendig.
+--
+-- Zusätzlich können die Dezimalstellen beschränkt werden. Alle überschüssigen
+-- Dezimalstellen werden abgeschnitten.
 --
 -- @param[type=string] _Value         Zu rundender Wert
 -- @param[type=string] _DecimalDigits Maximale Dezimalstellen
@@ -2618,5 +2604,9 @@ function SCP.Core.UpdateTexturePosition(_Category, _Key, _Value)
     g_TexturePositions = g_TexturePositions or {};
     g_TexturePositions[_Category] = g_TexturePositions[_Category] or {};
     g_TexturePositions[_Category][_Key] = _Value;
+end
+
+function SCP.Core.LanguageChanged(_PlayerID, _GUI_PlayerID, _Language)
+    Swift:ChangeSystemLanguage(_PlayerID, _Language, _GUI_PlayerID);
 end
 

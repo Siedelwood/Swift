@@ -15,7 +15,7 @@ SCP = SCP or {
 };
 
 QSB.Version = "Version 3.0.0 BETA (1.1.18-3)";
-QSB.Language = "de";
+QSB.Language = nil;
 QSB.HumanPlayerID = 1;
 QSB.ScriptCommandSequence = 2;
 QSB.ScriptCommands = {};
@@ -47,8 +47,12 @@ Swift = {
     m_ScriptEventRegister       = {};
     m_ScriptEventListener       = {};
     m_ScriptCommandRegister     = {};
+    m_LanguageRegister          = {
+        {"de", "Deutsch", "en"},
+        {"en", "English", "en"},
+        {"fr", "Français", "en"},
+    };
     m_AIProperties              = {};
-    m_Language                  = "de";
     m_Environment               = "global";
     m_ProcessDebugCommands      = false;
     m_NoQuicksaveConditions     = {};
@@ -567,6 +571,7 @@ function Swift:InitalizeScriptCommands()
     Swift:CreateScriptCommand("Cmd_RegisterLoadscreenHidden", SCP.Core.LoadscreenHidden);
     Swift:CreateScriptCommand("Cmd_UpdateCustomVariable", SCP.Core.UpdateCustomVariable);
     Swift:CreateScriptCommand("Cmd_UpdateTexturePosition", SCP.Core.UpdateTexturePosition);
+    Swift:CreateScriptCommand("Cmd_LanguageChanged", SCP.Core.LanguageChanged);
 end
 
 function Swift:CreateScriptCommand(_Name, _Function)
@@ -848,38 +853,33 @@ end
 -- Language
 
 function Swift:DetectLanguage()
-    self.m_Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
-    QSB.Language = self.m_Language;
+    local DefaultLanguage = Network.GetDesiredLanguage();
+    if DefaultLanguage ~= "de" and DefaultLanguage ~= "fr" then
+        DefaultLanguage = "en";
+    end
+    QSB.Language = DefaultLanguage;
 end
 
-function Swift:ChangeSystemLanguage(_Language)
-    local OldLanguage = self.m_Language;
+function Swift:OnLanguageChanged(_PlayerID, _GUI_PlayerID, _Language)
+    self:ChangeSystemLanguage(_PlayerID, _Language, _GUI_PlayerID);
+end
+
+function Swift:ChangeSystemLanguage(_PlayerID, _Language, _GUI_PlayerID)
+    local OldLanguage = QSB.Language;
     local NewLanguage = _Language;
-    self.m_Language = _Language;
-    QSB.Language = self.m_Language;
+    if _GUI_PlayerID == nil or _GUI_PlayerID == _PlayerID then
+        QSB.Language = _Language;
+    end
 
     Swift:DispatchScriptEvent(QSB.ScriptEvents.LanguageSet, OldLanguage, NewLanguage);
-    Logic.ExecuteInLuaLocalState(string.format(
-        [[
-            local OldLanguage = "%s"
-            local NewLanguage = "%s"
-            Swift.m_Language = NewLanguage
+    Logic.ExecuteInLuaLocalState(string.format([[
+        local OldLanguage = "%s"
+        local NewLanguage = "%s"
+        if GUI.GetPlayerID() == %d then
             QSB.Language = NewLanguage
-            Swift:DispatchScriptEvent(QSB.ScriptEvents.LanguageSet, OldLanguage, NewLanguage)
-        ]],
-        OldLanguage,
-        NewLanguage
-    ));
-end
-
-function Swift:GetTextOfDesiredLanguage(_Table)
-    if type(_Table) == "table" then
-        if _Table[QSB.Language] then
-            return _Table[QSB.Language];
         end
-        return "ERROR_NO_TEXT";
-    end
-    return "ERROR_NO_TEXT";
+        Swift:DispatchScriptEvent(QSB.ScriptEvents.LanguageSet, OldLanguage, NewLanguage)
+    ]], OldLanguage, NewLanguage, _PlayerID));
 end
 
 function Swift:Localize(_Text)
@@ -893,7 +893,19 @@ function Swift:Localize(_Text)
                 end
             end
         else
-            LocalizedText = Swift:GetTextOfDesiredLanguage(_Text);
+            if _Text[QSB.Language] then
+                LocalizedText = _Text[QSB.Language];
+            else
+                for k, v in pairs(self.m_LanguageRegister) do
+                    if v[1] == QSB.Language and v[3] ~= nil then
+                        LocalizedText = _Text[v[3]];
+                        break;
+                    end
+                end
+            end
+            if type(LocalizedText) == "table" then
+                LocalizedText = "ERROR_NO_TEXT";
+            end
         end
     else
         LocalizedText = tostring(_Text);
