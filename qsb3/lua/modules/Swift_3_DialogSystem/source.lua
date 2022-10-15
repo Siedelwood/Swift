@@ -26,7 +26,8 @@ ModuleDialogSystem = {
         Text = {
             Continue = {
                 de = "{cr}{cr}{azure}(Weiter mit ESC)",
-                en = "{cr}{cr}{azure}(Continue with ESC)"
+                en = "{cr}{cr}{azure}(Continue with ESC)",
+                fr = "{cr}{cr}{azure}(Continuer avec ESC)",
             }
         },
     },

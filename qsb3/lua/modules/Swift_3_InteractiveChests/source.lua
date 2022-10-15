@@ -25,20 +25,24 @@ ModuleInteractiveChests = {
             Title = {
                 de = "Schatztruhe",
                 en = "Treasure Chest",
+                fr = "Coffre au trésor",
             },
             Text = {
                 de = "Diese Truhe enthält einen geheimen Schatz. Öffnet sie, um den Schatz zu bergen.",
                 en = "This chest contains a secred treasure. Open it to salvage the treasure.",
+                fr = "Ce coffre contient un trésor secret. Ouvrez-le pour récupérer le trésor.",
             },
         },
         Treasure = {
             Title = {
                 de = "Versteckter Schatz",
                 en = "Hidden treasure",
+                fr = "Trésor caché",
             },
             Text = {
                 de = "Ihr habt einen geheimen Schatz entdeckt. Beeilt Euch und beansprucht ihn für Euch!",
                 en = "You have discovered a secred treasure. Be quick to claim it before it is to late!",
+                fr = "Vous avez découvert un trésor secret. Dépêchez-vous de le revendiquer!",
             },
         }
     }

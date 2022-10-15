@@ -21,9 +21,9 @@ ModuleQuestJournal = {
     -- This is a shared structure but the values are asynchronous!
     Shared = {
         Text = {
-            Next  = {de = "Tagebuch anzeigen", en = "Show Journal"},
-            Title = {de = "Tagebuch", en = "Journal"},
-            Note  = {de = "Notiz", en = "Note"},
+            Next  = { de = "Tagebuch anzeigen", en = "Show Journal", fr = "Afficher le journal" },
+            Title = { de = "Tagebuch",          en = "Journal",      fr = "Journal"},
+            Note  = { de = "Notiz",             en = "Note",         fr = "Note"},
         },
     };
 };
@@ -195,7 +195,7 @@ function ModuleQuestJournal.Local:DisplayQuestJournal(_QuestName, _PlayerID, _In
         }
         if _Input then
             Data.Button = {
-                Text   = API.Localize{de = "Notiz", en = "Note"},
+                Text   = API.Localize{ de = "Notiz", en = "Note", fr = "Note" },
                 Action = function(_Data)
                     API.BroadcastScriptEventToGlobal(QSB.ScriptEvents.QuestJournalPlayerNote, _Data.PlayerID, _Data.QuestName);
                     API.ShowTextInput(_Data.PlayerID, false);

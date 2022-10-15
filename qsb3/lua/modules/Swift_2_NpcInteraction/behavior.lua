@@ -40,10 +40,11 @@ B_Goal_NPC = {
     Description     = {
         en = "Goal: The hero has to talk to a non-player character.",
         de = "Ziel: Der Held muss einen Nichtspielercharakter ansprechen.",
+        fr = "Objectif: le héros doit interpeller un personnage non joueur.",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "NPC",  de = "NPC" },
-        { ParameterType.ScriptName, en = "Hero", de = "Held" },
+        { ParameterType.ScriptName, en = "NPC",  de = "NPC",  fr = "NPC" },
+        { ParameterType.ScriptName, en = "Hero", de = "Held", fr = "Héro" },
     },
 }
 

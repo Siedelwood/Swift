@@ -225,7 +225,7 @@ function ModuleObjectInteraction.Global:CreateDefaultObjectNames()
     IO_UserDefindedNames["D_X_ChestClosed"]    = {
         de = "Schatztruhe",
         en = "Treasure Chest",
-        fr = "Coffre au trésor"
+        fr = "Coffre au Trésor"
     };
     IO_UserDefindedNames["D_X_ChestOpenEmpty"] = {
         de = "Leere Truhe",

@@ -24,9 +24,9 @@ ModuleBriefingSystem = {
     -- This is a shared structure but the values are asynchronous!
     Shared = {
         Text = {
-            NextButton = {de = "Weiter",  en = "Forward"},
-            PrevButton = {de = "Zurück",  en = "Previous"},
-            EndButton  = {de = "Beenden", en = "Close"},
+            NextButton = {de = "Weiter",  en = "Forward",  fr = "Continuer"},
+            PrevButton = {de = "Zurück",  en = "Previous", fr = "Retour"},
+            EndButton  = {de = "Beenden", en = "Close",    fr = "Quitter"},
         },
     },
 };

@@ -56,10 +56,16 @@ function ModuleExtendedCamera.Local:RegisterExtendedZoomHotkey()
     self:UnregisterExtendedZoomHotkey();
     if self.ExtendedZoomHotKeyID == 0 then
         self.ExtendedZoomHotKeyID = API.AddShortcut(
-            {de = "STRG + SHIFT + K",
-             en = "CTRL + SHIFT + K"},
-            {de = "Alternativen Zoom ein/aus",
-             en = "Alternative zoom on/off"}
+            {
+                de = "STRG + UMSCHALT + K",
+                en = "CTRL + SHIFT + K",
+                fr = "CTRL + SHIFT + K",
+            },
+            {
+                de = "Alternativen Zoom ein/aus",
+                en = "Alternative zoom on/off",
+                fr = "Zoom alternatif On/Off",
+            }
         );
     end
 end

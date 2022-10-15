@@ -28,10 +28,12 @@ ModuleInteractiveMines = {
             Title = {
                 de = "Rohstoffquelle erschließen",
                 en = "Construct mine",
+                fr = "Exploiter la source de ressources",
             },
             Text = {
                 de = "An diesem Ort könnt Ihr eine Rohstoffquelle erschließen!",
                 en = "You're able to create a pit at this location!",
+                fr = "À cet endroit, vous pouvez exploiter une source de ressources!",
             },
         },
     },
