@@ -263,6 +263,10 @@ function B_Goal_CityReputation:SetCaption(_Quest)
     end
 end
 
+function B_Goal_CityReputation:GetIcon()
+    return {5, 14};
+end
+
 function B_Goal_CityReputation:Debug(_Quest)
     if type(self.Reputation) ~= "number" or self.Reputation < 0 or self.Reputation > 100 then
         error(_Quest.Identifier.. ": " ..self.Name.. ": Reputation must be between 0 and 100!");
