@@ -589,20 +589,20 @@ function ModuleCastleStore.Local:DescribeHotkeys(_PlayerID)
     end
     if not self.Shortcuts[_PlayerID].StoreGoods then
         self.Shortcuts[_PlayerID].StoreGoods = API.AddShortcut(
-            {de = "Umschalt + B", en = "Shift + B"},
-            {de = "Burglager: Waren einlagern", en = "Vault: Store goods"}
+            {de = "Umschalt + B",               en = "Shift + B",           fr = "Shift + B"},
+            {de = "Burglager: Waren einlagern", en = "Vault: Store goods",  fr = "Entrepôt du château : stocker des marchandises"}
         );
     end
     if not self.Shortcuts[_PlayerID].LockGoods then
         self.Shortcuts[_PlayerID].LockGoods = API.AddShortcut(
-            {de = "Umschalt + N", en = "Shift + N"},
-            {de = "Burglager: Waren sperren", en = "Vault: Lock goods"}
+            {de = "Umschalt + N",               en = "Shift + N",           fr = "Shift + N"},
+            {de = "Burglager: Waren sperren",   en = "Vault: Lock goods",   fr = "Entrepôt du château : bloquer les marchandises"}
         );
     end
     if not self.Shortcuts[_PlayerID].EmptyWarehouse then
         self.Shortcuts[_PlayerID].EmptyWarehouse = API.AddShortcut(
-            {de = "Umschalt + M", en = "Shift + M"},
-            {de = "Burglager: Lager räumen", en = "Vault: Empty store"}
+            {de = "Umschalt + M",               en = "Shift + M",           fr = "Shift + M"},
+            {de = "Burglager: Lager räumen",    en = "Vault: Empty store",  fr = "Entrepôt du château : vider l'entrepôt"}
         );
     end
 end

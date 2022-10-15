@@ -61,7 +61,7 @@ B_Goal_DestroySoldiers = {
     Text = {
         de = "{center}SOLDATEN ZERSTÖREN {cr}{cr}von der Partei: %s{cr}{cr}Anzahl: %d",
         en = "{center}DESTROY SOLDIERS {cr}{cr}from faction: %s{cr}{cr}Amount: %d",
-        fr = "{center}DESTRUIRE DES SOLDATS {cr}{cr}de la faction : %s{cr}{cr}Nombre : %d",
+        fr = "{center}DESTRUIRE DES SOLDATS {cr}{cr}de la faction: %s{cr}{cr}Nombre : %d",
     }
 }
 

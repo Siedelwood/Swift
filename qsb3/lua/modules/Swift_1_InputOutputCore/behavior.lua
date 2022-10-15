@@ -157,15 +157,17 @@ B_Goal_InputDialog  = {
     Description = {
         en = "Goal: Player must type in something. The passwords have to be seperated by ; and whitespaces will be ignored.",
         de = "Ziel: Öffnet einen Dialog, der Spieler muss Lösungswörter eingeben. Diese sind durch ; abzutrennen. Leerzeichen werden ignoriert.",
+        fr = "Objectif: Ouvre un dialogue, le joueur doit entrer des mots de solution. Ceux-ci doivent être séparés par ;. Les espaces sont ignorés.",
     },
     DefaultMessage = {
         de = "Versuche bis zum Fehlschlag: ",
-        en = "Trials remaining until failure: "
+        en = "Trials remaining until failure: ",
+        fr = "Tentatives jusqu'à l'échec: ",
     },
     Parameter = {
-        {ParameterType.Default, en = "Password to enter", de = "Einzugebendes Passwort" },
-        {ParameterType.Number, en = "Trials till failure (0 endless)", de = "Versuche bis Fehlschlag (0 endlos)" },
-        {ParameterType.Default, en = "Wrong password message", de = "Text bei Falscheingabe" },
+        {ParameterType.Default, en = "Password to enter",               de = "Einzugebendes Passwort",              fr = "Mot de passe à saisir" },
+        {ParameterType.Number,  en = "Trials till failure (0 endless)", de = "Versuche bis Fehlschlag (0 endlos)",  fr = "Tentatives jusqu'à l'échec (0 sans fin)" },
+        {ParameterType.Default, en = "Wrong password message",          de = "Text bei Falscheingabe",              fr = "Texte en cas d'erreur de saisie" },
     }
 }
 
