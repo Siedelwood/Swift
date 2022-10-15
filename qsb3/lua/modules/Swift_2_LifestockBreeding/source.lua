@@ -79,7 +79,7 @@ function ModuleLifestockBreeding.Global:OnGameStart()
     MerchantSystem.BasePrices[Goods.G_Sheep] = ModuleLifestockBreeding.Global.SheepMoneyCost;
     MerchantSystem.BasePrices[Goods.G_Cow]   = ModuleLifestockBreeding.Global.CattleMoneyCost;
 
-    QSB.ScriptEvents.AnimalBred = API.RegisterScriptEvent("Event_AnimalBred");
+    QSB.ScriptEvents.AnimalBreed = API.RegisterScriptEvent("Event_AnimalBreed");
 
     StartSimpleJobEx(function()
         ModuleLifestockBreeding.Global:AnimalBreedController();
@@ -117,9 +117,9 @@ function ModuleLifestockBreeding.Global:CreateAnimal(_PastureID, _Type, _Shrink)
         table.insert(self.AnimalChildren, {ID, self.GrothTime});
     end
 
-    API.SendScriptEvent(QSB.ScriptEvents.AnimalBred, ID);
+    API.SendScriptEvent(QSB.ScriptEvents.AnimalBreed, ID);
     Logic.ExecuteInLuaLocalState(string.format(
-        [[API.SendScriptEvent(QSB.ScriptEvents.AnimalBred, %d)]],
+        [[API.SendScriptEvent(QSB.ScriptEvents.AnimalBreed, %d)]],
         ID
     ));
 end
@@ -268,7 +268,7 @@ function ModuleLifestockBreeding.Local:OnGameStart()
     MerchantSystem.BasePrices[Goods.G_Sheep] = ModuleLifestockBreeding.Local.SheepMoneyCost;
     MerchantSystem.BasePrices[Goods.G_Cow]   = ModuleLifestockBreeding.Local.CattleMoneyCost;
 
-    QSB.ScriptEvents.AnimalBred = API.RegisterScriptEvent("Event_AnimalBred");
+    QSB.ScriptEvents.AnimalBreed = API.RegisterScriptEvent("Event_AnimalBreed");
 
     self:InitBuyLifestockButton();
 end
