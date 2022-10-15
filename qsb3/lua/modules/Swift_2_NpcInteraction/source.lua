@@ -25,7 +25,7 @@ ModuleNpcInteraction = {
             StartConversation = {
                 de = "Gespräch beginnen",
                 en = "Start conversation",
-                fr = "Parlez à caractère",
+                fr = "Commencer la conversation",
             }
         }
     };

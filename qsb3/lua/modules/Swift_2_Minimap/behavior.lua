@@ -36,12 +36,13 @@ B_Reprisal_CreateMapMarker = {
     Description = {
         en = "Reprisal: Creates an marker on the minimap.",
         de = "Vergeltung: Erzeugt eine Markierung auf der Minikarte.",
+        fr = "Rétribution : crée un marqueur sur la mini-carte.",
     },
     Parameter = {
-        { ParameterType.Default,    en = "Marker Name",  de = "Name Markierung" },
-        { ParameterType.Custom,     en = "Marker Type",  de = "Typ der Markierung" },
-        { ParameterType.Custom,     en = "Marker Color", de = "Farbe der Markierung" },
-        { ParameterType.ScriptName, en = "Position",     de = "Position" },
+        { ParameterType.Default,    en = "Marker Name",  de = "Name Markierung",        fr = "Nom du marqueur" },
+        { ParameterType.Custom,     en = "Marker Type",  de = "Typ der Markierung",     fr = "Type de marqueur" },
+        { ParameterType.Custom,     en = "Marker Color", de = "Farbe der Markierung",   fr = "Couleur du marqueur" },
+        { ParameterType.ScriptName, en = "Position",     de = "Position",               fr = "Position" },
     },
 }
 
@@ -122,6 +123,7 @@ B_Reward_CreateMapMarker = Swift:CopyTable(B_Reprisal_CreateMapMarker);
 B_Reward_CreateMapMarker.Name = "Reward_CreateMapMarker";
 B_Reward_CreateMapMarker.Description.en = "Reward: Creates an marker on the minimap.";
 B_Reward_CreateMapMarker.Description.de = "Lohn: Erzeugt eine Markierung auf der Minikarte.";
+B_Reward_CreateMapMarker.Description.fr = "Récompense: crée un marqueur sur la mini-carte.";
 B_Reward_CreateMapMarker.GetReprisalTable = nil;
 
 B_Reward_CreateMapMarker.GetRewardTable = function(self, _Quest)
@@ -149,9 +151,10 @@ B_Reprisal_DestroyMapMarker = {
     Description = {
         en = "Reprisal: Removes an marker from the minimap.",
         de = "Vergeltung: Entfernt eine Markierung von der Minikarte.",
+        fr = "Rétribution: enlève un marqueur de la mini-carte.",
     },
     Parameter = {
-        { ParameterType.Default,    en = "Marker Name",  de = "Name Markierung" },
+        { ParameterType.Default,    en = "Marker Name",  de = "Name Markierung", fr = "Nom du marqueur" },
     },
 }
 
@@ -203,6 +206,7 @@ B_Reward_DestroyMapMarker = Swift:CopyTable(B_Reprisal_DestroyMapMarker);
 B_Reward_DestroyMapMarker.Name = "Reward_DestroyMapMarker";
 B_Reward_DestroyMapMarker.Description.en = "Reward: Creates an marker on the minimap.";
 B_Reward_DestroyMapMarker.Description.de = "Lohn: Erzeugt eine Markierung auf der Minikarte.";
+B_Reward_DestroyMapMarker.Description.fr = "Récompense: enlève un marqueur de la mini-carte.";
 B_Reward_DestroyMapMarker.GetReprisalTable = nil;
 
 B_Reward_DestroyMapMarker.GetRewardTable = function(self, _Quest)

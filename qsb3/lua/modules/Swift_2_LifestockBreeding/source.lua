@@ -41,28 +41,34 @@ ModuleLifestockBreeding = {
                 Title = {
                     de = "Zucht aktiv",
                     en = "Breeding active",
+                    fr = "Élevage actif",
                 },
                 Text = {
                     de = "- Klicken um Zucht zu stoppen",
                     en = "- Click to stop breeding",
+                    fr = "- Cliquez pour arrêter l'élevage",
                 },
                 Disabled = {
                     de = "Zucht ist gesperrt!",
                     en = "Breeding is locked!",
+                    fr = "L'élevage est bloqué!",
                 },
             },
             BreedingInactive = {
                 Title = {
                     de = "Zucht gestoppt",
                     en = "Breeding stopped",
+                    fr = "Élevage stoppé",
                 },
                 Text = {
                     de = "- Klicken um Zucht zu starten {cr}- Benötigt Platz {cr}- Benötigt Getreide",
                     en = "- Click to allow breeding {cr}- Requires space {cr}- Requires grain",
+                    fr = "- Cliquez pour démarrer l'élevage {cr}- Nécessite de l'espace {cr}- Nécessite des céréales",
                 },
                 Disabled = {
                     de = "Zucht ist gesperrt!",
                     en = "Breeding is locked!",
+                    fr = "L'élevage est bloqué!",
                 },
             },
         },

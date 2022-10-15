@@ -50,16 +50,18 @@ B_Goal_DestroySoldiers = {
     Description = {
         en = "Goal: Destroy a given amount of enemy soldiers",
         de = "Ziel: Zerstöre eine Anzahl gegnerischer Soldaten",
-                },
+        fr = "Objectif: Détruire un certain nombre de soldats ennemis",
+    },
     Parameter = {
-        {ParameterType.PlayerID, en = "Attacking Player", de = "Angreifer", },
-        {ParameterType.PlayerID, en = "Defending Player", de = "Verteidiger", },
-        {ParameterType.Number, en = "Amount", de = "Anzahl", },
+        {ParameterType.PlayerID, en = "Attacking Player",   de = "Angreifer",   fr = "Attaquant", },
+        {ParameterType.PlayerID, en = "Defending Player",   de = "Verteidiger", fr = "Défenseur", },
+        {ParameterType.Number,   en = "Amount",             de = "Anzahl",      fr = "Quantité", },
     },
 
     Text = {
         de = "{center}SOLDATEN ZERSTÖREN {cr}{cr}von der Partei: %s{cr}{cr}Anzahl: %d",
         en = "{center}DESTROY SOLDIERS {cr}{cr}from faction: %s{cr}{cr}Amount: %d",
+        fr = "{center}DESTRUIRE DES SOLDATS {cr}{cr}de la faction : %s{cr}{cr}Nombre : %d",
     }
 }
 

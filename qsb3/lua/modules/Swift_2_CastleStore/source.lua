@@ -49,6 +49,7 @@ ModuleCastleStore = {
                 Text = {
                     de = "Finanzansicht",
                     en = "Financial view",
+                    fr = "Vue financière",
                 },
             },
 
@@ -56,6 +57,7 @@ ModuleCastleStore = {
                 Text = {
                     de = "Lageransicht",
                     en = "Storeage view",
+                    fr = "Vue de l'entrepôt",
                 },
             },
 
@@ -63,6 +65,7 @@ ModuleCastleStore = {
                 Text = {
                     de = "Diese Ware wird nicht angenommen.",
                     en = "This good will not be stored.",
+                    fr = "Cette marchandise n'est pas acceptée.",
                 },
             },
 
@@ -70,10 +73,12 @@ ModuleCastleStore = {
                 Title = {
                     de = "Güter verwaren",
                     en = "Keep goods",
+                    fr = "Garder les marchandises",
                 },
                 Text = {
                     de = "[UMSCHALT + N]{cr}- Lagert Waren im Burglager ein {cr}- Waren verbleiben auch im Lager, wenn Platz vorhanden ist",
                     en = "[SHIFT + N]{cr}- Stores goods inside the vault {cr}- Goods also remain in the warehouse when space is available",
+                    fr = "[SHIFT + N]{cr}- Entrepose les marchandises dans l'entrepôt du château {cr}- Les marchandises restent aussi dans l'entrepôt s'il y a de la place",
                 },
             },
 
@@ -81,10 +86,12 @@ ModuleCastleStore = {
                 Title = {
                     de = "Güter zwischenlagern",
                     en = "Store in vault",
+                    fr = "Stockage temporaire des marchandises",
                 },
                 Text = {
                     de = "[UMSCHALT + B]{cr}- Lagert Waren im Burglager ein {cr}- Lagert waren wieder aus, sobald Platz frei wird",
                     en = "[SHIFT + B]{cr}- Stores goods inside the vault {cr}- Allows to extrac goods as soon as space becomes available",
+                    fr = "[SHIFT + B]{cr}- Entrepose des marchandises dans l'entrepôt du château {cr}- Enlève des marchandises dès que l'espace est libre",
                 },
             },
 
@@ -92,10 +99,12 @@ ModuleCastleStore = {
                 Title = {
                     de = "Lager räumen",
                     en = "Clear store",
+                    fr = "Vider l'entrepôt",
                 },
                 Text = {
                     de = "[UMSCHALT + M]{cr}- Lagert alle Waren aus {cr}- Benötigt Platz im Lagerhaus",
                     en = "[Shift + M]{cr}- Removes all goods {cr}- Requires space in the storehouse",
+                    fr = "[SHIFT + M]{cr}- Enlève toutes les marchandises {cr}- Nécessite de l'espace dans l'entrepôt",
                 },
             },
         },
