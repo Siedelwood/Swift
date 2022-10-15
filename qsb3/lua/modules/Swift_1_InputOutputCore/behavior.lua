@@ -42,11 +42,12 @@ B_Goal_Decide = {
     Description = {
         en = "Goal: Opens a Yes/No Dialog. Decision = Quest Result",
         de = "Ziel: Öffnet einen Ja/Nein-Dialog. Die Entscheidung bestimmt das Quest-Ergebnis (ja=true, nein=false).",
+        fr = "Objectif: ouvre une fenêtre de dialogue oui/non. La décision détermine le résultat de la quête (oui=true, non=false).",
     },
-    Parameter = {
-        { ParameterType.Default, en = "Text", de = "Text", },
-        { ParameterType.Default, en = "Title", de = "Titel", },
-        { ParameterType.Custom, en = "Button labels", de = "Button Beschriftung", },
+    Parameter = {       
+        { ParameterType.Default, en = "Text",          de = "Text",                fr = "Text", },
+        { ParameterType.Default, en = "Title",         de = "Titel",               fr = "Titre", },
+        { ParameterType.Custom,  en = "Button labels", de = "Button Beschriftung", fr = "Inscription sur le bouton", },
     },
 }
 
