@@ -7139,8 +7139,8 @@ B_Reward_AI_MountOutpost = {
         fr = "Récompense: Place un groupe de soldats sur un avant-poste de l'IA.",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Script name",   de = "Skriptname".  fr = "Nom de l'entité" },
-        { ParameterType.Custom,     en = "Soldiers type", de = "Soldatentyp". fr = "Type de soldat" },
+        { ParameterType.ScriptName, en = "Script name",   de = "Skriptname",  fr = "Nom de l'entité" },
+        { ParameterType.Custom,     en = "Soldiers type", de = "Soldatentyp", fr = "Type de soldat" },
     },
 }
 
@@ -7264,7 +7264,7 @@ B_Reward_UpgradeBuilding = {
     Name = "Reward_UpgradeBuilding",
     Description = {
         en = "Reward: Upgrades a building",
-        de = "Lohn: Baut ein Gebäude aus"
+        de = "Lohn: Baut ein Gebäude aus",
         fr = "Récompense: Améliore un Bâtiment",
     },
     Parameter =    {
