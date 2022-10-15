@@ -38,10 +38,11 @@ B_Reprisal_JournalEnable = {
     Description = {
         en = "Reprisal: Displays the journal for a quest or hides it.",
         de = "Vergeltung: Zeigt das Tagebuch für einen Quest an oder versteckt es.",
+        fr = "Rétribution: Affiche ou cache le journal pour une quête.",
     },
     Parameter = {
-        { ParameterType.QuestName, en = "Quest name",     de = "Name Quest" },
-        { ParameterType.Custom,    en = "Journal active", de = "Tagebuch aktiv" },
+        { ParameterType.QuestName, en = "Quest name",     de = "Name Quest",     fr = "Nom de la quête" },
+        { ParameterType.Custom,    en = "Journal active", de = "Tagebuch aktiv", fr = "Journal actif" },
     },
 }
 
@@ -88,6 +89,7 @@ B_Reward_JournalEnable = Swift:CopyTable(B_Reprisal_JournalEnable);
 B_Reward_JournalEnable.Name = "Reward_JournalEnable";
 B_Reward_JournalEnable.Description.en = "Reward: Displays the journal for a quest or hides it.";
 B_Reward_JournalEnable.Description.de = "Lohn: Zeigt das Tagebuch für einen Quest an oder versteckt es.";
+B_Reward_JournalEnable.Description.fr = "Récompense: Affiche ou cache le journal d'une quête.";
 B_Reward_JournalEnable.GetReprisalTable = nil;
 
 B_Reward_JournalEnable.GetRewardTable = function(self, _Quest)
@@ -114,12 +116,13 @@ B_Reprisal_JournalWrite = {
     Name = "Reprisal_JournalWrite",
     Description = {
         en = "Reprisal: Adds or alters a journal entry to a quest.",
-        de = "Lohn: Schreibt oder ändert einen Tagebucheintrag.",
+        de = "Vergeltung: Schreibt oder ändert einen Tagebucheintrag.",
+        fr = "Rétribution: Écrit ou modifie une entrée de journal.",
     },
     Parameter = {
-        { ParameterType.QuestName, en = "Quest name", de = "Name Quest" },
-        { ParameterType.Default,   en = "Entry name", de = "Name Eintrag" },
-        { ParameterType.Default,   en = "Entry text", de = "Text Eintrag" },
+        { ParameterType.QuestName, en = "Quest name", de = "Name Quest",   fr = "Nom de la quête" },
+        { ParameterType.Default,   en = "Entry name", de = "Name Eintrag", fr = "Nom de l'entrée" },
+        { ParameterType.Default,   en = "Entry text", de = "Text Eintrag", fr = "Texte de l'entrée" },
     },
 }
 
@@ -185,6 +188,7 @@ B_Reward_JournalWrite = Swift:CopyTable(B_Reprisal_JournalWrite);
 B_Reward_JournalWrite.Name = "Reward_JournalWrite";
 B_Reward_JournalWrite.Description.en = "Reward: Adds or alters a journal entry to a quest.";
 B_Reward_JournalWrite.Description.de = "Lohn: Schreibt oder ändert einen Tagebucheintrag.";
+B_Reward_JournalWrite.Description.de = "Récompense: Écrit ou modifie une entrée de journal.";
 B_Reward_JournalWrite.GetReprisalTable = nil;
 
 B_Reward_JournalWrite.GetRewardTable = function(self, _Quest)
@@ -211,10 +215,11 @@ B_Reprisal_JournalRemove = {
     Description = {
         en = "Reprisal: Remove a journal entry from a quest.",
         de = "Vergeltung: Entfernt einen Tagebucheintrag vom Quest.",
+        fr = "Rétribution: Supprime une entrée de journal de la quête.",
     },
     Parameter = {
-        { ParameterType.QuestName, en = "Quest name", de = "Name Quest" },
-        { ParameterType.Default,   en = "Entry name", de = "Name Eintrag" },
+        { ParameterType.QuestName, en = "Quest name", de = "Name Quest",   fr = "Nom de la quête" },
+        { ParameterType.Default,   en = "Entry name", de = "Name Eintrag", fr = "Nom de l'entrée" },
     },
 }
 
@@ -275,6 +280,7 @@ B_Reward_JournalRemove = Swift:CopyTable(B_Reprisal_JournalRemove);
 B_Reward_JournalRemove.Name = "Reward_JournalRemove";
 B_Reward_JournalRemove.Description.en = "Reward: Remove a journal entry from a quest.";
 B_Reward_JournalRemove.Description.de = "Lohn: Entfernt einen Tagebucheintrag vom Quest.";
+B_Reward_JournalRemove.Description.fr = "Récompense: Supprime une entrée de journal de la quête.";
 B_Reward_JournalRemove.GetReprisalTable = nil;
 
 B_Reward_JournalRemove.GetRewardTable = function(self, _Quest)
@@ -302,11 +308,12 @@ B_Reprisal_JournaHighlight = {
     Description = {
         en = "Reprisal: Highlights or unhighlights a journal entry of a quest.",
         de = "Vergeltung: Hebt einen Tagebucheintrag hevor oder hebt die Hervorhebung auf.",
+        fr = "Rétribution: met en valeur ou annule la mise en valeur d'une entrée de journal.",
     },
     Parameter = {
-        { ParameterType.QuestName, en = "Quest name", de = "Name Quest" },
-        { ParameterType.Default, en = "Name of entry",    de = "Name Eintrag" },
-        { ParameterType.Custom,  en = "Highlight entry",  de = "Hebe hervor" },
+        { ParameterType.QuestName, en = "Quest name",      de = "Name Quest",   fr= "Nom de la quête" },
+        { ParameterType.Default,   en = "Name of entry",   de = "Name Eintrag", fr= "Nom de l'entrée" },
+        { ParameterType.Custom,    en = "Highlight entry", de = "Hebe hervor",  fr= "Mettre en valeur" },
     },
 }
 
@@ -371,6 +378,7 @@ B_Reward_JournaHighlight = Swift:CopyTable(B_Reprisal_JournaHighlight);
 B_Reward_JournaHighlight.Name = "Reward_JournaHighlight";
 B_Reward_JournaHighlight.Description.en = "Reward: Highlights or unhighlights a journal entry of a quest.";
 B_Reward_JournaHighlight.Description.de = "Lohn: Hebt einen Tagebucheintrag hevor oder hebt die Hervorhebung auf.";
+B_Reward_JournaHighlight.Description.fr = "Récompense: met en valeur ou annule la mise en valeur d'une entrée de journal.";
 B_Reward_JournaHighlight.GetReprisalTable = nil;
 
 B_Reward_JournaHighlight.GetRewardTable = function(self, _Quest)
