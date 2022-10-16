@@ -207,9 +207,9 @@ end
 function ModuleEntityEventCore.Global:OverrideLogic()
     self.Logic_ChangeEntityPlayerID = Logic.ChangeEntityPlayerID;
     Logic.ChangeEntityPlayerID = function(...)
-        local OldID = arg[1];
+        local OldID = {arg[1]};
         local OldPlayerID = Logic.EntityGetPlayer(arg[1]);
-        local NewID = self.Logic_ChangeEntityPlayerID(unpack(arg));
+        local NewID = {self.Logic_ChangeEntityPlayerID(unpack(arg))};
         local NewPlayerID = Logic.EntityGetPlayer(NewID[1]);
         ModuleEntityEventCore.Global:TriggerEntityOnwershipChangedEvent(OldID, OldPlayerID, NewID, NewPlayerID);
         return NewID;
