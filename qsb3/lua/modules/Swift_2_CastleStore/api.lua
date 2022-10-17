@@ -328,11 +328,11 @@ function SCP.CastleStore.ToggleGoodState(_PlayerID, _GoodType)
     end
 end
 
-function SCP.CastleStore.ObjectPayStep1(_PlayerID, _ScriptName)
-    ModuleCastleStore.Global:InteractiveObjectPayStep1(_PlayerID, _ScriptName);
+function SCP.CastleStore.ObjectPayStep1(_PlayerID, _EntityID, _CostType1, _CostAmount1, _CostType2, _CostAmount2)
+    ModuleCastleStore.Global:InteractiveObjectPayStep1(_PlayerID, _EntityID, _CostType1, _CostAmount1, _CostType2, _CostAmount2);
 end
 
-function SCP.CastleStore.ObjectPayStep3(_PlayerID, _ScriptName)
-    ModuleCastleStore.Global:InteractiveObjectPayStep1(_PlayerID, _ScriptName);
+function SCP.CastleStore.ObjectPayStep3(_PlayerID, _EntityID)
+    ModuleCastleStore.Global:InteractiveObjectPayStep3(_PlayerID, _EntityID);
 end
 

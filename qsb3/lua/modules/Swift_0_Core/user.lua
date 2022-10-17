@@ -60,6 +60,7 @@ function Swift:RestoreAfterLoad()
     debug("Loading save game", true);
     self:OverrideString();
     self:OverrideTable();
+    self:OverrideMath();
     if self:IsGlobalEnvironment() then
         self:GlobalRestoreDebugAfterLoad();
         self:GlobalRestoreBugfixesAfterLoad();
