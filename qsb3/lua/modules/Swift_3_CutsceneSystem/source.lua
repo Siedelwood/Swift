@@ -630,6 +630,7 @@ function ModuleCutsceneSystem.Local:ActivateCinematicMode(_PlayerID)
     local x,y = XGUIEng.GetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight");
     XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight", x, 65 * (ScreenY/1080));
 
+    self.SelectionBackup = {GUI.GetSelectedEntities()};
     GUI.ClearSelection();
     GUI.ClearNotes();
     GUI.ForbidContextSensitiveCommandsInSelectionState();
@@ -674,6 +675,9 @@ function ModuleCutsceneSystem.Local:DeactivateCinematicMode(_PlayerID)
     GUI.SetFeedbackSoundOutputState(1);
     GUI.ActivateSelectionState();
     GUI.PermitContextSensitiveCommandsInSelectionState();
+    for k, v in pairs(self.SelectionBackup) do
+        GUI.SelectEntity(v);
+    end
     Display.SetRenderSky(0);
     Display.SetRenderBorderPins(1);
     Display.SetRenderFogOfWar(1);

@@ -990,6 +990,7 @@ function ModuleBriefingSystem.Local:ActivateCinematicMode(_PlayerID)
     XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 0, 0, 400, 600);
     XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 0, 0);
 
+    self.SelectionBackup = {GUI.GetSelectedEntities()};
     GUI.ClearSelection();
     GUI.ClearNotes();
     GUI.ForbidContextSensitiveCommandsInSelectionState();
@@ -1034,6 +1035,9 @@ function ModuleBriefingSystem.Local:DeactivateCinematicMode(_PlayerID)
     GUI.SetFeedbackSoundOutputState(1);
     GUI.ActivateSelectionState();
     GUI.PermitContextSensitiveCommandsInSelectionState();
+    for k, v in pairs(self.SelectionBackup) do
+        GUI.SelectEntity(v);
+    end
     Display.SetRenderSky(0);
     Display.SetRenderBorderPins(1);
     Display.SetRenderFogOfWar(1);

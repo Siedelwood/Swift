@@ -772,6 +772,7 @@ function ModuleDialogSystem.Local:ActivateCinematicMode(_PlayerID)
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionDialog/Objectives", " ");
 
     -- Change ui state for cinematic
+    self.SelectionBackup = {GUI.GetSelectedEntities()};
     GUI.ClearSelection();
     GUI.ClearNotes();
     GUI.ForbidContextSensitiveCommandsInSelectionState();
@@ -797,6 +798,7 @@ function ModuleDialogSystem.Local:ActivateCinematicMode(_PlayerID)
     SetFaderAlpha(0);
 
     -- Push loadscreen if previously visible
+    -- (This should never happen)
     if LoadScreenVisible then
         XGUIEng.PushPage("/LoadScreen/LoadScreen", false);
     end
@@ -820,6 +822,9 @@ function ModuleDialogSystem.Local:DeactivateCinematicMode(_PlayerID)
     GUI.SetFeedbackSoundOutputState(1);
     GUI.ActivateSelectionState();
     GUI.PermitContextSensitiveCommandsInSelectionState();
+    for k, v in pairs(self.SelectionBackup) do
+        GUI.SelectEntity(v);
+    end
     Display.SetRenderSky(0);
     Display.SetRenderBorderPins(1);
     Display.SetRenderFogOfWar(1);
