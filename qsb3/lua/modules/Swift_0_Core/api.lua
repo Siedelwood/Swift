@@ -1372,9 +1372,20 @@ function API.GetEntityCategoyList(_Entity)
         error("API.GetEntityCategoyList: _Entity (" ..tostring(_Entity).. ") does not exist!");
         return {};
     end
+    return API.GetEntityTypeCategoyList(Logic.GetEntityType(EntityID));
+end
+
+---
+-- Gibt alle Kategorien zurück, zu denen der Entity-Typ gehört.
+--
+-- @param              _Type Typ des Entity
+-- @return[type=table] Kategorien des Entity
+-- @within Entity
+--
+function API.GetEntityTypeCategoyList(_Type)
     local Categories = {};
     for k, v in pairs(EntityCategories) do
-        if Logic.IsEntityInCategory(EntityID, v) == 1 then 
+        if Logic.IsEntityTypeInCategory(_Type, v) == 1 then
             Categories[#Categories+1] = v;
         end
     end
