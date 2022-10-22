@@ -560,8 +560,6 @@ end
 -- Local -------------------------------------------------------------------- --
 
 function ModuleCastleStore.Local:OnGameStart()
-    IO = Logic.CreateReferenceToTableInGlobaLuaState("IO");
-
     for i= 1, 8 do
         self.Shortcuts[i] = {};
     end

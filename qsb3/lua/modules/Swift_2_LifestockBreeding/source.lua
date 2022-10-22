@@ -108,16 +108,15 @@ function ModuleLifestockBreeding.Global:OnGameStart()
 
     for i= 1, 8 do
         self.Cattle.PastureRegister[i] = {};
-        for k, v in pairs(Logic.GetEntitiesOfType(Entities.B_CattlePasture)) do
-            local PlayerID = Logic.EntityGetPlayer(v);
-            self:RegisterNewPasture(v, PlayerID);
-        end
-
         self.Sheep.PastureRegister[i] = {};
-        for k, v in pairs(Logic.GetEntitiesOfType(Entities.B_SheepPasture)) do
-            local PlayerID = Logic.EntityGetPlayer(v);
-            self:RegisterNewPasture(v, PlayerID);
-        end
+    end
+    for k, v in pairs(Logic.GetEntitiesOfType(Entities.B_CattlePasture)) do
+        local PlayerID = Logic.EntityGetPlayer(v);
+        self:RegisterNewPasture(v, PlayerID);
+    end
+    for k, v in pairs(Logic.GetEntitiesOfType(Entities.B_SheepPasture)) do
+        local PlayerID = Logic.EntityGetPlayer(v);
+        self:RegisterNewPasture(v, PlayerID);
     end
 
     StartSimpleJobEx(function()
