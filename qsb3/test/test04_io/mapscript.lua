@@ -100,12 +100,13 @@ end
 function CreateTestMines2()
     API.CreateIOIronMine{
         Position = "ironmine",
-        Costs    = {Goods.G_Wood, 50, Goods.G_Gold, 1500}
+        Costs    = {Goods.G_Wood, 50, Goods.G_Gold, 150}
     };
     API.CreateIOStoneMine{
         Position = "stonemine",
-        Costs    = {Goods.G_Wood, 50, Goods.G_Gold, 1500}
+        Costs    = {Goods.G_Wood, 50, Goods.G_Gold, 150}
     };
+    Logic.InteractiveObjectSetCostResourceCartType(GetID("ironmine"), Entities.U_Marketer);
 end
 
 function CreateTestChests()
@@ -173,6 +174,8 @@ function CreateTestObject()
         Name     = "IO1",
         Distance = 1000,
         Text     = "Bockwurst",
+        Player   = 2,
+        Costs    = {Goods.G_Wood, 50, Goods.G_Gold, 150},
         Texture  = {1, 1, 1},
         Condition = function(_Data)
             return true;
