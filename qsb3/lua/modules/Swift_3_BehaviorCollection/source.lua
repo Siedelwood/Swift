@@ -135,8 +135,8 @@ function ModuleBehaviorCollection.Global:OverrideIsObjectiveCompleted()
     QuestTemplate.IsObjectiveCompleted_Orig_QSB_SwiftBehaviors = QuestTemplate.IsObjectiveCompleted;
     QuestTemplate.IsObjectiveCompleted = function(self, objective)
         local objectiveType = objective.Type;
-        if objectiveType == Objective.DestroyEntities and objective.Completed ~= nil then
-            if objective.Data[1] == 3 then
+        if objective.Completed ~= nil then
+            if objectiveType == Objective.DestroyEntities and objective.Data[1] == 3 then
                 objective.Data[5] = nil;
             end
             return objective.Completed;
