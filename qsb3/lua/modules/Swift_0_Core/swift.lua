@@ -432,7 +432,8 @@ function Swift:OverrideDoQuicksave()
 end
 
 function Swift:AlterQuickSaveHotkey()
-    StartSimpleHiResJobEx(function()
+    -- FIXME: This does not work if the job module is not present!
+    API.StartHiResJob(function()
         Input.KeyBindDown(
             Keys.ModifierControl + Keys.S,
             "KeyBindings_SaveGame(true)",

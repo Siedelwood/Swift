@@ -17,8 +17,9 @@ ModuleJobsCore = {
     Local = {},
     -- This is a shared structure but the values are asynchronous!
     Shared = {
-        EventJobID = 0,
-        EventJobs = {};
+        EventJobMappingID = 0,
+        EventJobMapping = {},
+        EventJobs = {},
         TimeLineData = {},
         SecondsSinceGameStart = 0;
         LastTimeStamp = 0;
@@ -34,16 +35,17 @@ function ModuleJobsCore.Local:OnGameStart()
 end
 
 function ModuleJobsCore.Shared:CreateEventJob(_Type, _Function, ...)
-    self.EventJobID = self.EventJobID +1;
+    self.EventJobMappingID = self.EventJobMappingID +1;
     local ID = Trigger.RequestTrigger(
         _Type,
         "",
         "ModuleJobCore_EventJob_BasicEventJobExecutor",
         1,
         {},
-        {self.EventJobID}
+        {self.EventJobMappingID}
     );
-    self.EventJobs[self.EventJobID] = {ID, _Function, table.copy(arg)};
+    self.EventJobs[ID] = {ID, true, _Function, table.copy(arg)};
+    self.EventJobMapping[self.EventJobMappingID] = ID;
     return ID;
 end
 
@@ -72,13 +74,12 @@ end
 
 -- Event Jobs
 
-function ModuleJobCore_EventJob_BasicEventJobExecutor(_ID)
-    if ModuleJobsCore.Shared.EventJobs[_ID] then
-        local Parameter = ModuleJobsCore.Shared.EventJobs[_ID][3];
-        local Finished = ModuleJobsCore.Shared.EventJobs[_ID][2](unpack(Parameter));
-        if Finished then
-            ModuleJobsCore.Shared.EventJobs[_ID] = nil;
-            return true;
+function ModuleJobCore_EventJob_BasicEventJobExecutor(_MappingID)
+    local ID = ModuleJobsCore.Shared.EventJobMapping[_MappingID];
+    if ID and ModuleJobsCore.Shared.EventJobs[ID] and ModuleJobsCore.Shared.EventJobs[ID][2] then
+        local Parameter = ModuleJobsCore.Shared.EventJobs[ID][4];
+        if ModuleJobsCore.Shared.EventJobs[ID][3](unpack(Parameter)) then
+            ModuleJobsCore.Shared.EventJobs[ID][2] = false;
         end
     end
 end

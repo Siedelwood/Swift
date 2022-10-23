@@ -447,6 +447,7 @@ function ModuleCutsceneSystem.Local:DisplayPageFader(_PlayerID, _PageID)
 
     local PageFadeOut = Page.FadeOut;
     if PageFadeOut then
+        -- FIXME: This would create jobs that are only be paused at the end!
         self.Cutscene[_PlayerID].FaderJob = API.StartHiResJob(function(_Time, _FadeOut)
             if Logic.GetTimeMs() > _Time - (_FadeOut * 1000) then
                 FadeOut(_FadeOut);

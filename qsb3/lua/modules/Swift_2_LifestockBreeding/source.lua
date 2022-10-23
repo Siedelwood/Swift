@@ -119,10 +119,10 @@ function ModuleLifestockBreeding.Global:OnGameStart()
         self:RegisterNewPasture(v, PlayerID);
     end
 
-    StartSimpleJobEx(function()
+    API.StartJob(function()
         ModuleLifestockBreeding.Global:AnimalBreedController();
     end);
-    StartSimpleJobEx(function()
+    API.StartJob(function()
         ModuleLifestockBreeding.Global:AnimalGrouthController();
     end);
 end

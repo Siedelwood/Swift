@@ -13,6 +13,16 @@ You may use and modify this file unter the terms of the MIT licence.
 -- jedes (in Siedler implementierte) Event einen Job als Funktionsreferenz
 -- oder Inline Job schreiben.
 --
+-- <h4>Prozessänderung</h4>
+-- Für gewöhnlich werden Jobs durch return true beendet und aus dem System
+-- gelöscht. Neu ist nun, dass Jobs durch return true nur noch pausiert werden
+-- und später wieder angestoßen werden können. Soll ein Job endgültig entfernt
+-- werden, muss dies extern über einen Funktionsaufruf geschehen.
+-- 
+-- Jobs, die direkt über Trigger.RequestTrigger gestartet werden, sind nicht
+-- betroffen. Trigger.UnrequestTrigger kann nur noch für Jobs verwendet werden,
+-- die mit Trigger.RequestTrigger direkt gestartet wurden.
+--
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
 -- <li><a href="Swift_0_Core.api.html">(0) Core</a></li>
@@ -121,6 +131,77 @@ function API.StartHiResJob(_Function, ...)
 end
 StartSimpleHiResJob = API.StartHiResJob;
 StartSimpleHiResJobEx = API.StartHiResJob;
+
+---
+-- Beendet den Job mit der übergebenen ID endgültig.
+--
+-- @param[type=number] _JobID ID des Jobs
+-- @within Anwenderfunktionen
+--
+-- @usage API.EndJob(AnyJobID);
+--
+function API.EndJob(_JobID)
+    if ModuleJobsCore.Shared.EventJobs[_JobID] then
+        Trigger.UnrequestTrigger(ModuleJobsCore.Shared.EventJobs[_JobID][1]);
+        ModuleJobsCore.Shared.EventJobs[_JobID] = nil;
+        return;
+    end
+    EndJob(_JobID);
+end
+
+---
+-- Gibt zurück, ob der Job mit der übergebenen ID aktiv ist.
+--
+-- @param[type=number] _JobID ID des Jobs
+-- @return[type=boolean] Job ist aktiv
+-- @within Anwenderfunktionen
+--
+-- @usage if API.JobIsRunning(AnyJobID) then
+--     -- Mach was
+-- end;
+--
+function API.JobIsRunning(_JobID)
+    if ModuleJobsCore.Shared.EventJobs[_JobID] then
+        return ModuleJobsCore.Shared.EventJobs[_JobID][2] == true;
+    end
+    return JobIsRunning(_JobID);
+end
+
+---
+-- Aktiviert einen pausierten Job.
+--
+-- @param[type=number] _JobID ID des Jobs
+-- @within Anwenderfunktionen
+--
+-- @usage API.ResumeJob(AnyJobID);
+--
+function API.ResumeJob(_JobID)
+    if ModuleJobsCore.Shared.EventJobs[_JobID] then
+        if ModuleJobsCore.Shared.EventJobs[_JobID][2] ~= true then
+            ModuleJobsCore.Shared.EventJobs[_JobID][2] = true;
+        end
+        return;
+    end
+    error("API.ResumeJob: Job " ..tostring(_JobID).. " can not be resumed!");
+end
+
+---
+-- Pausiert einen aktivien Job.
+--
+-- @param[type=number] _JobID ID des Jobs
+-- @within Anwenderfunktionen
+--
+-- @usage API.YieldJob(AnyJobID);
+--
+function API.YieldJob(_JobID)
+    if ModuleJobsCore.Shared.EventJobs[_JobID] then
+        if ModuleJobsCore.Shared.EventJobs[_JobID][2] == true then
+            ModuleJobsCore.Shared.EventJobs[_JobID][2] = false;
+        end
+        return;
+    end
+    error("API.YieldJob: Job " ..tostring(_JobID).. " can not be paused!");
+end
 
 ---
 -- Wartet die angebene Zeit in Sekunden und führt anschließend die Funktion aus.

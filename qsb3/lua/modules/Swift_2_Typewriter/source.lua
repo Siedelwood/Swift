@@ -30,7 +30,7 @@ function ModuleTypewriter.Global:OnGameStart()
     QSB.ScriptEvents.TypewriterStarted = API.RegisterScriptEvent("Event_TypewriterStarted");
     QSB.ScriptEvents.TypewriterEnded = API.RegisterScriptEvent("Event_TypewriterEnded");
 
-    StartSimpleHiResJobEx(function()
+    API.StartHiResJob(function()
         ModuleTypewriter.Global:ControlTypewriter();
     end);
 end

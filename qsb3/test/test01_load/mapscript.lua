@@ -89,3 +89,33 @@ function Mission_FirstMapAction()
     -- }
 end
 
+function TestJobFunction()
+    if g_TestJobFinished then
+        g_TestJobFinished = false;
+        return true;
+    end
+    API.Note("Sometimes it just work's!");
+end
+
+function StartTestJob()
+    g_TestJobFinished = false;
+    g_TestJobID = API.StartJob(TestJobFunction);
+end
+
+function EndTestJob()
+    g_TestJobFinished = true;
+    API.ClearNotes();
+end
+
+function PurgeTestJob()
+    API.EndJob(g_TestJobID);
+end
+
+function YieldTestJob()
+    API.YieldJob(g_TestJobID);
+end
+
+function ResumeTestJob()
+    API.ResumeJob(g_TestJobID);
+end
+

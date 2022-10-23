@@ -1552,12 +1552,18 @@ function B_Reward_MoveToPosition:CustomFunction(_Quest)
     x = x + self.Distance * math.cos( math.rad(orientation+self.Angle) );
     y = y + self.Distance * math.sin( math.rad(orientation+self.Angle) );
     Logic.MoveSettler(entity, x, y);
-    StartSimpleJobEx( function(_entityID, _targetID)
+    self.EntityMovingJob = API.StartJob( function(_entityID, _targetID)
         if Logic.IsEntityMoving(_entityID) == false then
             LookAt(_entityID, _targetID);
             return true;
         end
     end, entity, target);
+end
+
+function B_Reward_MoveToPosition:Reset(_Quest)
+    if self.EntityMovingJob then
+        API.EndJob(self.EntityMovingJob);
+    end
 end
 
 function B_Reward_MoveToPosition:Debug(_Quest)
