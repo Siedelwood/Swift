@@ -501,10 +501,12 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
                 if HasSpace == false then
                     Disable = true
                 end
-                if IO[ScriptName] and type(IO[ScriptName].Player) == "table" then
-                    Disable = not self:IsAvailableForGuiPlayer(ScriptName);
-                elseif IO[ScriptName] and type(IO[ScriptName].Player) == "number" then
-                    Disable = IO[ScriptName].Player ~= PlayerID;
+                if Disable == false then
+                    if IO[ScriptName] and type(IO[ScriptName].Player) == "table" then
+                        Disable = self:IsAvailableForGuiPlayer(ScriptName);
+                    elseif IO[ScriptName] and type(IO[ScriptName].Player) == "number" then
+                        Disable = IO[ScriptName].Player ~= PlayerID;
+                    end
                 end
 
                 if Disable == true then

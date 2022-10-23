@@ -987,8 +987,6 @@ function ModuleCastleStore.Local:OverwriteInteractiveObject()
             return;
         end
 
-        -- Before we trigger the action we have to check if it can be triggered
-        -- normaly or if the castle store must handle the activation.
         if not Mission_Callback_OverrideObjectInteraction or not Mission_Callback_OverrideObjectInteraction(EntityID, PlayerID, Costs) then
             if Costs and Costs[1] then
                 CanBuyBoolean = CanBuyBoolean and GetPlayerResources(Costs[1], PlayerID) >= Costs[2];
@@ -996,10 +994,12 @@ function ModuleCastleStore.Local:OverwriteInteractiveObject()
                     CanBuyBoolean = CanBuyBoolean and GetPlayerResources(Costs[3], PlayerID) >= Costs[4];
                 end
             end
+            -- Trigger normal interaction
             if CanBuyBoolean then
                 GUI_Interaction.InteractiveObjectClicked_Orig_CastleStore();
                 return;
             end
+            -- Invoke the castle store
             API.BroadcastScriptCommand(
                 QSB.ScriptCommands.CastleStoreObjectPayStep1,
                 PlayerID,

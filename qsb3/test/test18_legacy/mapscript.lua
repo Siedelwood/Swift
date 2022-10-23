@@ -108,6 +108,14 @@ function CreateEnemy()
     local ID = Logic.CreateBattalionOnUnblockedLand(Entities.U_MilitarySword, x, y, 0, 2, 6);
 end
 
-function CreateMine()
-    API.CreateIOIronMine("MineTest", Goods.G_Gold, 50, Goods.G_Wood, 5, true)
+function CreateTestMine()
+    API.CreateIOIronMine("MineTest", Goods.G_Grain, 20, Goods.G_Stone, 30, true)
+    -- API.CreateIOStoneMine("MineTest", Goods.G_Carcass, 20, Goods.G_Wood, 30, true)
+    -- API.CreateIOIronMine("MineTest", Goods.G_Iron, 20, Goods.G_Gems, 20, true)
+    -- API.CreateIOStoneMine("MineTest", Goods.G_Dye, 20, Goods.G_Honeycomb, 30, true)
+    -- API.CreateIOIronMine("MineTest", Goods.G_Carcass, 30, Goods.G_RawFish, 30, true)
+    -- API.CreateIOStoneMine("MineTest", Goods.G_Milk, 30, Goods.G_Honeycomb, 30, true)
+    -- API.CreateIOIronMine("MineTest", Goods.G_Olibanum, 20, Goods.G_RawFish, 30, true)
+    -- API.CreateIOStoneMine("MineTest", Goods.G_Iron, 30, Goods.G_Wood, 30, true)
 end
+
