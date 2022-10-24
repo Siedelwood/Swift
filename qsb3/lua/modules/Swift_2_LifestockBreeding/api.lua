@@ -15,7 +15,8 @@ You may use and modify this file unter the terms of the MIT licence.
 -- Zucht zu beginnen, sind frei konfigurierbar.
 --
 -- Zusätzlich können die Tiere kleiner gespawnt werden und wachsen dann mit
--- der Zeit automatisch. Diese Funktionalität kann abgeschaltet werden.
+-- der Zeit automatisch. Diese Funktionalität kann abgeschaltet werden und
+-- ist rein kosmetisch.
 -- 
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
@@ -119,13 +120,13 @@ end
 -- <td>QuantityBoost</td>
 -- <td>number</td>
 -- <td>Menge an Sekunden, die jedes Tier im Gebiet die Zuchtauer verkürzt.
--- (Default: 15)</td>
+-- (Default: 9)</td>
 -- </tr>
 -- <tr>
 -- <td>AreaSize</td>
 -- <td>number</td>
 -- <td>Größe des Gebietes, in dem Tiere für die Zucht vorhanden sein müssen.
--- (Default: 3000)</td>
+-- (Default: 4500)</td>
 -- </tr>
 -- <tr>
 -- <td>UseCalves</td>
@@ -137,27 +138,27 @@ end
 -- <td>CalvesSize</td>
 -- <td>number</td>
 -- <td>Bestimmt die initiale Größe der Kälber. Werden Kälber nicht benutzt, wird
--- diese Option ignoriert. (Default: 0.4)</td>
+-- diese Option ignoriert. (Default: 0.45)</td>
 -- </tr>
 -- <tr>
 -- <td>FeedingTimer</td>
 -- <td>number</td>
 -- <td>Bestimmt die Zeit in Sekunden zwischen den Fütterungsperioden. Am Ende
 -- jeder Periode wird pro züchtendem Gatter 1 Getreide abgezogen, wenn das
--- Gebäude nicht pausiert ist. (Default: 45)</td>
+-- Gebäude nicht pausiert ist. (Default: 25)</td>
 -- </tr>
 -- <tr>
 -- <td>BreedingTimer</td>
 -- <td>number</td>
 -- <td>Bestimmt die Zeit in Sekunden, bis ein neues Tier erscheint. Wenn für
 -- eine Fütterung kein Getreide da ist, wird der Zähler zur letzten Fütterung
--- zurückgesetzt. (Default: 240)</td>
+-- zurückgesetzt. (Default: 150)</td>
 -- </tr>
 -- <tr>
 -- <td>GrothTimer</td>
 -- <td>number</td>
 -- <td>Bestimmt die Zeit in Sekunden zwischen den Wachstumsschüben eines
--- Kalbs. Jeder Wachstumsschub ist +0.1 Gößenänderung. (Default: 45)</td>
+-- Kalbs. Jeder Wachstumsschub ist +0.05 Gößenänderung. (Default: 15)</td>
 -- </tr>
 -- </table>
 -- 
@@ -168,8 +169,8 @@ end
 -- API.ConfigureCattleBreeding{
 --     -- Es werden keine Tiere benötigt
 --     RequiredAmount = 0,
---     -- Mindestzeit sind 2 Minuten
---     BreedingTimer = 2*60
+--     -- Mindestzeit sind 3 Minuten
+--     BreedingTimer = 3*60
 -- }
 --
 function API.ConfigureCattleBreeding(_Data)
@@ -221,13 +222,13 @@ end
 -- <td>QuantityBoost</td>
 -- <td>number</td>
 -- <td>Menge an Sekunden, die jedes Tier im Gebiet die Zuchtauer verkürzt.
--- (Default: 15)</td>
+-- (Default: 9)</td>
 -- </tr>
 -- <tr>
 -- <td>AreaSize</td>
 -- <td>number</td>
 -- <td>Größe des Gebietes, in dem Tiere für die Zucht vorhanden sein müssen.
--- (Default: 3000)</td>
+-- (Default: 4500)</td>
 -- </tr>
 -- <tr>
 -- <td>UseCalves</td>
@@ -239,27 +240,27 @@ end
 -- <td>CalvesSize</td>
 -- <td>number</td>
 -- <td>Bestimmt die initiale Größe der Kälber. Werden Kälber nicht benutzt, wird
--- diese Option ignoriert. (Default: 0.4)</td>
+-- diese Option ignoriert. (Default: 0.45)</td>
 -- </tr>
 -- <tr>
 -- <td>FeedingTimer</td>
 -- <td>number</td>
 -- <td>Bestimmt die Zeit in Sekunden zwischen den Fütterungsperioden. Am Ende
 -- jeder Periode wird pro züchtendem Gatter 1 Getreide abgezogen, wenn das
--- Gebäude nicht pausiert ist. (Default: 45)</td>
+-- Gebäude nicht pausiert ist. (Default: 30)</td>
 -- </tr>
 -- <tr>
 -- <td>BreedingTimer</td>
 -- <td>number</td>
 -- <td>Bestimmt die Zeit in Sekunden, bis ein neues Tier erscheint. Wenn für
 -- eine Fütterung kein Getreide da ist, wird der Zähler zur letzten Fütterung
--- zurückgesetzt. (Default: 240)</td>
+-- zurückgesetzt. (Default: 120)</td>
 -- </tr>
 -- <tr>
 -- <td>GrothTimer</td>
 -- <td>number</td>
 -- <td>Bestimmt die Zeit in Sekunden zwischen den Wachstumsschüben eines
--- Kalbs. Jeder Wachstumsschub ist +0.1 Gößenänderung. (Default: 45)</td>
+-- Kalbs. Jeder Wachstumsschub ist +0.05 Gößenänderung. (Default: 15)</td>
 -- </tr>
 -- </table>
 -- 
@@ -270,8 +271,8 @@ end
 -- API.ConfigureSheepBreeding{
 --     -- Es werden keine Tiere benötigt
 --     RequiredAmount = 0,
---     -- Mindestzeit sind 2 Minuten
---     BreedingTimer = 2*60
+--     -- Mindestzeit sind 3 Minuten
+--     BreedingTimer = 3*60
 -- }
 --
 function API.ConfigureSheepBreeding(_Data)
