@@ -15,7 +15,6 @@ ModuleTypewriter = {
 
     Global = {
         TypewriterEventData = {},
-        TypewriterEventQueue = {},
         TypewriterEventCounter = 0,
     },
     Local = {},
@@ -31,10 +30,7 @@ function ModuleTypewriter.Global:OnGameStart()
     QSB.ScriptEvents.TypewriterStarted = API.RegisterScriptEvent("Event_TypewriterStarted");
     QSB.ScriptEvents.TypewriterEnded = API.RegisterScriptEvent("Event_TypewriterEnded");
 
-    for i= 1, 8 do
-        self.TypewriterEventQueue[i] = {};
-    end
-    StartSimpleHiResJobEx(function()
+    API.StartHiResJob(function()
         ModuleTypewriter.Global:ControlTypewriter();
     end);
 end
@@ -63,9 +59,9 @@ function ModuleTypewriter.Global:PlayTypewriter(_Data)
     Logic.ExecuteInLuaLocalState(string.format(
         [[
         if GUI.GetPlayerID() == %d then
-            API.ActivateImageScreen("%s", %d, %d, %d, %d);
-            API.DeactivateNormalInterface();
-            API.DeactivateBorderScroll(%d);
+            API.ActivateImageScreen(GUI.GetPlayerID(), "%s", %d, %d, %d, %d)
+            API.DeactivateNormalInterface(GUI.GetPlayerID())
+            API.DeactivateBorderScroll(GUI.GetPlayerID(), %d)
             Input.CutsceneMode()
             GUI.ClearNotes()
         end
@@ -97,9 +93,9 @@ function ModuleTypewriter.Global:FinishTypewriter(_PlayerID)
             [[
             if GUI.GetPlayerID() == %d then
                 ModuleDisplayCore.Local:ResetFarClipPlane()
-                API.DeactivateImageScreen()
-                API.ActivateNormalInterface()
-                API.ActivateBorderScroll()
+                API.DeactivateImageScreen(GUI.GetPlayerID())
+                API.ActivateNormalInterface(GUI.GetPlayerID())
+                API.ActivateBorderScroll(GUI.GetPlayerID())
                 Input.GameMode()
                 GUI.ClearNotes()
             end

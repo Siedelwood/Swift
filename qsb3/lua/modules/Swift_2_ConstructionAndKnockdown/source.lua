@@ -23,6 +23,19 @@ ModuleConstructionControl = {
     },
     Local = {},
     Shared = {
+        Text = {
+            NoPalisadeHere = {
+                de = "An dieser Stelle kann keine Palisade gebaut werden!",
+                en = "A palisade can not be constructed at this location.",
+                fr = "Aucune palissade ne peut être construite à cet endroit.",
+            },
+            NoWallHere = {
+                de = "An dieser Stelle kann keine Mauer gebaut werden!",
+                en = "A wall can not be constructed at this location.",
+                fr = "Aucun mur ne peut être construit à cet endroit.",
+            },
+        },
+
         WallTypes = {
             "B_PalisadeSegment",
             "B_PalisadeGate",
@@ -68,6 +81,7 @@ function ModuleConstructionControl.Global:OverrideCanPlayerPlaceBuilding()
         for i= 1, #ModuleConstructionControl.Shared.WallTypes do
             local Type = Entities[ModuleConstructionControl.Shared.WallTypes[i]];
             if Type then
+                local IsPalisade = Type == Entities.B_PalisadeSegment;
                 local EntityList = Logic.GetEntitiesOfType(Type);
                 for j= 1, #EntityList do
                     local PlayerID = Logic.EntityGetPlayer(EntityList[j]);
@@ -76,10 +90,14 @@ function ModuleConstructionControl.Global:OverrideCanPlayerPlaceBuilding()
                     and not self:CheckConstructionConditions(PlayerID, Type, x, y) then
                         Logic.ExecuteInLuaLocalState(string.format([[
                             if GUI.GetPlayerID() == %d then
-                                -- TODO: Add message
+                                local Msg = ModuleConstructionControl.Shared.Text.NoWallHere
+                                if %s == true then
+                                    Msg = ModuleConstructionControl.Shared.Text.NoPalisadeHere
+                                end
+                                Message(API.Localize(Msg))
                                 GUI.CancelState()
                             end
-                        ]], PlayerID));
+                        ]], PlayerID, tostring(IsPalisade)));
                         DestroyEntity(EntityList[j]);
                     end
                 end

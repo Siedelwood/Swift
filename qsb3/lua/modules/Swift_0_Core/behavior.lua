@@ -23,47 +23,51 @@ Swift.Behavior = {
         DestroySoldiers = {
             de = "{center}SOLDATEN ZERSTÖREN {cr}{cr}von der Partei: %s{cr}{cr}Anzahl: %d",
             en = "{center}DESTROY SOLDIERS {cr}{cr}from faction: %s{cr}{cr}Amount: %d",
+            fr = "{center}DESTRUCTION DE SOLDATS {cr}{cr}De la faction : %s{cr}{cr}Nombre : %d",
         },
         ActivateBuff = {
             Pattern = {
                 de = "BONUS AKTIVIEREN{cr}{cr}%s",
                 en = "ACTIVATE BUFF{cr}{cr}%s",
+                fr = "ACTIVER BONUS{cr}{cr}%s",
             },
             BuffsVanilla = {
-                ["Buff_Spice"]                  = {de = "Salz", en = "Salt"},
-                ["Buff_Colour"]                 = {de = "Farben", en = "Color"},
-                ["Buff_Entertainers"]           = {de = "Entertainer", en = "Entertainer"},
-                ["Buff_FoodDiversity"]          = {de = "Vielfältige Nahrung", en = "Food diversity"},
-                ["Buff_ClothesDiversity"]       = {de = "Vielfältige Kleidung", en = "Clothes diversity"},
-                ["Buff_HygieneDiversity"]       = {de = "Vielfältige Reinigung", en = "Hygiene diversity"},
-                ["Buff_EntertainmentDiversity"] = {de = "Vielfältige Unterhaltung", en = "Entertainment diversity"},
-                ["Buff_Sermon"]                 = {de = "Predigt", en = "Sermon"},
-                ["Buff_Festival"]               = {de = "Fest", en = "Festival"},
-                ["Buff_ExtraPayment"]           = {de = "Sonderzahlung", en = "Extra payment"},
-                ["Buff_HighTaxes"]              = {de = "Hohe Steuern", en = "High taxes"},
-                ["Buff_NoPayment"]              = {de = "Kein Sold", en = "No payment"},
-                ["Buff_NoTaxes"]                = {de = "Keine Steuern", en = "No taxes"},
+                ["Buff_Spice"]                  = {de = "Salz", en = "Salt", fr = "Sel"},
+                ["Buff_Colour"]                 = {de = "Farben", en = "Color", fr = "Couleurs"},
+                ["Buff_Entertainers"]           = {de = "Entertainer", en = "Entertainer", fr = "Artistes"},
+                ["Buff_FoodDiversity"]          = {de = "Vielfältige Nahrung", en = "Food diversity", fr = "Diversité alimentaire"},
+                ["Buff_ClothesDiversity"]       = {de = "Vielfältige Kleidung", en = "Clothes diversity", fr = "Diversité vestimentaire"},
+                ["Buff_HygieneDiversity"]       = {de = "Vielfältige Reinigung", en = "Hygiene diversity", fr = "Diversité hygiénique"},
+                ["Buff_EntertainmentDiversity"] = {de = "Vielfältige Unterhaltung", en = "Entertainment diversity", fr = "Diversité des dievertissements"},
+                ["Buff_Sermon"]                 = {de = "Predigt", en = "Sermon", fr = "Sermon"},
+                ["Buff_Festival"]               = {de = "Fest", en = "Festival", fr = "Festival"},
+                ["Buff_ExtraPayment"]           = {de = "Sonderzahlung", en = "Extra payment", fr = "Paiement supplémentaire"},
+                ["Buff_HighTaxes"]              = {de = "Hohe Steuern", en = "High taxes", fr = "Hautes taxes"},
+                ["Buff_NoPayment"]              = {de = "Kein Sold", en = "No payment", fr = "Aucun paiement"},
+                ["Buff_NoTaxes"]                = {de = "Keine Steuern", en = "No taxes", fr = "Aucune taxes"},
             },
             BuffsEx1 = {
-                ["Buff_Gems"]              = {de = "Edelsteine", en = "Gems"},
-                ["Buff_MusicalInstrument"] = {de = "Musikinstrumente", en = "Musical instruments"},
-                ["Buff_Olibanum"]          = {de = "Weihrauch", en = "Olibanum"},
+                ["Buff_Gems"]              = {de = "Edelsteine", en = "Gems", fr = "Gemmes"},
+                ["Buff_MusicalInstrument"] = {de = "Musikinstrumente", en = "Musical instruments", fr = "Instruments musicaux"},
+                ["Buff_Olibanum"]          = {de = "Weihrauch", en = "Olibanum", fr = "Encens"},
             }
         },
         SoldierCount = {
             Pattern = {
                 de = "SOLDATENANZAHL {cr}Partei: %s{cr}{cr}%s %d",
                 en = "SOLDIER COUNT {cr}Faction: %s{cr}{cr}%s %d",
+                fr = "NOMBRE DE SOLDATS {cr}Faction: %s{cr}{cr}%s %d",
             },
             Relation = {
-                ["true"]  = {de = "Weniger als ", en = "Less than "},
-                ["false"] = {de = "Mindestens ", en = "At least "},
+                ["true"]  = {de = "Weniger als ", en = "Less than ", fr = "Moins de"},
+                ["false"] = {de = "Mindestens ", en = "At least ", fr = "Au moins"},
             }
         },
         Festivals = {
             Pattern = {
                 de = "FESTE FEIERN {cr}{cr}Partei: %s{cr}{cr}Anzahl: %d",
                 en = "HOLD PARTIES {cr}{cr}Faction: %s{cr}{cr}Amount: %d",
+                fr = "FESTIVITÉS {cr}{cr}Faction: %s{cr}{cr}Nombre : %d",
             },
         }
     }
@@ -210,9 +214,10 @@ B_Goal_ActivateObject = {
     Description = {
         en = "Goal: Activate an interactive object",
         de = "Ziel: Aktiviere ein interaktives Objekt",
+        fr = "Objectif: activer un objet interactif",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Object name", de = "Skriptname" },
+        { ParameterType.ScriptName, en = "Object name", de = "Skriptname", fr = "Nom de l'entité" },
     },
 }
 
@@ -258,12 +263,13 @@ B_Goal_Deliver = {
     Description = {
         en = "Goal: Deliver goods to quest giver or to another player.",
         de = "Ziel: Liefere Waren zum Auftraggeber oder zu einem anderen Spieler.",
+        fr = "Objectif: livrer des marchandises au mandant ou à un autre joueur.",
     },
     Parameter = {
-        { ParameterType.Custom, en = "Type of good", de = "Ressourcentyp" },
-        { ParameterType.Number, en = "Amount of good", de = "Ressourcenmenge" },
-        { ParameterType.Custom, en = "To different player", de = "Anderer Empfänger" },
-        { ParameterType.Custom, en = "Ignore capture", de = "Abfangen ignorieren" },
+        { ParameterType.Custom, en = "Type of good", de = "Ressourcentyp", fr = "Type de ressources" },
+        { ParameterType.Number, en = "Amount of good", de = "Ressourcenmenge", fr = "Quantité de ressources" },
+        { ParameterType.Custom, en = "To different player", de = "Anderer Empfänger", fr = "Autre bénéficiaire" },
+        { ParameterType.Custom, en = "Ignore capture", de = "Abfangen ignorieren", fr = "Ignorer une interception" },
     },
 }
 
@@ -361,22 +367,24 @@ B_Goal_Diplomacy = {
     Description = {
         en = "Goal: A diplomatic state must b reached. Can be lower than current state or higher.",
         de = "Ziel: Die Beziehungen zu einem Spieler müssen entweder verbessert oder verschlechtert werden.",
+        fr = "Objectif: les relations avec un joueur doivent être soit améliorées, soit détériorées.",
     },
     Parameter = {
-        { ParameterType.PlayerID, en = "Party", de = "Partei" },
-        { ParameterType.Custom,   en = "Relation", de = "Relation" },
-        { ParameterType.Custom,   en = "Diplomacy state", de = "Diplomatische Beziehung" },
+        { ParameterType.PlayerID, en = "Party", de = "Partei", fr = "Faction" },
+        { ParameterType.Custom,   en = "Relation", de = "Relation", fr = "Relation" },
+        { ParameterType.Custom,   en = "Diplomacy state", de = "Diplomatische Beziehung", fr = "Relations diplomatiques" },
     },
     DiploNameMap = {
-        [DiplomacyStates.Allied]             = {de = "Verbündeter",    en = "Allied"},
-        [DiplomacyStates.TradeContact]       = {de = "Handelspartner", en = "Trade Contact"},
-        [DiplomacyStates.EstablishedContact] = {de = "Bekannt",        en = "Established Contact"},
-        [DiplomacyStates.Undecided]          = {de = "Unbekannt",      en = "Undecided"},
-        [DiplomacyStates.Enemy]              = {de = "Feind",          en = "Enemy"},
+        [DiplomacyStates.Allied]             = {de = "Verbündeter",    en = "Allied",               fr = "Allié"},
+        [DiplomacyStates.TradeContact]       = {de = "Handelspartner", en = "Trade Contact",        fr = "Partenaire commercial"},
+        [DiplomacyStates.EstablishedContact] = {de = "Bekannt",        en = "Established Contact",  fr = "Contact établi"},
+        [DiplomacyStates.Undecided]          = {de = "Unbekannt",      en = "Undecided",            fr = "Inconnu"},
+        [DiplomacyStates.Enemy]              = {de = "Feind",          en = "Enemy",                fr = "Ennemi"},
     },
     TextPattern = {
         de = "DIPLOMATIESTATUS ERREICHEN {cr}{cr}Status: %s{cr}Zur Partei: %s",
         en = "DIPLOMATIC STATE {cr}{cr}State: %s{cr}To player: %s",
+        fr = "ATTEINDRE LE STATUT DE DIPLOMATIQUE {cr}{cr}Statut : %s{cr}Avec la faction : %s",
     },
 }
 
@@ -387,8 +395,8 @@ end
 function B_Goal_Diplomacy:ChangeCaption(_Quest)
     local PlayerName = GetPlayerName(self.PlayerID) or "";
     local Text = string.format(
-        Swift:GetTextOfDesiredLanguage(self.TextPattern),
-        Swift:GetTextOfDesiredLanguage(self.DiploNameMap[self.DiplState]),
+        Swift:Localize(self.TextPattern),
+        Swift:Localize(self.DiploNameMap[self.DiplState]),
         PlayerName
     );
     Swift:ChangeCustomQuestCaptionText(Text, _Quest);
@@ -456,9 +464,10 @@ B_Goal_DiscoverPlayer = {
     Description = {
         en = "Goal: Discover the home territory of another player.",
         de = "Ziel: Entdecke das Heimatterritorium eines Spielers.",
+        fr = "Objectif: Découvrir le territoire d'origine d'un joueur.",
     },
     Parameter = {
-        { ParameterType.PlayerID, en = "Player", de = "Spieler" },
+        { ParameterType.PlayerID, en = "Player", de = "Spieler", fr = "Joueur" },
     },
 }
 
@@ -513,9 +522,10 @@ B_Goal_DiscoverTerritory = {
     Description = {
         en = "Goal: Discover a territory",
         de = "Ziel: Entdecke ein Territorium",
+        fr = "Objectif : Découvrir un territoire",
     },
     Parameter = {
-        { ParameterType.TerritoryName, en = "Territory", de = "Territorium" },
+        { ParameterType.TerritoryName, en = "Territory", de = "Territorium", fr = "Territoire" },
     },
 }
 
@@ -564,9 +574,10 @@ B_Goal_DestroyPlayer = {
     Description = {
         en = "Goal: Destroy a player (destroy a main building)",
         de = "Ziel: Zerstöre einen Spieler (ein Hauptgebäude muss zerstört werden).",
+        fr = "Objectif : Détruire un joueur (un bâtiment principal doit être détruit).",
     },
     Parameter = {
-        { ParameterType.PlayerID, en = "Player", de = "Spieler" },
+        { ParameterType.PlayerID, en = "Player", de = "Spieler", fr = "Joueur" },
     },
 }
 
@@ -625,9 +636,10 @@ B_Goal_StealInformation = {
     Description = {
         en = "Goal: Steal information from another players castle",
         de = "Ziel: Stehle Informationen aus der Burg eines Spielers",
+        fr = "Objectif : voler des informations du château d'un joueur",
     },
     Parameter = {
-        { ParameterType.PlayerID, en = "Player", de = "Spieler" },
+        { ParameterType.PlayerID, en = "Player", de = "Spieler", fr = "Joueur" },
     },
 }
 
@@ -678,9 +690,10 @@ B_Goal_DestroyAllPlayerUnits = {
     Description = {
         en = "Goal: Destroy all units owned by player (be careful with script entities)",
         de = "Ziel: Zerstöre alle Einheiten eines Spielers (vorsicht mit Script-Entities)",
+        fr = "Objectif: Détruire toutes les unités d'un joueur (attention aux entités de script)",
     },
     Parameter = {
-        { ParameterType.PlayerID, en = "Player", de = "Spieler" },
+        { ParameterType.PlayerID, en = "Player", de = "Spieler", fr = "Joueur" },
     },
 }
 
@@ -739,9 +752,10 @@ B_Goal_DestroyScriptEntity = {
     Description = {
         en = "Goal: Destroy an entity",
         de = "Ziel: Zerstöre eine Entität",
+        fr = "Objectif : Détruire une entité",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Script name", de = "Skriptname" },
+        { ParameterType.ScriptName, en = "Script name", de = "Skriptname", fr = "Nom de l'entité" },
     },
 }
 
@@ -807,11 +821,12 @@ B_Goal_DestroyType = {
     Description = {
         en = "Goal: Destroy entity types",
         de = "Ziel: Zerstöre Entitätstypen",
+        fr = "Objectif: Détruire les types d'entités",
     },
     Parameter = {
-        { ParameterType.Custom, en = "Type name", de = "Typbezeichnung" },
-        { ParameterType.Number, en = "Amount", de = "Anzahl" },
-        { ParameterType.Custom, en = "Player", de = "Spieler" },
+        { ParameterType.Custom, en = "Type name", de = "Typbezeichnung", fr = "Désignation du type" },
+        { ParameterType.Number, en = "Amount", de = "Anzahl", fr = "Quantité" },
+        { ParameterType.Custom, en = "Player", de = "Spieler", fr = "Joueur" },
     },
 }
 
@@ -895,12 +910,13 @@ B_Goal_EntityDistance = {
     Description = {
         en = "Goal: Distance between two entities",
         de = "Ziel: Zwei Entities sollen zueinander eine Entfernung über- oder unterschreiten.",
+        fr = "Objectif: deux entités doivent se trouver à une distance supérieure ou inférieure l'une de l'autre.",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Entity 1", de = "Entity 1" },
-        { ParameterType.ScriptName, en = "Entity 2", de = "Entity 2" },
-        { ParameterType.Custom, en = "Relation", de = "Relation" },
-        { ParameterType.Number, en = "Distance", de = "Entfernung" },
+        { ParameterType.ScriptName, en = "Entity 1", de = "Entity 1", fr = "Entité 1" },
+        { ParameterType.ScriptName, en = "Entity 2", de = "Entity 2", fr = "Entité 2" },
+        { ParameterType.Custom, en = "Relation", de = "Relation", fr = "Relation" },
+        { ParameterType.Number, en = "Distance", de = "Entfernung", fr = "Distance" },
     },
 }
 
@@ -975,10 +991,11 @@ B_Goal_KnightDistance = {
     Description = {
         en = "Goal: Bring the knight close to a given entity. If the distance is left at 0 it will automatically set to 2500.",
         de = "Ziel: Bringe den Ritter nah an eine bestimmte Entität. Wird die Entfernung 0 gelassen, ist sie automatisch 2500.",
+        fr = "Objectif : Rapproche le chevalier d'une entité donnée. Si la distance est laissée à 0, elle est automatiquement de 2500.",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Target", de = "Ziel" },
-        { ParameterType.Number, en = "Distance", de = "Entfernung" },
+        { ParameterType.ScriptName, en = "Target", de = "Ziel", fr = "Cible" },
+        { ParameterType.Number, en = "Distance", de = "Entfernung", fr = "Distance" },
     },
 }
 
@@ -1027,13 +1044,14 @@ B_Goal_UnitsOnTerritory = {
     Description = {
         en = "Goal: Place a certain amount of units on a territory",
         de = "Ziel: Platziere eine bestimmte Anzahl Einheiten auf einem Gebiet",
+        fr = "Objectif: placer un certain nombre d'unités sur un territoire",
     },
     Parameter = {
-        { ParameterType.TerritoryNameWithUnknown, en = "Territory", de = "Territorium" },
-        { ParameterType.Custom,  en = "Player", de = "Spieler" },
-        { ParameterType.Custom,  en = "Category", de = "Kategorie" },
-        { ParameterType.Custom,  en = "Relation", de = "Relation" },
-        { ParameterType.Number,  en = "Number of units", de = "Anzahl Einheiten" },
+        { ParameterType.TerritoryNameWithUnknown, en = "Territory", de = "Territorium", fr = "Territoire" },
+        { ParameterType.Custom,  en = "Player", de = "Spieler", fr = "Joueur" },
+        { ParameterType.Custom,  en = "Category", de = "Kategorie", fr = "Catégorie" },
+        { ParameterType.Custom,  en = "Relation", de = "Relation", fr = "Relation" },
+        { ParameterType.Number,  en = "Number of units", de = "Anzahl Einheiten", fr = "Quantité d'unitées" },
     },
 }
 
@@ -1149,10 +1167,11 @@ B_Goal_ActivateBuff = {
     Description = {
         en = "Goal: Activate a buff",
         de = "Ziel: Aktiviere einen Buff",
+        fr = "Objectif: Activer un bonus",
     },
     Parameter = {
-        { ParameterType.PlayerID, en = "Player", de = "Spieler" },
-        { ParameterType.Custom, en = "Buff", de = "Buff" },
+        { ParameterType.PlayerID, en = "Player", de = "Spieler", fr = "Joueur" },
+        { ParameterType.Custom, en = "Buff", de = "Buff", fr = "Bonus" },
     },
 }
 
@@ -1177,8 +1196,8 @@ function B_Goal_ActivateBuff:CustomFunction(_Quest)
         end
         Swift:ChangeCustomQuestCaptionText(
             string.format(
-                Swift:GetTextOfDesiredLanguage(Swift.Behavior.Text.ActivateBuff.Pattern),
-                Swift:GetTextOfDesiredLanguage(tMapping[self.BuffName])
+                Swift:Localize(Swift.Behavior.Text.ActivateBuff.Pattern),
+                Swift:Localize(tMapping[self.BuffName])
             ),
             _Quest
         );
@@ -1279,11 +1298,12 @@ B_Goal_BuildRoad = {
     Description = {
         en = "Goal: Connect two points with a street or a road",
         de = "Ziel: Verbinde zwei Punkte mit einer Strasse oder einem Weg.",
+        fr = "Objectif: Relier deux points par une route ou un chemin.",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Entity 1",     de = "Entity 1" },
-        { ParameterType.ScriptName, en = "Entity 2",     de = "Entity 2" },
-        { ParameterType.Custom,     en = "Only roads",     de = "Nur Strassen" },
+        { ParameterType.ScriptName, en = "Entity 1",       de = "Entity 1",     fr = "Entité 1" },
+        { ParameterType.ScriptName, en = "Entity 2",       de = "Entity 2",     fr = "Entité 2" },
+        { ParameterType.Custom,     en = "Only roads",     de = "Nur Strassen", fr = "Que des Routes" },
     },
 }
 
@@ -1353,11 +1373,12 @@ B_Goal_BuildWall = {
     Description = {
         en = "Goal: Build a wall between 2 positions bo stop the movement of an (hostile) player.",
         de = "Ziel: Baue eine Mauer zwischen 2 Punkten, die die Bewegung eines (feindlichen) Spielers zwischen den Punkten verhindert.",
+        fr = "Objectif: Construire un mur entre 2 points qui empêche le déplacement d'un joueur (ennemi) entre les points.",
     },
     Parameter = {
-        { ParameterType.PlayerID, en = "Enemy", de = "Feind" },
-        { ParameterType.ScriptName, en = "Entity 1", de = "Entity 1" },
-        { ParameterType.ScriptName, en = "Entity 2", de = "Entity 2" },
+        { ParameterType.PlayerID, en = "Enemy", de = "Feind", fr = "Ennemi" },
+        { ParameterType.ScriptName, en = "Entity 1", de = "Entity 1", fr = "Entité 1" },
+        { ParameterType.ScriptName, en = "Entity 2", de = "Entity 2", fr = "Entité 2" },
     },
 }
 
@@ -1445,9 +1466,10 @@ B_Goal_Claim = {
     Description = {
         en = "Goal: Claim a territory",
         de = "Ziel: Erobere ein Territorium",
+        fr = "Objectif: Conquérir un territoire",
     },
     Parameter = {
-        { ParameterType.TerritoryName, en = "Territory", de = "Territorium" },
+        { ParameterType.TerritoryName, en = "Territory", de = "Territorium", fr = "Territoire" },
     },
 }
 
@@ -1489,9 +1511,10 @@ B_Goal_ClaimXTerritories = {
     Description = {
         en = "Goal: Claim the given number of territories, all player territories are counted",
         de = "Ziel: Erobere die angegebene Anzahl Territorien, alle spielereigenen Territorien werden gezählt",
+        fr = "Objectif: conquérir le nombre de territoires indiqué, tous les territoires des joueurs sont comptabilisés.",
     },
     Parameter = {
-        { ParameterType.Number, en = "Territories" , de = "Territorien" }
+        { ParameterType.Number, en = "Territories" , de = "Territorien", fr = "Territoire" }
     },
 }
 
@@ -1534,11 +1557,12 @@ B_Goal_Create = {
     Description = {
         en = "Goal: Create Buildings/Units on a specified territory",
         de = "Ziel: Erstelle Einheiten/Gebäude auf einem bestimmten Territorium.",
+        fr = "Objectif: créer des unités/bâtiments sur un territoire donné.",
     },
     Parameter = {
-        { ParameterType.Entity, en = "Type name", de = "Typbezeichnung" },
-        { ParameterType.Number, en = "Amount", de = "Anzahl" },
-        { ParameterType.TerritoryNameWithUnknown, en = "Territory", de = "Territorium" },
+        { ParameterType.Entity, en = "Type name", de = "Typbezeichnung", fr = "Désignation du type" },
+        { ParameterType.Number, en = "Amount", de = "Anzahl", fr = "Quantité" },
+        { ParameterType.TerritoryNameWithUnknown, en = "Territory", de = "Territorium", fr = "Territoire" },
     },
 }
 
@@ -1584,10 +1608,11 @@ B_Goal_Produce = {
     Description = {
         en = "Goal: Produce an amount of goods",
         de = "Ziel: Produziere eine Anzahl einer bestimmten Ware.",
+        fr = "Objectif: produire un certain nombre d'une marchandise donnée."
     },
     Parameter = {
-        { ParameterType.RawGoods, en = "Type of good", de = "Ressourcentyp" },
-        { ParameterType.Number, en = "Amount of good", de = "Anzahl der Ressource" },
+        { ParameterType.RawGoods, en = "Type of good", de = "Ressourcentyp", fr = "Type de ressources" },
+        { ParameterType.Number, en = "Amount of good", de = "Anzahl der Ressource", fr = "Quantité de ressources" },
     },
 }
 
@@ -1630,11 +1655,12 @@ B_Goal_GoodAmount = {
     Description = {
         en = "Goal: Obtain an amount of goods - either by trading or producing them",
         de = "Ziel: Beschaffe eine Anzahl Waren - entweder durch Handel oder durch eigene Produktion.",
+        fr = "Objectif: Se procurer un certain nombre de marchandises - soit par le commerce, soit par sa propre production."
     },
     Parameter = {
-        { ParameterType.Custom, en = "Type of good", de = "Warentyp" },
-        { ParameterType.Number, en = "Amount", de = "Anzahl" },
-        { ParameterType.Custom, en = "Relation", de = "Relation" },
+        { ParameterType.Custom, en = "Type of good", de = "Warentyp", fr = "TYpe de marchandises" },
+        { ParameterType.Number, en = "Amount", de = "Anzahl", fr = "Quantité" },
+        { ParameterType.Custom, en = "Relation", de = "Relation", fr = "Relation" },
     },
 }
 
@@ -1701,10 +1727,11 @@ B_Goal_SatisfyNeed = {
     Description = {
         en = "Goal: Satisfy a need",
         de = "Ziel: Erfuelle ein Beduerfnis",
+        fr = "Objectif: Répondre à un besoin",
     },
     Parameter = {
-        { ParameterType.PlayerID, en = "Player", de = "Spieler" },
-        { ParameterType.Need, en = "Need", de = "Beduerfnis" },
+        { ParameterType.PlayerID, en = "Player", de = "Spieler", fr = "Joueur" },
+        { ParameterType.Need, en = "Need", de = "Beduerfnis", fr = "Besoin" },
     },
 }
 
@@ -1761,10 +1788,11 @@ B_Goal_SettlersNumber = {
     Description = {
         en = "Goal: Get a given amount of settlers",
         de = "Ziel: Erreiche eine bestimmte Anzahl Siedler.",
+        fr = "Objectif: atteindre un certain nombre de Settlers.",
     },
     Parameter = {
-        { ParameterType.Number,   en = "Amount", de = "Anzahl" },
-        { ParameterType.PlayerID, en = "Player", de = "Spieler" },
+        { ParameterType.Number,   en = "Amount", de = "Anzahl", fr = "Quantité" },
+        { ParameterType.PlayerID, en = "Player", de = "Spieler", fr = "Joueur" },
     },
 }
 
@@ -1804,9 +1832,10 @@ B_Goal_Spouses = {
     Description = {
         en = "Goal: Get a given amount of spouses",
         de = "Ziel: Erreiche eine bestimmte Ehefrauenanzahl",
+        fr = "Objectif: Atteindre un certain nombre d'épouses",
     },
     Parameter = {
-        { ParameterType.Number, en = "Amount", de = "Anzahl" },
+        { ParameterType.Number, en = "Amount", de = "Anzahl", fr = "Quantité" },
     },
 }
 
@@ -1855,11 +1884,12 @@ B_Goal_SoldierCount = {
     Description = {
         en = "Goal: Create a specified number of soldiers",
         de = "Ziel: Erreiche eine Anzahl grösser oder kleiner der angegebenen Menge Soldaten.",
+        fr = "Objectif: Atteindre un nombre de soldats supérieur ou inférieur à la quantité indiquée.",
     },
     Parameter = {
-        { ParameterType.PlayerID, en = "Player", de = "Spieler" },
-        { ParameterType.Custom, en = "Relation", de = "Relation" },
-        { ParameterType.Number, en = "Number of soldiers", de = "Anzahl Soldaten" },
+        { ParameterType.PlayerID, en = "Player", de = "Spieler", fr = "Joueur" },
+        { ParameterType.Custom, en = "Relation", de = "Relation", fr = "Relation" },
+        { ParameterType.Number, en = "Number of soldiers", de = "Anzahl Soldaten", fr = "Nombre de soldats" },
     },
 }
 
@@ -1883,9 +1913,9 @@ function B_Goal_SoldierCount:CustomFunction(_Quest)
         local PlayerName = GetPlayerName(self.PlayerID) or "";
         Swift:ChangeCustomQuestCaptionText(
             string.format(
-                Swift:GetTextOfDesiredLanguage(Swift.Behavior.Text.SoldierCount.Pattern),
+                Swift:Localize(Swift.Behavior.Text.SoldierCount.Pattern),
                 PlayerName,
-                Swift:GetTextOfDesiredLanguage(Swift.Behavior.Text.SoldierCount.Relation[Relation]),
+                Swift:Localize(Swift.Behavior.Text.SoldierCount.Relation[Relation]),
                 self.NumberOfUnits
             ),
             _Quest
@@ -1990,9 +2020,10 @@ B_Goal_KnightTitle = {
     Description = {
         en = "Goal: Reach a specified knight title",
         de = "Ziel: Erreiche einen vorgegebenen Titel",
+        fr = "Objectif: atteindre un titre donné",
     },
     Parameter = {
-        { ParameterType.Custom, en = "Knight title", de = "Titel" },
+        { ParameterType.Custom, en = "Knight title", de = "Titel", fr = "Titre" },
     },
 }
 
@@ -2041,10 +2072,11 @@ B_Goal_Festivals = {
     Description = {
         en = "Goal: The player has to start the given number of festivals.",
         de = "Ziel: Der Spieler muss eine gewisse Anzahl Feste gestartet haben.",
+        fr = "Objectif: Le joueur doit avoir lancé un certain nombre de festivités."
     },
     Parameter = {
-        { ParameterType.PlayerID, en = "Player", de = "Spieler" },
-        { ParameterType.Number, en = "Number of festivals", de = "Anzahl Feste" }
+        { ParameterType.PlayerID, en = "Player", de = "Spieler", fr = "Joueur" },
+        { ParameterType.Number, en = "Number of festivals", de = "Anzahl Feste", fr = "Nombre de festivités" }
     }
 };
 
@@ -2066,7 +2098,7 @@ function B_Goal_Festivals:CustomFunction(_Quest)
         local PlayerName = GetPlayerName(self.PlayerID) or "";
         Swift:ChangeCustomQuestCaptionText(
             string.format(
-                Swift:GetTextOfDesiredLanguage(Swift.Behavior.Text.Festivals.Pattern),
+                Swift:Localize(Swift.Behavior.Text.Festivals.Pattern),
                 PlayerName, self.NeededFestivals
             ), 
             _Quest
@@ -2140,9 +2172,10 @@ B_Goal_Capture = {
     Description = {
         en = "Goal: Capture a cart.",
         de = "Ziel: Ein Karren muss erobert werden.",
+        fr = "Objectif: un chariot doit être conquis.",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Script name", de = "Skriptname" },
+        { ParameterType.ScriptName, en = "Script name", de = "Skriptname", fr = "Nom de l'entité" },
     },
 }
 
@@ -2201,11 +2234,12 @@ B_Goal_CaptureType = {
     Description = {
         en = "Goal: Capture specified entity types",
         de = "Ziel: Nimm bestimmte Entitätstypen gefangen",
+        fr = "Objectif: capturer certains types d'entités",
     },
     Parameter = {
-        { ParameterType.Custom,     en = "Type name", de = "Typbezeichnung" },
-        { ParameterType.Number,     en = "Amount", de = "Anzahl" },
-        { ParameterType.PlayerID,     en = "Player", de = "Spieler" },
+        { ParameterType.Custom,     en = "Type name",   de = "Typbezeichnung",  fr = "Désignation du type" },
+        { ParameterType.Number,     en = "Amount",      de = "Anzahl",          fr = "Quantité" },
+        { ParameterType.PlayerID,   en = "Player",      de = "Spieler",         fr = "Joueur" },
     },
 }
 
@@ -2282,9 +2316,10 @@ B_Goal_Protect = {
     Description = {
         en = "Goal: Protect an entity (entity needs a script name",
         de = "Ziel: Beschütze eine Entität (Entität benötigt einen Skriptnamen)",
+        fr = "Objectif : Protéger une entité (l'entité nécessite un nom de script)"
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Script name", de = "Skriptname" },
+        { ParameterType.ScriptName, en = "Script name", de = "Skriptname", fr = "Nom de l'entité" },
     },
 }
 
@@ -2356,9 +2391,10 @@ B_Goal_Refill = {
     Description = {
         en = "Goal: Refill an object using a geologist",
         de = "Ziel: Eine Mine soll durch einen Geologen wieder aufgefuellt werden.",
+        fr = "Objectif: Une mine doit être réalimentée par un géologue.",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Script name", de = "Skriptname" },
+        { ParameterType.ScriptName, en = "Script name", de = "Skriptname", fr = "Nom de l'entité" },
     },
    RequiresExtraNo = 1,
 }
@@ -2410,11 +2446,12 @@ B_Goal_ResourceAmount = {
     Description = {
         en = "Goal: Reach a specified amount of resources in a doodad",
         de = "Ziel: In einer Mine soll weniger oder mehr als eine angegebene Anzahl an Rohstoffen sein.",
+        fr = "Objectif: Dans une mine, il doit y avoir moins ou plus de matières premières qu'un nombre indiqué.",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Script name", de = "Skriptname" },
-        { ParameterType.Custom, en = "Relation", de = "Relation" },
-        { ParameterType.Number, en = "Amount", de = "Menge" },
+        { ParameterType.ScriptName, en = "Script name", de = "Skriptname", fr = "Nom de l'entité" },
+        { ParameterType.Custom, en = "Relation", de = "Relation", fr = "Relation" },
+        { ParameterType.Number, en = "Amount", de = "Menge", fr = "Quantité" },
     },
 }
 
@@ -2483,6 +2520,7 @@ B_Goal_InstantFailure = {
     Description = {
         en = "Goal: Instant failure, the goal returns false.",
         de = "Ziel: Direkter Misserfolg, das Goal sendet false.",
+        fr = "Objectif: échec direct, le goal envoie false.",
     },
 }
 
@@ -2508,6 +2546,7 @@ B_Goal_InstantSuccess = {
     Description = {
         en = "Goal: Instant success, the goal returns true.",
         de = "Ziel: Direkter Erfolg, das Goal sendet true.",
+        fr = "Objectif: succès direct, le goal envoie false."
     },
 }
 
@@ -2536,6 +2575,7 @@ B_Goal_NoChange = {
     Description = {
         en = "Goal: The quest state doesn't change. Use reward functions of other quests to change the state of this quest.",
         de = "Ziel: Der Questzustand wird nicht verändert. Ein Reward einer anderen Quest sollte den Zustand dieser Quest verändern.",
+        fr = "Objectif: L'état de la quête n'est pas modifié. Une récompense d'une autre quête doit modifier l'état de cette quête.",
     },
 }
 
@@ -2574,9 +2614,10 @@ B_Goal_MapScriptFunction = {
     Description = {
         en = "Goal: Calls a function within the global map script. Return 'true' means success, 'false' means failure and 'nil' doesn't change anything.",
         de = "Ziel: Ruft eine Funktion im globalen Skript auf, die einen Wahrheitswert zurueckgibt. Rueckgabe 'true' gilt als erfuellt, 'false' als gescheitert und 'nil' ändert nichts.",
+        fr = "Objectif: Appelle une fonction dans le script global qui renvoie une valeur de vérité. Le retour 'true' est considéré comme rempli, 'false' comme échoué et 'nil' ne change rien.",
     },
     Parameter = {
-        { ParameterType.Default, en = "Function name", de = "Funktionsname" },
+        { ParameterType.Default, en = "Function name", de = "Funktionsname", fr = "Nom de la fonction" },
     },
 }
 
@@ -2646,11 +2687,12 @@ B_Goal_CustomVariables = {
     Description = {
         en = "Goal: A customised variable has to assume a certain value.",
         de = "Ziel: Eine benutzerdefinierte Variable muss einen bestimmten Wert annehmen.",
+        fr = "Objectif: une variable définie par l'utilisateur doit prendre une certaine valeur.",
     },
     Parameter = {
-        { ParameterType.Default, en = "Name of Variable", de = "Variablenname" },
-        { ParameterType.Custom,  en = "Relation", de = "Relation" },
-        { ParameterType.Default, en = "Value or variable", de = "Wert oder Variable" }
+        { ParameterType.Default, en = "Name of Variable", de = "Variablenname", fr = "Nom de la variable" },
+        { ParameterType.Custom,  en = "Relation", de = "Relation", fr = "Relation" },
+        { ParameterType.Default, en = "Value or variable", de = "Wert oder Variable", fr = "Valeur ou variable" }
     }
 };
 
@@ -2756,15 +2798,16 @@ B_Goal_TributeDiplomacy = {
     Description = {
         en = "Goal: AI requests periodical tribute for better Diplomacy",
         de = "Ziel: Die KI fordert einen regelmässigen Tribut fuer bessere Diplomatie. Der Questgeber ist der fordernde Spieler.",
+        fr = "Objectif: L'IA demande un tribut régulier pour une meilleure diplomatie. Le donneur de quête est le joueur qui exige."
     },
     Parameter = {
-        { ParameterType.Number, en = "Amount", de = "Menge", },
-        { ParameterType.Number, en = "Time till next peyment in seconds", de = "Zeit bis zur Forderung in Sekunden", },
-        { ParameterType.Number, en = "Time to pay tribute in seconds", de = "Zeit bis zur Zahlung in Sekunden", },
-        { ParameterType.Default, en = "Start Message for TributQuest", de = "Startnachricht der Tributquest", },
-        { ParameterType.Default, en = "Success Message for TributQuest", de = "Erfolgsnachricht der Tributquest", },
-        { ParameterType.Default, en = "Failure Message for TributQuest", de = "Niederlagenachricht der Tributquest", },
-        { ParameterType.Custom, en = "Restart if failed to pay", de = "Nicht-bezahlen beendet die Quest", },
+        { ParameterType.Number, en = "Amount", de = "Menge", fr = "Quantité", },
+        { ParameterType.Number, en = "Time till next peyment in seconds", de = "Zeit bis zur Forderung in Sekunden", fr = "Temps jusqu'à la demande en secondes", },
+        { ParameterType.Number, en = "Time to pay tribute in seconds", de = "Zeit bis zur Zahlung in Sekunden", fr = "Délai avant paiement en secondes", },
+        { ParameterType.Default, en = "Start Message for TributQuest", de = "Startnachricht der Tributquest", fr = "Message de début de quête de tribut", },
+        { ParameterType.Default, en = "Success Message for TributQuest", de = "Erfolgsnachricht der Tributquest", fr = "Message de réussite de la quête de tribut", },
+        { ParameterType.Default, en = "Failure Message for TributQuest", de = "Niederlagenachricht der Tributquest", fr = "Message de défaite de la quête de tribut", },
+        { ParameterType.Custom, en = "Restart if failed to pay", de = "Nicht-bezahlen beendet die Quest", fr = "Ne pas payer met fin à la quête", },
     },
 }
 
@@ -2948,19 +2991,20 @@ B_Goal_TributeClaim = {
     Description = {
         en = "Goal: AI requests periodical tribute for a specified territory. The quest sender is the demanding player.",
         de = "Ziel: Die KI fordert einen regelmässigen Tribut fuer ein Territorium. Der Questgeber ist der fordernde Spieler.",
-                },
+        fr = "Objectif: L'IA demande un tribut régulier pour un territoire. Le donneur de quête est le joueur qui exige.",
+    },
     Parameter = {
-        { ParameterType.TerritoryName, en = "Territory", de = "Territorium", },
-        { ParameterType.PlayerID, en = "PlayerID", de = "PlayerID", },
-        { ParameterType.Number, en = "Amount", de = "Menge", },
-        { ParameterType.Number, en = "Length of Period in seconds", de = "Sekunden bis zur nächsten Forderung", },
-        { ParameterType.Number, en = "Time to pay Tribut in seconds", de = "Zeit bis zur Zahlung in Sekunden", },
-        { ParameterType.Default, en = "Start Message for TributQuest", de = "Startnachricht der Tributquest", },
-        { ParameterType.Default, en = "Success Message for TributQuest", de = "Erfolgsnachricht der Tributquest", },
-        { ParameterType.Default, en = "Failure Message for TributQuest", de = "Niederlagenachricht der Tributquest", },
-        { ParameterType.Number, en = "How often to pay (0 = forerver)", de = "Anzahl der Tributquests (0 = unendlich)", },
-        { ParameterType.Custom, en = "Other Owner cancels the Quest", de = "Anderer Spieler kann Quest beenden", },
-        { ParameterType.Custom, en = "About if a rate is not payed", de = "Nicht-bezahlen beendet die Quest", },
+        { ParameterType.TerritoryName, en = "Territory", de = "Territorium", fr = "Territoire", },
+        { ParameterType.PlayerID, en = "PlayerID", de = "PlayerID", fr = "PlayerID", },
+        { ParameterType.Number, en = "Amount", de = "Menge", fr = "Quantité", },
+        { ParameterType.Number, en = "Length of Period in seconds", de = "Sekunden bis zur nächsten Forderung", fr = "secondes jusqu'à la prochaine demande", },
+        { ParameterType.Number, en = "Time to pay Tribut in seconds", de = "Zeit bis zur Zahlung in Sekunden", fr = "Délai avant paiement en secondes", },
+        { ParameterType.Default, en = "Start Message for TributQuest", de = "Startnachricht der Tributquest", fr = "Message de début de quête de tribut", },
+        { ParameterType.Default, en = "Success Message for TributQuest", de = "Erfolgsnachricht der Tributquest", fr = "Message de réussite de la quête de tribut", },
+        { ParameterType.Default, en = "Failure Message for TributQuest", de = "Niederlagenachricht der Tributquest", fr = "Message de défaite de la quête de tribut", },
+        { ParameterType.Number, en = "How often to pay (0 = forerver)", de = "Anzahl der Tributquests (0 = unendlich)", fr = "Nombre de quêtes de tribut (0 = infini)", },
+        { ParameterType.Custom, en = "Other Owner cancels the Quest", de = "Anderer Spieler kann Quest beenden", fr = "Un autre joueur peut terminer une quête", },
+        { ParameterType.Custom, en = "About if a rate is not payed", de = "Nicht-bezahlen beendet die Quest", fr = "Ne pas payer met fin à la quête", },
     },
 }
 
@@ -3206,9 +3250,10 @@ B_Reprisal_InteractiveObjectDeactivate = {
     Description = {
         en = "Reprisal: Deactivates an interactive object",
         de = "Vergeltung: Deaktiviert ein interaktives Objekt",
+        fr = "Rétribution: désactive un objet interactif",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Interactive object", de = "Interaktives Objekt" },
+        { ParameterType.ScriptName, en = "Interactive object", de = "Interaktives Objekt", fr = "Object interactif" },
     },
 }
 
@@ -3269,10 +3314,11 @@ B_Reprisal_InteractiveObjectActivate = {
     Description = {
         en = "Reprisal: Activates an interactive object",
         de = "Vergeltung: Aktiviert ein interaktives Objekt",
+        fr = "Retribution : active un objet interactif",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Interactive object",  de = "Interaktives Objekt" },
-        { ParameterType.Custom,     en = "Availability",         de = "Nutzbarkeit" },
+        { ParameterType.ScriptName, en = "Interactive object",  de = "Interaktives Objekt", fr = "Object interactif" },
+        { ParameterType.Custom,     en = "Availability",        de = "Nutzbarkeit",         fr = "Utilisabilité" },
     },
 }
 
@@ -3334,6 +3380,7 @@ B_Reprisal_SlightlyDiplomacyDecrease = {
     Description = {
         en = "Reprisal: Diplomacy decreases slightly to another player.",
         de = "Vergeltung: Der Diplomatiestatus zum Auftraggeber wird um eine Stufe verringert.",
+        fr = "Rétribution: le statut diplomatique avec le mandant est réduit d'un niveau.",
     },
 }
 
@@ -3378,11 +3425,12 @@ B_Reprisal_Diplomacy = {
     Description = {
         en = "Reprisal: Sets Diplomacy state of two Players to a stated value.",
         de = "Vergeltung: Setzt den Diplomatiestatus zweier Spieler auf den angegebenen Wert.",
+        fr = "Rétribution: Définit le statut diplomatique de deux joueurs sur la valeur indiquée.",
     },
     Parameter = {
-        { ParameterType.PlayerID,         en = "PlayerID 1", de = "Spieler 1" },
-        { ParameterType.PlayerID,         en = "PlayerID 2", de = "Spieler 2" },
-        { ParameterType.DiplomacyState,   en = "Relation",   de = "Beziehung" },
+        { ParameterType.PlayerID,         en = "PlayerID 1", de = "Spieler 1", fr = "Joueur 1" },
+        { ParameterType.PlayerID,         en = "PlayerID 2", de = "Spieler 2", fr = "Joueur 2" },
+        { ParameterType.DiplomacyState,   en = "Relation",   de = "Beziehung", fr = "Relation diplomatique" },
     },
 }
 
@@ -3441,9 +3489,10 @@ B_Reprisal_DestroyEntity = {
     Description = {
         en = "Reprisal: Replaces an entity with an invisible script entity, which retains the entities name.",
         de = "Vergeltung: Ersetzt eine Entity mit einer unsichtbaren Script-Entity, die den Namen übernimmt.",
+        fr = "Rétribution: remplace une entité par une entité de script invisible qui prend son nom.",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Entity", de = "Entity" },
+        { ParameterType.ScriptName, en = "Entity", de = "Entity", fr = "Entité" },
     },
 }
 
@@ -3489,9 +3538,10 @@ B_Reprisal_DestroyEffect = {
     Description = {
         en = "Reprisal: Destroys an effect",
         de = "Vergeltung: Zerstört einen Effekt",
+        fr = "Rétribution: détruit un effet",
     },
     Parameter = {
-        { ParameterType.Default, en = "Effect name", de = "Effektname" },
+        { ParameterType.Default, en = "Effect name", de = "Effektname", fr = "Nom de l'effet" },
     }
 }
 
@@ -3537,6 +3587,7 @@ B_Reprisal_Defeat = {
     Description = {
         en = "Reprisal: The player loses the game.",
         de = "Vergeltung: Der Spieler verliert das Spiel.",
+        fr = "Rétribution: le joueur perd la partie.",
     },
 }
 
@@ -3564,6 +3615,7 @@ B_Reprisal_FakeDefeat = {
     Description = {
         en = "Reprisal: Displays a defeat icon for a quest",
         de = "Vergeltung: Zeigt ein Niederlage Icon fuer eine Quest an",
+        fr = "Rétribution: affiche une icône de défaite pour une quête",
     },
 }
 
@@ -3596,11 +3648,12 @@ B_Reprisal_ReplaceEntity = {
     Description = {
         en = "Reprisal: Replaces an entity with a new one of a different type. The playerID can be changed too.",
         de = "Vergeltung: Ersetzt eine Entity durch eine neue anderen Typs. Es kann auch die Spielerzugehörigkeit geändert werden.",
+        fr = "Rétribution: remplace une entité par une nouvelle entité d'un autre type. Il est également possible de changer l'appartenance d'un joueur.",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Target", de = "Ziel" },
-        { ParameterType.Custom, en = "New Type", de = "Neuer Typ" },
-        { ParameterType.Custom, en = "New playerID", de = "Neue Spieler ID" },
+        { ParameterType.ScriptName, en = "Target", de = "Ziel", fr = "Cible" },
+        { ParameterType.Custom, en = "New Type", de = "Neuer Typ", fr = "Nouveau type" },
+        { ParameterType.Custom, en = "New playerID", de = "Neue Spieler ID", fr = "Nouvelle ID de joueur" },
     },
 }
 
@@ -3686,9 +3739,10 @@ B_Reprisal_QuestRestart = {
     Description = {
         en = "Reprisal: Restarts a (completed) quest so it can be triggered and completed again",
         de = "Vergeltung: Startet eine (beendete) Quest neu, damit diese neu ausgelöst und beendet werden kann",
+        fr = "Rétribution : relance une quête (terminée) pour qu'elle puisse être redéclenchée et terminée à nouveau",
     },
     Parameter = {
-        { ParameterType.QuestName, en = "Quest name", de = "Questname" },
+        { ParameterType.QuestName, en = "Quest name", de = "Questname", fr = "Nom de la Quête" },
     },
 }
 
@@ -3734,9 +3788,10 @@ B_Reprisal_QuestFailure = {
     Description = {
         en = "Reprisal: Lets another active quest fail",
         de = "Vergeltung: Lässt eine andere aktive Quest fehlschlagen",
+        fr = "Rétribution: fait échouer une autre quête active",
     },
     Parameter = {
-        { ParameterType.QuestName, en = "Quest name", de = "Questname" },
+        { ParameterType.QuestName, en = "Quest name", de = "Questname", fr = "Nom de la Quête" },
     },
 }
 
@@ -3782,9 +3837,10 @@ B_Reprisal_QuestSuccess = {
     Description = {
         en = "Reprisal: Completes another active quest successfully",
         de = "Vergeltung: Beendet eine andere aktive Quest erfolgreich",
+        fr = "Rétribution: Réussir une autre quête active",
     },
     Parameter = {
-        { ParameterType.QuestName, en = "Quest name", de = "Questname" },
+        { ParameterType.QuestName, en = "Quest name", de = "Questname", fr = "Nom de la Quête" },
     },
 }
 
@@ -3830,9 +3886,10 @@ B_Reprisal_QuestActivate = {
     Description = {
         en = "Reprisal: Activates another quest that is not triggered yet.",
         de = "Vergeltung: Aktiviert eine andere Quest die noch nicht ausgelöst wurde.",
-                },
+        fr = "Rétribution: Active une autre quête qui n'a pas encore été déclenchée.",
+    },
     Parameter = {
-        {ParameterType.QuestName, en = "Quest name", de = "Questname", },
+        {ParameterType.QuestName, en = "Quest name", de = "Questname", fr = "Nom de la Quête", },
     },
 }
 
@@ -3880,9 +3937,10 @@ B_Reprisal_QuestInterrupt = {
     Description = {
         en = "Reprisal: Interrupts another active quest without success or failure",
         de = "Vergeltung: Beendet eine andere aktive Quest ohne Erfolg oder Misserfolg",
+        fr = "Rétribution : termine une autre quête active sans succès ni échec",
     },
     Parameter = {
-        { ParameterType.QuestName, en = "Quest name", de = "Questname" },
+        { ParameterType.QuestName, en = "Quest name", de = "Questname", fr = "Nom de la Quête" },
     },
 }
 
@@ -3936,10 +3994,11 @@ B_Reprisal_QuestForceInterrupt = {
     Description = {
         en = "Reprisal: Interrupts another quest (even when it isn't active yet) without success or failure",
         de = "Vergeltung: Beendet eine andere Quest, auch wenn diese noch nicht aktiv ist ohne Erfolg oder Misserfolg",
+        fr = "Rétribution: Termine une autre quête, même si elle n'est pas encore active, sans succès ni échec.",
     },
     Parameter = {
-        { ParameterType.QuestName, en = "Quest name", de = "Questname" },
-        { ParameterType.Custom, en = "Ended quests", de = "Beendete Quests" },
+        { ParameterType.QuestName, en = "Quest name", de = "Questname", fr = "Nom de la Quête" },
+        { ParameterType.Custom, en = "Ended quests", de = "Beendete Quests", fr = "Quêtes terminées" },
     },
 }
 
@@ -4024,11 +4083,12 @@ B_Reprisal_CustomVariables = {
     Description = {
         en = "Reprisal: Executes a mathematical operation with this variable. The other operand can be a number or another custom variable.",
         de = "Vergeltung: Führt eine mathematische Operation mit der Variable aus. Der andere Operand kann eine Zahl oder eine Custom-Varible sein.",
+        fr = "Rétribution: effectue une opération mathématique sur la variable. L'autre opérateur peut être un nombre ou une variable personnalisée.",
     },
     Parameter = {
-        { ParameterType.Default, en = "Name of variable", de = "Variablenname" },
-        { ParameterType.Custom,  en = "Operator", de = "Operator" },
-        { ParameterType.Default,  en = "Value or variable", de = "Wert oder Variable" }
+        { ParameterType.Default, en = "Name of variable", de = "Variablenname", fr = "Nom de la variable" },
+        { ParameterType.Custom,  en = "Operator", de = "Operator", fr = "Operateur" },
+        { ParameterType.Default,  en = "Value or variable", de = "Wert oder Variable", fr = "Valeur ou variable" }
     }
 };
 
@@ -4117,9 +4177,10 @@ B_Reprisal_MapScriptFunction = {
     Description = {
         en = "Reprisal: Calls a function within the global map script if the quest has failed.",
         de = "Vergeltung: Ruft eine Funktion im globalen Kartenskript auf, wenn die Quest fehlschlägt.",
+        fr = "Rétribution: lance une fonction dans le script global de la carte en cas d'échec de la quête.",
     },
     Parameter = {
-        { ParameterType.Default, en = "Function name", de = "Funktionsname" },
+        { ParameterType.Default, en = "Function name", de = "Funktionsname", fr = "Nom de la fonction" },
     },
 }
 
@@ -4175,11 +4236,12 @@ B_Reprisal_Technology = {
     Description = {
         en = "Reprisal: Locks or unlocks a technology for the given player",
         de = "Vergeltung: Sperrt oder erlaubt eine Technolgie fuer den angegebenen Player",
+        fr = "Rétribution: bloque ou autorise une technologie pour le joueur spécifié",
     },
     Parameter = {
-        { ParameterType.PlayerID, en = "PlayerID", de = "SpielerID" },
-        { ParameterType.Custom,   en = "Un / Lock", de = "Sperren/Erlauben" },
-        { ParameterType.Custom,   en = "Technology", de = "Technologie" },
+        { ParameterType.PlayerID, en = "PlayerID", de = "SpielerID", fr = "PlayerID" },
+        { ParameterType.Custom,   en = "Un / Lock", de = "Sperren/Erlauben", fr = "Bloquer/Autoriser" },
+        { ParameterType.Custom,   en = "Technology", de = "Technologie"; fr = "Technologie" },
     },
 }
 
@@ -4259,12 +4321,13 @@ B_Reward_DEBUG = {
     Description = {
         en = "Reward: Start the debug mode. See documentation for more information.",
         de = "Lohn: Startet den Debug-Modus. Für mehr Informationen siehe Dokumentation.",
+        fr = "Récompense: Démarre le mode de débug. Pour plus d'informations, voir la documentation.",
     },
     Parameter = {
-        { ParameterType.Custom,     en = "Check quest while runtime", de = "Quests zur Laufzeit prüfen" },
-        { ParameterType.Custom,     en = "Use quest trace", de = "Questverfolgung" },
-        { ParameterType.Custom,     en = "Activate developing cheats", de = "Cheats aktivieren" },
-        { ParameterType.Custom,     en = "Activate developing shell", de = "Eingabe aktivieren" },
+        { ParameterType.Custom,     en = "Check quest while runtime",   de = "Quests zur Laufzeit prüfen",  fr = "Vérifier les quêtes au cours de l'exécution" },
+        { ParameterType.Custom,     en = "Use quest trace",             de = "Questverfolgung",             fr = "Suivi de quête" },
+        { ParameterType.Custom,     en = "Activate developing cheats",  de = "Cheats aktivieren",           fr = "Activer les cheats" },
+        { ParameterType.Custom,     en = "Activate developing shell",   de = "Eingabe aktivieren",          fr = "Activer la saisie" },
     },
 }
 
@@ -4314,11 +4377,12 @@ B_Reprisal_Technology = {
     Description = {
         en = "Reprisal: Locks or unlocks a technology for the given player",
         de = "Vergeltung: Sperrt oder erlaubt eine Technolgie fuer den angegebenen Player",
+        fr = "Rétribution: bloque ou autorise une technologie pour le joueur spécifié",
     },
     Parameter = {
-        { ParameterType.PlayerID, en = "PlayerID", de = "SpielerID" },
-        { ParameterType.Custom,   en = "Un / Lock", de = "Sperren/Erlauben" },
-        { ParameterType.Custom,   en = "Technology", de = "Technologie" },
+        { ParameterType.PlayerID, en = "PlayerID",   de = "SpielerID",          fr = "PlayerID", },
+        { ParameterType.Custom,   en = "Un / Lock",  de = "Sperren/Erlauben",   fr = "Bloquer/Autoriser", },
+        { ParameterType.Custom,   en = "Technology", de = "Technologie",        fr = "Technologie" },
     },
 }
 
@@ -4396,6 +4460,7 @@ B_Reward_InteractiveObjectDeactivate = Swift:CopyTable(B_Reprisal_InteractiveObj
 B_Reward_InteractiveObjectDeactivate.Name             = "Reward_InteractiveObjectDeactivate";
 B_Reward_InteractiveObjectDeactivate.Description.en   = "Reward: Deactivates an interactive object";
 B_Reward_InteractiveObjectDeactivate.Description.de   = "Lohn: Deaktiviert ein interaktives Objekt";
+B_Reward_InteractiveObjectDeactivate.Description.fr   = "Récompense: Désactive un objet interactif";
 B_Reward_InteractiveObjectDeactivate.GetReprisalTable = nil;
 
 B_Reward_InteractiveObjectDeactivate.GetRewardTable = function(self, _Quest)
@@ -4429,6 +4494,7 @@ B_Reward_InteractiveObjectActivate = Swift:CopyTable(B_Reprisal_InteractiveObjec
 B_Reward_InteractiveObjectActivate.Name             = "Reward_InteractiveObjectActivate";
 B_Reward_InteractiveObjectActivate.Description.en   = "Reward: Activates an interactive object";
 B_Reward_InteractiveObjectActivate.Description.de   = "Lohn: Aktiviert ein interaktives Objekt";
+B_Reward_InteractiveObjectActivate.Description.fr   = "Récompense: Active un objet interactif";
 B_Reward_InteractiveObjectActivate.GetReprisalTable = nil;
 
 B_Reward_InteractiveObjectActivate.GetRewardTable = function(self, _Quest)
@@ -4468,18 +4534,19 @@ B_Reward_ObjectInit = {
     Description = {
         en = "Reward: Setup an interactive object with costs and rewards.",
         de = "Lohn: Initialisiert ein interaktives Objekt mit seinen Kosten und Schätzen.",
+        fr = "Récompense: Initialise un objet interactif avec ses coûts et ses trésors.",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Interactive object",     de = "Interaktives Objekt" },
-        { ParameterType.Number,     en = "Distance to use",     de = "Nutzungsentfernung" },
-        { ParameterType.Number,     en = "Waittime",             de = "Wartezeit" },
-        { ParameterType.Custom,     en = "Reward good",         de = "Belohnungsware" },
-        { ParameterType.Number,     en = "Reward amount",         de = "Anzahl" },
-        { ParameterType.Custom,     en = "Cost good 1",         de = "Kostenware 1" },
-        { ParameterType.Number,     en = "Cost amount 1",         de = "Anzahl 1" },
-        { ParameterType.Custom,     en = "Cost good 2",         de = "Kostenware 2" },
-        { ParameterType.Number,     en = "Cost amount 2",         de = "Anzahl 2" },
-        { ParameterType.Custom,     en = "Availability",         de = "Verfügbarkeit" },
+        { ParameterType.ScriptName, en = "Interactive object", de = "Interaktives Objekt",  fr = "Obejct interactif" },
+        { ParameterType.Number,     en = "Distance to use",    de = "Nutzungsentfernung",   fr = "Distance d'utilisation" },
+        { ParameterType.Number,     en = "Waittime",           de = "Wartezeit",            fr = "Temps d'attente" },
+        { ParameterType.Custom,     en = "Reward good",        de = "Belohnungsware",       fr = "Produits de récompense" },
+        { ParameterType.Number,     en = "Reward amount",      de = "Anzahl",               fr = "Quantité" },
+        { ParameterType.Custom,     en = "Cost good 1",        de = "Kostenware 1",         fr = "Marchandise de coût 1" },
+        { ParameterType.Number,     en = "Cost amount 1",      de = "Anzahl 1",             fr = "Quantité 1" },
+        { ParameterType.Custom,     en = "Cost good 2",        de = "Kostenware 2",         fr = "Marchandise de coût 2" },
+        { ParameterType.Number,     en = "Cost amount 2",      de = "Anzahl 2",             fr = "Quantité 2" },
+        { ParameterType.Custom,     en = "Availability",       de = "Verfügbarkeit",        fr = "Disponibilité" },
     },
 }
 
@@ -4661,6 +4728,7 @@ B_Reward_Diplomacy = Swift:CopyTable(B_Reprisal_Diplomacy);
 B_Reward_Diplomacy.Name             = "Reward_Diplomacy";
 B_Reward_Diplomacy.Description.en   = "Reward: Sets Diplomacy state of two Players to a stated value.";
 B_Reward_Diplomacy.Description.de   = "Lohn: Setzt den Diplomatiestatus zweier Spieler auf den angegebenen Wert.";
+B_Reward_Diplomacy.Description.fr   = "Récompense: Définit le statut diplomatique de deux joueurs sur la valeur indiquée.";
 B_Reward_Diplomacy.GetReprisalTable = nil;
 
 B_Reward_Diplomacy.GetRewardTable = function(self, _Quest)
@@ -4686,6 +4754,7 @@ B_Reward_SlightlyDiplomacyIncrease = {
     Description = {
         en = "Reward: Diplomacy increases slightly to another player",
         de = "Lohn: Verbesserung des Diplomatiestatus zu einem anderen Spieler",
+        fr = "Récompense: Amélioration du statut diplomatique avec un autre joueur",
     },
 }
 
@@ -4740,17 +4809,18 @@ B_Reward_Merchant = {
     Description = {
         en = "Reward: Deletes all existing offers for a merchant and sets new offers, if given",
         de = "Lohn: Löscht alle Angebote eines Händlers und setzt neue, wenn angegeben",
+        fr = "Récompense: Supprime toutes les offres d'un commerçant et en place de nouvelles si elles sont indiquées.",
     },
     Parameter = {
-        { ParameterType.Custom, en = "PlayerID", de = "PlayerID" },
-        { ParameterType.Custom, en = "Amount 1", de = "Menge 1" },
-        { ParameterType.Custom, en = "Offer 1", de = "Angebot 1" },
-        { ParameterType.Custom, en = "Amount 2", de = "Menge 2" },
-        { ParameterType.Custom, en = "Offer 2", de = "Angebot 2" },
-        { ParameterType.Custom, en = "Amount 3", de = "Menge 3" },
-        { ParameterType.Custom, en = "Offer 3", de = "Angebot 3" },
-        { ParameterType.Custom, en = "Amount 4", de = "Menge 4" },
-        { ParameterType.Custom, en = "Offer 4", de = "Angebot 4" },
+        { ParameterType.Custom, en = "PlayerID", de = "PlayerID",  fr = "PlayerID" },
+        { ParameterType.Custom, en = "Amount 1", de = "Menge 1",   fr = "Quantité 1" },
+        { ParameterType.Custom, en = "Offer 1",  de = "Angebot 1", fr = "Offre 1" },
+        { ParameterType.Custom, en = "Amount 2", de = "Menge 2",   fr = "Quantité 2" },
+        { ParameterType.Custom, en = "Offer 2",  de = "Angebot 2", fr = "Offre 2" },
+        { ParameterType.Custom, en = "Amount 3", de = "Menge 3",   fr = "Quantité 3" },
+        { ParameterType.Custom, en = "Offer 3",  de = "Angebot 3", fr = "Offr 3e" },
+        { ParameterType.Custom, en = "Amount 4", de = "Menge 4",   fr = "Quantité 4" },
+        { ParameterType.Custom, en = "Offer 4",  de = "Angebot 4", fr = "Offre 4" },
     },
 }
 
@@ -4901,6 +4971,7 @@ B_Reward_DestroyEntity = Swift:CopyTable(B_Reprisal_DestroyEntity);
 B_Reward_DestroyEntity.Name = "Reward_DestroyEntity";
 B_Reward_DestroyEntity.Description.en = "Reward: Replaces an entity with an invisible script entity, which retains the entities name.";
 B_Reward_DestroyEntity.Description.de = "Lohn: Ersetzt eine Entity mit einer unsichtbaren Script-Entity, die den Namen übernimmt.";
+B_Reward_DestroyEntity.Description.fr = "Récompense: Remplace une entité par une entité de script invisible qui prend le nom.";
 B_Reward_DestroyEntity.GetReprisalTable = nil;
 
 B_Reward_DestroyEntity.GetRewardTable = function(self, _Quest)
@@ -4926,6 +4997,7 @@ B_Reward_DestroyEffect = Swift:CopyTable(B_Reprisal_DestroyEffect);
 B_Reward_DestroyEffect.Name = "Reward_DestroyEffect";
 B_Reward_DestroyEffect.Description.en = "Reward: Destroys an effect.";
 B_Reward_DestroyEffect.Description.de = "Lohn: Zerstört einen Effekt.";
+B_Reward_DestroyEffect.Description.fr = "Récompense: Détruit un effet.";
 B_Reward_DestroyEffect.GetReprisalTable = nil;
 
 B_Reward_DestroyEffect.GetRewardTable = function(self, _Quest)
@@ -4962,14 +5034,15 @@ B_Reward_CreateBattalion = {
     Description = {
         en = "Reward: Replaces a script entity with a battalion, which retains the entities name",
         de = "Lohn: Ersetzt eine Script-Entity durch ein Bataillon, welches den Namen der Script-Entity übernimmt",
+        fr = "Récompense: Remplace une entité de script par un bataillon qui prend le nom de l'entité de script.",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Script entity", de = "Script Entity" },
-        { ParameterType.PlayerID, en = "Player", de = "Spieler" },
-        { ParameterType.Custom, en = "Type name", de = "Typbezeichnung" },
-        { ParameterType.Number, en = "Orientation (in degrees)", de = "Ausrichtung (in Grad)" },
-        { ParameterType.Number, en = "Number of soldiers", de = "Anzahl Soldaten" },
-        { ParameterType.Custom, en = "Hide from AI", de = "Vor KI verstecken" },
+        { ParameterType.ScriptName, en = "Script entity",               de = "Script Entity",           fr = "Entité de script" },
+        { ParameterType.PlayerID,   en = "Player",                      de = "Spieler",                 fr = "Joueur" },
+        { ParameterType.Custom,     en = "Type name",                   de = "Typbezeichnung",          fr = "Désignation du type" },
+        { ParameterType.Number,     en = "Orientation (in degrees)",    de = "Ausrichtung (in Grad)",   fr = "Orientation (en degrés)" },
+        { ParameterType.Number,     en = "Number of soldiers",          de = "Anzahl Soldaten",         fr = "Nombre de Soldats" },
+        { ParameterType.Custom,     en = "Hide from AI",                de = "Vor KI verstecken",       fr = "Cacher de l'IA" },
     },
 }
 
@@ -5075,15 +5148,16 @@ B_Reward_CreateSeveralBattalions = {
     Description = {
         en = "Reward: Creates a given amount of battalions",
         de = "Lohn: Erstellt eine gegebene Anzahl Bataillone",
+        fr = "Récompense: Crée un nombre donné de bataillons",
     },
     Parameter = {
-        { ParameterType.Number, en = "Amount", de = "Anzahl" },
-        { ParameterType.ScriptName, en = "Script entity", de = "Script Entity" },
-        { ParameterType.PlayerID, en = "Player", de = "Spieler" },
-        { ParameterType.Custom, en = "Type name", de = "Typbezeichnung" },
-        { ParameterType.Number, en = "Orientation (in degrees)", de = "Ausrichtung (in Grad)" },
-        { ParameterType.Number, en = "Number of soldiers", de = "Anzahl Soldaten" },
-        { ParameterType.Custom, en = "Hide from AI", de = "Vor KI verstecken" },
+        { ParameterType.Number,     en = "Amount",                      de = "Anzahl",                  fr = "Quantité" },
+        { ParameterType.ScriptName, en = "Script entity",               de = "Script Entity",           fr = "Quentité de Script" },
+        { ParameterType.PlayerID,   en = "Player",                      de = "Spieler",                 fr = "Joueur" },
+        { ParameterType.Custom,     en = "Type name",                   de = "Typbezeichnung",          fr = "Désignation de type" },
+        { ParameterType.Number,     en = "Orientation (in degrees)",    de = "Ausrichtung (in Grad)",   fr = "Orientation (en degrés)" },
+        { ParameterType.Number,     en = "Number of soldiers",          de = "Anzahl Soldaten",         fr = "Nombre de soldats" },
+        { ParameterType.Custom,     en = "Hide from AI",                de = "Vor KI verstecken",       fr = "Cacher de l'AI" },
     },
 }
 
@@ -5199,13 +5273,14 @@ B_Reward_CreateEffect = {
     Description = {
         en = "Reward: Creates an effect at a specified position",
         de = "Lohn: Erstellt einen Effekt an der angegebenen Position",
+        fr = "Récompense: Crée un effet à la position indiquée",
     },
     Parameter = {
-        { ParameterType.Default,    en = "Effect name", de = "Effektname" },
-        { ParameterType.Custom,     en = "Type name", de = "Typbezeichnung" },
-        { ParameterType.PlayerID,   en = "Player", de = "Spieler" },
-        { ParameterType.ScriptName, en = "Location", de = "Ort" },
-        { ParameterType.Number,     en = "Orientation (in degrees)(-1: from locating entity)", de = "Ausrichtung (in Grad)(-1: von Positionseinheit)" },
+        { ParameterType.Default,    en = "Effect name", de = "Effektname",      fr = "Nom de l'effet" },
+        { ParameterType.Custom,     en = "Type name",   de = "Typbezeichnung",  fr = "Designation de type" },
+        { ParameterType.PlayerID,   en = "Player",      de = "Spieler",         fr = "Joueur" },
+        { ParameterType.ScriptName, en = "Location",    de = "Ort",             fr = "Lieu" },
+        { ParameterType.Number,     en = "Orientation (in degrees)(-1: from locating entity)", de = "Ausrichtung (in Grad)(-1: von Positionseinheit)", fr = "Orientation (en degrés)(-1 : de l'unité de position)" },
     }
 }
 
@@ -5301,13 +5376,14 @@ B_Reward_CreateEntity = {
     Description = {
         en = "Reward: Replaces an entity by a new one of a given type",
         de = "Lohn: Ersetzt eine Entity durch eine neue gegebenen Typs",
+        fr = "Récompense: Remplace une entité par une nouvelle entité de type donné",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Script entity", de = "Script Entity" },
-        { ParameterType.PlayerID, en = "Player", de = "Spieler" },
-        { ParameterType.Custom, en = "Type name", de = "Typbezeichnung" },
-        { ParameterType.Number, en = "Orientation (in degrees)", de = "Ausrichtung (in Grad)" },
-        { ParameterType.Custom, en = "Hide from AI", de = "Vor KI verstecken" },
+        { ParameterType.ScriptName, en = "Script entity",               de = "Script Entity",           fr = "Entité de script" },
+        { ParameterType.PlayerID,   en = "Player",                      de = "Spieler",                 fr = "Joueur" },
+        { ParameterType.Custom,     en = "Type name",                   de = "Typbezeichnung",          fr = "Désignation de type" },
+        { ParameterType.Number,     en = "Orientation (in degrees)",    de = "Ausrichtung (in Grad)",   fr = "Orientation (en degrés)" },
+        { ParameterType.Custom,     en = "Hide from AI",                de = "Vor KI verstecken",       fr = "Cacher de l'AI" },
     },
 }
 
@@ -5405,6 +5481,7 @@ B_Reward_CreateSettler = Swift:CopyTable(B_Reward_CreateEntity);
 B_Reward_CreateSettler.Name = "Reward_CreateSettler";
 B_Reward_CreateSettler.Description.en = "Reward: Replaces an entity by a new one of a given type";
 B_Reward_CreateSettler.Description.de = "Lohn: Ersetzt eine Entity durch eine neue gegebenen Typs";
+B_Reward_CreateSettler.Description.fr = "Récompense: Remplace une entité par une nouvelle entité de type donné";
 Swift:RegisterBehavior(B_Reward_CreateSettler);
 
 -- -------------------------------------------------------------------------- --
@@ -5432,14 +5509,15 @@ B_Reward_CreateSeveralEntities = {
     Description = {
         en = "Reward: Creating serveral battalions at the position of a entity. They retains the entities name and a _[index] suffix",
         de = "Lohn: Erzeugt mehrere Entities an der Position der Entity. Sie übernimmt den Namen der Script Entity und den Suffix _[index]",
+        fr = "Récompense: Crée plusieurs Entities à la position de l'Entity. Elle reprend le nom de l'entité script et le suffixe _[index].",
     },
     Parameter = {
-        { ParameterType.Number, en = "Amount", de = "Anzahl" },
-        { ParameterType.ScriptName, en = "Script entity", de = "Script Entity" },
-        { ParameterType.PlayerID, en = "Player", de = "Spieler" },
-        { ParameterType.Custom, en = "Type name", de = "Typbezeichnung" },
-        { ParameterType.Number, en = "Orientation (in degrees)", de = "Ausrichtung (in Grad)" },
-        { ParameterType.Custom, en = "Hide from AI", de = "Vor KI verstecken" },
+        { ParameterType.Number,     en = "Amount",                      de = "Anzahl",                  fr = "Quantité" },
+        { ParameterType.ScriptName, en = "Script entity",               de = "Script Entity",           fr = "Entité de script" },
+        { ParameterType.PlayerID,   en = "Player",                      de = "Spieler",                 fr = "Joueur" },
+        { ParameterType.Custom,     en = "Type name",                   de = "Typbezeichnung",          fr = "Designation de type" },
+        { ParameterType.Number,     en = "Orientation (in degrees)",    de = "Ausrichtung (in Grad)",   fr = "Orientation (en degrés)" },
+        { ParameterType.Custom,     en = "Hide from AI",                de = "Vor KI verstecken",       fr = "Cacher de l'AI" },
     },
 }
 
@@ -5554,10 +5632,11 @@ B_Reward_MoveSettler = {
     Description = {
         en = "Reward: Moves a (NPC) settler to a destination. Must not be AI controlled, or it won't move",
         de = "Lohn: Bewegt einen (NPC) Siedler zu einem Zielort. Darf keinem KI Spieler gehören, ansonsten wird sich der Siedler nicht bewegen",
+        fr = "Récompense: Déplace un settler (NPC) vers une destination. Ne doit pas appartenir à un joueur IA, sinon le settler ne se déplacera pas.",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Settler", de = "Siedler" },
-        { ParameterType.ScriptName, en = "Destination", de = "Ziel" },
+        { ParameterType.ScriptName, en = "Settler", de = "Siedler", fr = "Settler" },
+        { ParameterType.ScriptName, en = "Destination", de = "Ziel", fr = "Destination" },
     },
 }
 
@@ -5614,6 +5693,7 @@ B_Reward_Victory = {
     Description = {
         en = "Reward: The player wins the game.",
         de = "Lohn: Der Spieler gewinnt das Spiel.",
+        fr = "Récompense: Le Joueur gagne la partie.",
     },
 }
 
@@ -5640,6 +5720,7 @@ B_Reward_Defeat = {
     Description = {
         en = "Reward: The player loses the game.",
         de = "Lohn: Der Spieler verliert das Spiel.",
+        fr = "Récompense: le Joueur perd la partie.",
     },
 }
 
@@ -5673,6 +5754,7 @@ B_Reward_FakeVictory = {
     Description = {
         en = "Reward: Display a victory icon for a quest",
         de = "Lohn: Zeigt ein Siegesicon fuer diese Quest",
+        fr = "Récompense: Affiche une icône de victoire pour cette quête",
     },
 }
 
@@ -5716,19 +5798,20 @@ B_Reward_AI_SpawnAndAttackTerritory = {
     Description = {
         en = "Reward: Spawns AI troops and attacks a territory (Hint: Use for hidden quests as a surprise)",
         de = "Lohn: Erstellt KI Truppen und greift ein Territorium an (Tipp: Fuer eine versteckte Quest als Ueberraschung verwenden)",
+        fr = "Récompense: Créez des troupes d'IA et attaquez un territoire (astuce : utilisez une surprise pour une quête cachée).",
     },
     Parameter = {
-        { ParameterType.PlayerID, en = "AI Player", de = "KI Spieler" },
-        { ParameterType.ScriptName, en = "Spawn point", de = "Erstellungsort" },
-        { ParameterType.TerritoryName, en = "Territory", de = "Territorium" },
-        { ParameterType.Number, en = "Sword", de = "Schwert" },
-        { ParameterType.Number, en = "Bow", de = "Bogen" },
-        { ParameterType.Number, en = "Catapults", de = "Katapulte" },
-        { ParameterType.Number, en = "Siege towers", de = "Belagerungstuerme" },
-        { ParameterType.Number, en = "Rams", de = "Rammen" },
-        { ParameterType.Number, en = "Ammo carts", de = "Munitionswagen" },
-        { ParameterType.Custom, en = "Soldier type", de = "Soldatentyp" },
-        { ParameterType.Custom, en = "Reuse troops", de = "Verwende bestehende Truppen" },
+        { ParameterType.PlayerID,       en = "AI Player",       de = "KI Spieler",                  fr = "Joueur AI" },
+        { ParameterType.ScriptName,     en = "Spawn point",     de = "Erstellungsort",              fr = "Lieu de création" },
+        { ParameterType.TerritoryName,  en = "Territory",       de = "Territorium",                 fr = "Territoire" },
+        { ParameterType.Number,         en = "Sword",           de = "Schwert",                     fr = "Épéiste" },
+        { ParameterType.Number,         en = "Bow",             de = "Bogen",                       fr = "Archer" },
+        { ParameterType.Number,         en = "Catapults",       de = "Katapulte",                   fr = "Catapultes" },
+        { ParameterType.Number,         en = "Siege towers",    de = "Belagerungstuerme",           fr = "Tours de siège" },
+        { ParameterType.Number,         en = "Rams",            de = "Rammen",                      fr = "Bélier" },
+        { ParameterType.Number,         en = "Ammo carts",      de = "Munitionswagen",              fr = "Chariot à munitions" },
+        { ParameterType.Custom,         en = "Soldier type",    de = "Soldatentyp",                 fr = "Type de soldat" },
+        { ParameterType.Custom,         en = "Reuse troops",    de = "Verwende bestehende Truppen", fr = "Utiliser les troupes existantes" },
     },
 }
 
@@ -5878,16 +5961,17 @@ B_Reward_AI_SpawnAndAttackArea = {
     Description = {
         en = "Reward: Spawns AI troops and attacks everything within the specified area, except the players main buildings",
         de = "Lohn: Erstellt KI Truppen und greift ein angegebenes Gebiet an, aber nicht die Hauptgebauede eines Spielers",
+        fr = "Récompense: Crée des troupes IA et attaque une zone spécifiée, mais pas les bâtiments principaux d'un joueur.",
     },
     Parameter = {
-        { ParameterType.PlayerID, en = "AI Player", de = "KI Spieler" },
-        { ParameterType.ScriptName, en = "Spawn point", de = "Erstellungsort" },
-        { ParameterType.ScriptName, en = "Target", de = "Ziel" },
-        { ParameterType.Number, en = "Radius", de = "Radius" },
-        { ParameterType.Number, en = "Sword", de = "Schwert" },
-        { ParameterType.Number, en = "Bow", de = "Bogen" },
-        { ParameterType.Custom, en = "Soldier type", de = "Soldatentyp" },
-        { ParameterType.Custom, en = "Reuse troops", de = "Verwende bestehende Truppen" },
+        { ParameterType.PlayerID,   en = "AI Player",       de = "KI Spieler",                  fr = "Joueur AI" },
+        { ParameterType.ScriptName, en = "Spawn point",     de = "Erstellungsort",              fr = "Lieu de création" },
+        { ParameterType.ScriptName, en = "Target",          de = "Ziel",                        fr = "Cible" },
+        { ParameterType.Number,     en = "Radius",          de = "Radius",                      fr = "Rayon" },
+        { ParameterType.Number,     en = "Sword",           de = "Schwert",                     fr = "Épéiste" },
+        { ParameterType.Number,     en = "Bow",             de = "Bogen",                       fr = "Archer" },
+        { ParameterType.Custom,     en = "Soldier type",    de = "Soldatentyp",                 fr = "Type de soldats" },
+        { ParameterType.Custom,     en = "Reuse troops",    de = "Verwende bestehende Truppen", fr = "Utiliser des troupes existantes" },
     },
 }
 
@@ -6014,18 +6098,19 @@ B_Reward_AI_SpawnAndProtectArea = {
     Description = {
         en = "Reward: Spawns AI troops and defends a specified area",
         de = "Lohn: Erstellt KI Truppen und verteidigt ein angegebenes Gebiet",
+        fr = "Récompense: Crée des troupes d'IA et défend un territoire donné",
     },
     Parameter = {
-        { ParameterType.PlayerID, en = "AI Player", de = "KI Spieler" },
-        { ParameterType.ScriptName, en = "Spawn point", de = "Erstellungsort" },
-        { ParameterType.ScriptName, en = "Target", de = "Ziel" },
-        { ParameterType.Number, en = "Radius", de = "Radius" },
-        { ParameterType.Number, en = "Time (-1 for infinite)", de = "Zeit (-1 fuer unendlich)" },
-        { ParameterType.Number, en = "Sword", de = "Schwert" },
-        { ParameterType.Number, en = "Bow", de = "Bogen" },
-        { ParameterType.Custom, en = "Capture tradecarts", de = "Handelskarren angreifen" },
-        { ParameterType.Custom, en = "Soldier type", de = "Soldatentyp" },
-        { ParameterType.Custom, en = "Reuse troops", de = "Verwende bestehende Truppen" },
+        { ParameterType.PlayerID,   en = "AI Player",               de = "KI Spieler",                  fr = "Joueur AI" },
+        { ParameterType.ScriptName, en = "Spawn point",             de = "Erstellungsort",              fr = "Lieu de création" },
+        { ParameterType.ScriptName, en = "Target",                  de = "Ziel",                        fr = "Cible" },
+        { ParameterType.Number,     en = "Radius",                  de = "Radius",                      fr = "Rayon" },
+        { ParameterType.Number,     en = "Time (-1 for infinite)",  de = "Zeit (-1 fuer unendlich)",    fr = "Temps (-1 pour infini)" },
+        { ParameterType.Number,     en = "Sword",                   de = "Schwert",                     fr = "Épéiste" },
+        { ParameterType.Number,     en = "Bow",                     de = "Bogen",                       fr = "Archer" },
+        { ParameterType.Custom,     en = "Capture tradecarts",      de = "Handelskarren angreifen",     fr = "Attaquer les chariots de commerce" },
+        { ParameterType.Custom,     en = "Soldier type",            de = "Soldatentyp",                 fr = "Type de soldat" },
+        { ParameterType.Custom,     en = "Reuse troops",            de = "Verwende bestehende Truppen", fr = "Utiliser les troupes existantes" },
     },
 }
 
@@ -6180,11 +6265,12 @@ B_Reward_AI_SetNumericalFact = {
     Description = {
         en = "Reward: Sets a numerical fact for the AI player",
         de = "Lohn: Setzt eine Verhaltensregel fuer den KI-Spieler. ",
+        fr = "Récompense: Définit une règle de comportement pour le joueur IA.",
     },
     Parameter = {
-        { ParameterType.PlayerID, en = "AI Player",      de = "KI Spieler" },
-        { ParameterType.Custom,   en = "Numerical Fact", de = "Verhaltensregel" },
-        { ParameterType.Number,   en = "Value",          de = "Wert" },
+        { ParameterType.PlayerID, en = "AI Player",      de = "KI Spieler",         fr = "Joueur AI" },
+        { ParameterType.Custom,   en = "Numerical Fact", de = "Verhaltensregel",    fr = "Règle de conduite" },
+        { ParameterType.Number,   en = "Value",          de = "Wert",               fr = "Valeur" },
     },
 }
 
@@ -6301,11 +6387,12 @@ B_Reward_AI_Aggressiveness = {
     Description = {
         en = "Reward: Sets the AI player's aggressiveness.",
         de = "Lohn: Setzt die Aggressivität des KI-Spielers fest.",
+        fr = "Récompense: Définit l'agressivité du joueur IA.",
     },
     Parameter =
     {
-        { ParameterType.PlayerID, en = "AI player", de = "KI-Spieler" },
-        { ParameterType.Custom, en = "Aggressiveness (1-3)", de = "Aggressivität (1-3)" }
+        { ParameterType.PlayerID, en = "AI player", de = "KI-Spieler", fr = "Joueur AI" },
+        { ParameterType.Custom, en = "Aggressiveness (1-3)", de = "Aggressivität (1-3)", fr = "Agressivité (1-3)" }
     }
 };
 
@@ -6371,11 +6458,12 @@ B_Reward_AI_SetEnemy = {
     Description = {
         en = "Reward:Sets the enemy of an AI player (the AI only handles one enemy properly).",
         de = "Lohn: Legt den Feind eines KI-Spielers fest (die KI behandelt nur einen Feind korrekt).",
+        fr = "Récompense: Définit l'ennemi d'un joueur IA (l'IA ne traite correctement qu'un seul ennemi).",
     },
     Parameter =
     {
-        { ParameterType.PlayerID, en = "AI player", de = "KI-Spieler" },
-        { ParameterType.PlayerID, en = "Enemy", de = "Feind" }
+        { ParameterType.PlayerID, en = "AI player", de = "KI-Spieler", fr = "Joueur AI" },
+        { ParameterType.PlayerID, en = "Enemy", de = "Feind", fr = "Ennemi" }
     }
 };
 
@@ -6429,6 +6517,7 @@ B_Reward_ReplaceEntity = Swift:CopyTable(B_Reprisal_ReplaceEntity);
 B_Reward_ReplaceEntity.Name = "Reward_ReplaceEntity";
 B_Reward_ReplaceEntity.Description.en = "Reward: Replaces an entity with a new one of a different type. The playerID can be changed too.";
 B_Reward_ReplaceEntity.Description.de = "Lohn: Ersetzt eine Entity durch eine neue anderen Typs. Es kann auch die Spielerzugehörigkeit geändert werden.";
+B_Reward_ReplaceEntity.Description.fr = "Récompense: Remplace une entité par une nouvelle entité d'un autre type. Il est également possible de changer l'appartenance d'un joueur.";
 B_Reward_ReplaceEntity.GetReprisalTable = nil;
 
 B_Reward_ReplaceEntity.GetRewardTable = function(self, _Quest)
@@ -6459,10 +6548,11 @@ B_Reward_SetResourceAmount = {
     Description = {
         en = "Reward: Set the current and maximum amount of a resource doodad (the amount can also set to 0)",
         de = "Lohn: Setzt die aktuellen sowie maximalen Resourcen in einem Doodad (auch 0 ist möglich)",
+        fr = "Récompense: Définit les ressources actuelles ainsi que les ressources maximales dans un Doodad (0 est également possible)",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Ressource", de = "Resource" },
-        { ParameterType.Number, en = "Amount", de = "Menge" },
+        { ParameterType.ScriptName, en = "Ressource", de = "Resource", fr = "Ressources" },
+        { ParameterType.Number, en = "Amount", de = "Menge", fr = "Quantité" },
     },
 }
 
@@ -6524,10 +6614,11 @@ B_Reward_Resources = {
     Description = {
         en = "Reward: The player receives a given amount of Goods in his store.",
         de = "Lohn: Legt der Partei die angegebenen Rohstoffe ins Lagerhaus.",
+        fr = "Récompense: Placez les matières premières indiquées dans l'entrepôt de la faction.",
     },
     Parameter = {
-        { ParameterType.RawGoods, en = "Type of good", de = "Resourcentyp" },
-        { ParameterType.Number, en = "Amount of good", de = "Anzahl der Resource" },
+        { ParameterType.RawGoods,   en = "Type of good",    de = "Resourcentyp",        fr = "Type de ressources" },
+        { ParameterType.Number,     en = "Amount of good",  de = "Anzahl der Resource", fr = "Nombre de ressources" },
     },
 }
 
@@ -6575,16 +6666,17 @@ B_Reward_SendCart = {
     Description = {
         en = "Reward: Sends a cart to a player. It spawns at a building or by replacing an entity. The cart can replace the entity if it's not a building.",
         de = "Lohn: Sendet einen Karren zu einem Spieler. Der Karren wird an einem Gebäude oder einer Entity erstellt. Er ersetzt die Entity, wenn diese kein Gebäude ist.",
+        fr = "Récompense: Envoie un chariot à un joueur. Le chariot est créé sur un bâtiment ou une entité. Elle remplace l'entité si celle-ci n'est pas un bâtiment.",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Script entity", de = "Script Entity" },
-        { ParameterType.PlayerID, en = "Owning player", de = "Besitzer" },
-        { ParameterType.Custom, en = "Type name", de = "Typbezeichnung" },
-        { ParameterType.Custom, en = "Good type", de = "Warentyp" },
-        { ParameterType.Number, en = "Amount", de = "Anzahl" },
-        { ParameterType.Custom, en = "Override target player", de = "Anderer Zielspieler" },
-        { ParameterType.Custom, en = "Ignore reservations", de = "Ignoriere Reservierungen" },
-        { ParameterType.Custom, en = "Replace entity", de = "Entity ersetzen" },
+        { ParameterType.ScriptName, en = "Script entity",           de = "Script Entity",               fr = "Entité de Script" },
+        { ParameterType.PlayerID,   en = "Owning player",           de = "Besitzer",                    fr = "Propriétaire" },
+        { ParameterType.Custom,     en = "Type name",               de = "Typbezeichnung",              fr = "Désignation du type" },
+        { ParameterType.Custom,     en = "Good type",               de = "Warentyp",                    fr = "Type de marchandise" },
+        { ParameterType.Number,     en = "Amount",                  de = "Anzahl",                      fr = "Quantité" },
+        { ParameterType.Custom,     en = "Override target player",  de = "Anderer Zielspieler",         fr = "Autre joueur destinataire" },
+        { ParameterType.Custom,     en = "Ignore reservations",     de = "Ignoriere Reservierungen",    fr = "Ignorer les réservations" },
+        { ParameterType.Custom,     en = "Replace entity",          de = "Entity ersetzen",             fr = "Remplacer une entité" },
     },
 }
 
@@ -6702,10 +6794,11 @@ B_Reward_Units = {
     Description = {
         en = "Reward: Units",
         de = "Lohn: Einheiten",
+        fr = "Récompense: Unités",
     },
     Parameter = {
-        { ParameterType.Entity, en = "Type name", de = "Typbezeichnung" },
-        { ParameterType.Number, en = "Amount", de = "Anzahl" },
+        { ParameterType.Entity, en = "Type name", de = "Typbezeichnung", fr ="Désignation de type" },
+        { ParameterType.Number, en = "Amount", de = "Anzahl", fr ="Quantité" },
     },
 }
 
@@ -6740,6 +6833,7 @@ B_Reward_QuestRestart = Swift:CopyTable(B_Reprisal_QuestRestart);
 B_Reward_QuestRestart.Name = "Reward_QuestRestart";
 B_Reward_QuestRestart.Description.en = "Reward: Restarts a (completed) quest so it can be triggered and completed again.";
 B_Reward_QuestRestart.Description.de = "Lohn: Startet eine (beendete) Quest neu, damit diese neu ausgelöst und beendet werden kann.";
+B_Reward_QuestRestart.Description.fr = "Récompense: Redémarre une quête (terminée) pour qu'elle puisse être redéclenchée et terminée.";
 B_Reward_QuestRestart.GetReprisalTable = nil;
 
 B_Reward_QuestRestart.GetRewardTable = function(self, _Quest)
@@ -6765,6 +6859,7 @@ B_Reward_QuestFailure = Swift:CopyTable(B_Reprisal_QuestFailure);
 B_Reward_QuestFailure.Name = "Reward_QuestFailure";
 B_Reward_QuestFailure.Description.en = "Reward: Lets another active quest fail.";
 B_Reward_QuestFailure.Description.de = "Lohn: Lässt eine andere aktive Quest fehlschlagen.";
+B_Reward_QuestFailure.Description.fr = "Récompense: Fait échouer une autre quête active.";
 B_Reward_QuestFailure.GetReprisalTable = nil;
 
 B_Reward_QuestFailure.GetRewardTable = function(self, _Quest)
@@ -6790,6 +6885,7 @@ B_Reward_QuestSuccess = Swift:CopyTable(B_Reprisal_QuestSuccess);
 B_Reward_QuestSuccess.Name = "Reward_QuestSuccess";
 B_Reward_QuestSuccess.Description.en = "Reward: Completes another active quest successfully.";
 B_Reward_QuestSuccess.Description.de = "Lohn: Beendet eine andere aktive Quest erfolgreich.";
+B_Reward_QuestSuccess.Description.fr = "Récompense: Termine avec succès une autre quête active.";
 B_Reward_QuestSuccess.GetReprisalTable = nil;
 
 B_Reward_QuestSuccess.GetRewardTable = function(self, _Quest)
@@ -6815,6 +6911,7 @@ B_Reward_QuestActivate = Swift:CopyTable(B_Reprisal_QuestActivate);
 B_Reward_QuestActivate.Name = "Reward_QuestActivate";
 B_Reward_QuestActivate.Description.en = "Reward: Activates another quest that is not triggered yet.";
 B_Reward_QuestActivate.Description.de = "Lohn: Aktiviert eine andere Quest die noch nicht ausgelöst wurde.";
+B_Reward_QuestActivate.Description.fr = "Récompense: Active une autre quête qui n'a pas encore été déclenchée.";
 B_Reward_QuestActivate.GetReprisalTable = nil;
 
 B_Reward_QuestActivate.GetRewardTable = function(self, _Quest)
@@ -6840,6 +6937,7 @@ B_Reward_QuestInterrupt = Swift:CopyTable(B_Reprisal_QuestInterrupt);
 B_Reward_QuestInterrupt.Name = "Reward_QuestInterrupt";
 B_Reward_QuestInterrupt.Description.en = "Reward: Interrupts another active quest without success or failure.";
 B_Reward_QuestInterrupt.Description.de = "Lohn: Beendet eine andere aktive Quest ohne Erfolg oder Misserfolg.";
+B_Reward_QuestInterrupt.Description.fr = "Récompense: Termine une autre quête active sans succès ni échec.";
 B_Reward_QuestInterrupt.GetReprisalTable = nil;
 
 B_Reward_QuestInterrupt.GetRewardTable = function(self, _Quest)
@@ -6866,6 +6964,7 @@ B_Reward_QuestForceInterrupt = Swift:CopyTable(B_Reprisal_QuestForceInterrupt);
 B_Reward_QuestForceInterrupt.Name = "Reward_QuestForceInterrupt";
 B_Reward_QuestForceInterrupt.Description.en = "Reward: Interrupts another quest (even when it isn't active yet) without success or failure.";
 B_Reward_QuestForceInterrupt.Description.de = "Lohn: Beendet eine andere Quest, auch wenn diese noch nicht aktiv ist ohne Erfolg oder Misserfolg.";
+B_Reward_QuestForceInterrupt.Description.fr = "Récompense: Termine une autre quête, même si elle n'est pas encore active, sans succès ni échec.";
 B_Reward_QuestForceInterrupt.GetReprisalTable = nil;
 
 B_Reward_QuestForceInterrupt.GetRewardTable = function(self, _Quest)
@@ -6907,6 +7006,7 @@ B_Reward_CustomVariables = Swift:CopyTable(B_Reprisal_CustomVariables);
 B_Reward_CustomVariables.Name = "Reward_CustomVariables";
 B_Reward_CustomVariables.Description.en = "Reward: Executes a mathematical operation with this variable. The other operand can be a number or another custom variable.";
 B_Reward_CustomVariables.Description.de = "Lohn: Führt eine mathematische Operation mit der Variable aus. Der andere Operand kann eine Zahl oder eine Custom-Varible sein.";
+B_Reward_CustomVariables.Description.fr = "Récompense: Effectue une opération mathématique sur la variable. L'autre opérateur peut être un nombre ou une variable personnalisée.";
 B_Reward_CustomVariables.GetReprisalTable = nil;
 
 B_Reward_CustomVariables.GetRewardTable = function(self, _Quest)
@@ -6942,6 +7042,7 @@ B_Reward_MapScriptFunction = Swift:CopyTable(B_Reprisal_MapScriptFunction);
 B_Reward_MapScriptFunction.Name = "Reward_MapScriptFunction";
 B_Reward_MapScriptFunction.Description.en = "Reward: Calls a function within the global map script if the quest has failed.";
 B_Reward_MapScriptFunction.Description.de = "Lohn: Ruft eine Funktion im globalen Kartenskript auf, wenn die Quest fehlschlägt.";
+B_Reward_MapScriptFunction.Description.fr = "Récompense: Invoque une fonction dans le script global de la carte en cas d'échec de la quête.";
 B_Reward_MapScriptFunction.GetReprisalTable = nil;
 
 B_Reward_MapScriptFunction.GetRewardTable = function(self, _Quest)
@@ -6969,6 +7070,7 @@ B_Reward_Technology = Swift:CopyTable(B_Reprisal_Technology);
 B_Reward_Technology.Name = "Reward_Technology";
 B_Reward_Technology.Description.en = "Reward: Locks or unlocks a technology for the given player.";
 B_Reward_Technology.Description.de = "Lohn: Sperrt oder erlaubt eine Technolgie fuer den angegebenen Player.";
+B_Reward_Technology.Description.fr = "Récompense: Bloque ou autorise une technologie pour le joueur spécifié.";
 B_Reward_Technology.GetReprisalTable = nil;
 
 B_Reward_Technology.GetRewardTable = function(self, _Quest)
@@ -6996,9 +7098,10 @@ B_Reward_PrestigePoints  = {
     Description = {
         en = "Reward: Prestige",
         de = "Lohn: Prestige",
+        fr = "Récompense: Prestige",
     },
     Parameter = {
-        { ParameterType.Number, en = "Points", de = "Punkte" },
+        { ParameterType.Number, en = "Points", de = "Punkte", fr = "Points" },
     },
 }
 
@@ -7033,10 +7136,11 @@ B_Reward_AI_MountOutpost = {
     Description = {
         en = "Reward: Places a troop of soldiers on a named outpost.",
         de = "Lohn: Platziert einen Trupp Soldaten auf einem Aussenposten der KI.",
+        fr = "Récompense: Place un groupe de soldats sur un avant-poste de l'IA.",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Script name", de = "Skriptname" },
-        { ParameterType.Custom,      en = "Soldiers type", de = "Soldatentyp" },
+        { ParameterType.ScriptName, en = "Script name",   de = "Skriptname",  fr = "Nom de l'entité" },
+        { ParameterType.Custom,     en = "Soldiers type", de = "Soldatentyp", fr = "Type de soldat" },
     },
 }
 
@@ -7103,9 +7207,10 @@ B_Reward_QuestRestartForceActive = {
     Description = {
         en = "Reward: Restarts a (completed) quest and triggers it immediately.",
         de = "Lohn: Startet eine (beendete) Quest neu und triggert sie sofort.",
+        fr = "Récompense: Redémarre une quête (terminée) et la déclenche immédiatement.",
     },
     Parameter = {
-        { ParameterType.QuestName, en = "Quest name", de = "Questname" },
+        { ParameterType.QuestName, en = "Quest name", de = "Questname", fr = "Nom de la quête" },
     },
 }
 
@@ -7159,10 +7264,11 @@ B_Reward_UpgradeBuilding = {
     Name = "Reward_UpgradeBuilding",
     Description = {
         en = "Reward: Upgrades a building",
-        de = "Lohn: Baut ein Gebäude aus"
+        de = "Lohn: Baut ein Gebäude aus",
+        fr = "Récompense: Améliore un Bâtiment",
     },
     Parameter =    {
-        { ParameterType.ScriptName, en = "Building", de = "Gebäude" }
+        { ParameterType.ScriptName, en = "Building", de = "Gebäude", fr = "Bâtiment" }
     }
 };
 
@@ -7221,10 +7327,11 @@ B_Reward_SetBuildingUpgradeLevel = {
 	Description = {
 		en = "Reward: Sets the upgrade level of the specified building.",
 		de = "Lohn: Legt das Upgrade-Level eines Gebaeudes fest.",
+        fr = "Récompense: Définit le niveau d'amélioration d'un bâtiment.",
 	},
 	Parameter = {
-		{ ParameterType.ScriptName, en = "Building", de = "Gebäude" },
-		{ ParameterType.Custom, en = "Upgrade level", de = "Upgrade-Level" },
+		{ ParameterType.ScriptName, en = "Building",        de = "Gebäude",         fr = "Bâtiment" },
+		{ ParameterType.Custom,     en = "Upgrade level",   de = "Upgrade-Level",   fr = "Niveau d'amélioration" },
 	}
 };
  
@@ -7294,9 +7401,10 @@ B_Trigger_PlayerDiscovered = {
     Description = {
         en = "Trigger: if a given player has been discovered",
         de = "Auslöser: wenn ein angegebener Spieler entdeckt wurde",
+        fr = "Déclencheur: lorsqu'un joueur spécifié est découvert",
     },
     Parameter = {
-        { ParameterType.PlayerID, en = "Player", de = "Spieler" },
+        { ParameterType.PlayerID, en = "Player", de = "Spieler", fr = "Joueur" },
     },
 }
 
@@ -7332,10 +7440,11 @@ B_Trigger_OnDiplomacy = {
     Description = {
         en = "Trigger: if diplomatic relations have been established with a player",
         de = "Auslöser: wenn ein angegebener Diplomatie-Status mit einem Spieler erreicht wurde.",
+        fr = "Déclencheur: lorsqu'un statut diplomatique spécifié a été atteint avec un joueur.",
     },
     Parameter = {
-        { ParameterType.PlayerID, en = "Player", de = "Spieler" },
-        { ParameterType.DiplomacyState, en = "Relation", de = "Beziehung" },
+        { ParameterType.PlayerID,       en = "Player",      de = "Spieler",     fr = "Joueur" },
+        { ParameterType.DiplomacyState, en = "Relation",    de = "Beziehung",   fr = "Relation diplomatique" },
     },
 }
 
@@ -7373,11 +7482,12 @@ B_Trigger_OnNeedUnsatisfied = {
     Description = {
         en = "Trigger: if a specified need is unsatisfied",
         de = "Auslöser: wenn ein bestimmtes Beduerfnis nicht befriedigt ist.",
+        fr = "Déclencheur: lorsqu'un certain besoin n'est pas satisfait.",
     },
     Parameter = {
-        { ParameterType.PlayerID, en = "Player", de = "Spieler" },
-        { ParameterType.Need, en = "Need", de = "Beduerfnis" },
-        { ParameterType.Number, en = "Workers on strike", de = "Streikende Arbeiter" },
+        { ParameterType.PlayerID,   en = "Player",              de = "Spieler",             fr = "Joueur" },
+        { ParameterType.Need,       en = "Need",                de = "Beduerfnis",          fr = "Besoin" },
+        { ParameterType.Number,     en = "Workers on strike",   de = "Streikende Arbeiter", fr = "Travailleurs en grève" },
     },
 }
 
@@ -7433,9 +7543,10 @@ B_Trigger_OnResourceDepleted = {
     Description = {
         en = "Trigger: if a resource is (temporarily) depleted",
         de = "Auslöser: wenn eine Ressource (zeitweilig) verbraucht ist",
+        fr = "Déclencheur: lorsqu'une ressource est (temporairement) consommée",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Script name", de = "Skriptname" },
+        { ParameterType.ScriptName, en = "Script name", de = "Skriptname", fr = "Nom de script" },
     },
 }
 
@@ -7477,11 +7588,12 @@ B_Trigger_OnAmountOfGoods = {
     Description = {
         en = "Trigger: if the player has gathered a given amount of resources in his storehouse",
         de = "Auslöser: wenn der Spieler eine bestimmte Menge einer Ressource in seinem Lagerhaus hat",
+        fr = "Déclencheur: lorsque le joueur a une certaine quantité d'une ressource dans son entrepôt",
     },
     Parameter = {
-        { ParameterType.PlayerID, en = "Player", de = "Spieler" },
-        { ParameterType.RawGoods, en = "Type of good", de = "Resourcentyp" },
-        { ParameterType.Number, en = "Amount of good", de = "Anzahl der Resource" },
+        { ParameterType.PlayerID,   en = "Player",          de = "Spieler",             fr = "Joueur" },
+        { ParameterType.RawGoods,   en = "Type of good",    de = "Resourcentyp",        fr = "Type de ressources" },
+        { ParameterType.Number,     en = "Amount of good",  de = "Anzahl der Resource", fr = "Quantité de ressources" },
     },
 }
 
@@ -7548,10 +7660,11 @@ B_Trigger_OnQuestActiveWait = {
     Description = {
         en = "Trigger: if a given quest has been activated. Waiting time optional",
         de = "Auslöser: wenn eine angegebene Quest aktiviert wurde. Optional mit Wartezeit",
+        fr = "Déclencheur: lorsqu'une quête indiquée a été activée. En option avec délai d'attente",
     },
     Parameter = {
-        { ParameterType.QuestName, en = "Quest name", de = "Questname" },
-        { ParameterType.Number,     en = "Waiting time", de = "Wartezeit"},
+        { ParameterType.QuestName,  en = "Quest name",   de = "Questname", fr = "Nom de la quête" },
+        { ParameterType.Number,     en = "Waiting time", de = "Wartezeit", fr = "Temps d'attente" },
     },
 }
 
@@ -7618,10 +7731,11 @@ Swift:RegisterBehavior(B_Trigger_OnQuestActiveWait);
 -- Kompatibelitätsmodus
 B_Trigger_OnQuestActive = Swift:CopyTable(B_Trigger_OnQuestActiveWait);
 B_Trigger_OnQuestActive.Name = "Trigger_OnQuestActive";
-B_Trigger_OnQuestActive.Description.en = "Reward: Starts the quest after another has been activated.";
-B_Trigger_OnQuestActive.Description.de = "Lohn: Startet den Quest, wenn ein anderer aktiviert wird.";
+B_Trigger_OnQuestActive.Description.en = "Trigger: Starts the quest after another has been activated.";
+B_Trigger_OnQuestActive.Description.de = "Auslöser: Startet den Quest, wenn ein anderer aktiviert wird.";
+B_Trigger_OnQuestActive.Description.fr = "Déclencheur: Démarre la quête lorsqu'une autre est activée.";
 B_Trigger_OnQuestActive.Parameter = {
-    { ParameterType.QuestName,     en = "Quest name", de = "Questname" },
+    { ParameterType.QuestName,     en = "Quest name", de = "Questname", fr = "Nom de la quête" },
 }
 
 function B_Trigger_OnQuestActive:AddParameter(_Index, _Parameter)
@@ -7653,10 +7767,11 @@ B_Trigger_OnQuestFailureWait = {
     Description = {
         en = "Trigger: if a given quest has failed. Waiting time optional",
         de = "Auslöser: wenn eine angegebene Quest fehlgeschlagen ist. Optional mit Wartezeit",
+        fr = "Déclencheur: lorsqu'une quête indiquée a échoué. En option avec délai d'attente",
     },
     Parameter = {
-        { ParameterType.QuestName,     en = "Quest name", de = "Questname" },
-        { ParameterType.Number,     en = "Waiting time", de = "Wartezeit"},
+        { ParameterType.QuestName, en = "Quest name",   de = "Questname", fr = "Nom de la quête" },
+        { ParameterType.Number,    en = "Waiting time", de = "Wartezeit", fr = "Temps d'attente" },
     },
 }
 
@@ -7715,10 +7830,11 @@ Swift:RegisterBehavior(B_Trigger_OnQuestFailureWait);
 -- Kompatibelitätsmodus
 B_Trigger_OnQuestFailure = Swift:CopyTable(B_Trigger_OnQuestFailureWait);
 B_Trigger_OnQuestFailure.Name = "Trigger_OnQuestFailure";
-B_Trigger_OnQuestFailure.Description.en = "Reward: Starts the quest after another has failed.";
-B_Trigger_OnQuestFailure.Description.de = "Lohn: Startet den Quest, wenn ein anderer fehlschlägt.";
+B_Trigger_OnQuestFailure.Description.en = "Trigger: Starts the quest after another has failed.";
+B_Trigger_OnQuestFailure.Description.de = "Auslöser: Startet den Quest, wenn ein anderer fehlschlägt.";
+B_Trigger_OnQuestFailure.Description.fr = "Déclencheur: Lance la quête lorsqu'une autre échoue.";
 B_Trigger_OnQuestFailure.Parameter = {
-    { ParameterType.QuestName,     en = "Quest name", de = "Questname" },
+    { ParameterType.QuestName,     en = "Quest name", de = "Questname", fr = "Nom de la quête" },
 }
 
 function B_Trigger_OnQuestFailure:AddParameter(_Index, _Parameter)
@@ -7748,9 +7864,10 @@ B_Trigger_OnQuestNotTriggered = {
     Description = {
         en = "Trigger: if a given quest is not yet active. Should be used in combination with other triggers.",
         de = "Auslöser: wenn eine angegebene Quest noch inaktiv ist. Sollte mit weiteren Triggern kombiniert werden.",
+        fr = "Déclencheur: lorsqu'une quête indiquée est encore inactive. Doit être combiné avec d'autres déclencheurs."
     },
     Parameter = {
-        { ParameterType.QuestName,     en = "Quest name", de = "Questname" },
+        { ParameterType.QuestName,     en = "Quest name", de = "Questname", fr = "Nom de la quête" },
     },
 }
 
@@ -7804,10 +7921,11 @@ B_Trigger_OnQuestInterruptedWait = {
     Description = {
         en = "Trigger: if a given quest has been interrupted. Should be used in combination with other triggers.",
         de = "Auslöser: wenn eine angegebene Quest abgebrochen wurde. Sollte mit weiteren Triggern kombiniert werden.",
+        fr = "Déclencheur: lorsqu'une quête indiquée a été interrompue. Doit être combiné avec d'autres déclencheurs."
     },
     Parameter = {
-        { ParameterType.QuestName,     en = "Quest name", de = "Questname" },
-        { ParameterType.Number,     en = "Waiting time", de = "Wartezeit"},
+        { ParameterType.QuestName,  en = "Quest name",   de = "Questname", fr = "Nom de la quête" },
+        { ParameterType.Number,     en = "Waiting time", de = "Wartezeit", fr = "Temps d'attente"},
     },
 }
 
@@ -7866,10 +7984,11 @@ Swift:RegisterBehavior(B_Trigger_OnQuestInterruptedWait);
 -- Kompatibelitätsmodus
 B_Trigger_OnQuestInterrupted = Swift:CopyTable(B_Trigger_OnQuestInterruptedWait);
 B_Trigger_OnQuestInterrupted.Name = "Trigger_OnQuestInterrupted";
-B_Trigger_OnQuestInterrupted.Description.en = "Reward: Starts the quest after another is interrupted.";
-B_Trigger_OnQuestInterrupted.Description.de = "Lohn: Startet den Quest, wenn ein anderer abgebrochen wurde.";
+B_Trigger_OnQuestInterrupted.Description.en = "Trigger: Starts the quest after another is interrupted.";
+B_Trigger_OnQuestInterrupted.Description.de = "Auslöser: Startet den Quest, wenn ein anderer abgebrochen wurde.";
+B_Trigger_OnQuestInterrupted.Description.fr = "Déclencheur: Démarre la quête lorsqu'une autre a été annulée.";
 B_Trigger_OnQuestInterrupted.Parameter = {
-    { ParameterType.QuestName,     en = "Quest name", de = "Questname" },
+    { ParameterType.QuestName,     en = "Quest name", de = "Questname", fr = "Nom de la quête" },
 }
 
 function B_Trigger_OnQuestInterrupted:AddParameter(_Index, _Parameter)
@@ -7904,10 +8023,11 @@ B_Trigger_OnQuestOverWait = {
     Description = {
         en = "Trigger: if a given quest has been finished, regardless of its result. Waiting time optional",
         de = "Auslöser: wenn eine angegebene Quest beendet wurde, unabhängig von deren Ergebnis. Wartezeit optional",
+        fr = "Déclencheur: lorsqu'une quête indiquée est terminée, indépendamment de son résultat. Délai d'attente optionnel"
     },
     Parameter = {
-        { ParameterType.QuestName,     en = "Quest name", de = "Questname" },
-        { ParameterType.Number,     en = "Waiting time", de = "Wartezeit"},
+        { ParameterType.QuestName,  en = "Quest name",   de = "Questname", fr = "Nom de la quête" },
+        { ParameterType.Number,     en = "Waiting time", de = "Wartezeit", fr = "Temps d'attente"},
     },
 }
 
@@ -7966,10 +8086,11 @@ Swift:RegisterBehavior(B_Trigger_OnQuestOverWait);
 -- Kompatibelitätsmodus
 B_Trigger_OnQuestOver = Swift:CopyTable(B_Trigger_OnQuestOverWait);
 B_Trigger_OnQuestOver.Name = "Trigger_OnQuestOver";
-B_Trigger_OnQuestOver.Description.en = "Reward: Starts the quest after another finished.";
-B_Trigger_OnQuestOver.Description.de = "Lohn: Startet den Quest, wenn ein anderer abgeschlossen wurde.";
+B_Trigger_OnQuestOver.Description.en = "Trigger: Starts the quest after another finished.";
+B_Trigger_OnQuestOver.Description.de = "Auslöser: Startet den Quest, wenn ein anderer abgeschlossen wurde.";
+B_Trigger_OnQuestOver.Description.fr = "Déclencheur: Démarre la quête lorsqu'une autre est terminée.";
 B_Trigger_OnQuestOver.Parameter = {
-    { ParameterType.QuestName,     en = "Quest name", de = "Questname" },
+    { ParameterType.QuestName,     en = "Quest name", de = "Questname", fr = "Nom de la quête" },
 }
 
 function B_Trigger_OnQuestOver:AddParameter(_Index, _Parameter)
@@ -8001,10 +8122,11 @@ B_Trigger_OnQuestSuccessWait = {
     Description = {
         en = "Trigger: if a given quest has been finished successfully. Waiting time optional",
         de = "Auslöser: wenn eine angegebene Quest erfolgreich abgeschlossen wurde. Wartezeit optional",
+        fr = "Déclencheur: lorsqu'une quête indiquée a été accomplie avec succès. Délai d'attente optionnel",
     },
     Parameter = {
-        { ParameterType.QuestName,     en = "Quest name", de = "Questname" },
-        { ParameterType.Number,     en = "Waiting time", de = "Wartezeit"},
+        { ParameterType.QuestName,  en = "Quest name",   de = "Questname", fr = "Nom de la quête" },
+        { ParameterType.Number,     en = "Waiting time", de = "Wartezeit", fr = "Temps d'attente" },
     },
 }
 
@@ -8063,10 +8185,11 @@ Swift:RegisterBehavior(B_Trigger_OnQuestSuccessWait);
 -- Kompatibelitätsmodus
 B_Trigger_OnQuestSuccess = Swift:CopyTable(B_Trigger_OnQuestSuccessWait);
 B_Trigger_OnQuestSuccess.Name = "Trigger_OnQuestSuccess";
-B_Trigger_OnQuestSuccess.Description.en = "Reward: Starts the quest after another finished successfully.";
-B_Trigger_OnQuestSuccess.Description.de = "Lohn: Startet den Quest, wenn ein anderer erfolgreich abgeschlossen wurde.";
+B_Trigger_OnQuestSuccess.Description.en = "Trigger: Starts the quest after another finished successfully.";
+B_Trigger_OnQuestSuccess.Description.de = "Auslöser: Startet den Quest, wenn ein anderer erfolgreich abgeschlossen wurde.";
+B_Trigger_OnQuestSuccess.Description.de = "Déclencheur: Démarre la quête lorsqu'une autre a été accomplie avec succès.";
 B_Trigger_OnQuestSuccess.Parameter = {
-    { ParameterType.QuestName,     en = "Quest name", de = "Questname" },
+    { ParameterType.QuestName,     en = "Quest name", de = "Questname", fr = "Nom de la quête" },
 }
 
 function B_Trigger_OnQuestSuccess:AddParameter(_Index, _Parameter)
@@ -8104,11 +8227,12 @@ B_Trigger_CustomVariables = {
     Description = {
         en = "Trigger: if the variable has a certain value.",
         de = "Auslöser: wenn die Variable einen bestimmen Wert eingenommen hat.",
+        fr = "Déclencheur: lorsque la variable a pris une valeur déterminée."
     },
     Parameter = {
-        { ParameterType.Default, en = "Name of Variable", de = "Variablennamen" },
-        { ParameterType.Custom,  en = "Relation", de = "Relation" },
-        { ParameterType.Default, en = "Value", de = "Wert" }
+        { ParameterType.Default, en = "Name of Variable",   de = "Variablennamen",  fr = "Noms de variables" },
+        { ParameterType.Custom,  en = "Relation",           de = "Relation",        fr = "Relation" },
+        { ParameterType.Default, en = "Value",              de = "Wert",            fr = "Valeur" }
     }
 };
 
@@ -8189,6 +8313,7 @@ B_Trigger_AlwaysActive = {
     Description = {
         en = "Trigger: the map has been started.",
         de = "Auslöser: Start der Karte.",
+        fr = "Déclencheur: Démarrage de la carte.",
     },
 }
 
@@ -8216,9 +8341,10 @@ B_Trigger_OnMonth = {
     Description = {
         en = "Trigger: a specified month",
         de = "Auslöser: ein bestimmter Monat",
+        fr = "Déclencheur: un mois donné"
     },
     Parameter = {
-        { ParameterType.Custom, en = "Month", de = "Monat" },
+        { ParameterType.Custom, en = "Month", de = "Monat", fr = "Mois" },
     },
 }
 
@@ -8276,6 +8402,7 @@ B_Trigger_OnMonsoon = {
     Description = {
         en = "Trigger: on monsoon.",
         de = "Auslöser: wenn der Monsun beginnt.",
+        fr = "Déclencheur: lorsque la mousson commence.",
     },
     RequiresExtraNo = 1,
 }
@@ -8312,9 +8439,10 @@ B_Trigger_Time = {
     Description = {
         en = "Trigger: a given amount of time since map start",
         de = "Auslöser: eine gewisse Anzahl Sekunden nach Spielbeginn",
+        fr = "Déclencheur: un certain nombre de secondes après le début du jeu",
     },
     Parameter = {
-        { ParameterType.Number, en = "Time (sec.)", de = "Zeit (Sek.)" },
+        { ParameterType.Number, en = "Time (sec.)", de = "Zeit (Sek.)", fr = "Temps (sec.)" },
     },
 }
 
@@ -8346,6 +8474,7 @@ B_Trigger_OnWaterFreezes = {
     Description = {
         en = "Trigger: if the water starts freezing",
         de = "Auslöser: wenn die Gewässer gefrieren",
+        fr = "Déclencheur: lorsque les eaux gèlent",
     },
 }
 
@@ -8380,6 +8509,7 @@ B_Trigger_NeverTriggered = {
     Description = {
         en = "Trigger: Never triggers a Quest. The quest may be set active by Reward_QuestActivate or Reward_QuestRestartForceActive",
         de = "Auslöser: Löst nie eine Quest aus. Die Quest kann von Reward_QuestActivate oder Reward_QuestRestartForceActive aktiviert werden.",
+        fr = "Déclencheur: Ne déclenche jamais de quête. La quête peut être activée par Reward_QuestActivate ou Reward_QuestRestartForceActive.",
     },
 }
 
@@ -8410,10 +8540,11 @@ B_Trigger_OnAtLeastOneQuestFailure = {
     Description = {
         en = "Trigger: if one or both of the given quests have failed.",
         de = "Auslöser: wenn einer oder beide der angegebenen Aufträge fehlgeschlagen sind.",
+        fr = "Déclencheur: si l'une des quêtes indiquées ou les deux ont échoué.",
     },
     Parameter = {
-        { ParameterType.QuestName, en = "Quest Name 1", de = "Questname 1" },
-        { ParameterType.QuestName, en = "Quest Name 2", de = "Questname 2" },
+        { ParameterType.QuestName, en = "Quest Name 1", de = "Questname 1", fr = "Nom de la quête 1" },
+        { ParameterType.QuestName, en = "Quest Name 2", de = "Questname 2", fr = "Nom de la quête 2" },
     },
 }
 
@@ -8476,10 +8607,11 @@ B_Trigger_OnAtLeastOneQuestSuccess = {
     Description = {
         en = "Trigger: if one or both of the given quests are won.",
         de = "Auslöser: wenn einer oder beide der angegebenen Aufträge gewonnen wurden.",
+        fr = "Déclencheur : si une ou les deux missions indiquées ont été gagnées.",
     },
     Parameter = {
-        { ParameterType.QuestName, en = "Quest Name 1", de = "Questname 1" },
-        { ParameterType.QuestName, en = "Quest Name 2", de = "Questname 2" },
+        { ParameterType.QuestName, en = "Quest Name 1", de = "Questname 1", fr = "Nom de la quête 1" },
+        { ParameterType.QuestName, en = "Quest Name 2", de = "Questname 2", fr = "Nom de la quête 2" },
     },
 }
 
@@ -8547,15 +8679,16 @@ B_Trigger_OnAtLeastXOfYQuestsSuccess = {
     Description = {
         en = "Trigger: if at least X of Y given quests has been finished successfully.",
         de = "Auslöser: wenn X von Y angegebener Quests erfolgreich abgeschlossen wurden.",
+        fr = "Déclencheur: lorsque X des Y quêtes indiquées ont été accomplies avec succès.",
     },
     Parameter = {
-        { ParameterType.Custom, en = "Least Amount", de = "Mindest Anzahl" },
-        { ParameterType.Custom, en = "Quest Amount", de = "Quest Anzahl" },
-        { ParameterType.QuestName, en = "Quest name 1", de = "Questname 1" },
-        { ParameterType.QuestName, en = "Quest name 2", de = "Questname 2" },
-        { ParameterType.QuestName, en = "Quest name 3", de = "Questname 3" },
-        { ParameterType.QuestName, en = "Quest name 4", de = "Questname 4" },
-        { ParameterType.QuestName, en = "Quest name 5", de = "Questname 5" },
+        { ParameterType.Custom, en = "Least Amount", de = "Mindest Anzahl", fr = "Nombre minimum" },
+        { ParameterType.Custom, en = "Quest Amount", de = "Quest Anzahl",   fr = "Nombre de quêtes" },
+        { ParameterType.QuestName, en = "Quest name 1", de = "Questname 1", fr = "Nom de la quête 1" },
+        { ParameterType.QuestName, en = "Quest name 2", de = "Questname 2", fr = "Nom de la quête 2" },
+        { ParameterType.QuestName, en = "Quest name 3", de = "Questname 3", fr = "Nom de la quête 3" },
+        { ParameterType.QuestName, en = "Quest name 4", de = "Questname 4", fr = "Nom de la quête 4" },
+        { ParameterType.QuestName, en = "Quest name 5", de = "Questname 5", fr = "Nom de la quête 5" },
     },
 }
 
@@ -8650,9 +8783,10 @@ B_Trigger_MapScriptFunction = {
     Description = {
         en = "Trigger: Calls a function within the global map script. If the function returns true the quest will be started",
         de = "Auslöser: Ruft eine Funktion im globalen Skript auf. Wenn sie true sendet, wird die Quest gestartet.",
+        fr = "Déclencheur: Appelle une fonction dans le script global. Si elle envoie true, la quête est lancée.",
     },
     Parameter = {
-        { ParameterType.Default, en = "Function name", de = "Funktionsname" },
+        { ParameterType.Default, en = "Function name", de = "Funktionsname", fr = "Nom de la fonction" },
     },
 }
 
@@ -8706,9 +8840,10 @@ B_Trigger_OnEffectDestroyed = {
 	Description = {
 		en = "Trigger: Starts a quest after an effect was destroyed",
 		de = "Auslöser: Startet eine Quest, nachdem ein Effekt zerstoert wurde",
+        fr = "Déclencheur: Démarre une quête après la destruction d'un effet.",
 	},
 	Parameter = {
-		{ ParameterType.Default, en = "Effect name", de = "Effektname" },
+		{ ParameterType.Default, en = "Effect name", de = "Effektname", fr = "Nom de l'effet" },
 	},
 }
 

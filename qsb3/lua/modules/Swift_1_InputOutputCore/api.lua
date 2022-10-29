@@ -333,6 +333,73 @@ function API.DialogSelectBox(_Title, _Text, _Action, _List)
 end
 
 ---
+-- Öffnet den Dialog für die Auswahl der Sprache. Deutsch, Englisch und
+-- Französisch sind vorkonfiguriert.
+--
+-- @param[type=number] _PlayerID (optional) Nur für diesen Spieler anzeigen
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- -- Für alle Spieler
+-- API.DialogLanguageSelection();
+-- Nur für Spieler 2 anzeigen (Multiplayer)
+-- API.DialogLanguageSelection(2);
+--
+function API.DialogLanguageSelection(_PlayerID)
+    _PlayerID = _PlayerID or -1
+    if not GUI then
+        Logic.ExecuteInLuaLocalState(string.format(
+            [[API.DialogLanguageSelection(%d)]],
+            _PlayerID
+        ));
+        return;
+    end
+    if _PlayerID ~= -1 and GUI.GetPlayerID() ~= _PlayerID then
+        return;
+    end
+
+    local DisplayedList = {};
+    for i= 1, #Swift.m_LanguageRegister do
+        table.insert(DisplayedList, Swift.m_LanguageRegister[i][2]);
+    end
+    local Action = function(_Selected)
+        API.BroadcastScriptCommand(
+            QSB.ScriptCommands.SetLanguageResult,
+            GUI.GetPlayerID(),
+            Swift.m_LanguageRegister[_Selected][1]
+        );
+    end
+    local Text = API.Localize(ModuleInputOutputCore.Shared.Text.ChooseLanguage);
+    API.DialogSelectBox(Text.Title, Text.Text, Action, DisplayedList);
+end
+
+---
+-- Fügt eine neue Sprache zur Auswahl hinzu.
+--
+-- @param[type=string] _Shortcut Kürzel der Sprache (vgl. de, en, ...)
+-- @param[type=string] _Name     Anzeigename der Sprache
+-- @param[type=string] _Fallback Kürzel der Ausweichsprache
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- API.DefineLanguage("sx", "Sächsich", "de")
+--
+function API.DefineLanguage(_Shortcut, _Name, _Fallback)
+    assert(type(_Shortcut) == "string");
+    assert(type(_Name) == "string");
+    assert(type(_Fallback) == "string");
+    for k, v in pairs(Swift.m_LanguageRegister) do
+        if v[1] == _Shortcut then
+            return;
+        end
+    end
+    table.insert(Swift.m_LanguageRegister, {_Shortcut, _Name, _Fallback});
+    Logic.ExecuteInLuaLocalState(string.format([[
+        table.insert(Swift.m_LanguageRegister, {"%s", "%s", "%s"})
+    ]], _Shortcut, _Name, _Fallback));
+end
+
+---
 -- Öffnet ein einfaches Textfenster mit dem angegebenen Text.
 --
 -- Die Länge des Textes ist nicht beschränkt. Überschreitet der Text die
@@ -438,5 +505,9 @@ end
 
 function SCP.InputOutputCore.SetDecisionResult(_PlayerID, _Yes)
     QSB.DecisionWindowResult = _Yes == true;
+end
+
+function SCP.InputOutputCore.SetLanguageResult(_PlayerID, _Language)
+    Swift:ChangeSystemLanguage(_PlayerID, _Language);
 end
 

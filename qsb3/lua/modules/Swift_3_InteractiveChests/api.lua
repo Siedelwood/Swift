@@ -35,24 +35,19 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- des angegebenen Typs.
 --
 -- Die Menge der Ware ist dabei zufällig und liegt zwischen dem Minimalwert
--- und dem Maximalwert. Optional kann eine Funktion angegeben werden, die
--- ausgeführt wird, wenn die Truhe geöffnet wird. Diese Funktion verhält sich
--- wie das Callback eines interaktiven Objektes.
+-- und dem Maximalwert.
 --
 -- @param[type=string]   _Name     Name der zu ersetzenden Script Entity
 -- @param[type=number]   _Good     Warentyp
 -- @param[type=number]   _Min      Mindestmenge
 -- @param[type=number]   _Max      (Optional) Maximalmenge
--- @param[type=function] _Callback (Optional) Callback-Funktion
 -- @within Anwenderfunktionen
 --
 -- @usage
 -- -- Normale Truhe
 -- API.CreateRandomChest("chest", Goods.G_Gems, 100, 300);
--- -- Truhe mit Aktion
--- API.CreateRandomChest("chest", Goods.G_Gems, 100, 300, OnChestOpened);
 --
-function API.CreateRandomChest(_Name, _Good, _Min, _Max, _Callback)
+function API.CreateRandomChest(_Name, _Good, _Min, _Max)
     if GUI then
         return;
     end
@@ -70,9 +65,6 @@ function API.CreateRandomChest(_Name, _Good, _Min, _Max, _Callback)
     end
 
     if type(_Max) ~= "number" then
-        if not _Callback and type(_Max) == "function" then
-            _Callback = _Max;
-        end
         _Max = _Min;
     else
         if type(_Max) ~= "number" or _Max < 1 then
@@ -84,7 +76,7 @@ function API.CreateRandomChest(_Name, _Good, _Min, _Max, _Callback)
             return;
         end
     end
-    ModuleInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _Callback, false);
+    ModuleInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Max, false);
 end
 
 ---
@@ -92,24 +84,19 @@ end
 -- des angegebenen Typs.
 --
 -- Die Menge der Ware ist dabei zufällig und liegt zwischen dem Minimalwert
--- und dem Maximalwert. Optional kann eine Funktion angegeben werden, die
--- ausgeführt wird, wenn der Schatz gefunden wird. Diese Funktion verhält sich
--- wie das Callback eines interaktiven Objektes.
+-- und dem Maximalwert.
 --
 -- @param[type=string]   _Name     Name des Script Entity
 -- @param[type=number]   _Good     Warentyp
 -- @param[type=number]   _Min      Mindestmenge
 -- @param[type=number]   _Max      (Optional) Maximalmenge
--- @param[type=function] _Callback (Optional) Callback-Funktion
 -- @within Anwenderfunktionen
 --
 -- @usage
 -- -- Normale Ruine
 -- API.CreateRandomTreasure("well1", Goods.G_Gems, 100, 300);
--- -- Ruine mit Aktion
--- API.CreateRandomTreasure("well1", Goods.G_Gems, 100, 300, OnTreasureDiscovered);
 --
-function API.CreateRandomTreasure(_Name, _Good, _Min, _Max, _Callback)
+function API.CreateRandomTreasure(_Name, _Good, _Min, _Max)
     if GUI then
         return;
     end
@@ -127,9 +114,6 @@ function API.CreateRandomTreasure(_Name, _Good, _Min, _Max, _Callback)
     end
 
     if type(_Max) ~= "number" then
-        if not _Callback and type(_Max) == "function" then
-            _Callback = _Max;
-        end
         _Max = _Min;
     else
         if type(_Max) ~= "number" or _Max < 1 then
@@ -141,7 +125,7 @@ function API.CreateRandomTreasure(_Name, _Good, _Min, _Max, _Callback)
             return;
         end
     end
-    ModuleInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _Callback, false, true);
+    ModuleInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Max, false, true);
 end
 
 ---

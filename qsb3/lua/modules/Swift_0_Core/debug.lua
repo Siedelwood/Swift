@@ -434,8 +434,7 @@ end
 function Swift:ExecuteQsbDebugHotkey(_Type)
     if self.m_DevelopingCheats then
         if _Type == 'RestartMap' then
-            Camera.RTS_FollowEntity(0);
-            Framework.RestartMap();
+            API.RestartMap();
         end
     end
 end
@@ -530,7 +529,7 @@ end
 function Swift:ConfirmQsbDebugShell()
     if self:IsProcessDebugCommands() then
         if self.m_ChatBoxInput == "restartmap" then
-            Framework.RestartMap();
+            API.RestartMap();
         else
             if string.find(self.m_ChatBoxInput, "^> .*$") then
                 GUI.SendScriptCommand(self.m_ChatBoxInput.sub(self.m_ChatBoxInput, 3), true);

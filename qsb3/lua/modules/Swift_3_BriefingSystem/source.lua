@@ -24,9 +24,9 @@ ModuleBriefingSystem = {
     -- This is a shared structure but the values are asynchronous!
     Shared = {
         Text = {
-            NextButton = {de = "Weiter",  en = "Forward"},
-            PrevButton = {de = "Zurück",  en = "Previous"},
-            EndButton  = {de = "Beenden", en = "Close"},
+            NextButton = {de = "Weiter",  en = "Forward",  fr = "Continuer"},
+            PrevButton = {de = "Zurück",  en = "Previous", fr = "Retour"},
+            EndButton  = {de = "Beenden", en = "Close",    fr = "Quitter"},
         },
     },
 };
@@ -387,8 +387,8 @@ function ModuleBriefingSystem.Local:StartBriefing(_PlayerID, _Briefing)
     self.Briefing[_PlayerID].LastSkipButtonPressed = 0;
     self.Briefing[_PlayerID].CurrentPage = 0;
 
-    API.DeactivateNormalInterface();
-    API.DeactivateBorderScroll();
+    API.DeactivateNormalInterface(_PlayerID);
+    API.DeactivateBorderScroll(_PlayerID);
 
     if not Framework.IsNetworkGame() then
         Game.GameTimeSetFactor(_PlayerID, 1);
@@ -405,8 +405,8 @@ function ModuleBriefingSystem.Local:EndBriefing(_PlayerID, _Briefing)
         Game.GameTimeSetFactor(_PlayerID, 1);
     end
     self:DeactivateCinematicMode(_PlayerID);
-    API.ActivateNormalInterface();
-    API.ActivateBorderScroll();
+    API.ActivateNormalInterface(_PlayerID);
+    API.ActivateBorderScroll(_PlayerID);
 
     self.Briefing[_PlayerID] = nil;
     Display.SetRenderFogOfWar(1);
@@ -544,6 +544,7 @@ function ModuleBriefingSystem.Local:DisplayPageFader(_PlayerID, _PageID)
 
     local PageFadeOut = Page.FadeOut;
     if PageFadeOut then
+        -- FIXME: This would create jobs that are only be paused at the end!
         self.Briefing[_PlayerID].FaderJob = API.StartHiResJob(function(_Time, _FadeOut)
             if Logic.GetTimeMs() > _Time - (_FadeOut * 1000) then
                 FadeOut(_FadeOut);
@@ -990,6 +991,7 @@ function ModuleBriefingSystem.Local:ActivateCinematicMode(_PlayerID)
     XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 0, 0, 400, 600);
     XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 0, 0);
 
+    self.SelectionBackup = {GUI.GetSelectedEntities()};
     GUI.ClearSelection();
     GUI.ClearNotes();
     GUI.ForbidContextSensitiveCommandsInSelectionState();
@@ -1034,6 +1036,9 @@ function ModuleBriefingSystem.Local:DeactivateCinematicMode(_PlayerID)
     GUI.SetFeedbackSoundOutputState(1);
     GUI.ActivateSelectionState();
     GUI.PermitContextSensitiveCommandsInSelectionState();
+    for k, v in pairs(self.SelectionBackup) do
+        GUI.SelectEntity(v);
+    end
     Display.SetRenderSky(0);
     Display.SetRenderBorderPins(1);
     Display.SetRenderFogOfWar(1);

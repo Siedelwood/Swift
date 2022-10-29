@@ -25,20 +25,24 @@ ModuleInteractiveChests = {
             Title = {
                 de = "Schatztruhe",
                 en = "Treasure Chest",
+                fr = "Coffre au trésor",
             },
             Text = {
                 de = "Diese Truhe enthält einen geheimen Schatz. Öffnet sie, um den Schatz zu bergen.",
                 en = "This chest contains a secred treasure. Open it to salvage the treasure.",
+                fr = "Ce coffre contient un trésor secret. Ouvrez-le pour récupérer le trésor.",
             },
         },
         Treasure = {
             Title = {
                 de = "Versteckter Schatz",
                 en = "Hidden treasure",
+                fr = "Trésor caché",
             },
             Text = {
                 de = "Ihr habt einen geheimen Schatz entdeckt. Beeilt Euch und beansprucht ihn für Euch!",
                 en = "You have discovered a secred treasure. Be quick to claim it before it is to late!",
+                fr = "Vous avez découvert un trésor secret. Dépêchez-vous de le revendiquer!",
             },
         }
     }
@@ -64,12 +68,9 @@ function ModuleInteractiveChests.Global:OnEvent(_ID, _Event, ...)
     end
 end
 
-function ModuleInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _Callback, _DirectPay, _NoModelChange)
+function ModuleInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _DirectPay, _NoModelChange)
     _Min = math.floor((_Min ~= nil and _Min > 0 and _Min) or 1);
     _Max = math.floor((_Max ~= nil and _Max > 1 and _Max) or 2);
-    if not _Callback then
-        _Callback = function() end
-    end
     assert(_Good ~= nil, "CreateRandomChest: Good does not exist!");
     assert(_Min <= _Max, "CreateRandomChest: min amount must be smaller or equal than max amount!");
 
@@ -80,8 +81,8 @@ function ModuleInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _M
         Logic.GetGoodTypeName(_Good),
         _Min,
         _Max,
-        tostring(_Callback),
-        tostring(_NoModelChange)
+        tostring(_DirectPay == true),
+        tostring(_NoModelChange == true)
     ))
 
     -- Texte und Model setzen
@@ -123,7 +124,6 @@ function ModuleInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _M
         Waittime                = 0,
         State                   = 0,
         DoNotChangeModel        = _NoModelChange == true,
-        CallbackOpened          = _Callback,
         Action                  = function(_Data, _KnightID, _PlayerID)
             if not _Data.DoNotChangeModel then
                 Logic.SetModel(GetID(_Data.Name), Models.Doodads_D_X_ChestOpenEmpty);
@@ -131,7 +131,6 @@ function ModuleInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _M
             if _Data.DirectReward then
                 AddGood(_Data.DirectReward[1], _Data.DirectReward[2], _PlayerID);
             end
-            IO[_Data.Name]:CallbackOpened();
 
             API.SendScriptEvent(QSB.ScriptEvents.InteractiveTreasureActivated, _Data.Name, _KnightID, _PlayerID);
             Logic.ExecuteInLuaLocalState(string.format(

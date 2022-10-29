@@ -60,6 +60,21 @@ ModuleInputOutputCore = {
             Names = {},
             EntityTypes = {},
         };
+
+        Text = {
+            ChooseLanguage = {
+                Title = {
+                    de = "Wählt die Sprache",
+                    en = "Chose your Tongue",
+                    fr = "Sélectionnez la langue",
+                },
+                Text = {
+                    de = "Wählt aus der Liste die Sprache aus, in die Handlungstexte übersetzt werden sollen.",
+                    en = "Choose from the list below which language story texts shall be presented to you.",
+                    fr = "Sélectionne dans la liste la langue dans laquelle les textes narratifs doivent être traduits.",
+                }
+            }
+        }
     };
 };
 
@@ -70,6 +85,7 @@ function ModuleInputOutputCore.Global:OnGameStart()
     QSB.ScriptEvents.ChatClosed = API.RegisterScriptEvent("Event_ChatClosed");
 
     API.RegisterScriptCommand("Cmd_SetDecisionResult", SCP.InputOutputCore.SetDecisionResult);
+    API.RegisterScriptCommand("Cmd_SetLanguageResult", SCP.InputOutputCore.SetLanguageResult);
 end
 
 function ModuleInputOutputCore.Global:OnEvent(_ID, _Event, ...)
@@ -127,7 +143,7 @@ function ModuleInputOutputCore.Local:OnEvent(_ID, _Event, ...)
     elseif _ID == QSB.ScriptEvents.ChatClosed then
         if arg[3] then
             if arg[1] == "restartmap" then
-                Framework.RestartMap();
+                API.RestartMap();
             elseif arg[1]:find("^> ") then
                 GUI.SendScriptCommand(arg[1]:sub(3), true);
             elseif arg[1]:find("^>> ") then

@@ -576,13 +576,19 @@ function ModuleKnightTitleRequirements.Local:OverwriteTooltips()
 
     if Framework.GetGameExtraNo() ~= 0 then
         ModuleKnightTitleRequirements.Local.BuffTypeNames[Buffs.Buff_Gems] = {
-            de = "Edelsteine beschaffen", en = "Obtain gems"
+            de = "Edelsteine beschaffen",
+            en = "Obtain gems",
+            fr = "Se procurer des Gemmes",
         }
         ModuleKnightTitleRequirements.Local.BuffTypeNames[Buffs.Buff_Olibanum] = {
-            de = "Weihrauch beschaffen", en = "Obtain olibanum"
+            de = "Weihrauch beschaffen",
+            en = "Obtain olibanum",
+            fr = "Se procurer de l'encens",
         }
         ModuleKnightTitleRequirements.Local.BuffTypeNames[Buffs.Buff_MusicalInstrument] = {
-            de = "Muskinstrumente beschaffen", en = "Obtain instruments"
+            de = "Muskinstrumente beschaffen",
+            en = "Obtain instruments",
+            fr = "Se procurer des instruments de musique",
         }
     end
 end
@@ -662,38 +668,38 @@ ModuleKnightTitleRequirements.Local.RequirementWidgets = {
 };
 
 ModuleKnightTitleRequirements.Local.GoodCategoryNames = {
-    [GoodCategories.GC_Ammunition]      = {de = "Munition", en = "Ammunition"},
-    [GoodCategories.GC_Animal]          = {de = "Nutztiere", en = "Livestock"},
-    [GoodCategories.GC_Clothes]         = {de = "Kleidung", en = "Clothes"},
-    [GoodCategories.GC_Document]        = {de = "Dokumente", en = "Documents"},
-    [GoodCategories.GC_Entertainment]   = {de = "Unterhaltung", en = "Entertainment"},
-    [GoodCategories.GC_Food]            = {de = "Nahrungsmittel", en = "Food"},
-    [GoodCategories.GC_Gold]            = {de = "Gold", en = "Gold"},
-    [GoodCategories.GC_Hygiene]         = {de = "Hygieneartikel", en = "Hygiene"},
-    [GoodCategories.GC_Luxury]          = {de = "Dekoration", en = "Decoration"},
-    [GoodCategories.GC_Medicine]        = {de = "Medizin", en = "Medicine"},
-    [GoodCategories.GC_None]            = {de = "Nichts", en = "None"},
-    [GoodCategories.GC_RawFood]         = {de = "Nahrungsmittel", en = "Food"},
-    [GoodCategories.GC_RawMedicine]     = {de = "Medizin", en = "Medicine"},
-    [GoodCategories.GC_Research]        = {de = "Forschung", en = "Research"},
-    [GoodCategories.GC_Resource]        = {de = "Rohstoffe", en = "Resource"},
-    [GoodCategories.GC_Tools]           = {de = "Werkzeug", en = "Tools"},
-    [GoodCategories.GC_Water]           = {de = "Wasser", en = "Water"},
-    [GoodCategories.GC_Weapon]          = {de = "Waffen", en = "Weapon"},
+    [GoodCategories.GC_Ammunition]      = {de = "Munition",         en = "Ammunition",      fr = "Munition"},
+    [GoodCategories.GC_Animal]          = {de = "Nutztiere",        en = "Livestock",       fr = "Animaux d'élevage"},
+    [GoodCategories.GC_Clothes]         = {de = "Kleidung",         en = "Clothes",         fr = "Vêtements"},
+    [GoodCategories.GC_Document]        = {de = "Dokumente",        en = "Documents",       fr = "Documents"},
+    [GoodCategories.GC_Entertainment]   = {de = "Unterhaltung",     en = "Entertainment",   fr = "Divertissement"},
+    [GoodCategories.GC_Food]            = {de = "Nahrungsmittel",   en = "Food",            fr = "Nourriture"},
+    [GoodCategories.GC_Gold]            = {de = "Gold",             en = "Gold",            fr = "Or"},
+    [GoodCategories.GC_Hygiene]         = {de = "Hygieneartikel",   en = "Hygiene",         fr = "Hygiène"},
+    [GoodCategories.GC_Luxury]          = {de = "Dekoration",       en = "Decoration",      fr = "Décoration"},
+    [GoodCategories.GC_Medicine]        = {de = "Medizin",          en = "Medicine",        fr = "Médecine"},
+    [GoodCategories.GC_None]            = {de = "Nichts",           en = "None",            fr = "Rien"},
+    [GoodCategories.GC_RawFood]         = {de = "Nahrungsmittel",   en = "Food",            fr = "Nourriture"},
+    [GoodCategories.GC_RawMedicine]     = {de = "Medizin",          en = "Medicine",        fr = "Médecine"},
+    [GoodCategories.GC_Research]        = {de = "Forschung",        en = "Research",        fr = "Recherche"},
+    [GoodCategories.GC_Resource]        = {de = "Rohstoffe",        en = "Resource",        fr = "Ressources"},
+    [GoodCategories.GC_Tools]           = {de = "Werkzeug",         en = "Tools",           fr = "Outils"},
+    [GoodCategories.GC_Water]           = {de = "Wasser",           en = "Water",           fr = "Eau"},
+    [GoodCategories.GC_Weapon]          = {de = "Waffen",           en = "Weapon",          fr = "Armes"},
 };
 
 ModuleKnightTitleRequirements.Local.BuffTypeNames = {
-    [Buffs.Buff_ClothesDiversity]        = {de = "Vielfältige Kleidung", en = "Clothes variety"},
-    [Buffs.Buff_Colour]                  = {de = "Farben beschaffen", en = "Obtain color"},
-    [Buffs.Buff_Entertainers]            = {de = "Gaukler anheuern", en = "Hire entertainer"}, -- Funktioniert nicht, belegt MP!
-    [Buffs.Buff_EntertainmentDiversity]  = {de = "Vielfältige Unterhaltung", en = "Entertainment variety"},
-    [Buffs.Buff_ExtraPayment]            = {de = "Sonderzahlung", en = "Extra payment"},
-    [Buffs.Buff_Festival]                = {de = "Fest veranstalten", en = "Hold Festival"},   -- Funktioniert nicht, belegt MP!
-    [Buffs.Buff_FoodDiversity]           = {de = "Vielfältige Nahrung", en = "Food variety"},
-    [Buffs.Buff_HygieneDiversity]        = {de = "Vielfältige Hygiene", en = "Hygiene variety"},
-    [Buffs.Buff_NoTaxes]                 = {de = "Steuerbefreiung", en = "No taxes"},
-    [Buffs.Buff_Sermon]                  = {de = "Pregigt abhalten", en = "Hold sermon"},
-    [Buffs.Buff_Spice]                   = {de = "Salz beschaffen", en = "Obtain salt"},
+    [Buffs.Buff_ClothesDiversity]        = {de = "Vielfältige Kleidung",        en = "Clothes variety",         fr = "Diversité vestimentaire"},
+    [Buffs.Buff_Colour]                  = {de = "Farben beschaffen",           en = "Obtain color",            fr = "Se procurer des couleurs"},
+    [Buffs.Buff_Entertainers]            = {de = "Gaukler anheuern",            en = "Hire entertainer",        fr = "Engager des saltimbanques"}, -- Funktioniert nicht, belegt MP!
+    [Buffs.Buff_EntertainmentDiversity]  = {de = "Vielfältige Unterhaltung",    en = "Entertainment variety",   fr = "Diversité des divertissements"},
+    [Buffs.Buff_ExtraPayment]            = {de = "Sonderzahlung",               en = "Extra payment",           fr = "Paiement supplémentaire"},
+    [Buffs.Buff_Festival]                = {de = "Fest veranstalten",           en = "Hold Festival",           fr = "Organiser une fête"},   -- Funktioniert nicht, belegt MP!
+    [Buffs.Buff_FoodDiversity]           = {de = "Vielfältige Nahrung",         en = "Food variety",            fr = "Diversité alimentaire"},
+    [Buffs.Buff_HygieneDiversity]        = {de = "Vielfältige Hygiene",         en = "Hygiene variety",         fr = "Diversité hygiénique"},
+    [Buffs.Buff_NoTaxes]                 = {de = "Steuerbefreiung",             en = "No taxes",                fr = "Exonération fiscale"},
+    [Buffs.Buff_Sermon]                  = {de = "Pregigt abhalten",            en = "Hold sermon",             fr = "Tenir des prêches"},
+    [Buffs.Buff_Spice]                   = {de = "Salz beschaffen",             en = "Obtain salt",             fr = "Se procurer du sel"},
 };
 
 ModuleKnightTitleRequirements.Local.Description = {
@@ -701,10 +707,12 @@ ModuleKnightTitleRequirements.Local.Description = {
         Title = {
             de = "Benötigte Siedler",
             en = "Needed settlers",
+            fr = "Settlers nécessaires",
         },
         Text = {
             de = "- Benötigte Menge an Siedlern",
             en = "- Needed number of settlers",
+            fr = "- Quantité de settlers nécessaire",
         },
     },
 
@@ -712,10 +720,12 @@ ModuleKnightTitleRequirements.Local.Description = {
         Title = {
             de = "Reiche Häuser",
             en = "Rich city buildings",
+            fr = "Bâtiments riches",
         },
         Text = {
             de = "- Menge an reichen Stadtgebäuden",
             en = "- Needed amount of rich city buildings",
+            fr = "- Quantité de bâtiments de la ville riches",
         },
     },
 
@@ -723,10 +733,12 @@ ModuleKnightTitleRequirements.Local.Description = {
         Title = {
             de = "Waren lagern",
             en = "Store Goods",
+            fr = "Entreposer des marchandises",
         },
         Text = {
             de = "- Benötigte Menge",
             en = "- Needed amount",
+            fr = "- Quantité nécessaire",
         },
     },
 
@@ -734,10 +746,12 @@ ModuleKnightTitleRequirements.Local.Description = {
         Title = {
             de = "Dekorierte Häuser",
             en = "Decorated City buildings",
+            fr = "Bâtiments décorés",
         },
         Text = {
             de = "- Menge an voll dekorierten Gebäuden",
             en = "- Amount of full decoraded city buildings",
+            fr = "- Quantité de bâtiments entièrement décorés",
         },
     },
 
@@ -745,10 +759,12 @@ ModuleKnightTitleRequirements.Local.Description = {
         Title = {
             de = "Dekoration",
             en = "Decoration",
+            fr = "Décoration",
         },
         Text = {
             de = "- Menge an Dekorationsgütern in der Siedlung",
             en = "- Amount of decoration goods in settlement",
+            fr = "- Quantité de biens de décoration dans la ville",
         },
     },
 
@@ -756,10 +772,12 @@ ModuleKnightTitleRequirements.Local.Description = {
         Title = {
             de = "Burgstufe",
             en = "Castle level",
+            fr = "Niveau du château",
         },
         Text = {
             de = "- Benötigte Ausbauten der Burg",
             en = "- Needed castle upgrades",
+            fr = "- Améliorations nécessaires du château",
         },
     },
 
@@ -767,10 +785,12 @@ ModuleKnightTitleRequirements.Local.Description = {
         Title = {
             de = "Lagerhausstufe",
             en = "Storehouse level",
+            fr = "Niveau de l'entrepôt",
         },
         Text = {
             de = "- Benötigte Ausbauten des Lagerhauses",
             en = "- Needed storehouse upgrades",
+            fr = "- Améliorations nécessaires de l'entrepôt",
         },
     },
 
@@ -778,10 +798,12 @@ ModuleKnightTitleRequirements.Local.Description = {
         Title = {
             de = "Kirchenstufe",
             en = "Cathedral level",
+            fr = "Niveau de la cathédrale",
         },
         Text = {
             de = "- Benötigte Ausbauten der Kirche",
             en = "- Needed cathedral upgrades",
+            fr = "- Améliorations nécessaires de la cathédrale",
         },
     },
 
@@ -789,10 +811,12 @@ ModuleKnightTitleRequirements.Local.Description = {
         Title = {
             de = "Ruf der Stadt",
             en = "City reputation",
+            fr = "Réputation de la ville",
         },
         Text = {
             de = "- Benötigter Ruf der Stadt",
             en = "- Needed city reputation",
+            fr = "- Réputation de la ville nécessaire",
         },
     },
 
@@ -800,10 +824,12 @@ ModuleKnightTitleRequirements.Local.Description = {
         Title = {
             de = "",
             en = "",
+            fr = "",
         },
         Text = {
             de = "- Benötigte Anzahl",
             en = "- Needed amount",
+            fr = "- Nombre requis",
         },
     },
 
@@ -811,10 +837,12 @@ ModuleKnightTitleRequirements.Local.Description = {
         Title = {
             de = "Kühe",
             en = "Cattle",
+            fr = "Vaches",
         },
         Text = {
             de = "- Benötigte Menge an Kühen",
             en = "- Needed amount of cattle",
+            fr = "- Quantité de vaches nécessaire",
         },
     },
 
@@ -822,10 +850,12 @@ ModuleKnightTitleRequirements.Local.Description = {
         Title = {
             de = "Schafe",
             en = "Sheeps",
+            fr = "Moutons",
         },
         Text = {
             de = "- Benötigte Menge an Schafen",
             en = "- Needed amount of sheeps",
+            fr = "- Quantité de moutons nécessaire",
         },
     },
 
@@ -833,10 +863,12 @@ ModuleKnightTitleRequirements.Local.Description = {
         Title = {
             de = "Territorien",
             en = "Territories",
+            fr = "Territoires",
         },
         Text = {
             de = "- Zu erobernde Territorien",
             en = "- Territories to claim",
+            fr = "- Territoires à conquérir",
         },
     },
 
@@ -844,10 +876,12 @@ ModuleKnightTitleRequirements.Local.Description = {
         Title = {
             de = "Stadtgebäude",
             en = "City buildings",
+            fr = "Bâtiment de la ville",
         },
         Text = {
             de = "- Menge benötigter Stadtgebäude",
             en = "- Needed amount of city buildings",
+            fr = "- Quantité de bâtiments urbains nécessaires",
         },
     },
 
@@ -855,10 +889,12 @@ ModuleKnightTitleRequirements.Local.Description = {
         Title = {
             de = "Rohstoffgebäude",
             en = "Gatherer",
+            fr = "Cueilleur",
         },
         Text = {
             de = "- Menge benötigter Rohstoffgebäude",
             en = "- Needed amount of gatherer",
+            fr = "- Quantité de bâtiments de matières premières nécessaires",
         },
     },
 
@@ -866,10 +902,12 @@ ModuleKnightTitleRequirements.Local.Description = {
         Title = {
             de = "Farmeinrichtungen",
             en = "Farming structure",
+            fr = "Installations de la ferme",
         },
         Text = {
             de = "- Menge benötigter Nutzfläche",
             en = "- Needed amount of farming structure",
+            fr = "- Quantité de surface utile nécessaire",
         },
     },
 
@@ -877,10 +915,12 @@ ModuleKnightTitleRequirements.Local.Description = {
         Title = {
             de = "",
             en = "",
+            fr = "",
         },
         Text = {
             de = "- Durch Siedler zu konsumierende Menge",
             en = "- Amount to be consumed by the settlers",
+            fr = "- Quantité à consommer par les settlers",
         },
     },
 
@@ -888,10 +928,12 @@ ModuleKnightTitleRequirements.Local.Description = {
         Title = {
             de = "",
             en = "",
+            fr = "",
         },
         Text = {
             de = "- Benötigte Menge",
             en = "- Needed amount",
+            fr = "- Quantité nécessaire",
         },
     },
 
@@ -899,10 +941,12 @@ ModuleKnightTitleRequirements.Local.Description = {
         Title = {
             de = "Bonus aktivieren",
             en = "Activate Buff",
+            fr = "Activer bonus",
         },
         Text = {
             de = "- Aktiviere diesen Bonus auf den Ruf der Stadt",
             en = "- Raise the city reputatition with this buff",
+            fr = "- Active ce bonus sur la réputation de la ville",
         },
     },
 
@@ -910,10 +954,12 @@ ModuleKnightTitleRequirements.Local.Description = {
         Title = {
             de = "Batalione",
             en = "Battalions",
+            fr = "Battalions",
         },
         Text = {
             de = "- Menge an Batalionen unterhalten",
             en = "- Battalions you need under your command",
+            fr = "- Maintenir une quantité de bataillons",
         },
     },
 
@@ -921,10 +967,12 @@ ModuleKnightTitleRequirements.Local.Description = {
         Title = {
             de = "Soldaten",
             en = "Soldiers",
+            fr = "Soldats",
         },
         Text = {
             de = "- Menge an Streitkräften unterhalten",
             en = "- Soldiers you need under your command",
+            fr = "- Maintenir une quantité de forces armées",
         },
     },
 
@@ -932,10 +980,12 @@ ModuleKnightTitleRequirements.Local.Description = {
         Title = {
             de = "Arbeiter",
             en = "Workers",
+            fr = "Travailleurs",
         },
         Text = {
             de = "- Menge an arbeitender Bevölkerung",
             en = "- Workers you need under your reign",
+            fr = "- Quantité de population au travail",
         },
     },
 
@@ -943,10 +993,12 @@ ModuleKnightTitleRequirements.Local.Description = {
         Title = {
             de = "",
             en = "",
+            fr = "",
         },
         Text = {
             de = "- Benötigte Menge",
             en = "- Needed Amount",
+            fr = "- Quantité nécessaire",
         },
     },
 
@@ -954,10 +1006,12 @@ ModuleKnightTitleRequirements.Local.Description = {
         Title = {
             de = "Gebäude",
             en = "Buildings",
+            fr = "Bâtiments",
         },
         Text = {
             de = "- Gesamtmenge an Gebäuden",
             en = "- Amount of buildings",
+            fr = "- Total des bâtiments",
         },
     },
 
@@ -965,10 +1019,12 @@ ModuleKnightTitleRequirements.Local.Description = {
         Title = {
             de = "Waffen",
             en = "Weapons",
+            fr = "Armes",
         },
         Text = {
             de = "- Benötigte Menge an Waffen",
             en = "- Needed amount of weapons",
+            fr = "- Quantité d'armes nécessaire",
         },
     },
 
@@ -976,10 +1032,12 @@ ModuleKnightTitleRequirements.Local.Description = {
         Title = {
             de = "Belagerungsgeräte",
             en = "Siege Engines",
+            fr = "Matériel de siège",
         },
         Text = {
             de = "- Benötigte Menge an Belagerungsgeräten",
             en = "- Needed amount of siege engine",
+            fr = "- Quantité de matériel de siège nécessaire",
         },
     },
 
@@ -987,10 +1045,12 @@ ModuleKnightTitleRequirements.Local.Description = {
         Title = {
             de = "Ehefrauen",
             en = "Spouses",
+            fr = "Épouses",
         },
         Text = {
             de = "- Benötigte Anzahl Ehefrauen in der Stadt",
             en = "- Needed amount of spouses in your city",
+            fr = "- Nombre d'épouses nécessaires dans la ville",
         },
     },
 };

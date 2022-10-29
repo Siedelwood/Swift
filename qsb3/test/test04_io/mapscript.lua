@@ -111,9 +111,7 @@ end
 
 function CreateTestChests()
     API.CreateRandomGoldChest("chest1");
-    API.CreateRandomChest("chest2", Goods.G_Wood, 10, 30, function()
-        API.Note("It just work's!");
-    end);
+    API.CreateRandomChest("chest2", Goods.G_Wood, 10, 30);
     API.CreateRandomLuxuryChest("chest3");
     -- API.CreateRandomTreasure("IO1", Goods.G_Gold, 200, 400);
 end

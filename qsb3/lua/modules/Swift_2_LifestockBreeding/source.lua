@@ -15,58 +15,83 @@ ModuleLifestockBreeding = {
 
     Global = {
         AnimalChildren = {},
-        GrothTime = 45,
-        ShrinkedSize = 0.4,
-        MinAmountNearby = 2,
-        AreaSizeNearby = 3000,
+        PastureRegister = {},
 
-        AllowBreedCattle = true,
-        CattlePastures = {},
-        CattleBaby = true,
-        CattleFeedingTimer = 45,
-        CattleMoneyCost = 300,
+        Cattle = {
+            RequiredAmount = 2,
+            QuantityBoost = 9,
+            AreaSize = 4500,
+            GrothTimer = 15,
+            FeedingTimer = 25,
+            BreedingTimer = 150,
+            BabySize = 0.45,
+            UseCalves = true,
 
-        AllowBreedSheeps = true,
-        SheepPastures = {},
-        SheepBaby = true,
-        SheepFeedingTimer = 45,
-        SheepMoneyCost = 300,
+            Breeding = true,
+            MoneyCost = 300,
+        },
+        Sheep = {
+            RequiredAmount = 2,
+            QuantityBoost = 9,
+            AreaSize = 4500,
+            GrothTimer = 15,
+            FeedingTimer = 30,
+            BreedingTimer = 120,
+            BabySize = 0.45,
+            UseCalves = true,
+
+            Breeding = true,
+            MoneyCost = 450,
+        },
     },
     Local = {
-        AllowBreedCattle = true,
-        AllowBreedSheeps = true,
-
-        Description = {
+        Cattle = {
+            Breeding = true,
+            MoneyCost = 300,
+        },
+        Sheep = {
+            Breeding = true,
+            MoneyCost = 450,
+        },
+    },
+    Shared = {
+        Text = {
             BreedingActive = {
                 Title = {
                     de = "Zucht aktiv",
                     en = "Breeding active",
+                    fr = "Élevage actif",
                 },
                 Text = {
                     de = "- Klicken um Zucht zu stoppen",
                     en = "- Click to stop breeding",
+                    fr = "- Cliquez pour arrêter l'élevage",
                 },
                 Disabled = {
                     de = "Zucht ist gesperrt!",
                     en = "Breeding is locked!",
+                    fr = "L'élevage est bloqué!",
                 },
             },
             BreedingInactive = {
                 Title = {
                     de = "Zucht gestoppt",
                     en = "Breeding stopped",
+                    fr = "Élevage stoppé",
                 },
                 Text = {
                     de = "- Klicken um Zucht zu starten {cr}- Benötigt Platz {cr}- Benötigt Getreide",
                     en = "- Click to allow breeding {cr}- Requires space {cr}- Requires grain",
+                    fr = "- Cliquez pour démarrer l'élevage {cr}- Nécessite de l'espace {cr}- Nécessite des céréales",
                 },
                 Disabled = {
                     de = "Zucht ist gesperrt!",
                     en = "Breeding is locked!",
+                    fr = "L'élevage est bloqué!",
                 },
             },
         },
-    },
+    }
 }
 
 -- Global ------------------------------------------------------------------- --
@@ -76,47 +101,32 @@ function ModuleLifestockBreeding.Global:OnGameStart()
     MerchantSystem.BasePricesOrigModuleLifestockBreeding[Goods.G_Sheep] = MerchantSystem.BasePrices[Goods.G_Sheep];
     MerchantSystem.BasePricesOrigModuleLifestockBreeding[Goods.G_Cow]   = MerchantSystem.BasePrices[Goods.G_Cow];
 
-    MerchantSystem.BasePrices[Goods.G_Sheep] = ModuleLifestockBreeding.Global.SheepMoneyCost;
-    MerchantSystem.BasePrices[Goods.G_Cow]   = ModuleLifestockBreeding.Global.CattleMoneyCost;
+    MerchantSystem.BasePrices[Goods.G_Sheep] = ModuleLifestockBreeding.Global.Sheep.MoneyCost;
+    MerchantSystem.BasePrices[Goods.G_Cow]   = ModuleLifestockBreeding.Global.Cattle.MoneyCost;
 
     QSB.ScriptEvents.AnimalBreed = API.RegisterScriptEvent("Event_AnimalBreed");
 
-    StartSimpleJobEx(function()
+    for i= 1, 8 do
+        self.PastureRegister[i] = {};
+    end
+
+    API.StartJob(function()
         ModuleLifestockBreeding.Global:AnimalBreedController();
     end);
-    StartSimpleJobEx(function()
+    API.StartJob(function()
         ModuleLifestockBreeding.Global:AnimalGrouthController();
     end);
 end
 
-function ModuleLifestockBreeding.Global:GetScale(_Entity)
-    local ID = GetID(_Entity);
-    local SV = QSB.ScriptingValue.Size;
-    local IntVal = Logic.GetEntityScriptingValue(ID, SV);
-    return API.ConvertIntegerToFloat(IntVal);
+function ModuleLifestockBreeding.Global:OnEvent(_ID, _Event, ...)
 end
 
-function ModuleLifestockBreeding.Global:SetScale(_Entity, _Scale)
-    local ID = GetID(_Entity);
-    local SV = QSB.ScriptingValue.Size;
-    local IntVal = API.ConvertFloatToInteger(_Scale);
-    Logic.SetEntityScriptingValue(ID, SV, IntVal);
-end
-
-function ModuleLifestockBreeding.Global:CreateAnimal(_PastureID, _Type, _Shrink)
-    local PlayerID = Logic.EntityGetPlayer(_PastureID);
-    local x, y = Logic.GetBuildingApproachPosition(_PastureID);
-    local SheepType = Entities.A_X_Sheep01;
-    if not Framework.IsNetworkGame() then
-        SheepType = (_Type == 0 and Entities["A_X_Sheep0" ..math.random(1, 2)]) or SheepType;
-    end
-    local Type = (_Type > 0 and _Type) or SheepType;
-    local ID = Logic.CreateEntity(Type, x, y, 0, PlayerID);
+function ModuleLifestockBreeding.Global:SpawnCattle(_X, _Y, _PlayerID, _Shrink)
+    local ID = Logic.CreateEntity(Entities.A_X_Cow01, _X, _Y, 0, _PlayerID);
     if _Shrink == true then
-        self:SetScale(ID, self.ShrinkedSize);
-        table.insert(self.AnimalChildren, {ID, self.GrothTime});
+        API.SetFloat(ID, QSB.ScriptingValue.Size, self.Cattle.BabySize);
+        table.insert(self.AnimalChildren, {ID, self.Cattle.GrothTimer});
     end
-
     API.SendScriptEvent(QSB.ScriptEvents.AnimalBreed, ID);
     Logic.ExecuteInLuaLocalState(string.format(
         [[API.SendScriptEvent(QSB.ScriptEvents.AnimalBreed, %d)]],
@@ -124,136 +134,202 @@ function ModuleLifestockBreeding.Global:CreateAnimal(_PastureID, _Type, _Shrink)
     ));
 end
 
-function ModuleLifestockBreeding.Global:BreedingTimeTillNext(_Animals)
-    if self.MinAmountNearby <= _Animals then
-        local Time = 240 - (_Animals * 15);
-        if Time < 30 then
-            Time = 30;
-        end
-        return Time;
+function ModuleLifestockBreeding.Global:SpawnSheep(_X, _Y, _PlayerID, _Shrink)
+    local Type = Entities.A_X_Sheep01;
+    if not Framework.IsNetworkGame() then
+        Type = Entities["A_X_Sheep0" ..math.random(1, 2)];
+    end
+    local ID = Logic.CreateEntity(Type, _X, _Y, 0, _PlayerID);
+    if _Shrink == true then
+        API.SetFloat(ID, QSB.ScriptingValue.Size, self.Sheep.BabySize);
+        table.insert(self.AnimalChildren, {ID, self.Sheep.GrothTimer});
+    end
+    API.SendScriptEvent(QSB.ScriptEvents.AnimalBreed, ID);
+    Logic.ExecuteInLuaLocalState(string.format(
+        [[API.SendScriptEvent(QSB.ScriptEvents.AnimalBreed, %d)]],
+        ID
+    ));
+end
+
+function ModuleLifestockBreeding.Global:CalculateCattleBreedingTimer(_Animals)
+    if self.Cattle.RequiredAmount <= _Animals then
+        local Time = self.Cattle.BreedingTimer - (_Animals * self.Cattle.QuantityBoost);
+        return (Time < 30 and 30) or Time;
     end
     return -1;
 end
 
-function ModuleLifestockBreeding.Global:IsCattleNeeded(_PlayerID)
+function ModuleLifestockBreeding.Global:CalculateSheepBreedingTimer(_Animals)
+    if self.Sheep.RequiredAmount <= _Animals then
+        local Time = self.Sheep.BreedingTimer - (_Animals * self.Sheep.QuantityBoost);
+        return (Time < 30 and 30) or Time;
+    end
+    return -1;
+end
+
+function ModuleLifestockBreeding.Global:IsCattleNeeded(_PastureID, _PlayerID)
+    if self:GetCattlePastureDelta(_PlayerID) < 1 then
+        local x,y,z = Logic.EntityGetPos(_PastureID);
+        local n1, ID1 = Logic.GetPlayerEntitiesInArea(_PlayerID, Entities.A_X_Cow01, x, y, 900, 16);
+        return n1 < 5;
+    end
+    return false;
+end
+
+function ModuleLifestockBreeding.Global:IsSheepNeeded(_PastureID, _PlayerID)
+    if self:GetSheepPastureDelta(_PlayerID) < 1 then
+        local x,y,z = Logic.EntityGetPos(_PastureID);
+        local n1, ID1 = Logic.GetPlayerEntitiesInArea(_PlayerID, Entities.A_X_Sheep01, x, y, 900, 16);
+        local n2, ID2 = Logic.GetPlayerEntitiesInArea(_PlayerID, Entities.A_X_Sheep02, x, y, 900, 16);
+        return n1+n2 < 5;
+    end
+    return false;
+end
+
+function ModuleLifestockBreeding.Global:GetCattlePastureDelta(_PlayerID)
     local AmountOfCattle = {Logic.GetPlayerEntitiesInCategory(_PlayerID, EntityCategories.CattlePasture)};
     local AmountOfPasture = Logic.GetNumberOfEntitiesOfTypeOfPlayer(_PlayerID, Entities.B_CattlePasture);
-    return #AmountOfCattle < AmountOfPasture * 5;
+    return #AmountOfCattle / (AmountOfPasture * 5);
 end
 
-function ModuleLifestockBreeding.Global:IsSheepNeeded(_PlayerID)
+function ModuleLifestockBreeding.Global:GetSheepPastureDelta(_PlayerID)
     local AmountOfSheep = {Logic.GetPlayerEntitiesInCategory(_PlayerID, EntityCategories.SheepPasture)};
     local AmountOfPasture = Logic.GetNumberOfEntitiesOfTypeOfPlayer(_PlayerID, Entities.B_SheepPasture);
-    return #AmountOfSheep < AmountOfPasture * 5;
+    return #AmountOfSheep / (AmountOfPasture * 5);
 end
 
-function ModuleLifestockBreeding.Global:CountCattleNearby(_PastureID)
-    local PlayerID = Logic.EntityGetPlayer(_PastureID);
-    local x, y, z  = Logic.EntityGetPos(_PastureID);
-    local AreaSize = self.AreaSizeNearby;
-    local Cattle   = {Logic.GetPlayerEntitiesInArea(PlayerID, Entities.A_X_Cow01, x, y, AreaSize, 16)};
+function ModuleLifestockBreeding.Global:CountCattleNearby(_Pasture)
+    local PastureID = GetID(_Pasture)
+    local PlayerID  = Logic.EntityGetPlayer(PastureID);
+    local x, y, z   = Logic.EntityGetPos(PastureID);
+    local AreaSize  = self.Cattle.AreaSize;
+    local Cattle    = {Logic.GetPlayerEntitiesInArea(PlayerID, Entities.A_X_Cow01, x, y, AreaSize, 16)};
     table.remove(Cattle, 1);
     return #Cattle;
 end
 
-function ModuleLifestockBreeding.Global:CountSheepsNearby(_PastureID)
-    local PlayerID = Logic.EntityGetPlayer(_PastureID);
-    local x, y, z  = Logic.EntityGetPos(_PastureID);
-    local AreaSize = self.AreaSizeNearby;
-    local Sheeps1  = {Logic.GetPlayerEntitiesInArea(PlayerID, Entities.A_X_Sheep01, x, y, AreaSize, 16)};
-    local Sheeps2  = {Logic.GetPlayerEntitiesInArea(PlayerID, Entities.A_X_Sheep02, x, y, AreaSize, 16)};
+function ModuleLifestockBreeding.Global:CountSheepsNearby(_Pasture)
+    local PastureID = GetID(_Pasture)
+    local PlayerID  = Logic.EntityGetPlayer(PastureID);
+    local x, y, z   = Logic.EntityGetPos(PastureID);
+    local AreaSize  = self.Sheep.AreaSize;
+    local Sheeps1   = {Logic.GetPlayerEntitiesInArea(PlayerID, Entities.A_X_Sheep01, x, y, AreaSize, 16)};
+    local Sheeps2   = {Logic.GetPlayerEntitiesInArea(PlayerID, Entities.A_X_Sheep02, x, y, AreaSize, 16)};
     table.remove(Sheeps1, 1);
     table.remove(Sheeps2, 1);
     return #Sheeps1 + #Sheeps2;
 end
 
-function ModuleLifestockBreeding.Global:AnimalBreedController()
-    for PlayerID = 1, 8, 1 do
-        -- Kühe
-        if self.AllowBreedCattle then
-            local Pastures = GetPlayerEntities(PlayerID, Entities.B_CattlePasture);
-            for k, v  in pairs(Pastures) do
-                -- Tiere zählen
-                local AmountNearby = self:CountCattleNearby(v);
-                -- Zuchtzähler
-                self.CattlePastures[v] = self.CattlePastures[v] or 0;
-                if self:IsCattleNeeded(PlayerID) and Logic.IsBuildingStopped(v) == false then
-                    self.CattlePastures[v] = self.CattlePastures[v] +1;
-                    -- Alle X Sekunden wird 1 Getreide verbraucht
-                    local FeedingTime = self.CattleFeedingTimer;
-                    if self.CattlePastures[v] > 0 and FeedingTime > 0 and Logic.GetTime() % FeedingTime == 0 then
-                        if GetPlayerResources(Goods.G_Grain, PlayerID) > 0 then
-                            AddGood(Goods.G_Grain, -1, PlayerID);
-                        else
-                            self.CattlePastures[v] = self.CattlePastures[v] - FeedingTime;
-                        end
-                    end
-                end
-                -- Kuh spawnen
-                local TimeTillNext = self:BreedingTimeTillNext(AmountNearby);
-                if TimeTillNext > -1 and self.CattlePastures[v] > TimeTillNext then
-                    if self:IsCattleNeeded(PlayerID) then
-                        self:CreateAnimal(v, Entities.A_X_Cow01, self.CattleBaby);
-                        self.CattlePastures[v] = 0;
-                    end
-                end
-            end
-        end
-
-        -- Schafe
-        if self.AllowBreedSheeps then
-            local Pastures = GetPlayerEntities(PlayerID, Entities.B_SheepPasture);
-            for k, v  in pairs(Pastures) do
-                -- Tier zählen
-                local AmountNearby = self:CountSheepsNearby(v);
-                -- Zuchtzähler
-                self.SheepPastures[v] = self.SheepPastures[v] or 0;
-                if self:IsSheepNeeded(PlayerID) and Logic.IsBuildingStopped(v) == false then
-                    self.SheepPastures[v] = self.SheepPastures[v] +1;
-                    -- Alle X Sekunden wird 1 Getreide verbraucht
-                    local FeedingTime = self.SheepFeedingTimer;
-                    if self.SheepPastures[v] > 0 and FeedingTime > 0 and Logic.GetTime() % FeedingTime == 0 then
-                        if GetPlayerResources(Goods.G_Grain, PlayerID) > 0 then
-                            AddGood(Goods.G_Grain, -1, PlayerID);
-                        else
-                            self.SheepPastures[v] = self.SheepPastures[v] - FeedingTime;
-                        end
-                    end
-                end
-                -- Schaf spawnen
-                local TimeTillNext = self:BreedingTimeTillNext(AmountNearby);
-                if TimeTillNext > -1 and self.SheepPastures[v] > TimeTillNext then
-                    if self:IsSheepNeeded(PlayerID) then
-                        self:CreateAnimal(v, 0, self.SheepBaby);
-                        self.SheepPastures[v] = 0;
-                    end
+function ModuleLifestockBreeding.Global:AnimalGrouthController()
+    for k, v in pairs(self.AnimalChildren) do
+        if not IsExisting(v[1]) then
+            self.AnimalChildren[k] = nil;
+        else
+            self.AnimalChildren[k][2] = v[2] -1;
+            if v[2] < 0 then
+                local IsCow = Logic.GetEntityType(v[1]) == Entities.A_X_Cow01;
+                local GrothTimer = (IsCow and self.Cattle.GrothTimer) or self.Sheep.GrothTimer;
+                self.AnimalChildren[k][2] = GrothTimer;
+                local Scale = API.GetFloat(v[1], QSB.ScriptingValue.Size);
+                API.SetFloat(v[1], QSB.ScriptingValue.Size, math.min(1, Scale + 0.05))
+                if Scale + 0.05 >= 1 then
+                    self.AnimalChildren[k] = nil;
                 end
             end
         end
     end
 end
 
-function ModuleLifestockBreeding.Global:AnimalGrouthController()
-    for k, v in pairs(self.AnimalChildren) do
-        if v then
-            if not IsExisting(v[1]) then
-                self.AnimalChildren[k] = nil;
-            else
-                self.AnimalChildren[k][2] = v[2] -1;
-                if v[2] < 0 then
-                    self.AnimalChildren[k][2] = self.GrothTime;
-                    local Scale = self:GetScale(v[1]);
-                    if Scale < 1 then
-                        self:SetScale(v[1], Scale + 0.1);
-                        local GoodType = Logic.GetResourceDoodadGoodAmount(GetID(v[1]));
-                        if GoodType ~= 0 then
-                            Logic.SetResourceDoodadGoodAmount(GetID(v[1]), 0);
-                        end
-                    else
-                        self.AnimalChildren[k] = nil;
-                    end
+function ModuleLifestockBreeding.Global:AnimalBreedController()
+    if self.Cattle.Breeding then
+        local CattlePasture = Logic.GetEntitiesOfType(Entities.B_CattlePasture);
+        for k, v in pairs(CattlePasture) do
+            local PlayerID = Logic.EntityGetPlayer(v);
+            if not self.PastureRegister[PlayerID][v] then
+                self.PastureRegister[PlayerID][v] = {0, 0};
+            end
+            self:CalculateCattlePastureFeeding(PlayerID, v);
+            self:CattlePastureSpawnAnimal(PlayerID, v);
+        end
+    end
+
+    if self.Sheep.Breeding then
+        local SheepPasture = Logic.GetEntitiesOfType(Entities.B_SheepPasture);
+        for k, v in pairs(SheepPasture) do
+            local PlayerID = Logic.EntityGetPlayer(v);
+            if not self.PastureRegister[PlayerID][v] then
+                self.PastureRegister[PlayerID][v] = {0, 0};
+            end
+            self:CalculateSheepPastureFeeding(PlayerID, v);
+            self:SheepPastureSpawnAnimal(PlayerID, v);
+        end
+    end
+end
+
+function ModuleLifestockBreeding.Global:CalculateCattlePastureFeeding(_PlayerID, _PastureID)
+    if self:IsCattleNeeded(_PastureID, _PlayerID) and Logic.IsBuildingStopped(_PastureID) == false then
+        self.PastureRegister[_PlayerID][_PastureID][1] = self.PastureRegister[_PlayerID][_PastureID][1] +1;
+        if self.PastureRegister[_PlayerID][_PastureID][1] > 0 then
+            self.PastureRegister[_PlayerID][_PastureID][2] = self.PastureRegister[_PlayerID][_PastureID][2] +1;
+            if self.PastureRegister[_PlayerID][_PastureID][2] >= self.Cattle.FeedingTimer then
+                self.PastureRegister[_PlayerID][_PastureID][2] = 0;
+                if GetPlayerResources(Goods.G_Grain, _PlayerID) > 0 then
+                    AddGood(Goods.G_Grain, -1, _PlayerID);
+                else
+                    self.PastureRegister[_PlayerID][_PastureID][1] = math.max(
+                        self.PastureRegister[_PlayerID][_PastureID][1] - self.Cattle.FeedingTimer,
+                        0
+                    );
                 end
             end
+        else
+            self.PastureRegister[_PlayerID][_PastureID][2] = 0;
+        end
+    end
+end
+
+function ModuleLifestockBreeding.Global:CalculateSheepPastureFeeding(_PlayerID, _PastureID)
+    if self:IsSheepNeeded(_PastureID, _PlayerID) and Logic.IsBuildingStopped(_PastureID) == false then
+        self.PastureRegister[_PlayerID][_PastureID][1] = self.PastureRegister[_PlayerID][_PastureID][1] +1;
+        if self.PastureRegister[_PlayerID][_PastureID][1] > 0 then
+            self.PastureRegister[_PlayerID][_PastureID][2] = self.PastureRegister[_PlayerID][_PastureID][2] +1;
+            if self.PastureRegister[_PlayerID][_PastureID][2] >= self.Sheep.FeedingTimer then
+                self.PastureRegister[_PlayerID][_PastureID][2] = 0;
+                if GetPlayerResources(Goods.G_Grain, _PlayerID) > 0 then
+                    AddGood(Goods.G_Grain, -1, _PlayerID);
+                else
+                    self.PastureRegister[_PlayerID][_PastureID][1] = math.max(
+                        self.PastureRegister[_PlayerID][_PastureID][1] - self.Sheep.FeedingTimer,
+                        0
+                    );
+                end
+            end
+        else
+            self.PastureRegister[_PlayerID][_PastureID][2] = 0;
+        end
+    end
+end
+
+function ModuleLifestockBreeding.Global:CattlePastureSpawnAnimal(_PlayerID, _PastureID)
+    local CattleNearby = self:CountCattleNearby(_PastureID);
+    local TimeTillNext = self:CalculateCattleBreedingTimer(CattleNearby);
+    if TimeTillNext > -1 and self.PastureRegister[_PlayerID][_PastureID][1] >= TimeTillNext then
+        if self:IsCattleNeeded(_PastureID, _PlayerID) then
+            local x, y = Logic.GetBuildingApproachPosition(_PastureID);
+            self:SpawnCattle(x, y, _PlayerID, self.Cattle.UseCalves);
+            self.PastureRegister[_PlayerID][_PastureID] = nil;
+        end
+    end
+end
+
+function ModuleLifestockBreeding.Global:SheepPastureSpawnAnimal(_PlayerID, _PastureID)
+    local SheepNearby = self:CountSheepsNearby(_PastureID);
+    local TimeTillNext = self:CalculateSheepBreedingTimer(SheepNearby);
+    if TimeTillNext > -1 and self.PastureRegister[_PlayerID][_PastureID][1] >= TimeTillNext then
+        if self:IsSheepNeeded(_PastureID, _PlayerID) then
+            local x, y = Logic.GetBuildingApproachPosition(_PastureID);
+            self:SpawnSheep(x, y, _PlayerID, self.Sheep.UseCalves);
+            self.PastureRegister[_PlayerID][_PastureID] = nil;
         end
     end
 end
@@ -265,8 +341,8 @@ function ModuleLifestockBreeding.Local:OnGameStart()
     MerchantSystem.BasePricesOrigModuleLifestockBreeding[Goods.G_Sheep] = MerchantSystem.BasePrices[Goods.G_Sheep];
     MerchantSystem.BasePricesOrigModuleLifestockBreeding[Goods.G_Cow]   = MerchantSystem.BasePrices[Goods.G_Cow];
 
-    MerchantSystem.BasePrices[Goods.G_Sheep] = ModuleLifestockBreeding.Local.SheepMoneyCost;
-    MerchantSystem.BasePrices[Goods.G_Cow]   = ModuleLifestockBreeding.Local.CattleMoneyCost;
+    MerchantSystem.BasePrices[Goods.G_Sheep] = ModuleLifestockBreeding.Local.Sheep.MoneyCost;
+    MerchantSystem.BasePrices[Goods.G_Cow]   = ModuleLifestockBreeding.Local.Cattle.MoneyCost;
 
     QSB.ScriptEvents.AnimalBreed = API.RegisterScriptEvent("Event_AnimalBreed");
 
@@ -312,9 +388,9 @@ function ModuleLifestockBreeding.Local:InitBuyLifestockButton()
             ModuleLifestockBreeding.Local:ToggleBreedingState(_EntityID);
         end,
         function(_WidgetID, _EntityID)
-            local Description = API.Localize(ModuleLifestockBreeding.Local.Description.BreedingActive);
+            local Description = API.Localize(ModuleLifestockBreeding.Shared.Text.BreedingActive);
             if Logic.IsBuildingStopped(_EntityID) then
-                Description = API.Localize(ModuleLifestockBreeding.Local.Description.BreedingInactive);
+                Description = API.Localize(ModuleLifestockBreeding.Shared.Text.BreedingInactive);
             end
             API.SetTooltipCosts(Description.Title, Description.Text, Description.Disabled, {Goods.G_Grain, 1}, false);
         end,
@@ -324,7 +400,7 @@ function ModuleLifestockBreeding.Local:InitBuyLifestockButton()
                 Icon = {4, 12};
             end
             SetIcon(_WidgetID, Icon);
-            local DisableState = (ModuleLifestockBreeding.Local.AllowBreedCattle and 0) or 1;
+            local DisableState = (ModuleLifestockBreeding.Local.Cattle.Breeding and 0) or 1;
             XGUIEng.DisableButton(_WidgetID, DisableState);
         end
     );
@@ -335,9 +411,9 @@ function ModuleLifestockBreeding.Local:InitBuyLifestockButton()
             ModuleLifestockBreeding.Local:ToggleBreedingState(_EntityID);
         end,
         function(_WidgetID, _EntityID)
-            local Description = API.Localize(ModuleLifestockBreeding.Local.Description.BreedingActive);
+            local Description = API.Localize(ModuleLifestockBreeding.Shared.Text.BreedingActive);
             if Logic.IsBuildingStopped(_EntityID) then
-                Description = API.Localize(ModuleLifestockBreeding.Local.Description.BreedingInactive);
+                Description = API.Localize(ModuleLifestockBreeding.Shared.Text.BreedingInactive);
             end
             API.SetTooltipCosts(Description.Title, Description.Text, Description.Disabled, {Goods.G_Grain, 1}, false);
         end,
@@ -347,7 +423,7 @@ function ModuleLifestockBreeding.Local:InitBuyLifestockButton()
                 Icon = {4, 12};
             end
             SetIcon(_WidgetID, Icon);
-            local DisableState = (ModuleLifestockBreeding.Local.AllowBreedSheeps and 0) or 1;
+            local DisableState = (ModuleLifestockBreeding.Local.Sheep.Breeding and 0) or 1;
             XGUIEng.DisableButton(_WidgetID, DisableState);
         end
     );

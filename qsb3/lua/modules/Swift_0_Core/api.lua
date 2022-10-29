@@ -416,6 +416,7 @@ end
 -- @field QuestTrigger       Ein Quest wurde aktiviert (Parameter: QuestID)
 -- @field CustomValueChanged Eine Custom Variable hat sich geändert (Parameter: Name, OldValue, NewValue)
 -- @field LanguageSet        Die Sprache wurde geändert (Parameter: OldLanguage, NewLanguage)
+-- @field LoadscreenClosed   Der Ladebildschirm wurde beendet.
 -- @within Event
 --
 QSB.ScriptEvents = QSB.ScriptEvents or {};
@@ -647,21 +648,6 @@ function API.Localize(_Text)
 end
 
 ---
--- Stellt die angegebene Sprache zur Verwendung durch die QSB ein.
---
--- Alle von der QSB erzeugten Texte werden der übergebenen Sprache angepasst.
---
--- @param _Language Genutzte Sprache
--- @within Base
---
-function API.ChangeDesiredLanguage(_Language)
-    if GUI or type(_Language) ~= "string" or _Language:len() ~= 2 then
-        return;
-    end
-    Swift:ChangeSystemLanguage(_Language);
-end
-
----
 -- Wandelt underschiedliche Darstellungen einer Boolean in eine echte um.
 --
 -- Jeder String, der mit j, t, y oder + beginnt, wird als true interpretiert.
@@ -685,8 +671,9 @@ end
 
 ---
 -- Rundet eine Dezimalzahl kaufmännisch ab.
--- 
--- FIXME: Prüfen, ob nach neuem HE-Patch noch notwendig.
+--
+-- Zusätzlich können die Dezimalstellen beschränkt werden. Alle überschüssigen
+-- Dezimalstellen werden abgeschnitten.
 --
 -- @param[type=string] _Value         Zu rundender Wert
 -- @param[type=string] _DecimalDigits Maximale Dezimalstellen
@@ -937,6 +924,8 @@ function API.BroadcastScriptCommand(_NameOrID, ...)
     Swift:DispatchScriptCommand(ID, 0, unpack(arg));
 end
 
+-- Does this function makes any sense? Calling the synchronization but only for
+-- one player seems to be stupid...
 function API.SendScriptCommand(_NameOrID, ...)
     local ID = _NameOrID;
     if type(ID) == "string" then
@@ -950,7 +939,7 @@ function API.SendScriptCommand(_NameOrID, ...)
     if not GUI then
         return;
     end
-    Swift:DispatchScriptCommand(ID, 0, unpack(arg));
+    Swift:DispatchScriptCommand(ID, GUI.GetPlayerID(), unpack(arg));
 end
 
 -- Event
@@ -1383,9 +1372,20 @@ function API.GetEntityCategoyList(_Entity)
         error("API.GetEntityCategoyList: _Entity (" ..tostring(_Entity).. ") does not exist!");
         return {};
     end
+    return API.GetEntityTypeCategoyList(Logic.GetEntityType(EntityID));
+end
+
+---
+-- Gibt alle Kategorien zurück, zu denen der Entity-Typ gehört.
+--
+-- @param              _Type Typ des Entity
+-- @return[type=table] Kategorien des Entity
+-- @within Entity
+--
+function API.GetEntityTypeCategoyList(_Type)
     local Categories = {};
     for k, v in pairs(EntityCategories) do
-        if Logic.IsEntityInCategory(EntityID, v) == 1 then 
+        if Logic.IsEntityTypeInCategory(_Type, v) == 1 then
             Categories[#Categories+1] = v;
         end
     end
@@ -2556,10 +2556,32 @@ function API.ForbidFestival(_PlayerID)
     Swift.m_AIProperties[_PlayerID].ForbidFestival = true;
 end
 
+---
+-- Startet die Map sofort neu.
+--
+-- <b>Achtung:</b> Die Funktion Framework.RestartMap kann nicht mehr verwendet
+-- werden, da es sonst zu Fehlern mit dem Ladebildschirm kommt!
+--
+-- @within Base
+--
+function API.RestartMap()
+    Camera.RTS_FollowEntity(0);
+    Framework.SetLoadScreenNeedButton(1);
+    Framework.RestartMap();
+end
+
 -- Local callbacks
 
 function SCP.Core.LoadscreenHidden()
+    -- FIXME: Maybe the whole loadscreen hidden business should be converted
+    -- into an event on wich every module can listen to? This way of doing it
+    -- is a relict from ancient times before the event system...
     Swift.m_LoadScreenHidden = true;
+    API.SendScriptEvent(QSB.ScriptEvents.LoadscreenClosed);
+    Logic.ExecuteInLuaLocalState([[
+        Swift.m_LoadScreenHidden = true
+        API.SendScriptEvent(QSB.ScriptEvents.LoadscreenClosed)
+    ]]);
 end
 
 function SCP.Core.GlobalQsbLoaded()
@@ -2593,5 +2615,9 @@ function SCP.Core.UpdateTexturePosition(_Category, _Key, _Value)
     g_TexturePositions = g_TexturePositions or {};
     g_TexturePositions[_Category] = g_TexturePositions[_Category] or {};
     g_TexturePositions[_Category][_Key] = _Value;
+end
+
+function SCP.Core.LanguageChanged(_PlayerID, _GUI_PlayerID, _Language)
+    Swift:ChangeSystemLanguage(_PlayerID, _Language, _GUI_PlayerID);
 end
 

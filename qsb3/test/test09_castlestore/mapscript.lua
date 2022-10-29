@@ -102,6 +102,19 @@ function Mission_FirstMapAction()
     TEST_COMMAND = API.RegisterScriptCommand("TestFunction", TestFunction);
 end
 
+function SetupPalisadeRestriction()
+    -- Palisades can only be constructed near outposts
+    API.AddConstructionRestriction(function(_PlayerID, _Type, _x, _y)
+        if Logic.IsEntityTypeInCategory(_Type, EntityCategories.PalisadeSegment) == 1 then
+            local n, OPID = Logic.GetPlayerEntitiesInArea(_PlayerID, Entities.B_Outpost_ME, _x, _y, 1500, 1);
+            if n == 0 then
+                return false;
+            end
+        end
+        return true;
+    end)
+end
+
 function TestMoveAmma()
     -- API.MoveEntity("amma", "pos")
     -- API.MoveEntityAndLookAt("amma", "pos", "manuel");
@@ -138,10 +151,18 @@ GameCallback_QSB_OnEventReceived = function(_EventID, ...)
     --     local TypeID2 = Logic.GetEntityType(arg[3]);
     --     local TypeName2 = Logic.GetEntityTypeName(TypeID2);
     --     API.Note(TypeName2 .. " (Player " ..arg[4].. ") attacked " ..TypeName1.. " (Player " ..arg[2].. ")");
-    elseif _EventID == QSB.ScriptEvents.EntityDestroyed then
+    elseif _EventID == QSB.ScriptEvents.UpgradeStarted then
         local TypeID1 = Logic.GetEntityType(arg[1]);
         local TypeName1 = Logic.GetEntityTypeName(TypeID1);
-        API.Note(TypeName1 .. " destroyed (Player " ..arg[2].. ")");
+        API.Note(TypeName1 .. " upgrade start (Player " ..arg[2].. ")");
+    elseif _EventID == QSB.ScriptEvents.UpgradeCanceled then
+        local TypeID1 = Logic.GetEntityType(arg[1]);
+        local TypeName1 = Logic.GetEntityTypeName(TypeID1);
+        API.Note(TypeName1 .. " upgrade canceled (Player " ..arg[2].. ")");
+    -- elseif _EventID == QSB.ScriptEvents.EntityDestroyed then
+    --     local TypeID1 = Logic.GetEntityType(arg[1]);
+    --     local TypeName1 = Logic.GetEntityTypeName(TypeID1);
+    --     API.Note(TypeName1 .. " destroyed (Player " ..arg[2].. ")");
     -- elseif _EventID == QSB.ScriptEvents.BuildingPlaced then
     --     if IsExisting(arg[1]) then
     --         local TypeID = Logic.GetEntityType(arg[1]);
@@ -154,12 +175,12 @@ GameCallback_QSB_OnEventReceived = function(_EventID, ...)
     --         local TypeName = Logic.GetEntityTypeName(TypeID);
     --         API.Note("Knockdown: " ..TypeName.. " (Player: " ..arg[2].. ")");
     --     end
-    elseif _EventID == QSB.ScriptEvents.SettlerAttracted then
-        if IsExisting(arg[1]) then
-            local TypeID = Logic.GetEntityType(arg[1]);
-            local TypeName = Logic.GetEntityTypeName(TypeID);
-            API.Note("Settler attracted: " ..TypeName.. " (Player: " ..arg[2].. ")");
-        end
+    -- elseif _EventID == QSB.ScriptEvents.SettlerAttracted then
+    --     if IsExisting(arg[1]) then
+    --         local TypeID = Logic.GetEntityType(arg[1]);
+    --         local TypeName = Logic.GetEntityTypeName(TypeID);
+    --         API.Note("Settler attracted: " ..TypeName.. " (Player: " ..arg[2].. ")");
+    --     end
     -- elseif _EventID == QSB.ScriptEvents.EntitySpawned then
     --     if IsExisting(arg[1]) then
     --         local TypeID = Logic.GetEntityType(arg[1]);

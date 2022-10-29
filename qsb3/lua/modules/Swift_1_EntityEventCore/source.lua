@@ -191,9 +191,9 @@ function ModuleEntityEventCore.Global:OverrideCallback()
         ModuleEntityEventCore.Global:TriggerThiefStealFromBuildingEvent(_ThiefID, _ThiefPlayerID, _BuildingID, _BuildingPlayerID);
     end
 
-    GameCallback_OnBuildingUpgradeFinished_Orig_QSB_EntityCore = GameCallback_OnBuildingUpgradeFinished;
-	GameCallback_OnBuildingUpgradeFinished = function(_PlayerID, _EntityID, _NewUpgradeLevel)
-		GameCallback_OnBuildingUpgradeFinished_Orig_QSB_EntityCore(_PlayerID, _EntityID, _NewUpgradeLevel);
+    GameCallback_OnBuildingUpgraded_Orig_QSB_EntityCore = GameCallback_OnBuildingUpgraded;
+	GameCallback_OnBuildingUpgraded = function(_PlayerID, _EntityID, _NewUpgradeLevel)
+		GameCallback_OnBuildingUpgraded_Orig_QSB_EntityCore(_PlayerID, _EntityID, _NewUpgradeLevel);
         ModuleEntityEventCore.Global:TriggerUpgradeCompleteEvent(_PlayerID, _EntityID, _NewUpgradeLevel);
     end
 
@@ -473,6 +473,9 @@ function ModuleEntityEventCore.Local:OnGameStart()
     self:OverrideAfterBuildingPlacement();
 end
 
+function ModuleEntityEventCore.Local:OnEvent(_ID, _Event, ...)
+end
+
 function ModuleEntityEventCore.Local:OverrideAfterBuildingPlacement()
     GameCallback_GUI_AfterBuildingPlacement_Orig_EntityEventCore = GameCallback_GUI_AfterBuildingPlacement;
     GameCallback_GUI_AfterBuildingPlacement = function ()
@@ -493,9 +496,6 @@ function ModuleEntityEventCore.Local:OverrideAfterBuildingPlacement()
             end
         end, x, y);
     end
-end
-
-function ModuleEntityEventCore.Local:OnEvent(_ID, _Event, ...)
 end
 
 -- -------------------------------------------------------------------------- --

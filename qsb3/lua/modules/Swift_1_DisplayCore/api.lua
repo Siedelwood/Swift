@@ -49,25 +49,27 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- Blendet einen farbigen Hintergrund über der Spielwelt aber hinter dem
 -- Interface ein.
 --
+-- @param[type=number] _PlayerID ID des Spielers
 -- @param[type=number] _Red   (Optional) Rotwert (Standard: 0)
 -- @param[type=number] _Green (Optional) Grünwert (Standard: 0)
 -- @param[type=number] _Blue  (Optional) Blauwert (Standard: 0)
 -- @param[type=number] _Alpha (Optional) Alphawert (Standard: 255)
 -- @within Anwenderfunktionen
 --
-function API.ActivateColoredScreen(_Red, _Green, _Blue, _Alpha)
+function API.ActivateColoredScreen(_PlayerID, _Red, _Green, _Blue, _Alpha)
     -- Just to be compatible with the old version.
-    API.ActivateImageScreen("", _Red or 0, _Green or 0, _Blue or 0, _Alpha);
+    API.ActivateImageScreen(_PlayerID, "", _Red or 0, _Green or 0, _Blue or 0, _Alpha);
 end
 
 ---
 -- Deaktiviert den farbigen Hintergrund, wenn er angezeigt wird.
 --
+-- @param[type=number] _PlayerID ID des Spielers
 -- @within Anwenderfunktionen
 --
-function API.DeactivateColoredScreen()
+function API.DeactivateColoredScreen(_PlayerID)
     -- Just to be compatible with the old version.
-    API.DeactivateImageScreen()
+    API.DeactivateImageScreen(_PlayerID)
 end
 
 ---
@@ -75,6 +77,7 @@ end
 -- Die Grafik muss im 16:9-Format sein. Bei 4:3-Auflösungen wird
 -- links und rechts abgeschnitten.
 --
+-- @param[type=number] _PlayerID ID des Spielers
 -- @param[type=string] _Image Pfad zur Grafik
 -- @param[type=number] _Red   (Optional) Rotwert (Standard: 255)
 -- @param[type=number] _Green (Optional) Grünwert (Standard: 255)
@@ -82,10 +85,12 @@ end
 -- @param[type=number] _Alpha (Optional) Alphawert (Standard: 255)
 -- @within Anwenderfunktionen
 --
-function API.ActivateImageScreen(_Image, _Red, _Green, _Blue, _Alpha)
+function API.ActivateImageScreen(_PlayerID, _Image, _Red, _Green, _Blue, _Alpha)
+    assert(_PlayerID and _PlayerID >= 1 and _PlayerID <= 8);
     if not GUI then
         Logic.ExecuteInLuaLocalState(string.format(
-            [[ModuleDisplayCore.Local:InterfaceActivateImageBackground("%s", %d, %d, %d, %d)]],
+            [[ModuleDisplayCore.Local:InterfaceActivateImageBackground(%d, "%s", %d, %d, %d, %d)]],
+            _PlayerID,
             _Image,
             (_Red ~= nil and _Red) or 255,
             (_Green ~= nil and _Green) or 255,
@@ -94,80 +99,103 @@ function API.ActivateImageScreen(_Image, _Red, _Green, _Blue, _Alpha)
         ));
         return;
     end
-    ModuleDisplayCore.Local:InterfaceActivateImageBackground(_Image, _Red, _Green, _Blue, _Alpha);
+    ModuleDisplayCore.Local:InterfaceActivateImageBackground(_PlayerID, _Image, _Red, _Green, _Blue, _Alpha);
 end
 
 ---
 -- Deaktiviert ein angezeigtes Bild, wenn dieses angezeigt wird.
 --
+-- @param[type=number] _PlayerID ID des Spielers
 -- @within Anwenderfunktionen
 --
-function API.DeactivateImageScreen()
+function API.DeactivateImageScreen(_PlayerID)
+    assert(_PlayerID and _PlayerID >= 1 and _PlayerID <= 8);
     if not GUI then
-        Logic.ExecuteInLuaLocalState("ModuleDisplayCore.Local:InterfaceDeactivateImageBackground()");
+        Logic.ExecuteInLuaLocalState(string.format(
+            "ModuleDisplayCore.Local:InterfaceDeactivateImageBackground(%d)",
+            _PlayerID
+        ));
         return;
     end
-    ModuleDisplayCore.Local:InterfaceDeactivateImageBackground();
+    ModuleDisplayCore.Local:InterfaceDeactivateImageBackground(_PlayerID);
 end
 
 ---
 -- Zeigt das normale Interface an.
 --
+-- @param[type=number] _PlayerID ID des Spielers
 -- @within Anwenderfunktionen
 --
-function API.ActivateNormalInterface()
+function API.ActivateNormalInterface(_PlayerID)
+    assert(_PlayerID and _PlayerID >= 1 and _PlayerID <= 8);
     if not GUI then
-        Logic.ExecuteInLuaLocalState("ModuleDisplayCore.Local:InterfaceActivateNormalInterface()");
+        Logic.ExecuteInLuaLocalState(string.format(
+            "ModuleDisplayCore.Local:InterfaceActivateNormalInterface(%d)",
+            _PlayerID
+        ));
         return;
     end
-    ModuleDisplayCore.Local:InterfaceActivateNormalInterface();
+    ModuleDisplayCore.Local:InterfaceActivateNormalInterface(_PlayerID);
 end
 
 ---
 -- Blendet das normale Interface aus.
 --
+-- @param[type=number] _PlayerID ID des Spielers
 -- @within Anwenderfunktionen
 --
-function API.DeactivateNormalInterface()
+function API.DeactivateNormalInterface(_PlayerID)
+    assert(_PlayerID and _PlayerID >= 1 and _PlayerID <= 8);
     if not GUI then
-        Logic.ExecuteInLuaLocalState("ModuleDisplayCore.Local:InterfaceDeactivateNormalInterface()");
+        Logic.ExecuteInLuaLocalState(string.format(
+            "ModuleDisplayCore.Local:InterfaceDeactivateNormalInterface(%d)",
+            _PlayerID
+        ));
         return;
     end
-    ModuleDisplayCore.Local:InterfaceDeactivateNormalInterface();
+    ModuleDisplayCore.Local:InterfaceDeactivateNormalInterface(_PlayerID);
 end
 
 ---
 -- Akliviert border Scroll wieder und löst die Fixierung auf ein Entity auf.
 --
+-- @param[type=number] _PlayerID ID des Spielers
 -- @within Anwenderfunktionen
 --
-function API.ActivateBorderScroll()
+function API.ActivateBorderScroll(_PlayerID)
+    assert(_PlayerID and _PlayerID >= 1 and _PlayerID <= 8);
     if not GUI then
-        Logic.ExecuteInLuaLocalState("ModuleDisplayCore.Local:InterfaceActivateBorderScroll()");
+        Logic.ExecuteInLuaLocalState(string.format(
+            "ModuleDisplayCore.Local:InterfaceActivateBorderScroll(%d)",
+            _PlayerID
+        ));
         return;
     end
-    ModuleDisplayCore.Local:InterfaceActivateBorderScroll();
+    ModuleDisplayCore.Local:InterfaceActivateBorderScroll(_PlayerID);
 end
 
 ---
 -- Deaktiviert Randscrollen und setzt die Kamera optional auf das Ziel
 --
+-- @param[type=number] _PlayerID ID des Spielers
 -- @param[type=number] _Position (Optional) Entity auf das die Kamera schaut
 -- @within Anwenderfunktionen
 --
-function API.DeactivateBorderScroll(_Position)
+function API.DeactivateBorderScroll(_PlayerID, _Position)
+    assert(_PlayerID and _PlayerID >= 1 and _PlayerID <= 8);
     local PositionID;
     if _Position then
         PositionID = GetID(_Position);
     end
     if not GUI then
         Logic.ExecuteInLuaLocalState(string.format(
-            "ModuleDisplayCore.Local:InterfaceDeactivateBorderScroll(%d)",
+            "ModuleDisplayCore.Local:InterfaceDeactivateBorderScroll(%d, %d)",
+            _PlayerID,
             (PositionID or 0)
         ));
         return;
     end
-    ModuleDisplayCore.Local:InterfaceDeactivateBorderScroll(PositionID);
+    ModuleDisplayCore.Local:InterfaceDeactivateBorderScroll(_PlayerID, PositionID);
 end
 
 ---
@@ -181,6 +209,7 @@ function API.StartCinematicEvent(_Name, _PlayerID)
     if GUI then
         return;
     end
+    assert(_PlayerID and _PlayerID >= 1 and _PlayerID <= 8);
     QSB.CinematicEvents[_PlayerID] = QSB.CinematicEvents[_PlayerID] or {};
     local ID = ModuleDisplayCore.Global:ActivateCinematicEvent(_PlayerID);
     QSB.CinematicEvents[_PlayerID][_Name] = ID;
@@ -196,6 +225,7 @@ function API.FinishCinematicEvent(_Name, _PlayerID)
     if GUI then
         return;
     end
+    assert(_PlayerID and _PlayerID >= 1 and _PlayerID <= 8);
     QSB.CinematicEvents[_PlayerID] = QSB.CinematicEvents[_PlayerID] or {};
     if QSB.CinematicEvents[_PlayerID][_Name] then
         ModuleDisplayCore.Global:ConcludeCinematicEvent(QSB.CinematicEvents[_PlayerID][_Name], _PlayerID);
@@ -210,6 +240,7 @@ end
 -- @within Anwenderfunktionen
 --
 function API.GetCinematicEventStatus(_Identifier, _PlayerID)
+    assert(_PlayerID and _PlayerID >= 1 and _PlayerID <= 8);
     QSB.CinematicEvents[_PlayerID] = QSB.CinematicEvents[_PlayerID] or {};
     if type(_Identifier) == "number" then
         if GUI then
@@ -234,6 +265,7 @@ end
 -- @within Anwenderfunktionen
 --
 function API.IsCinematicEventActive(_PlayerID)
+    assert(_PlayerID and _PlayerID >= 1 and _PlayerID <= 8);
     QSB.CinematicEvents[_PlayerID] = QSB.CinematicEvents[_PlayerID] or {};
     for k, v in pairs(QSB.CinematicEvents[_PlayerID]) do
         if API.GetCinematicEventStatus(k, _PlayerID) == CinematicEventStatus.Active then

@@ -24,9 +24,9 @@ ModuleBehaviorCollection = {
     -- This is a shared structure but the values are asynchronous!
     Shared = {
         Text = {
-            FastForwardActivate   = {de = "Beschleunigen", en = "Fast Forward"},
-            FastForwardDeactivate = {de = "Zurücksetzen",  en = "Normal Speed"},
-            FastFormardMessage    = {de = "SCHNELLER VORLAUF",  en = "FAST FORWARD"},
+            FastForwardActivate   = { de = "Beschleunigen",      en = "Fast Forward", fr = "Accélérer", },
+            FastForwardDeactivate = { de = "Zurücksetzen",       en = "Normal Speed", fr = "Réinitialiser", },
+            FastFormardMessage    = { de = "SCHNELLER VORLAUF",  en = "FAST FORWARD", fr = "AVANCÉ RAPIDE", },
         },
     },
 };

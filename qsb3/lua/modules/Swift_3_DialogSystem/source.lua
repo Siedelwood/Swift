@@ -26,7 +26,8 @@ ModuleDialogSystem = {
         Text = {
             Continue = {
                 de = "{cr}{cr}{azure}(Weiter mit ESC)",
-                en = "{cr}{cr}{azure}(Continue with ESC)"
+                en = "{cr}{cr}{azure}(Continue with ESC)",
+                fr = "{cr}{cr}{azure}(Continuer avec ESC)",
             }
         },
     },
@@ -361,8 +362,8 @@ function ModuleDialogSystem.Local:StartDialog(_PlayerID, _Dialog)
         Camera = {PosX, PosY, Rotation, ZoomFactor}
     };
 
-    API.DeactivateNormalInterface();
-    API.DeactivateBorderScroll();
+    API.DeactivateNormalInterface(_PlayerID);
+    API.DeactivateBorderScroll(_PlayerID);
 
     if not Framework.IsNetworkGame() then
         Game.GameTimeSetFactor(_PlayerID, 1);
@@ -389,8 +390,8 @@ function ModuleDialogSystem.Local:EndDialog(_PlayerID, _Dialog)
         Game.GameTimeSetFactor(_PlayerID, 1);
     end
     self:DeactivateCinematicMode(_PlayerID);
-    API.ActivateNormalInterface();
-    API.ActivateBorderScroll();
+    API.ActivateNormalInterface(_PlayerID);
+    API.ActivateBorderScroll(_PlayerID);
 
     self.Dialog[_PlayerID] = nil;
     Display.SetRenderFogOfWar(1);
@@ -450,6 +451,7 @@ function ModuleDialogSystem.Local:DisplayPageFader(_PlayerID, _PageID)
 
     local PageFadeOut = Page.FadeOut;
     if PageFadeOut then
+        -- FIXME: This would create jobs that are only be paused at the end!
         self.Dialog[_PlayerID].FaderJob = API.StartHiResJob(function(_Time, _FadeOut)
             if Logic.GetTimeMs() > _Time - (_FadeOut * 1000) then
                 FadeOut(_FadeOut);
@@ -771,6 +773,7 @@ function ModuleDialogSystem.Local:ActivateCinematicMode(_PlayerID)
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionDialog/Objectives", " ");
 
     -- Change ui state for cinematic
+    self.SelectionBackup = {GUI.GetSelectedEntities()};
     GUI.ClearSelection();
     GUI.ClearNotes();
     GUI.ForbidContextSensitiveCommandsInSelectionState();
@@ -796,6 +799,7 @@ function ModuleDialogSystem.Local:ActivateCinematicMode(_PlayerID)
     SetFaderAlpha(0);
 
     -- Push loadscreen if previously visible
+    -- (This should never happen)
     if LoadScreenVisible then
         XGUIEng.PushPage("/LoadScreen/LoadScreen", false);
     end
@@ -819,6 +823,9 @@ function ModuleDialogSystem.Local:DeactivateCinematicMode(_PlayerID)
     GUI.SetFeedbackSoundOutputState(1);
     GUI.ActivateSelectionState();
     GUI.PermitContextSensitiveCommandsInSelectionState();
+    for k, v in pairs(self.SelectionBackup) do
+        GUI.SelectEntity(v);
+    end
     Display.SetRenderSky(0);
     Display.SetRenderBorderPins(1);
     Display.SetRenderFogOfWar(1);

@@ -69,6 +69,7 @@ function API.MoveEntity(_Entity, _Target, _IgnoreBlocking)
     local Index = ModuleEntityMovement.Global:FillMovingEntityDataForController(
         _Entity, {_Target}, nil, nil, _IgnoreBlocking
     );
+    -- FIXME: This would create jobs that are only be paused at the end!
     API.StartHiResJob(function(_Index)
         return ModuleEntityMovement.Global:MoveEntityPathController(_Index);
     end, Index);
@@ -109,6 +110,7 @@ function API.MoveEntityAndLookAt(_Entity, _Target, _LookAt, _IgnoreBlocking)
     local Index = ModuleEntityMovement.Global:FillMovingEntityDataForController(
         _Entity, {_Target}, _LookAt, nil, _IgnoreBlocking
     );
+    -- FIXME: This would create jobs that are only be paused at the end!
     API.StartHiResJob(function(_Index)
         return ModuleEntityMovement.Global:MoveEntityPathController(_Index);
     end, Index);
@@ -153,6 +155,7 @@ function API.MoveEntityToPosition(_Entity, _Target, _Distance, _Angle, _IgnoreBl
     local Index = ModuleEntityMovement.Global:FillMovingEntityDataForController(
         _Entity, {Target}, nil, nil, _IgnoreBlocking
     );
+    -- FIXME: This would create jobs that are only be paused at the end!
     API.StartHiResJob(function(_Index)
         return ModuleEntityMovement.Global:MoveEntityPathController(_Index);
     end, Index);
@@ -193,6 +196,7 @@ function API.MoveEntityAndExecute(_Entity, _Target, _Action, _IgnoreBlocking)
     local Index = ModuleEntityMovement.Global:FillMovingEntityDataForController(
         _Entity, {_Target}, nil, _Action, _IgnoreBlocking
     );
+    -- FIXME: This would create jobs that are only be paused at the end!
     API.StartHiResJob(function(_Index)
         return ModuleEntityMovement.Global:MoveEntityPathController(_Index);
     end, Index);
@@ -228,6 +232,7 @@ function API.MoveEntityOnCheckpoints(_Entity, _Targets, _IgnoreBlocking)
     local Index = ModuleEntityMovement.Global:FillMovingEntityDataForController(
         _Entity, _Targets, nil, nil, _IgnoreBlocking
     );
+    -- FIXME: This would create jobs that are only be paused at the end!
     API.StartHiResJob(function(_Index)
         return ModuleEntityMovement.Global:MoveEntityPathController(_Index);
     end, Index);

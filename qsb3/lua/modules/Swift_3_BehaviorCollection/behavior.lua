@@ -37,12 +37,13 @@ B_Goal_MoveToPosition = {
     Description = {
         en = "Goal: A entity have to moved as close as the distance to another entity. The target can be marked with a static marker.",
         de = "Ziel: Ein Entity muss sich einer anderen bis auf eine bestimmte Distanz nähern. Die Lupe wird angezeigt, das Ziel kann markiert werden.",
+        fr = "Objectif: une entité doit s'approcher d'une autre à une distance donnée. La loupe est affichée, la cible peut être marquée.",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Entity",   de = "Entity" },
-        { ParameterType.ScriptName, en = "Target",   de = "Ziel" },
-        { ParameterType.Number,     en = "Distance", de = "Entfernung" },
-        { ParameterType.Custom,     en = "Marker",   de = "Ziel markieren" },
+        { ParameterType.ScriptName, en = "Entity",   de = "Entity",         fr = "Entité" },
+        { ParameterType.ScriptName, en = "Target",   de = "Ziel",           fr = "Cible" },
+        { ParameterType.Number,     en = "Distance", de = "Entfernung",     fr = "Distance" },
+        { ParameterType.Custom,     en = "Marker",   de = "Ziel markieren", fr = "Marquer la cible" },
     },
 }
 
@@ -90,9 +91,10 @@ B_Goal_WinQuest = {
     Description = {
         en = "Goal: The player has to win a given quest.",
         de = "Ziel: Der Spieler muss eine angegebene Quest erfolgreich abschliessen.",
+        fr = "Objectif: Le joueur doit réussir une quête indiquée.",
     },
     Parameter = {
-        { ParameterType.QuestName, en = "Quest Name",      de = "Questname" },
+        { ParameterType.QuestName, en = "Quest Name",  de = "Questname", fr = "Nom de la quête" },
     },
 }
 
@@ -155,11 +157,12 @@ B_Goal_AmmunitionAmount = {
     Description = {
         en = "Goal: Reach a smaller or bigger value than the given amount of ammunition in a war machine.",
         de = "Ziel: Über- oder unterschreite die angegebene Anzahl Munition in einem Kriegsgerät.",
+        fr = "Objectif : Dépasser ou ne pas dépasser le nombre de munitions indiqué dans un engin de guerre.",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Script name", de = "Skriptname" },
-        { ParameterType.Custom, en = "Relation", de = "Relation" },
-        { ParameterType.Number, en = "Amount", de = "Menge" },
+        { ParameterType.ScriptName, en = "Script name", de = "Skriptname",  fr = "Nom de l'entité" },
+        { ParameterType.Custom,     en = "Relation",    de = "Relation",    fr = "Relation" },
+        { ParameterType.Number,     en = "Amount",      de = "Menge",       fr = "Quantité" },
     },
 }
 
@@ -223,13 +226,15 @@ B_Goal_CityReputation = {
     Description = {
         en = "Goal: The reputation of the quest receivers city must at least reach the desired hight.",
         de = "Ziel: Der Ruf der Stadt des Empfängers muss mindestens so hoch sein, wie angegeben.",
+        fr = "Objectif: la réputation de la ville du receveur doit être au moins aussi élevée que celle indiquée.",
     },
     Parameter = {
-        { ParameterType.Number, en = "City reputation", de = "Ruf der Stadt" },
+        { ParameterType.Number, en = "City reputation", de = "Ruf der Stadt", fr = "Réputation de la ville" },
     },
     Text = {
         de = "RUF DER STADT{cr}{cr}Hebe den Ruf der Stadt durch weise Herrschaft an!{cr}Benötigter Ruf: %d",
         en = "CITY REPUTATION{cr}{cr}Raise your reputation by fair rulership!{cr}Needed reputation: %d",
+        fr = "RÉPUTATION DE LA VILLE{cr}{cr} Augmente la réputation de la ville en la gouvernant sagement!{cr}Réputation requise : %d",
     }
 }
 
@@ -256,6 +261,10 @@ function B_Goal_CityReputation:SetCaption(_Quest)
         local Text = string.format(API.Localize(self.Text), self.Reputation);
         Swift:ChangeCustomQuestCaptionText(Text .."%", _Quest);
     end
+end
+
+function B_Goal_CityReputation:GetIcon()
+    return {5, 14};
 end
 
 function B_Goal_CityReputation:Debug(_Quest)
@@ -298,11 +307,12 @@ B_Goal_DestroySpawnedEntities = {
     Description = {
         en = "Goal: Destroy all entities spawned at the spawnpoint.",
         de = "Ziel: Zerstöre alle Entitäten, die bei dem Spawnpoint erzeugt wurde.",
+        fr = "Objectif: Détruire toutes les entités créées au point d'apparition.",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Spawnpoint",       de = "Spawnpoint" },
-        { ParameterType.Number,     en = "Amount",           de = "Menge" },
-        { ParameterType.Custom,     en = "Name is prefixed", de = "Name ist Präfix" },
+        { ParameterType.ScriptName, en = "Spawnpoint",       de = "Spawnpoint",         fr = "Point d'émergence" },
+        { ParameterType.Number,     en = "Amount",           de = "Menge",              fr = "Quantité" },
+        { ParameterType.Custom,     en = "Name is prefixed", de = "Name ist Präfix",    fr = "Le nom est un préfixe" },
     },
 };
 
@@ -403,6 +413,7 @@ B_Goal_DeliverRelative = Swift:CopyTable(B_Goal_Deliver);
 B_Goal_DeliverRelative.Name = "Goal_DeliverRelative";
 B_Goal_DeliverRelative.Description.en = "Goal: Deliver a relative amount of goods to the requesting player or another player";
 B_Goal_DeliverRelative.Description.de = "Ziel: Liefere eine relative Menge an Waren zum Auftraggeber oder zu einem anderen Spieler.";
+B_Goal_DeliverRelative.Description.fr = "Objectif: livrer une quantité relative de marchandises au mandant ou à un autre joueur.";
 
 B_Goal_DeliverRelative.GetGoalTable = function(self, _Quest)
     local GoodType = Logic.GetGoodTypeID(self.GoodTypeName);
@@ -438,12 +449,13 @@ B_Goal_StealGold = {
     Description = {
         en = "Goal: Steal an explicit amount of gold from a players or any players city buildings.",
         de = "Ziel: Diebe sollen eine bestimmte Menge Gold aus feindlichen Stadtgebäuden stehlen.",
+        fr = "Objectif: les voleurs doivent dérober une certaine quantité d'or dans les bâtiments urbains ennemis.",
     },
     Parameter = {
-        { ParameterType.Number,   en = "Amount on Gold", de = "Zu stehlende Menge" },
-        { ParameterType.Custom,   en = "Target player",  de = "Spieler von dem gestohlen wird" },
-        { ParameterType.Custom,   en = "Cheat earnings", de = "Einnahmen generieren" },
-        { ParameterType.Custom,   en = "Print progress", de = "Fortschritt ausgeben" },
+        { ParameterType.Number,   en = "Amount on Gold", de = "Zu stehlende Menge",             fr = "Quantité à voler" },
+        { ParameterType.Custom,   en = "Target player",  de = "Spieler von dem gestohlen wird", fr = "Joueur à qui l'on vole" },
+        { ParameterType.Custom,   en = "Cheat earnings", de = "Einnahmen generieren",           fr = "Générer des revenus" },
+        { ParameterType.Custom,   en = "Print progress", de = "Fortschritt ausgeben",           fr = "Afficher les progrès" },
     },
 }
 
@@ -478,7 +490,8 @@ end
 function B_Goal_StealGold:SetDescriptionOverwrite(_Quest)
     local TargetPlayerName = API.Localize({
         de = " anderen Spielern ",
-        en = " different parties"
+        en = " different parties ",
+        fr = " d'autres joueurs ",
     });
 
     if self.Target ~= -1 then
@@ -512,6 +525,7 @@ function B_Goal_StealGold:SetDescriptionOverwrite(_Quest)
     local text = {
         de = "Gold von %s stehlen {cr}{cr}Aus Stadtgebäuden zu stehlende Goldmenge: %d",
         en = "Steal gold from %s {cr}{cr}Amount on gold to steal from city buildings: %d",
+        fr = "Voler l'or de %s {cr}{cr}Quantité d'or à voler dans les bâtiments de la ville : %d",
     };
     return "{center}" ..string.format(API.Localize(text), TargetPlayerName, amount);
 end
@@ -567,10 +581,11 @@ B_Goal_StealFromBuilding = {
     Description = {
         en = "Goal: The player has to steal from a building. Not a castle and not a village storehouse!",
         de = "Ziel: Der Spieler muss ein bestimmtes Gebäude bestehlen. Dies darf keine Burg und kein Dorflagerhaus sein!",
+        fr = "Objectif: Le joueur doit voler un bâtiment spécifique. Il ne peut s'agir ni d'un château ni d'un entrepôt de village !",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Building", de = "Gebäude" },
-        { ParameterType.Custom,   en = "Cheat earnings", de = "Einnahmen generieren" },
+        { ParameterType.ScriptName, en = "Building",        de = "Gebäude",              fr = "Bâtiment" },
+        { ParameterType.Custom,     en = "Cheat earnings",  de = "Einnahmen generieren", fr = "Générer des revenus" },
     },
 }
 
@@ -604,21 +619,25 @@ function B_Goal_StealFromBuilding:SetDescriptionOverwrite(_Quest)
         text = {
             de = "Sabotage {cr}{cr} Sendet einen Dieb und sabotiert die markierte Kirche.",
             en = "Sabotage {cr}{cr} Send a thief to sabotage the marked chapel.",
+            fr = "Sabotage {cr}{cr} Envoyez un voleur pour saboter la chapelle marquée.",
         };
     elseif isWarehouse then
         text = {
             de = "Lagerhaus bestehlen {cr}{cr} Sendet einen Dieb in das markierte Lagerhaus.",
             en = "Steal from storehouse {cr}{cr} Steal from the marked storehouse.",
+            fr = "Voler un entrepôt {cr}{cr} Envoie un voleur dans l'entrepôt marqué.",
         };
     elseif isCistern then
         text = {
             de = "Sabotage {cr}{cr} Sendet einen Dieb und sabotiert den markierten Brunnen.",
             en = "Sabotage {cr}{cr} Send a thief and break the marked well of the enemy.",
+            fr = "Sabotage {cr}{cr} Envoie un voleur et sabote le puits marqué.",
         };
     else
         text = {
             de = "Gebäude bestehlen {cr}{cr} Sendet einen Dieb und bestehlt das markierte Gebäude.",
             en = "Steal from building {cr}{cr} Send a thief to steal from the marked building.",
+            fr = "Voler un bâtiment {cr}{cr} Envoie un voleur et vole le bâtiment marqué.",
         };
     end
     return "{center}" .. API.Localize(text);
@@ -720,11 +739,12 @@ B_Goal_SpyOnBuilding = {
     Description = {
         en = "Goal: Infiltrate a building with a thief. A thief must be able to steal from the target building.",
         de = "Ziel: Infiltriere ein Gebäude mit einem Dieb. Nur mit Gebaueden möglich, die bestohlen werden koennen.",
+        fr = "Objectif: Infiltrer un bâtiment avec un voleur. Seulement possible avec des bâtiments qui peuvent être volés.",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Target Building", de = "Zielgebäude" },
-        { ParameterType.Custom,     en = "Cheat earnings", de = "Einnahmen generieren" },
-        { ParameterType.Custom,     en = "Destroy Thief", de = "Dieb löschen" },
+        { ParameterType.ScriptName, en = "Target Building", de = "Zielgebäude",           fr = "Bâtiment cible" },
+        { ParameterType.Custom,     en = "Cheat earnings",  de = "Einnahmen generieren",  fr = "Générer des revenus" },
+        { ParameterType.Custom,     en = "Destroy Thief",   de = "Dieb löschen",          fr = "Supprimer le voleur" },
     },
 }
 
@@ -755,6 +775,7 @@ function B_Goal_SpyOnBuilding:SetDescriptionOverwrite(_Quest)
         local text = {
             de = "Gebäude infriltrieren {cr}{cr}Spioniere das markierte Gebäude mit einem Dieb aus!",
             en = "Infiltrate building {cr}{cr}Spy on the highlighted buildings with a thief!",
+            fr = "Infiltrer un bâtiment {cr}{cr}Espionner le bâtiment marqué avec un voleur!",
         };
         return API.Localize(text);
     else
@@ -838,18 +859,25 @@ B_Goal_FetchItems = {
     Description = {
         en = "Goal: ",
         de = "Ziel: ",
+        fr = "Objectif: ",
     },
     Parameter = {
-        { ParameterType.Default, en = "Search points",          de = "Suchpunkte" },
-        { ParameterType.Custom,  en = "Shared model",           de = "Gemeinsames Modell" },
-        { ParameterType.Number,  en = "Distance (0 = Default)", de = "Enternung (0 = Default)" },
+        { ParameterType.Default, en = "Search points",          de = "Suchpunkte",              fr = "Points de recherche" },
+        { ParameterType.Custom,  en = "Shared model",           de = "Gemeinsames Modell",      fr = "Modèle commun" },
+        { ParameterType.Number,  en = "Distance (0 = Default)", de = "Enternung (0 = Default)", fr = "Distance (0 = Default)" },
     },
 
     Text = {
-        {de = "%d/%d Gegenstände gefunden",
-         en = "%d/%d Items gefunden",},
-        {de = "GEGENSTÄNDE FINDEN {br}{br}Findet die verloren gegangenen Gegenstände.",
-         en = "FIND VALUABLES {br}{br}Find the missing items and return them.",},
+        {
+            de = "%d/%d Gegenstände gefunden",
+            en = "%d/%d Items gefunden",
+            fr = "%d/%d objets trouvés",
+        },
+        {
+            de = "GEGENSTÄNDE FINDEN {br}{br}Findet die verloren gegangenen Gegenstände.",
+            en = "FIND VALUABLES {br}{br}Find the missing items and return them.",
+            fr = "TROUVER LES OBJETS {br}{br}Trouve les objets perdus.",
+        },
     },
 
     Tools = {
@@ -1002,12 +1030,13 @@ B_Reprisal_SetPosition = {
     Description = {
         en = "Reprisal: Places an entity relative to the position of another. The entity can look the target.",
         de = "Vergeltung: Setzt eine Entity relativ zur Position einer anderen. Die Entity kann zum Ziel ausgerichtet werden.",
+        fr = "Rétribution: place une Entity vis-à-vis de l'emplacement d'une autre. L'entité peut être orientée vers la cible.",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Entity",          de = "Entity", },
-        { ParameterType.ScriptName, en = "Target position", de = "Zielposition", },
-        { ParameterType.Custom,     en = "Face to face",    de = "Ziel ansehen", },
-        { ParameterType.Number,     en = "Distance",        de = "Zielentfernung", },
+        { ParameterType.ScriptName, en = "Entity",          de = "Entity",          fr = "Entité", },
+        { ParameterType.ScriptName, en = "Target position", de = "Zielposition",    fr = "Position cible", },
+        { ParameterType.Custom,     en = "Face to face",    de = "Ziel ansehen",    fr = "Voir la cible", },
+        { ParameterType.Number,     en = "Distance",        de = "Zielentfernung",  fr = "Distance de la cible", },
     },
 }
 
@@ -1094,10 +1123,11 @@ B_Reprisal_ChangePlayer = {
     Description = {
         en = "Reprisal: Changes the owner of the entity or a battalion.",
         de = "Vergeltung: Aendert den Besitzer einer Entity oder eines Battalions.",
+        fr = "Rétribution : Change le propriétaire d'une entité ou d'un bataillon.",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Entity",     de = "Entity", },
-        { ParameterType.Custom,     en = "Player",     de = "Spieler", },
+        { ParameterType.ScriptName, en = "Entity",     de = "Entity",   fr = "Entité", },
+        { ParameterType.Custom,     en = "Player",     de = "Spieler",  fr = "Joueur", },
     },
 }
 
@@ -1160,10 +1190,11 @@ B_Reprisal_SetVisible = {
     Description = {
         en = "Reprisal: Changes the visibility of an entity. If the entity is a spawner the spawned entities will be affected.",
         de = "Vergeltung: Setzt die Sichtbarkeit einer Entity. Handelt es sich um einen Spawner werden auch die gespawnten Entities beeinflusst.",
+        fr = "Rétribution: fixe la visibilité d'une Entité. S'il s'agit d'un spawn, les Entities spawnées sont également affectées.",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Entity",     de = "Entity", },
-        { ParameterType.Custom,     en = "Visible",     de = "Sichtbar", },
+        { ParameterType.ScriptName, en = "Entity",      de = "Entity",   fr = "Entité", },
+        { ParameterType.Custom,     en = "Visible",     de = "Sichtbar", fr = "Visible", },
     },
 }
 
@@ -1253,10 +1284,11 @@ B_Reprisal_SetVulnerability = {
     Description = {
         en = "Reprisal: Changes the vulnerability of the entity. If the entity is a spawner the spawned entities will be affected.",
         de = "Vergeltung: Macht eine Entity verwundbar oder unverwundbar. Handelt es sich um einen Spawner, sind die gespawnten Entities betroffen.",
+        fr = "Rétribution: rend une Entité vulnérable ou invulnérable. S'il s'agit d'un spawn, les Entities spawnées sont affectées.",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Entity",              de = "Entity", },
-        { ParameterType.Custom,     en = "Vulnerability",      de = "Verwundbar", },
+        { ParameterType.ScriptName, en = "Entity",             de = "Entity",     fr = "Entité", },
+        { ParameterType.Custom,     en = "Vulnerability",      de = "Verwundbar", fr = "Vulnérabilité", },
     },
 }
 
@@ -1338,10 +1370,11 @@ B_Reprisal_SetModel = {
     Description = {
         en = "Reprisal: Changes the model of the entity. Be careful, some models crash the game.",
         de = "Vergeltung: Ändert das Model einer Entity. Achtung: Einige Modelle führen zum Absturz.",
+        fr = "Rétribution: modifie le modèle d'une entité. Attention: certains modèles entraînent un crash.",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Entity",     de = "Entity", },
-        { ParameterType.Custom,     en = "Model",     de = "Model", },
+        { ParameterType.ScriptName, en = "Entity",    de = "Entity", fr = "Entité", },
+        { ParameterType.Custom,     en = "Model",     de = "Model",  fr = "Modèle", },
     },
 }
 
@@ -1413,6 +1446,7 @@ B_Reward_SetPosition = Swift:CopyTable(B_Reprisal_SetPosition);
 B_Reward_SetPosition.Name = "Reward_SetPosition";
 B_Reward_SetPosition.Description.en = "Reward: Places an entity relative to the position of another. The entity can look the target.";
 B_Reward_SetPosition.Description.de = "Lohn: Setzt eine Entity relativ zur Position einer anderen. Die Entity kann zum Ziel ausgerichtet werden.";
+B_Reward_SetPosition.Description.fr = "Récompense: Définit une Entity vis-à-vis de la position d'une autre. L'entité peut être orientée vers la cible.";
 B_Reward_SetPosition.GetReprisalTable = nil;
 
 B_Reward_SetPosition.GetRewardTable = function(self, _Quest)
@@ -1439,6 +1473,7 @@ B_Reward_ChangePlayer = Swift:CopyTable(B_Reprisal_ChangePlayer);
 B_Reward_ChangePlayer.Name = "Reward_ChangePlayer";
 B_Reward_ChangePlayer.Description.en = "Reward: Changes the owner of the entity or a battalion.";
 B_Reward_ChangePlayer.Description.de = "Lohn: Ändert den Besitzer einer Entity oder eines Battalions.";
+B_Reward_ChangePlayer.Description.fr = "Récompense: Change le propriétaire d'une entité ou d'un bataillon.";
 B_Reward_ChangePlayer.GetReprisalTable = nil;
 
 B_Reward_ChangePlayer.GetRewardTable = function(self, _Quest)
@@ -1473,13 +1508,14 @@ B_Reward_MoveToPosition = {
     Name = "Reward_MoveToPosition",
     Description = {
         en = "Reward: Moves an entity relative to another entity. If angle is zero the entities will be standing directly face to face.",
-        de = "Lohn: Bewegt eine Entity relativ zur Position einer anderen. Wenn Winkel 0 ist, stehen sich die Entities direkt gegen�ber.",
+        de = "Lohn: Bewegt eine Entity relativ zur Position einer anderen. Wenn Winkel 0 ist, stehen sich die Entities direkt gegenüber.",
+        fr = "Récompense: Déplace une entité par rapport à la position d'une autre. Si l'angle est égal à 0, les entités sont directement opposées.",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Settler", de = "Siedler" },
-        { ParameterType.ScriptName, en = "Destination", de = "Ziel" },
-        { ParameterType.Number,     en = "Distance", de = "Entfernung" },
-        { ParameterType.Number,     en = "Angle", de = "Winkel" },
+        { ParameterType.ScriptName, en = "Settler",     de = "Siedler",     fr = "Settler" },
+        { ParameterType.ScriptName, en = "Destination", de = "Ziel",        fr = "Destination" },
+        { ParameterType.Number,     en = "Distance",    de = "Entfernung",  fr = "Distance" },
+        { ParameterType.Number,     en = "Angle",       de = "Winkel",      fr = "Angle" },
     },
 }
 
@@ -1516,12 +1552,18 @@ function B_Reward_MoveToPosition:CustomFunction(_Quest)
     x = x + self.Distance * math.cos( math.rad(orientation+self.Angle) );
     y = y + self.Distance * math.sin( math.rad(orientation+self.Angle) );
     Logic.MoveSettler(entity, x, y);
-    StartSimpleJobEx( function(_entityID, _targetID)
+    self.EntityMovingJob = API.StartJob( function(_entityID, _targetID)
         if Logic.IsEntityMoving(_entityID) == false then
             LookAt(_entityID, _targetID);
             return true;
         end
     end, entity, target);
+end
+
+function B_Reward_MoveToPosition:Reset(_Quest)
+    if self.EntityMovingJob then
+        API.EndJob(self.EntityMovingJob);
+    end
 end
 
 function B_Reward_MoveToPosition:Debug(_Quest)
@@ -1558,6 +1600,7 @@ B_Reward_VictoryWithParty = {
     Description = {
         en = "Reward: (Singleplayer) The player wins the game with an animated festival on the market. Continue playing deleates the festival.",
         de = "Lohn: (Einzelspieler) Der Spieler gewinnt das Spiel mit einer animierten Siegesfeier. Bei weiterspielen wird das Fest gelöscht.",
+        fr = "Récompense: (Joueur unique) Le joueur gagne la partie avec une fête de la victoire animée. Si le joueur continue à jouer, la fête est effacée.",
     },
     Parameter = {}
 };
@@ -1672,6 +1715,7 @@ B_Reward_SetVisible = Swift:CopyTable(B_Reprisal_SetVisible);
 B_Reward_SetVisible.Name = "Reward_SetVisible";
 B_Reward_SetVisible.Description.en = "Reward: Changes the visibility of an entity. If the entity is a spawner the spawned entities will be affected.";
 B_Reward_SetVisible.Description.de = "Lohn: Setzt die Sichtbarkeit einer Entity. Handelt es sich um einen Spawner werden auch die gespawnten Entities beeinflusst.";
+B_Reward_SetVisible.Description.fr = "Récompense: Définit la visibilité d'une Entity. S'il s'agit d'un spawn, les entités spawnées sont également influencées.";
 B_Reward_SetVisible.GetReprisalTable = nil;
 
 B_Reward_SetVisible.GetRewardTable = function(self, _Quest)
@@ -1702,6 +1746,7 @@ B_Reward_SetVulnerability = Swift:CopyTable(B_Reprisal_SetVulnerability);
 B_Reward_SetVulnerability.Name = "Reward_SetVulnerability";
 B_Reward_SetVulnerability.Description.en = "Reward: Changes the vulnerability of the entity. If the entity is a spawner the spawned entities will be affected.";
 B_Reward_SetVulnerability.Description.de = "Lohn: Macht eine Entity verwundbar oder unverwundbar. Handelt es sich um einen Spawner, sind die gespawnten Entities betroffen.";
+B_Reward_SetVulnerability.Description.fr = "Récompense: Rend une Entité vulnérable ou invulnérable. S'il s'agit d'un spawn, les entités spawnées sont affectées.";
 B_Reward_SetVulnerability.GetReprisalTable = nil;
 
 B_Reward_SetVulnerability.GetRewardTable = function(self, _Quest)
@@ -1732,6 +1777,7 @@ B_Reward_SetModel = Swift:CopyTable(B_Reprisal_SetModel);
 B_Reward_SetModel.Name = "Reward_SetModel";
 B_Reward_SetModel.Description.en = "Reward: Changes the model of the entity. Be careful, some models crash the game.";
 B_Reward_SetModel.Description.de = "Lohn: Ändert das Model einer Entity. Achtung: Einige Modelle führen zum Absturz.";
+B_Reward_SetModel.Description.fr = "Récompense: Modifie le modèle d'une entité. Attention : certains modèles entraînent un plantage.";
 B_Reward_SetModel.GetReprisalTable = nil;
 
 B_Reward_SetModel.GetRewardTable = function(self, _Quest)
@@ -1759,10 +1805,11 @@ B_Reward_AI_SetEntityControlled = {
     Description = {
         en = "Reward: Bind or Unbind an entity or a battalion to/from an AI player. The AI player must be activated!",
         de = "Lohn: Die KI kontrolliert die Entity oder der KI die Kontrolle entziehen. Die KI muss aktiv sein!",
+        fr = "Récompense: L'IA contrôle l'entité ou retirer le contrôle à l'IA. L'IA doit être active !",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Entity",               de = "Entity", },
-        { ParameterType.Custom,     en = "AI control entity", de = "KI kontrolliert Entity", },
+        { ParameterType.ScriptName, en = "Entity",            de = "Entity",                 fr = "Entité", },
+        { ParameterType.Custom,     en = "AI control entity", de = "KI kontrolliert Entity", fr = "L'IA contrôle l'entité", },
     },
 }
 
@@ -1841,15 +1888,16 @@ B_Trigger_OnAtLeastXOfYQuestsFailed = {
     Description = {
         en = "Trigger: if at least X of Y given quests has been finished successfully.",
         de = "Auslöser: wenn X von Y angegebener Quests fehlgeschlagen sind.",
+        fr = "Déclencheur: lorsque X des Y quêtes indiquées ont échoué.",
     },
     Parameter = {
-        { ParameterType.Custom, en = "Least Amount", de = "Mindest Anzahl" },
-        { ParameterType.Custom, en = "Quest Amount", de = "Quest Anzahl" },
-        { ParameterType.QuestName, en = "Quest name 1", de = "Questname 1" },
-        { ParameterType.QuestName, en = "Quest name 2", de = "Questname 2" },
-        { ParameterType.QuestName, en = "Quest name 3", de = "Questname 3" },
-        { ParameterType.QuestName, en = "Quest name 4", de = "Questname 4" },
-        { ParameterType.QuestName, en = "Quest name 5", de = "Questname 5" },
+        { ParameterType.Custom,    en = "Least Amount", de = "Mindest Anzahl",  fr = "Nombre minimum" },
+        { ParameterType.Custom,    en = "Quest Amount", de = "Quest Anzahl",    fr = "Nombre de quêtes" },
+        { ParameterType.QuestName, en = "Quest name 1", de = "Questname 1",     fr = "Nom de la quête 1" },
+        { ParameterType.QuestName, en = "Quest name 2", de = "Questname 2",     fr = "Nom de la quête 2" },
+        { ParameterType.QuestName, en = "Quest name 3", de = "Questname 3",     fr = "Nom de la quête 3" },
+        { ParameterType.QuestName, en = "Quest name 4", de = "Questname 4",     fr = "Nom de la quête 4" },
+        { ParameterType.QuestName, en = "Quest name 5", de = "Questname 5",     fr = "Nom de la quête 5" },
     },
 }
 
@@ -1939,9 +1987,10 @@ B_Trigger_AmmunitionDepleted = {
     Description = {
         en = "Trigger: if the ammunition of the entity is depleted.",
         de = "Auslöser: wenn die Munition der Entity aufgebraucht ist.",
+        fr = "Déclencheur: lorsque les munitions de l'entité sont épuisées.",
     },
     Parameter = {
-        { ParameterType.Scriptname, en = "Script name", de = "Skriptname" },
+        { ParameterType.Scriptname, en = "Script name", de = "Skriptname", fr = "Nom de l'entité" },
     },
 }
 
@@ -1997,10 +2046,11 @@ B_Trigger_OnExactOneQuestIsWon = {
     Description = {
         en = "Trigger: if one of two given quests has been finished successfully, but NOT both.",
         de = "Auslöser: wenn eine von zwei angegebenen Quests (aber NICHT beide) erfolgreich abgeschlossen wurde.",
+        fr = "Déclencheur: lorsque l'une des deux quêtes indiquées (mais PAS les deux) a été accomplie avec succès.",
     },
     Parameter = {
-        { ParameterType.QuestName, en = "Quest Name 1", de = "Questname 1" },
-        { ParameterType.QuestName, en = "Quest Name 2", de = "Questname 2" },
+        { ParameterType.QuestName, en = "Quest Name 1", de = "Questname 1", fr = "Nom de la quête 1", },
+        { ParameterType.QuestName, en = "Quest Name 2", de = "Questname 2", fr = "Nom de la quête 2", },
     },
 }
 
@@ -2066,10 +2116,11 @@ B_Trigger_OnExactOneQuestIsLost = {
     Description = {
         en = "Trigger: If one of two given quests has been lost, but NOT both.",
         de = "Auslöser: Wenn einer von zwei angegebenen Quests (aber NICHT beide) fehlschlägt.",
+        fr = "Déclencheur: Si l'une des deux quêtes indiquées (mais PAS les deux) échoue.",
     },
     Parameter = {
-        { ParameterType.QuestName, en = "Quest Name 1", de = "Questname 1" },
-        { ParameterType.QuestName, en = "Quest Name 2", de = "Questname 2" },
+        { ParameterType.QuestName, en = "Quest Name 1", de = "Questname 1", fr = "Nom de la quête 1", },
+        { ParameterType.QuestName, en = "Quest Name 2", de = "Questname 2", fr = "Nom de la quête 2", },
     },
 }
 

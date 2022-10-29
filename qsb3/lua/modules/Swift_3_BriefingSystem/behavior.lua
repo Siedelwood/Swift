@@ -33,11 +33,12 @@ B_Reprisal_Briefing = {
     Name = "Reprisal_Briefing",
     Description = {
         en = "Reprisal: Calls a function to start an new briefing.",
-        de = "Lohn: Ruft die Funktion auf und startet das enthaltene Briefing.",
+        de = "Vergeltung: Ruft die Funktion auf und startet das enthaltene Briefing.",
+        fr = "Rétribution: Appelle la fonction et démarre le briefing qu'elle contient.",
     },
     Parameter = {
-        { ParameterType.Default, en = "Briefing name",     de = "Name des Briefing" },
-        { ParameterType.Default, en = "Briefing function", de = "Funktion mit Briefing" },
+        { ParameterType.Default, en = "Briefing name",     de = "Name des Briefing",     fr = "Nom du briefing" },
+        { ParameterType.Default, en = "Briefing function", de = "Funktion mit Briefing", fr = "Fonction avec briefing" },
     },
 }
 
@@ -90,6 +91,7 @@ B_Reward_Briefing = Swift:CopyTable(B_Reprisal_Briefing);
 B_Reward_Briefing.Name = "Reward_Briefing";
 B_Reward_Briefing.Description.en = "Reward: Calls a function to start an new briefing.";
 B_Reward_Briefing.Description.de = "Lohn: Ruft die Funktion auf und startet das enthaltene Briefing.";
+B_Reward_Briefing.Description.fr = "Récompense: Appelle la fonction et démarre le briefing qu'elle contient.";
 B_Reward_Briefing.GetReprisalTable = nil;
 
 B_Reward_Briefing.GetRewardTable = function(self, _Quest)
@@ -104,6 +106,7 @@ Swift:RegisterBehavior(B_Reward_Briefing);
 -- Prüft, ob ein Briefing beendet ist und startet dann den Quest.
 --
 -- @param[type=string] _Name     Bezeichner des Briefing
+-- @param[type=number] _PlayerID ID des Spielers
 -- @param[type=number] _Waittime (optional) Wartezeit in Sekunden
 -- @within Trigger
 --
@@ -116,11 +119,12 @@ B_Trigger_Briefing = {
     Description = {
         en = "Trigger: Checks if an briefing has concluded and starts the quest if so.",
         de = "Auslöser: Prüft, ob ein Briefing beendet ist und startet dann den Quest.",
+        fr = "Déclencheur: Vérifie si un briefing est terminé et lance ensuite la quête.",
     },
     Parameter = {
-        { ParameterType.Default,  en = "Briefing name", de = "Name des Briefing" },
-        { ParameterType.PlayerID, en = "Player ID",     de = "Player ID" },
-        { ParameterType.Number,   en = "Wait time",     de = "Wartezeit" },
+        { ParameterType.Default,  en = "Briefing name", de = "Name des Briefing", fr = "Nom du briefing" },
+        { ParameterType.PlayerID, en = "Player ID",     de = "Player ID",         fr = "Player ID" },
+        { ParameterType.Number,   en = "Wait time",     de = "Wartezeit",         fr = "Temps d'attente" },
     },
 }
 

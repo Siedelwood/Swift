@@ -24,9 +24,9 @@ ModuleCutsceneSystem = {
     -- This is a shared structure but the values are asynchronous!
     Shared = {
         Text = {
-            FastForwardActivate   = {de = "Beschleunigen", en = "Fast Forward"},
-            FastForwardDeactivate = {de = "Zurücksetzen",  en = "Normal Speed"},
-            FastFormardMessage    = {de = "SCHNELLER VORLAUF",  en = "FAST FORWARD"},
+            FastForwardActivate   = {de = "Beschleunigen",      en = "Fast Forward", fr = "Accélérer"},
+            FastForwardDeactivate = {de = "Zurücksetzen",       en = "Normal Speed", fr = "Réinitialiser"},
+            FastFormardMessage    = {de = "SCHNELLER VORLAUF",  en = "FAST FORWARD", fr = "AVANCÉ RAPIDE"},
         },
     },
 };
@@ -246,8 +246,8 @@ function ModuleCutsceneSystem.Local:StartCutscene(_PlayerID, _Cutscene)
     self.Cutscene[_PlayerID].LastSkipButtonPressed = 0;
     self.Cutscene[_PlayerID].CurrentPage = 0;
 
-    API.DeactivateNormalInterface();
-    API.DeactivateBorderScroll();
+    API.DeactivateNormalInterface(_PlayerID);
+    API.DeactivateBorderScroll(_PlayerID);
 
     if not Framework.IsNetworkGame() then
         Game.GameTimeSetFactor(_PlayerID, 1);
@@ -265,8 +265,8 @@ function ModuleCutsceneSystem.Local:EndCutscene(_PlayerID)
         Game.GameTimeSetFactor(_PlayerID, 1);
     end
     self:DeactivateCinematicMode(_PlayerID);
-    API.ActivateNormalInterface();
-    API.ActivateBorderScroll();
+    API.ActivateNormalInterface(_PlayerID);
+    API.ActivateBorderScroll(_PlayerID);
 
     self.Cutscene[_PlayerID] = nil;
 end
@@ -447,6 +447,7 @@ function ModuleCutsceneSystem.Local:DisplayPageFader(_PlayerID, _PageID)
 
     local PageFadeOut = Page.FadeOut;
     if PageFadeOut then
+        -- FIXME: This would create jobs that are only be paused at the end!
         self.Cutscene[_PlayerID].FaderJob = API.StartHiResJob(function(_Time, _FadeOut)
             if Logic.GetTimeMs() > _Time - (_FadeOut * 1000) then
                 FadeOut(_FadeOut);
@@ -630,6 +631,7 @@ function ModuleCutsceneSystem.Local:ActivateCinematicMode(_PlayerID)
     local x,y = XGUIEng.GetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight");
     XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight", x, 65 * (ScreenY/1080));
 
+    self.SelectionBackup = {GUI.GetSelectedEntities()};
     GUI.ClearSelection();
     GUI.ClearNotes();
     GUI.ForbidContextSensitiveCommandsInSelectionState();
@@ -674,6 +676,9 @@ function ModuleCutsceneSystem.Local:DeactivateCinematicMode(_PlayerID)
     GUI.SetFeedbackSoundOutputState(1);
     GUI.ActivateSelectionState();
     GUI.PermitContextSensitiveCommandsInSelectionState();
+    for k, v in pairs(self.SelectionBackup) do
+        GUI.SelectEntity(v);
+    end
     Display.SetRenderSky(0);
     Display.SetRenderBorderPins(1);
     Display.SetRenderFogOfWar(1);

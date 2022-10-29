@@ -33,11 +33,12 @@ B_Reprisal_Cutscene = {
     Name = "Reprisal_Cutscene",
     Description = {
         en = "Reprisal: Calls a function to start an new Cutscene.",
-        de = "Lohn: Ruft die Funktion auf und startet die enthaltene Cutscene.",
+        de = "Vergeltung: Ruft die Funktion auf und startet die enthaltene Cutscene.",
+        fr = "Rétribution : Appelle la fonction et démarre la cutscene contenue.",
     },
     Parameter = {
-        { ParameterType.Default, en = "Cutscene name",     de = "Name der Cutscene" },
-        { ParameterType.Default, en = "Cutscene function", de = "Funktion mit Cutscene" },
+        { ParameterType.Default, en = "Cutscene name",     de = "Name der Cutscene",     fr = "Nom de la cutscene", },
+        { ParameterType.Default, en = "Cutscene function", de = "Funktion mit Cutscene", fr = "Fonction avec cutscene", },
     },
 }
 
@@ -90,6 +91,7 @@ B_Reward_Cutscene = Swift:CopyTable(B_Reprisal_Cutscene);
 B_Reward_Cutscene.Name = "Reward_Cutscene";
 B_Reward_Cutscene.Description.en = "Reward: Calls a function to start an new Cutscene.";
 B_Reward_Cutscene.Description.de = "Lohn: Ruft die Funktion auf und startet die enthaltene Cutscene.";
+B_Reward_Cutscene.Description.fr = "Récompense: Appelle la fonction et démarre la cutscene contenue.";
 B_Reward_Cutscene.GetReprisalTable = nil;
 
 B_Reward_Cutscene.GetRewardTable = function(self, _Quest)
@@ -104,6 +106,7 @@ Swift:RegisterBehavior(B_Reward_Cutscene);
 -- Prüft, ob ein Cutscene beendet ist und startet dann den Quest.
 --
 -- @param[type=string] _Name     Bezeichner des Cutscene
+-- @param[type=number] _PlayerID ID des Spielers
 -- @param[type=number] _Waittime (optional) Wartezeit in Sekunden
 -- @within Trigger
 --
@@ -116,11 +119,12 @@ B_Trigger_Cutscene = {
     Description = {
         en = "Trigger: Checks if an Cutscene has concluded and starts the quest if so.",
         de = "Auslöser: Prüft, ob eine Cutscene beendet ist und startet dann den Quest.",
+        fr = "Déclencheur: Vérifie si une cutscene est terminée et démarre ensuite la quête.",
     },
     Parameter = {
-        { ParameterType.Default,  en = "Cutscene name", de = "Name der Cutscene" },
-        { ParameterType.PlayerID, en = "Player ID",     de = "Player ID" },
-        { ParameterType.Number,   en = "Wait time",     de = "Wartezeit" },
+        { ParameterType.Default,  en = "Cutscene name", de = "Name der Cutscene", fr  ="Nom de la cutscene" },
+        { ParameterType.PlayerID, en = "Player ID",     de = "Player ID",         fr  ="Player ID" },
+        { ParameterType.Number,   en = "Wait time",     de = "Wartezeit",         fr  ="Temps d'attente" },
     },
 }
 

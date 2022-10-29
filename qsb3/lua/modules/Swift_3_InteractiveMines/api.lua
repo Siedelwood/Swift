@@ -76,21 +76,21 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- <td>ja</td>
 -- </tr>
 -- <tr>
+-- <td>ResourceAmount</td>
+-- <td>number</td>
+-- <td>Menge an Rohstoffen nach der Aktivierung</td>
+-- <td>ja</td>
+-- </tr>
+-- <tr>
+-- <td>RefillAmount</td>
+-- <td>number</td>
+-- <td>Menge an Rohstoffen, die ein Geologe auffüllt (0 == nicht nachfüllbar)</td>
+-- <td>ja</td>
+-- </tr>
+-- <tr>
 -- <td>ConstructionCondition</td>
 -- <td>function</td>
 -- <td>Eine zusätzliche Aktivierungsbedinung als Funktion.</td>
--- <td>ja</td>
--- </tr>
--- <tr>
--- <td>ConstructionAction</td>
--- <td>function</td>
--- <td>Eine Funktion, die nach der Aktivierung aufgerufen wird.</td>
--- <td>ja</td>
--- </tr>
--- <tr>
--- <td>DepletedAction</td>
--- <td>function</td>
--- <td>Eine Funktion, die aufgerufen wird, wenn die Mine ausgebeutet ist.</td>
 -- <td>ja</td>
 -- </tr>
 -- </table>
@@ -150,10 +150,9 @@ function API.CreateIOIronMine(_Data)
         _Data.Title,
         _Data.Text,
         Costs,
-        _Data.NotRefillable,
-        _Data.ConstructionCondition,
-        _Data.ConstructionAction,
-        _Data.DepletedAction
+        _Data.ResourceAmount,
+        _Data.RefillAmount,
+        _Data.ConstructionCondition
     );
 end
 
@@ -200,21 +199,21 @@ end
 -- <td>ja</td>
 -- </tr>
 -- <tr>
+-- <tr>
+-- <td>ResourceAmount</td>
+-- <td>number</td>
+-- <td>Menge an Rohstoffen nach der Aktivierung</td>
+-- <td>ja</td>
+-- </tr>
+-- <tr>
+-- <td>RefillAmount</td>
+-- <td>number</td>
+-- <td>Menge an Rohstoffen, die ein Geologe auffüllt (0 == nicht nachfüllbar)</td>
+-- <td>ja</td>
+-- </tr>
 -- <td>ConstructionCondition</td>
 -- <td>function</td>
 -- <td>Eine zusätzliche Aktivierungsbedinung als Funktion.</td>
--- <td>ja</td>
--- </tr>
--- <tr>
--- <td>ConstructionAction</td>
--- <td>function</td>
--- <td>Eine Funktion, die nach der Aktivierung aufgerufen wird.</td>
--- <td>ja</td>
--- </tr>
--- <tr>
--- <td>DepletedAction</td>
--- <td>function</td>
--- <td>Eine Funktion, die aufgerufen wird, wenn die Mine ausgebeutet ist.</td>
 -- <td>ja</td>
 -- </tr>
 -- </table>
@@ -274,10 +273,9 @@ function API.CreateIOStoneMine(_Data)
         _Data.Title,
         _Data.Text,
         Costs,
-        _Data.NotRefillable,
-        _Data.ConstructionCondition,
-        _Data.ConstructionAction,
-        _Data.DepletedAction
+        _Data.ResourceAmount,
+        _Data.RefillAmount,
+        _Data.ConstructionCondition
     );
 end
 

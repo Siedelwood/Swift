@@ -33,11 +33,12 @@ B_Reprisal_Dialog = {
     Name = "Reprisal_Dialog",
     Description = {
         en = "Reprisal: Calls a function to start an new dialog.",
-        de = "Lohn: Ruft die Funktion auf und startet das enthaltene Dialog.",
+        de = "Vergeltung: Ruft die Funktion auf und startet das enthaltene Dialog.",
+        fr = "Rétribution: Appelle la fonction et démarre le dialogue contenu.",
     },
     Parameter = {
-        { ParameterType.Default, en = "Dialog name",     de = "Name des Dialog" },
-        { ParameterType.Default, en = "Dialog function", de = "Funktion mit Dialog" },
+        { ParameterType.Default, en = "Dialog name",     de = "Name des Dialog",     fr = "Nom du dialogue" },
+        { ParameterType.Default, en = "Dialog function", de = "Funktion mit Dialog", fr = "Fonction du dialogue" },
     },
 }
 
@@ -90,6 +91,7 @@ B_Reward_Dialog = Swift:CopyTable(B_Reprisal_Dialog);
 B_Reward_Dialog.Name = "Reward_Dialog";
 B_Reward_Dialog.Description.en = "Reward: Calls a function to start an new dialog.";
 B_Reward_Dialog.Description.de = "Lohn: Ruft die Funktion auf und startet das enthaltene Dialog.";
+B_Reward_Dialog.Description.fr = "Récompense: Appelle la fonction et lance le dialogue qu'elle contient.";
 B_Reward_Dialog.GetReprisalTable = nil;
 
 B_Reward_Dialog.GetRewardTable = function(self, _Quest)
@@ -104,6 +106,7 @@ Swift:RegisterBehavior(B_Reward_Dialog);
 -- Prüft, ob ein Dialog beendet ist und startet dann den Quest.
 --
 -- @param[type=string] _Name     Bezeichner des Dialog
+-- @param[type=number] _PlayerID ID des Spielers
 -- @param[type=number] _Waittime (optional) Wartezeit in Sekunden
 -- @within Trigger
 --
@@ -116,11 +119,12 @@ B_Trigger_Dialog = {
     Description = {
         en = "Trigger: Checks if an dialog has concluded and starts the quest if so.",
         de = "Auslöser: Prüft, ob ein Dialog beendet ist und startet dann den Quest.",
+        fr = "Déclencheur: Vérifie si un dialogue est terminé et démarre alors la quête.",
     },
     Parameter = {
-        { ParameterType.Default,  en = "Dialog name", de = "Name des Dialog" },
-        { ParameterType.PlayerID, en = "Player ID",     de = "Player ID" },
-        { ParameterType.Number,   en = "Wait time",     de = "Wartezeit" },
+        { ParameterType.Default,  en = "Dialog name", de = "Name des Dialog", fr = "Nom du dialogue" },
+        { ParameterType.PlayerID, en = "Player ID",   de = "Player ID",       fr = "Player ID" },
+        { ParameterType.Number,   en = "Wait time",   de = "Wartezeit",       fr = "Temps d'attente" },
     },
 }
 

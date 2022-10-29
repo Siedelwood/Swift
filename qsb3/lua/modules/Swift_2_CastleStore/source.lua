@@ -49,6 +49,7 @@ ModuleCastleStore = {
                 Text = {
                     de = "Finanzansicht",
                     en = "Financial view",
+                    fr = "Vue financière",
                 },
             },
 
@@ -56,6 +57,7 @@ ModuleCastleStore = {
                 Text = {
                     de = "Lageransicht",
                     en = "Storeage view",
+                    fr = "Vue de l'entrepôt",
                 },
             },
 
@@ -63,6 +65,7 @@ ModuleCastleStore = {
                 Text = {
                     de = "Diese Ware wird nicht angenommen.",
                     en = "This good will not be stored.",
+                    fr = "Cette marchandise n'est pas acceptée.",
                 },
             },
 
@@ -70,10 +73,12 @@ ModuleCastleStore = {
                 Title = {
                     de = "Güter verwaren",
                     en = "Keep goods",
+                    fr = "Garder les marchandises",
                 },
                 Text = {
                     de = "[UMSCHALT + N]{cr}- Lagert Waren im Burglager ein {cr}- Waren verbleiben auch im Lager, wenn Platz vorhanden ist",
                     en = "[SHIFT + N]{cr}- Stores goods inside the vault {cr}- Goods also remain in the warehouse when space is available",
+                    fr = "[SHIFT + N]{cr}- Entrepose les marchandises dans l'entrepôt du château {cr}- Les marchandises restent aussi dans l'entrepôt s'il y a de la place",
                 },
             },
 
@@ -81,10 +86,12 @@ ModuleCastleStore = {
                 Title = {
                     de = "Güter zwischenlagern",
                     en = "Store in vault",
+                    fr = "Stockage temporaire des marchandises",
                 },
                 Text = {
                     de = "[UMSCHALT + B]{cr}- Lagert Waren im Burglager ein {cr}- Lagert waren wieder aus, sobald Platz frei wird",
                     en = "[SHIFT + B]{cr}- Stores goods inside the vault {cr}- Allows to extrac goods as soon as space becomes available",
+                    fr = "[SHIFT + B]{cr}- Entrepose des marchandises dans l'entrepôt du château {cr}- Enlève des marchandises dès que l'espace est libre",
                 },
             },
 
@@ -92,10 +99,12 @@ ModuleCastleStore = {
                 Title = {
                     de = "Lager räumen",
                     en = "Clear store",
+                    fr = "Vider l'entrepôt",
                 },
                 Text = {
                     de = "[UMSCHALT + M]{cr}- Lagert alle Waren aus {cr}- Benötigt Platz im Lagerhaus",
                     en = "[Shift + M]{cr}- Removes all goods {cr}- Requires space in the storehouse",
+                    fr = "[SHIFT + M]{cr}- Enlève toutes les marchandises {cr}- Nécessite de l'espace dans l'entrepôt",
                 },
             },
         },
@@ -551,8 +560,6 @@ end
 -- Local -------------------------------------------------------------------- --
 
 function ModuleCastleStore.Local:OnGameStart()
-    IO = Logic.CreateReferenceToTableInGlobaLuaState("IO");
-
     for i= 1, 8 do
         self.Shortcuts[i] = {};
     end
@@ -577,20 +584,20 @@ function ModuleCastleStore.Local:DescribeHotkeys(_PlayerID)
     end
     if not self.Shortcuts[_PlayerID].StoreGoods then
         self.Shortcuts[_PlayerID].StoreGoods = API.AddShortcut(
-            {de = "Umschalt + B", en = "Shift + B"},
-            {de = "Burglager: Waren einlagern", en = "Vault: Store goods"}
+            {de = "Umschalt + B",               en = "Shift + B",           fr = "Shift + B"},
+            {de = "Burglager: Waren einlagern", en = "Vault: Store goods",  fr = "Entrepôt du château : stocker des marchandises"}
         );
     end
     if not self.Shortcuts[_PlayerID].LockGoods then
         self.Shortcuts[_PlayerID].LockGoods = API.AddShortcut(
-            {de = "Umschalt + N", en = "Shift + N"},
-            {de = "Burglager: Waren sperren", en = "Vault: Lock goods"}
+            {de = "Umschalt + N",               en = "Shift + N",           fr = "Shift + N"},
+            {de = "Burglager: Waren sperren",   en = "Vault: Lock goods",   fr = "Entrepôt du château : bloquer les marchandises"}
         );
     end
     if not self.Shortcuts[_PlayerID].EmptyWarehouse then
         self.Shortcuts[_PlayerID].EmptyWarehouse = API.AddShortcut(
-            {de = "Umschalt + M", en = "Shift + M"},
-            {de = "Burglager: Lager räumen", en = "Vault: Empty store"}
+            {de = "Umschalt + M",               en = "Shift + M",           fr = "Shift + M"},
+            {de = "Burglager: Lager räumen",    en = "Vault: Empty store",  fr = "Entrepôt du château : vider l'entrepôt"}
         );
     end
 end
