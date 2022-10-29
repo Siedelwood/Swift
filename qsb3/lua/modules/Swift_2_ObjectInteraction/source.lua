@@ -503,7 +503,7 @@ function ModuleObjectInteraction.Local:OverrideGameFunctions()
                 end
                 if Disable == false then
                     if IO[ScriptName] and type(IO[ScriptName].Player) == "table" then
-                        Disable = self:IsAvailableForGuiPlayer(ScriptName);
+                        Disable = not self:IsAvailableForGuiPlayer(ScriptName);
                     elseif IO[ScriptName] and type(IO[ScriptName].Player) == "number" then
                         Disable = IO[ScriptName].Player ~= PlayerID;
                     end
