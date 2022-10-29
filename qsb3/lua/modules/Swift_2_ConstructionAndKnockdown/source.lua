@@ -27,10 +27,12 @@ ModuleConstructionControl = {
             NoPalisadeHere = {
                 de = "An dieser Stelle kann keine Palisade gebaut werden!",
                 en = "A palisade can not be constructed at this location.",
+                fr = "Aucune palissade ne peut être construite à cet endroit.",
             },
             NoWallHere = {
                 de = "An dieser Stelle kann keine Mauer gebaut werden!",
                 en = "A wall can not be constructed at this location.",
+                fr = "Aucun mur ne peut être construit à cet endroit.",
             },
         },
 
