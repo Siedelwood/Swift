@@ -102,6 +102,19 @@ function Mission_FirstMapAction()
     TEST_COMMAND = API.RegisterScriptCommand("TestFunction", TestFunction);
 end
 
+function SetupPalisadeRestriction()
+    -- Palisades can only be constructed near outposts
+    API.AddConstructionRestriction(function(_PlayerID, _Type, _x, _y)
+        if Logic.IsEntityTypeInCategory(_Type, EntityCategories.PalisadeSegment) == 1 then
+            local n, OPID = Logic.GetPlayerEntitiesInArea(_PlayerID, Entities.B_Outpost_ME, _x, _y, 1500, 1);
+            if n == 0 then
+                return false;
+            end
+        end
+        return true;
+    end)
+end
+
 function TestMoveAmma()
     -- API.MoveEntity("amma", "pos")
     -- API.MoveEntityAndLookAt("amma", "pos", "manuel");
