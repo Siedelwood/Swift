@@ -349,17 +349,16 @@ function ModuleDialogSystem.Local:StartDialog(_PlayerID, _Dialog)
         return;
     end
     self.Dialog[_PlayerID] = _Dialog;
-    self.Dialog[_PlayerID].SubtitlesPosition = {
-        XGUIEng.GetWidgetLocalPosition("/InGame/Root/Normal/AlignBottomLeft/SubTitles")
-    };
     self.Dialog[_PlayerID].CurrentPage = 0;
     local PosX, PosY = Camera.RTS_GetLookAtPosition();
     local Rotation = Camera.RTS_GetRotationAngle();
     local ZoomFactor = Camera.RTS_GetZoomFactor();
     local SpeedFactor = Game.GameTimeGetFactor(_PlayerID);
+    local SubX, SubY = XGUIEng.GetWidgetLocalPosition("/InGame/Root/Normal/AlignBottomLeft/SubTitles");
     self.Dialog[_PlayerID].Backup = {
-        Speed  = SpeedFactor;
-        Camera = {PosX, PosY, Rotation, ZoomFactor}
+        SubTitles = {SubX, SubY},
+        Camera    = {PosX, PosY, Rotation, ZoomFactor},
+        Speed     = SpeedFactor,
     };
 
     API.DeactivateNormalInterface(_PlayerID);
@@ -384,11 +383,7 @@ function ModuleDialogSystem.Local:EndDialog(_PlayerID, _Dialog)
         Camera.RTS_SetRotationAngle(self.Dialog[_PlayerID].Backup.Camera[3]);
         Camera.RTS_SetZoomFactor(self.Dialog[_PlayerID].Backup.Camera[4]);
     end
-    self.Dialog[_PlayerID].Backup = nil;
 
-    if not Framework.IsNetworkGame() then
-        Game.GameTimeSetFactor(_PlayerID, 1);
-    end
     self:DeactivateCinematicMode(_PlayerID);
     API.ActivateNormalInterface(_PlayerID);
     API.ActivateBorderScroll(_PlayerID);
@@ -550,7 +545,7 @@ function ModuleDialogSystem.Local:SetSubtitlesPosition(_PlayerID, _PageID)
 end
 
 function ModuleDialogSystem.Local:ResetSubtitlesPosition(_PlayerID)
-    local Position = self.Dialog[_PlayerID].SubtitlesPosition;
+    local Position = self.Dialog[_PlayerID].Backup.SubTitles;
     local SubtitleWidget = "/InGame/Root/Normal/AlignBottomLeft/SubTitles";
     XGUIEng.SetWidgetLocalPosition(SubtitleWidget, Position[1], Position[2]);
 end

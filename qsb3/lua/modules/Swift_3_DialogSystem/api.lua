@@ -74,7 +74,7 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- <tr>
 -- <td>RestoreGameSpeed</td>
 -- <td>boolean</td>
--- <td>(Optional) Stellt die Geschwindigkeit von dor dem Dialog wieder her. <br>Standard: ein</td>
+-- <td>(Optional) Stellt die Geschwindigkeit von vor dem Dialog wieder her. <br>Standard: ein</td>
 -- </tr>
 -- <tr>
 -- <td>EnableGlobalImmortality</td>
@@ -151,6 +151,12 @@ function API.StartDialog(_Dialog, _Name, _PlayerID)
     end
     if _Dialog.EnableBorderPins == nil then
         _Dialog.EnableBorderPins = false;
+    end
+    if _Dialog.RestoreGameSpeed == nil then
+        _Dialog.RestoreGameSpeed = true;
+    end
+    if _Dialog.RestoreCamera == nil then
+        _Dialog.RestoreCamera = true;
     end
     ModuleDialogSystem.Global:StartDialog(_Name, PlayerID, _Dialog);
 end
