@@ -386,6 +386,14 @@ function ModuleBriefingSystem.Local:StartBriefing(_PlayerID, _Briefing)
     self.Briefing[_PlayerID] = _Briefing;
     self.Briefing[_PlayerID].LastSkipButtonPressed = 0;
     self.Briefing[_PlayerID].CurrentPage = 0;
+    local PosX, PosY = Camera.RTS_GetLookAtPosition();
+    local Rotation = Camera.RTS_GetRotationAngle();
+    local ZoomFactor = Camera.RTS_GetZoomFactor();
+    local SpeedFactor = Game.GameTimeGetFactor(_PlayerID);
+    self.Briefing[_PlayerID].Backup = {
+        Camera = {PosX, PosY, Rotation, ZoomFactor},
+        Speed  = SpeedFactor,
+    };
 
     API.DeactivateNormalInterface(_PlayerID);
     API.DeactivateBorderScroll(_PlayerID);
@@ -401,9 +409,15 @@ function ModuleBriefingSystem.Local:EndBriefing(_PlayerID, _Briefing)
         return;
     end
 
-    if not Framework.IsNetworkGame() then
-        Game.GameTimeSetFactor(_PlayerID, 1);
+    if self.Briefing[_PlayerID].RestoreGameSpeed and not Framework.IsNetworkGame() then
+        Game.GameTimeSetFactor(_PlayerID, self.Briefing[_PlayerID].Backup.Speed);
     end
+    if self.Briefing[_PlayerID].RestoreCamera then
+        Camera.RTS_SetLookAtPosition(self.Briefing[_PlayerID].Backup.Camera[1], self.Briefing[_PlayerID].Backup.Camera[2]);
+        Camera.RTS_SetRotationAngle(self.Briefing[_PlayerID].Backup.Camera[3]);
+        Camera.RTS_SetZoomFactor(self.Briefing[_PlayerID].Backup.Camera[4]);
+    end
+
     self:DeactivateCinematicMode(_PlayerID);
     API.ActivateNormalInterface(_PlayerID);
     API.ActivateBorderScroll(_PlayerID);

@@ -70,6 +70,16 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- </td>
 -- </tr>
 -- <tr>
+-- <td>RestoreCamera</td>
+-- <td>boolean</td>
+-- <td>(Optional) Stellt die Kameraposition am Ende des Dialog wieder her. <br>Standard: ein</td>
+-- </tr>
+-- <tr>
+-- <td>RestoreGameSpeed</td>
+-- <td>boolean</td>
+-- <td>(Optional) Stellt die Geschwindigkeit von vor dem Dialog wieder her. <br>Standard: ein</td>
+-- </tr>
+-- <tr>
 -- <td>EnableGlobalImmortality</td>
 -- <td>boolean</td>
 -- <td>(Optional) Alle Einheiten und Gebäude werden unverwundbar solange das Briefing aktiv ist. <br>Standard: ein</td>
@@ -172,6 +182,12 @@ function API.StartBriefing(_Briefing, _Name, _PlayerID)
     end
     if _Briefing.EnableBorderPins == nil then
         _Briefing.EnableBorderPins = false;
+    end
+    if _Briefing.RestoreGameSpeed == nil then
+        _Briefing.RestoreGameSpeed = true;
+    end
+    if _Briefing.RestoreCamera == nil then
+        _Briefing.RestoreCamera = true;
     end
     ModuleBriefingSystem.Global:StartBriefing(_Name, PlayerID, _Briefing);
 end
@@ -427,8 +443,8 @@ end
 -- das Briefing gebunden.
 --
 -- <h5>Briefing Page</h5>
--- Eine Dialog Page ist eine einfache Seite. Sie kann für die Darstellung von
--- Dialogen zwischen Spielfiguren benutzt werden.
+-- Die Briefing Page definiert, was zum Zeitpunkt ihrer Anzeige dargestellt
+-- wird.
 --
 -- Folgende Parameter werden als Felder (Name = Wert) übergeben:
 -- <table border="1">
@@ -592,7 +608,7 @@ end
 --    Position     = "Marcus",
 --    Rotation     = 30,
 --    DialogCamera = true,
---};
+-- };
 --
 -- -- Eine Seite mit Optionen
 -- -- Hier können Namen von Pages angegeben werden oder Aktionen, welche etwas
@@ -607,7 +623,7 @@ end
 --        {"Antwort 1", "Zielseite"},
 --        {"Antwort 2", Option2Clicked},
 --    },
---};
+-- };
 --
 function AP(_Data)
     assert(false);
@@ -693,6 +709,9 @@ end
 -- ASP("Title", "Some important text.", true, "Marcus", MyFunction);
 -- -- Überspringen erlauben/verbieten
 -- ASP("Title", "Some important text.", true, "HQ", nil, true);
+-- -- In Kombination mit AAN
+-- -- (Hier ist Angabe des Page Name Pflicht.)
+-- ASP("Page1", "Title", "Some important text.");
 --
 function ASP(...)
     assert(false);
@@ -708,13 +727,15 @@ end
 -- <b>Hinweis</b>: Diese Funktion erzeugt keine eigene Seite!
 --
 -- <b>Hinweis</b>: Kameraanimationen laufen unabhängig von der Geschwindigkeit
--- des Spiels ab. Also auch, wenn das Spiel pausiert oder beschleunigt ist!
+-- des Spiels ab. Also auch, wenn das Spiel pausiert oder beschleunigt ist
+-- - was im Regelfall bei Briefings nicht der Fall sein sollte!
 --
--- Animationen werden beim Aufruf der Seite in die Warteschlange geschoben und
--- ausgeführt, sobald keine anderen Animationen mehr laufen. Dadurch ist es nun
--- möglich, mehrere Seiten Text mit der gleichen Kamerabewegung anzuzeigen.
--- Laufende Animationen können auch bei Aufruf der Seite abgebrochen werden,
--- damit die neuen Animationen sofort beginnen.
+-- Eine Animation wird über den Namen einer Page an diese Page gebunden und
+-- in die Animationswarteschlange eingefügt, sobald die Page angezeigt wird.
+-- Läuft bereits eine Animation, wird die neue Animation hinten angehangen.
+-- Will man dies nicht, muss man die vorherigen Animationen löschen. Es ist
+-- damit also einfach möglich, viele Textseiten zu schreiben, für die nur
+-- noch eine einzige Kameraeinstellung vorgenommen werden muss.
 --
 -- Es gibt 5 Anwendungsfälle:
 -- <ol>
