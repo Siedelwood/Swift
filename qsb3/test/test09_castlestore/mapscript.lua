@@ -151,14 +151,18 @@ GameCallback_QSB_OnEventReceived = function(_EventID, ...)
     --     local TypeID2 = Logic.GetEntityType(arg[3]);
     --     local TypeName2 = Logic.GetEntityTypeName(TypeID2);
     --     API.Note(TypeName2 .. " (Player " ..arg[4].. ") attacked " ..TypeName1.. " (Player " ..arg[2].. ")");
+    elseif _EventID == QSB.ScriptEvents.BuildingUpgraded then
+        local TypeID1 = Logic.GetEntityType(arg[1]);
+        local TypeName1 = Logic.GetEntityTypeName(TypeID1);
+        API.Note(TypeName1 .. " upgrade finished (Player " ..arg[2].. ", Level " ..arg[3].. ")");
     elseif _EventID == QSB.ScriptEvents.UpgradeStarted then
         local TypeID1 = Logic.GetEntityType(arg[1]);
         local TypeName1 = Logic.GetEntityTypeName(TypeID1);
         API.Note(TypeName1 .. " upgrade start (Player " ..arg[2].. ")");
     elseif _EventID == QSB.ScriptEvents.UpgradeCanceled then
-        local TypeID1 = Logic.GetEntityType(arg[1]);
-        local TypeName1 = Logic.GetEntityTypeName(TypeID1);
-        API.Note(TypeName1 .. " upgrade canceled (Player " ..arg[2].. ")");
+        -- local TypeID1 = Logic.GetEntityType(arg[1]);
+        -- local TypeName1 = Logic.GetEntityTypeName(TypeID1);
+        -- API.Note(TypeName1 .. " upgrade canceled (Player " ..arg[2].. ")");
     -- elseif _EventID == QSB.ScriptEvents.EntityDestroyed then
     --     local TypeID1 = Logic.GetEntityType(arg[1]);
     --     local TypeName1 = Logic.GetEntityTypeName(TypeID1);
