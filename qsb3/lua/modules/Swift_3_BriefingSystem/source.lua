@@ -19,6 +19,12 @@ ModuleBriefingSystem = {
         BriefingCounter = 0,
     },
     Local = {
+        ParallaxWidgets = {
+            {"/EndScreen/EndScreen/BackGround", "/EndScreen/EndScreen"},
+            {"/InGame/Root/BlackStartScreen/BG", "/InGame/Root/BlackStartScreen"},
+            {"/InGame/Root/EndScreen/BlackBG", "/InGame/Root/EndScreen"},
+            {"/InGame/Root/EndScreen/BG", "/InGame/Root/EndScreen"},
+        },
         Briefing = {},
     },
     -- This is a shared structure but the values are asynchronous!
@@ -110,6 +116,9 @@ function ModuleBriefingSystem.Global:BriefingExecutionController()
         if self.Briefing[i] and not self.Briefing[i].DisplayIngameCutscene then
             local PageID = self.Briefing[i].CurrentPage;
             local Page = self.Briefing[i][PageID];
+            -- Paralax Animation
+            self:AnimateParallaxes(i)
+            -- Auto Skip
             if Page and not Page.MC and Page.Duration > 0 then
                 if (Page.Started + Page.Duration) < Logic.GetTime() then
                     self:NextPage(i);
@@ -282,6 +291,24 @@ function ModuleBriefingSystem.Global:DisplayPage(_PlayerID, _PageID)
     );
 end
 
+function ModuleBriefingSystem.Global:AnimateParallaxes(_PlayerID)
+    local PageID = self.Briefing[_PlayerID].CurrentPage;
+    local Page = self.Briefing[_PlayerID][PageID];
+
+    if type(Page.Parallax) == "table" then
+        for i= 1, #Page.Parallax do
+            local U0, V0, U1, V1, A, I = 0, 0, 1, 1, 255, nil;
+            if type(Page.Parallax[i].Animation) == "function" then
+                U0, V0, U1, V1, A, I = Page.Parallax[i].Animation(Page);
+            end
+            Logic.ExecuteInLuaLocalState(string.format(
+                [[ModuleBriefingSystem.Local.Briefing[%d][%d].Parallax[%d].Animation = {%f, %f, %f, %f, %d, %s}]],
+                _PlayerID, PageID, i, U0, V0, U1, V1, A, (I and "\"" ..I.. "\"") or "nil"
+            ))
+        end
+    end
+end
+
 function ModuleBriefingSystem.Global:SkipButtonPressed(_PlayerID, _PageID)
     if not self.Briefing[_PlayerID] then
         return;
@@ -444,8 +471,7 @@ function ModuleBriefingSystem.Local:DisplayPage(_PlayerID, _PageID, _PageData)
         self:DisplayPageControls(_PlayerID, _PageID);
         self:DisplayPageAnimations(_PlayerID, _PageID);
         self:DisplayPageFader(_PlayerID, _PageID);
-        self:DisplayPagePortraits(_PlayerID, _PageID);
-        self:DisplayPageSplashScreen(_PlayerID, _PageID);
+        self:DisplayPageParallaxes(_PlayerID, _PageID);
         if self.Briefing[_PlayerID][_PageID].MC then
             self:DisplayPageOptionsDialog(_PlayerID, _PageID);
         end
@@ -568,86 +594,50 @@ function ModuleBriefingSystem.Local:DisplayPageFader(_PlayerID, _PageID)
     end
 end
 
-function ModuleBriefingSystem.Local:DisplayPagePortraits(_PlayerID, _PageID)    
+function ModuleBriefingSystem.Local:DisplayPageParallaxes(_PlayerID, _PageID)
     local Page = self.Briefing[_PlayerID][_PageID];
-    if Page.Portrait then
-        self:SetPagePortraits(_PlayerID, _PageID);
-    else
-        XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 1, 0);
+    for i= 1, #self.ParallaxWidgets do
+        XGUIEng.SetMaterialTexture(self.ParallaxWidgets[i][1], 1, "");
+        XGUIEng.SetMaterialColor(self.ParallaxWidgets[i][1], 1, 255, 255, 255, 0);
     end
-end
-
-function ModuleBriefingSystem.Local:SetPagePortraits(_PlayerID, _PageID, _U0, _V0, _U1, _V1, _A, _I)
-    local Page = self.Briefing[_PlayerID][_PageID];
-    if type(Page.Portrait) == "table" then
-        XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 1, 255);
-        XGUIEng.SetMaterialTexture("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 1, _I or Page.Portrait.Image);
-        XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 0, 0, 400, 600);
-        XGUIEng.SetMaterialUV("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 1, _U0 or 0, _V0 or 0, _U1 or 1, _V1 or 1);
-        XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 1, _A or 1);
-    else
-        XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 1, 255);
-        XGUIEng.SetMaterialTexture("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 1, _I or Page.Portrait);
-        XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 0, 0, 400, 600);
-        XGUIEng.SetMaterialUV("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 1, _U0 or 0, _V0 or 0, _U1 or 1, _V1 or 1);
-        XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 1, _A or 1);
-    end
-end
-
-function ModuleBriefingSystem.Local:AnimatePortrait(_PlayerID)
-    local PageID = self.Briefing[_PlayerID].CurrentPage;
-    local Page = self.Briefing[_PlayerID][PageID];
-
-    local PTW = "/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG";
-    if type(Page.Portrait) == "table" then
-        local U0, V0, U1, V1, A, I = 0, 0, 1, 1, 255, nil;
-        if type(Page.Portrait.Animation) == "function" then
-            U0, V0, U1, V1, A, I = Page.Portrait.Animation(Page);
+    if Page.Parallax then
+        for i= 1, #Page.Parallax do
+            self:SetPageParallax(_PlayerID, _PageID, i);
         end
-        self:SetPagePortraits(_PlayerID, PageID, U0, V0, U1, V1, A, I);
     end
 end
 
-function ModuleBriefingSystem.Local:DisplayPageSplashScreen(_PlayerID, _PageID)
+function ModuleBriefingSystem.Local:SetPageParallax(_PlayerID, _PageID, _Index, _U0, _V0, _U1, _V1, _A, _I)
     local Page = self.Briefing[_PlayerID][_PageID];
-    if Page.Splashscreen then
-        self:SetPageSplashScreen(_PlayerID, _PageID);
-    else
-        XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/BG", 1, 0);
-    end
-end
-
-function ModuleBriefingSystem.Local:SetPageSplashScreen(_PlayerID, _PageID, _U0, _V0, _U1, _V1, _A, _I)
-    local Page = self.Briefing[_PlayerID][_PageID];
-    local SSW = "/InGame/ThroneRoom/KnightInfo/BG";
-
-    local size = {GUI.GetScreenSize()};
+    local Widget = self.ParallaxWidgets[_Index][1];
+    local Size = {GUI.GetScreenSize()};
     local u0, v0, u1, v1 = _U0 or 0, _V0 or 0, _U1 or 1, _V1 or 1;
-    if size[1]/size[2] < 1.6 then
+    if Size[1]/Size[2] < 1.6 then
         u0 = u0 + (u0 / 0.125);
         u1 = u1 - (u1 * 0.125);
     end
-    if type(Page.Splashscreen) == "table" then
-        XGUIEng.SetMaterialAlpha(SSW, 0, _A or 255);
-        XGUIEng.SetMaterialTexture(SSW, 0, _I or Page.Splashscreen.Image);
-        XGUIEng.SetMaterialUV(SSW, 0, u0, v0, u1, v1);
-    else
-        XGUIEng.SetMaterialAlpha(SSW, 0, _A or 255);
-        XGUIEng.SetMaterialTexture(SSW, 0, _I or Page.Splashscreen);
-        XGUIEng.SetMaterialUV(SSW, 0, u0, v0, u1, v1);
-    end
+    XGUIEng.SetMaterialAlpha(Widget, 1, _A or 255);
+    XGUIEng.SetMaterialTexture(Widget, 1, _I or Page.Parallax[_Index].Image);
+    XGUIEng.SetMaterialUV(Widget, 1, u0, v0, u1, v1);
 end
 
-function ModuleBriefingSystem.Local:AnimateSplashScreen(_PlayerID)
+function ModuleBriefingSystem.Local:AnimateParallaxes(_PlayerID)
     local PageID = self.Briefing[_PlayerID].CurrentPage;
     local Page = self.Briefing[_PlayerID][PageID];
 
-    if type(Page.Splashscreen) == "table" then
-        local U0, V0, U1, V1, A, I = 0, 0, 1, 1, 255, nil;
-        if type(Page.Splashscreen.Animation) == "function" then
-            U0, V0, U1, V1, A, I = Page.Splashscreen.Animation(Page);
+    if type(Page.Parallax) == "table" then
+        for i= 1, #Page.Parallax do
+            local U0, V0, U1, V1, A, I = 0, 0, 1, 1, 255, nil;
+            if type(Page.Parallax[i].Animation) == "table" then
+                U0 = Page.Parallax[i].Animation[1] or U0;
+                V0 = Page.Parallax[i].Animation[2] or V0;
+                U1 = Page.Parallax[i].Animation[3] or U1;
+                V1 = Page.Parallax[i].Animation[4] or V1;
+                A  = Page.Parallax[i].Animation[5] or A;
+                I  = Page.Parallax[i].Animation[6] or I;
+            end
+            self:SetPageParallax(_PlayerID, PageID, i, U0, V0, U1, V1, A, I);
         end
-        self:SetPageSplashScreen(_PlayerID, PageID, U0, V0, U1, V1, A, I);
     end
 end
 
@@ -731,11 +721,8 @@ function ModuleBriefingSystem.Local:ThroneRoomCameraControl(_PlayerID, _Page)
         Camera.ThroneRoom_SetLookAt(LX, LY, LZ);
         Camera.ThroneRoom_SetFOV(FOV);
 
-        -- Portrait
-        self:AnimatePortrait(_PlayerID);
-
-        -- Splashscreen
-        self:AnimateSplashScreen(_PlayerID);
+        -- Parallax
+        self:AnimateParallaxes(_PlayerID);
 
         -- Multiple Choice
         if self.Briefing[_PlayerID].MCSelectionIsShown then
@@ -813,7 +800,7 @@ function ModuleBriefingSystem.Local:GetCameraProperties(_PlayerID)
     local endFOV = ((FlyTo and FlyTo.FOV) or CurrPage.FOV) or 42.0;
 
     local factor = self:GetLERP(_PlayerID);
-    
+
     local lPLX, lPLY, lPLZ = self:ConvertPosition(startPosition);
     local cPLX, cPLY, cPLZ = self:ConvertPosition(endPosition);
     local lookAtX = lPLX + (cPLX - lPLX) * factor;
@@ -944,13 +931,28 @@ function ModuleBriefingSystem.Local:ActivateCinematicMode(_PlayerID)
         return;
     end
     self.CinematicActive = true;
-    
+
     local LoadScreenVisible = API.IsLoadscreenVisible();
     if LoadScreenVisible then
         XGUIEng.PopPage();
     end
     local ScreenX, ScreenY = GUI.GetScreenSize();
 
+    -- Parallax
+    function EndScreen_ExitGame() end
+    function MissionFadeInEndScreen() end
+    for i= 1, #self.ParallaxWidgets do
+        XGUIEng.ShowWidget(self.ParallaxWidgets[i][1], 1);
+        XGUIEng.ShowWidget(self.ParallaxWidgets[i][2], 1);
+        XGUIEng.PushPage(self.ParallaxWidgets[i][2], false);
+
+        XGUIEng.SetMaterialTexture(self.ParallaxWidgets[i][1], 1, "");
+        XGUIEng.SetMaterialColor(self.ParallaxWidgets[i][1], 1, 255, 255, 255, 0);
+        XGUIEng.SetMaterialUV(self.ParallaxWidgets[i][1], 1, 0, 0, 1, 1);
+    end
+    XGUIEng.ShowWidget("/EndScreen/EndScreen/BG", 0);
+
+    -- Throneroom Main
     XGUIEng.ShowWidget("/InGame/ThroneRoom", 1);
     XGUIEng.PushPage("/InGame/ThroneRoom/KnightInfo", false);
     XGUIEng.PushPage("/InGame/ThroneRoomBars", false);
@@ -988,22 +990,9 @@ function ModuleBriefingSystem.Local:ActivateCinematicMode(_PlayerID)
     -- Briefing messages
     XGUIEng.ShowAllSubWidgets("/InGame/ThroneRoom/KnightInfo", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/Text", 1);
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/BG", 1);
+    XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/BG", 0);
     XGUIEng.SetText("/InGame/ThroneRoom/KnightInfo/Text", " ");
     XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/Text", 200, 300, 1000, 10);
-
-    -- Splashscreen
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/BG", 1);
-    XGUIEng.SetMaterialColor("/InGame/ThroneRoom/KnightInfo/BG", 0, 255, 255, 255, 0);
-    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/BG", 0, 0);
-
-    -- Portrait
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/LeftFrame", 1);
-    XGUIEng.ShowAllSubWidgets("/InGame/ThroneRoom/KnightInfo/LeftFrame", 0);
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 1);
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 1);
-    XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 0, 0, 400, 600);
-    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 0, 0);
 
     self.SelectionBackup = {GUI.GetSelectedEntities()};
     GUI.ClearSelection();
@@ -1060,6 +1049,12 @@ function ModuleBriefingSystem.Local:DeactivateCinematicMode(_PlayerID)
         Display.SetUserOptionOcclusionEffect(1);
     end
 
+    XGUIEng.ShowWidget("/EndScreen/EndScreen/BG", 1);
+    for i= 1, #self.ParallaxWidgets do
+        XGUIEng.ShowWidget(self.ParallaxWidgets[i][1], 0);
+        XGUIEng.ShowWidget(self.ParallaxWidgets[i][2], 0);
+        XGUIEng.PopPage();
+    end
     XGUIEng.PopPage();
     XGUIEng.PopPage();
     XGUIEng.PopPage();

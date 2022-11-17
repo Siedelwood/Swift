@@ -125,6 +125,39 @@ end
 
 -- -------------------------------------------------------------------------- --
 
+-- > BriefingTest2([[foo]], 1)
+
+function BriefingTest2(_Name, _PlayerID)
+    local Briefing = {
+        EnableBorderPins = false,
+        EnableSky = true,
+        EnableFoW = false,
+    }
+    local AP, ASP, AAN = API.AddBriefingPages(Briefing);
+
+    AP {
+        Title    = "Page",
+        Text     = "This is the page.",
+        Position = "npc1",
+        BarOpacity  = 0,
+        Parallax = {
+            {Image = "C:/IMG/Paralax6.png",
+             Animation = function(_Page)
+                local Factor = math.min((Logic.GetTime() - _Page.Started) / 10, 1);
+                return 0 + (0.2 * Factor), 0, 0.8 + (0.2 * Factor), 1, 255, nil;
+             end}
+        }
+    }
+
+    Briefing.Starting = function(_Data)
+    end
+    Briefing.Finished = function(_Data)
+    end
+    API.StartBriefing(Briefing, _Name, _PlayerID)
+end
+
+-- -------------------------------------------------------------------------- --
+
 function DialogTest(_Name, _PlayerID)
     local Dialog = {
         EnableFoW = false,
