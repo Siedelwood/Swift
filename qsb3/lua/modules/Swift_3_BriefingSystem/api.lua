@@ -102,29 +102,81 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- </table>
 --
 -- <h5>Animationen</h5>
--- Animationen für Seiten eines Briefings werden vom Text entkoppelt. Das hat
--- den Charme, dass Spielfiguren erzählen und erzählen und die Kamera über die
--- ganze Zeit die gleiche Animation zeigt, was das Lesen angenehmer macht.
+-- Kameraanimationen für Seiten eines Briefings wurden vom Text entkoppelt. Das
+-- hat den Charme, dass Spielfiguren erzählen und erzählen und die Kamera über
+-- die ganze Zeit die gleiche Animation zeigt, was das Lesen angenehmer macht.
 --
--- Animationen werden nur erzeugt, wenn die Page noch keine Position hat!
+-- <b>Hinweis:</b> Animationen werden nur erzeugt, wenn die Page noch keine Position hat!
+-- Andernfalls werden die Werte für Angle, Rotation und Zoom aus der Page
+-- genommen und/oder Defaults verwendet.
 --
--- Animationen können auch über eine Table angegeben werden. Diese wird direkt
+-- Animationen können über eine Table angegeben werden. Diese wird direkt
 -- an die Briefing Table angehangen. Die Animation wird die Kamera dann von
--- Position 1 zu Position 2 bewegen.
+-- Position 1 zu Position 2 bewegen. Dabei ist die zweite Position optional
+-- und kann weggelassen werden.
 -- <p>Beispiel:</p>
 -- <pre>
 -- Briefing.PageAnimations = {
 --    ["Page1"] = {
---        -- Position1, Rotation1, Zoom1, Angle1, Position2, Rotation2, Zoom2, Angle2, Animationsdauer
---        {"pos4", -60, 2000, 35, "pos4", -30, 2000, 25, 30}
+--        -- Relativdarstellung
+--        -- Animationsdauer, Position1, Rotation1, Zoom1, Angle1, Position2, Rotation2, Zoom2, Angle2
+--        {30, "pos4", -60, 2000, 35, "pos4", -30, 2000, 25},
+--        -- Hier können weitere Einträge folgen...
 --    },
 --    ["Page3"] = {
 --        -- Diese Option löscht alle laufenden Animationen
 --        PurgeOld = true,
---        {"pos2", -45, 6000, 35, "pos2", -45, 3000, 35, 30},
+--        -- Vektordarstellung
+--        -- Animationsdauer, {Position1, Höhe}, {LookAt1, Höhe}, {Position2, Höhe}, {LookAt2, Höhe}, Animationsdauer
+--        {30, {"pos2", 500}, {"pos4", 0}, {"pos7", 1000}, {"pos8", 0}},
+--        -- Hier können weitere Einträge folgen...
 --    }
 --};</pre>
--- Es wird aber empfohlen, die Funktion <a href="#AAN">AAN</a> zu verwenden.
+--
+-- <h5>Parallax</h5>
+-- Unter Parallax versteht man (im Kontext eines Videospiels) einen Hintergrund,
+-- dessen Bildausschnitt veränderlich ist. So wurden früher z.B. der Hintergrund
+-- eines Side Scrollers (Super Mario, Sonic, ...) realisiert.
+--
+-- Während eines Briefings können bis zu 4 übereinander liegende Ebenen solcher
+-- Parallaxe verwendet werden. Dabei wird eine Grafik vorgegeben, die durch
+-- Angabe von UV-Koordinaten und Alphawert animiert werden kann. Diese Grafiken
+-- liegen hinter allen Elementen des Thronerooms.
+--
+-- Parallaxe können über eine Table angegeben werden. Diese wird direkt an die
+-- Briefing Table angehangen. Jede Ebene kann getrennt von den anderen agieren.
+-- Ein Parallax kann statisch ein Bild anzeigen oder animiert sein. In diesem
+-- Fall wird sich von Position 1 zu Position 2 bewegt, wobei Position 2 optional
+-- ist und weggelassen werden kann.
+--
+-- Die UV-Koordinaten ergeben zwei Punkte auf der Grafik aus der ein Rechteck
+-- ergänzt wird. Die Koordinaten können entweder pixelgenau order relativ
+-- angegeben werden. Pixelgenau bedeutet, dass man einen Punkt exakt an einer
+-- bestimmten Position auf der Grafik auswählt und setzt (z.B. 100, 50). Gibt
+-- man relative Werte an, dann benutzt man Zahlen zwischen 0 und 1, wobei 0 für
+-- 0% und 1 für 100% steht. In jedem Fall sind die Koordinaten absolut oder
+-- relativ zur Grafik und nicht zur Bildschirmgröße.
+--
+-- <b>Achtung:</b> Die Grafiken müssen immer im 16:9 Format sein. Für den Fall,
+-- dass das Spiel in einer 4:3 Auflösung gespielt wird, werden automatisch die
+-- angegebenen Koordinaten umgerechnet und links und rechts abgeschnitten.
+--
+-- <p>Beispiel:</p>
+-- <pre>
+-- Briefing.PageParallax = {
+--    ["Page1"] = {
+--        -- Bilddatei, Anzeigedauer, U0Start, V0Start, U1Start, V1Start, AlphaStart, U0End, V0End, U1End, V1End, AlphaEnd
+--        {"C:/IMG/Paralax6.png", 60, 0, 0, 0.8, 1, 255, 0.2, 0, 1, 1, 255},
+--        -- Hier können weitere Einträge folgen...
+--    },
+--    ["Page3"] = {
+--        -- Diese Option löscht alle Parallaxe
+--        PurgeOld = true,
+--        -- Bilddatei, Anzeigedauer, U0Start, V0Start, U1Start, V1Start, AlphaStart
+--        {"C:/IMG/Paralax1.png", 1, 0, 0, 1, 1, 180},
+--        -- Hier können weitere Einträge folgen...
+--    }
+--};</pre>
 --
 -- @param[type=table]  _Briefing Definition des Briefing
 -- @param[type=string] _Name     Name des Briefing
@@ -134,7 +186,7 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- @usage
 -- function Briefing1(_Name, _PlayerID)
 --     local Briefing = {};
---     local AP, ASP, AAN = API.AddBriefingPages(Briefing);
+--     local AP, ASP = API.AddBriefingPages(Briefing);
 --
 --     -- Aufrufe von AP oder ASP um Seiten zu erstellen
 --
@@ -215,7 +267,6 @@ end
 -- @param[type=table] _Briefing Briefing Definition
 -- @return[type=function] <a href="#AP">AP</a>
 -- @return[type=function] <a href="#ASP">ASP</a>
--- @return[type=function] <a href="#AA">AA</a>
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -224,7 +275,7 @@ end
 -- -- Wenn zusätzlich ASP benötigt wird.
 -- local AP, ASP = API.AddBriefingPages(Briefing);
 -- -- Wenn auch die Kurzschreibweise für Animationen gebraucht wird.
--- local AP, ASP, AA = API.AddBriefingPages(Briefing);
+-- local AP, ASP = API.AddBriefingPages(Briefing);
 --
 function API.AddBriefingPages(_Briefing)
     _Briefing.GetPage = function(self, _NameOrID)
@@ -252,44 +303,54 @@ function API.AddBriefingPages(_Briefing)
                 return 0;
             end
 
-            -- Simple camera position
+            -- Simple camera animation
             if _Page.Position then
-                local Angle = _Page.Angle;
-                if not Angle then
-                    Angle = QSB.Briefing.CAMERA_ANGLEDEFAULT;
+                local Angle1 = _Page.Angle;
+                if not Angle1 then
+                    Angle1 = QSB.Briefing.CAMERA_ANGLEDEFAULT;
                     if _Page.DialogCamera then
-                        Angle = QSB.Briefing.DLGCAMERA_ANGLEDEFAULT;
+                        Angle1 = QSB.Briefing.DLGCAMERA_ANGLEDEFAULT;
                     end
                 end
 
-                local Rotation = _Page.Rotation;
-                if not Rotation then
-                    Rotation = QSB.Briefing.CAMERA_ROTATIONDEFAULT;
+                local Rotation1 = _Page.Rotation;
+                if not Rotation1 then
+                    Rotation1 = QSB.Briefing.CAMERA_ROTATIONDEFAULT;
                     if _Page.DialogCamera then
-                        Rotation = QSB.Briefing.DLGCAMERA_ROTATIONDEFAULT;
+                        Rotation1 = QSB.Briefing.DLGCAMERA_ROTATIONDEFAULT;
                     end
                 end
 
-                local Zoom = _Page.Zoom;
-                if not Zoom then
-                    Zoom = QSB.Briefing.CAMERA_ZOOMDEFAULT;
+                local Zoom1 = _Page.Zoom;
+                if not Zoom1 then
+                    Zoom1 = QSB.Briefing.CAMERA_ZOOMDEFAULT;
                     if _Page.DialogCamera then
-                        Zoom = QSB.Briefing.DLGCAMERA_ZOOMDEFAULT;
+                        Zoom1 = QSB.Briefing.DLGCAMERA_ZOOMDEFAULT;
                     end
+                end
+
+                local Position2 = _Page.Position;
+                local Rotation2 = Rotation1;
+                local Zoom2     = Zoom1;
+                local Angle2    = Angle1;
+                if _Page.FlyTo then
+                    Position2 = _Page.FlyTo.Position or Position2;
+                    Rotation2 = _Page.FlyTo.Rotation or Rotation2;
+                    Zoom2     = _Page.FlyTo.Zoom or Zoom2;
+                    Angle2    = _Page.FlyTo.Angle or Angle2;
                 end
 
                 _Briefing.PageAnimations[Identifier] = {
-                    {PurgeOld = true,
-                     _Page.Position, Rotation, Zoom, Angle,
-                     _Page.Position, Rotation, Zoom, Angle,
-                     _Page.Duration or 1
-                    }
+                    PurgeOld = true,
+                    {_Page.Duration or 1,
+                     _Page.Position, Rotation1, Zoom1, Angle1,
+                     Position2, Rotation2, Zoom2, Angle2}
                 };
             end
 
             -- Language
-            _Page.Title = API.Localize(_Page.Title);
-            _Page.Text = API.Localize(_Page.Text);
+            _Page.Title = API.Localize(_Page.Title or "");
+            _Page.Text = API.Localize(_Page.Text or "");
             _Page.FOV = _Page.FOV or 42.0;
 
             -- Display time
@@ -301,7 +362,7 @@ function API.AddBriefingPages(_Briefing)
                     if _Page.DisableSkipping == nil then
                         _Page.DisableSkipping = false;
                     end
-                    _Page.Duration = string.len(_Page.Text or "") * QSB.Briefing.TIMER_PER_CHAR;
+                    _Page.Duration = _Page.Text:len() * QSB.Briefing.TIMER_PER_CHAR;
                     if _Page.Duration < 6 then
                         _Page.Duration = 6;
                     end
@@ -328,60 +389,6 @@ function API.AddBriefingPages(_Briefing)
         end
         table.insert(_Briefing, _Page);
         return _Page;
-    end
-
-    local AAN = function(_Identifier, ...)
-        _Briefing.PageAnimations = _Briefing.PageAnimations or {};
-
-        local PageID = _Identifier;
-        if type(_Identifier) == "string" then
-            PageID = nil;
-            for i= 1, #_Briefing do
-                if type(_Briefing[i]) == "table" and _Briefing[i].Name == _Identifier then
-                    PageID = i;
-                end
-            end
-        end
-        if not PageID then
-            error("AAN[Briefing]: Can not find name or ID '".. tostring(_Identifier).. "'!");
-            return;
-        end
-        if not _Briefing.PageAnimations[_Identifier] then
-            _Briefing.PageAnimations[_Identifier] = {};
-        end
-        if #arg == 1 then
-            _Briefing.PageAnimations[_Identifier].PurgeOld = arg[1] == true;
-        else
-            -- Static position (relative)
-            if #arg == 4 then
-                table.insert(_Briefing.PageAnimations[_Identifier], {
-                    arg[1], arg[2], arg[3], arg[4],
-                    arg[1], arg[2], arg[3], arg[4],
-                    1
-                });
-            -- Camera movement (relative)
-            elseif #arg == 9 then
-                table.insert(_Briefing.PageAnimations[_Identifier], {
-                    arg[1], arg[2], arg[3], arg[4],
-                    arg[5], arg[6], arg[7], arg[8],
-                    arg[9]
-                });
-            -- Static position (vector)
-            elseif #arg == 6 then
-                table.insert(_Briefing.PageAnimations[_Identifier], {
-                    {arg[1], arg[2], arg[3]}, {arg[4], arg[5], arg[6]},
-                    {arg[1], arg[2], arg[3]}, {arg[4], arg[5], arg[6]},
-                    1
-                });
-            -- Camera movement (vector)
-            elseif #arg == 13 then
-                table.insert(_Briefing.PageAnimations[_Identifier], {
-                    {arg[1], arg[2], arg[3]}, {arg[4], arg[5], arg[6]},
-                    {arg[7], arg[8], arg[9]}, {arg[10], arg[11], arg[12]},
-                    arg[13]
-                });
-            end
-        end
     end
 
     local ASP = function(...)
@@ -432,6 +439,11 @@ function API.AddBriefingPages(_Briefing)
             Rotation        = Rotation,
         };
     end
+
+    -- Prevent hard errors
+    local AAN = function()
+        error("AAN has been removed!");
+    end;
     return AP, ASP, AAN;
 end
 
@@ -504,7 +516,7 @@ end
 -- <tr>
 -- <td>Rotation</td>
 -- <td>number</td>
--- <td>(Optional) Die Rotation der Kamera gibt den Winkel an, indem die Kamera
+-- <td>(Optional) Rotation der Kamera gibt den Winkel an, indem die Kamera
 -- um das Ziel gedreht wird.</td>
 -- </tr>
 -- <tr>
@@ -515,7 +527,14 @@ end
 -- <tr>
 -- <td>Angle</td>
 -- <td>number</td>
--- <td>(Optional) Der Angle gibt den Winkel an, in dem die Kamera gekippt wird.
+-- <td>(Optional) Angle gibt den Winkel an, in dem die Kamera gekippt wird.
+-- </td>
+-- </tr>
+-- <tr>
+-- <td>FlyTo</td>
+-- <td>table</td>
+-- <td>(Optional) Kann ein zweites Set von Position, Rotation, Zoom und Angle
+-- enthalten, zudem sich die Kamera dann bewegt.
 -- </td>
 -- </tr>
 -- <tr>
@@ -553,7 +572,7 @@ end
 -- </tr>
 -- </table>
 --
--- <br><h5>Multiple Choice</h5>
+-- <h5>Multiple Choice</h5>
 -- In einem Briefing kann der Spieler auch zur Auswahl einer Option gebeten
 -- werden. Dies wird als Multiple Choice bezeichnet. Schreibe die Optionen
 -- in eine Untertabelle MC.
@@ -709,83 +728,8 @@ end
 -- ASP("Title", "Some important text.", true, "Marcus", MyFunction);
 -- -- Überspringen erlauben/verbieten
 -- ASP("Title", "Some important text.", true, "HQ", nil, true);
--- -- In Kombination mit AAN
--- -- (Hier ist Angabe des Page Name Pflicht.)
--- ASP("Page1", "Title", "Some important text.");
 --
 function ASP(...)
-    assert(false);
-end
-
----
--- Erzeugt eine neue Animation für eine Seite in Kurzschreibweise.
---
--- <b>Achtung</b>: Diese Funktion wird von
--- <a href="#API.AddBriefingPages">API.AddBriefingPages</a> erzeugt und an
--- das Briefing gebunden.
---
--- <b>Hinweis</b>: Diese Funktion erzeugt keine eigene Seite!
---
--- <b>Hinweis</b>: Kameraanimationen laufen unabhängig von der Geschwindigkeit
--- des Spiels ab. Also auch, wenn das Spiel pausiert oder beschleunigt ist
--- - was im Regelfall bei Briefings nicht der Fall sein sollte!
---
--- Eine Animation wird über den Namen einer Page an diese Page gebunden und
--- in die Animationswarteschlange eingefügt, sobald die Page angezeigt wird.
--- Läuft bereits eine Animation, wird die neue Animation hinten angehangen.
--- Will man dies nicht, muss man die vorherigen Animationen löschen. Es ist
--- damit also einfach möglich, viele Textseiten zu schreiben, für die nur
--- noch eine einzige Kameraeinstellung vorgenommen werden muss.
---
--- Es gibt 5 Anwendungsfälle:
--- <ol>
--- <li><b>Kamerasprung (relativ)</b>:<br>Die Kamera springt zur angegebenen
--- Position. Koordinaten werden mittels Position, Rotation, Entfernung und
--- Kamerawinkel (in dieser Reihenfolge) angegeben.</li>
--- <li><b>Kameraanimation (relativ)</b>:<br>Die Kamera bewegt sich von einem
--- Punkt zum anderen. Beide Punkte werden mittels Position, Rotation, Entfernung
--- und Kamerawinkel (in dieser Reihenfolge) angegeben.<br>Danach muss die Dauer
--- der Animation in Sekunden angegeben werden.</li>
--- <li><b>Kamerasprung (Vektor)</b>:<br>Die Kamera springt zur angegebenen
--- Vektor. Dafür wird die Kameraposition und danach das Blickziels übergeben.
--- Für beide Punkte muss die Reihenfolge beachtet werden. Also X-, Y- und dann
--- Z-Koordinate.</li>
--- <li><b>Kameraanimation (Vektor)</b>:<br>Die Kamera bewegt sich von einem
--- Vektor zum anderen. Die Positionen werden genau wie bei 3. angegeben, nur
--- das es hier 4 Punkte statt nur 2 gibt.<br>Danach muss die Dauer der Animation
--- in Sekunden angegeben werden.</li>
--- <li><b>Animation abbrechen</b>:<br>Alle laufenden Animationen werden
--- abgebrochen sobald die Seite angezeigt wird. Danach werden die für die Seite
--- definierten Animationen ausgeführt.</li>
--- </ol>
---
--- @param _Identifier Name oder ID der Seite
--- @param ...         Daten der Animation
--- @within Briefing
---
--- @usage
--- -- statische Position (relativ)
--- -- AAN(_Identifier, _Position, _Rotation, _Zoom, _Angle)
--- AAN("Page1", "HQ1", -20, 7500, 38);
--- -- animierte Bewegung (relativ)
--- -- AAN(_Identifier, _Position1, _Rotation1, _Zoom1, _Angle1, _Position2, _Rotation2, _Zoom2, _Angle2, _Duration)
--- AAN("Page1", "HQ1", -20, 7500, 38, "Marcus", -40, 3500, 28, 30);
--- -- statische Position (Vektor)
--- -- AAN(_Identifier, _X1, _Y1, _Z1, _X2, _Y2, _Z2)
--- local x1, y1, z1 = Logic.EntityGetPos("CamPos1");
--- local x2, y2, z2 = Logic.EntityGetPos("HQ1");
--- AAN("Page1", x1, y1, z1, x2, y2, z2 + 3000);
--- -- animierte Bewegung (Vektor)
--- -- AAN(_Identifier, _X1, _Y1, _Z1, _X2, _Y2, _Z2, _X3, _Y3, _Z3, _X4, _Y4, _Z4, _Duration)
--- local x1, y1, z1 = Logic.EntityGetPos(GetID("CamPos1"));
--- local x2, y2, z2 = Logic.EntityGetPos(GetID("HQ1"));
--- local x3, y3, z3 = Logic.EntityGetPos(GetID("CamPos2"));
--- local x4, y4, z4 = Logic.EntityGetPos(GetID("Marcus"));
--- AAN("Page1", x1, y1, z1, x2, y2, z2 + 3000, x3, y3, z3, x4, y4, z4 + 2000, 30);
--- -- laufende Animationen abbrechen
--- AAN("Page1", true);
---
-function AAN(...)
     assert(false);
 end
 

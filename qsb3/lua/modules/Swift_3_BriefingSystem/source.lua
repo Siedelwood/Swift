@@ -116,8 +116,6 @@ function ModuleBriefingSystem.Global:BriefingExecutionController()
         if self.Briefing[i] and not self.Briefing[i].DisplayIngameCutscene then
             local PageID = self.Briefing[i].CurrentPage;
             local Page = self.Briefing[i][PageID];
-            -- Paralax Animation
-            self:AnimateParallaxes(i)
             -- Auto Skip
             if Page and not Page.MC and Page.Duration > 0 then
                 if (Page.Started + Page.Duration) < Logic.GetTime() then
@@ -164,6 +162,7 @@ function ModuleBriefingSystem.Global:NextBriefing(_PlayerID)
         Briefing.CurrentPage = 0;
         self.Briefing[_PlayerID] = Briefing;
         self:TransformAnimations(_PlayerID);
+        self:TransformParallax(_PlayerID);
 
         if Briefing.EnableGlobalImmortality then
             Logic.SetGlobalInvulnerability(1);
@@ -192,44 +191,80 @@ function ModuleBriefingSystem.Global:TransformAnimations(_PlayerID)
             if PageID ~= 0 then
                 self.Briefing[_PlayerID][PageID].Animations = {};
                 self.Briefing[_PlayerID][PageID].Animations.PurgeOld = v.PurgeOld == true;
-                for i= 1, #v, 1 do               
+                for i= 1, #v, 1 do
                     -- Relaive position
-                    if #v[i] == 9 then
-                        table.insert(self.Briefing[_PlayerID][PageID].Animations, {
-                            Duration = v[i][9] or (2 * 60),
-
-                            Start = {
-                                Position = (type(v[i][1]) ~= "table" and {v[i][1],0}) or v[i][1],
-                                Rotation = v[i][2],
-                                Zoom     = v[i][3],
-                                Angle    = v[i][4],
-                            },
-                            End = {
-                                Position = (type(v[i][5]) ~= "table" and {v[i][5],0}) or v[i][5],
-                                Rotation = v[i][6],
-                                Zoom     = v[i][7],
-                                Angle    = v[i][8],
-                            },
-                        });
+                    if type(v[i][3]) == "number" then
+                        local Entry = {};
+                        Entry.Duration = v[i][1] or (2 * 60);
+                        Entry.Start = {
+                            Position = (type(v[i][2]) ~= "table" and {v[i][2],0}) or v[i][2],
+                            Rotation = v[i][3] or -45,
+                            Zoom     = v[i][4] or 9000,
+                            Angle    = v[i][5] or 47,
+                        };
+                        local EndPosition = v[i][6] or Entry.Start.Position;
+                        Entry.End = {
+                            Position = (type(EndPosition) ~= "table" and {EndPosition,0}) or EndPosition,
+                            Rotation = v[i][7] or Entry.Start.Rotation,
+                            Zoom     = v[i][8] or Entry.Start.Zoom,
+                            Angle    = v[i][9] or Entry.Start.Angle,
+                        };
+                        table.insert(self.Briefing[_PlayerID][PageID].Animations, Entry);
                     -- Vector
-                    elseif #v[i] == 5 then
-                        table.insert(self.Briefing[_PlayerID][PageID].Animations, {
-                            Duration = v[i][5] or (2 * 60),
-
-                            Start = {
-                                Position = (type(v[i][1]) ~= "table" and {v[i][1],0}) or v[i][1],
-                                LookAt   = (type(v[i][2]) ~= "table" and {v[i][1],0}) or v[i][2],
-                            },
-                            End = {
-                                Position = (type(v[i][3]) ~= "table" and {v[i][5],0}) or v[i][3],
-                                LookAt   = (type(v[i][4]) ~= "table" and {v[i][1],0}) or v[i][4],
-                            },
-                        });
+                    elseif type(v[i][3]) == "table" then
+                        local Entry = {};
+                        Entry.Duration = v[i][1] or (2 * 60);
+                        Entry.Start = {
+                            Position = (type(v[i][2]) ~= "table" and {v[i][2],0}) or v[i][2],
+                            LookAt   = (type(v[i][3]) ~= "table" and {v[i][3],0}) or v[i][3],
+                        };
+                        local EndPosition = v[i][4] or Entry.Start.Position;
+                        local EndLookAt   = v[i][5] or Entry.Start.LookAt;
+                        Entry.End = {
+                            Position = (type(EndPosition) ~= "table" and {EndPosition,0}) or EndPosition,
+                            LookAt   = (type(EndLookAt) ~= "table" and {EndLookAt,0}) or EndLookAt,
+                        };
+                        table.insert(self.Briefing[_PlayerID][PageID].Animations, Entry);
                     end
                 end
             end
         end
         self.Briefing[_PlayerID].PageAnimations = nil;
+    end
+end
+
+function ModuleBriefingSystem.Global:TransformParallax(_PlayerID)
+    if self.Briefing[_PlayerID].PageParallax then
+        for k, v in pairs(self.Briefing[_PlayerID].PageParallax) do
+            local PageID = self:GetPageIDByName(_PlayerID, k);
+            if PageID ~= 0 then
+                self.Briefing[_PlayerID][PageID].Parallax = {};
+                self.Briefing[_PlayerID][PageID].Parallax.PurgeOld = v.PurgeOld == true;
+                for i= 1, 4, 1 do
+                    if v[i] then
+                        local Entry = {};
+                        Entry.Image = v[i][1];
+                        Entry.Duration = v[i][2] or (2 * 60);
+                        Entry.Start = {
+                            U0 = v[i][3] or 0,
+                            V0 = v[i][4] or 0,
+                            U1 = v[i][5] or 1,
+                            V1 = v[i][6] or 1,
+                            A  = v[i][7] or 255
+                        };
+                        Entry.End = {
+                            U0 = v[i][8] or Entry.Start.U0,
+                            V0 = v[i][9] or Entry.Start.V0,
+                            U1 = v[i][10] or Entry.Start.U1,
+                            V1 = v[i][11] or Entry.Start.V1,
+                            A  = v[i][12] or Entry.Start.A
+                        };
+                        self.Briefing[_PlayerID][PageID].Parallax[i] = Entry;
+                    end
+                end
+            end
+        end
+        self.Briefing[_PlayerID].PageParallax = nil;
     end
 end
 
@@ -289,24 +324,6 @@ function ModuleBriefingSystem.Global:DisplayPage(_PlayerID, _PageID)
         _PageID,
         self.Briefing[_PlayerID][_PageID]
     );
-end
-
-function ModuleBriefingSystem.Global:AnimateParallaxes(_PlayerID)
-    local PageID = self.Briefing[_PlayerID].CurrentPage;
-    local Page = self.Briefing[_PlayerID][PageID];
-
-    if type(Page.Parallax) == "table" then
-        for i= 1, #Page.Parallax do
-            local U0, V0, U1, V1, A, I = 0, 0, 1, 1, 255, nil;
-            if type(Page.Parallax[i].Animation) == "function" then
-                U0, V0, U1, V1, A, I = Page.Parallax[i].Animation(Page);
-            end
-            Logic.ExecuteInLuaLocalState(string.format(
-                [[ModuleBriefingSystem.Local.Briefing[%d][%d].Parallax[%d].Animation = {%f, %f, %f, %f, %d, %s}]],
-                _PlayerID, PageID, i, U0, V0, U1, V1, A, (I and "\"" ..I.. "\"") or "nil"
-            ))
-        end
-    end
 end
 
 function ModuleBriefingSystem.Global:SkipButtonPressed(_PlayerID, _PageID)
@@ -461,6 +478,7 @@ function ModuleBriefingSystem.Local:DisplayPage(_PlayerID, _PageID, _PageData)
     end
     self.Briefing[_PlayerID][_PageID] = _PageData;
     self.Briefing[_PlayerID].AnimationQueue = self.Briefing[_PlayerID].AnimationQueue or {};
+    self.Briefing[_PlayerID].ParallaxLayers = self.Briefing[_PlayerID].ParallaxLayers or {};
     self.Briefing[_PlayerID].CurrentPage = _PageID;
     if type(self.Briefing[_PlayerID][_PageID]) == "table" then
         self.Briefing[_PlayerID][_PageID].Started = Logic.GetTime();
@@ -596,47 +614,43 @@ end
 
 function ModuleBriefingSystem.Local:DisplayPageParallaxes(_PlayerID, _PageID)
     local Page = self.Briefing[_PlayerID][_PageID];
-    for i= 1, #self.ParallaxWidgets do
-        XGUIEng.SetMaterialTexture(self.ParallaxWidgets[i][1], 1, "");
-        XGUIEng.SetMaterialColor(self.ParallaxWidgets[i][1], 1, 255, 255, 255, 0);
-    end
     if Page.Parallax then
-        for i= 1, #Page.Parallax do
-            self:SetPageParallax(_PlayerID, _PageID, i);
+        if Page.Parallax.PurgeOld then
+            for i= 1, #self.ParallaxWidgets do
+                XGUIEng.SetMaterialTexture(self.ParallaxWidgets[i][1], 1, "");
+                XGUIEng.SetMaterialColor(self.ParallaxWidgets[i][1], 1, 255, 255, 255, 0);
+            end
+            self.Briefing[_PlayerID].ParallaxLayers = {};
+        end
+        for i= 1, 4, 1 do
+            if Page.Parallax[i] then
+                local Animation = table.copy(Page.Parallax[i]);
+                Animation.Started = XGUIEng.GetSystemTime();
+                self.Briefing[_PlayerID].ParallaxLayers[i] = Animation;
+            end
         end
     end
 end
 
-function ModuleBriefingSystem.Local:SetPageParallax(_PlayerID, _PageID, _Index, _U0, _V0, _U1, _V1, _A, _I)
-    local Page = self.Briefing[_PlayerID][_PageID];
-    local Widget = self.ParallaxWidgets[_Index][1];
-    local Size = {GUI.GetScreenSize()};
-    local u0, v0, u1, v1 = _U0 or 0, _V0 or 0, _U1 or 1, _V1 or 1;
-    if Size[1]/Size[2] < 1.6 then
-        u0 = u0 + (u0 / 0.125);
-        u1 = u1 - (u1 * 0.125);
-    end
-    XGUIEng.SetMaterialAlpha(Widget, 1, _A or 255);
-    XGUIEng.SetMaterialTexture(Widget, 1, _I or Page.Parallax[_Index].Image);
-    XGUIEng.SetMaterialUV(Widget, 1, u0, v0, u1, v1);
-end
-
-function ModuleBriefingSystem.Local:AnimateParallaxes(_PlayerID)
-    local PageID = self.Briefing[_PlayerID].CurrentPage;
-    local Page = self.Briefing[_PlayerID][PageID];
-
-    if type(Page.Parallax) == "table" then
-        for i= 1, #Page.Parallax do
-            local U0, V0, U1, V1, A, I = 0, 0, 1, 1, 255, nil;
-            if type(Page.Parallax[i].Animation) == "table" then
-                U0 = Page.Parallax[i].Animation[1] or U0;
-                V0 = Page.Parallax[i].Animation[2] or V0;
-                U1 = Page.Parallax[i].Animation[3] or U1;
-                V1 = Page.Parallax[i].Animation[4] or V1;
-                A  = Page.Parallax[i].Animation[5] or A;
-                I  = Page.Parallax[i].Animation[6] or I;
+function ModuleBriefingSystem.Local:ControlParallaxes(_PlayerID)
+    if self.Briefing[_PlayerID].ParallaxLayers then
+        local CurrentTime = XGUIEng.GetSystemTime();
+        for k, v in pairs(self.Briefing[_PlayerID].ParallaxLayers) do
+            local Widget = self.ParallaxWidgets[k][1];
+            local Size = {GUI.GetScreenSize()};
+            local Factor = math.min(math.lerp(v.Started, CurrentTime, v.Duration), 1);
+            local Alpha = v.Start.A + (v.End.A - v.Start.A) * Factor;
+            local u0 = v.Start.U0 + (v.End.U0 - v.Start.U0) * Factor;
+            local v0 = v.Start.V0 + (v.End.V0 - v.Start.V0) * Factor;
+            local u1 = v.Start.U1 + (v.End.U1 - v.Start.U1) * Factor;
+            local v1 = v.Start.U1 + (v.End.U1 - v.Start.U1) * Factor;
+            if Size[1]/Size[2] < 1.6 then
+                u0 = u0 + (u0 / 0.125);
+                u1 = u1 - (u1 * 0.125);
             end
-            self:SetPageParallax(_PlayerID, PageID, i, U0, V0, U1, V1, A, I);
+            XGUIEng.SetMaterialAlpha(Widget, 1, Alpha or 255);
+            XGUIEng.SetMaterialTexture(Widget, 1, v.Image);
+            XGUIEng.SetMaterialUV(Widget, 1, u0, v0, u1, v1);
         end
     end
 end
@@ -693,25 +707,8 @@ end
 
 function ModuleBriefingSystem.Local:ThroneRoomCameraControl(_PlayerID, _Page)
     if _Page then
-        -- Control animations
-        if self.Briefing[_PlayerID].CurrentAnimation then
-            local CurrentTime = XGUIEng.GetSystemTime();
-            local Animation = self.Briefing[_PlayerID].CurrentAnimation;
-            if CurrentTime > Animation.Started + Animation.Duration then
-                if #self.Briefing[_PlayerID].AnimationQueue > 0 then
-                    self.Briefing[_PlayerID].CurrentAnimation = nil;
-                end
-            end
-        end
-        if self.Briefing[_PlayerID].CurrentAnimation == nil then
-            if self.Briefing[_PlayerID].AnimationQueue and #self.Briefing[_PlayerID].AnimationQueue > 0 then
-                local Next = table.remove(self.Briefing[_PlayerID].AnimationQueue, 1);
-                Next.Started = XGUIEng.GetSystemTime();
-                self.Briefing[_PlayerID].CurrentAnimation = Next;
-            end
-        end
-
         -- Camera
+        self:ControlCameraAnimation(_PlayerID);
         local PX, PY, PZ = self:GetPagePosition(_PlayerID);
         local LX, LY, LZ = self:GetPageLookAt(_PlayerID);
         if PX and not LX then
@@ -722,7 +719,7 @@ function ModuleBriefingSystem.Local:ThroneRoomCameraControl(_PlayerID, _Page)
         Camera.ThroneRoom_SetFOV(FOV);
 
         -- Parallax
-        self:AnimateParallaxes(_PlayerID);
+        self:ControlParallaxes(_PlayerID);
 
         -- Multiple Choice
         if self.Briefing[_PlayerID].MCSelectionIsShown then
@@ -740,6 +737,25 @@ function ModuleBriefingSystem.Local:ThroneRoomCameraControl(_PlayerID, _Page)
             SkipText = API.Localize(ModuleBriefingSystem.Shared.Text.EndButton);
         end
         XGUIEng.SetText("/InGame/ThroneRoom/Main/Skip", "{center}" ..SkipText);
+    end
+end
+
+function ModuleBriefingSystem.Local:ControlCameraAnimation(_PlayerID)
+    if self.Briefing[_PlayerID].CurrentAnimation then
+        local CurrentTime = XGUIEng.GetSystemTime();
+        local Animation = self.Briefing[_PlayerID].CurrentAnimation;
+        if CurrentTime > Animation.Started + Animation.Duration then
+            if #self.Briefing[_PlayerID].AnimationQueue > 0 then
+                self.Briefing[_PlayerID].CurrentAnimation = nil;
+            end
+        end
+    end
+    if self.Briefing[_PlayerID].CurrentAnimation == nil then
+        if self.Briefing[_PlayerID].AnimationQueue and #self.Briefing[_PlayerID].AnimationQueue > 0 then
+            local Next = table.remove(self.Briefing[_PlayerID].AnimationQueue, 1);
+            Next.Started = XGUIEng.GetSystemTime();
+            self.Briefing[_PlayerID].CurrentAnimation = Next;
+        end
     end
 end
 
