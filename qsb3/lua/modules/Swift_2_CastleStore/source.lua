@@ -118,14 +118,14 @@ QSB.CastleStorePlayerData = {};
 
 function ModuleCastleStore.Global:OnGameStart()
     QSB.CastleStore = self.CastleStore;
-    
+
     API.RegisterScriptCommand("Cmd_CastleStoreAcceptAllGoods", SCP.CastleStore.AcceptAllGoods);
     API.RegisterScriptCommand("Cmd_CastleStoreLockAllGoods", SCP.CastleStore.LockAllGoods);
     API.RegisterScriptCommand("Cmd_CastleStoreRefuseAllGoods", SCP.CastleStore.RefuseAllGoods);
     API.RegisterScriptCommand("Cmd_CastleStoreToggleGoodState", SCP.CastleStore.ToggleGoodState);
     API.RegisterScriptCommand("Cmd_CastleStoreObjectPayStep1", SCP.CastleStore.ObjectPayStep1);
     API.RegisterScriptCommand("Cmd_CastleStoreObjectPayStep3", SCP.CastleStore.ObjectPayStep3);
-    
+
     for i= 1, 8 do
         self.BackupGoods[i] = {};
     end
@@ -891,8 +891,8 @@ function ModuleCastleStore.Local.CastleStore:RestoreStorehouseMenu()
     SetIcon(MotherPath.. "StorehouseTabButtonUp/up/B_StoreHouse", {3, 13});
     SetIcon(MotherPath.. "StorehouseTabButtonDown/down/B_StoreHouse", {3, 13});
     SetIcon(MotherPath.. "CityTabButtonUp/up/CityBuildingsNumber", {8, 1});
-    SetIcon(MotherPath.. "TabButtons/CityTabButtonDown/down/CityBuildingsNumber", {8, 1});
-    SetIcon(MotherPath.. "TabButtons/Tab03Up/up/B_Castle_ME", {3, 14});
+    SetIcon(MotherPath.. "CityTabButtonDown/down/CityBuildingsNumber", {8, 1});
+    SetIcon(MotherPath.. "Tab03Up/up/B_Castle_ME", {3, 14});
     SetIcon(MotherPath.. "Tab03Down/down/B_Castle_ME", {3, 14});
 
     for k, v in ipairs {"G_Carcass", "G_Grain", "G_Milk", "G_RawFish", "G_Iron","G_Wood", "G_Stone", "G_Honeycomb", "G_Herb", "G_Wool"} do
@@ -1077,7 +1077,7 @@ function ModuleCastleStore.Local.CastleStore:ActivateHotkeys()
         2,
         false
     );
-    
+
     -- Lager räumen
     Input.KeyBindDown(
         Keys.ModifierShift + Keys.M,
