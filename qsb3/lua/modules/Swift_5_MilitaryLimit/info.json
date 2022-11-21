@@ -7,8 +7,7 @@
     "description": "",
     "files": [
         "source.lua",
-        "api.lua",
-        "behavior.lua"
+        "api.lua"
     ],
     "dependencies": [
         "Swift_0_Core",

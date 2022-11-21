@@ -14,13 +14,9 @@ ModuleBehaviorCollection = {
     },
 
     Global = {
-        Cutscene = {},
-        CutsceneQueue = {},
-        CutsceneCounter = 0;
+        SoldierKillsCounter = {},
     },
-    Local = {
-        Cutscene = {},
-    },
+    Local = {},
     -- This is a shared structure but the values are asynchronous!
     Shared = {},
 };
@@ -28,6 +24,9 @@ ModuleBehaviorCollection = {
 -- Global ------------------------------------------------------------------- --
 
 function ModuleBehaviorCollection.Global:OnGameStart()
+    for i= 0, 8 do
+        self.SoldierKillsCounter[i] = {};
+    end
     self:OverrideIsObjectiveCompleted();
     self:OverrideOnQuestTriggered();
 end
@@ -37,6 +36,8 @@ function ModuleBehaviorCollection.Global:OnEvent(_ID, _Event, ...)
         self:OnThiefInfiltratedBuilding(arg[1], arg[2], arg[3], arg[4]);
     elseif _ID == QSB.ScriptEvents.ThiefDeliverEarnings then
         self:OnThiefDeliverEarnings(arg[1], arg[2], arg[3], arg[4], arg[5]);
+    elseif _ID == QSB.ScriptEvents.EntityKilled then
+        self:OnEntityKilled(arg[1], arg[2], arg[3], arg[4]);
     end
 end
 
@@ -172,7 +173,7 @@ end
 --
 function ModuleBehaviorCollection.Global:GetPossibleModels()
     local Data = {};
-    -- Erst mal alles entfernen...
+    -- Add generic models
     for k, v in pairs(Models) do
         if  not string.find(k, "Animals_")
         and not string.find(k, "MissionMap_")
@@ -182,7 +183,7 @@ function ModuleBehaviorCollection.Global:GetPossibleModels()
             table.insert(Data, k);
         end
     end
-    -- Models hinzufügen
+    -- Add specific models
     table.insert(Data, "Effects_Dust01");
     table.insert(Data, "Effects_E_DestructionSmoke");
     table.insert(Data, "Effects_E_DustLarge");
@@ -218,7 +219,7 @@ function ModuleBehaviorCollection.Global:GetPossibleModels()
         table.insert(Data, "Effects_E_KhanaTemple_Fire");
         table.insert(Data, "Effects_E_Knight_Saraya_Aura");
     end
-    -- Sortieren
+    -- Sort
     table.sort(Data);
     return Data;
 end
@@ -293,6 +294,19 @@ function ModuleBehaviorCollection.Global:OnThiefDeliverEarnings(_ThiefID, _Playe
             end
         end
     end
+end
+
+function ModuleBehaviorCollection.Global:OnEntityKilled(_KilledEntityID, _KilledPlayerID, _KillerEntityID, _KillerPlayerID)
+    if _KilledPlayerID ~= 0 and _KillerPlayerID ~= 0 then
+        self.SoldierKillsCounter[_KillerPlayerID][_KilledPlayerID] = self.SoldierKillsCounter[_KillerPlayerID][_KilledPlayerID] or 0
+        if Logic.IsEntityInCategory(_KilledEntityID, EntityCategories.Soldier) == 1 then
+            self.SoldierKillsCounter[_KillerPlayerID][_KilledPlayerID] = self.SoldierKillsCounter[_KillerPlayerID][_KilledPlayerID] +1
+        end
+    end
+end
+
+function ModuleBehaviorCollection.Global:GetEnemySoldierKillsOfPlayer(_PlayerID1, _PlayerID2)
+    return self.SoldierKillsCounter[_PlayerID1][_PlayerID2] or 0;
 end
 
 -- Local -------------------------------------------------------------------- --

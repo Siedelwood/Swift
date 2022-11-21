@@ -17,7 +17,6 @@ ModuleMilitaryLimit = {
 
     Global = {
         SoldierLimitCalculators = {},
-        SoldierKillsCounter = {},
     };
     Local = {
         SelectionBackup = {},
@@ -43,10 +42,6 @@ function ModuleMilitaryLimit.Global:OnGameStart()
     API.RegisterScriptCommand("Cmd_MilitaryLimitProduceUnits", SCP.MilitaryLimit.ProduceUnits);
     API.RegisterScriptCommand("Cmd_MilitaryLimitRefillBattalion", SCP.MilitaryLimit.RefillBattalion);
 
-    for i= 0, 8 do
-        self.SoldierKillsCounter[i] = {};
-    end
-
     if API.IsHistoryEditionNetworkGame() then
         return;
     end
@@ -60,24 +55,6 @@ function ModuleMilitaryLimit.Global:OnGameStart()
 end
 
 function ModuleMilitaryLimit.Global:OnEvent(_ID, _Name, ...)
-    if _ID == QSB.ScriptEvents.EntityKilled then
-        self:OnEntityKilledController(arg[1], arg[2], arg[3], arg[4]);
-    end
-end
-
--- Destroy soldiers --------------------------------------------------------- --
-
-function ModuleMilitaryLimit.Global:OnEntityKilledController(_KilledEntityID, _KilledPlayerID, _KillerEntityID, _KillerPlayerID)
-    if _KilledEntityID ~= 0 and _KillerEntityID ~= 0 then
-        self.SoldierKillsCounter[_KillerPlayerID][_KilledPlayerID] = self.SoldierKillsCounter[_KillerPlayerID][_KilledPlayerID] or 0
-        if Logic.IsEntityTypeInCategory( _KillerPlayerID, EntityCategories.Soldier ) == 1 then
-            self.SoldierKillsCounter[_KillerPlayerID][_KilledPlayerID] = self.SoldierKillsCounter[_KillerPlayerID][_KilledPlayerID] +1
-        end
-    end
-end
-
-function ModuleMilitaryLimit.Global:GetEnemySoldierKillsOfPlayer(_PlayerID1, _PlayerID2)
-    return self.SoldierKillsCounter[_PlayerID1][_PlayerID2] or 0;
 end
 
 -- Soldier imits ------------------------------------------------------------ --

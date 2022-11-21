@@ -1005,6 +1005,94 @@ end
 Swift:RegisterBehavior(B_Goal_FetchItems);
 
 -- -------------------------------------------------------------------------- --
+
+---
+-- Ein beliebiger Spieler muss Soldaten eines anderen Spielers zerstören.
+--
+-- Dieses Behavior kann auch in versteckten Quests bentutzt werden, wenn die
+-- Menge an zerstörten Soldaten durch einen Feind des Spielers gefragt ist oder
+-- wenn ein Verbündeter oder Feind nach X Verlusten aufgeben soll.
+--
+-- @param _PlayerA Angreifende Partei
+-- @param _PlayerB Zielpartei
+-- @param _Amount Menga an Soldaten
+--
+-- @within Goal
+--
+function Goal_DestroySoldiers(...)
+    return B_Goal_DestroySoldiers:new(...);
+end
+
+B_Goal_DestroySoldiers = {
+    Name = "Goal_DestroySoldiers",
+    Description = {
+        en = "Goal: Destroy a given amount of enemy soldiers",
+        de = "Ziel: Zerstöre eine Anzahl gegnerischer Soldaten",
+        fr = "Objectif: Détruire un certain nombre de soldats ennemis",
+    },
+    Parameter = {
+        {ParameterType.PlayerID, en = "Attacking Player",   de = "Angreifer",   fr = "Attaquant", },
+        {ParameterType.PlayerID, en = "Defending Player",   de = "Verteidiger", fr = "Défenseur", },
+        {ParameterType.Number,   en = "Amount",             de = "Anzahl",      fr = "Quantité", },
+    },
+
+    Text = {
+        de = "{center}SOLDATEN ZERSTÖREN {cr}{cr}von der Partei: %s{cr}{cr}Anzahl: %d",
+        en = "{center}DESTROY SOLDIERS {cr}{cr}from faction: %s{cr}{cr}Amount: %d",
+        fr = "{center}DESTRUIRE DES SOLDATS {cr}{cr}de la faction: %s{cr}{cr}Nombre : %d",
+    }
+}
+
+function B_Goal_DestroySoldiers:GetGoalTable()
+    return {Objective.Custom2, {self, self.CustomFunction} }
+end
+
+function B_Goal_DestroySoldiers:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.AttackingPlayer = _Parameter * 1
+    elseif (_Index == 1) then
+        self.AttackedPlayer = _Parameter * 1
+    elseif (_Index == 2) then
+        self.KillsNeeded = _Parameter * 1
+    end
+end
+
+function B_Goal_DestroySoldiers:CustomFunction(_Quest)
+    if not _Quest.QuestDescription or _Quest.QuestDescription == "" then
+        local PlayerName = GetPlayerName(self.AttackedPlayer) or ("Player " ..self.AttackedPlayer);
+        Swift:ChangeCustomQuestCaptionText(
+            string.format(
+                Swift:Localize(self.Text),
+                PlayerName, self.KillsNeeded
+            ),
+            _Quest
+        );
+    end
+    if self.KillsNeeded <= ModuleBehaviorCollection.Global:GetEnemySoldierKillsOfPlayer(self.AttackingPlayer, self.AttackedPlayer) then
+        return true;
+    end
+end
+
+function B_Goal_DestroySoldiers:Debug(_Quest)
+    if Logic.GetStoreHouse(self.AttackingPlayer) == 0 then
+        error(_Quest.Identifier.. ": " ..self.Name .. ": Player " .. self.AttackinPlayer .. " is dead :-(")
+        return true
+    elseif Logic.GetStoreHouse(self.AttackedPlayer) == 0 then
+        error(_Quest.Identifier.. ": " ..self.Name .. ": Player " .. self.AttackedPlayer .. " is dead :-(")
+        return true
+    elseif self.KillsNeeded < 0 then
+        error(_Quest.Identifier.. ": " ..self.Name .. ": Amount negative")
+        return true
+    end
+end
+
+function B_Goal_DestroySoldiers:GetIcon()
+    return {7,12}
+end
+
+Swift:RegisterBehavior(B_Goal_DestroySoldiers);
+
+-- -------------------------------------------------------------------------- --
 -- Reprisals                                                                  --
 -- -------------------------------------------------------------------------- --
 

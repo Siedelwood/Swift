@@ -59,7 +59,7 @@ ModMapLoader = {
 		},
 		Back = {
 			de = "{center}Hauptmenü",
-			en = "{center}Main menu"
+			en = "{center}Main menu",
 			fr = "{center}Menu principal",
 		},
 		MapNotFound = {

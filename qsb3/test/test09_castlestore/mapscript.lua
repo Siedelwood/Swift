@@ -99,6 +99,18 @@ function Mission_FirstMapAction()
     --     end
     -- end);
 
+    -- API.CreateQuest {
+    --     Name = "Test2",
+    --     Sender = 2,
+    --     Receiver = 1,
+    --     Suggestion = "Destroy enemies!",
+
+    --     Goal_DestroySoldiers(1, 3, 6),
+    --     Trigger_Time(6)
+    -- }
+
+    API.SetPlayerName(3, "Hans Wurst");
+
     TEST_COMMAND = API.RegisterScriptCommand("TestFunction", TestFunction);
 end
 
