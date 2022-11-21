@@ -1,0 +1,17 @@
+{
+    "name": "Swift_4_ConstructionAndKnockdown",
+    "version": "1.0.0",
+    "mandatory": false,
+    "caption": "(4) Construction and Knockdown",
+    "shortdesc": "Ermöglicht den Bau von Gebäuden anhand von Kriterien zu verhindern.",
+    "description": "",
+    "files": [
+        "source.lua",
+        "api.lua"
+    ],
+    "dependencies": [
+        "Swift_0_Core",
+        "Swift_1_EntityEventCore",
+        "Swift_1_JobsCore"
+    ]
+}

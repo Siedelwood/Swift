@@ -1,0 +1,19 @@
+{
+    "name": "Swift_5_MilitaryLimit",
+    "version": "1.0.0",
+    "mandatory": false,
+    "caption": "(5) Military Limit",
+    "shortdesc": "Ermöglicht es, benutzerdefiniertes Soldatenlimit festzulegen.",
+    "description": "",
+    "files": [
+        "source.lua",
+        "api.lua",
+        "behavior.lua"
+    ],
+    "dependencies": [
+        "Swift_0_Core",
+        "Swift_1_EntityEventCore",
+        "Swift_1_JobsCore",
+        "Swift_1_InterfaceCore"
+    ]
+}
