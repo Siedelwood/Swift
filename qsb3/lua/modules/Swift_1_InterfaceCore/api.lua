@@ -297,7 +297,7 @@ function API.SetPlayerPortrait(_PlayerID, _Portrait)
         Logic.ExecuteInLuaLocalState("API.SetPlayerPortrait(" .._PlayerID.. ", " ..Portrait.. ")")
         return;
     end
-    
+
     if _Portrait == nil then
         ModuleInterfaceCore.Local:SetPlayerPortraitByPrimaryKnight(_PlayerID);
         return;

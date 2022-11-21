@@ -546,10 +546,11 @@ end
 function ModuleInputOutputCore.Local:DialogAltF4Action()
     Input.KeyBindDown(Keys.ModifierAlt + Keys.F4, "", 30, false);
     self:OpenRequesterDialog(
+        GUI.GetPlayerID(),
         XGUIEng.GetStringTableText("UI_Texts/MainMenuExitGame_center"),
         XGUIEng.GetStringTableText("UI_Texts/ConfirmQuitCurrentGame"),
-        function (_Yes) 
-            if _Yes then 
+        function (_Yes)
+            if _Yes then
                 Framework.ExitGame();
             end
             if not Framework.IsNetworkGame() then
@@ -606,7 +607,10 @@ function ModuleInputOutputCore.Local:DialogQueuePush(_Methode, _Args)
     table.insert(self.Requester.Queue, Entry);
 end
 
-function ModuleInputOutputCore.Local:OpenDialog(_Title, _Text, _Action)
+function ModuleInputOutputCore.Local:OpenDialog(_PlayerID, _Title, _Text, _Action)
+    if GUI.GetPlayerID() ~= _PlayerID then
+        return;
+    end
     if XGUIEng.IsWidgetShown(RequesterDialog) == 0 then
         assert(type(_Title) == "string");
         assert(type(_Text) == "string");
@@ -656,17 +660,20 @@ function ModuleInputOutputCore.Local:OpenDialog(_Title, _Text, _Action)
             XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 1);
         end
     else
-        self:DialogQueuePush("OpenDialog", {_Title, _Text, _Action});
+        self:DialogQueuePush("OpenDialog", {_PlayerID, _Title, _Text, _Action});
     end
 end
 
-function ModuleInputOutputCore.Local:OpenRequesterDialog(_Title, _Text, _Action, _OkCancel)
+function ModuleInputOutputCore.Local:OpenRequesterDialog(_PlayerID, _Title, _Text, _Action, _OkCancel)
+    if GUI.GetPlayerID() ~= _PlayerID then
+        return;
+    end
     if XGUIEng.IsWidgetShown(RequesterDialog) == 0 then
         assert(type(_Title) == "string");
         assert(type(_Text) == "string");
         _Title = "{center}" .. _Title;
 
-        self:OpenDialog(_Title, _Text, _Action);
+        self:OpenDialog(_PlayerID, _Title, _Text, _Action);
         XGUIEng.ShowWidget(RequesterDialog_Yes,1);
         XGUIEng.ShowWidget(RequesterDialog_No,1);
         XGUIEng.ShowWidget(RequesterDialog_Ok,0);
@@ -695,13 +702,16 @@ function ModuleInputOutputCore.Local:OpenRequesterDialog(_Title, _Text, _Action,
         Action = Action .. "; ModuleInputOutputCore.Local.CallbackRequester(ModuleInputOutputCore.Local, false, GUI.GetPlayerID())"
         XGUIEng.SetActionFunction(RequesterDialog_No, Action);
     else
-        self:DialogQueuePush("OpenRequesterDialog", {_Title, _Text, _Action, _OkCancel});
+        self:DialogQueuePush("OpenRequesterDialog", {_PlayerID, _Title, _Text, _Action, _OkCancel});
     end
 end
 
-function ModuleInputOutputCore.Local:OpenSelectionDialog(_Title, _Text, _Action, _List)
+function ModuleInputOutputCore.Local:OpenSelectionDialog(_PlayerID, _Title, _Text, _Action, _List)
+    if GUI.GetPlayerID() ~= _PlayerID then
+        return;
+    end
     if XGUIEng.IsWidgetShown(RequesterDialog) == 0 then
-        self:OpenDialog(_Title, _Text, _Action);
+        self:OpenDialog(_PlayerID, _Title, _Text, _Action);
 
         local HeroComboBoxID = XGUIEng.GetWidgetID(CustomGame.Widget.KnightsList);
         XGUIEng.ListBoxPopAll(HeroComboBoxID);
@@ -732,7 +742,7 @@ function ModuleInputOutputCore.Local:OpenSelectionDialog(_Title, _Text, _Action,
         XGUIEng.SetWidgetScreenPosition(Container .. "HeroComboBoxMain", x1-25, y1-(90*(screen[2]/1080)));
         XGUIEng.SetWidgetScreenPosition(Container .. "HeroComboBoxContainer", x1-25, y1-(20*(screen[2]/1080)));
     else
-        self:DialogQueuePush("OpenSelectionDialog", {_Title, _Text, _Action, _List});
+        self:DialogQueuePush("OpenSelectionDialog", {_PlayerID, _Title, _Text, _Action, _List});
     end
 end
 

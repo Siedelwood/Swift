@@ -240,17 +240,24 @@ end
 --
 -- <b>Hinweis</b>: Kann nicht aus dem globalen Skript heraus benutzt werden.
 --
--- @param[type=string]   _Title  Titel des Dialog
--- @param[type=string]   _Text   Text des Dialog
--- @param                _Action Funktionsreferenz
+-- @param[type=string]   _PlayerID (Optional) Empfangender Spieler
+-- @param[type=string]   _Title    Titel des Dialog
+-- @param[type=string]   _Text     Text des Dialog
+-- @param                _Action   Funktionsreferenz
 -- @within Anwenderfunktionen
 --
 -- @usage
 -- API.DialogInfoBox("Wichtige Information", "Diese Information ist Spielentscheidend!");
 --
-function API.DialogInfoBox(_Title, _Text, _Action)
+function API.DialogInfoBox(_PlayerID, _Title, _Text, _Action)
     if not GUI then
         return;
+    end
+    if type(_PlayerID) ~= "number" then
+        _Action = _Text;
+        _Text = _Title;
+        _Title = _PlayerID;
+        _PlayerID = GUI.GetPlayerID();
     end
     if type(_Title) == "table" then
         _Title = API.Localize(_Title);
@@ -258,7 +265,7 @@ function API.DialogInfoBox(_Title, _Text, _Action)
     if type(_Text) == "table" then
         _Text  = API.Localize(_Text);
     end
-    return ModuleInputOutputCore.Local:OpenDialog(_Title, _Text, _Action);
+    return ModuleInputOutputCore.Local:OpenDialog(_PlayerID, _Title, _Text, _Action);
 end
 
 ---
@@ -271,6 +278,7 @@ end
 --
 -- <b>Hinweis</b>: Kann nicht aus dem globalen Skript heraus benutzt werden.
 --
+-- @param[type=string]   _PlayerID (Optional) Empfangender Spieler
 -- @param[type=string]   _Title    Titel des Dialog
 -- @param[type=string]   _Text     Text des Dialog
 -- @param                _Action   Funktionsreferenz
@@ -283,9 +291,15 @@ end
 -- end
 -- API.DialogRequestBox("Frage", "Möchtest du das wirklich tun?", YesNoAction, false);
 --
-function API.DialogRequestBox(_Title, _Text, _Action, _OkCancel)
+function API.DialogRequestBox(_PlayerID, _Title, _Text, _Action, _OkCancel)
     if not GUI then
         return;
+    end
+    if type(_PlayerID) ~= "number" then
+        _Action = _Text;
+        _Text = _Title;
+        _Title = _PlayerID;
+        _PlayerID = GUI.GetPlayerID();
     end
     if type(_Title) == "table" then
         _Title = API.Localize(_Title);
@@ -293,7 +307,7 @@ function API.DialogRequestBox(_Title, _Text, _Action, _OkCancel)
     if type(_Text) == "table" then
         _Text  = API.Localize(_Text);
     end
-    return ModuleInputOutputCore.Local:OpenRequesterDialog(_Title, _Text, _Action, _OkCancel);
+    return ModuleInputOutputCore.Local:OpenRequesterDialog(_PlayerID, _Title, _Text, _Action, _OkCancel);
 end
 
 ---
@@ -305,6 +319,7 @@ end
 --
 -- <b>Hinweis</b>: Kann nicht aus dem globalen Skript heraus benutzt werden.
 --
+-- @param[type=string]   _PlayerID (Optional) Empfangender Spieler
 -- @param[type=string]   _Title  Titel des Dialog
 -- @param[type=string]   _Text   Text des Dialog
 -- @param                _Action Funktionsreferenz
@@ -318,9 +333,15 @@ end
 -- local List = {"Option A", "Option B", "Option C"};
 -- API.DialogSelectBox("Auswahl", "Wähle etwas aus!", OptionsAction, List);
 --
-function API.DialogSelectBox(_Title, _Text, _Action, _List)
+function API.DialogSelectBox(_PlayerID, _Title, _Text, _Action, _List)
     if not GUI then
         return;
+    end
+    if type(_PlayerID) ~= "number" then
+        _Action = _Text;
+        _Text = _Title;
+        _Title = _PlayerID;
+        _PlayerID = GUI.GetPlayerID();
     end
     if type(_Title) == "table" then
         _Title = API.Localize(_Title);
@@ -329,7 +350,7 @@ function API.DialogSelectBox(_Title, _Text, _Action, _List)
         _Text  = API.Localize(_Text);
     end
     _Text = _Text .. "{cr}";
-    ModuleInputOutputCore.Local:OpenSelectionDialog(_Title, _Text, _Action, _List);
+    ModuleInputOutputCore.Local:OpenSelectionDialog(_PlayerID, _Title, _Text, _Action, _List);
 end
 
 ---
@@ -342,7 +363,7 @@ end
 -- @usage
 -- -- Für alle Spieler
 -- API.DialogLanguageSelection();
--- Nur für Spieler 2 anzeigen (Multiplayer)
+-- -- Nur für Spieler 2 anzeigen
 -- API.DialogLanguageSelection(2);
 --
 function API.DialogLanguageSelection(_PlayerID)
@@ -370,7 +391,7 @@ function API.DialogLanguageSelection(_PlayerID)
         );
     end
     local Text = API.Localize(ModuleInputOutputCore.Shared.Text.ChooseLanguage);
-    API.DialogSelectBox(Text.Title, Text.Text, Action, DisplayedList);
+    API.DialogSelectBox(GUI.GetPlayerID(), Text.Title, Text.Text, Action, DisplayedList);
 end
 
 ---

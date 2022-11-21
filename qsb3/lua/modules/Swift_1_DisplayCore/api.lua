@@ -201,6 +201,8 @@ end
 ---
 -- Propagiert den Beginn des Kinoevents und bindet es an den Spieler.
 --
+-- <b>Hinweis:</b>Während eines aktiven Kinoevent kann nicht gespeichert werden.
+--
 -- @param[type=string] _Name     Bezeichner
 -- @param[type=number] _PlayerID ID des Spielers
 -- @within Anwenderfunktionen

@@ -109,9 +109,12 @@ function ModuleDisplayCore.Global:ActivateCinematicEvent(_PlayerID)
     local ID = self:GetNewCinematicEventID();
     Logic.ExecuteInLuaLocalState(string.format(
         [[API.SendScriptEvent(QSB.ScriptEvents.CinematicActivated, %d, %d);
-         XGUIEng.DisableButton("/InGame/InGame/MainMenu/Container/QuickSave", 1);
-         XGUIEng.DisableButton("/InGame/InGame/MainMenu/Container/SaveGame", 1);]],
+          if GUI.GetPlayerID() == %d then
+            XGUIEng.DisableButton("/InGame/InGame/MainMenu/Container/QuickSave", 1);
+            XGUIEng.DisableButton("/InGame/InGame/MainMenu/Container/SaveGame", 1);
+          end]],
         ID,
+        _PlayerID,
         _PlayerID
     ))
     API.SendScriptEvent(QSB.ScriptEvents.CinematicActivated, ID, _PlayerID);
@@ -121,9 +124,12 @@ end
 function ModuleDisplayCore.Global:ConcludeCinematicEvent(_ID, _PlayerID)
     Logic.ExecuteInLuaLocalState(string.format(
         [[API.SendScriptEvent(QSB.ScriptEvents.CinematicConcluded, %d, %d);
-         XGUIEng.DisableButton("/InGame/InGame/MainMenu/Container/QuickSave", 0);
-         XGUIEng.DisableButton("/InGame/InGame/MainMenu/Container/SaveGame", 0);]],
+          if GUI.GetPlayerID() == %d then
+            XGUIEng.DisableButton("/InGame/InGame/MainMenu/Container/QuickSave", 0);
+            XGUIEng.DisableButton("/InGame/InGame/MainMenu/Container/SaveGame", 0);
+          end]],
         _ID,
+        _PlayerID,
         _PlayerID
     ))
     API.SendScriptEvent(QSB.ScriptEvents.CinematicConcluded, _ID, _PlayerID);
