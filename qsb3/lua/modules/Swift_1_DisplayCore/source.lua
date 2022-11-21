@@ -108,7 +108,9 @@ end
 function ModuleDisplayCore.Global:ActivateCinematicEvent(_PlayerID)
     local ID = self:GetNewCinematicEventID();
     Logic.ExecuteInLuaLocalState(string.format(
-        "API.SendScriptEvent(QSB.ScriptEvents.CinematicActivated, %d, %d);",
+        [[API.SendScriptEvent(QSB.ScriptEvents.CinematicActivated, %d, %d);
+         XGUIEng.DisableButton("/InGame/InGame/MainMenu/Container/QuickSave", 1);
+         XGUIEng.DisableButton("/InGame/InGame/MainMenu/Container/SaveGame", 1);]],
         ID,
         _PlayerID
     ))
@@ -118,7 +120,9 @@ end
 
 function ModuleDisplayCore.Global:ConcludeCinematicEvent(_ID, _PlayerID)
     Logic.ExecuteInLuaLocalState(string.format(
-        "API.SendScriptEvent(QSB.ScriptEvents.CinematicConcluded, %d, %d);",
+        [[API.SendScriptEvent(QSB.ScriptEvents.CinematicConcluded, %d, %d);
+         XGUIEng.DisableButton("/InGame/InGame/MainMenu/Container/QuickSave", 0);
+         XGUIEng.DisableButton("/InGame/InGame/MainMenu/Container/SaveGame", 0);]],
         _ID,
         _PlayerID
     ))
