@@ -1,5 +1,5 @@
 --[[
-Swift_5_MilitaryLimit/API
+Swift_MOD_MilitaryLimit/API
 
 Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 
