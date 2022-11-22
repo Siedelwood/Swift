@@ -82,8 +82,9 @@ function CreateRoadPathWithTwoAlternatives()
                 return true;
             end
             return false;
-        end, "PathStart")
-    );
+        end,
+        "PathStart"
+    ));
 end
 
 -- > CreateRoadPathWithBlockedAlternative()
@@ -94,7 +95,7 @@ function CreateRoadPathWithBlockedAlternative()
     API.Note(Pathfinder:Insert(
         "PathEnd",
         "PathStart",
-        300,
+        500,
         1,
         function(_Node, _Siblings, _Start)
             if Logic.DEBUG_GetSectorAtPosition(_Node.X, _Node.Y) == 0 then
@@ -115,6 +116,7 @@ function CreateRoadPathWithBlockedAlternative()
                 return true;
             end
             return false;
-        end, "PathStart")
-    );
+        end,
+        "PathStart"
+    ));
 end

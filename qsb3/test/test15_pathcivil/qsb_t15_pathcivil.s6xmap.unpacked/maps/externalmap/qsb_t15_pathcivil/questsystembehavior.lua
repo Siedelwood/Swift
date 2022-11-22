@@ -1,1 +1,1 @@
-Script.Load("E:/Repositories/swift/qsb3/lua/var/qsb/qsb.lua");
+Script.Load("E:/Repositories/swift/qsb3/var/qsb/qsb.lua");

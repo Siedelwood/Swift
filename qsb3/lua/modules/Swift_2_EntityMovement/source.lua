@@ -174,9 +174,9 @@ Pathfinder = {
     NodeDistance = 300;
     StepsPerTurn = 1;
 
-    m_PathCounter = 0;
-    m_Paths = {};
-    m_ProcessedPaths = {};
+    PathSequence = 0;
+    PathList = {};
+    ProcessedPaths = {};
 }
 
 function Pathfinder:Insert(_Start, _End, _NodeDistance, _StepsPerTick, _Filter, ...)
@@ -189,8 +189,8 @@ function Pathfinder:Insert(_Start, _End, _NodeDistance, _StepsPerTick, _Filter, 
         return 0;
     end
 
-    self.m_PathCounter = self.m_PathCounter +1;
-    self.m_ProcessedPaths[self.m_PathCounter] = {
+    self.PathSequence = self.PathSequence +1;
+    self.ProcessedPaths[self.PathSequence] = {
         NodeDistance = _NodeDistance or 300,
         StepsPerTick = _StepsPerTick or 1,
         StartNode = Start,
@@ -205,14 +205,14 @@ function Pathfinder:Insert(_Start, _End, _NodeDistance, _StepsPerTick, _Filter, 
     };
 
     Start.ID = "ID_"..Start.X.."_"..Start.Y;
-    table.insert(self.m_ProcessedPaths[self.m_PathCounter].Open, 1, Start);
-    self.m_ProcessedPaths[self.m_PathCounter].OpenMap[Start.ID] = true;
+    table.insert(self.ProcessedPaths[self.PathSequence].Open, 1, Start);
+    self.ProcessedPaths[self.PathSequence].OpenMap[Start.ID] = true;
 
-    return self.m_PathCounter;
+    return self.PathSequence;
 end
 
 function Pathfinder:Controller()
-    for k, v in pairs(self.m_ProcessedPaths) do
+    for k, v in pairs(self.ProcessedPaths) do
         if v.Suspended == false then
             self:Step(k);
         end
@@ -236,29 +236,29 @@ function Pathfinder:SendPathingFailedEvent(_Index)
 end
 
 function Pathfinder:SetSuspended(_ID, _Flag)
-    if self.m_ProcessedPaths[_ID] then
-        self.m_ProcessedPaths[_ID].Suspended = _Flag == true;
+    if self.ProcessedPaths[_ID] then
+        self.ProcessedPaths[_ID].Suspended = _Flag == true;
     end
 end
 
 function Pathfinder:Step(_Index)
-    if not self.m_ProcessedPaths[_Index] then
-        self.m_ProcessedPaths[_Index] = nil;
-        self.m_Paths[_Index] = nil;
+    if not self.ProcessedPaths[_Index] then
+        self.ProcessedPaths[_Index] = nil;
+        self.PathList[_Index] = nil;
         self:SendPathingFailedEvent(_Index);
         return true;
     end
-    for i= 1, self.m_ProcessedPaths[_Index].StepsPerTick, 1 do
-        if #self.m_ProcessedPaths[_Index].Open == 0 then
-            self.m_ProcessedPaths[_Index] = nil;
-            self.m_Paths[_Index] = nil;
+    for i= 1, self.ProcessedPaths[_Index].StepsPerTick, 1 do
+        if #self.ProcessedPaths[_Index].Open == 0 then
+            self.ProcessedPaths[_Index] = nil;
+            self.PathList[_Index] = nil;
             self:SendPathingFailedEvent(_Index);
             return true;
         end
-        local removed = table.remove(self.m_ProcessedPaths[_Index].Open, 1);
-        self.m_ProcessedPaths[_Index].OpenMap[removed.ID] = nil;
-        if  removed.X == self.m_ProcessedPaths[_Index].TargetNode.X
-        and removed.Y == self.m_ProcessedPaths[_Index].TargetNode.Y then
+        local removed = table.remove(self.ProcessedPaths[_Index].Open, 1);
+        self.ProcessedPaths[_Index].OpenMap[removed.ID] = nil;
+        if  removed.X == self.ProcessedPaths[_Index].TargetNode.X
+        and removed.Y == self.ProcessedPaths[_Index].TargetNode.Y then
             local LastNode = removed;
             local path = {}
             local prev = LastNode;
@@ -272,8 +272,8 @@ function Pathfinder:Step(_Index)
                     break;
                 end
             end
-            self.m_Paths[_Index] = PathModel:New(path);
-            self.m_ProcessedPaths[_Index] = nil;
+            self.PathList[_Index] = PathModel:New(path);
+            self.ProcessedPaths[_Index] = nil;
             self:SendPathingSucceedEvent(_Index);
             return true;
         else
@@ -290,20 +290,20 @@ function Pathfinder:Expand(_Index, _Node)
     -- Regular nodes
     local FatherNodeID = _Node.ID;
     local SuccessorNodes = {};
-    local Distance = self.m_ProcessedPaths[_Index].NodeDistance;
+    local Distance = self.ProcessedPaths[_Index].NodeDistance;
     for i= x-Distance, x+Distance, Distance do
         for j= y-Distance, y+Distance, Distance do
             if not (i == x and j == y) then
-                if  not self.m_ProcessedPaths[_Index].OpenMap["ID_"..i.."_"..j] 
-                and not self.m_ProcessedPaths[_Index].ClosedMap["ID_"..i.."_"..j] then
+                if  not self.ProcessedPaths[_Index].OpenMap["ID_"..i.."_"..j] 
+                and not self.ProcessedPaths[_Index].ClosedMap["ID_"..i.."_"..j] then
                     -- Insert node
                     table.insert(SuccessorNodes, {
                         ID = "ID_"..i.."_"..j,
                         X = i,
                         Y = j,
                         Father = FatherNodeID,
-                        Distance1 = API.GetDistance(_Node, self.m_ProcessedPaths[_Index].TargetNode),
-                        Distance2 = API.GetDistance(self.m_ProcessedPaths[_Index].StartNode, _Node)
+                        Distance1 = API.GetDistance(_Node, self.ProcessedPaths[_Index].TargetNode),
+                        Distance2 = API.GetDistance(self.ProcessedPaths[_Index].StartNode, _Node)
                     });
                 end
             end
@@ -315,29 +315,29 @@ function Pathfinder:Expand(_Index, _Node)
     -- Sort open list
     self:SortOpenList(_Index);
     -- Insert current node to closed list
-    table.insert(self.m_ProcessedPaths[_Index].Closed, _Node);
-    self.m_ProcessedPaths[_Index].OpenMap[_Node.ID] = true;
+    table.insert(self.ProcessedPaths[_Index].Closed, _Node);
+    self.ProcessedPaths[_Index].OpenMap[_Node.ID] = true;
 end
 
 function Pathfinder:AcceptSuccessors(_Index, _SuccessorList)
     local SuccessorList = {};
     for k,v in pairs(_SuccessorList) do
-        if not self.m_ProcessedPaths[_Index].ClosedMap["ID_"..v.X.."_"..v.Y] then
-            if not self.m_ProcessedPaths[_Index].OpenMap["ID_"..v.X.."_"..v.Y] then
+        if not self.ProcessedPaths[_Index].ClosedMap["ID_"..v.X.."_"..v.Y] then
+            if not self.ProcessedPaths[_Index].OpenMap["ID_"..v.X.."_"..v.Y] then
                 table.insert(SuccessorList, v);
             end
         end
     end
     for k,v in pairs(SuccessorList) do
         local useNode = true;
-        if self.m_ProcessedPaths[_Index].AcceptMethode then
-            useNode = useNode and self.m_ProcessedPaths[_Index].AcceptMethode(
-                v, SuccessorList, unpack(self.m_ProcessedPaths[_Index].AcceptArgs)
+        if self.ProcessedPaths[_Index].AcceptMethode then
+            useNode = useNode and self.ProcessedPaths[_Index].AcceptMethode(
+                v, SuccessorList, unpack(self.ProcessedPaths[_Index].AcceptArgs)
             );
         end
         if useNode then
-            table.insert(self.m_ProcessedPaths[_Index].Open, v);
-            self.m_ProcessedPaths[_Index].OpenMap[v.ID] = true;
+            table.insert(self.ProcessedPaths[_Index].Open, v);
+            self.ProcessedPaths[_Index].OpenMap[v.ID] = true;
             -- Make visible (debug only)
             -- Logic.CreateEntity(Entities.XD_CoordinateEntity, v.X, v.Y, 0, 0);
         end
@@ -348,7 +348,7 @@ function Pathfinder:SortOpenList(_Index)
     local comp = function(v,w)
         return v.Distance1 < w.Distance1 and v.Distance2 < w.Distance2;
     end
-    table.sort(self.m_ProcessedPaths[_Index].Open, comp);
+    table.sort(self.ProcessedPaths[_Index].Open, comp);
 end
 
 function Pathfinder:GetClosestPositionOnNodeMap(_Position, _NodeDistance)
@@ -367,25 +367,25 @@ end
 
 function Pathfinder:GetNodeByID(_Index, _ID)
     local node;
-    for i=1, #self.m_ProcessedPaths[_Index].Closed do
-        if self.m_ProcessedPaths[_Index].Closed[i].ID == _ID then
-            node = self.m_ProcessedPaths[_Index].Closed[i];
+    for i=1, #self.ProcessedPaths[_Index].Closed do
+        if self.ProcessedPaths[_Index].Closed[i].ID == _ID then
+            node = self.ProcessedPaths[_Index].Closed[i];
         end
     end
     return node;
 end
 
 function Pathfinder:IsPathExisting(_ID)
-    return self.m_Paths[_ID] ~= nil;
+    return self.PathList[_ID] ~= nil;
 end
 
 function Pathfinder:IsPathStillCalculated(_ID)
-    return self.m_ProcessedPaths[_ID] ~= nil;
+    return self.ProcessedPaths[_ID] ~= nil;
 end
 
 function Pathfinder:GetPath(_ID)
     if self:IsPathExisting(_ID) then
-        return table.copy(self.m_Paths[_ID]);
+        return table.copy(self.PathList[_ID]);
     end
 end
 
