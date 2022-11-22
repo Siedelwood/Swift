@@ -1,5 +1,5 @@
 --[[
-Swift_3_InteractiveChests/Source
+Swift_5_InteractiveChests/Source
 
 Copyright (C) 2021 - 2022 totalwarANGEL - All Rights Reserved.
 

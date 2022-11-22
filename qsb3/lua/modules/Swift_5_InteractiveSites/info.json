@@ -1,9 +1,9 @@
 {
-    "name": "Swift_3_InteractiveMines",
+    "name": "Swift_5_InteractiveSites",
     "version": "1.0.0",
     "mandatory": false,
-    "caption": "(3) Interactive Mines",
-    "shortdesc": "Ermöglicht es eingestürzte Minen mit dem Helden zu restaurieren.",
+    "caption": "(5) Interactive Sites",
+    "shortdesc": "Es können interaktive Baustellen gesetzt werden.",
     "description": "",
     "files": [
         "source.lua",

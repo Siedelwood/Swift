@@ -1,9 +1,9 @@
 {
-    "name": "Swift_3_InteractiveChests",
+    "name": "Swift_5_InteractiveMines",
     "version": "1.0.0",
     "mandatory": false,
-    "caption": "(3) Interactive Chests",
-    "shortdesc": "Ermöglicht es Truhen und Ruinen mit zufälligen Schätzen zu befüllen.",
+    "caption": "(5) Interactive Mines",
+    "shortdesc": "Ermöglicht es eingestürzte Minen mit dem Helden zu restaurieren.",
     "description": "",
     "files": [
         "source.lua",
