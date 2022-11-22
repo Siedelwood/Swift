@@ -238,6 +238,8 @@ end
 -- Öffnet einen Info-Dialog. Sollte bereits ein Dialog zu sehen sein, wird
 -- der Dialog der Dialogwarteschlange hinzugefügt.
 --
+-- An die Action wird der Spieler übergeben, der den Dialog bestätigt hat.
+--
 -- <b>Hinweis</b>: Kann nicht aus dem globalen Skript heraus benutzt werden.
 --
 -- @param[type=string]   _PlayerID (Optional) Empfangender Spieler
@@ -274,7 +276,7 @@ end
 --
 -- Um die Entscheigung des Spielers abzufragen, wird ein Callback benötigt.
 -- Das Callback bekommt eine Boolean übergeben, sobald der Spieler die
--- Entscheidung getroffen hat.
+-- Entscheidung getroffen hat, plus die ID des Spielers.
 --
 -- <b>Hinweis</b>: Kann nicht aus dem globalen Skript heraus benutzt werden.
 --
@@ -315,7 +317,8 @@ end
 -- der Dialog der Dialogwarteschlange hinzugefügt.
 --
 -- In diesem Dialog wählt der Spieler eine Option aus einer Liste von Optionen
--- aus. Anschließend erhält das Callback den Index der selektierten Option.
+-- aus. Anschließend erhält das Callback den Index der selektierten Option und
+-- die ID des Spielers, der den Dialog bestätigt hat.
 --
 -- <b>Hinweis</b>: Kann nicht aus dem globalen Skript heraus benutzt werden.
 --
