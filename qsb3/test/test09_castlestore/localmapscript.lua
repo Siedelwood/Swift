@@ -41,6 +41,26 @@ end
 function Mission_LocalOnQsbLoaded()
     PredicateBenchmark = {};
     VanillaBenchmark = {};
+
+    MyTest = {
+        Foo = {
+            Bar = function()
+
+            end
+        }
+    }
+end
+
+function ConstructBuildingRescritction(_PlayerID, _Type, _X, _Y)
+    return true;
+end
+
+function ConstructRoadRescritction(_PlayerID, _IsTrail, _X, _Y)
+    return true;
+end
+
+function KnockdownBuildingRestriction(_PlayerID, _BuildingID, _X, _Y)
+    return true;
 end
 
 function BuildingButtonTypeTest()

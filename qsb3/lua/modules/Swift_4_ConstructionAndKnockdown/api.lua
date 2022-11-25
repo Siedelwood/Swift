@@ -9,23 +9,36 @@ You may use and modify this file unter the terms of the MIT licence.
 ]]
 
 ---
--- Ermöglicht den Gebäudebau zu beschränken.
+-- Ermöglicht Abriss und Bau für den Spieler einzuschränken.
+-- 
+-- <p><b>Hinweis</b>: Jegliche Enschränkungen funktionieren nur für menschlische
+-- Spieler. Die KI wird sie alle ignorieren!</p>
+-- 
+-- <p>Eine Baubeschränkung oder ein Abrissschutz geben eine ID zurück, über die
+-- seibiger dann gelöscht werden kann.</p>
 --
--- Der Bau von Gebäudetypen oder Gebäudekategorien kann reguliert werden.
--- Verbote können für bestimmte Bereiche (kreisförmige Gebiete um ein Zentrum)
--- oder ganze Territorien vereinbart werden.
+-- Es gibt zudem eine Hierarchie, nach der die einzelnen Checks durchgeführt
+-- werden. Dabei wird nach Art des betroffenen Bereiches und nach Art des
+-- betroffenen Subjektes unterschieden.
 --
--- <b>Hinweis</b>: Werden Mauern oder Palisaden verboten, werden diese zwar
--- gesetzt, aber sofort danach wieder zerstört. Der Wagen mit den Steinen kehrt
--- dann in das Lagerhaus zurück.
+-- Nach Art des Bereiches:
+-- <ol>
+-- <li>Custom-Funktionen</li>
+-- <li>Durch Umkreise definierte Bereiche</li>
+-- <li>Durch Territorien definierte Bereiche</li>
+-- </ol>
 --
--- <b>Hinweis</b>: Es können nur Abrisse verhindert werden, wenn ein Gebäude
--- für den Abriss einen Siedler benötigt.
+-- Nach Art des Gebäudes:
+-- <ol>
+-- <li>Custom-Funktionen</li>
+-- <li>Skriptnamen</li>
+-- <li>Entity Types</li>
+-- <li>Entity Categories</li>
+-- </ol>
 --
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
--- <li><a href="Swift_1_EntityEventCore.api.html">(1) Entity Event Core</a></li>
--- <li><a href="Swift_1_JobsCore.api.html">(1) Jobs Core</a></li>
+-- <li><a href="Swift_1_InterfaceCore.api.html">(1) Interface Core</a></li>
 -- </ul>
 --
 -- @within Beschreibung
@@ -33,467 +46,411 @@ You may use and modify this file unter the terms of the MIT licence.
 --
 
 ---
--- Events, auf die reagiert werden kann.
+-- Verhindert den Bau Gebäuden anhand der übergebenen Funktion.
 --
--- @field BuildingKnockdown Ein Gebäude wurde zum Abriss markiert. (Parameter: EntityID, PlayerID, _State)
---                          <br>Gebäude, die noch nicht fertig gebaut sind, werden sofort abgerissen!
+-- Die angegebene Funktion muss eine Funktion im lokalen Skript sein. Es ist
+-- möglich Funktionen innerhalb Tables anzugeben. Die self-Referenz wird
+-- allerdings nicht unterstützt.
 --
--- @within Event
+-- Eine Funktion muss true zurückgeben, wenn der Bau geblockt werden soll.
+-- Die gleiche Funktion kann für alle Spieler benutzt werden, wenn als PlayerID
+-- -1 angegeben wird. Für welchen Spieler sie ausgeführt wird, wird stets als 
+-- Parameter übergeben.
 --
-QSB.ScriptEvents = QSB.ScriptEvents or {};
-
----
--- Erzeugt eine neue Baubeschränkung.
---
--- Eine Baubeschränkung muss <b>true</b> zurückgeben, wenn ein Gebäudetyp oder
--- eine Gebäudekategorie gebaut werden darf. Im Gegenzug muss <b>false</b>
--- zurückgegeben werden, wenn der Bau nicht gestattet sein soll.
---
--- @param[type=function] _Function Bedingung der Beschränkung
--- @return[type=number] ID der Beschränkung
--- @within Anwenderfunktionen
--- @see API.GetForbidConstructTypeAtTerritory
--- @see API.GetForbidConstructCategoryAtTerritory
--- @see API.GetForbidConstructTypeInArea
--- @see API.GetForbidConstructCategoryInArea
--- @see API.GetPermitConstructTypeAtTerritory
--- @see API.GetPermitConstructCategoryAtTerritory
--- @see API.GetPermitConstructTypeInArea
--- @see API.GetPermitConstructCategoryInArea
+-- @param[type=number]   _PlayerID ID des Spielers
+-- @param[type=function] _Function Funktion im lokalen Skript
+-- @return[type=number] ID der Einschränkung
 --
 -- @usage
--- -- Vordefinierte Bedingung:
--- -- Bäckereien dürfen nicht auf Territorium 13 gebaut werden.
--- local ID = API.AddConstructionRestriction(
---     API.GetForbidConstructTypeAtTerritory(1, 13, Entities.B_Bakery)
--- );
--- -- Benutzerdefinierte Bedingung:
--- -- Steinmauern können nur auf Territorium 7 gebaut werden.
--- local ID = API.AddConstructionRestriction(function(_PlayerID, _Type, _x, _y)
---     if  _PlayerID == 1
---     and Logic.IsEntityTypeInCategory(_Type, EntityCategories.Palisade) == 0
---     and Logic.IsEntityTypeInCategory(_Type, EntityCategories.Wall) == 1 then
---         if Logic.GetTerritoryAtPosition(_x, _y) ~= 7 then
---             return false;
---         end
---     end
---     return true;
--- end);
+-- function MyCustomRestriction = function(_PlayerID, _Type, _X, _Y)
+--    if AnythingIWant then
+--        return true;
+--    end
+-- end
+-- MyRestriction = API.RestrictBuildingCustomFunction(1, MyCustomRestriction);
 --
-function API.AddConstructionRestriction(_Function)
-    local ID = ModuleConstructionControl.Global:GenerateConstructionConditionID();
-    ModuleConstructionControl.Global.ConstructionConditions[ID] = _Function;
+function API.RestrictBuildingCustomFunction(_PlayerID, _Function)
+    if GUI then
+        return 0;
+    end
+    local ID = ModuleConstructionControl.Global:InsertProtection(_PlayerID, 0, "NoConstructCustomFunction", {
+        Function = _Function,
+    });
     return ID;
 end
 
 ---
--- Entfernt eine Baubeschränkung.
--- @param[type=number] _ID ID der Beschränkung
--- @within Anwenderfunktionen
---
--- @usage API.RemoveConstructionRestriction(SomeRestrictionID);
---
-function API.RemoveConstructionRestriction(_ID)
-    ModuleConstructionControl.Global.ConstructionConditions[_ID] = nil;
-end
-
----
--- Erzeugt eine Bedinungsfunktion.
---
--- Der Entitytyp kann <u>nur</u> im Territorium gebaut werden.
---
--- @param[type=number] _PlayerID   ID des Spielers
--- @param[type=number] _Territory  ID des Territorium
--- @param[type=number] _EntityType Entity Type
--- @return[type=function] Bedingungsfunktion
--- @within Anwenderfunktionen
---
-function API.GetPermitConstructTypeAtTerritory(_PlayerID, _Territory, _EntityType)
-    return function(_Player, _Type, _x, _y)
-        if _Player == _PlayerID and _Type == _EntityType then
-            return Logic.GetTerritoryAtPosition(_x, _y) == _Territory;
-        end
-        return true;
-    end
-end
-
----
--- Erzeugt eine Bedinungsfunktion.
---
--- Der Entitytyp kann <u>nicht</u> im Territorium gebaut werden.
---
--- @param[type=number] _PlayerID   ID des Spielers
--- @param[type=number] _Territory  ID des Territorium
--- @param[type=number] _EntityType Entity Type
--- @return[type=function] Bedingungsfunktion
--- @within Anwenderfunktionen
---
-function API.GetForbidConstructTypeAtTerritory(_PlayerID, _Territory, _EntityType)
-    return function(_Player, _Type, _x, _y)
-        if _Player == _PlayerID and _Type == _EntityType then
-            return Logic.GetTerritoryAtPosition(_x, _y) ~= _Territory;
-        end
-        return true;
-    end
-end
-
----
--- Erzeugt eine Bedinungsfunktion.
---
--- Die Kategorie kann <u>nur</u> im Territorium gebaut werden.
---
+-- Verhindert den Bau von Gebäuden des Typs in dem Territorium.
 -- @param[type=number] _PlayerID  ID des Spielers
--- @param[type=number] _Territory ID des Territorium
--- @param[type=number] _Category  Entity Category
--- @return[type=function] Bedingungsfunktion
--- @within Anwenderfunktionen
+-- @param[type=number] _Type      Entity-Typ
+-- @param              _Territory ID oder Name des Territorium
+-- @return[type=number] ID der Einschränkung
 --
-function API.GetPermitConstructCategoryAtTerritory(_PlayerID, _Territory, _Category)
-    return function(_Player, _Type, _x, _y)
-        if _Player == _PlayerID and Logic.IsEntityTypeInCategory(_Type, _Category) == 1 then
-            return Logic.GetTerritoryAtPosition(_x, _y) == _Territory;
-        end
-        return true;
+-- @usage MyRestriction = API.RestrictBuildingTypeInTerritory(1, Entities.B_Bakery, 1);
+--
+function API.RestrictBuildingTypeInTerritory(_PlayerID, _Type, _Territory)
+    if GUI then
+        return 0;
     end
-end
-
----
--- Erzeugt eine Bedinungsfunktion.
---
--- Die Kategorie kann <u>nicht</u> im Territorium gebaut werden.
---
--- @param[type=number] _PlayerID  ID des Spielers
--- @param[type=number] _Territory ID des Territorium
--- @param[type=number] _Category  Entity Category
--- @return[type=function] Bedingungsfunktion
--- @within Anwenderfunktionen
---
-function API.GetForbidConstructCategoryAtTerritory(_PlayerID, _Territory, _Category)
-    return function(_Player, _Type, _x, _y)
-        if _Player == _PlayerID and Logic.IsEntityTypeInCategory(_Type, _Category) == 1 then
-            return Logic.GetTerritoryAtPosition(_x, _y) ~= _Territory;
-        end
-        return true;
+    if type(_Territory) == "string" then
+        _Territory = GetTerritoryIDByName(_Territory);
     end
-end
-
----
--- Erzeugt eine Bedinungsfunktion.
---
--- Der Entitytyp kann <u>nur</u> im Gebiet gebaut werden.
---
--- @param[type=number] _PlayerID   ID des Spielers
--- @param[type=string] _AreaCenter Gebietszentrum
--- @param[type=number] _AreaSize   Gebietsradius
--- @param[type=number] _EntityType Entity Type
--- @return[type=function] Bedingungsfunktion
--- @within Anwenderfunktionen
---
-function API.GetPermitConstructTypeInArea(_PlayerID, _AreaCenter, _AreaSize, _EntityType)
-    return function(_Player, _Type, _x, _y)
-        if _Player == _PlayerID and _Type == _EntityType then
-            return GetDistance({X= _x, Y= _y}, _AreaCenter) <= _AreaSize;
-        end
-        return true;
-    end
-end
-
----
--- Erzeugt eine Bedinungsfunktion.
---
--- Der Entitytyp kann <u>nicht</u> im Gebiet gebaut werden.
---
--- @param[type=number] _PlayerID   ID des Spielers
--- @param[type=string] _AreaCenter Gebietszentrum
--- @param[type=number] _AreaSize   Gebietsradius
--- @param[type=number] _EntityType Entity Type
--- @return[type=function] Bedingungsfunktion
--- @within Anwenderfunktionen
---
-function API.GetForbidConstructTypeInArea(_PlayerID, _AreaCenter, _AreaSize, _EntityType)
-    return function(_Player, _Type, _x, _y)
-        if _Player == _PlayerID and _Type == _EntityType then
-            return GetDistance({X= _x, Y= _y}, _AreaCenter) > _AreaSize;
-        end
-        return true;
-    end
-end
-
----
--- Erzeugt eine Bedinungsfunktion.
---
--- Die Kategorie kann <u>nur</u> im Gebiet gebaut werden.
---
--- @param[type=number] _PlayerID   ID des Spielers
--- @param[type=string] _AreaCenter Gebietszentrum
--- @param[type=number] _AreaSize   Gebietsradius
--- @param[type=number] _Category   Entity Category
--- @return[type=function] Bedingungsfunktion
--- @within Anwenderfunktionen
---
-function API.GetPermitConstructCategoryInArea(_PlayerID, _AreaCenter, _AreaSize, _Category)
-    return function(_Player, _Type, _x, _y)
-        if _Player == _PlayerID and Logic.IsEntityTypeInCategory(_Type, _Category) == 1 then
-            return GetDistance({X= _x, Y= _y}, _AreaCenter) <= _AreaSize;
-        end
-        return true;
-    end
-end
-
----
--- Erzeugt eine Bedinungsfunktion.
---
--- Die Kategorie kann <u>nicht</u> im Gebiet gebaut werden.
---
--- @param[type=number] _PlayerID   ID des Spielers
--- @param[type=string] _AreaCenter Gebietszentrum
--- @param[type=number] _AreaSize   Gebietsradius
--- @param[type=number] _Category   Entity Category
--- @return[type=function] Bedingungsfunktion
--- @within Anwenderfunktionen
---
-function API.GetForbidConstructCategoryInArea(_PlayerID, _AreaCenter, _AreaSize, _Category)
-    return function(_Player, _Type, _x, _y)
-        if _Player == _PlayerID and Logic.IsEntityTypeInCategory(_Type, _Category) == 1 then
-            return GetDistance({X= _x, Y= _y}, _AreaCenter) > _AreaSize;
-        end
-        return true;
-    end
-end
-
----
--- Erzeugt eine neue Abrissbeschränkung.
---
--- Eine Abrissbeschränkung muss <b>true</b> zurückgeben, wenn ein Gebäudetyp
--- oder eine Gebäudekategorie abgerissen werden darf. Im Gegenzug muss
--- <b>false</b> zurückgegeben werden, wenn der Besitzer das Gebäude nicht
--- abreißen können sein soll.
---
--- @param[type=function] _Function Bedingung der Beschränkung
--- @return[type=number] ID der Beschränkung
--- @within Anwenderfunktionen
---
--- @see API.GetForbidKnockdownTypeAtTerritory
--- @see API.GetForbidKnockdownCategoryAtTerritory
--- @see API.GetForbidKnockdownTypeInArea
--- @see API.GetForbidKnockdownCategoryInArea
--- @see API.GetPermitKnockdownTypeAtTerritory
--- @see API.GetPermitKnockdownCategoryAtTerritory
--- @see API.GetPermitKnockdownTypeInArea
--- @see API.GetPermitKnockdownCategoryInArea
---
--- @usage
--- -- Vordefinierte Bedingung:
--- -- Bäckereien dürfen nicht auf Territorium 13 abgerissen werden.
--- local ID = API.AddKnockdownRestriction(
---     API.GetForbidKnockdownTypeAtTerritory(1, 13, Entities.B_Bakery)
--- );
--- -- Benutzerdefinierte Bedingung:
--- -- Das Gebäude mit dem namen "Bakery" darf nicht abgerissen werden.
--- local ID = API.AddKnockdownRestriction(function(_EntityID)
---     return Logic.GetEntityName(_EntityID) ~= "Bakery";
--- end);
---
-function API.AddKnockdownRestriction(_Function)
-    local ID = ModuleConstructionControl.Global:GenerateKnockdownConditionID();
-    ModuleConstructionControl.Global.KnockdownConditions[ID] = _Function;
+    local ID = ModuleConstructionControl.Global:InsertProtection(_PlayerID, 0, "NoConstructTypeInTerritory", {
+        Territory = _Territory,
+        Type = _Type,
+    });
     return ID;
 end
 
 ---
--- Entfernt eine Abrissbeschränkung.
--- @param[type=number] _ID ID der Beschränkung
--- @within Anwenderfunktionen
+-- Verhindert den Bau von Gebäuden des Typs innerhalb des Gebietes.
+-- @param[type=number] _PlayerID  ID des Spielers
+-- @param[type=number] _Type      Entity-Typ
+-- @param              _Position  Position oder Skriptname
+-- @param[type=number] _Area      Größe des Gebiets
+-- @return[type=number] ID der Einschränkung
 --
--- @usage API.RemoveKnockdownRestriction(SomeRestrictionID);
+-- @usage MyRestriction = API.RestrictBuildingTypeInArea(1, Entities.B_Bakery, "GiveMeMeatInstead", 3000);
 --
-function API.RemoveKnockdownRestriction(_ID)
-    ModuleConstructionControl.Global.KnockdownConditions[_ID] = nil;
+function API.RestrictBuildingTypeInArea(_PlayerID, _Type, _Position, _Area)
+    if GUI then
+        return 0;
+    end
+    local ID = ModuleConstructionControl.Global:InsertProtection(_PlayerID, 0, "NoConstructTypeInArea", {
+        Position = API.GetPosition(_Position),
+        Area = _Area,
+        Type = _Type,
+    });
+    return ID;
 end
 
 ---
--- Erzeugt eine Bedinungsfunktion.
+-- Verhindert den Bau von Gebäuden der Kategorie in dem Territorium.
+-- @param[type=number] _PlayerID  ID des Spielers
+-- @param[type=number] _Category  Entity-Kategorie
+-- @param              _Territory ID oder Name des Territorium
+-- @return[type=number] ID der Einschränkung
 --
--- Der Entitytyp kann <u>nicht</u> im Territorium abgerissen werden.
+-- @usage MyRestriction = API.RestrictBuildingCategoryInTerritory(1, EntityCategories.CityBuilding, 1);
 --
--- @param[type=number] _PlayerID   ID des Spielers
--- @param[type=number] _Territory  ID des Territorium
--- @param[type=number] _EntityType Entity Type
--- @return[type=function] Bedingungsfunktion
--- @within Anwenderfunktionen
---
-function API.GetForbidKnockdownTypeAtTerritory(_PlayerID, _Territory, _EntityType)
-    return function(_EntityID)
-        if Logic.EntityGetPlayer(_EntityID) == _PlayerID then
-            if Logic.GetEntityType(_EntityID) == _EntityType then
-                return GetTerritoryUnderEntity(_EntityID) ~= _Territory;
-            end
-        end
-        return true;
+function API.RestrictBuildingCategoryInTerritory(_PlayerID, _Category, _Territory)
+    if GUI then
+        return 0;
     end
+    if type(_Territory) == "string" then
+        _Territory = GetTerritoryIDByName(_Territory);
+    end
+    local ID = ModuleConstructionControl.Global:InsertProtection(_PlayerID, 0, "NoConstructCategoryInTerritory", {
+        Territory = _Territory,
+        Category = _Category,
+    });
+    return ID;
 end
 
 ---
--- Erzeugt eine Bedinungsfunktion.
+-- Verhindert den Bau von Gebäuden der Kategorie innerhalb des Gebietes.
+-- @param[type=number] _PlayerID  ID des Spielers
+-- @param[type=number] _Category  Entity-Kategorie
+-- @param              _Position  Position oder Skriptname
+-- @param[type=number] _Area      Größe des Gebiets
+-- @return[type=number] ID der Einschränkung
 --
--- Der Entitytyp kann <u>nur</u> im Territorium abgerissen werden.
+-- @usage MyRestriction = API.RestrictBuildingCategoryInArea(1, EntityCategories.OuterRimBuilding, "NoOuterRim", 3000);
 --
--- @param[type=number] _PlayerID   ID des Spielers
--- @param[type=number] _Territory  ID des Territorium
--- @param[type=number] _EntityType Entity Type
--- @return[type=function] Bedingungsfunktion
--- @within Anwenderfunktionen
---
-function API.GetPermitKnockdownTypeAtTerritory(_PlayerID, _Territory, _EntityType)
-    return function(_EntityID)
-        if Logic.EntityGetPlayer(_EntityID) == _PlayerID then
-            if Logic.GetEntityType(_EntityID) == _EntityType then
-                return GetTerritoryUnderEntity(_EntityID) == _Territory;
-            end
-        end
-        return true;
+function API.RestrictBuildingCategoryInArea(_PlayerID, _Category, _Position, _Area)
+    if GUI then
+        return 0;
     end
+    local ID = ModuleConstructionControl.Global:InsertProtection(_PlayerID, 0, "NoConstructCategoryInArea", {
+        Position = API.GetPosition(_Position),
+        Area = _Area,
+        Category = _Category,
+    });
+    return ID;
 end
 
 ---
--- Erzeugt eine Bedinungsfunktion.
+-- Verhindert den Bau von Pfaden oder Straßen anhand der übergebenen Funktion.
 --
--- Die Kategorie kann <u>nicht</u> im Territorium abgerissen werden.
+-- Die angegebene Funktion muss eine Funktion im lokalen Skript sein. Es ist
+-- möglich Funktionen innerhalb Tables anzugeben. Die self-Referenz wird
+-- allerdings nicht unterstützt.
 --
--- @param[type=number] _PlayerID   ID des Spielers
--- @param[type=number] _Territory  ID des Territorium
--- @param[type=number] _Category   Entity Category
--- @return[type=function] Bedingungsfunktion
--- @within Anwenderfunktionen
+-- Eine Funktion muss true zurückgeben, wenn der Bau geblockt werden soll.
+-- Die gleiche Funktion kann für alle Spieler benutzt werden, wenn als PlayerID
+-- -1 angegeben wird. Für welchen Spieler sie ausgeführt wird, wird stets als
+-- Parameter übergeben.
 --
-function API.GetForbidKnockdownCategoryAtTerritory(_PlayerID, _Territory, _Category)
-    return function(_EntityID)
-        if Logic.EntityGetPlayer(_EntityID) == _PlayerID then
-            if Logic.IsEntityTypeInCategory(_EntityID, _Category) == 1 then
-                return GetTerritoryUnderEntity(_EntityID) ~= _Territory;
-            end
-        end
-        return true;
+-- @param[type=number]   _PlayerID ID des Spielers
+-- @param[type=function] _Function Funktion im lokalen Skript
+-- @return[type=number] ID der Einschränkung
+--
+-- @usage
+-- function MyCustomRestriction = function(_PlayerID, _IsTrail, _X, _Y)
+--    if AnythingIWant then
+--        return true;
+--    end
+-- end
+-- MyRestriction = API.RestrictRoadCustomFunction(1, MyCustomRestriction);
+--
+function API.RestrictRoadCustomFunction(_PlayerID, _Function)
+    if GUI then
+        return 0;
     end
+    local ID = ModuleConstructionControl.Global:InsertProtection(_PlayerID, 0, "NoRoadCustomFunction", {
+        Function = _Function,
+    });
+    return ID;
 end
 
 ---
--- Erzeugt eine Bedinungsfunktion.
+-- Verhindert den Bau von Pfaden in dem Territorium.
+-- @param[type=number] _PlayerID  ID des Spielers
+-- @param              _Territory ID oder Name des Territorium
+-- @return[type=number] ID der Einschränkung
 --
--- Die Kategorie kann <u>nur</u> im Territorium abgerissen werden.
+-- @usage MyRestriction = API.RestrictTrailInTerritory(1, 1);
 --
--- @param[type=number] _PlayerID   ID des Spielers
--- @param[type=number] _Territory  ID des Territorium
--- @param[type=number] _Category   Entity Category
--- @return[type=function] Bedingungsfunktion
--- @within Anwenderfunktionen
---
-function API.GetPermitKnockdownCategoryAtTerritory(_PlayerID, _Territory, _Category)
-    return function(_EntityID)
-        if Logic.EntityGetPlayer(_EntityID) == _PlayerID then
-            if Logic.IsEntityTypeInCategory(_EntityID, _Category) == 1 then
-                return GetTerritoryUnderEntity(_EntityID) == _Territory;
-            end
-        end
-        return true;
+function API.RestrictTrailInTerritory(_PlayerID, _Territory)
+    if GUI then
+        return 0;
     end
+    if type(_Territory) == "string" then
+        _Territory = GetTerritoryIDByName(_Territory);
+    end
+    local ID = ModuleConstructionControl.Global:InsertProtection(_PlayerID, 0, "NoTrailInTerritory", {
+        Territory = _Territory,
+    });
+    return ID;
 end
 
 ---
--- Erzeugt eine Bedinungsfunktion.
+-- Verhindert den Bau von Pfaden innerhalb des Gebiets.
+-- @param[type=number] _PlayerID  ID des Spielers
+-- @param              _Position  Position oder Skriptname
+-- @param[type=number] _Area      Größe des Gebiets
+-- @return[type=number] ID der Einschränkung
 --
--- Der Entitytyp kann <u>nicht</u> im Gebiet abgerissen werden.
+-- @usage MyRestriction = API.RestrictTrailInArea(1, "NoMansLand", 3000);
 --
--- @param[type=number] _PlayerID   ID des Spielers
--- @param[type=number] _AreaCenter Gebietszentrum
--- @param[type=number] _AreaSize   Gebietsradius
--- @param[type=number] _EntityType Entity Type
--- @return[type=function] Bedingungsfunktion
--- @within Anwenderfunktionen
---
-function API.GetForbidKnockdownTypeInArea(_PlayerID, _AreaCenter, _AreaSize, _EntityType)
-    return function(_EntityID)
-        if Logic.EntityGetPlayer(_EntityID) == _PlayerID then
-            if Logic.GetEntityType(_EntityID) == _EntityType then
-                return API.GetDistance(_EntityID, _AreaCenter) > _AreaSize;
-            end
-        end
-        return true;
+function API.RestrictTrailInArea(_PlayerID, _Position, _Area)
+    if GUI then
+        return 0;
     end
+    local ID = ModuleConstructionControl.Global:InsertProtection(_PlayerID, 0, "NoTrailInArea", {
+        Position = API.GetPosition(_Position),
+        Area = _Area,
+    });
+    return ID;
 end
 
 ---
--- Erzeugt eine Bedinungsfunktion.
+-- Verhindert den Bau von Straßen in dem Territorium.
+-- @param[type=number] _PlayerID  ID des Spielers
+-- @param              _Territory ID oder Name des Territorium
+-- @return[type=number] ID der Einschränkung
 --
--- Der Entitytyp kann <u>nur</u> im Gebiet abgerissen werden.
+-- @usage MyRestriction = API.RestrictStreetInTerritory(1, 1);
 --
--- @param[type=number] _PlayerID   ID des Spielers
--- @param[type=number] _AreaCenter Gebietszentrum
--- @param[type=number] _AreaSize   Gebietsradius
--- @param[type=number] _EntityType Entity Type
--- @return[type=function] Bedingungsfunktion
--- @within Anwenderfunktionen
---
-function API.GetPermitKnockdownTypeInArea(_PlayerID, _AreaCenter, _AreaSize, _EntityType)
-    return function(_EntityID)
-        if Logic.EntityGetPlayer(_EntityID) == _PlayerID then
-            if Logic.GetEntityType(_EntityID) == _EntityType then
-                return API.GetDistance(_EntityID, _AreaCenter) <= _AreaSize;
-            end
-        end
-        return true;
+function API.RestrictStreetInTerritory(_PlayerID, _Territory)
+    if GUI then
+        return 0;
     end
+    if type(_Territory) == "string" then
+        _Territory = GetTerritoryIDByName(_Territory);
+    end
+    local ID = ModuleConstructionControl.Global:InsertProtection(_PlayerID, 0, "NoStreetInTerritory", {
+        Territory = _Territory,
+    });
+    return ID;
 end
 
 ---
--- Erzeugt eine Bedinungsfunktion.
+-- Verhindert den Bau von Straßen innerhalb des Gebiets.
+-- @param[type=number] _PlayerID  ID des Spielers
+-- @param              _Position  Position oder Skriptname
+-- @param[type=number] _Area      Größe des Gebiets
+-- @return[type=number] ID der Einschränkung
 --
--- Die Kategorie kann <u>nicht</u> im Gebiet abgerissen werden.
+-- @usage MyRestriction = API.RestrictStreetInArea(1, "NoMansLand", 3000);
 --
--- @param[type=number] _PlayerID   ID des Spielers
--- @param[type=number] _AreaCenter Gebietszentrum
--- @param[type=number] _AreaSize   Gebietsradius
--- @param[type=number] _Category   Entity Category
--- @return[type=function] Bedingungsfunktion
--- @within Anwenderfunktionen
---
-function API.GetForbidKnockdownCategoryInArea(_PlayerID, _AreaCenter, _AreaSize, _Category)
-    return function(_EntityID)
-        if Logic.EntityGetPlayer(_EntityID) == _PlayerID then
-            if Logic.IsEntityTypeInCategory(_EntityID, _Category) == 1 then
-                return API.GetDistance(_EntityID, _AreaCenter) > _AreaSize;
-            end
-        end
-        return true;
+function API.RestrictStreetInArea(_PlayerID, _Position, _Area)
+    if GUI then
+        return 0;
     end
+    local ID = ModuleConstructionControl.Global:InsertProtection(_PlayerID, 0, "NoStreetInArea", {
+        Position = API.GetPosition(_Position),
+        Area = _Area,
+    });
+    return ID;
 end
 
 ---
--- Erzeugt eine Bedinungsfunktion.
+-- Löscht eine Baueinschränkung mit der angegebenen ID;
+-- @param[type=number] _ID  ID der Einschränkung
 --
--- Die Kategorie kann <u>nur</u> im Gebiet abgerissen werden.
+-- @usage API.DeleteRestriction(MyRestriction);
 --
--- @param[type=number] _PlayerID   ID des Spielers
--- @param[type=number] _AreaCenter Gebietszentrum
--- @param[type=number] _AreaSize   Gebietsradius
--- @param[type=number] _Category   Entity Category
--- @return[type=function] Bedingungsfunktion
--- @within Anwenderfunktionen
---
-function API.GetPermitKnockdownCategoryInArea(_PlayerID, _AreaCenter, _AreaSize, _Category)
-    return function(_EntityID)
-        if Logic.EntityGetPlayer(_EntityID) == _PlayerID then
-            if Logic.IsEntityTypeInCategory(_EntityID, _Category) == 1 then
-                return API.GetDistance(_EntityID, _AreaCenter) <= _AreaSize;
-            end
-        end
-        return true;
+function API.DeleteRestriction(_ID)
+    if GUI then
+        return;
     end
+    ModuleConstructionControl.Global:DeleteRestriction(_ID);
+    ModuleConstructionControl.Global:SyncRestrictions();
 end
 
--- Local callbacks
+---
+-- Verhindert den Abriss von Gebäuden anhand der übergebenen Funktion.
+--
+-- Die angegebene Funktion muss eine Funktion im lokalen Skript sein. Es ist
+-- möglich Funktionen innerhalb Tables anzugeben. Die self-Referenz wird
+-- allerdings nicht unterstützt.
+--
+-- Eine Funktion muss true zurückgeben, wenn der Abriss geblockt werden soll.
+-- Die gleiche Funktion kann für alle Spieler benutzt werden, wenn als PlayerID
+-- -1 angegeben wird. Für welchen Spieler sie ausgeführt wird, wird stets als
+-- Parameter übergeben.
+--
+-- @param[type=number]   _PlayerID ID des Spielers
+-- @param[type=function] _Function Funktion im lokalen Skript
+-- @return[type=number] ID der Protektion
+--
+-- @usage
+-- function MyCustomProtection = function(_PlayerID, _BuildingID, _X, _Y)
+--    if AnythingIWant then
+--        return true;
+--    end
+-- end
+-- MyProtection = API.ProtectBuildingCustomFunction(1, MyCustomProtection);
+--
+function API.ProtectBuildingCustomFunction(_PlayerID, _Function)
+    if GUI then
+        return 0;
+    end
+    local ID = ModuleConstructionControl.Global:InsertProtection(_PlayerID, 0, "NoKnockdownCustomFunction", {
+        Function = _Function,
+    });
+    return ID;
+end
 
-function SCP.ConstructionAndKnockdown.CancelKnockdown(_BuildingID, _PlayerID, _State)
-    ModuleConstructionControl.Global:CheckCancelBuildingKnockdown(_BuildingID, _PlayerID, _State)
+---
+-- Verhindert den Abriss aller Gebäude des Typs in dem Territorium.
+-- @param[type=number] _PlayerID  ID des Spielers
+-- @param[type=number] _Type      Entity-Typ
+-- @param              _Territory ID oder Name des Territorium
+-- @return[type=number] ID der Protektion
+--
+-- @usage MyProtection = API.ProtectBuildingTypeInTerritory(1, Entities.B_Bakery, 1);
+--
+function API.ProtectBuildingTypeInTerritory(_PlayerID, _Type, _Territory)
+    if GUI then
+        return 0;
+    end
+    if type(_Territory) == "string" then
+        _Territory = GetTerritoryIDByName(_Territory);
+    end
+    local ID = ModuleConstructionControl.Global:InsertProtection(_PlayerID, 0, "NoKnockdownTypeInTerritory", {
+        Territory = _Territory,
+        Type = _Type,
+    });
+    return ID;
+end
+
+---
+-- Verhindert den Abriss aller Gebäude des Typs innerhalb des Gebiets.
+-- @param[type=number] _PlayerID  ID des Spielers
+-- @param[type=number] _Type      Entity-Typ
+-- @param              _Position  Position oder Skriptname
+-- @param[type=number] _Area      Größe des Gebiets
+-- @return[type=number] ID der Protektion
+--
+-- @usage MyProtection = API.ProtectBuildingTypeInArea(1, Entities.B_Bakery, "AreaCenter", 3000);
+--
+function API.ProtectBuildingTypeInArea(_PlayerID, _Type, _Position, _Area)
+    if GUI then
+        return 0;
+    end
+    local ID = ModuleConstructionControl.Global:InsertProtection(_PlayerID, 0, "NoKnockdownTypeInArea", {
+        Position = API.GetPosition(_Position),
+        Area = _Area,
+        Type = _Type,
+    });
+    return ID;
+end
+
+---
+-- Verhindert den Abriss aller Gebäude in der Kategorie in dem Territorium.
+-- @param[type=number] _PlayerID  ID des Spielers
+-- @param[type=number] _Category  Entity-Kategorie
+-- @param              _Territory ID oder Name des Territorium
+-- @return[type=number] ID der Protektion
+--
+-- @usage MyProtection = API.ProtectBuildingCategoryInTerritory(1, EntityCategories.CityBuilding, 1);
+--
+function API.ProtectBuildingCategoryInTerritory(_PlayerID, _Category, _Territory)
+    if GUI then
+        return 0;
+    end
+    if type(_Territory) == "string" then
+        _Territory = GetTerritoryIDByName(_Territory);
+    end
+    local ID = ModuleConstructionControl.Global:InsertProtection(_PlayerID, 0, "NoKnockdownCategoryInTerritory", {
+        Territory = _Territory,
+        Category = _Category,
+    });
+    return ID;
+end
+
+---
+-- Verhindert den Abriss aller Gebäude in der Kategorie innerhalb des Gebiets.
+-- @param[type=number] _PlayerID  ID des Spielers
+-- @param[type=number] _Category  Entity-Kategorie
+-- @param              _Position  Position oder Skriptname
+-- @param[type=number] _Area      Größe des Gebiets
+-- @return[type=number] ID der Protektion
+--
+-- @usage MyProtection = API.ProtectBuildingCategoryInArea(1, EntityCategories.CityBuilding, "AreaCenter", 3000);
+--
+function API.ProtectBuildingCategoryInArea(_PlayerID, _Category, _Position, _Area)
+    if GUI then
+        return 0;
+    end
+    local ID = ModuleConstructionControl.Global:InsertProtection(_PlayerID, 0, "NoKnockdownCategoryInArea", {
+        Position = API.GetPosition(_Position),
+        Area = _Area,
+        Category = _Category,
+    });
+    return ID;
+end
+
+---
+-- Verhindert den Abriss eines benannten Gebäudes.
+-- @param[type=String] _ScriptName Skriptname des Entity
+-- @return[type=number] ID der Protektion
+--
+-- @usage MyProtection = API.ProtectNamedBuilding(1, "Denkmalschutz");
+--
+function API.ProtectNamedBuilding(_PlayerID, _ScriptName)
+    if GUI then
+        return 0;
+    end
+    local ID = ModuleConstructionControl.Global:InsertProtection(_PlayerID, 0, "NoKnockdownScriptName", {
+        ScriptName = _ScriptName,
+    });
+    return ID;
+end
+
+---
+-- Löscht einen Abrissschutz mit der angegebenen ID.
+-- @param[type=number] _ID  ID der Protektion
+--
+-- @usage API.DeleteProtection(MyProtection);
+--
+function API.DeleteProtection(_ID)
+    if GUI then
+        return;
+    end
+    ModuleConstructionControl.Global:DeleteProtection(_ID);
+    ModuleConstructionControl.Global:SyncProtections();
 end
 

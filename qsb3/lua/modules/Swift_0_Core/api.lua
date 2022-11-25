@@ -145,8 +145,8 @@ function API.OverrideTable()
     end
 
     ---
-    -- Erzeugt eine Deep Copy der Tabelle und schreibt alle Werte optional in
-    -- eine weitere Tabelle.
+    -- Erzeugt eine Deep Copy der Tabelle und gibt eine neue Table zurück oder
+    -- überträgt die Werte in ein zweites Table.
     -- @param[type=table] t1 Quelle
     -- @param[type=table] t2 (Optional) Ziel
     -- @return[type=table] Deep Copy
@@ -160,7 +160,7 @@ function API.OverrideTable()
     end
 
     ---
-    -- Kehr die Reihenfolge aller Elemente in einer Array Table um.
+    -- Kehr die Reihenfolge aller Listenelemente im Table um.
     -- @param[type=table] t1 Table
     -- @return[type=table] Invertierte Table
     -- @within table
@@ -168,7 +168,7 @@ function API.OverrideTable()
     table.invert = function (t1)
         assert(type(t1) == "table");
         local t2 = {};
-        for i= #t1, 1, -1 do
+        for i= table.length(t1), 1, -1 do
             table.insert(t2, t1[i]);
         end
         return t2;
@@ -197,7 +197,7 @@ function API.OverrideTable()
     end
 
     ---
-    -- Serialisiert eine Table als String. Funktionen, Threads und Upvalues
+    -- Serialisiert eine Table als String. Funktionen, Threads und Userdata
     -- können nicht serialisiert werden.
     -- @param[type=table] t Table
     -- @return[type=string] Serialisierte Table
