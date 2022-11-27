@@ -65,27 +65,28 @@ function Swift:LoadCore()
     self:DetectLanguage();
 
     if self:IsGlobalEnvironment() then
+        self:OverrideSaveLoadedCallback();
         self.Debug:InitalizeDebugModeGlobal();
+        self.Bugfix:InitalizeBugfixesGlobal();
         self:InitalizeScriptCommands();
         self:InitalizeEventsGlobal();
         self:InitalizeAIVariables();
-        self:InstallBehaviorGlobal();
+        self.Behavior:InstallBehaviorGlobal();
         self:OverrideQuestSystemGlobal();
         self:InitalizeCallbackGlobal();
         self:OverrideOnMPGameStart();
         self:DisableLogicFestival();
-        self:InitalizeBugfixesGlobal();
     end
 
     if self:IsLocalEnvironment() then
         self.Debug:InitalizeDebugModeLocal();
+        self.Bugfix:InitalizeBugfixesLocal();
         self:InitalizeEventsLocal();
-        self:InstallBehaviorLocal();
+        self.Behavior:InstallBehaviorLocal();
         self:OverrideDoQuicksave();
         self:AlterQuickSaveHotkey();
         self:InitalizeCallbackLocal();
         self:ValidateTerritories();
-        self:InitalizeBugfixesLocal();
 
         -- Saving human player ID makes only sense in singleplayer context
         -- 'cause in multiplayer there would be more than one.
@@ -117,6 +118,38 @@ function Swift:LoadCore()
                 return true;
             end
         end);
+    end
+end
+
+-- Restore Swift
+
+function Swift:OverrideSaveLoadedCallback()
+    if Mission_OnSaveGameLoaded then
+        Mission_OnSaveGameLoaded_Orig_Swift = Mission_OnSaveGameLoaded;
+        Mission_OnSaveGameLoaded = function()
+            Mission_OnSaveGameLoaded_Orig_Swift();
+            Swift:RestoreAfterLoad();
+            Logic.ExecuteInLuaLocalState("Swift:RestoreAfterLoad()");
+            Swift:DispatchScriptEvent(QSB.ScriptEvents.SaveGameLoaded);
+            Logic.ExecuteInLuaLocalState("Swift:DispatchScriptEvent(QSB.ScriptEvents.SaveGameLoaded)");
+        end
+    end
+end
+
+function Swift:RestoreAfterLoad()
+    debug("Loading save game", true);
+    self.LuaBase:OverrideBaseLua();
+    if self:IsGlobalEnvironment() then
+        self.Debug:GlobalRestoreDebugAfterLoad();
+        self.Bugfix:GlobalRestoreBugfixesAfterLoad();
+        self:DisableLogicFestival();
+    end
+    if self:IsLocalEnvironment() then
+        self.Debug:LocalRestoreDebugAfterLoad();
+        self.Bugfix:LocalRestoreBugfixesAfterLoad();
+        self:SetEscapeKeyTrigger();
+        self:CreateRandomSeed();
+        self:AlterQuickSaveHotkey();
     end
 end
 

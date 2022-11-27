@@ -321,6 +321,7 @@ You may use and modify this file unter the terms of the MIT licence.
 -- @within Beschreibung
 --
 
+Swift = Swift or {};
 Swift.Debug = {
     Benchmarks           = {};
     CheckAtRun           = false;

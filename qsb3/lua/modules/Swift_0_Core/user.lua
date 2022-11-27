@@ -11,7 +11,6 @@ You may use and modify this file unter the terms of the MIT licence.
 QSB.RefillAmounts = {};
 
 function Swift:InitalizeCallbackGlobal()
-    self:OverrideSaveLoadedCallback();
     self:OverwriteGeologistRefill();
     self:OverrideSoldierPayment();
 end
@@ -41,38 +40,6 @@ function Swift:TriggerEntityKilledCallbacks(_Entity, _Attacker)
     ));
 end
 
--- Save Game Callback
-
-function Swift:OverrideSaveLoadedCallback()
-    if Mission_OnSaveGameLoaded then
-        Mission_OnSaveGameLoaded_Orig_Swift = Mission_OnSaveGameLoaded;
-        Mission_OnSaveGameLoaded = function()
-            Mission_OnSaveGameLoaded_Orig_Swift();
-            Swift:RestoreAfterLoad();
-            Logic.ExecuteInLuaLocalState("Swift:RestoreAfterLoad()");
-            Swift:DispatchScriptEvent(QSB.ScriptEvents.SaveGameLoaded);
-            Logic.ExecuteInLuaLocalState("Swift:DispatchScriptEvent(QSB.ScriptEvents.SaveGameLoaded)");
-        end
-    end
-end
-
-function Swift:RestoreAfterLoad()
-    debug("Loading save game", true);
-    self.LuaBase:OverrideBaseLua();
-    if self:IsGlobalEnvironment() then
-        self.Debug:GlobalRestoreDebugAfterLoad();
-        self:GlobalRestoreBugfixesAfterLoad();
-        self:DisableLogicFestival();
-    end
-    if self:IsLocalEnvironment() then
-        self.Debug:LocalRestoreDebugAfterLoad();
-        self:LocalRestoreBugfixesAfterLoad();
-        self:SetEscapeKeyTrigger();
-        self:CreateRandomSeed();
-        self:AlterQuickSaveHotkey();
-    end
-end
-
 -- Escape Callback
 
 function Swift:SetEscapeKeyTrigger()
@@ -84,7 +51,7 @@ function Swift:ExecuteEscapeCallback()
     API.BroadcastScriptEventToGlobal(
         QSB.ScriptEvents.EscapePressed,
         GUI.GetPlayerID()
-    )
+    );
     -- Local
     Swift:DispatchScriptEvent(QSB.ScriptEvents.EscapePressed, GUI.GetPlayerID());
 end

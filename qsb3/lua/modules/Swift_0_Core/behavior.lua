@@ -77,16 +77,16 @@ QSB.DestroyedSoldiers = {};
 QSB.EffectNameToID = {};
 QSB.InitalizedObjekts = {};
 
-function Swift:InstallBehaviorGlobal()
+function Swift.Behavior:InstallBehaviorGlobal()
     self:OverrideQuestMarkers();
     self:OverrideIsObjectiveCompleted();
 end
 
-function Swift:InstallBehaviorLocal()
+function Swift.Behavior:InstallBehaviorLocal()
     self:OverrideDisplayQuestObjective();
 end
 
-function Swift:OverrideQuestMarkers()
+function Swift.Behavior:OverrideQuestMarkers()
     QuestTemplate.RemoveQuestMarkers = function(self)
         for i=1, self.Objectives[0] do
             if self.Objectives[i].Type == Objective.Distance then
@@ -125,7 +125,7 @@ function Swift:OverrideQuestMarkers()
     end
 end
 
-function Swift:OverrideIsObjectiveCompleted()
+function Swift.Behavior:OverrideIsObjectiveCompleted()
     QuestTemplate.IsObjectiveCompleted_Orig_QSB_CoreBehavior = QuestTemplate.IsObjectiveCompleted;
     QuestTemplate.IsObjectiveCompleted = function(self, objective)
         local objectiveType = objective.Type;
@@ -139,7 +139,7 @@ function Swift:OverrideIsObjectiveCompleted()
         if objectiveType == Objective.DestroyAllPlayerUnits then
             local PlayerEntities = GetPlayerEntities(data, 0);
             local IllegalEntities = {};
-            
+
             for i= #PlayerEntities, 1, -1 do
                 local Type = Logic.GetEntityType(PlayerEntities[i]);
                 if Logic.IsEntityInCategory(PlayerEntities[i], EntityCategories.AttackableBuilding) == 0 or Logic.IsEntityInCategory(PlayerEntities[i], EntityCategories.Wall) == 0 then
@@ -157,14 +157,14 @@ function Swift:OverrideIsObjectiveCompleted()
                 objective.Completed = true;
             end
         elseif objectiveType == Objective.Distance then
-            objective.Completed = Swift:IsQuestPositionReached(self, objective);
+            objective.Completed = Swift.Behavior:IsQuestPositionReached(self, objective);
         else
             return self:IsObjectiveCompleted_Orig_QSB_CoreBehavior(objective);
         end
     end
 end
 
-function Swift:OverrideDisplayQuestObjective()
+function Swift.Behavior:OverrideDisplayQuestObjective()
     GUI_Interaction.DisplayQuestObjective_Orig_QSB_CoreBehavior = GUI_Interaction.DisplayQuestObjective
     GUI_Interaction.DisplayQuestObjective = function(_QuestIndex, _MessageKey)
         local Quest, QuestType = GUI_Interaction.GetPotentialSubQuestAndType(_QuestIndex);
@@ -177,7 +177,7 @@ function Swift:OverrideDisplayQuestObjective()
     end
 end
 
-function Swift:IsQuestPositionReached(_Quest, _Objective)
+function Swift.Behavior:IsQuestPositionReached(_Quest, _Objective)
     local IDdata2 = GetID(_Objective.Data[1]);
     if IDdata2 == -65566 then
         _Objective.Data[1] = Logic.GetKnightID(_Quest.ReceivingPlayer);
