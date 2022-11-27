@@ -61,9 +61,7 @@ Swift = {
 };
 
 function Swift:LoadCore()
-    self:OverrideString();
-    self:OverrideTable();
-    self:OverrideMath();
+    self:OverrideBaseLua();
     self:DetectEnvironment();
     self:DetectLanguage();
 
@@ -523,46 +521,6 @@ function error(_Text, _Silent)
     Swift:Log("ERROR: " .._Text, LOG_LEVEL_ERROR, not _Silent);
 end
 
--- Lua base functions
-
-function Swift:OverrideTable()
-    API.OverrideTable();
-end
-
-function Swift:OverrideString()
-    API.OverrideString();
-end
-
-function Swift:OverrideMath()
-    API.OverrideMath();
-end
-
-function Swift:ConvertTableToString(_Table)
-    assert(type(_Table) == "table");
-    local String = "{";
-    for k, v in pairs(_Table) do
-        local key;
-        if (tonumber(k)) then
-            key = ""..k;
-        else
-            key = "\""..k.."\"";
-        end
-        if type(v) == "table" then
-            String = String .. "[" .. key .. "] = " .. table.tostring(v) .. ", ";
-        elseif type(v) == "number" then
-            String = String .. "[" .. key .. "] = " .. v .. ", ";
-        elseif type(v) == "string" then
-            String = String .. "[" .. key .. "] = \"" .. v .. "\", ";
-        elseif type(v) == "boolean" or type(v) == "nil" then
-            String = String .. "[" .. key .. "] = " .. tostring(v) .. ", ";
-        else
-            String = String .. "[" .. key .. "] = \"" .. tostring(v) .. "\", ";
-        end
-    end
-    String = String .. "}";
-    return String;
-end
-
 -- Local Script Command
 
 function Swift:InitalizeScriptCommands()
@@ -924,22 +882,6 @@ function Swift:ToBoolean(_Input)
         return true;
     end
     return false;
-end
-
-function Swift:CopyTable(_Table1, _Table2)
-    _Table1 = _Table1 or {};
-    _Table2 = _Table2 or {};
-    for k, v in pairs(_Table1) do
-        if "table" == type(v) then
-            _Table2[k] = _Table2[k] or {};
-            for kk, vv in pairs(self:CopyTable(v, _Table2[k])) do
-                _Table2[k][kk] = _Table2[k][kk] or vv;
-            end
-        else
-            _Table2[k] = v;
-        end
-    end
-    return _Table2;
 end
 
 -- Jobs

@@ -1,6 +1,7 @@
 BinLoader_BasePath = nil;
 BinLoader_CoreFiles = {
     "Swift_0_Core/swift.lua",
+    "Swift_0_Core/luabase.lua",
     "Swift_0_Core/api.lua",
     "Swift_0_Core/debug.lua",
     "Swift_0_Core/behavior.lua",
