@@ -21,6 +21,7 @@ QSB.ScriptCommandSequence = 2;
 QSB.ScriptCommands = {};
 QSB.ScriptEvents = {};
 QSB.CustomVariable = {};
+QSB.RefillAmounts = {};
 
 Swift = Swift or {};
 
@@ -65,15 +66,16 @@ function Swift:LoadCore()
     self:DetectLanguage();
 
     if self:IsGlobalEnvironment() then
-        self:OverrideSaveLoadedCallback();
         self.Debug:InitalizeDebugModeGlobal();
         self.Bugfix:InitalizeBugfixesGlobal();
+        self.Behavior:InstallBehaviorGlobal();
+        self:OverrideSaveLoadedCallback();
         self:InitalizeScriptCommands();
         self:InitalizeEventsGlobal();
         self:InitalizeAIVariables();
-        self.Behavior:InstallBehaviorGlobal();
         self:OverrideQuestSystemGlobal();
-        self:InitalizeCallbackGlobal();
+        self:OverwriteGeologistRefill();
+        self:OverrideSoldierPayment();
         self:OverrideOnMPGameStart();
         self:DisableLogicFestival();
     end
@@ -81,11 +83,11 @@ function Swift:LoadCore()
     if self:IsLocalEnvironment() then
         self.Debug:InitalizeDebugModeLocal();
         self.Bugfix:InitalizeBugfixesLocal();
-        self:InitalizeEventsLocal();
         self.Behavior:InstallBehaviorLocal();
+        self:InitalizeEventsLocal();
         self:OverrideDoQuicksave();
         self:AlterQuickSaveHotkey();
-        self:InitalizeCallbackLocal();
+        self:SetEscapeKeyTrigger();
         self:ValidateTerritories();
 
         -- Saving human player ID makes only sense in singleplayer context
@@ -895,6 +897,80 @@ ANY = function(_ID, ...)
         end
     end
     return false;
+end
+
+-- Callbacks
+
+-- Trigger Entity Killed Callbacks
+
+function Swift:TriggerEntityKilledCallbacks(_Entity, _Attacker)
+    local DefenderID = GetID(_Entity);
+    local AttackerID = GetID(_Attacker or 0);
+    if AttackerID == 0 or DefenderID == 0 or Logic.GetEntityHealth(DefenderID) > 0 then
+        return;
+    end
+    local x, y, z     = Logic.EntityGetPos(DefenderID);
+    local DefPlayerID = Logic.EntityGetPlayer(DefenderID);
+    local DefType     = Logic.GetEntityType(DefenderID);
+    local AttPlayerID = Logic.EntityGetPlayer(AttackerID);
+    local AttType     = Logic.GetEntityType(AttackerID);
+
+    GameCallback_EntityKilled(DefenderID, DefPlayerID, AttackerID, AttPlayerID, DefType, AttType);
+    Logic.ExecuteInLuaLocalState(string.format(
+        "GameCallback_Feedback_EntityKilled(%d, %d, %d, %d,%d, %d, %f, %f)",
+        DefenderID, DefPlayerID, AttackerID, AttPlayerID, DefType, AttType, x, y
+    ));
+end
+
+-- Escape Callback
+
+function Swift:SetEscapeKeyTrigger()
+    Input.KeyBindDown(Keys.Escape, "Swift:ExecuteEscapeCallback()", 30, false);
+end
+
+function Swift:ExecuteEscapeCallback()
+    -- Global
+    API.BroadcastScriptEventToGlobal(
+        QSB.ScriptEvents.EscapePressed,
+        GUI.GetPlayerID()
+    );
+    -- Local
+    Swift:DispatchScriptEvent(QSB.ScriptEvents.EscapePressed, GUI.GetPlayerID());
+end
+
+-- Geologist Refill Callback
+
+function Swift:OverwriteGeologistRefill()
+    if Framework.GetGameExtraNo() >= 1 then
+        GameCallback_OnGeologistRefill_Orig_QSB_SwiftCore = GameCallback_OnGeologistRefill;
+        GameCallback_OnGeologistRefill = function(_PlayerID, _TargetID, _GeologistID)
+            GameCallback_OnGeologistRefill_Orig_QSB_SwiftCore(_PlayerID, _TargetID, _GeologistID);
+            if QSB.RefillAmounts[_TargetID] then
+                local RefillAmount = QSB.RefillAmounts[_TargetID];
+                local RefillRandom = RefillAmount + math.random(1, math.floor((RefillAmount * 0.2) + 0.5));
+                Logic.SetResourceDoodadGoodAmount(_TargetID, RefillRandom);
+                if RefillRandom > 0 then
+                    if Logic.GetResourceDoodadGoodType(_TargetID) == Goods.G_Iron then
+                        Logic.SetModel(_TargetID, Models.Doodads_D_SE_ResourceIron);
+                    else
+                        Logic.SetModel(_TargetID, Models.R_ResorceStone_Scaffold);
+                    end
+                end
+            end
+        end
+    end
+end
+
+-- Soldier Payment Callback
+
+function Swift:OverrideSoldierPayment()
+    GameCallback_SetSoldierPaymentLevel_Orig = GameCallback_SetSoldierPaymentLevel;
+    GameCallback_SetSoldierPaymentLevel = function(_PlayerID, _Level)
+        if _Level <= 2 then
+            return GameCallback_SetSoldierPaymentLevel_Orig(_PlayerID, _Level);
+        end
+        Swift:ProcessScriptCommand(_PlayerID, _Level);
+    end
 end
 
 -- Jobs

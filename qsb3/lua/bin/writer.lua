@@ -4,7 +4,6 @@ BinWriter_ModuleFiles = {
     "Swift_0_Core/api.lua",
     "Swift_0_Core/debug.lua",
     "Swift_0_Core/behavior.lua",
-    "Swift_0_Core/user.lua",
     "Swift_0_Core/bugfixes.lua",
 
     "Swift_1_DisplayCore/source.lua",
