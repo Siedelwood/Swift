@@ -195,6 +195,8 @@ function ModuleBriefingSystem.Global:TransformAnimations(_PlayerID)
                     -- Relaive position
                     if type(v[i][3]) == "number" then
                         local Entry = {};
+                        Entry.Interpolation = v[i].Interpolation;
+                        Entry.Repeat = v[i].Repeat == true;
                         Entry.Duration = v[i][1] or (2 * 60);
                         Entry.Start = {
                             Position = (type(v[i][2]) ~= "table" and {v[i][2],0}) or v[i][2],
@@ -213,6 +215,8 @@ function ModuleBriefingSystem.Global:TransformAnimations(_PlayerID)
                     -- Vector
                     elseif type(v[i][3]) == "table" then
                         local Entry = {};
+                        Entry.Interpolation = v[i].Interpolation;
+                        Entry.Repeat = v[i].Repeat == true;
                         Entry.Duration = v[i][1] or (2 * 60);
                         Entry.Start = {
                             Position = (type(v[i][2]) ~= "table" and {v[i][2],0}) or v[i][2],
@@ -244,7 +248,9 @@ function ModuleBriefingSystem.Global:TransformParallax(_PlayerID)
                     if v[i] then
                         local Entry = {};
                         Entry.Image = v[i][1];
+                        Entry.Interpolation = v[i].Interpolation;
                         Entry.Duration = v[i][2] or (2 * 60);
+                        Entry.Repeat = v[i].Repeat == true;
                         Entry.Start = {
                             U0 = v[i][3] or 0,
                             V0 = v[i][4] or 0,
@@ -639,6 +645,12 @@ function ModuleBriefingSystem.Local:ControlParallaxes(_PlayerID)
             local Widget = self.ParallaxWidgets[k][1];
             local Size = {GUI.GetScreenSize()};
             local Factor = math.min(math.lerp(v.Started, CurrentTime, v.Duration), 1);
+            if v.Interpolation then
+                Factor = v:Interpolation(CurrentTime);
+            end
+            if v.Repeat then
+                self.Briefing[_PlayerID].ParallaxLayers[k].Started = CurrentTime;
+            end
             local Alpha = v.Start.A + (v.End.A - v.Start.A) * Factor;
             local u0 = v.Start.U0 + (v.End.U0 - v.Start.U0) * Factor;
             local v0 = v.Start.V0 + (v.End.V0 - v.Start.V0) * Factor;
@@ -745,8 +757,12 @@ function ModuleBriefingSystem.Local:ControlCameraAnimation(_PlayerID)
         local CurrentTime = XGUIEng.GetSystemTime();
         local Animation = self.Briefing[_PlayerID].CurrentAnimation;
         if CurrentTime > Animation.Started + Animation.Duration then
-            if #self.Briefing[_PlayerID].AnimationQueue > 0 then
-                self.Briefing[_PlayerID].CurrentAnimation = nil;
+            if not self.Briefing[_PlayerID].CurrentAnimation.Repeat then
+                if #self.Briefing[_PlayerID].AnimationQueue > 0 then
+                    self.Briefing[_PlayerID].CurrentAnimation = nil;
+                end
+            else
+                self.Briefing[_PlayerID].CurrentAnimation.Started = CurrentTime;
             end
         end
     end
@@ -770,9 +786,9 @@ function ModuleBriefingSystem.Local:GetPagePosition(_PlayerID)
     if FlyTo then
         local lX, lY, lZ = self:ConvertPosition(FlyTo.Position);
         if lX then
-            x = x + (lX - x) * self:GetLERP(_PlayerID);
-            y = y + (lY - y) * self:GetLERP(_PlayerID);
-            z = z + (lZ - z) * self:GetLERP(_PlayerID);
+            x = x + (lX - x) * self:GetInterpolationFactor(_PlayerID);
+            y = y + (lY - y) * self:GetInterpolationFactor(_PlayerID);
+            z = z + (lZ - z) * self:GetInterpolationFactor(_PlayerID);
         end
     end
     return x, y, z;
@@ -789,9 +805,9 @@ function ModuleBriefingSystem.Local:GetPageLookAt(_PlayerID)
     if FlyTo and x then
         local lX, lY, lZ = self:ConvertPosition(FlyTo.LookAt);
         if lX then
-            x = x + (lX - x) * self:GetLERP(_PlayerID);
-            y = y + (lY - y) * self:GetLERP(_PlayerID);
-            z = z + (lZ - z) * self:GetLERP(_PlayerID);
+            x = x + (lX - x) * self:GetInterpolationFactor(_PlayerID);
+            y = y + (lY - y) * self:GetInterpolationFactor(_PlayerID);
+            z = z + (lZ - z) * self:GetInterpolationFactor(_PlayerID);
         end
     end
     return x, y, z;
@@ -815,7 +831,7 @@ function ModuleBriefingSystem.Local:GetCameraProperties(_PlayerID)
     local startFOV = (CurrPage.FOV) or 42.0;
     local endFOV = ((FlyTo and FlyTo.FOV) or CurrPage.FOV) or 42.0;
 
-    local factor = self:GetLERP(_PlayerID);
+    local factor = self:GetInterpolationFactor(_PlayerID);
 
     local lPLX, lPLY, lPLZ = self:ConvertPosition(startPosition);
     local cPLX, cPLY, cPLZ = self:ConvertPosition(endPosition);
@@ -846,11 +862,15 @@ function ModuleBriefingSystem.Local:ConvertPosition(_Table)
     return x, y, z;
 end
 
-function ModuleBriefingSystem.Local:GetLERP(_PlayerID)
+function ModuleBriefingSystem.Local:GetInterpolationFactor(_PlayerID)
     if self.Briefing[_PlayerID].CurrentAnimation then
+        local CurrentTime = XGUIEng.GetSystemTime();
+        if self.Briefing[_PlayerID].CurrentAnimation.Interpolation then
+            return self.Briefing[_PlayerID].CurrentAnimation:Interpolation(CurrentTime);
+        end
         local Factor = math.lerp(
             self.Briefing[_PlayerID].CurrentAnimation.Started,
-            XGUIEng.GetSystemTime(),
+            CurrentTime,
             self.Briefing[_PlayerID].CurrentAnimation.Duration
         );
         return math.min(Factor, 1);
