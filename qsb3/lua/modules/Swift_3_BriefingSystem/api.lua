@@ -44,6 +44,11 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 ---
 -- Startet ein Briefing.
 --
+-- Die Funktion bekommt ein Table mit der Briefingdefinition, wenn sie
+-- aufgerufen wird.
+--
+-- <p>(→ Beispiel #1)</p>
+--
 -- <h5>Einstellungen</h5>
 -- Für ein Briefing können verschiedene spezielle Einstellungen vorgenommen
 -- werden.
@@ -102,36 +107,21 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- </table>
 --
 -- <h5>Animationen</h5>
--- Kameraanimationen für Seiten eines Briefings wurden vom Text entkoppelt. Das
--- hat den Charme, dass Spielfiguren erzählen und erzählen und die Kamera über
--- die ganze Zeit die gleiche Animation zeigt, was das Lesen angenehmer macht.
+-- Kameraanimationen für Seiten eines Briefings können vom Text einer Page
+-- entkoppelt werden. Das hat den Charme, dass Spielfiguren erzählen und
+-- erzählen und die Kamera über die ganze Zeit die gleiche Animation zeigt,
+-- was das Lesen angenehmer macht.
 --
--- <b>Hinweis:</b> Animationen werden nur erzeugt, wenn die Page noch keine Position hat!
--- Andernfalls werden die Werte für Angle, Rotation und Zoom aus der Page
--- genommen und/oder Defaults verwendet.
+-- <b>Hinweis:</b> Animationen werden nur erzeugt, wenn die Page noch keine
+-- Position hat! Andernfalls werden die Werte für Angle, Rotation und Zoom
+-- aus der Page genommen und/oder Defaults verwendet.
 --
 -- Animationen können über eine Table angegeben werden. Diese wird direkt
--- an die Briefing Table angehangen. Die Animation wird die Kamera dann von
+-- in die Briefing Table geschrieben. Die Animation wird die Kamera dann von
 -- Position 1 zu Position 2 bewegen. Dabei ist die zweite Position optional
 -- und kann weggelassen werden.
--- <p>Beispiel:</p>
--- <pre>
--- Briefing.PageAnimations = {
---    ["Page1"] = {
---        -- Relativdarstellung
---        -- Animationsdauer, Position1, Rotation1, Zoom1, Angle1, Position2, Rotation2, Zoom2, Angle2
---        {30, "pos4", -60, 2000, 35, "pos4", -30, 2000, 25},
---        -- Hier können weitere Einträge folgen...
---    },
---    ["Page3"] = {
---        -- Diese Option löscht alle laufenden Animationen
---        PurgeOld = true,
---        -- Vektordarstellung
---        -- Animationsdauer, {Position1, Höhe}, {LookAt1, Höhe}, {Position2, Höhe}, {LookAt2, Höhe}, Animationsdauer
---        {30, {"pos2", 500}, {"pos4", 0}, {"pos7", 1000}, {"pos8", 0}},
---        -- Hier können weitere Einträge folgen...
---    }
---};</pre>
+-- 
+-- <p>(→ Beispiel #2)</p>
 --
 -- <h5>Parallax</h5>
 -- Unter Parallax versteht man (im Kontext eines Videospiels) einen Hintergrund,
@@ -143,8 +133,8 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- Angabe von UV-Koordinaten und Alphawert animiert werden kann. Diese Grafiken
 -- liegen hinter allen Elementen des Thronerooms.
 --
--- Parallaxe können über eine Table angegeben werden. Diese wird direkt an die
--- Briefing Table angehangen. Jede Ebene kann getrennt von den anderen agieren.
+-- Parallaxe können über eine Table angegeben werden. Diese wird direkt in die
+-- Briefing Table geschrieben. Jede Ebene kann getrennt von den anderen agieren.
 -- Ein Parallax kann statisch ein Bild anzeigen oder animiert sein. In diesem
 -- Fall wird sich von Position 1 zu Position 2 bewegt, wobei Position 2 optional
 -- ist und weggelassen werden kann.
@@ -160,23 +150,10 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- <b>Achtung:</b> Die Grafiken müssen immer im 16:9 Format sein. Für den Fall,
 -- dass das Spiel in einer 4:3 Auflösung gespielt wird, werden automatisch die
 -- angegebenen Koordinaten umgerechnet und links und rechts abgeschnitten.
+-- Konzipiere Grafiken also stets so, dass sie auch im 4:3 Format noch das
+-- wichtigste zeigen.
 --
--- <p>Beispiel:</p>
--- <pre>
--- Briefing.PageParallax = {
---    ["Page1"] = {
---        -- Bilddatei, Anzeigedauer, U0Start, V0Start, U1Start, V1Start, AlphaStart, U0End, V0End, U1End, V1End, AlphaEnd
---        {"C:/IMG/Paralax6.png", 60, 0, 0, 0.8, 1, 255, 0.2, 0, 1, 1, 255},
---        -- Hier können weitere Einträge folgen...
---    },
---    ["Page3"] = {
---        -- Diese Option löscht alle Parallaxe
---        PurgeOld = true,
---        -- Bilddatei, Anzeigedauer, U0Start, V0Start, U1Start, V1Start, AlphaStart
---        {"C:/IMG/Paralax1.png", 1, 0, 0, 1, 1, 180},
---        -- Hier können weitere Einträge folgen...
---    }
---};</pre>
+-- (→ Beispiel #3)
 --
 -- @param[type=table]  _Briefing Definition des Briefing
 -- @param[type=string] _Name     Name des Briefing
@@ -184,8 +161,11 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- @within Anwenderfunktionen
 --
 -- @usage
+-- -- Beispiel #1: Grobes Gerüst eines Briefings
 -- function Briefing1(_Name, _PlayerID)
---     local Briefing = {};
+--     local Briefing = {
+--         -- Hier können verschiedene Konfigurationen vorgenommen werden.
+--     };
 --     local AP, ASP = API.AddBriefingPages(Briefing);
 --
 --     -- Aufrufe von AP oder ASP um Seiten zu erstellen
@@ -196,8 +176,45 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 --     Briefing.Finished = function(_Data)
 --         -- Mach was tolles hier wenn es endet.
 --     end
+--     -- Das Briefing wird gestartet
 --     API.StartBriefing(Briefing, _Name, _PlayerID);
 -- end
+--
+-- @usage
+-- -- Beispiel #2: Angabe von Animationen außerhalb von Pages
+-- Briefing.PageAnimations = {
+--     ["Page1"] = {
+--         -- Relativdarstellung
+--         -- Animationsdauer, Position1, Rotation1, Zoom1, Angle1, Position2, Rotation2, Zoom2, Angle2
+--         {30, "pos4", -60, 2000, 35, "pos4", -30, 2000, 25},
+--         -- Hier können weitere Einträge folgen...
+--     },
+--     ["Page3"] = {
+--         -- Diese Option löscht alle laufenden Animationen
+--         PurgeOld = true,
+--         -- Vektordarstellung
+--         -- Animationsdauer, {Position1, Höhe}, {LookAt1, Höhe}, {Position2, Höhe}, {LookAt2, Höhe}, Animationsdauer
+--         {30, {"pos2", 500}, {"pos4", 0}, {"pos7", 1000}, {"pos8", 0}},
+--         -- Hier können weitere Einträge folgen...
+--     }
+-- };
+--
+-- @usage
+-- -- Beispiel #3: Angabe von Parallaxen außerhalb von Pages
+-- Briefing.PageParallax = {
+--     ["Page1"] = {
+--         -- Bilddatei, Anzeigedauer, U0Start, V0Start, U1Start, V1Start, AlphaStart, U0End, V0End, U1End, V1End, AlphaEnd
+--         {"C:/IMG/Paralax6.png", 60, 0, 0, 0.8, 1, 255, 0.2, 0, 1, 1, 255},
+--         -- Hier können weitere Einträge folgen...
+--     },
+--     ["Page3"] = {
+--         -- Diese Option löscht alle Parallaxe
+--         PurgeOld = true,
+--         -- Bilddatei, Anzeigedauer, U0Start, V0Start, U1Start, V1Start, AlphaStart
+--         {"C:/IMG/Paralax1.png", 1, 0, 0, 1, 1, 180},
+--         -- Hier können weitere Einträge folgen...
+--     }
+-- };
 --
 function API.StartBriefing(_Briefing, _Name, _PlayerID)
     if GUI then
@@ -268,13 +285,12 @@ end
 -- @return[type=function] <a href="#AP">AP</a>
 -- @return[type=function] <a href="#ASP">ASP</a>
 -- @within Anwenderfunktionen
+-- @see API.StartBriefing
 --
 -- @usage
 -- -- Wenn nur AP benötigt wird.
 -- local AP = API.AddBriefingPages(Briefing);
 -- -- Wenn zusätzlich ASP benötigt wird.
--- local AP, ASP = API.AddBriefingPages(Briefing);
--- -- Wenn auch die Kurzschreibweise für Animationen gebraucht wird.
 -- local AP, ASP = API.AddBriefingPages(Briefing);
 --
 function API.AddBriefingPages(_Briefing)
@@ -458,6 +474,8 @@ end
 -- Die Briefing Page definiert, was zum Zeitpunkt ihrer Anzeige dargestellt
 -- wird.
 --
+-- <p>(→ Beispiel #1)</p>
+--
 -- Folgende Parameter werden als Felder (Name = Wert) übergeben:
 -- <table border="1">
 -- <tr>
@@ -576,13 +594,9 @@ end
 -- In einem Briefing kann der Spieler auch zur Auswahl einer Option gebeten
 -- werden. Dies wird als Multiple Choice bezeichnet. Schreibe die Optionen
 -- in eine Untertabelle MC.
--- <pre>AP {
---    ...
---    MC = {
---        {"Antwort 1", "ExamplePage1"},
---        {"Antwort 2", Option2Clicked},
---    },
---};</pre>
+--
+-- <p>(→ Beispiel #2)</p>
+-- 
 -- Es kann der Name der Zielseite angegeben werden, oder eine Funktion, die
 -- den Namen des Ziels zurück gibt. In der Funktion können vorher beliebige
 -- Dinge getan werden, wie z.B. Variablen setzen.
@@ -590,10 +604,13 @@ end
 -- Eine Antwort kann markiert werden, dass sie auch bei einem Rücksprung,
 -- nicht mehrfach gewählt werden kann. In diesem Fall ist sie bei erneutem
 -- Aufsuchen der Seite nicht mehr gelistet.
--- <pre>{"Antwort 3", "AnotherPage", Remove = true},</pre>
+-- 
+-- <p>(→ Beispiel #3)</p>
+--
 -- Eine Option kann auch bedingt ausgeblendet werden. Dazu wird eine Funktion
 -- angegeben, welche über die Sichtbarkeit entscheidet.
--- <pre>{"Antwort 3", "AnotherPage", Disable = OptionIsDisabled},</pre>
+-- 
+-- <p>(→ Beispiel #4)</p>
 --
 -- Nachdem der Spieler eine Antwort gewählt hat, wird er auf die Seite mit
 -- dem angegebenen Namen geleitet.
@@ -601,27 +618,30 @@ end
 -- Um das Briefing zu beenden, nachdem ein Pfad beendet ist, wird eine leere
 -- AP-Seite genutzt. Auf diese Weise weiß das Briefing, das es an dieser
 -- Stelle zuende ist.
--- <pre>AP()</pre>
+--
+-- <p>(→ Beispiel #5)</p>
 --
 -- Soll stattdessen zu einer anderen Seite gesprungen werden, kann bei AP der
 -- Name der Seite angeben werden, zu der gesprungen werden soll.
--- <pre>AP("SomePageName")</pre>
+--
+-- <p>(→ Beispiel #6)</p>
 --
 -- Um später zu einem beliebigen Zeitpunkt die gewählte Antwort einer Seite zu
 -- erfahren, muss der Name der Seite genutzt werden.
--- <pre>Briefing.Finished = function(_Data)
---    local Choosen = _Data:GetPage("Choice"):GetSelectedAnswer();
---end</pre>
+-- 
 -- Die zurückgegebene Zahl ist die ID der Antwort, angefangen von oben. Wird 0
 -- zurückgegeben, wurde noch nicht geantwortet.
+-- 
+-- <p>(→ Beispiel #7)</p>
 --
 -- @param[type=table] _Data Daten der Seite
 -- @return[type=table] Erzeugte Seite
 -- @within Briefing
 --
 -- @usage
--- -- Eine einfache Seite
+-- -- Beispiel #1: Eine einfache Seite erstellen
 -- AP {
+--    -- Hier werden die Attribute der Page angegeben
 --    Title        = "Marcus",
 --    Text         = "Das ist eine simple Seite.",
 --    Position     = "Marcus",
@@ -629,20 +649,50 @@ end
 --    DialogCamera = true,
 -- };
 --
--- -- Eine Seite mit Optionen
--- -- Hier können Namen von Pages angegeben werden oder Aktionen, welche etwas
--- -- Ausführen und danach einen Namen zurückgeben.
+-- @usage
+-- -- Beispiel #2: Verwendung von Multiple Choice
 -- AP {
 --    Title        = "Marcus",
---    Text         = "Das ist eine simple Seite.",
+--    Text         = "Das ist eine nicht so simple Seite.",
 --    Position     = "Marcus",
 --    Rotation     = 30,
 --    DialogCamera = true,
+--    -- MC ist das Table mit den auswählbaren Antworten
 --    MC = {
+--        -- Zielseite ist der Name der Page, zu der gesprungen wird.
 --        {"Antwort 1", "Zielseite"},
+--        -- Option2Clicked ist eine Funktion, die etwas macht und
+--        -- danach die Page zurückgibt, zu der gesprungen wird.
 --        {"Antwort 2", Option2Clicked},
 --    },
 -- };
+--
+-- @usage
+-- -- Beispiel #3: Antwort, die nur einmal gewählt werden kann
+-- MC = {
+--     {"Antwort 3", "AnotherPage", Remove = true},
+-- }
+--
+-- @usage
+-- -- Beispiel #4: Antwort mit gesteuerter Sichtbarkeit
+-- MC = {
+--     {"Antwort 3", "AnotherPage", Disable = OptionIsDisabled},
+-- }
+--
+-- @usage
+-- -- Beispiel #5: Abbruch des Briefings
+-- AP()
+--
+-- @usage
+-- -- Beispiel #6: Sprung zu anderer Seite
+-- AP("SomePageName")
+--
+-- @usage
+-- -- Beispiel #7: Erfragen der gewählten Antwort
+-- Briefing.Finished = function(_Data)
+--     local Choosen = _Data:GetPage("Choice"):GetSelectedAnswer();
+--     -- In Choosen steht der Index der Antwort
+-- end
 --
 function AP(_Data)
     assert(false);
@@ -687,7 +737,7 @@ end
 -- <tr>
 -- <td>DialogCamera</td>
 -- <td>boolean</td>
--- <td>(Optional) Die Kamera geht in Nahsicht und stellt Charaktere dar. Wird
+-- <td>Die Kamera geht in Nahsicht und stellt Charaktere dar. Wird
 -- sie weggelassen, wird die Fernsicht verwendet.</td>
 -- </tr>
 -- <tr>
