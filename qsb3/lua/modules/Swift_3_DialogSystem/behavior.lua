@@ -87,7 +87,7 @@ function Reward_Dialog(...)
     return B_Reward_Dialog:new(...);
 end
 
-B_Reward_Dialog = Swift:CopyTable(B_Reprisal_Dialog);
+B_Reward_Dialog = Swift.LuaBase:CopyTable(B_Reprisal_Dialog);
 B_Reward_Dialog.Name = "Reward_Dialog";
 B_Reward_Dialog.Description.en = "Reward: Calls a function to start an new dialog.";
 B_Reward_Dialog.Description.de = "Lohn: Ruft die Funktion auf und startet das enthaltene Dialog.";

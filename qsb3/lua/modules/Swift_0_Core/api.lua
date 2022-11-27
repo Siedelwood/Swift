@@ -304,7 +304,7 @@ end
 -- local Bool = API.ToBoolean("no") --> Bool = false
 --
 function API.ToBoolean(_Value)
-    return Swift:ToBoolean(_Value);
+    return Swift.LuaBase:ToBoolean(_Value);
 end
 
 ---

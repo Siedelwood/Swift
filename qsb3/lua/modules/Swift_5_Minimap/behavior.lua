@@ -119,7 +119,7 @@ function Reward_CreateMapMarker(...)
     return B_Reward_CreateMapMarker:new(...);
 end
 
-B_Reward_CreateMapMarker = Swift:CopyTable(B_Reprisal_CreateMapMarker);
+B_Reward_CreateMapMarker = Swift.LuaBase:CopyTable(B_Reprisal_CreateMapMarker);
 B_Reward_CreateMapMarker.Name = "Reward_CreateMapMarker";
 B_Reward_CreateMapMarker.Description.en = "Reward: Creates an marker on the minimap.";
 B_Reward_CreateMapMarker.Description.de = "Lohn: Erzeugt eine Markierung auf der Minikarte.";
@@ -202,7 +202,7 @@ function Reward_DestroyMapMarker(...)
     return B_Reward_DestroyMapMarker:new(...);
 end
 
-B_Reward_DestroyMapMarker = Swift:CopyTable(B_Reprisal_DestroyMapMarker);
+B_Reward_DestroyMapMarker = Swift.LuaBase:CopyTable(B_Reprisal_DestroyMapMarker);
 B_Reward_DestroyMapMarker.Name = "Reward_DestroyMapMarker";
 B_Reward_DestroyMapMarker.Description.en = "Reward: Creates an marker on the minimap.";
 B_Reward_DestroyMapMarker.Description.de = "Lohn: Erzeugt eine Markierung auf der Minikarte.";

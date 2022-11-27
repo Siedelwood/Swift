@@ -79,15 +79,15 @@ function Swift:OverrideIsMerchantArrived()
 
                 if StorehouseID > 0 then
                     local x,y = Logic.GetBuildingApproachPosition(StorehouseID);
-                    HasArrived = API.GetDistance(objective.Data[3], {X= x, Y= y}) < 1300;
+                    HasArrived = API.GetDistance(objective.Data[3], {X= x, Y= y}) < 1000;
                 end
                 if MarketplaceID > 0 then
                     local x,y = Logic.GetBuildingApproachPosition(MarketplaceID);
-                    HasArrived = HasArrived or API.GetDistance(objective.Data[3], {X= x, Y= y}) < 1300;
+                    HasArrived = HasArrived or API.GetDistance(objective.Data[3], {X= x, Y= y}) < 1000;
                 end
                 if HeadquartersID > 0 then
                     local x,y = Logic.GetBuildingApproachPosition(HeadquartersID);
-                    HasArrived = HasArrived or API.GetDistance(objective.Data[3], {X= x, Y= y}) < 1300;
+                    HasArrived = HasArrived or API.GetDistance(objective.Data[3], {X= x, Y= y}) < 1000;
                 end
                 return HasArrived;
             end

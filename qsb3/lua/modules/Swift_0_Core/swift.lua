@@ -61,7 +61,7 @@ Swift = {
 };
 
 function Swift:LoadCore()
-    self:OverrideBaseLua();
+    self.LuaBase:OverrideBaseLua();
     self:DetectEnvironment();
     self:DetectLanguage();
 
@@ -824,16 +824,6 @@ function Swift:UpdateCustomVariable(_Name, _Value)
 end
 
 -- Boolean variants
-
-function Swift:ToBoolean(_Input)
-    if type(_Input) == "boolean" then
-        return _Input;
-    end
-    if _Input == 1 or string.find(string.lower(tostring(_Input)), "^[1tjy\\+].*$") then
-        return true;
-    end
-    return false;
-end
 
 -- Logical connectors
 

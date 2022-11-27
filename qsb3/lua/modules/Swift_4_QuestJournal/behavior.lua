@@ -85,7 +85,7 @@ function Reward_JournalEnable(...)
     return B_Reward_JournalEnable:new(...);
 end
 
-B_Reward_JournalEnable = Swift:CopyTable(B_Reprisal_JournalEnable);
+B_Reward_JournalEnable = Swift.LuaBase:CopyTable(B_Reprisal_JournalEnable);
 B_Reward_JournalEnable.Name = "Reward_JournalEnable";
 B_Reward_JournalEnable.Description.en = "Reward: Displays the journal for a quest or hides it.";
 B_Reward_JournalEnable.Description.de = "Lohn: Zeigt das Tagebuch für einen Quest an oder versteckt es.";
@@ -184,7 +184,7 @@ function Reward_JournalWrite(...)
     return B_Reward_JournalWrite:new(...);
 end
 
-B_Reward_JournalWrite = Swift:CopyTable(B_Reprisal_JournalWrite);
+B_Reward_JournalWrite = Swift.LuaBase:CopyTable(B_Reprisal_JournalWrite);
 B_Reward_JournalWrite.Name = "Reward_JournalWrite";
 B_Reward_JournalWrite.Description.en = "Reward: Adds or alters a journal entry to a quest.";
 B_Reward_JournalWrite.Description.de = "Lohn: Schreibt oder ändert einen Tagebucheintrag.";
@@ -276,7 +276,7 @@ function Reward_JournalRemove(...)
     return B_Reward_JournalRemove:new(...);
 end
 
-B_Reward_JournalRemove = Swift:CopyTable(B_Reprisal_JournalRemove);
+B_Reward_JournalRemove = Swift.LuaBase:CopyTable(B_Reprisal_JournalRemove);
 B_Reward_JournalRemove.Name = "Reward_JournalRemove";
 B_Reward_JournalRemove.Description.en = "Reward: Remove a journal entry from a quest.";
 B_Reward_JournalRemove.Description.de = "Lohn: Entfernt einen Tagebucheintrag vom Quest.";
@@ -374,7 +374,7 @@ function Reward_JournaHighlight(...)
     return B_Reward_JournaHighlight:new(...);
 end
 
-B_Reward_JournaHighlight = Swift:CopyTable(B_Reprisal_JournaHighlight);
+B_Reward_JournaHighlight = Swift.LuaBase:CopyTable(B_Reprisal_JournaHighlight);
 B_Reward_JournaHighlight.Name = "Reward_JournaHighlight";
 B_Reward_JournaHighlight.Description.en = "Reward: Highlights or unhighlights a journal entry of a quest.";
 B_Reward_JournaHighlight.Description.de = "Lohn: Hebt einen Tagebucheintrag hevor oder hebt die Hervorhebung auf.";

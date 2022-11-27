@@ -87,7 +87,7 @@ function Reward_Briefing(...)
     return B_Reward_Briefing:new(...);
 end
 
-B_Reward_Briefing = Swift:CopyTable(B_Reprisal_Briefing);
+B_Reward_Briefing = Swift.LuaBase:CopyTable(B_Reprisal_Briefing);
 B_Reward_Briefing.Name = "Reward_Briefing";
 B_Reward_Briefing.Description.en = "Reward: Calls a function to start an new briefing.";
 B_Reward_Briefing.Description.de = "Lohn: Ruft die Funktion auf und startet das enthaltene Briefing.";

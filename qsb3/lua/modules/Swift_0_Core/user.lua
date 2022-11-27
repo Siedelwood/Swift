@@ -58,7 +58,7 @@ end
 
 function Swift:RestoreAfterLoad()
     debug("Loading save game", true);
-    self:OverrideBaseLua();
+    self.LuaBase:OverrideBaseLua();
     if self:IsGlobalEnvironment() then
         self:GlobalRestoreDebugAfterLoad();
         self:GlobalRestoreBugfixesAfterLoad();

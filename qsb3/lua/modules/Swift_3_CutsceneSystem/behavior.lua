@@ -87,7 +87,7 @@ function Reward_Cutscene(...)
     return B_Reward_Cutscene:new(...);
 end
 
-B_Reward_Cutscene = Swift:CopyTable(B_Reprisal_Cutscene);
+B_Reward_Cutscene = Swift.LuaBase:CopyTable(B_Reprisal_Cutscene);
 B_Reward_Cutscene.Name = "Reward_Cutscene";
 B_Reward_Cutscene.Description.en = "Reward: Calls a function to start an new Cutscene.";
 B_Reward_Cutscene.Description.de = "Lohn: Ruft die Funktion auf und startet die enthaltene Cutscene.";

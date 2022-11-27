@@ -1190,9 +1190,9 @@ end
 
 function B_Goal_ActivateBuff:CustomFunction(_Quest)
    if not _Quest.QuestDescription or _Quest.QuestDescription == "" then
-        local tMapping = Swift:CopyTable(Swift.Behavior.Text.ActivateBuff.BuffsVanilla);
+        local tMapping = Swift.LuaBase:CopyTable(Swift.Behavior.Text.ActivateBuff.BuffsVanilla);
         if g_GameExtraNo >= 1 then
-            tMapping = Swift:CopyTable(Swift.Behavior.Text.ActivateBuff.BuffsEx1, tMapping);
+            tMapping = Swift.LuaBase:CopyTable(Swift.Behavior.Text.ActivateBuff.BuffsEx1, tMapping);
         end
         Swift:ChangeCustomQuestCaptionText(
             string.format(
@@ -4456,7 +4456,7 @@ function Reward_ObjectDeactivate(...)
     return B_Reward_InteractiveObjectDeactivate:new(...);
 end
 
-B_Reward_InteractiveObjectDeactivate = Swift:CopyTable(B_Reprisal_InteractiveObjectDeactivate);
+B_Reward_InteractiveObjectDeactivate = Swift.LuaBase:CopyTable(B_Reprisal_InteractiveObjectDeactivate);
 B_Reward_InteractiveObjectDeactivate.Name             = "Reward_InteractiveObjectDeactivate";
 B_Reward_InteractiveObjectDeactivate.Description.en   = "Reward: Deactivates an interactive object";
 B_Reward_InteractiveObjectDeactivate.Description.de   = "Lohn: Deaktiviert ein interaktives Objekt";
@@ -4490,7 +4490,7 @@ function Reward_ObjectActivate(...)
     return B_Reward_InteractiveObjectActivate:new(...);
 end
 
-B_Reward_InteractiveObjectActivate = Swift:CopyTable(B_Reprisal_InteractiveObjectActivate);
+B_Reward_InteractiveObjectActivate = Swift.LuaBase:CopyTable(B_Reprisal_InteractiveObjectActivate);
 B_Reward_InteractiveObjectActivate.Name             = "Reward_InteractiveObjectActivate";
 B_Reward_InteractiveObjectActivate.Description.en   = "Reward: Activates an interactive object";
 B_Reward_InteractiveObjectActivate.Description.de   = "Lohn: Aktiviert ein interaktives Objekt";
@@ -4724,7 +4724,7 @@ function Reward_Diplomacy(...)
     return B_Reward_Diplomacy:new(...);
 end
 
-B_Reward_Diplomacy = Swift:CopyTable(B_Reprisal_Diplomacy);
+B_Reward_Diplomacy = Swift.LuaBase:CopyTable(B_Reprisal_Diplomacy);
 B_Reward_Diplomacy.Name             = "Reward_Diplomacy";
 B_Reward_Diplomacy.Description.en   = "Reward: Sets Diplomacy state of two Players to a stated value.";
 B_Reward_Diplomacy.Description.de   = "Lohn: Setzt den Diplomatiestatus zweier Spieler auf den angegebenen Wert.";
@@ -4967,7 +4967,7 @@ function Reward_DestroyEntity(...)
     return B_Reward_DestroyEntity:new(...);
 end
 
-B_Reward_DestroyEntity = Swift:CopyTable(B_Reprisal_DestroyEntity);
+B_Reward_DestroyEntity = Swift.LuaBase:CopyTable(B_Reprisal_DestroyEntity);
 B_Reward_DestroyEntity.Name = "Reward_DestroyEntity";
 B_Reward_DestroyEntity.Description.en = "Reward: Replaces an entity with an invisible script entity, which retains the entities name.";
 B_Reward_DestroyEntity.Description.de = "Lohn: Ersetzt eine Entity mit einer unsichtbaren Script-Entity, die den Namen übernimmt.";
@@ -4993,7 +4993,7 @@ function Reward_DestroyEffect(...)
     return B_Reward_DestroyEffect:new(...);
 end
 
-B_Reward_DestroyEffect = Swift:CopyTable(B_Reprisal_DestroyEffect);
+B_Reward_DestroyEffect = Swift.LuaBase:CopyTable(B_Reprisal_DestroyEffect);
 B_Reward_DestroyEffect.Name = "Reward_DestroyEffect";
 B_Reward_DestroyEffect.Description.en = "Reward: Destroys an effect.";
 B_Reward_DestroyEffect.Description.de = "Lohn: Zerstört einen Effekt.";
@@ -5477,7 +5477,7 @@ Swift:RegisterBehavior(B_Reward_CreateEntity);
 -- -------------------------------------------------------------------------- --
 
 -- Kompatibelität
-B_Reward_CreateSettler = Swift:CopyTable(B_Reward_CreateEntity);
+B_Reward_CreateSettler = Swift.LuaBase:CopyTable(B_Reward_CreateEntity);
 B_Reward_CreateSettler.Name = "Reward_CreateSettler";
 B_Reward_CreateSettler.Description.en = "Reward: Replaces an entity by a new one of a given type";
 B_Reward_CreateSettler.Description.de = "Lohn: Ersetzt eine Entity durch eine neue gegebenen Typs";
@@ -6513,7 +6513,7 @@ function Reward_ReplaceEntity(...)
     return B_Reward_ReplaceEntity:new(...);
 end
 
-B_Reward_ReplaceEntity = Swift:CopyTable(B_Reprisal_ReplaceEntity);
+B_Reward_ReplaceEntity = Swift.LuaBase:CopyTable(B_Reprisal_ReplaceEntity);
 B_Reward_ReplaceEntity.Name = "Reward_ReplaceEntity";
 B_Reward_ReplaceEntity.Description.en = "Reward: Replaces an entity with a new one of a different type. The playerID can be changed too.";
 B_Reward_ReplaceEntity.Description.de = "Lohn: Ersetzt eine Entity durch eine neue anderen Typs. Es kann auch die Spielerzugehörigkeit geändert werden.";
@@ -6829,7 +6829,7 @@ function Reward_QuestRestart(...)
     return B_Reward_QuestRestart:new(...)
 end
 
-B_Reward_QuestRestart = Swift:CopyTable(B_Reprisal_QuestRestart);
+B_Reward_QuestRestart = Swift.LuaBase:CopyTable(B_Reprisal_QuestRestart);
 B_Reward_QuestRestart.Name = "Reward_QuestRestart";
 B_Reward_QuestRestart.Description.en = "Reward: Restarts a (completed) quest so it can be triggered and completed again.";
 B_Reward_QuestRestart.Description.de = "Lohn: Startet eine (beendete) Quest neu, damit diese neu ausgelöst und beendet werden kann.";
@@ -6855,7 +6855,7 @@ function Reward_QuestFailure(...)
     return B_Reward_QuestFailure:new(...)
 end
 
-B_Reward_QuestFailure = Swift:CopyTable(B_Reprisal_QuestFailure);
+B_Reward_QuestFailure = Swift.LuaBase:CopyTable(B_Reprisal_QuestFailure);
 B_Reward_QuestFailure.Name = "Reward_QuestFailure";
 B_Reward_QuestFailure.Description.en = "Reward: Lets another active quest fail.";
 B_Reward_QuestFailure.Description.de = "Lohn: Lässt eine andere aktive Quest fehlschlagen.";
@@ -6881,7 +6881,7 @@ function Reward_QuestSuccess(...)
     return B_Reward_QuestSuccess:new(...)
 end
 
-B_Reward_QuestSuccess = Swift:CopyTable(B_Reprisal_QuestSuccess);
+B_Reward_QuestSuccess = Swift.LuaBase:CopyTable(B_Reprisal_QuestSuccess);
 B_Reward_QuestSuccess.Name = "Reward_QuestSuccess";
 B_Reward_QuestSuccess.Description.en = "Reward: Completes another active quest successfully.";
 B_Reward_QuestSuccess.Description.de = "Lohn: Beendet eine andere aktive Quest erfolgreich.";
@@ -6907,7 +6907,7 @@ function Reward_QuestActivate(...)
     return B_Reward_QuestActivate:new(...)
 end
 
-B_Reward_QuestActivate = Swift:CopyTable(B_Reprisal_QuestActivate);
+B_Reward_QuestActivate = Swift.LuaBase:CopyTable(B_Reprisal_QuestActivate);
 B_Reward_QuestActivate.Name = "Reward_QuestActivate";
 B_Reward_QuestActivate.Description.en = "Reward: Activates another quest that is not triggered yet.";
 B_Reward_QuestActivate.Description.de = "Lohn: Aktiviert eine andere Quest die noch nicht ausgelöst wurde.";
@@ -6933,7 +6933,7 @@ function Reward_QuestInterrupt(...)
     return B_Reward_QuestInterrupt:new(...)
 end
 
-B_Reward_QuestInterrupt = Swift:CopyTable(B_Reprisal_QuestInterrupt);
+B_Reward_QuestInterrupt = Swift.LuaBase:CopyTable(B_Reprisal_QuestInterrupt);
 B_Reward_QuestInterrupt.Name = "Reward_QuestInterrupt";
 B_Reward_QuestInterrupt.Description.en = "Reward: Interrupts another active quest without success or failure.";
 B_Reward_QuestInterrupt.Description.de = "Lohn: Beendet eine andere aktive Quest ohne Erfolg oder Misserfolg.";
@@ -6960,7 +6960,7 @@ function Reward_QuestForceInterrupt(...)
     return B_Reward_QuestForceInterrupt:new(...)
 end
 
-B_Reward_QuestForceInterrupt = Swift:CopyTable(B_Reprisal_QuestForceInterrupt);
+B_Reward_QuestForceInterrupt = Swift.LuaBase:CopyTable(B_Reprisal_QuestForceInterrupt);
 B_Reward_QuestForceInterrupt.Name = "Reward_QuestForceInterrupt";
 B_Reward_QuestForceInterrupt.Description.en = "Reward: Interrupts another quest (even when it isn't active yet) without success or failure.";
 B_Reward_QuestForceInterrupt.Description.de = "Lohn: Beendet eine andere Quest, auch wenn diese noch nicht aktiv ist ohne Erfolg oder Misserfolg.";
@@ -7002,7 +7002,7 @@ function Reward_CustomVariables(...)
     return B_Reward_CustomVariables:new(...);
 end
 
-B_Reward_CustomVariables = Swift:CopyTable(B_Reprisal_CustomVariables);
+B_Reward_CustomVariables = Swift.LuaBase:CopyTable(B_Reprisal_CustomVariables);
 B_Reward_CustomVariables.Name = "Reward_CustomVariables";
 B_Reward_CustomVariables.Description.en = "Reward: Executes a mathematical operation with this variable. The other operand can be a number or another custom variable.";
 B_Reward_CustomVariables.Description.de = "Lohn: Führt eine mathematische Operation mit der Variable aus. Der andere Operand kann eine Zahl oder eine Custom-Varible sein.";
@@ -7038,7 +7038,7 @@ function Reward_MapScriptFunction(...)
     return B_Reward_MapScriptFunction:new(...);
 end
 
-B_Reward_MapScriptFunction = Swift:CopyTable(B_Reprisal_MapScriptFunction);
+B_Reward_MapScriptFunction = Swift.LuaBase:CopyTable(B_Reprisal_MapScriptFunction);
 B_Reward_MapScriptFunction.Name = "Reward_MapScriptFunction";
 B_Reward_MapScriptFunction.Description.en = "Reward: Calls a function within the global map script if the quest has failed.";
 B_Reward_MapScriptFunction.Description.de = "Lohn: Ruft eine Funktion im globalen Kartenskript auf, wenn die Quest fehlschlägt.";
@@ -7066,7 +7066,7 @@ function Reward_Technology(...)
     return B_Reward_Technology:new(...);
 end
 
-B_Reward_Technology = Swift:CopyTable(B_Reprisal_Technology);
+B_Reward_Technology = Swift.LuaBase:CopyTable(B_Reprisal_Technology);
 B_Reward_Technology.Name = "Reward_Technology";
 B_Reward_Technology.Description.en = "Reward: Locks or unlocks a technology for the given player.";
 B_Reward_Technology.Description.de = "Lohn: Sperrt oder erlaubt eine Technolgie fuer den angegebenen Player.";
@@ -7729,7 +7729,7 @@ Swift:RegisterBehavior(B_Trigger_OnQuestActiveWait);
 -- -------------------------------------------------------------------------- --
 
 -- Kompatibelitätsmodus
-B_Trigger_OnQuestActive = Swift:CopyTable(B_Trigger_OnQuestActiveWait);
+B_Trigger_OnQuestActive = Swift.LuaBase:CopyTable(B_Trigger_OnQuestActiveWait);
 B_Trigger_OnQuestActive.Name = "Trigger_OnQuestActive";
 B_Trigger_OnQuestActive.Description.en = "Trigger: Starts the quest after another has been activated.";
 B_Trigger_OnQuestActive.Description.de = "Auslöser: Startet den Quest, wenn ein anderer aktiviert wird.";
@@ -7828,7 +7828,7 @@ Swift:RegisterBehavior(B_Trigger_OnQuestFailureWait);
 -- -------------------------------------------------------------------------- --
 
 -- Kompatibelitätsmodus
-B_Trigger_OnQuestFailure = Swift:CopyTable(B_Trigger_OnQuestFailureWait);
+B_Trigger_OnQuestFailure = Swift.LuaBase:CopyTable(B_Trigger_OnQuestFailureWait);
 B_Trigger_OnQuestFailure.Name = "Trigger_OnQuestFailure";
 B_Trigger_OnQuestFailure.Description.en = "Trigger: Starts the quest after another has failed.";
 B_Trigger_OnQuestFailure.Description.de = "Auslöser: Startet den Quest, wenn ein anderer fehlschlägt.";
@@ -7982,7 +7982,7 @@ Swift:RegisterBehavior(B_Trigger_OnQuestInterruptedWait);
 -- -------------------------------------------------------------------------- --
 
 -- Kompatibelitätsmodus
-B_Trigger_OnQuestInterrupted = Swift:CopyTable(B_Trigger_OnQuestInterruptedWait);
+B_Trigger_OnQuestInterrupted = Swift.LuaBase:CopyTable(B_Trigger_OnQuestInterruptedWait);
 B_Trigger_OnQuestInterrupted.Name = "Trigger_OnQuestInterrupted";
 B_Trigger_OnQuestInterrupted.Description.en = "Trigger: Starts the quest after another is interrupted.";
 B_Trigger_OnQuestInterrupted.Description.de = "Auslöser: Startet den Quest, wenn ein anderer abgebrochen wurde.";
@@ -8084,7 +8084,7 @@ Swift:RegisterBehavior(B_Trigger_OnQuestOverWait);
 -- -------------------------------------------------------------------------- --
 
 -- Kompatibelitätsmodus
-B_Trigger_OnQuestOver = Swift:CopyTable(B_Trigger_OnQuestOverWait);
+B_Trigger_OnQuestOver = Swift.LuaBase:CopyTable(B_Trigger_OnQuestOverWait);
 B_Trigger_OnQuestOver.Name = "Trigger_OnQuestOver";
 B_Trigger_OnQuestOver.Description.en = "Trigger: Starts the quest after another finished.";
 B_Trigger_OnQuestOver.Description.de = "Auslöser: Startet den Quest, wenn ein anderer abgeschlossen wurde.";
@@ -8183,7 +8183,7 @@ Swift:RegisterBehavior(B_Trigger_OnQuestSuccessWait);
 -- -------------------------------------------------------------------------- --
 
 -- Kompatibelitätsmodus
-B_Trigger_OnQuestSuccess = Swift:CopyTable(B_Trigger_OnQuestSuccessWait);
+B_Trigger_OnQuestSuccess = Swift.LuaBase:CopyTable(B_Trigger_OnQuestSuccessWait);
 B_Trigger_OnQuestSuccess.Name = "Trigger_OnQuestSuccess";
 B_Trigger_OnQuestSuccess.Description.en = "Trigger: Starts the quest after another finished successfully.";
 B_Trigger_OnQuestSuccess.Description.de = "Auslöser: Startet den Quest, wenn ein anderer erfolgreich abgeschlossen wurde.";

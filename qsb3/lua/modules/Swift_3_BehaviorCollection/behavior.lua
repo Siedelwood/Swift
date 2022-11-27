@@ -409,7 +409,7 @@ function Goal_DeliverRelative(...)
     return B_Goal_DeliverRelative:new(...);
 end
 
-B_Goal_DeliverRelative = Swift:CopyTable(B_Goal_Deliver);
+B_Goal_DeliverRelative = Swift.LuaBase:CopyTable(B_Goal_Deliver);
 B_Goal_DeliverRelative.Name = "Goal_DeliverRelative";
 B_Goal_DeliverRelative.Description.en = "Goal: Deliver a relative amount of goods to the requesting player or another player";
 B_Goal_DeliverRelative.Description.de = "Ziel: Liefere eine relative Menge an Waren zum Auftraggeber oder zu einem anderen Spieler.";
@@ -1530,7 +1530,7 @@ function Reward_SetPosition(...)
     return B_Reward_SetPosition:new(...);
 end
 
-B_Reward_SetPosition = Swift:CopyTable(B_Reprisal_SetPosition);
+B_Reward_SetPosition = Swift.LuaBase:CopyTable(B_Reprisal_SetPosition);
 B_Reward_SetPosition.Name = "Reward_SetPosition";
 B_Reward_SetPosition.Description.en = "Reward: Places an entity relative to the position of another. The entity can look the target.";
 B_Reward_SetPosition.Description.de = "Lohn: Setzt eine Entity relativ zur Position einer anderen. Die Entity kann zum Ziel ausgerichtet werden.";
@@ -1557,7 +1557,7 @@ function Reward_ChangePlayer(...)
     return B_Reward_ChangePlayer:new(...);
 end
 
-B_Reward_ChangePlayer = Swift:CopyTable(B_Reprisal_ChangePlayer);
+B_Reward_ChangePlayer = Swift.LuaBase:CopyTable(B_Reprisal_ChangePlayer);
 B_Reward_ChangePlayer.Name = "Reward_ChangePlayer";
 B_Reward_ChangePlayer.Description.en = "Reward: Changes the owner of the entity or a battalion.";
 B_Reward_ChangePlayer.Description.de = "Lohn: Ändert den Besitzer einer Entity oder eines Battalions.";
@@ -1799,7 +1799,7 @@ function Reward_SetVisible(...)
     return B_Reward_SetVisible:new(...)
 end
 
-B_Reward_SetVisible = Swift:CopyTable(B_Reprisal_SetVisible);
+B_Reward_SetVisible = Swift.LuaBase:CopyTable(B_Reprisal_SetVisible);
 B_Reward_SetVisible.Name = "Reward_SetVisible";
 B_Reward_SetVisible.Description.en = "Reward: Changes the visibility of an entity. If the entity is a spawner the spawned entities will be affected.";
 B_Reward_SetVisible.Description.de = "Lohn: Setzt die Sichtbarkeit einer Entity. Handelt es sich um einen Spawner werden auch die gespawnten Entities beeinflusst.";
@@ -1830,7 +1830,7 @@ function Reward_SetVulnerability(...)
     return B_Reward_SetVulnerability:new(...);
 end
 
-B_Reward_SetVulnerability = Swift:CopyTable(B_Reprisal_SetVulnerability);
+B_Reward_SetVulnerability = Swift.LuaBase:CopyTable(B_Reprisal_SetVulnerability);
 B_Reward_SetVulnerability.Name = "Reward_SetVulnerability";
 B_Reward_SetVulnerability.Description.en = "Reward: Changes the vulnerability of the entity. If the entity is a spawner the spawned entities will be affected.";
 B_Reward_SetVulnerability.Description.de = "Lohn: Macht eine Entity verwundbar oder unverwundbar. Handelt es sich um einen Spawner, sind die gespawnten Entities betroffen.";
@@ -1861,7 +1861,7 @@ function Reward_SetModel(...)
     return B_Reward_SetModel:new(...);
 end
 
-B_Reward_SetModel = Swift:CopyTable(B_Reprisal_SetModel);
+B_Reward_SetModel = Swift.LuaBase:CopyTable(B_Reprisal_SetModel);
 B_Reward_SetModel.Name = "Reward_SetModel";
 B_Reward_SetModel.Description.en = "Reward: Changes the model of the entity. Be careful, some models crash the game.";
 B_Reward_SetModel.Description.de = "Lohn: Ändert das Model einer Entity. Achtung: Einige Modelle führen zum Absturz.";

@@ -8,13 +8,15 @@ You may use and modify this file unter the terms of the MIT licence.
 (See https://en.wikipedia.org/wiki/MIT_License)
 ]]
 
-function Swift:OverrideBaseLua()
+Swift.LuaBase = {};
+
+function Swift.LuaBase:OverrideBaseLua()
     self:OverrideTable();
     self:OverrideString();
     self:OverrideMath();
 end
 
-function Swift:OverrideTable()
+function Swift.LuaBase:OverrideTable()
     table.compare = function(t1, t2, fx)
         assert(type(t1) == "table");
         assert(type(t2) == "table");
@@ -81,7 +83,7 @@ function Swift:OverrideTable()
         t2 = t2 or {};
         assert(type(t1) == "table");
         assert(type(t2) == "table");
-        return Swift:CopyTable(t1, t2);
+        return Swift.LuaBase:CopyTable(t1, t2);
     end
 
     table.invert = function (t1)
@@ -104,7 +106,7 @@ function Swift:OverrideTable()
     end
 
     table.tostring = function(t)
-        return Swift:ConvertTableToString(t);
+        return Swift.LuaBase:ConvertTableToString(t);
     end
 
     table.insertAll = function(t, ...)
@@ -173,7 +175,7 @@ function Swift:OverrideTable()
     table.restoreMetatables();
 end
 
-function Swift:OverrideString()
+function Swift.LuaBase:OverrideString()
     string.contains = function (self, s)
         return self:find(s) ~= nil;
     end
@@ -215,14 +217,14 @@ function Swift:OverrideString()
     end
 end
 
-function Swift:OverrideMath()
+function Swift.LuaBase:OverrideMath()
     math.lerp = function(s, c, e)
         local f = (c - s) / e;
         return (f > 1 and 1) or f;
     end
 end
 
-function Swift:ConvertTableToString(_Table)
+function Swift.LuaBase:ConvertTableToString(_Table)
     assert(type(_Table) == "table");
     local String = "{";
     for k, v in pairs(_Table) do
@@ -248,7 +250,7 @@ function Swift:ConvertTableToString(_Table)
     return String;
 end
 
-function Swift:CopyTable(_Table1, _Table2)
+function Swift.LuaBase:CopyTable(_Table1, _Table2)
     _Table1 = _Table1 or {};
     _Table2 = _Table2 or {};
     for k, v in pairs(_Table1) do
@@ -262,5 +264,15 @@ function Swift:CopyTable(_Table1, _Table2)
         end
     end
     return _Table2;
+end
+
+function Swift.LuaBase:ToBoolean(_Input)
+    if type(_Input) == "boolean" then
+        return _Input;
+    end
+    if _Input == 1 or string.find(string.lower(tostring(_Input)), "^[1tjy\\+].*$") then
+        return true;
+    end
+    return false;
 end
 
