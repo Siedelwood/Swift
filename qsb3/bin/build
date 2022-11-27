@@ -13,8 +13,8 @@ cp ../var/qsb.lua ../var/qsb/qsb.lua
 echo "done!"
 echo "create minified qsb..."
 #FIXME Minifyer produces invalid code!
-#cd ../luaminifyer
-#./LuaMinify.sh ../var/qsb.lua &>/dev/null
+#cd ../lua/tools/luaminifyer
+#./LuaMinify.sh ../../../var/qsb.lua &>/dev/null
 cp ../var/qsb.lua ../var/qsb_min.lua
 cp ../var/qsb_min.lua ../var/qsb/qsb_min.lua
 rm ../var/qsb.lua
