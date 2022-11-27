@@ -47,15 +47,15 @@ Swift = {
     m_ScriptEventRegister       = {};
     m_ScriptEventListener       = {};
     m_ScriptCommandRegister     = {};
+    m_AIProperties              = {};
+    m_NoQuicksaveConditions     = {};
     m_LanguageRegister          = {
         {"de", "Deutsch", "en"},
         {"en", "English", "en"},
         {"fr", "Français", "en"},
     };
-    m_AIProperties              = {};
     m_Environment               = "global";
     m_ProcessDebugCommands      = false;
-    m_NoQuicksaveConditions     = {};
     m_LogLevel                  = 2;
     m_FileLogLevel              = 3;
 };
@@ -121,6 +121,50 @@ function Swift:LoadCore()
     end
 end
 
+-- Load files
+
+function Swift:LoadExternFiles()
+    if Mission_LoadFiles then
+        local FilesList = Mission_LoadFiles();
+        for i= 1, #FilesList, 1 do
+            if type(FilesList[i]) == "function" then
+                FilesList[i]();
+            else
+                Script.Load(FilesList[i]);
+            end
+        end
+    end
+end
+
+-- Environment Detection
+
+function Swift:DetectEnvironment()
+    self.m_Environment = (nil ~= GUI and "local") or "global";
+end
+
+function Swift:IsGlobalEnvironment()
+    return "global" == self.m_Environment;
+end
+
+function Swift:IsLocalEnvironment()
+    return "local" == self.m_Environment;
+end
+
+function Swift:ValidateTerritories()
+    local InvalidTerritories = false;
+    local Territories = {Logic.GetTerritories()};
+    for i= 1, #Territories, 1 do
+        local x, y = GUI.ComputeTerritoryPosition(Territories[i]);
+        if not x or not y then
+            error("Territory " ..Territories[i].. " is invalid!");
+            InvalidTerritories = true;
+        end
+    end
+    if InvalidTerritories then
+        error ("A territory must have a size greater 0 and no separated areas!");
+    end
+end
+
 -- Modules
 
 function Swift:LoadModules()
@@ -155,39 +199,6 @@ end
 function Swift:IsModuleRegistered(_Name)
     for k, v in pairs(self.m_ModuleRegister) do
         return v.Properties and v.Properties.Name == _Name;
-    end
-end
-
--- Random Seed
-
-function Swift:CreateRandomSeed()
-    local Seed = 0;
-    local MapName = Framework.GetCurrentMapName();
-    local MapType = Framework.GetCurrentMapTypeAndCampaignName();
-    local SeedString = Framework.GetMapGUID(MapName, MapType);
-    for PlayerID = 1, 8 do
-        if Logic.PlayerGetIsHumanFlag(PlayerID) and Logic.PlayerGetGameState(PlayerID) ~= 0 then
-            if GUI.GetPlayerID() == PlayerID then
-                local PlayerName = Logic.GetPlayerName(PlayerID);
-                local DateText = Framework.GetSystemTimeDateString();
-                SeedString = SeedString .. PlayerName .. " " .. DateText;
-                for s in SeedString:gmatch(".") do
-                    Seed = Seed + ((tonumber(s) ~= nil and tonumber(s)) or s:byte());
-                end
-                if Framework.IsNetworkGame() then
-                    Swift:DispatchScriptCommand(QSB.ScriptCommands.ProclaimateRandomSeed, 0, Seed);
-                else
-                    GUI.SendScriptCommand("SCP.Core.ProclaimateRandomSeed(" ..Seed.. ")");
-                end
-            end
-            break;
-        end
-    end
-end
-
-function Swift:OverrideOnMPGameStart()
-    GameCallback_OnMPGameStart = function()
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_TURN, "", "VictoryConditionHandler", 1)
     end
 end
 
@@ -320,50 +331,6 @@ function Swift:RegisterBehavior(_Behavior)
     table.insert(self.m_BehaviorRegister, _Behavior);
 end
 
--- Load files
-
-function Swift:LoadExternFiles()
-    if Mission_LoadFiles then
-        local FilesList = Mission_LoadFiles();
-        for i= 1, #FilesList, 1 do
-            if type(FilesList[i]) == "function" then
-                FilesList[i]();
-            else
-                Script.Load(FilesList[i]);
-            end
-        end
-    end
-end
-
--- Environment Detection
-
-function Swift:DetectEnvironment()
-    self.m_Environment = (nil ~= GUI and "local") or "global";
-end
-
-function Swift:IsGlobalEnvironment()
-    return "global" == self.m_Environment;
-end
-
-function Swift:IsLocalEnvironment()
-    return "local" == self.m_Environment;
-end
-
-function Swift:ValidateTerritories()
-    local InvalidTerritories = false;
-    local Territories = {Logic.GetTerritories()};
-    for i= 1, #Territories, 1 do
-        local x, y = GUI.ComputeTerritoryPosition(Territories[i]);
-        if not x or not y then
-            error("Territory " ..Territories[i].. " is invalid!");
-            InvalidTerritories = true;
-        end
-    end
-    if InvalidTerritories then
-        error ("A territory must have a size greater 0 and no separated areas!");
-    end
-end
-
 -- History Edition
 
 function Swift:IsHistoryEdition()
@@ -390,16 +357,7 @@ function Swift:OverrideDoQuicksave()
 end
 
 function Swift:AlterQuickSaveHotkey()
-    -- FIXME: This does not work if the job module is not present!
-    API.StartHiResJob(function()
-        Input.KeyBindDown(
-            Keys.ModifierControl + Keys.S,
-            "KeyBindings_SaveGame(true)",
-            2,
-            false
-        );
-        return true;
-    end);
+    StartSimpleHiResJob("Swift_EventJob_AlterQuickSaveHotkey");
 end
 
 function Swift:AddBlockQuicksaveCondition(_Function)
@@ -705,70 +663,6 @@ function Swift:IsAllowedEventParameter(_Parameter)
     return true;
 end
 
--- AI
-
-function Swift:InitalizeAIVariables()
-    for i= 1, 8 do
-        self.m_AIProperties[i] = {};
-    end
-end
-
-function Swift:DisableLogicFestival()
-    Swift.Logic_StartFestival = Logic.StartFestival;
-    Logic.StartFestival = function(_PlayerID, _Type)
-        if Logic.PlayerGetIsHumanFlag(_PlayerID) ~= true then
-            if Swift.m_AIProperties[_PlayerID].ForbidFestival == true then
-                return;
-            end
-        end
-        Swift.Logic_StartFestival(_PlayerID, _Type);
-    end
-end
-
--- Custom Variable
-
-function Swift:GetCustomVariable(_Name)
-    return QSB.CustomVariable[_Name];
-end
-
-function Swift:SetCustomVariable(_Name, _Value)
-    Swift:UpdateCustomVariable(_Name, _Value);
-    local Value = tostring(_Value);
-    if type(_Value) ~= "number" then
-        Value = [["]] ..Value.. [["]];
-    end
-    if GUI then
-        Swift:DispatchScriptCommand(QSB.ScriptCommands.UpdateCustomVariable, 0, _Name, Value);
-    else
-        Logic.ExecuteInLuaLocalState(string.format(
-            [[Swift:UpdateCustomVariable("%s", %s)]],
-            _Name,
-            Value
-        ));
-    end
-end
-
-function Swift:UpdateCustomVariable(_Name, _Value)
-    if QSB.CustomVariable[_Name] then
-        local Old = QSB.CustomVariable[_Name];
-        QSB.CustomVariable[_Name] = _Value;
-        Swift:DispatchScriptEvent(
-            QSB.ScriptEvents.CustomValueChanged,
-            _Name,
-            Old,
-            _Value
-        );
-    else
-        QSB.CustomVariable[_Name] = _Value;
-        Swift:DispatchScriptEvent(
-            QSB.ScriptEvents.CustomValueChanged,
-            _Name,
-            nil,
-            _Value
-        );
-    end
-end
-
 -- Language
 
 function Swift:DetectLanguage()
@@ -832,19 +726,17 @@ function Swift:Localize(_Text)
     return LocalizedText;
 end
 
--- Utils
-
-function Swift:ToBoolean(_Input)
-    if type(_Input) == "boolean" then
-        return _Input;
-    end
-    if _Input == 1 or string.find(string.lower(tostring(_Input)), "^[1tjy\\+].*$") then
-        return true;
-    end
-    return false;
-end
-
 -- Jobs
+
+function Swift_EventJob_AlterQuickSaveHotkey()
+    Input.KeyBindDown(
+        Keys.ModifierControl + Keys.S,
+        "KeyBindings_SaveGame(true)",
+        2,
+        false
+    );
+    return true;
+end
 
 function Swift_EventJob_WaitForLoadScreenHidden()
     if XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 0 then
