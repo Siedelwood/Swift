@@ -1,8 +1,6 @@
 BinWriter_ModuleFiles = {
     "Swift_0_Core/swift.lua",
     "Swift_0_Core/luabase.lua",
-    "Swift_0_Core/logic.lua",
-    "Swift_0_Core/utilities.lua",
     "Swift_0_Core/api.lua",
     "Swift_0_Core/debug.lua",
     "Swift_0_Core/behavior.lua",

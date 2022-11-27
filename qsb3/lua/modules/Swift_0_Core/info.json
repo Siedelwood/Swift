@@ -8,8 +8,6 @@
     "files": [
         "swift.lua",
         "luabase.lua",
-        "logic.lua",
-        "utilities.lua",
         "api.lua",
         "debug.lua",
         "behavior.lua",
