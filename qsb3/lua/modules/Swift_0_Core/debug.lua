@@ -353,11 +353,11 @@ function Swift.Debug:LocalRestoreDebugAfterLoad()
 end
 
 function Swift.Debug:InitalizeQsbDebugEvents()
-    QSB.ScriptEvents.DebugChatConfirmed = Swift:CreateScriptEvent(
+    QSB.ScriptEvents.DebugChatConfirmed = Swift.Event:CreateScriptEvent(
         "Event_DebugModeChatConfirmed",
         nil
     );
-    QSB.ScriptEvents.DebugModeStatusChanged = Swift:CreateScriptEvent(
+    QSB.ScriptEvents.DebugModeStatusChanged = Swift.Event:CreateScriptEvent(
         "Event_DebugModeStatusChanged",
         nil
     );
@@ -373,7 +373,7 @@ function Swift.Debug:ActivateDebugMode(_CheckAtRun, _TraceQuests, _DevelopingChe
     self.DevelopingCheats = _DevelopingCheats == true;
     self.DevelopingShell  = _DevelopingShell == true;
 
-    Swift:DispatchScriptEvent(
+    Swift.Event:DispatchScriptEvent(
         QSB.ScriptEvents.DebugModeStatusChanged,
         self.CheckAtRun,
         self.TraceQuests,
@@ -389,7 +389,7 @@ function Swift.Debug:ActivateDebugMode(_CheckAtRun, _TraceQuests, _DevelopingChe
             Swift.Debug.DevelopingCheats = %s;
             Swift.Debug.DevelopingShell  = %s;
 
-            Swift:DispatchScriptEvent(
+            Swift.Event:DispatchScriptEvent(
                 QSB.ScriptEvents.DebugModeStatusChanged,
                 Swift.Debug.CheckAtRun,
                 Swift.Debug.TraceQuests,
@@ -514,12 +514,12 @@ function Swift.Debug:DisplayQsbDebugShell()
         self.ChatBoxInput = string.gsub(self.ChatBoxInput,"'","\'");
         self:ConfirmQsbDebugShell();
         GUI.SendScriptCommand([[
-            Swift:DispatchScriptEvent(
+            Swift.Event:DispatchScriptEvent(
                 QSB.ScriptEvents.DebugChatConfirmed, 
                 "]]..self.ChatBoxInput..[["
             );
         ]]);
-        self:DispatchScriptEvent(
+        self.Event:DispatchScriptEvent(
             QSB.ScriptEvents.DebugChatConfirmed,
             self.ChatBoxInput
         );

@@ -4,6 +4,7 @@ BinLoader_CoreFiles = {
     "Swift_0_Core/luabase.lua",
     "Swift_0_Core/api.lua",
     "Swift_0_Core/debug.lua",
+    "Swift_0_Core/event.lua",
     "Swift_0_Core/behavior.lua",
     "Swift_0_Core/bugfixes.lua",
 }

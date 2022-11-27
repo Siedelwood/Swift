@@ -45,9 +45,6 @@ end
 Swift = {
     m_ModuleRegister            = {};
     m_BehaviorRegister          = {};
-    m_ScriptEventRegister       = {};
-    m_ScriptEventListener       = {};
-    m_ScriptCommandRegister     = {};
     m_AIProperties              = {};
     m_NoQuicksaveConditions     = {};
     m_LanguageRegister          = {
@@ -69,14 +66,14 @@ function Swift:LoadCore()
         self.Debug:InitalizeDebugModeGlobal();
         self.Bugfix:InitalizeBugfixesGlobal();
         self.Behavior:InstallBehaviorGlobal();
+        self.Event:InitalizeScriptCommands();
+        self.Event:InitalizeEventsGlobal();
         self:OverrideSaveLoadedCallback();
-        self:InitalizeScriptCommands();
-        self:InitalizeEventsGlobal();
-        self:InitalizeAIVariables();
         self:OverrideQuestSystemGlobal();
         self:OverwriteGeologistRefill();
         self:OverrideSoldierPayment();
         self:OverrideOnMPGameStart();
+        self:InitalizeAIVariables();
         self:DisableLogicFestival();
     end
 
@@ -84,7 +81,7 @@ function Swift:LoadCore()
         self.Debug:InitalizeDebugModeLocal();
         self.Bugfix:InitalizeBugfixesLocal();
         self.Behavior:InstallBehaviorLocal();
-        self:InitalizeEventsLocal();
+        self.Event:InitalizeEventsLocal();
         self:OverrideDoQuicksave();
         self:AlterQuickSaveHotkey();
         self:SetEscapeKeyTrigger();
@@ -108,7 +105,7 @@ function Swift:LoadCore()
             if Logic.GetTime() > 1 then
                 for k, v in pairs(g_TexturePositions) do
                     for kk, vv in pairs(v) do
-                        Swift:DispatchScriptCommand(
+                        Swift.Event:DispatchScriptCommand(
                             QSB.ScriptCommands.UpdateTexturePosition,
                             GUI.GetPlayerID(),
                             k,
@@ -132,8 +129,8 @@ function Swift:OverrideSaveLoadedCallback()
             Mission_OnSaveGameLoaded_Orig_Swift();
             Swift:RestoreAfterLoad();
             Logic.ExecuteInLuaLocalState("Swift:RestoreAfterLoad()");
-            Swift:DispatchScriptEvent(QSB.ScriptEvents.SaveGameLoaded);
-            Logic.ExecuteInLuaLocalState("Swift:DispatchScriptEvent(QSB.ScriptEvents.SaveGameLoaded)");
+            Swift.Event:DispatchScriptEvent(QSB.ScriptEvents.SaveGameLoaded);
+            Logic.ExecuteInLuaLocalState("Swift.Event:DispatchScriptEvent(QSB.ScriptEvents.SaveGameLoaded)");
         end
     end
 end
@@ -286,9 +283,9 @@ end
 function Swift:SendQuestStateEvent(_QuestName, _StateName)
     local QuestID = API.GetQuestID(_QuestName);
     if Quests[QuestID] then
-        Swift:DispatchScriptEvent(QSB.ScriptEvents[_StateName], QuestID);
+        Swift.Event:DispatchScriptEvent(QSB.ScriptEvents[_StateName], QuestID);
         Logic.ExecuteInLuaLocalState(string.format(
-            [[Swift:DispatchScriptEvent(QSB.ScriptEvents["%s"], %d)]],
+            [[Swift.Event:DispatchScriptEvent(QSB.ScriptEvents["%s"], %d)]],
             _StateName,
             QuestID
         ));
@@ -473,230 +470,6 @@ function error(_Text, _Silent)
     Swift:Log("ERROR: " .._Text, LOG_LEVEL_ERROR, not _Silent);
 end
 
--- Local Script Command
-
-function Swift:InitalizeScriptCommands()
-    Swift:CreateScriptCommand("Cmd_SendScriptEvent", API.SendScriptEvent);
-    Swift:CreateScriptCommand("Cmd_GlobalQsbLoaded", SCP.Core.GlobalQsbLoaded);
-    Swift:CreateScriptCommand("Cmd_ProclaimateRandomSeed", SCP.Core.ProclaimateRandomSeed);
-    Swift:CreateScriptCommand("Cmd_RegisterLoadscreenHidden", SCP.Core.LoadscreenHidden);
-    Swift:CreateScriptCommand("Cmd_UpdateCustomVariable", SCP.Core.UpdateCustomVariable);
-    Swift:CreateScriptCommand("Cmd_UpdateTexturePosition", SCP.Core.UpdateTexturePosition);
-    Swift:CreateScriptCommand("Cmd_LanguageChanged", SCP.Core.LanguageChanged);
-end
-
-function Swift:CreateScriptCommand(_Name, _Function)
-    if not self:IsGlobalEnvironment() then
-        return 0;
-    end
-    QSB.ScriptCommandSequence = QSB.ScriptCommandSequence +1;
-    local ID = QSB.ScriptCommandSequence;
-    local Name = _Name;
-    if string.find(_Name, "^Cmd_") then
-        Name = string.sub(_Name, 5);
-    end
-    self.m_ScriptCommandRegister[ID] = {Name, _Function};
-    Logic.ExecuteInLuaLocalState(string.format(
-        [[
-            local ID = %d
-            local Name = "%s"
-            Swift.m_ScriptCommandRegister[ID] = Name
-            QSB.ScriptCommands[Name] = ID
-        ]],
-        ID,
-        Name
-    ));
-    QSB.ScriptCommands[Name] = ID;
-    return ID;
-end
-
-function Swift:DispatchScriptCommand(_ID, ...)
-    if not self:IsLocalEnvironment() then
-        return;
-    end
-    assert(_ID ~= nil);
-    if self.m_ScriptCommandRegister[_ID] then
-        local PlayerID = GUI.GetPlayerID();
-        local NamePlayerID = 8;
-        local PlayerName = Logic.GetPlayerName(NamePlayerID);
-        local Parameters = self:EncodeScriptCommandParameters(unpack(arg));
-        GUI.SetPlayerName(NamePlayerID, Parameters);
-
-        if Framework.IsNetworkGame() and self:IsHistoryEdition() then
-            GUI.SetSoldierPaymentLevel(_ID);
-        else
-            GUI.SendScriptCommand(string.format(
-                [[Swift:ProcessScriptCommand(%d, %d)]],
-                arg[1],
-                _ID
-            ));
-        end
-        debug(string.format(
-            "Dispatching script command %s to global.",
-            self.m_ScriptCommandRegister[_ID]
-        ), true);
-
-        GUI.SetPlayerName(NamePlayerID, PlayerName);
-        GUI.SetSoldierPaymentLevel(PlayerSoldierPaymentLevel[PlayerID]);
-    end
-end
-
-function Swift:ProcessScriptCommand(_PlayerID, _ID)
-    if not self.m_ScriptCommandRegister[_ID] then
-        return;
-    end
-    local PlayerName = Logic.GetPlayerName(8);
-    local Parameters = self:DecodeScriptCommandParameters(PlayerName);
-    local PlayerID = table.remove(Parameters, 1);
-    if PlayerID ~= 0 and PlayerID ~= _PlayerID then
-        return;
-    end
-    debug(string.format(
-        "Processing script command %s in global.",
-        self.m_ScriptCommandRegister[_ID][1]
-    ), true);
-    self.m_ScriptCommandRegister[_ID][2](unpack(Parameters));
-end
-
-function Swift:EncodeScriptCommandParameters(...)
-    local Query = "";
-    for i= 1, #arg do
-        local Parameter = arg[i];
-        if type(Parameter) == "string" then
-            Parameter = string.replaceAll(Parameter, '#', "<<<HT>>>");
-            Parameter = string.replaceAll(Parameter, '"', "<<<QT>>>");
-            if Parameter:len() == 0 then
-                Parameter = "<<<ES>>>";
-            end
-        -- FIXME This covers only array tables!
-        -- (But we shouldn't encourage passing objects anyway!)
-        elseif type(Parameter) == "table" then
-            Parameter = "{" ..table.concat(Parameter, ",") .."}";
-        end
-        if string.len(Query) > 0 then
-            Query = Query .. "#";
-        end
-        Query = Query .. tostring(Parameter);
-    end
-    return Query;
-end
-
-function Swift:DecodeScriptCommandParameters(_Query)
-    local Parameters = {};
-    for k, v in pairs(string.slice(_Query, "#")) do
-        local Value = v;
-        Value = string.replaceAll(Value, "<<<HT>>>", '#');
-        Value = string.replaceAll(Value, "<<<QT>>>", '"');
-        Value = string.replaceAll(Value, "<<<ES>>>", '');
-        if Value == nil then
-            Value = nil;
-        elseif Value == "true" or Value == "false" then
-            Value = Value == "true";
-        elseif string.indexOf(Value, "{") == 1 then
-            -- FIXME This covers only array tables!
-            -- (But we shouldn't encourage passing objects anyway!)
-            local ValueTable = string.slice(string.sub(Value, 2, string.len(Value)-1), ",");
-            Value = {};
-            for i= 1, #ValueTable do
-                Value[i] = (tonumber(ValueTable[i]) ~= nil and tonumber(ValueTable[i]) or ValueTable);
-            end
-        elseif tonumber(Value) ~= nil then
-            Value = tonumber(Value);
-        end
-        table.insert(Parameters, Value);
-    end
-    return Parameters;
-end
-
--- Script Events
-
-function Swift:InitalizeEventsGlobal()
-    QSB.ScriptEvents.SaveGameLoaded = Swift:CreateScriptEvent("Event_SaveGameLoaded", nil);
-    QSB.ScriptEvents.EscapePressed = Swift:CreateScriptEvent("Event_EscapePressed", nil);
-    QSB.ScriptEvents.QuestFailure = Swift:CreateScriptEvent("Event_QuestFailure", nil);
-    QSB.ScriptEvents.QuestInterrupt = Swift:CreateScriptEvent("Event_QuestInterrupt", nil);
-    QSB.ScriptEvents.QuestReset = Swift:CreateScriptEvent("Event_QuestReset", nil);
-    QSB.ScriptEvents.QuestSuccess = Swift:CreateScriptEvent("Event_QuestSuccess", nil);
-    QSB.ScriptEvents.QuestTrigger = Swift:CreateScriptEvent("Event_QuestTrigger", nil);
-    QSB.ScriptEvents.CustomValueChanged = Swift:CreateScriptEvent("Event_CustomValueChanged", nil);
-    QSB.ScriptEvents.LanguageSet = Swift:CreateScriptEvent("Event_LanguageSet", nil);
-    QSB.ScriptEvents.LoadscreenClosed = Swift:CreateScriptEvent("Event_LoadscreenClosed", nil);
-end
-function Swift:InitalizeEventsLocal()
-    QSB.ScriptEvents.SaveGameLoaded = Swift:CreateScriptEvent("Event_SaveGameLoaded", nil);
-    QSB.ScriptEvents.EscapePressed = Swift:CreateScriptEvent("Event_EscapePressed", nil);
-    QSB.ScriptEvents.QuestFailure = Swift:CreateScriptEvent("Event_QuestFailure", nil);
-    QSB.ScriptEvents.QuestInterrupt = Swift:CreateScriptEvent("Event_QuestInterrupt", nil);
-    QSB.ScriptEvents.QuestReset = Swift:CreateScriptEvent("Event_QuestReset", nil);
-    QSB.ScriptEvents.QuestSuccess = Swift:CreateScriptEvent("Event_QuestSuccess", nil);
-    QSB.ScriptEvents.QuestTrigger = Swift:CreateScriptEvent("Event_QuestTrigger", nil);
-    QSB.ScriptEvents.CustomValueChanged = Swift:CreateScriptEvent("Event_CustomValueChanged", nil);
-    QSB.ScriptEvents.LanguageSet = Swift:CreateScriptEvent("Event_LanguageSet", nil);
-    QSB.ScriptEvents.LoadscreenClosed = Swift:CreateScriptEvent("Event_LoadscreenClosed", nil);
-end
-
-function Swift:CreateScriptEvent(_Name, _Function)
-    for i= 1, #self.m_ScriptEventRegister, 1 do
-        if self.m_ScriptEventRegister[i][1] == _Name then
-            return 0;
-        end
-    end
-    local ID = #self.m_ScriptEventRegister+1;
-    debug(string.format("Create script event %s", _Name), true);
-    self.m_ScriptEventRegister[ID] = {_Name, _Function};
-    return ID;
-end
-
-function Swift:DispatchScriptEvent(_ID, ...)
-    if not self.m_ScriptEventRegister[_ID] then
-        return;
-    end
-    -- Dispatch module events
-    for i= 1, #self.m_ModuleRegister, 1 do
-        local Env = "Local";
-        if self:IsGlobalEnvironment() then
-            Env = "Global";
-        end
-        if self.m_ModuleRegister[i][Env] and self.m_ModuleRegister[i][Env].OnEvent then
-            debug(string.format(
-                "Dispatching %s script event %s to Module %s",
-                Env:lower(),
-                self.m_ScriptEventRegister[_ID][1],
-                self.m_ModuleRegister[i].Properties.Name
-            ), true);
-            self.m_ModuleRegister[i][Env]:OnEvent(_ID, self.m_ScriptEventRegister[_ID], unpack(arg));
-        end
-    end
-    -- Call event callback
-    if GameCallback_QSB_OnEventReceived then
-        GameCallback_QSB_OnEventReceived(_ID, unpack(arg));
-    end
-    -- Call event listeners
-    if self.m_ScriptEventListener[_ID] then
-        for k, v in pairs(self.m_ScriptEventListener[_ID]) do
-            if tonumber(k) then
-                v(_ID, unpack(arg));
-            end
-        end
-    end
-end
-
-function Swift:IsAllowedEventParameter(_Parameter)
-    if type(_Parameter) == "function" or type(_Parameter) == "thread" or type(_Parameter) == "userdata" then
-        return false;
-    elseif type(_Parameter) == "table" then
-        for k, v in pairs(_Parameter) do
-            if type(k) ~= "number" and k ~= "n" then
-                return false;
-            end
-            if type(v) == "function" or type(v) == "thread" or type(v) == "userdata" then
-                return false;
-            end
-        end
-    end
-    return true;
-end
-
 -- Language
 
 function Swift:DetectLanguage()
@@ -718,14 +491,14 @@ function Swift:ChangeSystemLanguage(_PlayerID, _Language, _GUI_PlayerID)
         QSB.Language = _Language;
     end
 
-    Swift:DispatchScriptEvent(QSB.ScriptEvents.LanguageSet, OldLanguage, NewLanguage);
+    Swift.Event:DispatchScriptEvent(QSB.ScriptEvents.LanguageSet, OldLanguage, NewLanguage);
     Logic.ExecuteInLuaLocalState(string.format([[
         local OldLanguage = "%s"
         local NewLanguage = "%s"
         if GUI.GetPlayerID() == %d then
             QSB.Language = NewLanguage
         end
-        Swift:DispatchScriptEvent(QSB.ScriptEvents.LanguageSet, OldLanguage, NewLanguage)
+        Swift.Event:DispatchScriptEvent(QSB.ScriptEvents.LanguageSet, OldLanguage, NewLanguage)
     ]], OldLanguage, NewLanguage, _PlayerID));
 end
 
@@ -777,7 +550,7 @@ function Swift:CreateRandomSeed()
                     Seed = Seed + ((tonumber(s) ~= nil and tonumber(s)) or s:byte());
                 end
                 if Framework.IsNetworkGame() then
-                    Swift:DispatchScriptCommand(QSB.ScriptCommands.ProclaimateRandomSeed, 0, Seed);
+                    Swift.Event:DispatchScriptCommand(QSB.ScriptCommands.ProclaimateRandomSeed, 0, Seed);
                 else
                     GUI.SendScriptCommand("SCP.Core.ProclaimateRandomSeed(" ..Seed.. ")");
                 end
@@ -826,7 +599,7 @@ function Swift:SetCustomVariable(_Name, _Value)
         Value = [["]] ..Value.. [["]];
     end
     if GUI then
-        Swift:DispatchScriptCommand(QSB.ScriptCommands.UpdateCustomVariable, 0, _Name, Value);
+        Swift.Event:DispatchScriptCommand(QSB.ScriptCommands.UpdateCustomVariable, 0, _Name, Value);
     else
         Logic.ExecuteInLuaLocalState(string.format(
             [[Swift:UpdateCustomVariable("%s", %s)]],
@@ -840,7 +613,7 @@ function Swift:UpdateCustomVariable(_Name, _Value)
     if QSB.CustomVariable[_Name] then
         local Old = QSB.CustomVariable[_Name];
         QSB.CustomVariable[_Name] = _Value;
-        Swift:DispatchScriptEvent(
+        Swift.Event:DispatchScriptEvent(
             QSB.ScriptEvents.CustomValueChanged,
             _Name,
             Old,
@@ -848,7 +621,7 @@ function Swift:UpdateCustomVariable(_Name, _Value)
         );
     else
         QSB.CustomVariable[_Name] = _Value;
-        Swift:DispatchScriptEvent(
+        Swift.Event:DispatchScriptEvent(
             QSB.ScriptEvents.CustomValueChanged,
             _Name,
             nil,
@@ -935,7 +708,7 @@ function Swift:ExecuteEscapeCallback()
         GUI.GetPlayerID()
     );
     -- Local
-    Swift:DispatchScriptEvent(QSB.ScriptEvents.EscapePressed, GUI.GetPlayerID());
+    Swift.Event:DispatchScriptEvent(QSB.ScriptEvents.EscapePressed, GUI.GetPlayerID());
 end
 
 -- Geologist Refill Callback
@@ -969,7 +742,7 @@ function Swift:OverrideSoldierPayment()
         if _Level <= 2 then
             return GameCallback_SetSoldierPaymentLevel_Orig(_PlayerID, _Level);
         end
-        Swift:ProcessScriptCommand(_PlayerID, _Level);
+        Swift.Event:ProcessScriptCommand(_PlayerID, _Level);
     end
 end
 
@@ -987,7 +760,7 @@ end
 
 function Swift_EventJob_WaitForLoadScreenHidden()
     if XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 0 then
-        Swift:DispatchScriptCommand(QSB.ScriptCommands.RegisterLoadscreenHidden, GUI.GetPlayerID());
+        Swift.Event:DispatchScriptCommand(QSB.ScriptCommands.RegisterLoadscreenHidden, GUI.GetPlayerID());
         return true;
     end
 end
@@ -996,7 +769,7 @@ function Swift_EventJob_PostTexturesToGlobal()
     if Logic.GetTime() > 1 then
         for k, v in pairs(g_TexturePositions) do
             for kk, vv in pairs(v) do
-                Swift:DispatchScriptCommand(QSB.ScriptCommands.UpdateTexturePosition, GUI.GetPlayerID(), k, kk, v);
+                Swift.Event:DispatchScriptCommand(QSB.ScriptCommands.UpdateTexturePosition, GUI.GetPlayerID(), k, kk, v);
             end
         end
         return true;

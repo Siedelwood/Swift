@@ -543,14 +543,14 @@ end
 -- want to synchronize things in their maps they can use the event system.
 
 function API.RegisterScriptCommand(_Name, _Function)
-    return Swift:CreateScriptCommand(_Name, _Function);
+    return Swift.Event:CreateScriptCommand(_Name, _Function);
 end
 
 function API.BroadcastScriptCommand(_NameOrID, ...)
     local ID = _NameOrID;
     if type(ID) == "string" then
-        for i= 1, #self.m_ScriptCommandRegister, 1 do
-            if self.m_ScriptCommandRegister[i][1] == _NameOrID then
+        for i= 1, #Swift.Event.m_ScriptCommandRegister, 1 do
+            if Swift.Event.m_ScriptCommandRegister[i][1] == _NameOrID then
                 ID = i;
             end
         end
@@ -559,7 +559,7 @@ function API.BroadcastScriptCommand(_NameOrID, ...)
     if not GUI then
         return;
     end
-    Swift:DispatchScriptCommand(ID, 0, unpack(arg));
+    Swift.Event:DispatchScriptCommand(ID, 0, unpack(arg));
 end
 
 -- Does this function makes any sense? Calling the synchronization but only for
@@ -567,8 +567,8 @@ end
 function API.SendScriptCommand(_NameOrID, ...)
     local ID = _NameOrID;
     if type(ID) == "string" then
-        for i= 1, #self.m_ScriptCommandRegister, 1 do
-            if self.m_ScriptCommandRegister[i][1] == _NameOrID then
+        for i= 1, #Swift.Event.m_ScriptCommandRegister, 1 do
+            if Swift.Event.m_ScriptCommandRegister[i][1] == _NameOrID then
                 ID = i;
             end
         end
@@ -577,7 +577,7 @@ function API.SendScriptCommand(_NameOrID, ...)
     if not GUI then
         return;
     end
-    Swift:DispatchScriptCommand(ID, GUI.GetPlayerID(), unpack(arg));
+    Swift.Event:DispatchScriptCommand(ID, GUI.GetPlayerID(), unpack(arg));
 end
 
 -- Event
@@ -593,7 +593,7 @@ end
 -- local EventID = API.RegisterScriptEvent("MyNewEvent");
 --
 function API.RegisterScriptEvent(_Name)
-    return Swift:CreateScriptEvent(_Name, nil);
+    return Swift.Event:CreateScriptEvent(_Name, nil);
 end
 
 ---
@@ -612,7 +612,7 @@ end
 -- API.SendScriptEvent(SomeEventID, Param1, Param2, ...);
 --
 function API.SendScriptEvent(_EventID, ...)
-    Swift:DispatchScriptEvent(_EventID, unpack(arg));
+    Swift.Event:DispatchScriptEvent(_EventID, unpack(arg));
 end
 
 ---
@@ -633,12 +633,12 @@ function API.BroadcastScriptEventToGlobal(_EventID, ...)
     end
     -- Becase I don't want the user to fuck around with parameters.
     for k, v in pairs(arg) do
-        if not Swift:IsAllowedEventParameter(v) then
+        if not Swift.Event:IsAllowedEventParameter(v) then
             error("API.BroadcastScriptEventToGlobal: Parameter " ..k.. " has non appropriate type! (" ..type(v).. ")");
             return;
         end
     end
-    Swift:DispatchScriptCommand(
+    Swift.Event:DispatchScriptCommand(
         QSB.ScriptCommands.SendScriptEvent,
         0,
         _EventID,
@@ -664,12 +664,12 @@ function API.SendScriptEventToGlobal(_EventID, ...)
     end
     -- Becase I don't want the user to fuck around with parameters.
     for k, v in pairs(arg) do
-        if not Swift:IsAllowedEventParameter(v) then
+        if not Swift.Event:IsAllowedEventParameter(v) then
             error("API.SendScriptEventToGlobal: Parameter " ..k.. " has non appropriate type! (" ..type(v).. ")");
             return;
         end
     end
-    Swift:DispatchScriptCommand(
+    Swift.Event:DispatchScriptCommand(
         QSB.ScriptCommands.SendScriptEvent,
         GUI.GetPlayerID(),
         _EventID,
@@ -697,15 +697,15 @@ end
 -- end);
 --
 function API.AddScriptEventListener(_EventID, _Function)
-    if not Swift.m_ScriptEventListener[_EventID] then
-        Swift.m_ScriptEventListener[_EventID] = {
+    if not Swift.Event.m_ScriptEventListener[_EventID] then
+        Swift.Event.m_ScriptEventListener[_EventID] = {
             IDSequence = 0;
         }
     end
-    local Data = Swift.m_ScriptEventListener[_EventID];
+    local Data = Swift.Event.m_ScriptEventListener[_EventID];
     assert(type(_Function) == "function");
-    Swift.m_ScriptEventListener[_EventID].IDSequence = Data.IDSequence +1;
-    Swift.m_ScriptEventListener[_EventID][Data.IDSequence] = _Function;
+    Swift.Event.m_ScriptEventListener[_EventID].IDSequence = Data.IDSequence +1;
+    Swift.Event.m_ScriptEventListener[_EventID][Data.IDSequence] = _Function;
     return Data.IDSequence;
 end
 
@@ -717,8 +717,8 @@ end
 -- @within Event
 --
 function API.RemoveScriptEventListener(_EventID, _ID)
-    if Swift.m_ScriptEventListener[_EventID] then
-        Swift.m_ScriptEventListener[_EventID][_ID] = nil;
+    if Swift.Event.m_ScriptEventListener[_EventID] then
+        Swift.Event.m_ScriptEventListener[_EventID][_ID] = nil;
     end
 end
 
@@ -2095,9 +2095,9 @@ function API.RestartQuest(_QuestName, _NoMessage)
             Quest.Job = Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", "Quest_Loop", 1, 0, {Quest.QueueID});
         end
         -- Note: This is a special operation outside of the quest system!
-        Swift:DispatchScriptEvent(QSB.ScriptEvents.QuestReset, QuestID);
+        Swift.Event:DispatchScriptEvent(QSB.ScriptEvents.QuestReset, QuestID);
         Logic.ExecuteInLuaLocalState(string.format(
-            "Swift:DispatchScriptEvent(QSB.ScriptEvents.QuestReset, %d)",
+            "Swift.Event:DispatchScriptEvent(QSB.ScriptEvents.QuestReset, %d)",
             QuestID
         ));
         return QuestID, Quest;

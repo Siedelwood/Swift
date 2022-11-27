@@ -10,6 +10,7 @@
         "luabase.lua",
         "api.lua",
         "debug.lua",
+        "event.lua",
         "behavior.lua",
         "bugfixes.lua"
     ],
