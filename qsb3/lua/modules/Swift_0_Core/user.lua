@@ -12,7 +12,6 @@ QSB.RefillAmounts = {};
 
 function Swift:InitalizeCallbackGlobal()
     self:OverrideSaveLoadedCallback();
-    self:OverrideConstructionCompleteCallback();
     self:OverwriteGeologistRefill();
     self:OverrideSoldierPayment();
 end
@@ -40,25 +39,6 @@ function Swift:TriggerEntityKilledCallbacks(_Entity, _Attacker)
         "GameCallback_Feedback_EntityKilled(%d, %d, %d, %d,%d, %d, %f, %f)",
         DefenderID, DefPlayerID, AttackerID, AttPlayerID, DefType, AttType, x, y
     ));
-end
-
--- Make NPC barracks respawn
-
-function Swift:OverrideConstructionCompleteCallback()
-    GameCallback_OnBuildingConstructionComplete_Orig_QSB_Core = GameCallback_OnBuildingConstructionComplete;
-    GameCallback_OnBuildingConstructionComplete = function(_PlayerID, _EntityID)
-        GameCallback_OnBuildingConstructionComplete_Orig_QSB_Core(_PlayerID, _EntityID);
-        local EntityType = Logic.GetEntityType(_EntityID);
-        if EntityType == Entities.B_NPC_Barracks_ME then
-            Logic.RespawnResourceSetMaxSpawn(_EntityID, 0.01);
-            Logic.RespawnResourceSetMinSpawn(_EntityID, 0.01);
-        end
-    end
-
-    for k, v in pairs(Logic.GetEntitiesOfType(Entities.B_NPC_Barracks_ME)) do
-        Logic.RespawnResourceSetMaxSpawn(v, 0.01);
-        Logic.RespawnResourceSetMinSpawn(v, 0.01);
-    end
 end
 
 -- Save Game Callback

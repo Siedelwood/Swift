@@ -13,6 +13,7 @@ You may use and modify this file unter the terms of the MIT licence.
 -- Initalize bugfixes in global env
 function Swift:InitalizeBugfixesGlobal()
     self:FixResourceSlotsInStorehouses();
+    self:OverrideConstructionCompleteCallback();
 end
 
 -- Reload bugfixes after loading in global env
@@ -32,11 +33,30 @@ function Swift:FixResourceSlotsInStorehouses()
     end
 end
 
+-- Make NPC barracks respawn
+
+function Swift:OverrideConstructionCompleteCallback()
+    GameCallback_OnBuildingConstructionComplete_Orig_QSB_Core = GameCallback_OnBuildingConstructionComplete;
+    GameCallback_OnBuildingConstructionComplete = function(_PlayerID, _EntityID)
+        GameCallback_OnBuildingConstructionComplete_Orig_QSB_Core(_PlayerID, _EntityID);
+        local EntityType = Logic.GetEntityType(_EntityID);
+        if EntityType == Entities.B_NPC_Barracks_ME then
+            Logic.RespawnResourceSetMaxSpawn(_EntityID, 0.01);
+            Logic.RespawnResourceSetMinSpawn(_EntityID, 0.01);
+        end
+    end
+
+    for k, v in pairs(Logic.GetEntitiesOfType(Entities.B_NPC_Barracks_ME)) do
+        Logic.RespawnResourceSetMaxSpawn(v, 0.01);
+        Logic.RespawnResourceSetMinSpawn(v, 0.01);
+    end
+end
+
 -- -------------------------------------------------------------------------- --
 
 -- Initalize bugfixes in local env
 function Swift:InitalizeBugfixesLocal()
-    -- self:FixInteractiveObjectClicked();
+    self:FixInteractiveObjectClicked();
 end
 
 function Swift:FixInteractiveObjectClicked()
