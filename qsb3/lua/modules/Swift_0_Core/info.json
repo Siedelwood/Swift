@@ -7,6 +7,8 @@
     "description": "",
     "files": [
         "swift.lua",
+        "luabase.lua",
+        "logic.lua",
         "api.lua",
         "debug.lua",
         "behavior.lua",
