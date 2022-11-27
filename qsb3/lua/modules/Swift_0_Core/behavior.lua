@@ -6414,12 +6414,12 @@ function B_Reward_AI_Aggressiveness:CustomFunction()
         or AIPlayer:new(self.AIPlayer, AIPlayerProfile_City));
     PlayerAIs[self.AIPlayer] = player;
     if self.Aggressiveness >= 2 then
-        player.m_ProfileLoop = AIProfile_Skirmish;
+        player.ProfileLoop = AIProfile_Skirmish;
         player.Skirmish = player.Skirmish or {};
         player.Skirmish.Claim_MinTime = SkirmishDefault.Claim_MinTime + (self.Aggressiveness - 2) * 390;
         player.Skirmish.Claim_MaxTime = player.Skirmish.Claim_MinTime * 2;
     else
-        player.m_ProfileLoop = AIPlayerProfile_City;
+        player.ProfileLoop = AIPlayerProfile_City;
     end
 end
 

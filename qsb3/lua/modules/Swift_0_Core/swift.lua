@@ -29,10 +29,6 @@ ParameterType = ParameterType or {};
 g_QuestBehaviorVersion = 1;
 g_QuestBehaviorTypes = {};
 
----
--- AddOn Versionsnummer
--- @local
---
 g_GameExtraNo = 0;
 if Framework then
     g_GameExtraNo = Framework.GetGameExtraNo();
@@ -43,18 +39,18 @@ end
 -- Core  -------------------------------------------------------------------- --
 
 Swift = {
-    m_ModuleRegister            = {};
-    m_BehaviorRegister          = {};
-    m_AIProperties              = {};
-    m_NoQuicksaveConditions     = {};
-    m_LanguageRegister          = {
+    ModuleRegister            = {};
+    BehaviorRegister          = {};
+    AIProperties              = {};
+    NoQuicksaveConditions     = {};
+    LanguageRegister          = {
         {"de", "Deutsch", "en"},
         {"en", "English", "en"},
         {"fr", "Français", "en"},
     };
-    m_Environment               = "global";
-    m_LogLevel                  = 2;
-    m_FileLogLevel              = 3;
+    Environment               = "global";
+    LogLevel                  = 2;
+    FileLogLevel              = 3;
 };
 
 function Swift:LoadCore()
@@ -68,13 +64,13 @@ function Swift:LoadCore()
         self.Behavior:InstallBehaviorGlobal();
         self.Event:InitalizeScriptCommands();
         self.Event:InitalizeEventsGlobal();
+        self:InitalizeAIVariables();
+        self:DisableLogicFestival();
         self:OverrideSaveLoadedCallback();
         self:OverrideQuestSystemGlobal();
         self:OverwriteGeologistRefill();
         self:OverrideSoldierPayment();
         self:OverrideOnMPGameStart();
-        self:InitalizeAIVariables();
-        self:DisableLogicFestival();
     end
 
     if self:IsLocalEnvironment() then
@@ -170,15 +166,15 @@ end
 -- Environment Detection
 
 function Swift:DetectEnvironment()
-    self.m_Environment = (nil ~= GUI and "local") or "global";
+    self.Environment = (nil ~= GUI and "local") or "global";
 end
 
 function Swift:IsGlobalEnvironment()
-    return "global" == self.m_Environment;
+    return "global" == self.Environment;
 end
 
 function Swift:IsLocalEnvironment()
-    return "local" == self.m_Environment;
+    return "local" == self.Environment;
 end
 
 function Swift:ValidateTerritories()
@@ -199,17 +195,17 @@ end
 -- Modules
 
 function Swift:LoadModules()
-    for i= 1, #self.m_ModuleRegister, 1 do
+    for i= 1, #self.ModuleRegister, 1 do
         if self:IsGlobalEnvironment() then 
-            self.m_ModuleRegister[i]["Local"] = nil;
-            if self.m_ModuleRegister[i]["Global"].OnGameStart then
-                self.m_ModuleRegister[i]["Global"]:OnGameStart();
+            self.ModuleRegister[i]["Local"] = nil;
+            if self.ModuleRegister[i]["Global"].OnGameStart then
+                self.ModuleRegister[i]["Global"]:OnGameStart();
             end
         end
         if self:IsLocalEnvironment() then
-            self.m_ModuleRegister[i]["Global"] = nil;
-            if self.m_ModuleRegister[i]["Local"].OnGameStart then
-                self.m_ModuleRegister[i]["Local"]:OnGameStart();
+            self.ModuleRegister[i]["Global"] = nil;
+            if self.ModuleRegister[i]["Local"].OnGameStart then
+                self.ModuleRegister[i]["Local"]:OnGameStart();
             end
         end
     end
@@ -224,11 +220,11 @@ function Swift:RegisterModule(_Module)
         assert(false, "Expected name for Module!");
         return;
     end
-    table.insert(self.m_ModuleRegister, _Module);
+    table.insert(self.ModuleRegister, _Module);
 end
 
 function Swift:IsModuleRegistered(_Name)
-    for k, v in pairs(self.m_ModuleRegister) do
+    for k, v in pairs(self.ModuleRegister) do
         return v.Properties and v.Properties.Name == _Name;
     end
 end
@@ -312,8 +308,8 @@ end
 -- Behavior
 
 function Swift:LoadBehaviors()
-    for i= 1, #self.m_BehaviorRegister, 1 do
-        local Behavior = self.m_BehaviorRegister[i];
+    for i= 1, #self.BehaviorRegister, 1 do
+        local Behavior = self.BehaviorRegister[i];
 
         if not _G["B_" .. Behavior.Name].new then
             _G["B_" .. Behavior.Name].new = function(self, ...)
@@ -359,7 +355,7 @@ function Swift:RegisterBehavior(_Behavior)
         end
     end
     table.insert(g_QuestBehaviorTypes, _Behavior);
-    table.insert(self.m_BehaviorRegister, _Behavior);
+    table.insert(self.BehaviorRegister, _Behavior);
 end
 
 -- History Edition
@@ -392,12 +388,12 @@ function Swift:AlterQuickSaveHotkey()
 end
 
 function Swift:AddBlockQuicksaveCondition(_Function)
-    table.insert(self.m_NoQuicksaveConditions, _Function);
+    table.insert(self.NoQuicksaveConditions, _Function);
 end
 
 function Swift:CanDoQuicksave(...)
-    for i= 1, #self.m_NoQuicksaveConditions, 1 do
-        if self.m_NoQuicksaveConditions[i](unpack(arg)) then
+    for i= 1, #self.NoQuicksaveConditions, 1 do
+        if self.NoQuicksaveConditions[i](unpack(arg)) then
             return false;
         end
     end
@@ -413,12 +409,12 @@ LOG_LEVEL_ERROR   = 1;
 LOG_LEVEL_OFF     = 0;
 
 function Swift:Log(_Text, _Level, _Verbose)
-    if Swift.m_FileLogLevel >= _Level then
+    if Swift.FileLogLevel >= _Level then
         local Level = _Text:sub(1, _Text:find(":"));
         local Text = _Text:sub(_Text:find(":")+1);
         Text = string.format(
             " (%s) %s%s",
-            Swift.m_Environment,
+            Swift.Environment,
             Framework.GetSystemTimeDateString(),
             Text
         )
@@ -426,7 +422,7 @@ function Swift:Log(_Text, _Level, _Verbose)
     end
     if _Verbose then
         if self:IsGlobalEnvironment() then
-            if Swift.m_LogLevel >= _Level then
+            if Swift.LogLevel >= _Level then
                 Logic.ExecuteInLuaLocalState(string.format(
                     [[GUI.AddStaticNote("%s")]],
                     _Text
@@ -434,7 +430,7 @@ function Swift:Log(_Text, _Level, _Verbose)
             end
             return;
         end
-        if Swift.m_LogLevel >= _Level then
+        if Swift.LogLevel >= _Level then
             GUI.AddStaticNote(_Text);
         end
     end
@@ -443,15 +439,15 @@ end
 function Swift:SetLogLevel(_ScreenLogLevel, _FileLogLevel)
     if self:IsGlobalEnvironment() then
         Logic.ExecuteInLuaLocalState(string.format(
-            [[Swift.m_FileLogLevel = %d]],
+            [[Swift.FileLogLevel = %d]],
             (_FileLogLevel or 0)
         ));
         Logic.ExecuteInLuaLocalState(string.format(
-            [[Swift.m_LogLevel = %d]],
+            [[Swift.LogLevel = %d]],
             (_ScreenLogLevel or 0)
         ));
-        self.m_FileLogLevel = (_FileLogLevel or 0);
-        self.m_LogLevel = (_ScreenLogLevel or 0);
+        self.FileLogLevel = (_FileLogLevel or 0);
+        self.LogLevel = (_ScreenLogLevel or 0);
     end
 end
 
@@ -516,7 +512,7 @@ function Swift:Localize(_Text)
             if _Text[QSB.Language] then
                 LocalizedText = _Text[QSB.Language];
             else
-                for k, v in pairs(self.m_LanguageRegister) do
+                for k, v in pairs(self.LanguageRegister) do
                     if v[1] == QSB.Language and v[3] ~= nil then
                         LocalizedText = _Text[v[3]];
                         break;
@@ -570,7 +566,7 @@ end
 
 function Swift:InitalizeAIVariables()
     for i= 1, 8 do
-        self.m_AIProperties[i] = {};
+        self.AIProperties[i] = {};
     end
 end
 
@@ -578,7 +574,7 @@ function Swift:DisableLogicFestival()
     Swift.Logic_StartFestival = Logic.StartFestival;
     Logic.StartFestival = function(_PlayerID, _Type)
         if Logic.PlayerGetIsHumanFlag(_PlayerID) ~= true then
-            if Swift.m_AIProperties[_PlayerID].ForbidFestival == true then
+            if Swift.AIProperties[_PlayerID].ForbidFestival == true then
                 return;
             end
         end

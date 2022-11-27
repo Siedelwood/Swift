@@ -10,9 +10,9 @@ You may use and modify this file unter the terms of the MIT licence.
 
 Swift = Swift or {};
 Swift.Event = {
-    m_ScriptEventRegister   = {};
-    m_ScriptEventListener   = {};
-    m_ScriptCommandRegister = {};
+    ScriptEventRegister   = {};
+    ScriptEventListener   = {};
+    ScriptCommandRegister = {};
 };
 
 -- Local Script Command
@@ -37,12 +37,12 @@ function Swift.Event:CreateScriptCommand(_Name, _Function)
     if string.find(_Name, "^Cmd_") then
         Name = string.sub(_Name, 5);
     end
-    self.m_ScriptCommandRegister[ID] = {Name, _Function};
+    self.ScriptCommandRegister[ID] = {Name, _Function};
     Logic.ExecuteInLuaLocalState(string.format(
         [[
             local ID = %d
             local Name = "%s"
-            Swift.Event.m_ScriptCommandRegister[ID] = Name
+            Swift.Event.ScriptCommandRegister[ID] = Name
             QSB.ScriptCommands[Name] = ID
         ]],
         ID,
@@ -57,7 +57,7 @@ function Swift.Event:DispatchScriptCommand(_ID, ...)
         return;
     end
     assert(_ID ~= nil);
-    if self.m_ScriptCommandRegister[_ID] then
+    if self.ScriptCommandRegister[_ID] then
         local PlayerID = GUI.GetPlayerID();
         local NamePlayerID = 8;
         local PlayerName = Logic.GetPlayerName(NamePlayerID);
@@ -75,7 +75,7 @@ function Swift.Event:DispatchScriptCommand(_ID, ...)
         end
         debug(string.format(
             "Dispatching script command %s to global.",
-            self.m_ScriptCommandRegister[_ID]
+            self.ScriptCommandRegister[_ID]
         ), true);
 
         GUI.SetPlayerName(NamePlayerID, PlayerName);
@@ -84,7 +84,7 @@ function Swift.Event:DispatchScriptCommand(_ID, ...)
 end
 
 function Swift.Event:ProcessScriptCommand(_PlayerID, _ID)
-    if not self.m_ScriptCommandRegister[_ID] then
+    if not self.ScriptCommandRegister[_ID] then
         return;
     end
     local PlayerName = Logic.GetPlayerName(8);
@@ -95,9 +95,9 @@ function Swift.Event:ProcessScriptCommand(_PlayerID, _ID)
     end
     debug(string.format(
         "Processing script command %s in global.",
-        self.m_ScriptCommandRegister[_ID][1]
+        self.ScriptCommandRegister[_ID][1]
     ), true);
-    self.m_ScriptCommandRegister[_ID][2](unpack(Parameters));
+    self.ScriptCommandRegister[_ID][2](unpack(Parameters));
 end
 
 function Swift.Event:EncodeScriptCommandParameters(...)
@@ -178,35 +178,35 @@ function Swift.Event:InitalizeEventsLocal()
 end
 
 function Swift.Event:CreateScriptEvent(_Name, _Function)
-    for i= 1, #self.m_ScriptEventRegister, 1 do
-        if self.m_ScriptEventRegister[i][1] == _Name then
+    for i= 1, #self.ScriptEventRegister, 1 do
+        if self.ScriptEventRegister[i][1] == _Name then
             return 0;
         end
     end
-    local ID = #self.m_ScriptEventRegister+1;
+    local ID = #self.ScriptEventRegister+1;
     debug(string.format("Create script event %s", _Name), true);
-    self.m_ScriptEventRegister[ID] = {_Name, _Function};
+    self.ScriptEventRegister[ID] = {_Name, _Function};
     return ID;
 end
 
 function Swift.Event:DispatchScriptEvent(_ID, ...)
-    if not self.m_ScriptEventRegister[_ID] then
+    if not self.ScriptEventRegister[_ID] then
         return;
     end
     -- Dispatch module events
-    for i= 1, #Swift.m_ModuleRegister, 1 do
+    for i= 1, #Swift.ModuleRegister, 1 do
         local Env = "Local";
         if Swift:IsGlobalEnvironment() then
             Env = "Global";
         end
-        if Swift.m_ModuleRegister[i][Env] and Swift.m_ModuleRegister[i][Env].OnEvent then
+        if Swift.ModuleRegister[i][Env] and Swift.ModuleRegister[i][Env].OnEvent then
             debug(string.format(
                 "Dispatching %s script event %s to Module %s",
                 Env:lower(),
-                self.m_ScriptEventRegister[_ID][1],
-                Swift.m_ModuleRegister[i].Properties.Name
+                self.ScriptEventRegister[_ID][1],
+                Swift.ModuleRegister[i].Properties.Name
             ), true);
-            Swift.m_ModuleRegister[i][Env]:OnEvent(_ID, self.m_ScriptEventRegister[_ID], unpack(arg));
+            Swift.ModuleRegister[i][Env]:OnEvent(_ID, self.ScriptEventRegister[_ID], unpack(arg));
         end
     end
     -- Call event callback
@@ -214,8 +214,8 @@ function Swift.Event:DispatchScriptEvent(_ID, ...)
         GameCallback_QSB_OnEventReceived(_ID, unpack(arg));
     end
     -- Call event listeners
-    if self.m_ScriptEventListener[_ID] then
-        for k, v in pairs(self.m_ScriptEventListener[_ID]) do
+    if self.ScriptEventListener[_ID] then
+        for k, v in pairs(self.ScriptEventListener[_ID]) do
             if tonumber(k) then
                 v(_ID, unpack(arg));
             end

@@ -372,7 +372,7 @@ function API.AddBlockQuicksaveCondition(_Function)
 end
 
 function API.IsLoadscreenVisible()
-    return Swift.m_LoadScreenHidden ~= true;
+    return Swift.LoadScreenHidden ~= true;
 end
 
 -- Debug
@@ -549,8 +549,8 @@ end
 function API.BroadcastScriptCommand(_NameOrID, ...)
     local ID = _NameOrID;
     if type(ID) == "string" then
-        for i= 1, #Swift.Event.m_ScriptCommandRegister, 1 do
-            if Swift.Event.m_ScriptCommandRegister[i][1] == _NameOrID then
+        for i= 1, #Swift.Event.ScriptCommandRegister, 1 do
+            if Swift.Event.ScriptCommandRegister[i][1] == _NameOrID then
                 ID = i;
             end
         end
@@ -567,8 +567,8 @@ end
 function API.SendScriptCommand(_NameOrID, ...)
     local ID = _NameOrID;
     if type(ID) == "string" then
-        for i= 1, #Swift.Event.m_ScriptCommandRegister, 1 do
-            if Swift.Event.m_ScriptCommandRegister[i][1] == _NameOrID then
+        for i= 1, #Swift.Event.ScriptCommandRegister, 1 do
+            if Swift.Event.ScriptCommandRegister[i][1] == _NameOrID then
                 ID = i;
             end
         end
@@ -697,15 +697,15 @@ end
 -- end);
 --
 function API.AddScriptEventListener(_EventID, _Function)
-    if not Swift.Event.m_ScriptEventListener[_EventID] then
-        Swift.Event.m_ScriptEventListener[_EventID] = {
+    if not Swift.Event.ScriptEventListener[_EventID] then
+        Swift.Event.ScriptEventListener[_EventID] = {
             IDSequence = 0;
         }
     end
-    local Data = Swift.Event.m_ScriptEventListener[_EventID];
+    local Data = Swift.Event.ScriptEventListener[_EventID];
     assert(type(_Function) == "function");
-    Swift.Event.m_ScriptEventListener[_EventID].IDSequence = Data.IDSequence +1;
-    Swift.Event.m_ScriptEventListener[_EventID][Data.IDSequence] = _Function;
+    Swift.Event.ScriptEventListener[_EventID].IDSequence = Data.IDSequence +1;
+    Swift.Event.ScriptEventListener[_EventID][Data.IDSequence] = _Function;
     return Data.IDSequence;
 end
 
@@ -717,8 +717,8 @@ end
 -- @within Event
 --
 function API.RemoveScriptEventListener(_EventID, _ID)
-    if Swift.Event.m_ScriptEventListener[_EventID] then
-        Swift.Event.m_ScriptEventListener[_EventID][_ID] = nil;
+    if Swift.Event.ScriptEventListener[_EventID] then
+        Swift.Event.ScriptEventListener[_EventID][_ID] = nil;
     end
 end
 
@@ -2181,7 +2181,7 @@ end
 -- @within AI
 --
 function API.AllowFestival(_PlayerID)
-    Swift.m_AIProperties[_PlayerID].ForbidFestival = false;
+    Swift.AIProperties[_PlayerID].ForbidFestival = false;
 end
 
 ---
@@ -2191,7 +2191,7 @@ end
 -- @within AI
 --
 function API.ForbidFestival(_PlayerID)
-    Swift.m_AIProperties[_PlayerID].ForbidFestival = true;
+    Swift.AIProperties[_PlayerID].ForbidFestival = true;
 end
 
 ---
@@ -2214,31 +2214,31 @@ function SCP.Core.LoadscreenHidden()
     -- FIXME: Maybe the whole loadscreen hidden business should be converted
     -- into an event on wich every module can listen to? This way of doing it
     -- is a relict from ancient times before the event system...
-    Swift.m_LoadScreenHidden = true;
+    Swift.LoadScreenHidden = true;
     API.SendScriptEvent(QSB.ScriptEvents.LoadscreenClosed);
     Logic.ExecuteInLuaLocalState([[
-        Swift.m_LoadScreenHidden = true
+        Swift.LoadScreenHidden = true
         API.SendScriptEvent(QSB.ScriptEvents.LoadscreenClosed)
     ]]);
 end
 
 function SCP.Core.GlobalQsbLoaded()
-    if Mission_MP_OnQsbLoaded and not Swift.m_MP_FMA_Loaded and Framework.IsNetworkGame() then
+    if Mission_MP_OnQsbLoaded and not Swift.MP_FMA_Loaded and Framework.IsNetworkGame() then
         Logic.ExecuteInLuaLocalState([[
             if Mission_MP_LocalOnQsbLoaded then
                 Mission_MP_LocalOnQsbLoaded();
             end
         ]]);
-        Swift.m_MP_FMA_Loaded = true;
+        Swift.MP_FMA_Loaded = true;
         Mission_MP_OnQsbLoaded();
     end
 end
 
 function SCP.Core.ProclaimateRandomSeed(_Seed)
-    if Swift.m_MP_Seed_Set then
+    if Swift.MP_Seed_Set then
         return;
     end
-    Swift.m_MP_Seed_Set = true;
+    Swift.MP_Seed_Set = true;
     math.randomseed(_Seed);
     local void = math.random(1, 100);
     Logic.ExecuteInLuaLocalState(string.format([[math.randomseed(%d); math.random(1, 100)]], _Seed));

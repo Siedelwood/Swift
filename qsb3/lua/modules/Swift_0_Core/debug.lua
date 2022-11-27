@@ -381,7 +381,7 @@ function Swift.Debug:ActivateDebugMode(_CheckAtRun, _TraceQuests, _DevelopingChe
         self.DevelopingShell
     );
     self:InitalizeQuestTrace();
-    
+
     Logic.ExecuteInLuaLocalState(string.format(
         [[
             Swift.Debug.CheckAtRun       = %s;
@@ -419,11 +419,11 @@ function Swift.Debug:InitalizeDebugHotkeys()
         KeyBindings_EnableDebugMode(2);
         KeyBindings_EnableDebugMode(3);
         XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/GameClock", 1);
-        self.m_GameClock = true;
+        self.GameClock = true;
     else
         KeyBindings_EnableDebugMode(0);
         XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/GameClock", 0);
-        self.m_GameClock = false;
+        self.GameClock = false;
     end
 end
 
