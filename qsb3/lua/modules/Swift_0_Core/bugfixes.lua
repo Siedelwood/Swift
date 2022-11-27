@@ -14,6 +14,7 @@ You may use and modify this file unter the terms of the MIT licence.
 function Swift:InitalizeBugfixesGlobal()
     self:FixResourceSlotsInStorehouses();
     self:OverrideConstructionCompleteCallback();
+    self:OverrideIsMerchantArrived();
 end
 
 -- Reload bugfixes after loading in global env
@@ -33,8 +34,7 @@ function Swift:FixResourceSlotsInStorehouses()
     end
 end
 
--- Make NPC barracks respawn
-
+-- Adds respawning capability to the ME barracks of villages.
 function Swift:OverrideConstructionCompleteCallback()
     GameCallback_OnBuildingConstructionComplete_Orig_QSB_Core = GameCallback_OnBuildingConstructionComplete;
     GameCallback_OnBuildingConstructionComplete = function(_PlayerID, _EntityID)
@@ -49,6 +49,50 @@ function Swift:OverrideConstructionCompleteCallback()
     for k, v in pairs(Logic.GetEntitiesOfType(Entities.B_NPC_Barracks_ME)) do
         Logic.RespawnResourceSetMaxSpawn(v, 0.01);
         Logic.RespawnResourceSetMinSpawn(v, 0.01);
+    end
+end
+
+-- The check if a quest delivery has arrived uses the approach position of
+-- the buildings as area center because any cart must pass it before it can
+-- enter the building to despawn.
+function Swift:OverrideIsMerchantArrived()
+    function QuestTemplate:IsMerchantArrived(objective)
+        if objective.Data[3] ~= nil then
+            if objective.Data[3] == 1 then
+                if objective.Data[5].ID ~= nil then
+                    objective.Data[3] = objective.Data[5].ID;
+                    DeleteQuestMerchantWithID(objective.Data[3]);
+                    if MapCallback_DeliverCartSpawned then
+                        MapCallback_DeliverCartSpawned(self, objective.Data[3], objective.Data[1]);
+                    end
+                end
+            elseif Logic.IsEntityDestroyed(objective.Data[3]) then
+                DeleteQuestMerchantWithID(objective.Data[3]);
+                objective.Data[3] = nil;
+                objective.Data[5].ID = nil;
+            else
+                local Target = objective.Data[6] and objective.Data[6] or self.SendingPlayer;
+                local StorehouseID = Logic.GetStoreHouse(Target);
+                local MarketplaceID = Logic.GetStoreHouse(Target);
+                local HeadquartersID = Logic.GetStoreHouse(Target);
+                local HasArrived = nil;
+
+                if StorehouseID > 0 then
+                    local x,y = Logic.GetBuildingApproachPosition(StorehouseID);
+                    HasArrived = API.GetDistance(objective.Data[3], {X= x, Y= y}) < 1300;
+                end
+                if MarketplaceID > 0 then
+                    local x,y = Logic.GetBuildingApproachPosition(MarketplaceID);
+                    HasArrived = HasArrived or API.GetDistance(objective.Data[3], {X= x, Y= y}) < 1300;
+                end
+                if HeadquartersID > 0 then
+                    local x,y = Logic.GetBuildingApproachPosition(HeadquartersID);
+                    HasArrived = HasArrived or API.GetDistance(objective.Data[3], {X= x, Y= y}) < 1300;
+                end
+                return HasArrived;
+            end
+        end
+        return false;
     end
 end
 
