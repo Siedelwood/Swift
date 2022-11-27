@@ -321,35 +321,37 @@ You may use and modify this file unter the terms of the MIT licence.
 -- @within Beschreibung
 --
 
-Swift.m_Benchmarks           = {};
-Swift.m_CheckAtRun           = false;
-Swift.m_TraceQuests          = false;
-Swift.m_DevelopingCheats     = false;
-Swift.m_DevelopingShell      = false;
-Swift.m_DebugInputShown      = false;
-Swift.m_ProcessDebugCommands = false;
+Swift.Debug = {
+    Benchmarks           = {};
+    CheckAtRun           = false;
+    TraceQuests          = false;
+    DevelopingCheats     = false;
+    DevelopingShell      = false;
+    DebugInputShown      = false;
+    ProcessDebugCommands = false;
+}
 
-function Swift:InitalizeDebugModeGlobal()
+function Swift.Debug:InitalizeDebugModeGlobal()
     self:InitalizeQsbDebugEvents();
 end
 
-function Swift:InitalizeDebugModeLocal()
+function Swift.Debug:InitalizeDebugModeLocal()
     self:InitalizeQsbDebugHotkeys();
     self:InitalizeQsbDebugShell();
     self:InitalizeQsbDebugEvents();
 end
 
-function Swift:GlobalRestoreDebugAfterLoad()
+function Swift.Debug:GlobalRestoreDebugAfterLoad()
     self:InitalizeQuestTrace();
 end
 
-function Swift:LocalRestoreDebugAfterLoad()
+function Swift.Debug:LocalRestoreDebugAfterLoad()
     self:InitalizeQsbDebugHotkeys();
     self:InitalizeQsbDebugShell();
     self:InitalizeDebugHotkeys();
 end
 
-function Swift:InitalizeQsbDebugEvents()
+function Swift.Debug:InitalizeQsbDebugEvents()
     QSB.ScriptEvents.DebugChatConfirmed = Swift:CreateScriptEvent(
         "Event_DebugModeChatConfirmed",
         nil
@@ -360,58 +362,58 @@ function Swift:InitalizeQsbDebugEvents()
     );
 end
 
-function Swift:ActivateDebugMode(_CheckAtRun, _TraceQuests, _DevelopingCheats, _DevelopingShell)
-    if self:IsLocalEnvironment() then
+function Swift.Debug:ActivateDebugMode(_CheckAtRun, _TraceQuests, _DevelopingCheats, _DevelopingShell)
+    if Swift:IsLocalEnvironment() then
         return;
     end
 
-    self.m_CheckAtRun       = _CheckAtRun == true;
-    self.m_TraceQuests      = _TraceQuests == true;
-    self.m_DevelopingCheats = _DevelopingCheats == true;
-    self.m_DevelopingShell  = _DevelopingShell == true;
+    self.CheckAtRun       = _CheckAtRun == true;
+    self.TraceQuests      = _TraceQuests == true;
+    self.DevelopingCheats = _DevelopingCheats == true;
+    self.DevelopingShell  = _DevelopingShell == true;
 
     Swift:DispatchScriptEvent(
         QSB.ScriptEvents.DebugModeStatusChanged,
-        self.m_CheckAtRun,
-        self.m_TraceQuests,
-        self.m_DevelopingCheats,
-        self.m_DevelopingShell
+        self.CheckAtRun,
+        self.TraceQuests,
+        self.DevelopingCheats,
+        self.DevelopingShell
     );
     self:InitalizeQuestTrace();
     
     Logic.ExecuteInLuaLocalState(string.format(
         [[
-            Swift.m_CheckAtRun       = %s;
-            Swift.m_TraceQuests      = %s;
-            Swift.m_DevelopingCheats = %s;
-            Swift.m_DevelopingShell  = %s;
+            Swift.Debug.CheckAtRun       = %s;
+            Swift.Debug.TraceQuests      = %s;
+            Swift.Debug.DevelopingCheats = %s;
+            Swift.Debug.DevelopingShell  = %s;
 
             Swift:DispatchScriptEvent(
                 QSB.ScriptEvents.DebugModeStatusChanged,
-                Swift.m_CheckAtRun,
-                Swift.m_TraceQuests,
-                Swift.m_DevelopingCheats,
-                Swift.m_DevelopingShell
+                Swift.Debug.CheckAtRun,
+                Swift.Debug.TraceQuests,
+                Swift.Debug.DevelopingCheats,
+                Swift.Debug.DevelopingShell
             );
-            Swift:InitalizeDebugHotkeys();
+            Swift.Debug:InitalizeDebugHotkeys();
         ]],
-        tostring(self.m_CheckAtRun),
-        tostring(self.m_TraceQuests),
-        tostring(self.m_DevelopingCheats),
-        tostring(self.m_DevelopingShell)
+        tostring(self.CheckAtRun),
+        tostring(self.TraceQuests),
+        tostring(self.DevelopingCheats),
+        tostring(self.DevelopingShell)
     ));
 end
 
-function Swift:InitalizeQuestTrace()
+function Swift.Debug:InitalizeQuestTrace()
     DEBUG_EnableQuestDebugKeys();
-    DEBUG_QuestTrace(self.m_TraceQuests == true);
+    DEBUG_QuestTrace(self.TraceQuests == true);
 end
 
-function Swift:InitalizeDebugHotkeys()
+function Swift.Debug:InitalizeDebugHotkeys()
     if Network.IsNATReady ~= nil and Framework.IsNetworkGame() then
         return;
     end
-    if self.m_DevelopingCheats then
+    if self.DevelopingCheats then
         KeyBindings_EnableDebugMode(1);
         KeyBindings_EnableDebugMode(2);
         KeyBindings_EnableDebugMode(3);
@@ -424,22 +426,22 @@ function Swift:InitalizeDebugHotkeys()
     end
 end
 
-function Swift:InitalizeQsbDebugHotkeys()
+function Swift.Debug:InitalizeQsbDebugHotkeys()
     if Framework.IsNetworkGame() then
         return;
     end
-    Input.KeyBindDown(Keys.ModifierControl + Keys.ModifierShift + Keys.ModifierAlt + Keys.R, "Swift:ExecuteQsbDebugHotkey('RestartMap')", 30, false);
+    Input.KeyBindDown(Keys.ModifierControl + Keys.ModifierShift + Keys.ModifierAlt + Keys.R, "Swift.Debug:ExecuteQsbDebugHotkey('RestartMap')", 30, false);
 end
 
-function Swift:ExecuteQsbDebugHotkey(_Type)
-    if self.m_DevelopingCheats then
+function Swift.Debug:ExecuteQsbDebugHotkey(_Type)
+    if self.DevelopingCheats then
         if _Type == 'RestartMap' then
             API.RestartMap();
         end
     end
 end
 
-function Swift:InitalizeQsbDebugShell()
+function Swift.Debug:InitalizeQsbDebugShell()
     if not Framework.IsNetworkGame() then
         GUI_Chat.Abort = function()
         end
@@ -455,8 +457,8 @@ function Swift:InitalizeQsbDebugShell()
         end
         Input.GameMode();
         if ChatMessage:len() > 0 and Framework.IsNetworkGame() then
-            if Swift.m_DevelopingShell then
-                Swift.m_ChatBoxInput = ChatMessage;
+            if Swift.Debug.DevelopingShell then
+                Swift.ChatBoxInput = ChatMessage;
             end
             GUI.SendChatMessage(ChatMessage, GUI.GetPlayerID(), g_Chat.CurrentMessageType, g_Chat.CurrentWhisperTarget);
         end
@@ -465,21 +467,21 @@ function Swift:InitalizeQsbDebugShell()
     if not Framework.IsNetworkGame() then
         QSB_DEBUG_InputBoxJob = function()
             -- Not allowed
-            if not Swift.m_DevelopingShell then
+            if not Swift.Debug.DevelopingShell then
                 return true;
             end
             if ModuleInputOutputCore then
                 return true;
             end
             -- Call cheap version
-            Swift.m_ProcessDebugCommands = true;
+            Swift.Debug.ProcessDebugCommands = true;
             Swift:DisplayQsbDebugShell();
         end
-        Input.KeyBindDown(Keys.ModifierShift + Keys.OemPipe, "Swift:OpenQsbDebugShell()", 30, false);
+        Input.KeyBindDown(Keys.ModifierShift + Keys.OemPipe, "Swift.Debug:OpenQsbDebugShell()", 30, false);
     end
 end
 
-function Swift:OpenQsbDebugShell()
+function Swift.Debug:OpenQsbDebugShell()
     -- Text input will only be evaluated in the original version of the game
     -- and in Singleplayer History Edition.
     if Network.IsNATReady ~= nil and Framework.IsNetworkGame() then
@@ -488,17 +490,17 @@ function Swift:OpenQsbDebugShell()
     StartSimpleHiResJob('QSB_DEBUG_InputBoxJob');
 end
 
-function Swift:IsProcessDebugCommands()
-    return self.m_ProcessDebugCommands;
+function Swift.Debug:IsProcessDebugCommands()
+    return self.ProcessDebugCommands;
 end
 
-function Swift:SetProcessDebugCommands(_Debug)
-    self.m_ProcessDebugCommands = _Debug;
+function Swift.Debug:SetProcessDebugCommands(_Debug)
+    self.ProcessDebugCommands = _Debug;
 end
 
-function Swift:DisplayQsbDebugShell()
+function Swift.Debug:DisplayQsbDebugShell()
     local MotherWidget = "/InGame/Root/Normal/ChatInput";
-    if not self.m_DebugInputShown then
+    if not self.DebugInputShown then
         Input.ChatMode();
         if not Framework.IsNetworkGame() then
             Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
@@ -506,50 +508,50 @@ function Swift:DisplayQsbDebugShell()
         XGUIEng.ShowWidget(MotherWidget, 1);
         XGUIEng.SetText(MotherWidget.. "/ChatInput", "");
         XGUIEng.SetFocus(MotherWidget.. "/ChatInput");
-        self.m_DebugInputShown = true;
-    elseif self.m_ChatBoxInput then
-        self.m_ChatBoxInput = string.gsub(self.m_ChatBoxInput,"'","\'");
+        self.DebugInputShown = true;
+    elseif self.ChatBoxInput then
+        self.ChatBoxInput = string.gsub(self.ChatBoxInput,"'","\'");
         self:ConfirmQsbDebugShell();
         GUI.SendScriptCommand([[
             Swift:DispatchScriptEvent(
                 QSB.ScriptEvents.DebugChatConfirmed, 
-                "]]..self.m_ChatBoxInput..[["
+                "]]..self.ChatBoxInput..[["
             );
         ]]);
         self:DispatchScriptEvent(
             QSB.ScriptEvents.DebugChatConfirmed,
-            self.m_ChatBoxInput
+            self.ChatBoxInput
         );
-        self.m_ProcessDebugCommands = false;
-        self.m_DebugInputShown = nil;
+        self.ProcessDebugCommands = false;
+        self.DebugInputShown = nil;
         return true;
     end
 end
 
-function Swift:ConfirmQsbDebugShell()
+function Swift.Debug:ConfirmQsbDebugShell()
     if self:IsProcessDebugCommands() then
-        if self.m_ChatBoxInput == "restartmap" then
+        if self.ChatBoxInput == "restartmap" then
             API.RestartMap();
         else
-            if string.find(self.m_ChatBoxInput, "^> .*$") then
-                GUI.SendScriptCommand(self.m_ChatBoxInput.sub(self.m_ChatBoxInput, 3), true);
-            elseif string.find(self.m_ChatBoxInput, "^>> .*$") then
-                GUI.SendScriptCommand(self.m_ChatBoxInput.sub(self.m_ChatBoxInput, 4), false);
+            if string.find(self.ChatBoxInput, "^> .*$") then
+                GUI.SendScriptCommand(self.ChatBoxInput.sub(self.ChatBoxInput, 3), true);
+            elseif string.find(self.ChatBoxInput, "^>> .*$") then
+                GUI.SendScriptCommand(self.ChatBoxInput.sub(self.ChatBoxInput, 4), false);
             end
         end
     end
 end
 
-function Swift:BeginBenchmark(_Identifier)
-    self.m_Benchmarks[_Identifier] = XGUIEng.GetSystemTime() * 1000;
+function Swift.Debug:BeginBenchmark(_Identifier)
+    self.Benchmarks[_Identifier] = XGUIEng.GetSystemTime() * 1000;
 end
 
-function Swift:StopBenchmark(_Identifier)
-    if self.m_Benchmarks[_Identifier] then
-        local StartTime = self.m_Benchmarks[_Identifier];
+function Swift.Debug:StopBenchmark(_Identifier)
+    if self.Benchmarks[_Identifier] then
+        local StartTime = self.Benchmarks[_Identifier];
         local EndTime = XGUIEng.GetSystemTime() * 1000;
         local ElapsedTime = EndTime - StartTime;
-        self.m_Benchmarks[_Identifier] = nil;
+        self.Benchmarks[_Identifier] = nil;
         Framework.WriteToLog(string.format(
             "Benchmark '%s': Execution took %f ms to complete",
             _Identifier,

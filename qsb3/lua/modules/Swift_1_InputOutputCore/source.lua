@@ -513,7 +513,7 @@ function ModuleInputOutputCore.Local:OverrideDebugInput()
     StartSimpleJobEx(function (_Time)
         if not API.IsLoadscreenVisible() and Logic.GetTime() > _Time+1 then
             Swift.InitalizeQsbDebugShell = function(self)
-                if not self.m_DevelopingShell then
+                if not self.Debug.DevelopingShell then
                     return;
                 end
                 Input.KeyBindDown(Keys.ModifierShift + Keys.OemPipe, "API.ShowTextInput(GUI.GetPlayerID(), true)", 2, false);
@@ -782,7 +782,7 @@ function ModuleInputOutputCore.Local:ShowInputBox(_PlayerID, _Debug)
     if GUI.GetPlayerID() ~= _PlayerID then
         return;
     end
-    Swift:SetProcessDebugCommands(_Debug);
+    Swift.Debug:SetProcessDebugCommands(_Debug);
     StartSimpleHiResJob("ModuleInputOutputCore_Local_InputBoxJob");
 end
 
@@ -823,8 +823,8 @@ function ModuleInputOutputCore.Local:PrepareInputVariable(_PlayerID)
             XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 0);
         end
         local ChatMessage = XGUIEng.GetText("/InGame/Root/Normal/ChatInput/ChatInput");
-        local IsDebug = Swift:IsProcessDebugCommands();
-        Swift.m_ChatBoxInput = ChatMessage;
+        local IsDebug = Swift.Debug:IsProcessDebugCommands();
+        Swift.ChatBoxInput = ChatMessage;
         ModuleInputOutputCore.Local:LocalToGlobal(ChatMessage, IsDebug);
         g_Chat.JustClosed = 1;
         if not Framework.IsNetworkGame() then
@@ -850,7 +850,7 @@ function ModuleInputOutputCore.Local:LocalToGlobal(_Text, _Debug)
         GUI.GetPlayerID(),
         _Debug == true
     );
-    Swift:SetProcessDebugCommands(false);
+    Swift.Debug:SetProcessDebugCommands(false);
 end
 
 -- Shared ------------------------------------------------------------------- --

@@ -390,7 +390,7 @@ end
 -- @within Debug
 --
 function API.ActivateDebugMode(_CheckAtRun, _TraceQuests, _DevelopingCheats, _DevelopingShell)
-    Swift:ActivateDebugMode(
+    Swift.Debug:ActivateDebugMode(
         _CheckAtRun == true,
         _TraceQuests == true,
         _DevelopingCheats == true,
@@ -408,7 +408,7 @@ end
 -- @within Debug
 --
 function API.IsDebugBehaviorCheckActive()
-    return Swift.m_CheckAtRun == true;
+    return Swift.Debug.CheckAtRun == true;
 end
 
 ---
@@ -418,7 +418,7 @@ end
 -- @within Debug
 --
 function API.IsDebugQuestTraceActive()
-    return Swift.m_TraceQuests == true;
+    return Swift.Debug.TraceQuests == true;
 end
 
 ---
@@ -428,7 +428,7 @@ end
 -- @within Debug
 --
 function API.IsDebugCheatsActive()
-    return Swift.m_DevelopingCheats == true;
+    return Swift.Debug.DevelopingCheats == true;
 end
 
 ---
@@ -441,7 +441,7 @@ end
 -- @within Debug
 --
 function API.IsDebugShellActive()
-    return Swift.m_DevelopingShell == true;
+    return Swift.Debug.DevelopingShell == true;
 end
 
 ---

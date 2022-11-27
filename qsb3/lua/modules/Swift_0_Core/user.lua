@@ -60,12 +60,12 @@ function Swift:RestoreAfterLoad()
     debug("Loading save game", true);
     self.LuaBase:OverrideBaseLua();
     if self:IsGlobalEnvironment() then
-        self:GlobalRestoreDebugAfterLoad();
+        self.Debug:GlobalRestoreDebugAfterLoad();
         self:GlobalRestoreBugfixesAfterLoad();
         self:DisableLogicFestival();
     end
     if self:IsLocalEnvironment() then
-        self:LocalRestoreDebugAfterLoad();
+        self.Debug:LocalRestoreDebugAfterLoad();
         self:LocalRestoreBugfixesAfterLoad();
         self:SetEscapeKeyTrigger();
         self:CreateRandomSeed();

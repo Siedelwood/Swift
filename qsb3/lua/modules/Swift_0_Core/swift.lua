@@ -55,7 +55,6 @@ Swift = {
         {"fr", "Français", "en"},
     };
     m_Environment               = "global";
-    m_ProcessDebugCommands      = false;
     m_LogLevel                  = 2;
     m_FileLogLevel              = 3;
 };
@@ -66,7 +65,7 @@ function Swift:LoadCore()
     self:DetectLanguage();
 
     if self:IsGlobalEnvironment() then
-        self:InitalizeDebugModeGlobal();
+        self.Debug:InitalizeDebugModeGlobal();
         self:InitalizeScriptCommands();
         self:InitalizeEventsGlobal();
         self:InitalizeAIVariables();
@@ -79,7 +78,7 @@ function Swift:LoadCore()
     end
 
     if self:IsLocalEnvironment() then
-        self:InitalizeDebugModeLocal();
+        self.Debug:InitalizeDebugModeLocal();
         self:InitalizeEventsLocal();
         self:InstallBehaviorLocal();
         self:OverrideDoQuicksave();

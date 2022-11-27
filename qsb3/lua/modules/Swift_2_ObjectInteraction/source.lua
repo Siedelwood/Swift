@@ -51,7 +51,7 @@ function ModuleObjectInteraction.Global:OnEvent(_ID, _Event, ...)
     if _ID == QSB.ScriptEvents.ObjectInteraction then
         self:OnObjectInteraction(arg[1], arg[2], arg[3]);
     elseif _ID == QSB.ScriptEvents.ChatClosed then
-        if Swift:IsProcessDebugCommands() then
+        if Swift.Debug:IsProcessDebugCommands() then
             self:ProcessChatInput(arg[1]);
         end
     end
