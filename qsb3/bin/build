@@ -26,7 +26,7 @@ echo "done!"
 echo "build documentation..."
 cd ../lua/tools/ldoc
 lua ldoc.lua -d ../../../doc/html ../../modules #&>/dev/null
-lua ldoc.lua -d ../../../mods/doc ../../mods &>/dev/null
+lua ldoc.lua -d ../../mods/doc ../../mods &>/dev/null
 cd ../../bin
 lua docbuilder.lua &>/dev/null
 cd ../../bin
