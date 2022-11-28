@@ -83,8 +83,8 @@ BinLoader_ModuleFiles = {
     "Swift_5_Minimap/source.lua",
     "Swift_5_Minimap/api.lua",
     "Swift_5_Minimap/behavior.lua",
-    "Swift_5_SpeedLimit/source.lua",
-    "Swift_5_SpeedLimit/api.lua",
+    "Swift_5_SpeedLimitation/source.lua",
+    "Swift_5_SpeedLimitation/api.lua",
 }
 
 function BinLoader_SetBasePath(_Path)

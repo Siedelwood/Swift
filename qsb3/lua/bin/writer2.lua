@@ -180,7 +180,7 @@ QsbWriter_ModuleFiles = {
         "behavior.lua",
     },
 
-    ["Swift_5_SpeedLimit"] = {
+    ["Swift_5_SpeedLimitation"] = {
         "source.lua",
         "api.lua",
     },
