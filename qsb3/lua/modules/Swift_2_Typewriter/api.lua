@@ -64,9 +64,9 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- <td>(Optional) Funktion nach Abschluss der Textanzeige (Default: nil)</td>
 -- </tr>
 -- <tr>
--- <td>Position</td>
--- <td></td>
--- <td>(Optional) Position der Kamera (Default: nil)</td>
+-- <td>TargetEntity</td>
+-- <td>string|number</td>
+-- <td>(Optional) TargetEntity der Kamera (Default: nil)</td>
 -- </tr>
 -- <tr>
 -- <td>CharSpeed</td>
@@ -75,12 +75,12 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- </tr>
 -- <tr>
 -- <td>Waittime</td>
--- <td></td>
+-- <td>number</td>
 -- <td>(Optional) Initiale Wartezeigt bevor der Effekt startet</td>
 -- </tr>
 -- <tr>
 -- <td>Opacity</td>
--- <td></td>
+-- <td>number</td>
 -- <td>(Optional) Durchsichtigkeit des Hintergrund (Default: 1)</td>
 -- </tr>
 -- <tr>

@@ -91,23 +91,25 @@ function ModuleInteractiveSites.Global:CreateIOBuildingSite(_Data)
     Logic.SetModel(EntityID, Models.Buildings_B_BuildingPlot_10x10);
     Logic.SetVisible(EntityID, true);
 
-    API.SetupObject {
-        Name              = _Data.Name,
-        IsInteractiveSite = true,
-        Title             = Title,
-        Text              = Text,
-        Texture           = _Data.Texture or {14, 10},
-        Distance          = _Data.Distance or 1500,
-        Type              = _Data.Type,
-        Costs             = Costs,
-        PlayerID          = _Data.PlayerID,
-        Condition         = function(_Data)
-            return self:ConditionIOConstructionSite(_Data);
-        end,
-        Action            = function(_Data, _KnightID, _PlayerID)
-            self:CallbackIOConstructionSite(_Data, _KnightID, _PlayerID);
-        end,
-    };
+    _Data.Title = Title;
+    _Data.Text = Text;
+    _Data.Costs = Costs;
+    _Data.ConditionOrigSite = _Data.Condition;
+    _Data.ActionOrigSite = _Data.Action;
+    API.SetupObject(_Data);
+
+    IO[_Data.Name].Condition = function(_Data)
+        if _Data.ConditionOrigSite then
+            _Data.ConditionOrigSite(_Data);
+        end
+        return self:ConditionIOConstructionSite(_Data);
+    end
+    IO[_Data.Name].Action = function(_Data, _KnightID, _PlayerID)
+        self:CallbackIOConstructionSite(_Data, _KnightID, _PlayerID);
+        if _Data.ActionOrigSite then
+            _Data.ActionOrigSite(_Data, _KnightID, _PlayerID);
+        end
+    end
 end
 
 function ModuleInteractiveSites.Global:CallbackIOConstructionSite(_Data, _KnightID, _PlayerID)

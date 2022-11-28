@@ -93,6 +93,12 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- <td>Eine zusätzliche Aktivierungsbedinung als Funktion.</td>
 -- <td>ja</td>
 -- </tr>
+-- <tr>
+-- <td>ConstructionAction</td>
+-- <td>function</td>
+-- <td>Eine zusätzliche Aktion nach der Aktivierung.</td>
+-- <td>ja</td>
+-- </tr>
 -- </table>
 --
 -- @param[type=table] _Data Datentabelle der Mine
@@ -100,14 +106,26 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- @see API.CreateIOStoneMine
 --
 -- @usage
--- -- Beispiel für eine Mine
+-- -- Beispiel #1: Eine einfache Mine
 -- API.CreateIOIronMine{
 --     Position = "mine"
 -- };
--- -- Beispiel für eine Mine mit geänderten kosten
+--
+-- @usage
+-- -- Beispiel #2: Mine mit geänderten Kosten
 -- API.CreateIOIronMine{
 --     Position = "mine",
 --     Costs    = {Goods.G_Wood, 15}
+-- };
+--
+-- @usage
+-- -- Beispiel #3: Mine mit Aktivierungsbedingung
+-- API.CreateIOIronMine{
+--     Position              = "mine",
+--     Costs                 = {Goods.G_Wood, 15},
+--     ConstructionCondition = function(_Data)
+--         return HeroHasShovel == true;
+--     end
 -- };
 --
 function API.CreateIOIronMine(_Data)
@@ -152,7 +170,8 @@ function API.CreateIOIronMine(_Data)
         Costs,
         _Data.ResourceAmount,
         _Data.RefillAmount,
-        _Data.ConstructionCondition
+        _Data.ConstructionCondition,
+        _Data.ConstructionAction
     );
 end
 
@@ -211,9 +230,16 @@ end
 -- <td>Menge an Rohstoffen, die ein Geologe auffüllt (0 == nicht nachfüllbar)</td>
 -- <td>ja</td>
 -- </tr>
+-- <tr>
 -- <td>ConstructionCondition</td>
 -- <td>function</td>
 -- <td>Eine zusätzliche Aktivierungsbedinung als Funktion.</td>
+-- <td>ja</td>
+-- </tr>
+-- <tr>
+-- <td>ConstructionAction</td>
+-- <td>function</td>
+-- <td>Eine zusätzliche Aktion nach der Aktivierung.</td>
 -- <td>ja</td>
 -- </tr>
 -- </table>
@@ -223,14 +249,26 @@ end
 -- @see API.CreateIOIronMine
 --
 -- @usage
--- -- Beispiel für eine Mine
+-- -- Beispiel #1: Eine einfache Mine
 -- API.CreateIOStoneMine{
 --     Position = "mine"
 -- };
--- -- Beispiel für eine Mine mit geänderten kosten
+--
+-- @usage
+-- -- Beispiel #2: Mine mit geänderten Kosten
 -- API.CreateIOStoneMine{
 --     Position = "mine",
 --     Costs    = {Goods.G_Wood, 15}
+-- };
+--
+-- @usage
+-- -- Beispiel #3: Mine mit Aktivierungsbedingung
+-- API.CreateIOStoneMine{
+--     Position              = "mine",
+--     Costs                 = {Goods.G_Wood, 15},
+--     ConstructionCondition = function(_Data)
+--         return HeroHasPickaxe == true;
+--     end
 -- };
 --
 function API.CreateIOStoneMine(_Data)
@@ -275,7 +313,8 @@ function API.CreateIOStoneMine(_Data)
         Costs,
         _Data.ResourceAmount,
         _Data.RefillAmount,
-        _Data.ConstructionCondition
+        _Data.ConstructionCondition,
+        _Data.ConstructionAction
     );
 end
 

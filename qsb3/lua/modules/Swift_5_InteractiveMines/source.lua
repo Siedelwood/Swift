@@ -70,7 +70,8 @@ function ModuleInteractiveMines.Global:CreateIOMine(
     _Costs,
     _ResourceAmount,
     _RefillAmount,
-    _Condition
+    _Condition,
+    _Action
 )
     local BlockerID = self:ResetIOMine(_Position, _Type);
     local Icon = {14, 10};
@@ -96,9 +97,10 @@ function ModuleInteractiveMines.Global:CreateIOMine(
         InvisibleBlocker     = BlockerID,
         Distance             = 1200,
         AdditionalCondition  = _Condition,
+        AdditionalAction     = _Action,
         Condition            = function(_Data)
             if _Data.AdditionalCondition then
-                return _Data:AdditionalCondition();
+                return _Data:AdditionalCondition(_Data);
             end
             return true;
         end,
@@ -114,6 +116,9 @@ function ModuleInteractiveMines.Global:CreateIOMine(
                 _KnightID,
                 _PlayerID
             ));
+            if _Data.AdditionalAction then
+                _Data.AdditionalAction(_Data, _KnightID, _PlayerID);
+            end
         end
     };
 end

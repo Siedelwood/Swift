@@ -57,25 +57,26 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- <tr><td>Type</td><td>number</td><td>Typ des Gebäudes</td></tr>
 -- <tr><td>Costs</td><td>table</td><td>(optional) Eigene Gebäudekosten</td></tr>
 -- <tr><td>Distance</td><td>number</td><td>(optional) Aktivierungsentfernung</td></tr>
--- reaktivieren</td></tr>
 -- <tr><td>Icon</td><td>table</td><td>(optional) Icon des Schalters</td></tr>
--- <tr><td>Title</td><td></td>string<td>(optional) Titel der Beschreibung</td></tr>
--- <tr><td>Text</td><td></td>string<td>(optional) Text der Beschreibung</td></tr>
--- nicht platzierter Baustelle. Muss Gebäude ID zurückgeben</td></tr>
+-- <tr><td>Title</td><td>string</td><td>(optional) Titel der Beschreibung</td></tr>
+-- <tr><td>Text</td><td>string</td><td>(optional) Text der Beschreibung</td></tr>
+-- <tr><td>Condition</td><td>function</td><td>(optional) Optionale Aktivierungsbedingung</td></tr>
+-- <tr><td>Action</td><td>function</td><td>(optional) Optionale Funktion bei Aktivierung</td></tr>
 -- </table>
 --
 -- @param[type=table] _Data Konfiguration des Objektes
 -- @within Anwenderfunktionen
 --
 -- @usage
--- -- Erzeugt eine Baustelle ohne besondere Einstellungen
+-- -- Beispiel #1: Eine einfache Baustelle erzeugen
 -- API.CreateIOBuildingSite {
 --     Name     = "haus",
 --     PlayerID = 1,
 --     Type     = Entities.B_Bakery
 -- };
 --
--- -- Baustelle mit geänderten Kosten und Aktivierungsdistanz
+-- @usage
+-- -- Beispiel #2: Baustelle mit Kosten erzeugen
 -- API.CreateIOBuildingSite {
 --     Name     = "haus",
 --     PlayerID = 1,
@@ -106,6 +107,10 @@ function API.CreateIOBuildingSite(_Data)
     end
     if _Data.Distance and (type(_Data.Distance) ~= "number" or _Data.Distance < 100) then
         error("API.CreateIOBuildingSite: Distance (" ..tostring(_Data.Distance).. ") is wrong or too small!");
+        return;
+    end
+    if _Data.Condition and type(_Data.Condition) ~= "function" then
+        error("API.CreateIOBuildingSite: Condition must be a function!");
         return;
     end
     if _Data.Action and type(_Data.Action) ~= "function" then

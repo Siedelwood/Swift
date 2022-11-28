@@ -68,7 +68,7 @@ function ModuleInteractiveChests.Global:OnEvent(_ID, _Event, ...)
     end
 end
 
-function ModuleInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _DirectPay, _NoModelChange)
+function ModuleInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _DirectPay, _NoModelChange, _Condition, _Action)
     _Min = math.floor((_Min ~= nil and _Min > 0 and _Min) or 1);
     _Max = math.floor((_Max ~= nil and _Max > 1 and _Max) or 2);
     assert(_Good ~= nil, "CreateRandomChest: Good does not exist!");
@@ -124,12 +124,23 @@ function ModuleInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _M
         Waittime                = 0,
         State                   = 0,
         DoNotChangeModel        = _NoModelChange == true,
+        ActivationCondition     = _Condition,
+        ActivationAction        = _Action,
+        Condition               = function(_Data)
+            if _Data.ActivationCondition then
+                return _Data.ActivationCondition(_Data);
+            end
+            return true;
+        end,
         Action                  = function(_Data, _KnightID, _PlayerID)
             if not _Data.DoNotChangeModel then
                 Logic.SetModel(GetID(_Data.Name), Models.Doodads_D_X_ChestOpenEmpty);
             end
             if _Data.DirectReward then
                 AddGood(_Data.DirectReward[1], _Data.DirectReward[2], _PlayerID);
+            end
+            if _Data.ActivationAction then
+                _Data.ActivationAction(_Data, _KnightID, _PlayerID);
             end
 
             API.SendScriptEvent(QSB.ScriptEvents.InteractiveTreasureActivated, _Data.Name, _KnightID, _PlayerID);

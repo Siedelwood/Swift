@@ -9,7 +9,11 @@ You may use and modify this file unter the terms of the MIT licence.
 ]]
 
 ---
--- Ermöglocht das Anlegen von Markierungen auf der Minimap.
+-- Ermöglicht das Anlegen von Markierungen auf der Minimap.
+--
+-- Mit diesem Mittel können Positionen und Ereignisse auf der Karte markiert
+-- werden. Dies kann z.B. dafür benutzt werden, einen bestimmten Suchbereich
+-- auf der Karte anzuzeigen.
 --
 -- Mögliche Typen von Markierungen:
 -- <ul>
@@ -18,20 +22,6 @@ You may use and modify this file unter the terms of the MIT licence.
 -- <li>Marker: Eine statische Markierung, die dauerhaft verbleibt.</li>
 -- <li>Pulse: Eine pulsierende Markierung, die dauerhaft verbleibt.</li>
 -- </ul>
---
--- Die Farbe eines Markers kann auf 2 verschiedene Weisen bestimmt werden.
--- <ol>
--- <li>Durch die Spielerfarbe des "Besitzers" der Markierung.
--- <pre> API.CreateMinimapSignal(1, 1, GetPosition("pos"));</pre>
--- </li>
--- <li>Durch Übergabe einer vordefinierten Farbe oder einer Farbtabelle
--- <pre>
--- API.CreateMinimapSignal(MarkerColor.Red, GetPosition("pos"));
--- API.CreateMinimapSignal(1, {180, 180, 180, 255}, GetPosition("pos"));</pre>
--- </li>
--- </ol>
---
--- Halbtransparente Marker sind nicht vorgesehen!
 --
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
@@ -49,8 +39,6 @@ You may use and modify this file unter the terms of the MIT licence.
 -- @field Yellow Sonnengelb
 -- @field Green Blattgrün
 --
--- @usage API.CreateMinimapSignal(1, MarkerColor.Red, GetPosition("pos"));
---
 MarkerColor = {
     Blue    = { 17,   7, 216},
     Red     = {216,   7,   7},
@@ -61,15 +49,34 @@ MarkerColor = {
 ---
 -- Erstellt eine flüchtige Markierung auf der Minimap.
 --
--- <b>Hinweis</b>: Die Farbe richtet sich nach der Spielerfarbe!
+-- Die Farbe kann auf 3 verschiedene Arten bestimmt werden.
+-- <ol>
+-- <li>Anhand der ID eines Spielers<br/>(→ Beispiel #1)</li>
+-- <li>Anhand einer vordefinierten Farbe<br/>(→ Beispiel #2)</li>
+-- <li>Anhand einer benutzerdefinierten Farbe<br/>(→ Beispiel #3)</li>
+-- </ol>
 --
 -- @param[type=number] _PlayerID             Anzeige für Spieler
--- @param              _PlayerIDOrColorTable PlayerID oder Farbtabelle (Spielernummer oder Farbtabelle)
+-- @param              _PlayerIDOrColorTable PlayerID oder Farbtabelle
 -- @param              _Position             Position des Markers (Skriptname, ID oder Position)
 -- @return[type=number] ID des Markers
 -- @within Anwenderfunktionen
+-- @see MarkerColor
 --
--- @usage API.CreateMinimapSignal(1, 1, GetPosition("pos"));
+-- @usage
+-- -- Beispiel #1: Farbe anhand des Spielers
+-- -- Es wird die Spielerfarbe eines Spielers verwendet.
+-- API.CreateMinimapSignal(1, 1, GetPosition("pos"));
+--
+-- @usage
+-- -- Beispiel #2: Farbe aus Vorgabentabelle
+-- -- Es wird eine der vorgegebenen Farben verwendet.
+-- API.CreateMinimapSignal(1, MarkerColor.Red, GetPosition("pos"));
+--
+-- @usage
+-- -- Beispiel #3: Farbe Frei bestimmen
+-- -- Es wird eine Farbe in Table-Form übergeben.
+-- API.CreateMinimapSignal(1, {88, 111, 144}, GetPosition("pos"));
 --
 function API.CreateMinimapSignal(_PlayerID, _PlayerIDOrColorTable, _Position)
     if GUI then
@@ -90,15 +97,34 @@ end
 ---
 -- Erstellt eine statische Markierung auf der Minimap.
 --
--- <b>Hinweis</b>: Die Farbe richtet sich nach der Spielerfarbe!
+-- Die Farbe kann auf 3 verschiedene Arten bestimmt werden.
+-- <ol>
+-- <li>Anhand der ID eines Spielers<br/>(→ Beispiel #1)</li>
+-- <li>Anhand einer vordefinierten Farbe<br/>(→ Beispiel #2)</li>
+-- <li>Anhand einer benutzerdefinierten Farbe<br/>(→ Beispiel #3)</li>
+-- </ol>
 --
 -- @param[type=number] _PlayerID             Anzeige für Spieler
--- @param              _PlayerIDOrColorTable PlayerID oder Farbtabelle (Spielernummer oder Farbtabelle)
+-- @param              _PlayerIDOrColorTable PlayerID oder Farbtabelle
 -- @param              _Position             Position des Markers (Skriptname, ID oder Position)
 -- @return[type=number] ID des Markers
 -- @within Anwenderfunktionen
+-- @see MarkerColor
 --
--- @usage API.CreateMinimapMarker(1, 1, GetPosition("pos"));
+-- @usage
+-- -- Beispiel #1: Farbe anhand des Spielers
+-- -- Es wird die Spielerfarbe eines Spielers verwendet.
+-- API.CreateMinimapMarker(1, 1, GetPosition("pos"));
+--
+-- @usage
+-- -- Beispiel #2: Farbe aus Vorgabentabelle
+-- -- Es wird eine der vorgegebenen Farben verwendet.
+-- API.CreateMinimapMarker(1, MarkerColor.Red, GetPosition("pos"));
+--
+-- @usage
+-- -- Beispiel #3: Farbe Frei bestimmen
+-- -- Es wird eine Farbe in Table-Form übergeben.
+-- API.CreateMinimapMarker(1, {88, 111, 144}, GetPosition("pos"));
 --
 function API.CreateMinimapMarker(_PlayerID, _PlayerIDOrColorTable, _Position)
     -- API.CreateMinimapMarker(1, 2, Logic.GetMarketplace(1))
@@ -120,15 +146,34 @@ end
 ---
 -- Erstellt eine pulsierende Markierung auf der Minimap.
 --
--- <b>Hinweis</b>: Die Farbe richtet sich nach der Spielerfarbe!
+-- Die Farbe kann auf 3 verschiedene Arten bestimmt werden.
+-- <ol>
+-- <li>Anhand der ID eines Spielers<br/>(→ Beispiel #1)</li>
+-- <li>Anhand einer vordefinierten Farbe<br/>(→ Beispiel #2)</li>
+-- <li>Anhand einer benutzerdefinierten Farbe<br/>(→ Beispiel #3)</li>
+-- </ol>
 --
 -- @param[type=number] _PlayerID             Anzeige für Spieler
--- @param              _PlayerIDOrColorTable PlayerID oder Farbtabelle (Spielernummer oder Farbtabelle)
+-- @param              _PlayerIDOrColorTable PlayerID oder Farbtabelle
 -- @param              _Position             Position des Markers (Skriptname, ID oder Position)
 -- @return[type=number] ID des Markers
 -- @within Anwenderfunktionen
+-- @see MarkerColor
 --
--- @usage API.CreateMinimapPulse(1, 1, GetPosition("pos"));
+-- @usage
+-- -- Beispiel #1: Farbe anhand des Spielers
+-- -- Es wird die Spielerfarbe eines Spielers verwendet.
+-- API.CreateMinimapPulse(1, 1, GetPosition("pos"));
+--
+-- @usage
+-- -- Beispiel #2: Farbe aus Vorgabentabelle
+-- -- Es wird eine der vorgegebenen Farben verwendet.
+-- API.CreateMinimapPulse(1, MarkerColor.Red, GetPosition("pos"));
+--
+-- @usage
+-- -- Beispiel #3: Farbe Frei bestimmen
+-- -- Es wird eine Farbe in Table-Form übergeben.
+-- API.CreateMinimapPulse(1, {88, 111, 144}, GetPosition("pos"));
 --
 function API.CreateMinimapPulse(_PlayerID, _PlayerIDOrColorTable, _Position)
     if GUI then
@@ -152,7 +197,8 @@ end
 -- @param[type=number] _ID ID des Markers
 -- @within Anwenderfunktionen
 --
--- @usage API.DestroyMinimapSignal(SomeMarkerID);
+-- @usage
+-- API.DestroyMinimapSignal(SomeMarkerID);
 --
 function API.DestroyMinimapSignal(_ID)
     if GUI then
