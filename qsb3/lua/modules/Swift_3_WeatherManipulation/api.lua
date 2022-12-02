@@ -47,7 +47,8 @@ You may use and modify this file unter the terms of the MIT licence.
 -- @see API.WeatherEventRegister
 -- @see API.WeatherEventRegisterLoop
 --
--- @usage -- Erzeugt ein Winterevent
+-- @usage
+-- -- Erzeugt ein Winterevent
 -- MyEvent = API.WeatherEventCreate(
 --     "ne_winter_sequence.xml", false, true, true, false, -15,
 --     {Goods.G_Grain, Goods.G_RawFish, Goods.G_Honeycomb}
@@ -83,7 +84,8 @@ end
 -- @see API.WeatherEventAbort
 -- @see API.WeatherEventRegisterLoop
 --
--- @usage API.WeatherEventRegister(MyEvent, 300);
+-- @usage
+-- API.WeatherEventRegister(MyEvent, 300);
 --
 function API.WeatherEventRegister(_Event, _Duration)
     if GUI then
@@ -106,7 +108,8 @@ end
 -- @see API.WeatherEventAbort
 -- @see API.WeatherEventRegister
 --
--- @usage API.WeatherEventRegister(MyEvent);
+-- @usage
+-- API.WeatherEventRegister(MyEvent);
 --
 function API.WeatherEventRegisterLoop(_Event)
     if GUI then

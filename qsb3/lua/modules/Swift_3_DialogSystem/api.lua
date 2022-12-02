@@ -98,7 +98,8 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- @param[type=number] _PlayerID Empfänger des Dialog
 -- @within Anwenderfunktionen
 --
--- @usage function Dialog1(_Name, _PlayerID)
+-- @usage
+-- function Dialog1(_Name, _PlayerID)
 --     local Dialog = {
 --         DisableFow = true,
 --         DisableBoderPins = true,
@@ -185,7 +186,8 @@ end
 -- @return[type=function] <a href="#ASP">ASP</a>
 -- @within Anwenderfunktionen
 --
--- @usage local AP, ASP = API.AddPages(Dialog);
+-- @usage
+-- local AP, ASP = API.AddPages(Dialog);
 --
 function API.AddDialogPages(_Dialog)
     _Dialog.GetPage = function(self, _NameOrID)
@@ -451,7 +453,8 @@ end
 -- @return[type=table] Referenz auf die Seite
 -- @within Dialog
 --
--- @usage -- Beispiel ohne Page Name
+-- @usage
+-- -- Beispiel ohne Page Name
 -- ASP(1, "hans", "Hans", "Ich gehe in die weitel Welt hinein.", true);
 -- -- Beispiel mit Page Name
 -- ASP("Page1", 1, "hans", "Hans", "Ich gehe in die weitel Welt hinein.", true);

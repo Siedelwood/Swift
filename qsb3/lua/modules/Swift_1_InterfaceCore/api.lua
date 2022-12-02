@@ -280,7 +280,8 @@ end
 -- @param[type=string] _Portrait Name des Models
 -- @within Anwenderfunktionen
 --
--- @usage -- Kopf des Primary Knight
+-- @usage
+-- -- Kopf des Primary Knight
 -- API.SetPlayerPortrait(2);
 -- -- Kopf durch Entity bestimmen
 -- API.SetPlayerPortrait(2, "amma");
@@ -795,7 +796,8 @@ end
 --
 -- @param[type=number] _ID ID des Bindung
 -- @within Anwenderfunktionen
--- @usage API.DropBuildingButton(SpecialButtonID);
+-- @usage
+-- API.DropBuildingButton(SpecialButtonID);
 --
 function API.DropBuildingButton(_ID)
     return ModuleInterfaceCore.Local:RemoveButtonBinding(0, _ID);
@@ -807,7 +809,8 @@ end
 -- @param[type=number] _Type Typ des Gebäudes
 -- @param[type=number] _ID   ID des Bindung
 -- @within Anwenderfunktionen
--- @usage API.DropBuildingButtonFromType(Entities.B_Bakery, SpecialButtonID);
+-- @usage
+-- API.DropBuildingButtonFromType(Entities.B_Bakery, SpecialButtonID);
 --
 function API.DropBuildingButtonFromType(_Type, _ID)
     return ModuleInterfaceCore.Local:RemoveButtonBinding(_Type, _ID);
@@ -819,7 +822,8 @@ end
 -- @param[type=string] _ScriptName Skriptname des Entity
 -- @param[type=number] _ID         ID des Bindung
 -- @within Anwenderfunktionen
--- @usage API.DropBuildingButtonFromEntity("Bakery", SpecialButtonID);
+-- @usage
+-- API.DropBuildingButtonFromEntity("Bakery", SpecialButtonID);
 --
 function API.DropBuildingButtonFromEntity(_ScriptName, _ID)
     return ModuleInterfaceCore.Local:RemoveButtonBinding(_ScriptName, _ID);

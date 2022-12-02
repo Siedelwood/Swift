@@ -174,7 +174,8 @@ end
 -- @see QSB.SegmentResult
 -- @see API.CreateQuest
 --
--- @usage API.CreateNestedQuest {
+-- @usage
+-- API.CreateNestedQuest {
 --     Name        = "UnimaginativeQuestname",
 --     Segments    = {
 --         {

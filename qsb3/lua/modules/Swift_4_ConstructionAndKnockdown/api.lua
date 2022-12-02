@@ -86,7 +86,8 @@ end
 -- @param              _Territory ID oder Name des Territorium
 -- @return[type=number] ID der Einschränkung
 --
--- @usage MyRestriction = API.RestrictBuildingTypeInTerritory(1, Entities.B_Bakery, 1);
+-- @usage
+-- MyRestriction = API.RestrictBuildingTypeInTerritory(1, Entities.B_Bakery, 1);
 --
 function API.RestrictBuildingTypeInTerritory(_PlayerID, _Type, _Territory)
     if GUI then
@@ -110,7 +111,8 @@ end
 -- @param[type=number] _Area      Größe des Gebiets
 -- @return[type=number] ID der Einschränkung
 --
--- @usage MyRestriction = API.RestrictBuildingTypeInArea(1, Entities.B_Bakery, "GiveMeMeatInstead", 3000);
+-- @usage
+-- MyRestriction = API.RestrictBuildingTypeInArea(1, Entities.B_Bakery, "GiveMeMeatInstead", 3000);
 --
 function API.RestrictBuildingTypeInArea(_PlayerID, _Type, _Position, _Area)
     if GUI then
@@ -131,7 +133,8 @@ end
 -- @param              _Territory ID oder Name des Territorium
 -- @return[type=number] ID der Einschränkung
 --
--- @usage MyRestriction = API.RestrictBuildingCategoryInTerritory(1, EntityCategories.CityBuilding, 1);
+-- @usage
+-- MyRestriction = API.RestrictBuildingCategoryInTerritory(1, EntityCategories.CityBuilding, 1);
 --
 function API.RestrictBuildingCategoryInTerritory(_PlayerID, _Category, _Territory)
     if GUI then
@@ -155,7 +158,8 @@ end
 -- @param[type=number] _Area      Größe des Gebiets
 -- @return[type=number] ID der Einschränkung
 --
--- @usage MyRestriction = API.RestrictBuildingCategoryInArea(1, EntityCategories.OuterRimBuilding, "NoOuterRim", 3000);
+-- @usage
+-- MyRestriction = API.RestrictBuildingCategoryInArea(1, EntityCategories.OuterRimBuilding, "NoOuterRim", 3000);
 --
 function API.RestrictBuildingCategoryInArea(_PlayerID, _Category, _Position, _Area)
     if GUI then
@@ -209,7 +213,8 @@ end
 -- @param              _Territory ID oder Name des Territorium
 -- @return[type=number] ID der Einschränkung
 --
--- @usage MyRestriction = API.RestrictTrailInTerritory(1, 1);
+-- @usage
+-- MyRestriction = API.RestrictTrailInTerritory(1, 1);
 --
 function API.RestrictTrailInTerritory(_PlayerID, _Territory)
     if GUI then
@@ -231,7 +236,8 @@ end
 -- @param[type=number] _Area      Größe des Gebiets
 -- @return[type=number] ID der Einschränkung
 --
--- @usage MyRestriction = API.RestrictTrailInArea(1, "NoMansLand", 3000);
+-- @usage
+-- MyRestriction = API.RestrictTrailInArea(1, "NoMansLand", 3000);
 --
 function API.RestrictTrailInArea(_PlayerID, _Position, _Area)
     if GUI then
@@ -250,7 +256,8 @@ end
 -- @param              _Territory ID oder Name des Territorium
 -- @return[type=number] ID der Einschränkung
 --
--- @usage MyRestriction = API.RestrictStreetInTerritory(1, 1);
+-- @usage
+-- MyRestriction = API.RestrictStreetInTerritory(1, 1);
 --
 function API.RestrictStreetInTerritory(_PlayerID, _Territory)
     if GUI then
@@ -272,7 +279,8 @@ end
 -- @param[type=number] _Area      Größe des Gebiets
 -- @return[type=number] ID der Einschränkung
 --
--- @usage MyRestriction = API.RestrictStreetInArea(1, "NoMansLand", 3000);
+-- @usage
+-- MyRestriction = API.RestrictStreetInArea(1, "NoMansLand", 3000);
 --
 function API.RestrictStreetInArea(_PlayerID, _Position, _Area)
     if GUI then
@@ -289,7 +297,8 @@ end
 -- Löscht eine Baueinschränkung mit der angegebenen ID;
 -- @param[type=number] _ID  ID der Einschränkung
 --
--- @usage API.DeleteRestriction(MyRestriction);
+-- @usage
+-- API.DeleteRestriction(MyRestriction);
 --
 function API.DeleteRestriction(_ID)
     if GUI then
@@ -340,7 +349,8 @@ end
 -- @param              _Territory ID oder Name des Territorium
 -- @return[type=number] ID der Protektion
 --
--- @usage MyProtection = API.ProtectBuildingTypeInTerritory(1, Entities.B_Bakery, 1);
+-- @usage
+-- MyProtection = API.ProtectBuildingTypeInTerritory(1, Entities.B_Bakery, 1);
 --
 function API.ProtectBuildingTypeInTerritory(_PlayerID, _Type, _Territory)
     if GUI then
@@ -364,7 +374,8 @@ end
 -- @param[type=number] _Area      Größe des Gebiets
 -- @return[type=number] ID der Protektion
 --
--- @usage MyProtection = API.ProtectBuildingTypeInArea(1, Entities.B_Bakery, "AreaCenter", 3000);
+-- @usage
+-- MyProtection = API.ProtectBuildingTypeInArea(1, Entities.B_Bakery, "AreaCenter", 3000);
 --
 function API.ProtectBuildingTypeInArea(_PlayerID, _Type, _Position, _Area)
     if GUI then
@@ -385,7 +396,8 @@ end
 -- @param              _Territory ID oder Name des Territorium
 -- @return[type=number] ID der Protektion
 --
--- @usage MyProtection = API.ProtectBuildingCategoryInTerritory(1, EntityCategories.CityBuilding, 1);
+-- @usage
+-- MyProtection = API.ProtectBuildingCategoryInTerritory(1, EntityCategories.CityBuilding, 1);
 --
 function API.ProtectBuildingCategoryInTerritory(_PlayerID, _Category, _Territory)
     if GUI then
@@ -409,7 +421,8 @@ end
 -- @param[type=number] _Area      Größe des Gebiets
 -- @return[type=number] ID der Protektion
 --
--- @usage MyProtection = API.ProtectBuildingCategoryInArea(1, EntityCategories.CityBuilding, "AreaCenter", 3000);
+-- @usage
+-- MyProtection = API.ProtectBuildingCategoryInArea(1, EntityCategories.CityBuilding, "AreaCenter", 3000);
 --
 function API.ProtectBuildingCategoryInArea(_PlayerID, _Category, _Position, _Area)
     if GUI then
@@ -428,7 +441,8 @@ end
 -- @param[type=String] _ScriptName Skriptname des Entity
 -- @return[type=number] ID der Protektion
 --
--- @usage MyProtection = API.ProtectNamedBuilding(1, "Denkmalschutz");
+-- @usage
+-- MyProtection = API.ProtectNamedBuilding(1, "Denkmalschutz");
 --
 function API.ProtectNamedBuilding(_PlayerID, _ScriptName)
     if GUI then
@@ -444,7 +458,8 @@ end
 -- Löscht einen Abrissschutz mit der angegebenen ID.
 -- @param[type=number] _ID  ID der Protektion
 --
--- @usage API.DeleteProtection(MyProtection);
+-- @usage
+-- API.DeleteProtection(MyProtection);
 --
 function API.DeleteProtection(_ID)
     if GUI then

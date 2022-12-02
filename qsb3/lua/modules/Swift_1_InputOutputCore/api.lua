@@ -80,7 +80,8 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- @param[type=string] _Text Anzeigetext
 -- @within Anwenderfunktionen
 --
--- @usage API.Note("Das ist eine flüchtige Information!");
+-- @usage
+-- API.Note("Das ist eine flüchtige Information!");
 --
 function API.Note(_Text)
     ModuleInputOutputCore.Shared:Note(_Text);
@@ -95,7 +96,8 @@ end
 -- @param[type=string] _Text Anzeigetext
 -- @within Anwenderfunktionen
 --
--- @usage API.StaticNote("Das ist eine dauerhafte Information!");
+-- @usage
+-- API.StaticNote("Das ist eine dauerhafte Information!");
 --
 function API.StaticNote(_Text)
     ModuleInputOutputCore.Shared:StaticNote(_Text);
@@ -110,7 +112,8 @@ end
 -- @param[type=string] _Text Anzeigetext
 -- @within Anwenderfunktionen
 --
--- @usage API.Message("Das ist eine Nachricht!");
+-- @usage
+-- API.Message("Das ist eine Nachricht!");
 --
 function API.Message(_Text)
     ModuleInputOutputCore.Shared:Message(_Text);
@@ -121,7 +124,8 @@ end
 --
 -- @within Anwenderfunktionen
 --
--- @usage API.ClearNotes();
+-- @usage
+-- API.ClearNotes();
 --
 function API.ClearNotes()
     ModuleInputOutputCore.Shared:ClearNotes();
@@ -171,7 +175,8 @@ end
 -- @return Ersetzter Text
 -- @within Anwenderfunktionen
 --
--- @usage local Placeholder = API.ConvertPlaceholders("{scarlet}Dieser Text ist jetzt rot!");
+-- @usage
+-- local Placeholder = API.ConvertPlaceholders("{scarlet}Dieser Text ist jetzt rot!");
 -- local Placeholder2 = API.ConvertPlaceholders("{n:placeholder2} wurde ersetzt!");
 -- local Placeholder3 = API.ConvertPlaceholders("{t:U_KnightHealing} wurde ersetzt!");
 -- local Placeholder3 = API.ConvertPlaceholders("{v:MyVariable.1.MyValue} wurde ersetzt!");
@@ -200,7 +205,8 @@ end
 -- @param[type=string] _Replacement Wert, der ersetzt wird
 -- @within Anwenderfunktionen
 --
--- @usage API.AddNamePlaceholder("Scriptname", "Horst");
+-- @usage
+-- API.AddNamePlaceholder("Scriptname", "Horst");
 -- API.AddNamePlaceholder("Scriptname", {de = "Kuchen", en = "Cake"});
 --
 function API.AddNamePlaceholder(_Name, _Replacement)
@@ -223,7 +229,8 @@ end
 -- @param[type=string] _Replacement Wert, der ersetzt wird
 -- @within Anwenderfunktionen
 --
--- @usage API.AddNamePlaceholder("U_KnightHealing", "Arroganze Ziege");
+-- @usage
+-- API.AddNamePlaceholder("U_KnightHealing", "Arroganze Ziege");
 -- API.AddNamePlaceholder("B_Castle_SE", {de = "Festung des Bösen", en = "Fortress of evil"});
 --
 function API.AddEntityTypePlaceholder(_Type, _Replacement)

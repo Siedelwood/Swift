@@ -27,7 +27,8 @@ You may use and modify this file unter the terms of the MIT licence.
 -- @return[type=number] Vergangene reale Zeit
 -- @within Anwenderfunktionen
 --
--- @usage local RealTime = API.RealTimeGetSecondsPassedSinceGameStart();
+-- @usage
+-- local RealTime = API.RealTimeGetSecondsPassedSinceGameStart();
 --
 function API.RealTimeGetSecondsPassedSinceGameStart()
     return ModuleJobsCore.Shared.SecondsSinceGameStart;
@@ -51,7 +52,8 @@ end
 -- @return[type=number] ID des Jobs
 -- @within Anwenderfunktionen
 --
--- @usage API.StartJobByEventType(
+-- @usage
+-- API.StartJobByEventType(
 --     Events.LOGIC_EVENT_EVERY_SECOND,
 --     FunctionRefToCall
 -- );
@@ -76,7 +78,8 @@ end
 -- @return[type=number] Job ID
 -- @within Anwenderfunktionen
 --
--- @usage -- Führt eine Funktion nach 15 Sekunden aus.
+-- @usage
+-- -- Führt eine Funktion nach 15 Sekunden aus.
 -- API.StartJob(function(_Time, _EntityType)
 --     if Logic.GetTime() > _Time + 15 then
 --         MachWas(_EntityType);
@@ -128,7 +131,8 @@ StartSimpleHiResJobEx = API.StartHiResJob;
 -- @param[type=number] _JobID ID des Jobs
 -- @within Anwenderfunktionen
 --
--- @usage API.EndJob(AnyJobID);
+-- @usage
+-- API.EndJob(AnyJobID);
 --
 function API.EndJob(_JobID)
     if ModuleJobsCore.Shared.EventJobs[_JobID] then
@@ -146,7 +150,8 @@ end
 -- @return[type=boolean] Job ist aktiv
 -- @within Anwenderfunktionen
 --
--- @usage if API.JobIsRunning(AnyJobID) then
+-- @usage
+-- if API.JobIsRunning(AnyJobID) then
 --     -- Mach was
 -- end;
 --
@@ -163,7 +168,8 @@ end
 -- @param[type=number] _JobID ID des Jobs
 -- @within Anwenderfunktionen
 --
--- @usage API.ResumeJob(AnyJobID);
+-- @usage
+-- API.ResumeJob(AnyJobID);
 --
 function API.ResumeJob(_JobID)
     if ModuleJobsCore.Shared.EventJobs[_JobID] then
@@ -181,7 +187,8 @@ end
 -- @param[type=number] _JobID ID des Jobs
 -- @within Anwenderfunktionen
 --
--- @usage API.YieldJob(AnyJobID);
+-- @usage
+-- API.YieldJob(AnyJobID);
 --
 function API.YieldJob(_JobID)
     if ModuleJobsCore.Shared.EventJobs[_JobID] then
@@ -207,7 +214,8 @@ end
 -- @return[type=number] ID der Verzögerung
 -- @within Anwenderfunktionen
 --
--- @usage API.StartDelay(
+-- @usage
+-- API.StartDelay(
 --     30,
 --     function()
 --         Logic.DEBUG_AddNote("Zeit abgelaufen!");
@@ -248,7 +256,8 @@ end
 -- @return[type=number] ID der Verzögerung
 -- @within Anwenderfunktionen
 --
--- @usage API.StartHiResDelay(
+-- @usage
+-- API.StartHiResDelay(
 --     30,
 --     function()
 --         Logic.DEBUG_AddNote("Zeit abgelaufen!");
@@ -290,7 +299,8 @@ end
 -- @return[type=number] ID der Verzögerung
 -- @within Anwenderfunktionen
 --
--- @usage API.StartRealTimeDelay(
+-- @usage
+-- API.StartRealTimeDelay(
 --     30,
 --     function()
 --         Logic.DEBUG_AddNote("Zeit abgelaufen!");

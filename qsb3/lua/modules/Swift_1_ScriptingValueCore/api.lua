@@ -40,7 +40,8 @@ QSB.ScriptingValue = {}
 -- @return[type=number] Ermittelter Wert
 -- @within Anwenderfunktionen
 --
--- @usage local PlayerID = API.GetInteger("HansWurst", QSB.ScriptingValue.Player);
+-- @usage
+-- local PlayerID = API.GetInteger("HansWurst", QSB.ScriptingValue.Player);
 --
 function API.GetInteger(_Entity, _SV)
     local ID = GetID(_Entity);
@@ -58,7 +59,8 @@ end
 -- @return[type=number] Ermittelter Wert
 -- @within Anwenderfunktionen
 --
--- @usage local Size = API.GetFloat("HansWurst", QSB.ScriptingValue.Size);
+-- @usage
+-- local Size = API.GetFloat("HansWurst", QSB.ScriptingValue.Size);
 --
 function API.GetFloat(_Entity, _SV)
     local ID = GetID(_Entity);
@@ -77,7 +79,8 @@ end
 -- @param[type=number] _Value  Zu setzender Wert
 -- @within Anwenderfunktionen
 --
--- @usage API.SetInteger("HansWurst", QSB.ScriptingValue.Player, 2);
+-- @usage
+-- API.SetInteger("HansWurst", QSB.ScriptingValue.Player, 2);
 --
 function API.SetInteger(_Entity, _SV, _Value)
     local ID = GetID(_Entity);
@@ -95,7 +98,8 @@ end
 -- @param[type=number] _Value  Zu setzender Wert
 -- @within Anwenderfunktionen
 --
--- @usage API.SetFloat("HansWurst", QSB.ScriptingValue.Size, 1.5);
+-- @usage
+-- API.SetFloat("HansWurst", QSB.ScriptingValue.Size, 1.5);
 --
 function API.SetFloat(_Entity, _SV, _Value)
     local ID = GetID(_Entity);
@@ -112,7 +116,8 @@ end
 -- @return[type=number] Konvertierte Ganzzahl
 -- @within Anwenderfunktionen
 --
--- @usage local Converted = API.ConvertIntegerToFloat(Value)
+-- @usage
+-- local Converted = API.ConvertIntegerToFloat(Value)
 --
 function API.ConvertIntegerToFloat(_Value)
     return ModuleScriptingValue.Shared:ScriptingValueIntegerToFloat(_Value);
@@ -125,7 +130,8 @@ end
 -- @return[type=number] Konvertierte Ganzzahl
 -- @within Anwenderfunktionen
 --
--- @usage local Converted = API.ConvertFloatToInteger(Value)
+-- @usage
+-- local Converted = API.ConvertFloatToInteger(Value)
 --
 function API.ConvertFloatToInteger(_Value)
     return ModuleScriptingValue.Shared:ScriptingValueFloatToInteger(_Value);

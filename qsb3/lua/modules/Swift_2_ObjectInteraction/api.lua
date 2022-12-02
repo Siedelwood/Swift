@@ -226,7 +226,8 @@ API.CreateObject = API.SetupObject;
 -- @param[type=string] _ScriptName Skriptname des Objektes
 -- @see API.SetupObject
 -- @see API.ResetObject
--- @usage API.DisposeObject("MyObject");
+-- @usage
+-- API.DisposeObject("MyObject");
 --
 function API.DisposeObject(_ScriptName)
     if GUI or not IO[_ScriptName] then
@@ -247,7 +248,8 @@ end
 -- @see API.SetupObject
 -- @see API.InteractiveObjectActivate
 -- @see API.InteractiveObjectDeactivate
--- @usage API.ResetObject("MyObject");
+-- @usage
+-- API.ResetObject("MyObject");
 --
 function API.ResetObject(_ScriptName)
     if GUI or not IO[_ScriptName] then

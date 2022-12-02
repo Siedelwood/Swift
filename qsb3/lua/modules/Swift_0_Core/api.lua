@@ -237,7 +237,8 @@ end
 -- @param               _Value Neuer Wert
 -- @within Base
 --
--- @usage local Value = API.ObtainCustomVariable("MyVariable", 0);
+-- @usage
+-- local Value = API.ObtainCustomVariable("MyVariable", 0);
 --
 function API.SaveCustomVariable(_Name, _Value)
     Swift:SetCustomVariable(_Name, _Value);
@@ -250,7 +251,8 @@ end
 -- @return Wert
 -- @within Base
 --
--- @usage local Value = API.ObtainCustomVariable("MyVariable", 0);
+-- @usage
+-- local Value = API.ObtainCustomVariable("MyVariable", 0);
 --
 function API.ObtainCustomVariable(_Name, _Default)
     local Value = QSB.CustomVariable[_Name];
@@ -273,7 +275,8 @@ end
 -- @return Übersetzten Text oder Table mit Texten
 -- @within Base
 --
--- @usage -- Einstufige Table
+-- @usage
+-- -- Einstufige Table
 -- local Text = API.Localize({de = "Deutsch", en = "English"});
 -- -- Rückgabe: "Deutsch"
 --
@@ -298,7 +301,8 @@ end
 -- @within Base
 -- @local
 --
--- @usage local Bool = API.ToBoolean("+")  --> Bool = true
+-- @usage
+-- local Bool = API.ToBoolean("+")  --> Bool = true
 -- local Bool = API.ToBoolean("1")  --> Bool = true
 -- local Bool = API.ToBoolean(1)  --> Bool = true
 -- local Bool = API.ToBoolean("no") --> Bool = false
@@ -532,7 +536,8 @@ end
 -- @param[type=number] _FileLogLevel   Level für Dateiausgaabe
 -- @within Debug
 --
--- @usage API.SetLogLevel(LOG_LEVEL_ERROR, LOG_LEVEL_WARNING);
+-- @usage
+-- API.SetLogLevel(LOG_LEVEL_ERROR, LOG_LEVEL_WARNING);
 --
 function API.SetLogLevel(_ScreenLogLevel, _FileLogLevel)
     Swift:SetLogLevel(_ScreenLogLevel, _FileLogLevel);
@@ -739,7 +744,8 @@ end
 -- @param[type=number] _NewOwner (optional) Neuer Besitzer
 -- @return[type=number] Entity-ID des Entity
 -- @within Entity
--- @usage API.ReplaceEntity("Stein", Entities.XD_ScriptEntity)
+-- @usage
+-- API.ReplaceEntity("Stein", Entities.XD_ScriptEntity)
 --
 function API.ReplaceEntity(_Entity, _Type, _NewOwner)
     local ID1 = GetID(_Entity);
@@ -834,7 +840,8 @@ end
 -- @param[type=boolean] _Overtake          (optional) Mit Position austauschen
 -- @return[type=number] Entity-ID des erzeugten Wagens
 -- @within Entity
--- @usage -- API-Call
+-- @usage
+-- -- API-Call
 -- API.SendCart(Logic.GetStoreHouse(1), 2, Goods.G_Grain, 45)
 --
 function API.SendCart(_Position, _PlayerID, _GoodType, _Amount, _CartOverlay, _IgnoreReservation, _Overtake)
@@ -974,7 +981,8 @@ end
 -- @param[type=string] _Name Optionaler Name im Log
 -- @within Base
 -- @local
--- @usage Table = {1, 2, 3, {a = true}}
+-- @usage
+-- Table = {1, 2, 3, {a = true}}
 -- API.DumpTable(Table)
 --
 function API.DumpTable(_Table, _Name)
@@ -1182,7 +1190,8 @@ end
 -- @param[type=number] _Territory Zielterritorium
 -- @within Entity
 -- @local
--- @usage local Found = API.GetEntitiesOfCategoryInTerritory(1, EntityCategories.Hero, 5)
+-- @usage
+-- local Found = API.GetEntitiesOfCategoryInTerritory(1, EntityCategories.Hero, 5)
 --
 function API.GetEntitiesOfCategoryInTerritory(_PlayerID, _Category, _Territory)
     local PlayerEntities = {};
@@ -1559,7 +1568,8 @@ end
 -- @param _Target      Ziel (Skriptname, ID oder Position)
 -- @param[type=number] _Offset Winkel Offset
 -- @within Entity
--- @usage API.LookAt("Hakim", "Alandra")
+-- @usage
+-- API.LookAt("Hakim", "Alandra")
 --
 function API.LookAt(_Entity, _Target, _Offset)
     _Offset = _Offset or 0;
@@ -1609,7 +1619,8 @@ LookAt = API.LookAt;
 -- @param _entity         Entity (Skriptname oder ID)
 -- @param _entityToLookAt Ziel (Skriptname oder ID)
 -- @within Entity
--- @usage API.Confront("Hakim", "Alandra")
+-- @usage
+-- API.Confront("Hakim", "Alandra")
 --
 function API.Confront(_entity, _entityToLookAt)
     API.LookAt(_entity, _entityToLookAt);
@@ -1626,7 +1637,8 @@ end
 -- @param _pos2 Zweite Vergleichsposition (Skriptname, ID oder Positions-Table)
 -- @return[type=number] Entfernung zwischen den Punkten
 -- @within Position
--- @usage local Distance = API.GetDistance("HQ1", Logic.GetKnightID(1))
+-- @usage
+-- local Distance = API.GetDistance("HQ1", Logic.GetKnightID(1))
 --
 function API.GetDistance( _pos1, _pos2 )
     if (type(_pos1) == "string") or (type(_pos1) == "number") then
@@ -1653,7 +1665,8 @@ GetDistance = API.GetDistance;
 -- @param _Pos2 Zweite Vergleichsposition (Skriptname, ID oder Positions-Table)
 -- @return[type=number] Winkel zwischen den Punkten
 -- @within Position
--- @usage local Angle = API.GetAngleBetween("HQ1", Logic.GetKnightID(1))
+-- @usage
+-- local Angle = API.GetAngleBetween("HQ1", Logic.GetKnightID(1))
 --
 function API.GetAngleBetween(_Pos1, _Pos2)
 	local delta_X = 0;
@@ -1690,7 +1703,8 @@ end
 -- @param[type=table] _List   Liste von Entities oder Positionen
 -- @return Nähste Entity oder Position
 -- @within Position
--- @usage local Clostest = API.GetClosestToTarget("HQ1", {"Marcus", "Alandra", "Hakim"});
+-- @usage
+-- local Clostest = API.GetClosestToTarget("HQ1", {"Marcus", "Alandra", "Hakim"});
 --
 function API.GetClosestToTarget(_Target, _List)
     local ClosestToTarget = 0;
@@ -1713,7 +1727,8 @@ end
 -- @param _Entity Entity (Skriptname oder ID)
 -- @return[type=table] Positionstabelle {X= x, Y= y, Z= z}
 -- @within Position
--- @usage local Position = API.GetPosition("Hans");
+-- @usage
+-- local Position = API.GetPosition("Hans");
 --
 function API.GetPosition(_Entity)
     if _Entity == nil then
@@ -1738,7 +1753,8 @@ GetPosition = API.GetPosition;
 -- @param _Entity Entity (Skriptname oder ID)
 -- @param _Target Ziel (Skriptname, ID oder Position)
 -- @within Position
--- @usage API.SetPosition("Hans", "Horst");
+-- @usage
+-- API.SetPosition("Hans", "Horst");
 --
 function API.SetPosition(_Entity, _Target)
     local ID = GetID(_Entity);
@@ -1800,7 +1816,8 @@ end
 -- @param ... Positionen mit Komma getrennt
 -- @return[type=table] Durchschnittsposition aller Positionen
 -- @within Mathematik
--- @usage local Center = API.GetGeometricFocus("Hakim", "Marcus", "Alandra");
+-- @usage
+-- local Center = API.GetGeometricFocus("Hakim", "Marcus", "Alandra");
 --
 function API.GetGeometricFocus(...)
     local PositionData = {X= 0, Y= 0, Z= 0};
@@ -1830,7 +1847,8 @@ end
 -- @param[type=number]  _Percentage Entfernung zu Erster Position
 -- @return[type=table] Position auf Linie
 -- @within Mathematik
--- @usage local Position = API.GetLinePosition("HQ1", "HQ2", 0.75);
+-- @usage
+-- local Position = API.GetLinePosition("HQ1", "HQ2", 0.75);
 --
 function API.GetLinePosition(_Pos1, _Pos2, _Percentage)
     if _Percentage > 1 then
@@ -1868,7 +1886,8 @@ end
 -- @param[type=number]  _Periode Anzahl an Positionen
 -- @return[type=table] Positionen auf Linie
 -- @within Mathematik
--- @usage local PositionList = API.GetLinePosition("HQ1", "HQ2", 6);
+-- @usage
+-- local PositionList = API.GetLinePosition("HQ1", "HQ2", 6);
 --
 function API.GetLinePositions(_Pos1, _Pos2, _Periode)
     local PositionList = {};
@@ -1887,7 +1906,8 @@ end
 -- @param[type=number]  _Angle           Winkel auf dem Kreis
 -- @return[type=table] Position auf Kreisbahn
 -- @within Mathematik
--- @usage local Position = API.GetCirclePosition("HQ1", 3000, -45);
+-- @usage
+-- local Position = API.GetCirclePosition("HQ1", 3000, -45);
 --
 function API.GetCirclePosition(_Target, _Distance, _Angle)
     if not API.IsValidPosition(_Target) and not IsExisting(_Target) then
@@ -1921,7 +1941,8 @@ API.GetRelatiePos = API.GetCirclePosition;
 -- @param[type=number]  _Offset          Start Offset
 -- @return[type=table] Positionend auf Kreisbahn
 -- @within Mathematik
--- @usage local PositionList = API.GetCirclePosition("Position", 3000, 6, 45);
+-- @usage
+-- local PositionList = API.GetCirclePosition("Position", 3000, 6, 45);
 --
 function API.GetCirclePositions(_Target, _Distance, _Periode, _Offset)
     local Periode = API.Round(360 / _Periode, 0);

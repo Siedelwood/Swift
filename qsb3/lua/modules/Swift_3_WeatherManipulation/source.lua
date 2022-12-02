@@ -213,7 +213,6 @@ WeatherEvent = {
 --
 -- @within WeatherEvent
 -- @local
--- @usage MyEvent = WeatherEvent:New();
 --
 function WeatherEvent:New()
     return table.copy(self);

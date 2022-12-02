@@ -53,7 +53,8 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- @param[type=number] _Function Kalkulationsfunktion
 -- @within Anwenderfunktionen
 --
--- @usage API.PurchaseSetTraderAbilityForPlayer(2, MyCalculationFunction);
+-- @usage
+-- API.PurchaseSetTraderAbilityForPlayer(2, MyCalculationFunction);
 --
 function API.PurchaseSetTraderAbilityForPlayer(_PlayerID, _Function)
     if not GUI then
@@ -83,7 +84,8 @@ end
 -- @param[type=number] _Function Kalkulationsfunktion
 -- @within Anwenderfunktionen
 --
--- @usage API.PurchaseSetDefaultTraderAbility(MyCalculationFunction);
+-- @usage
+-- API.PurchaseSetDefaultTraderAbility(MyCalculationFunction);
 --
 function API.PurchaseSetDefaultTraderAbility(_Function)
     API.PurchaseSetTraderAbilityForPlayer(nil, _Function);
@@ -111,7 +113,8 @@ end
 -- @param[type=number] _Function Kalkulationsfunktion
 -- @within Anwenderfunktionen
 --
--- @usage API.PurchaseSetBasePriceForPlayer(2, MyCalculationFunction);
+-- @usage
+-- API.PurchaseSetBasePriceForPlayer(2, MyCalculationFunction);
 --
 function API.PurchaseSetBasePriceForPlayer(_PlayerID, _Function)
     if not GUI then
@@ -142,7 +145,8 @@ end
 -- @param[type=number] _Function Kalkulationsfunktion
 -- @within Anwenderfunktionen
 --
--- @usage API.PurchaseSetDefaultBasePrice(MyCalculationFunction);
+-- @usage
+-- API.PurchaseSetDefaultBasePrice(MyCalculationFunction);
 --
 function API.PurchaseSetDefaultBasePrice(_Function)
     API.PurchaseSetBasePriceForPlayer(nil, _Function);
@@ -171,7 +175,8 @@ end
 -- @param[type=number] _Function Kalkulationsfunktion
 -- @within Anwenderfunktionen
 --
--- @usage API.PurchaseSetInflationForPlayer(2, MyCalculationFunction);
+-- @usage
+-- API.PurchaseSetInflationForPlayer(2, MyCalculationFunction);
 --
 function API.PurchaseSetInflationForPlayer(_PlayerID, _Function)
     if not GUI then
@@ -203,7 +208,8 @@ end
 -- @param[type=number] _Function Kalkulationsfunktion
 -- @within Anwenderfunktionen
 --
--- @usage API.PurchaseSetDefaultInflation(MyCalculationFunction);
+-- @usage
+-- API.PurchaseSetDefaultInflation(MyCalculationFunction);
 --
 function API.PurchaseSetDefaultInflation(_Function)
     API.PurchaseSetInflationForPlayer(nil, _Function)
@@ -233,7 +239,8 @@ end
 -- @param[type=number] _Function Evaluationsfunktion
 -- @within Anwenderfunktionen
 --
--- @usage API.PurchaseSetConditionForPlayer(2, MyCalculationFunction);
+-- @usage
+-- API.PurchaseSetConditionForPlayer(2, MyCalculationFunction);
 --
 function API.PurchaseSetConditionForPlayer(_PlayerID, _Function)
     if not GUI then
@@ -265,7 +272,8 @@ end
 -- @param[type=number] _Function Evaluationsfunktion
 -- @within Anwenderfunktionen
 --
--- @usage API.PurchaseSetDefaultCondition(MyCalculationFunction);
+-- @usage
+-- API.PurchaseSetDefaultCondition(MyCalculationFunction);
 --
 function API.PurchaseSetDefaultCondition(_Function)
     API.PurchaseSetConditionForPlayer(nil, _Function)
@@ -293,7 +301,8 @@ end
 -- @param[type=number] _Function Kalkulationsfunktion
 -- @within Anwenderfunktionen
 --
--- @usage API.SaleSetBasePriceForPlayer(2, MyCalculationFunction);
+-- @usage
+-- API.SaleSetBasePriceForPlayer(2, MyCalculationFunction);
 --
 function API.SaleSetBasePriceForPlayer(_PlayerID, _Function)
     if not GUI then
@@ -323,7 +332,8 @@ end
 -- @param[type=number] _Function Kalkulationsfunktion
 -- @within Anwenderfunktionen
 --
--- @usage API.SaleSetDefaultBasePrice(MyCalculationFunction);
+-- @usage
+-- API.SaleSetDefaultBasePrice(MyCalculationFunction);
 --
 function API.SaleSetDefaultBasePrice(_Function)
     API.SaleSetBasePriceForPlayer(nil, _Function);
@@ -351,7 +361,8 @@ end
 -- @param[type=number] _Function Kalkulationsfunktion
 -- @within Anwenderfunktionen
 --
--- @usage API.SaleSetDeflationForPlayer(2, MyCalculationFunction);
+-- @usage
+-- API.SaleSetDeflationForPlayer(2, MyCalculationFunction);
 --
 function API.SaleSetDeflationForPlayer(_PlayerID, _Function)
     if not GUI then
@@ -381,7 +392,8 @@ end
 -- @param[type=number] _Function Kalkulationsfunktion
 -- @within Anwenderfunktionen
 --
--- @usage API.SaleSetDefaultDeflation(MyCalculationFunction);
+-- @usage
+-- API.SaleSetDefaultDeflation(MyCalculationFunction);
 --
 function API.SaleSetDefaultDeflation(_Function)
     API.SaleSetDeflationForPlayer(nil, _Function);
@@ -410,7 +422,8 @@ end
 -- @param[type=number] _Function Evaluationsfunktion
 -- @within Anwenderfunktionen
 --
--- @usage API.SaleSetConditionForPlayer(2, MyCalculationFunction);
+-- @usage
+-- API.SaleSetConditionForPlayer(2, MyCalculationFunction);
 --
 function API.SaleSetConditionForPlayer(_PlayerID, _Function)
     if not GUI then
@@ -441,7 +454,8 @@ end
 -- @param[type=number] _Function Evaluationsfunktion
 -- @within Anwenderfunktionen
 --
--- @usage API.SaleSetDefaultCondition(MyCalculationFunction);
+-- @usage
+-- API.SaleSetDefaultCondition(MyCalculationFunction);
 --
 function API.SaleSetDefaultCondition(_Function)
     API.SaleSetConditionForPlayer(nil, _Function);
@@ -456,7 +470,8 @@ end
 -- @param[type=number] _RefreshRate (Optional) Regenerationsrate des Angebot
 -- @within Anwenderfunktionen
 --
--- @usage -- Spieler 2 bietet Spieler 1 Brot an
+-- @usage
+-- -- Spieler 2 bietet Spieler 1 Brot an
 -- API.AddGoodOffer(2, Goods.G_Bread, 1, 2);
 -- -- Spieler 2 bietet Spieler 3 Eisen an
 -- API.AddGoodOffer(2, Goods.G_Iron, 3, 4, 180);
@@ -521,7 +536,8 @@ end
 -- @param[type=number] _RefreshRate (Optional) Regenerationsrate des Angebot
 -- @within Anwenderfunktionen
 --
--- @usage -- Spieler 2 bietet Spieler 1 Sölder an
+-- @usage
+-- -- Spieler 2 bietet Spieler 1 Sölder an
 -- API.AddMercenaryOffer(2, Entities.U_MilitaryBandit_Melee_SE, 1, 3);
 --
 function API.AddMercenaryOffer(_VendorID, _OfferType, _OfferAmount, _RefreshRate)
@@ -580,7 +596,8 @@ end
 -- @param[type=number] _OfferType   Typ des Entertainer
 -- @within Anwenderfunktionen
 --
--- @usage -- Spieler 2 bietet Spieler 1 einen Feuerschlucker an
+-- @usage
+-- -- Spieler 2 bietet Spieler 1 einen Feuerschlucker an
 -- API.AddEntertainerOffer(2, Entities.U_Entertainer_NA_FireEater);
 --
 function API.AddEntertainerOffer(_VendorID, _OfferType)
@@ -626,7 +643,8 @@ end
 -- @return[type=table] Angebotsinformationen
 -- @within Anwenderfunktionen
 --
--- @usage local Info = API.GetOfferInformation(2);
+-- @usage
+-- local Info = API.GetOfferInformation(2);
 --
 -- -- Info enthält:
 -- -- Info = {
@@ -655,7 +673,8 @@ end
 -- @return[type=number] Anzahl angebote
 -- @within Anwenderfunktionen
 --
--- @usage -- Angebote von Spieler 5 zählen
+-- @usage
+-- -- Angebote von Spieler 5 zählen
 -- local Count = API.GetOfferCount(5);
 --
 function API.GetOfferCount(_PlayerID)
@@ -674,7 +693,8 @@ end
 -- @return[type=boolean] Ware wird angeboten
 -- @within Anwenderfunktionen
 --
--- @usage -- Wird die Ware angeboten?
+-- @usage
+-- -- Wird die Ware angeboten?
 -- if API.IsGoodOrUnitOffered(4, Goods.G_Bread) then
 --     Logic.DEBUG_AddNote("Brot wird von Spieler 4 angeboten.");
 -- end
@@ -695,7 +715,8 @@ end
 -- @return[type=number] Menge an Angeboten
 -- @within Anwenderfunktionen
 --
--- @usage -- Wird die Ware angeboten?
+-- @usage
+-- -- Wird die Ware angeboten?
 -- local CurrentAmount = API.IsGoodOrUnitOffered(4, Goods.G_Bread);
 --
 function API.GetTradeOfferWaggonAmount(_PlayerID, _GoodOrEntityType)
@@ -717,7 +738,8 @@ end
 -- @param[type=number] _GoodOrEntityType Warentyp oder Entitytyp
 -- @within Anwenderfunktionen
 --
--- @usage -- Keinen Käse mehr verkaufen
+-- @usage
+-- -- Keinen Käse mehr verkaufen
 -- API.RemoveTradeOffer(7, Goods.G_Cheese);
 --
 function API.RemoveTradeOffer(_PlayerID, _GoodOrEntityType)
@@ -741,7 +763,8 @@ end
 -- @param[type=number] _NewAmount Neue Menge an Angeboten
 -- @within Anwenderfunktionen
 --
--- @usage -- Angebote voll auffüllen
+-- @usage
+-- -- Angebote voll auffüllen
 -- API.ModifyTradeOffer(7, Goods.G_Cheese, -1);
 -- API.ModifyTradeOffer(7, Goods.U_MilitarySword);
 -- -- 2 Angebote auffüllen
