@@ -26,8 +26,6 @@ You may use and modify this file unter the terms of the MIT licence.
 -- @field EntityArrived       Ein Entity hat das Ziel erreicht. (Parameter: EntityID, Position, DataIndex)
 -- @field EntityStuck         Ein Entity kann das Ziel nicht erreichen. (Parameter: EntityID, Position, DataIndex)
 -- @field EntityAtCheckpoint  Ein Entity hat einen Wegpunkt erreicht. (Parameter: EntityID, Position, DataIndex)
--- @field PathFindingFinished Ein Pfad wurde erfolgreich gefunden (Parameter: PathIndex)
--- @field PathFindingFailed   Ein Pfad konnte nicht ermittelt werden (Parameter: PathIndex)
 --
 -- @within Event
 --

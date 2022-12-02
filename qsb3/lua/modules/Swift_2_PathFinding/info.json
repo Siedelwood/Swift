@@ -1,9 +1,9 @@
 {
-    "name": "Swift_2_EntityMovement",
+    "name": "Swift_2_PathFinding",
     "version": "1.0.0",
     "mandatory": false,
-    "caption": "(2) Entity Movement",
-    "shortdesc": "Stellt Funktionen zur Bewegung von Entities.",
+    "caption": "(2) Path Finding",
+    "shortdesc": "Implementiert einen Wegfindungsalgosythmus.",
     "description": "",
     "files": [
         "source.lua",
