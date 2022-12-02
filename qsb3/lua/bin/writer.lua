@@ -28,8 +28,6 @@ BinWriter_ModuleFiles = {
     "Swift_2_CastleStore/api.lua",
     "Swift_2_EntityMovement/source.lua",
     "Swift_2_EntityMovement/api.lua",
-    "Swift_2_EntitySearch/source.lua",
-    "Swift_2_EntitySearch/api.lua",
     "Swift_2_KnightTitleRequirements/source.lua",
     "Swift_2_KnightTitleRequirements/api.lua",
     "Swift_2_KnightTitleRequirements/requirements.lua",

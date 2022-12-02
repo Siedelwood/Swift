@@ -61,11 +61,6 @@ QsbWriter_ModuleFiles = {
         "api.lua",
     },
 
-    ["Swift_2_EntitySearch"] = {
-        "source.lua",
-        "api.lua",
-    },
-
     ["Swift_2_KnightTitleRequirements"] = {
         "source.lua",
         "api.lua",
