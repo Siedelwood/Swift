@@ -11,9 +11,6 @@ You may use and modify this file unter the terms of the MIT licence.
 ---
 -- Ein Modul für die Bewegung von Entities.
 --
--- Es werden Funktionen für den Endanwender sowie eine Wegfindung für andere
--- Module bereitgestellt.
---
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
 -- <li><a href="Swift_1_JobsCore.api.html">(1) JobsCore</a></li>

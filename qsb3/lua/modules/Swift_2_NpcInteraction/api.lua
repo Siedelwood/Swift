@@ -85,7 +85,7 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- @within Anwenderfunktionen
 --
 -- @usage
--- -- Einen NPC mit Aktion erstellen:
+-- -- Beispiel #1: Einfachen NPC erstellen
 -- MyNpc = API.NpcCompose {
 --     Name     = "HansWurst",
 --     Callback = function(_Data)
@@ -95,8 +95,8 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 --     end
 -- }
 --
--- -- Einen NPC mit Aktion und Bedingung erstellen:
--- -- Der NPC kann nur angesprochen werden, wenn die Bedingung erfüllt ist.
+-- @usage
+-- -- Beispiel #2: NPC mit Bedingung erstellen
 -- MyNpc = API.NpcCompose {
 --     Name      = "HansWurst",
 --     Condition = function(_Data)
@@ -111,9 +111,8 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 --     end
 -- }
 --
--- -- Einen NPC für mehrere Spieler erstellen:
--- -- Jeder gelistete Spieler kann mit dem NPC sprechen. Bei allen anderen
--- -- Spielern wird eine optionale Aktion ausgeführt.
+-- @usage
+-- -- Beispiel #3: NPC auf Spieler beschränken
 -- MyNpc = API.NpcCompose {
 --     Name              = "HansWurst",
 --     Player            = {1, 2},
@@ -280,12 +279,17 @@ end
 -- @param[type=string] _Hero     (Optional) Skriptname des Helden
 -- @param[type=number] _PlayerID (Optional) Spieler ID
 -- @within Anwenderfunktionen
+-- 
 -- @usage
--- -- prüfe ob mit irgend wem gesprochen wurde
+-- -- Beispiel #1: Wurde mit NPC gesprochen
 -- if API.NpcTalkedTo(MyNpc) then
--- -- prüfe ob mit Spieler gesprochen wurde
+-- 
+-- @usage
+-- -- Beispiel #2: Spieler hat mit NPC gesprochen
 -- if API.NpcTalkedTo(MyNpc, nil, 1) then
--- -- prüfe ob mit Held des Spielers gesprochen wurde
+-- 
+-- @usage
+-- -- Beispiel #3: Held des Spielers hat mit NPC gesprochen
 -- if API.NpcTalkedTo(MyNpc, "Marcus", 1) then
 --
 function API.NpcTalkedTo(_Data, _Hero, _PlayerID)
