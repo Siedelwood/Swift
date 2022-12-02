@@ -44,6 +44,11 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 ---
 -- Startet einen Dialog.
 --
+-- Die Funktion bekommt ein Table mit der Dialogdefinition, wenn sie
+-- aufgerufen wird.
+--
+-- <p>(→ Beispiel #1)</p>
+--
 -- Für einen Dialog können verschiedene spezielle Einstellungen vorgenommen
 -- werden.<br>Mögliche Werte:
 -- <table border="1">
@@ -99,6 +104,7 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- @within Anwenderfunktionen
 --
 -- @usage
+-- -- Beispiel #1: Grobes Gerüst eines Briefings
 -- function Dialog1(_Name, _PlayerID)
 --     local Dialog = {
 --         DisableFow = true,
@@ -310,6 +316,8 @@ end
 --
 -- <h5>Dialog Page</h5>
 -- Eine Dialog Page stellt den gesprochenen Text mit und ohne Akteur dar.
+--
+-- <p>(→ Beispiel #1)</p>
 -- 
 -- Mögliche Felder:
 -- <table border="1">
@@ -388,13 +396,9 @@ end
 -- In einem Dialog kann der Spieler auch zur Auswahl einer Option gebeten
 -- werden. Dies wird als Multiple Choice bezeichnet. Schreibe die Optionen
 -- in eine Untertabelle MC.
--- <pre>AP {
---    ...
---    MC = {
---        {"Antwort 1", "ExamplePage1"},
---        {"Antwort 2", Option2Clicked},
---    },
---};</pre>
+--
+-- <p>(→ Beispiel #2)</p>
+--
 -- Es kann der Name der Zielseite angegeben werden, oder eine Funktion, die
 -- den Namen des Ziels zurück gibt. In der Funktion können vorher beliebige
 -- Dinge getan werden, wie z.B. Variablen setzen.
@@ -402,10 +406,13 @@ end
 -- Eine Antwort kann markiert werden, dass sie auch bei einem Rücksprung,
 -- nicht mehrfach gewählt werden kann. In diesem Fall ist sie bei erneutem
 -- Aufsuchen der Seite nicht mehr gelistet.
--- <pre>{"Antwort 3", "AnotherPage", Remove = true},</pre>
+-- 
+-- <p>(→ Beispiel #3)</p>
+--
 -- Eine Option kann auch bedingt ausgeblendet werden. Dazu wird eine Funktion
 -- angegeben, welche über die Sichtbarkeit entscheidet.
--- <pre>{"Antwort 3", "AnotherPage", Disable = OptionIsDisabled},</pre>
+-- 
+-- <p>(→ Beispiel #4)</p>
 --
 -- Nachdem der Spieler eine Antwort gewählt hat, wird er auf die Seite mit
 -- dem angegebenen Namen geleitet.
@@ -413,23 +420,85 @@ end
 -- Um den Dialog zu beenden, nachdem ein Pfad beendet ist, wird eine leere
 -- AP-Seite genutzt. Auf diese Weise weiß der Dialog, das er an dieser
 -- Stelle zuende ist.
--- <pre>AP()</pre>
+--
+-- <p>(→ Beispiel #5)</p>
 --
 -- Soll stattdessen zu einer anderen Seite gesprungen werden, kann bei AP der
 -- Name der Seite angeben werden, zu der gesprungen werden soll.
--- <pre>AP("SomePageName")</pre>
+--
+-- <p>(→ Beispiel #6)</p>
 --
 -- Um später zu einem beliebigen Zeitpunkt die gewählte Antwort einer Seite zu
 -- erfahren, muss der Name der Seite genutzt werden.
--- <pre>Dialog.Finished = function(_Data)
---    local Choosen = _Data:GetPage("Choice"):GetSelectedAnswer();
---end</pre>
+-- 
+-- <p>(→ Beispiel #7)</p>
+--
 -- Die zurückgegebene Zahl ist die ID der Antwort, angefangen von oben. Wird 0
 -- zurückgegeben, wurde noch nicht geantwortet.
 --
 -- @param[type=table] _Page Spezifikation der Seite
 -- @return[type=table] Refernez auf die angelegte Seite
 -- @within Dialog
+--
+-- @usage
+-- -- Beispiel #1: Eine einfache Seite erstellen
+-- AP {
+--     Title        = "Hero",
+--     Text         = "This page has an actor and a choice.",
+--     Actor        = 1,
+--     Duration     = 2,
+--     FadeIn       = 2,
+--     Position     = "npc1",
+--     DialogCamera = true,
+-- };
+--
+-- @usage
+-- -- Beispiel #2: Verwendung von Multiple Choice
+-- AP {
+--     Title        = "Hero",
+--     Text         = "This page has an actor and a choice.",
+--     Actor        = 1,
+--     Duration     = 2,
+--     FadeIn       = 2,
+--     Position     = "npc1",
+--     DialogCamera = true,
+--    -- MC ist das Table mit den auswählbaren Antworten
+--    MC = {
+--        -- Zielseite ist der Name der Page, zu der gesprungen wird.
+--        {"Antwort 1", "Zielseite"},
+--        -- Option2Clicked ist eine Funktion, die etwas macht und
+--        -- danach die Page zurückgibt, zu der gesprungen wird.
+--        {"Antwort 2", Option2Clicked},
+--    },
+-- };
+--
+-- @usage
+-- -- Beispiel #3: Antwort, die nur einmal gewählt werden kann
+-- MC = {
+--     {"Antwort 3", "AnotherPage", Remove = true},
+-- }
+--
+-- @usage
+-- -- Beispiel #4: Antwort mit gesteuerter Sichtbarkeit
+-- MC = {
+--     {"Antwort 3", "AnotherPage", Disable = OptionIsDisabled},
+-- }
+--
+-- @usage
+-- -- Beispiel #5: Abbruch des Dialog
+-- AP()
+--
+-- @usage
+-- -- Beispiel #6: Sprung zu anderer Seite
+-- AP("SomePageName")
+--
+-- @usage
+-- -- Beispiel #7: Erfragen der gewählten Antwort
+-- Dialog.Finished = function(_Data)
+--     local Choosen = _Data:GetPage("Choice"):GetSelectedAnswer();
+--     -- In Choosen steht der Index der Antwort
+-- end
+-- 
 --
 function AP(_Data)
     assert(false);

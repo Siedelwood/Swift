@@ -11,6 +11,12 @@ You may use and modify this file unter the terms of the MIT licence.
 ---
 -- Ermöglicht es Cutscene zu verwenden.
 --
+-- Cutscenes sind Kameraflüge, die zur szenerischen Untermalung gedacht sind.
+-- Texte sind kurz zu halten oder ganz wegzulassen, da der Spieler die Animation
+-- genießen soll und bestimmt nicht die ganze Zeit mit den Augen am
+-- Bildschirmrand festkleben will. Ebensowenig sind breite Bars oder der
+-- stetige Wechsel zwischen schmal und breit zu empfehlen.
+--
 -- <b>Vorausgesetzte Module:</b>
 -- <ul>
 -- <li><a href="Swift_1_DisplayCore.api.html">(1) Display Core</a></li>
@@ -36,6 +42,11 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 
 ---
 -- Startet eine Cutscene.
+--
+-- Die Funktion bekommt ein Table mit der Definition der Cutscene, wenn sie
+-- aufgerufen wird.
+--
+-- <p>(→ Beispiel #1)</p>
 --
 -- <h5>Einstellungen</h5>
 -- Für eine Cutscene können verschiedene spezielle Einstellungen vorgenommen
@@ -90,6 +101,7 @@ QSB.ScriptEvents = QSB.ScriptEvents or {};
 -- @within Anwenderfunktionen
 --
 -- @usage
+-- 
 -- function Cutscene1(_Name, _PlayerID)
 --     local Cutscene = {};
 --     local AP = API.AddCutscenePages(Cutscene);
@@ -207,6 +219,8 @@ end
 ---
 -- Erzeugt einen neuen Flight für die Cutscene.
 --
+-- <p>(→ Beispiel #1)</p>
+--
 -- <b>Achtung</b>: Diese Funktion wird von
 -- <a href="#API.AddCutscenePages">API.AddCutscenePages</a> erzeugt und an
 -- die Cutscene gebunden.
@@ -244,7 +258,7 @@ end
 -- <tr>
 -- <td>FarClipPlane</td>
 -- <td>number</td>
--- <td>(Optional) Renderdistanz für die Seite (Default 100000).
+-- <td>(Optional) Renderdistanz für die Seite (Default 35000).
 -- wird.</td>
 -- </tr>
 -- <tr>
@@ -280,6 +294,18 @@ end
 -- <td>(Optional) Setzt den Alphawert der Bars (Zwischen 0 und 1).</td>
 -- </tr>
 -- </table>
+--
+-- @usage
+-- -- Beispiel #1: Eine einfache Seite erstellen
+-- AF {
+--     -- Dateiname der Cutscene ohne .cs
+--     Flight       = "c02",
+--     -- Maximale Renderdistanz
+--     FarClipPlane = 45000,
+--     -- Text
+--     Title        = "Title",
+--     Text         = "Text of the flight.",
+-- };
 --
 -- @within Cutscene
 --
