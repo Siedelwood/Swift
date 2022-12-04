@@ -19,12 +19,6 @@ ModuleBriefingSystem = {
         BriefingCounter = 0,
     },
     Local = {
-        ParallaxWidgets = {
-            {"/EndScreen/EndScreen/BackGround", "/EndScreen/EndScreen"},
-            {"/InGame/Root/BlackStartScreen/BG", "/InGame/Root/BlackStartScreen"},
-            {"/InGame/Root/EndScreen/BlackBG", "/InGame/Root/EndScreen"},
-            {"/InGame/Root/EndScreen/BG", "/InGame/Root/EndScreen"},
-        },
         Briefing = {},
     },
     -- This is a shared structure but the values are asynchronous!
@@ -162,7 +156,6 @@ function ModuleBriefingSystem.Global:NextBriefing(_PlayerID)
         Briefing.CurrentPage = 0;
         self.Briefing[_PlayerID] = Briefing;
         self:TransformAnimations(_PlayerID);
-        self:TransformParallax(_PlayerID);
 
         if Briefing.EnableGlobalImmortality then
             Logic.SetGlobalInvulnerability(1);
@@ -195,8 +188,6 @@ function ModuleBriefingSystem.Global:TransformAnimations(_PlayerID)
                     -- Relaive position
                     if type(v[i][3]) == "number" then
                         local Entry = {};
-                        Entry.Interpolation = v[i].Interpolation;
-                        Entry.Repeat = v[i].Repeat == true;
                         Entry.Duration = v[i][1] or (2 * 60);
                         Entry.Start = {
                             Position = (type(v[i][2]) ~= "table" and {v[i][2],0}) or v[i][2],
@@ -215,8 +206,6 @@ function ModuleBriefingSystem.Global:TransformAnimations(_PlayerID)
                     -- Vector
                     elseif type(v[i][3]) == "table" then
                         local Entry = {};
-                        Entry.Interpolation = v[i].Interpolation;
-                        Entry.Repeat = v[i].Repeat == true;
                         Entry.Duration = v[i][1] or (2 * 60);
                         Entry.Start = {
                             Position = (type(v[i][2]) ~= "table" and {v[i][2],0}) or v[i][2],
@@ -234,43 +223,6 @@ function ModuleBriefingSystem.Global:TransformAnimations(_PlayerID)
             end
         end
         self.Briefing[_PlayerID].PageAnimations = nil;
-    end
-end
-
-function ModuleBriefingSystem.Global:TransformParallax(_PlayerID)
-    if self.Briefing[_PlayerID].PageParallax then
-        for k, v in pairs(self.Briefing[_PlayerID].PageParallax) do
-            local PageID = self:GetPageIDByName(_PlayerID, k);
-            if PageID ~= 0 then
-                self.Briefing[_PlayerID][PageID].Parallax = {};
-                self.Briefing[_PlayerID][PageID].Parallax.PurgeOld = v.PurgeOld == true;
-                for i= 1, 4, 1 do
-                    if v[i] then
-                        local Entry = {};
-                        Entry.Image = v[i][1];
-                        Entry.Interpolation = v[i].Interpolation;
-                        Entry.Duration = v[i][2] or (2 * 60);
-                        Entry.Repeat = v[i].Repeat == true;
-                        Entry.Start = {
-                            U0 = v[i][3] or 0,
-                            V0 = v[i][4] or 0,
-                            U1 = v[i][5] or 1,
-                            V1 = v[i][6] or 1,
-                            A  = v[i][7] or 255
-                        };
-                        Entry.End = {
-                            U0 = v[i][8] or Entry.Start.U0,
-                            V0 = v[i][9] or Entry.Start.V0,
-                            U1 = v[i][10] or Entry.Start.U1,
-                            V1 = v[i][11] or Entry.Start.V1,
-                            A  = v[i][12] or Entry.Start.A
-                        };
-                        self.Briefing[_PlayerID][PageID].Parallax[i] = Entry;
-                    end
-                end
-            end
-        end
-        self.Briefing[_PlayerID].PageParallax = nil;
     end
 end
 
@@ -484,7 +436,6 @@ function ModuleBriefingSystem.Local:DisplayPage(_PlayerID, _PageID, _PageData)
     end
     self.Briefing[_PlayerID][_PageID] = _PageData;
     self.Briefing[_PlayerID].AnimationQueue = self.Briefing[_PlayerID].AnimationQueue or {};
-    self.Briefing[_PlayerID].ParallaxLayers = self.Briefing[_PlayerID].ParallaxLayers or {};
     self.Briefing[_PlayerID].CurrentPage = _PageID;
     if type(self.Briefing[_PlayerID][_PageID]) == "table" then
         self.Briefing[_PlayerID][_PageID].Started = Logic.GetTime();
@@ -495,7 +446,6 @@ function ModuleBriefingSystem.Local:DisplayPage(_PlayerID, _PageID, _PageData)
         self:DisplayPageControls(_PlayerID, _PageID);
         self:DisplayPageAnimations(_PlayerID, _PageID);
         self:DisplayPageFader(_PlayerID, _PageID);
-        self:DisplayPageParallaxes(_PlayerID, _PageID);
         if self.Briefing[_PlayerID][_PageID].MC then
             self:DisplayPageOptionsDialog(_PlayerID, _PageID);
         end
@@ -618,55 +568,6 @@ function ModuleBriefingSystem.Local:DisplayPageFader(_PlayerID, _PageID)
     end
 end
 
-function ModuleBriefingSystem.Local:DisplayPageParallaxes(_PlayerID, _PageID)
-    local Page = self.Briefing[_PlayerID][_PageID];
-    if Page.Parallax then
-        if Page.Parallax.PurgeOld then
-            for i= 1, #self.ParallaxWidgets do
-                XGUIEng.SetMaterialTexture(self.ParallaxWidgets[i][1], 1, "");
-                XGUIEng.SetMaterialColor(self.ParallaxWidgets[i][1], 1, 255, 255, 255, 0);
-            end
-            self.Briefing[_PlayerID].ParallaxLayers = {};
-        end
-        for i= 1, 4, 1 do
-            if Page.Parallax[i] then
-                local Animation = table.copy(Page.Parallax[i]);
-                Animation.Started = XGUIEng.GetSystemTime();
-                self.Briefing[_PlayerID].ParallaxLayers[i] = Animation;
-            end
-        end
-    end
-end
-
-function ModuleBriefingSystem.Local:ControlParallaxes(_PlayerID)
-    if self.Briefing[_PlayerID].ParallaxLayers then
-        local CurrentTime = XGUIEng.GetSystemTime();
-        for k, v in pairs(self.Briefing[_PlayerID].ParallaxLayers) do
-            local Widget = self.ParallaxWidgets[k][1];
-            local Size = {GUI.GetScreenSize()};
-            local Factor = math.min(math.lerp(v.Started, CurrentTime, v.Duration), 1);
-            if v.Interpolation then
-                Factor = v:Interpolation(CurrentTime);
-            end
-            if v.Repeat then
-                self.Briefing[_PlayerID].ParallaxLayers[k].Started = CurrentTime;
-            end
-            local Alpha = v.Start.A + (v.End.A - v.Start.A) * Factor;
-            local u0 = v.Start.U0 + (v.End.U0 - v.Start.U0) * Factor;
-            local v0 = v.Start.V0 + (v.End.V0 - v.Start.V0) * Factor;
-            local u1 = v.Start.U1 + (v.End.U1 - v.Start.U1) * Factor;
-            local v1 = v.Start.U1 + (v.End.U1 - v.Start.U1) * Factor;
-            if Size[1]/Size[2] < 1.6 then
-                u0 = u0 + (u0 / 0.125);
-                u1 = u1 - (u1 * 0.125);
-            end
-            XGUIEng.SetMaterialAlpha(Widget, 1, Alpha or 255);
-            XGUIEng.SetMaterialTexture(Widget, 1, v.Image);
-            XGUIEng.SetMaterialUV(Widget, 1, u0, v0, u1, v1);
-        end
-    end
-end
-
 function ModuleBriefingSystem.Local:DisplayPageOptionsDialog(_PlayerID, _PageID)
     local Widget = "/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer";
     local Screen = {GUI.GetScreenSize()};
@@ -730,9 +631,6 @@ function ModuleBriefingSystem.Local:ThroneRoomCameraControl(_PlayerID, _Page)
         Camera.ThroneRoom_SetLookAt(LX, LY, LZ);
         Camera.ThroneRoom_SetFOV(FOV);
 
-        -- Parallax
-        self:ControlParallaxes(_PlayerID);
-
         -- Multiple Choice
         if self.Briefing[_PlayerID].MCSelectionIsShown then
             local Widget = "/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer";
@@ -757,12 +655,8 @@ function ModuleBriefingSystem.Local:ControlCameraAnimation(_PlayerID)
         local CurrentTime = XGUIEng.GetSystemTime();
         local Animation = self.Briefing[_PlayerID].CurrentAnimation;
         if CurrentTime > Animation.Started + Animation.Duration then
-            if not self.Briefing[_PlayerID].CurrentAnimation.Repeat then
-                if #self.Briefing[_PlayerID].AnimationQueue > 0 then
-                    self.Briefing[_PlayerID].CurrentAnimation = nil;
-                end
-            else
-                self.Briefing[_PlayerID].CurrentAnimation.Started = CurrentTime;
+            if #self.Briefing[_PlayerID].AnimationQueue > 0 then
+                self.Briefing[_PlayerID].CurrentAnimation = nil;
             end
         end
     end
@@ -865,9 +759,6 @@ end
 function ModuleBriefingSystem.Local:GetInterpolationFactor(_PlayerID)
     if self.Briefing[_PlayerID].CurrentAnimation then
         local CurrentTime = XGUIEng.GetSystemTime();
-        if self.Briefing[_PlayerID].CurrentAnimation.Interpolation then
-            return self.Briefing[_PlayerID].CurrentAnimation:Interpolation(CurrentTime);
-        end
         local Factor = math.lerp(
             self.Briefing[_PlayerID].CurrentAnimation.Started,
             CurrentTime,
@@ -974,20 +865,6 @@ function ModuleBriefingSystem.Local:ActivateCinematicMode(_PlayerID)
     end
     local ScreenX, ScreenY = GUI.GetScreenSize();
 
-    -- Parallax
-    function EndScreen_ExitGame() end
-    function MissionFadeInEndScreen() end
-    for i= 1, #self.ParallaxWidgets do
-        XGUIEng.ShowWidget(self.ParallaxWidgets[i][1], 1);
-        XGUIEng.ShowWidget(self.ParallaxWidgets[i][2], 1);
-        XGUIEng.PushPage(self.ParallaxWidgets[i][2], false);
-
-        XGUIEng.SetMaterialTexture(self.ParallaxWidgets[i][1], 1, "");
-        XGUIEng.SetMaterialColor(self.ParallaxWidgets[i][1], 1, 255, 255, 255, 0);
-        XGUIEng.SetMaterialUV(self.ParallaxWidgets[i][1], 1, 0, 0, 1, 1);
-    end
-    XGUIEng.ShowWidget("/EndScreen/EndScreen/BG", 0);
-
     -- Throneroom Main
     XGUIEng.ShowWidget("/InGame/ThroneRoom", 1);
     XGUIEng.PushPage("/InGame/ThroneRoom/KnightInfo", false);
@@ -1085,12 +962,6 @@ function ModuleBriefingSystem.Local:DeactivateCinematicMode(_PlayerID)
         Display.SetUserOptionOcclusionEffect(1);
     end
 
-    XGUIEng.ShowWidget("/EndScreen/EndScreen/BG", 1);
-    for i= 1, #self.ParallaxWidgets do
-        XGUIEng.ShowWidget(self.ParallaxWidgets[i][1], 0);
-        XGUIEng.ShowWidget(self.ParallaxWidgets[i][2], 0);
-        XGUIEng.PopPage();
-    end
     XGUIEng.PopPage();
     XGUIEng.PopPage();
     XGUIEng.PopPage();

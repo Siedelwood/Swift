@@ -133,57 +133,6 @@ end
 
 -- -------------------------------------------------------------------------- --
 
--- > BriefingTest2([[foo]], 1)
-
-function BriefingTest2(_Name, _PlayerID)
-    local Briefing = {
-        EnableBorderPins = false,
-        EnableSky = true,
-        EnableFoW = false,
-    }
-    local AP, ASP = API.AddBriefingPages(Briefing);
-
-    AP {
-        Name     = "Page1",
-        Title    = "Page 1",
-        Text     = "This is page 1 with parallax.",
-        Position = "npc1",
-        BarOpacity = 0,
-        Parallax = {
-            {
-                Image    = "C:/IMG/Paralax6.png",
-                Duration = 60,
-                Start    = {U0 = 0,   V0 = 0, U1 = 0.8, V1 = 1, A = 255},
-                End      = {U0 = 0.2, V0 = 0, U1 = 1,   V1 = 1, A = 255}
-            }
-        }
-    }
-
-    AP {
-        Name     = "Page2",
-        Title    = "Page 2",
-        Text     = "This is page 2.",
-        Position = "npc1",
-    }
-
-    Briefing.PageParallax = {
-        -- ["Page1"] = {
-        --     {"C:/IMG/Paralax6.png", 60, 0, 0, 0.8, 1, 255, 0.2, 0, 1, 1, 255}
-        -- },
-        ["Page2"] = {
-            PurgeOld = true
-        }
-    }
-
-    Briefing.Starting = function(_Data)
-    end
-    Briefing.Finished = function(_Data)
-    end
-    API.StartBriefing(Briefing, _Name, _PlayerID)
-end
-
--- -------------------------------------------------------------------------- --
-
 function DialogTest(_Name, _PlayerID)
     local Dialog = {
         EnableFoW = false,
