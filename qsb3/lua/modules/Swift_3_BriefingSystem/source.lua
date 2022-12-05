@@ -673,7 +673,7 @@ function ModuleBriefingSystem.Local:GetPagePosition(_PlayerID)
     local Position, FlyTo;
     if self.Briefing[_PlayerID].CurrentAnimation then
         Position = self.Briefing[_PlayerID].CurrentAnimation.Start.Position;
-        FlyTo = self.Briefing[_PlayerID].CurrentAnimation.End.Position;
+        FlyTo = self.Briefing[_PlayerID].CurrentAnimation.End;
     end
 
     local x, y, z = self:ConvertPosition(Position);
@@ -692,7 +692,7 @@ function ModuleBriefingSystem.Local:GetPageLookAt(_PlayerID)
     local LookAt, FlyTo;
     if self.Briefing[_PlayerID].CurrentAnimation then
         LookAt = self.Briefing[_PlayerID].CurrentAnimation.Start.LookAt;
-        FlyTo = self.Briefing[_PlayerID].CurrentAnimation.End.LookAt;
+        FlyTo = self.Briefing[_PlayerID].CurrentAnimation.End;
     end
 
     local x, y, z = self:ConvertPosition(LookAt);

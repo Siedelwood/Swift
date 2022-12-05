@@ -133,6 +133,35 @@ end
 
 -- -------------------------------------------------------------------------- --
 
+-- > BriefingTest2([[foo]], 1)
+
+function BriefingTest2(_Name, _PlayerID)
+    local Briefing = {
+        EnableBorderPins = false,
+        EnableSky = true,
+        EnableFoW = false,
+    }
+    local AP, ASP = API.AddBriefingPages(Briefing);
+
+    ASP("SpecialNamedPage1", "Page 1", "This is a briefing. I have to say important things.");
+    ASP("SpecialNamedPage2", "Page 2", "WOW! That is very cool.");
+
+    Briefing.PageAnimations = {
+        ["SpecialNamedPage1"] = {
+            {PurgeOld = true,
+             30, {"Pos1", 3500}, {"npc1", 500}, {"Pos2", 3500}, {"npc1", 500}}
+        },
+    }
+
+    Briefing.Starting = function(_Data)
+    end
+    Briefing.Finished = function(_Data)
+    end
+    API.StartBriefing(Briefing, _Name, _PlayerID)
+end
+
+-- -------------------------------------------------------------------------- --
+
 function DialogTest(_Name, _PlayerID)
     local Dialog = {
         EnableFoW = false,

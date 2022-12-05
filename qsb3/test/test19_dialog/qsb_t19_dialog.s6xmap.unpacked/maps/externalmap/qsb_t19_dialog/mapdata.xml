@@ -72,6 +72,30 @@
     </P>
     <O>2.750000e+002</O>
    </E>
+   <E>
+    <T>XD_ScriptEntity</T>
+    <Pl>1</Pl>
+    <H>100</H>
+    <S>1.</S>
+    <N>Pos1</N>
+    <P>
+     <X>3200.</X>
+     <Y>6400.</Y>
+    </P>
+    <O>0.000000e+000</O>
+   </E>
+   <E>
+    <T>XD_ScriptEntity</T>
+    <Pl>1</Pl>
+    <H>100</H>
+    <S>1.</S>
+    <N>Pos2</N>
+    <P>
+     <X>6400.</X>
+     <Y>3200.</Y>
+    </P>
+    <O>0.000000e+000</O>
+   </E>
   </EntityCollection>
  </Entities>
  <Roads>
