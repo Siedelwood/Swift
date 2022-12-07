@@ -153,9 +153,11 @@ function Swift.Bugfix:FixInteractiveObjectClicked()
             Sound.FXPlay2DSound( "ui\\menu_click");
         end
         -- Check feedback speech override
-        if not GUI_Interaction.InteractionSpeechFeedbackOverride
-        or not GUI_Interaction.InteractionSpeechFeedbackOverride(ObjectID) then
-            GUI_FeedbackSpeech.Add("SpeechOnly_CartsSent", g_FeedbackSpeech.Categories.CartsUnderway, nil, nil);
+        if Costs[1] then
+            if not GUI_Interaction.InteractionSpeechFeedbackOverride
+            or not GUI_Interaction.InteractionSpeechFeedbackOverride(ObjectID) then
+                GUI_FeedbackSpeech.Add("SpeechOnly_CartsSent", g_FeedbackSpeech.Categories.CartsUnderway, nil, nil);
+            end
         end
         -- Check action override and perform action
         if not Mission_Callback_OverrideObjectInteraction

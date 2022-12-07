@@ -14,7 +14,7 @@
 
 API = API or {};
 QSB = QSB or {};
-QSB.Version = "Version 2.14.6 18/11/2021";
+QSB.Version = "Version 2.14.7 07/12/2022";
 QSB.HumanPlayerID = 1;
 QSB.Language = "de";
 
@@ -37822,7 +37822,7 @@ function AddOnCastleStore.Local:OverwriteInteractiveObject()
         if not GUI_Interaction.InteractionClickOverride  or not GUI_Interaction.InteractionClickOverride(ObjectID) then
             Sound.FXPlay2DSound( "ui\\menu_click");
         end
-        if not GUI_Interaction.InteractionSpeechFeedbackOverride or not GUI_Interaction.InteractionSpeechFeedbackOverride(ObjectID) then                
+        if Costs[1] and not GUI_Interaction.InteractionSpeechFeedbackOverride or not GUI_Interaction.InteractionSpeechFeedbackOverride(ObjectID) then                
             GUI_FeedbackSpeech.Add("SpeechOnly_CartsSent", g_FeedbackSpeech.Categories.CartsUnderway, nil, nil);
         end
         -- Aktion
