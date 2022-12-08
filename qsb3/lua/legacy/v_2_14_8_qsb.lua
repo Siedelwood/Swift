@@ -14,7 +14,7 @@
 
 API = API or {};
 QSB = QSB or {};
-QSB.Version = "Version 2.14.7 07/12/2022";
+QSB.Version = "Version 2.14.8 08/12/2022";
 QSB.HumanPlayerID = 1;
 QSB.Language = "de";
 
@@ -4219,7 +4219,7 @@ function BundleBriefingSystem.Local:PageStarted()
     local PageID = self.Data.CurrentBriefing.Page;
     self.Data.CurrentPage = self.Data.CurrentBriefing[PageID];
     if type(self.Data.CurrentPage) == "table" then
-        self.Data.CurrentPage.Started = Logic.GetTime();
+        self.Data.CurrentPage.Started = XGUIEng.GetSystemTime();
 
         -- Zurück und Weiter
         local BackFlag = 1;
@@ -4374,7 +4374,7 @@ function BundleBriefingSystem.Local:ThroneRoomCameraControl()
         if type(self.Data.CurrentPage) == "table" then
             -- Animation invalidieren
             if self.Data.CurrentBriefing.CurrentAnimation then
-                local CurrentTime = Logic.GetTime();
+                local CurrentTime = XGUIEng.GetSystemTime();
                 local Animation = self.Data.CurrentBriefing.CurrentAnimation;
                 if CurrentTime > Animation.Started + Animation.Duration then
                     if #self.Data.CurrentBriefing.AnimationQueue > 0 then
@@ -4386,7 +4386,7 @@ function BundleBriefingSystem.Local:ThroneRoomCameraControl()
             if self.Data.CurrentBriefing.CurrentAnimation == nil then
                 if self.Data.CurrentBriefing.AnimationQueue and #self.Data.CurrentBriefing.AnimationQueue > 0 then
                     local Next = table.remove(self.Data.CurrentBriefing.AnimationQueue, 1);
-                    Next.Started = Logic.GetTime();
+                    Next.Started = XGUIEng.GetSystemTime();
                     self.Data.CurrentBriefing.CurrentAnimation = Next;
                 end
             end
@@ -4569,7 +4569,6 @@ end
 -- @local
 --
 function BundleBriefingSystem.Local:GetLERP()
-    local Current = Logic.GetTime();
     local Started, FlyTime;
     if self.Data.CurrentBriefing.CurrentAnimation then
         Started = self.Data.CurrentBriefing.CurrentAnimation.Started;
@@ -4581,17 +4580,20 @@ function BundleBriefingSystem.Local:GetLERP()
             FlyTime = self.Data.CurrentPage.FlyTo.Duration;
         end
     end
-
-    local Factor = 1.0;
-    if FlyTime and FlyTime > 0 then
-        if Started + FlyTime > Current then
-            Factor = (Current - Started) / FlyTime;
-            if Factor > 1 then
-                Factor = 1.0;
-            end
-        end
-    end
-    return Factor;
+	
+	if not LERPFactor then
+		LERPFactor = function(s, c, e)
+		local f = (c - s) / e;
+			return (f > 1 and 1) or f;
+		end
+	end
+	
+    local Factor = LERPFactor(
+        Started,
+        XGUIEng.GetSystemTime(),
+        FlyTime
+    );
+    return math.min(Factor, 1);
 end
 
 ---
@@ -4932,6 +4934,7 @@ function BundleBriefingSystem.Local:ActivateCinematicMode()
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Text", 1);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Title", 1);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", 1);
+	XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/updater", 1);
 
     -- Text
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Text", " ");
@@ -17815,7 +17818,7 @@ QSB.SimpleTypewriter = {
     m_Delay      = 15,
     m_Waittime   = 80,
     m_Speed      = 1,
-    m_Color      = {R= 0, G= 0, B= 0, A = 255},
+    m_Color      = {R = 0, G = 0, B = 0, A = 255},
     m_Index      = 0,
     m_Position   = 0,
     m_Text       = nil,
@@ -17938,16 +17941,22 @@ function QSB.SimpleTypewriter:Play()
             if BundleBriefingSystem then
                 BundleBriefingSystem.Local.Data.BriefingActive = true
             end
-            Core:InterfaceDeactivateNormalInterface()
-            Core:InterfaceActivateBlackBackground(%d, %d, %d, %d)
+			
+			Camera.SwitchCameraBehaviour(5)
+			GUI.ActivateCutSceneState()
+			Input.CutsceneMode()
+			
+			Core:InterfaceDeactivateNormalInterface()
             Core:InterfaceDeactivateBorderScroll(%d)
+			Core:InterfaceActivateBlackBackground(%d, %d, %d, %d)
+
             GUI.ClearNotes()
         ]],
+		GetID(self.m_Position),
         self.m_Color.R,
         self.m_Color.G,
         self.m_Color.B,
-        self.m_Color.A,
-        GetID(self.m_Position)
+        self.m_Color.A
     ));
     self.m_JobID = StartSimpleHiResJobEx(self.ControllerJob, self);
     return self;
@@ -17966,9 +17975,15 @@ function QSB.SimpleTypewriter:Stop()
         if BundleBriefingSystem then
             BundleBriefingSystem.Local.Data.BriefingActive = false
         end
-        Core:InterfaceDeactivateBlackBackground()
+		
+		Camera.SwitchCameraBehaviour(0)
+		GUI.ActivateSelectionState()
+		Input.GameMode()
+
         Core:InterfaceActivateNormalInterface()
         Core:InterfaceActivateBorderScroll()
+		Core:InterfaceDeactivateBlackBackground()
+
         GUI.ClearNotes()
     ]]);
     EndJob(self.m_JobID);
@@ -43933,4 +43948,3 @@ if not MapEditor and not GUI then
         end
     ]]);
 end
-
