@@ -17942,14 +17942,18 @@ function QSB.SimpleTypewriter:Play()
                 BundleBriefingSystem.Local.Data.BriefingActive = true
             end
 			
-			Camera.SwitchCameraBehaviour(5)
+			local Position = %d
+			local ColorR, ColorG, ColorB, ColorA = %d,%d,%d,%d
+			Core:InterfaceDeactivateNormalInterface()
+            Core:InterfaceDeactivateBorderScroll(Position)
+			Core:InterfaceActivateBlackBackground(ColorR, ColorG, ColorB, ColorA)
+			
+			if ColorA >= 255 then
+				Camera.SwitchCameraBehaviour(5)
+			end
 			GUI.ActivateCutSceneState()
 			Input.CutsceneMode()
 			
-			Core:InterfaceDeactivateNormalInterface()
-            Core:InterfaceDeactivateBorderScroll(%d)
-			Core:InterfaceActivateBlackBackground(%d, %d, %d, %d)
-
             GUI.ClearNotes()
         ]],
 		GetID(self.m_Position),
@@ -17976,7 +17980,9 @@ function QSB.SimpleTypewriter:Stop()
             BundleBriefingSystem.Local.Data.BriefingActive = false
         end
 		
-		Camera.SwitchCameraBehaviour(0)
+		if Camera.GetCameraBehaviour() == 5 then
+			Camera.SwitchCameraBehaviour(0)
+		end
 		GUI.ActivateSelectionState()
 		Input.GameMode()
 
