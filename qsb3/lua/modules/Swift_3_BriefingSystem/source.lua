@@ -622,6 +622,7 @@ function ModuleBriefingSystem.Local:ThroneRoomCameraControl(_PlayerID, _Page)
     if _Page then
         -- Camera
         self:ControlCameraAnimation(_PlayerID);
+        local FOV = 42;
         local PX, PY, PZ = self:GetPagePosition(_PlayerID);
         local LX, LY, LZ = self:GetPageLookAt(_PlayerID);
         if PX and not LX then
