@@ -1,1 +1,0 @@
-Script.Load("E:/Repositories/swift/qsb3/test/test04_io/localmapscript.lua");

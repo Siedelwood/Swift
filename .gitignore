@@ -61,6 +61,7 @@ app/
 tmp/
 */ldoc/*
 qsb3/doc/html
+qsb4/doc
 qsb3/lua/mods/doc
 qsb3/Swift
 qsb/lua/core.lua
@@ -73,3 +74,4 @@ qsb/doc/html/
 swift_*.lua
 
 *_min.lua
+*.odt#
